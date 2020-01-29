@@ -162,14 +162,23 @@ def pytest_generate_tests(metafunc):
                                      id="{}::{}".format(section, name)
                                      )
                     elif name.startswith("LOOKUP-"):
-                        lookup_keys = r'[^ ]+ *((?:[^ ]+ *as *)?(?P<FIELD>[^ ]+)) *OUTPUT'
+                        lookup_key_group = re.match(r'[^ ]+ +(?P<KEYS>.+) +OUTPUT', option.value, re.IGNORECASE).group('KEYS')
 
-                        matches = re.findall(lookup_keys, option.value, re.IGNORECASE)
+                        lookup_keys = r'(?:[^ ]* +AS +)?(?P<FIELD>[^ ]+)'
 
-                        params.append(
-                            pytest.param({'sourcetype': section, 'field': '( {} )'.format(' AND '.join(matches))},
-                                         id="{}::{}".format(section, name)
-                                         )
-                        )
+                        matches = re.findall(lookup_keys, lookup_key_group, re.IGNORECASE)
+
+                        if matches:
+                            terms = []
+                            for m in matches:
+                                terms.append('({}=* AND NOT {}="-" AND NOT {}="")'.format(m, m, m))
+
+                            condition = '( {} )'.format(' AND '.join(terms))
+
+                            params.append(
+                                pytest.param({'sourcetype': section, 'field': condition},
+                                             id="{}::{}".format(section, name)
+                                             )
+                            )
 
             metafunc.parametrize("prop_elements", params)
