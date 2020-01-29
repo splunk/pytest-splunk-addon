@@ -1,0 +1,8 @@
+vendor_severity,severity
+Critical,critical
+Major,high
+Minor,low
+Error,critical
+Warning,medium
+Information,informational
+Info,informational

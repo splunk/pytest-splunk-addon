@@ -1,0 +1,10 @@
+<panel>
+   <title>Symantec EP - Discovered Infections in Last 24H</title>
+   	<table>
+   		<search>
+     	<query>sourcetype="symantec:ep:scan:file" Infected_Files!=0  earliest=-1d|dedup dest |sort -Infected_Files|rename dest as "Computer Name"|rename dest_ip as "IP Address" | table  "Computer Name" "IP Address" Infected_Files, Total_Files,Omitted_Files</query>
+     	<earliest>0</earliest>
+     	<latest></latest>
+   		</search>
+    </table>
+</panel>

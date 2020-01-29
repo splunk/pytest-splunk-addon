@@ -1,0 +1,35 @@
+vendor_action,action
+Quarantined,blocked
+Renamed,deferred
+Deleted,blocked
+Cleaned,blocked
+Cleaned by deletion,blocked
+Bad,allowed
+Left alone,allowed
+Details pending,deferred
+No repair available,allowed
+Partially repaired,allowed
+Process terminate pending restart,allowed
+Cleaned or deleted macros,blocked
+Saved file as,deferred
+Sent to Intel (AMS),deferred
+Moved to backup location,deferred
+Renamed backup file,deferred
+Undo action in Quarantine View,deferred
+Unable to act on file,allowed
+Backed up file,deferred
+Pending analysis,deferred
+First action was partially successful; second action was Leave Alone. Results of the second action are not mentioned.,deferred
+A process needs to be terminated to remove a risk,deferred
+Prevent a risk from being logged or a user interface from being displayed,deferred
+Performing a request to restart the computer,deferred
+Shows as Cleaned by Deletion in the Risk History in the UI and the Logs in the SSC,blocked
+Auto-Protect prevented a file from being created; reported (Access denied),blocked
+Blocked,blocked
+Continue,allowed
+Allowed,allowed
+Accept,allowed
+Block,blocked
+Allow,allowed
+Moved back,deferred
+Access Denied,blocked
