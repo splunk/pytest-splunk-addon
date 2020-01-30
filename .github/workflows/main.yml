@@ -15,7 +15,7 @@ jobs:
         # Name of the Docker image
         name: docker.pkg.github.com/splunk/pytest-splunk-addon/pytest-splunk-addon
         # Tag for the Docker image
-        #tag: # optional
+        tag: latest,1,1.0,1.0.0
         # Script body to compute tag name for the Docker image, has context as the main function argument
         #tag script: # optional
         # Username for Docker registry
