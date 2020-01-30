@@ -26,5 +26,8 @@ COPY . /tmp/pytest-splunk-addon
 RUN pip3 install /tmp/pytest-splunk-addon
 
 COPY pytest.ini /work
-ENTRYPOINT "/entrypoint.sh"
 
+WORKDIR /work
+
+ENTRYPOINT "pytest"
+CMD "tests"
