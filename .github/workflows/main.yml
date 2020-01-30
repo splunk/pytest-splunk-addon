@@ -1,0 +1,28 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker Publish
+      uses: manusa/actions-publish-docker@v1.0.1
+      with:
+        # Name of the Docker image
+        name: splunk/pytest-splunk-addon
+        # Tag for the Docker image
+        #tag: # optional
+        # Script body to compute tag name for the Docker image, has context as the main function argument
+        #tag script: # optional
+        # Username for Docker registry
+        #username: 
+        # Password for Docker registry
+        #password: 
+        # Registry URL
+        registry: docker.pkg.github.com
+        # Don't skip pull requests
+        include pull requests: # optional
