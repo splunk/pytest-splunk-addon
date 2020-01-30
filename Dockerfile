@@ -8,6 +8,7 @@
 #work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 FROM python:3.7
 
+RUN pip3 install --upgrade pip
 RUN mkdir -p /work/tests
 RUN mkdir -p /work/test-results/functional
 
@@ -17,6 +18,9 @@ RUN apt-get update ; apt-get install -y netcat; apt-get clean
 
 COPY requirements.txt /
 RUN pip3 install -r /requirements.txt
+
+COPY . /tmp/pytest-splunk-addon
+RUN pip3 install /tmp/pytest-splunk-addon
 
 COPY pytest.ini /work
 ENTRYPOINT "/entrypoint.sh"
