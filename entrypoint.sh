@@ -17,4 +17,4 @@ wait-for $SPLUNK_HOST:8088 -t 0 -- echo splunkhec is up
 
 
 cd /work
-exec pytest tests $@
+exec pytest $@ tests
