@@ -17,7 +17,7 @@ class Basic():
         # run search
         result = splunk_search_util .checkQueryCountIsGreaterThanZero(
             search,
-            interval=6, retries=10)
+            interval=1, retries=20)
 
         if not result:
             pytest.fail(search)
@@ -32,7 +32,7 @@ class Basic():
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search,
-            interval=2, retries=10)
+            interval=1, retries=20)
 
         if not result:
             pytest.fail(search)
@@ -47,7 +47,7 @@ class Basic():
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search,
-            interval=2, retries=5)
+            interval=1, retries=10)
 
         if not result:
             pytest.fail(search)
