@@ -19,9 +19,6 @@ RUN apt-get update ; apt-get install -y netcat; apt-get clean
 COPY requirements.txt /
 RUN pip3 install -r /requirements.txt
 
-RUN pip3 install pytest-parallel
-
-
 COPY . /tmp/pytest-splunk-addon
 RUN pip3 install /tmp/pytest-splunk-addon
 
