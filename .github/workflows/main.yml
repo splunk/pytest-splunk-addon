@@ -19,8 +19,8 @@ jobs:
         # Script body to compute tag name for the Docker image, has context as the main function argument
         #tag script: # optional
         # Username for Docker registry
-        username: rfaircloth-splunk
-        password: ${{ secrets.GITHUB_TOKEN }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
         # Registry URL
         registry: docker.pkg.github.com
         # Don't skip pull requests
