@@ -13,7 +13,7 @@ jobs:
       uses: manusa/actions-publish-docker@v1.0.1
       with:
         # Name of the Docker image
-        name: docker.pkg.github.com/splunk/pytest-splunk-addon
+        name: splunk/pytest-splunk-addon/pytest-splunk-addon
         # Tag for the Docker image
         #tag: # optional
         # Script body to compute tag name for the Docker image, has context as the main function argument
@@ -22,6 +22,6 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         # Registry URL
-        #registry:
+        registry: docker.pkg.github.com
         # Don't skip pull requests
         include pull requests: # optional
