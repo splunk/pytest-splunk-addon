@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pytest
 
 
 def test_splunk_connection(testdir):
@@ -67,6 +68,36 @@ def test_splunk_app_fiction(testdir):
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
+
+
+def test_splunk_app_broken_sourcetype(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile("""
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+
+    """)
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        '--splunk_app=/Users/rfaircloth/PycharmProjects/pytest-splunk-addon/tests/addons/TA_broken_sourcetype',
+        '--splunk_host=127.0.0.1',
+        '--splunk_user=admin',
+        '--splunk_password=Changed@11',
+        '-v'
+    )
+
+    # fnmatch_lines does an assertion internally
+    result.stdout.fnmatch_lines([
+        '*test_basic_sourcetypes*notvalid*FAILED*',
+        '*test_fields*notvalid::EXTRACT-one* SKIPPED*',
+    ])
+
+    # The test suite should fail as this is a negative test
+    assert result.ret != 0
 
 
 def test_help_message(testdir):

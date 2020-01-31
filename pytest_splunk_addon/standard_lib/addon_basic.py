@@ -12,15 +12,14 @@ class Basic():
     def test_basic_sourcetypes(self, splunk_search_util, sourcetypes):
 
         self.logger.debug("Testing sourcetype={}", sourcetypes)
-        search = "search (index=_internal OR index=*) AND sourcetype=\"{}\"".format(sourcetypes)
+        search = "search (index=_internal OR index=*) AND sourcetype=\"{}\"".format(sourcetypes['sourcetype'])
 
         # run search
         result = splunk_search_util .checkQueryCountIsGreaterThanZero(
             search,
-            interval=1, retries=20)
+            interval=1, retries=1)
 
-        if not result:
-            pytest.fail(search)
+        assert result
 
     # This test ensures the contained samples will produce at lease one event per eventtype
     @pytest.mark.splunk_addon_searchtime
@@ -32,7 +31,7 @@ class Basic():
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search,
-            interval=1, retries=20)
+            interval=1, retries=1)
 
         if not result:
             pytest.fail(search)
@@ -47,7 +46,7 @@ class Basic():
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search,
-            interval=1, retries=10)
+            interval=1, retries=1)
 
         if not result:
             pytest.fail(search)

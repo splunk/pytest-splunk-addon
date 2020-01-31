@@ -77,20 +77,36 @@ def pytest_generate_tests(metafunc):
 
         if "sourcetypes" in metafunc.fixturenames:
 
-            sourcetypes = []
+            params = []
             # Add source types which are not RENAME host:: or used to set source:: used to set SOURCETYPE
             for section in props.sects:
                 if section.startswith('source::'):
                     if props.sects[section].options['sourcetype']:
                         continue
                     else:
-                        sourcetypes.append(section)
+                        params.append(
+                            pytest.param({'sourcetype': section, 'sourcetype': section},
+                                         marks=pytest.mark.dependency(
+                                             name='splunk::addon::sourcetype[{}]'.format(section)
+                                             ),
+                                         id=section
+                                         )
+                        )
                 elif section.startswith('host::'):
                     continue
                 else:
-                    sourcetypes.append(section)
+                    params.append(
+                        pytest.param({'sourcetype': section, 'sourcetype': section},
+                                     marks=pytest.mark.dependency(
+                                         name='splunk::addon::sourcetype[{}]'.format(section)
+                                     ),
+                                     id=section
+                                     )
+                    )
 
-            metafunc.parametrize("sourcetypes", sourcetypes)
+
+
+            metafunc.parametrize("sourcetypes", params)
 
         elif "eventtypes" in metafunc.fixturenames:
             metafunc.parametrize("eventtypes", eventtypes)
@@ -115,6 +131,9 @@ def pytest_generate_tests(metafunc):
                             condition = '( {} )'.format(' AND '.join(terms))
                             params.append(
                                 pytest.param({'sourcetype': section, 'field': condition},
+                                             marks=pytest.mark.dependency(
+                                                 depends=['splunk::addon::sourcetype[{}]'.format(section)]
+                                             ),
                                              id="{}::{}".format(section, name)
                                              )
                             )
@@ -135,6 +154,9 @@ def pytest_generate_tests(metafunc):
                                     params.append(
                                         pytest.param(
                                             {'sourcetype': section, 'field': condition},
+                                            marks=pytest.mark.dependency(
+                                                depends=['splunk::addon::sourcetype[{}]'.format(section)]
+                                            ),
                                             id="{}::{}".format(section, name)
                                             )
                                     )
@@ -147,6 +169,9 @@ def pytest_generate_tests(metafunc):
 
                             params.append(
                                 pytest.param({'sourcetype': section, 'field': term },
+                                             marks=pytest.mark.dependency(
+                                                 depends=['splunk::addon::sourcetype[{}]'.format(section)]
+                                             ),
                                              id="{}::{}".format(section, name)
                                              )
                             )
@@ -154,13 +179,22 @@ def pytest_generate_tests(metafunc):
                         # Eval tests are hard we simple check to see if the field will ever populate for the source type
                         # When if or coalesce is used we should demand a manual test creation to test the paths
 
-                        matches = re.search(r'EVAL-(?P<FIELD>.*)', option.name, re.IGNORECASE)
-                        pytest.param({'sourcetype': section, 'field': matches},
-                                     marks=pytest.mark.dependency(depends=[
-                                         "tests/dynamic/test_splunk_addon.py::TestSplunkApp::test_basic_sourcetypes[{}]".format(
-                                             section)]),
-                                     id="{}::{}".format(section, name)
-                                     )
+                        matches = re.findall(r'EVAL-(?P<FIELD>.*)', option.name, re.IGNORECASE)
+                        if matches:
+                            terms = []
+                            for m in matches:
+                                terms.append('({}=* AND NOT {}="-" AND NOT {}="")'.format(m, m, m))
+
+                            condition = '( {} )'.format(' AND '.join(terms))
+
+                        params.append(
+                            pytest.param({'sourcetype': section, 'field': matches},
+                                         marks=pytest.mark.dependency(
+                                             depends=['splunk::addon::sourcetype[{}]'.format(condition)]
+                                         ),
+                                         id="{}::{}".format(section, name)
+                                         )
+                        )
                     elif name.startswith("LOOKUP-"):
                         lookup_key_group = re.match(r'[^ ]+ +(?P<KEYS>.+) +OUTPUT', option.value, re.IGNORECASE).group('KEYS')
 
@@ -177,6 +211,9 @@ def pytest_generate_tests(metafunc):
 
                             params.append(
                                 pytest.param({'sourcetype': section, 'field': condition},
+                                             marks=pytest.mark.dependency(
+                                                 depends=['splunk::addon::sourcetype[{}]'.format(section)]
+                                             ),
                                              id="{}::{}".format(section, name)
                                              )
                             )
