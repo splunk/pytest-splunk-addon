@@ -9,6 +9,7 @@ from splunk_appinspect import App
 from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
+from pytest_docker_tools import build, container
 
 logger = logging.getLogger()
 
@@ -52,14 +53,42 @@ def pytest_addoption(parser):
         help='Splunk password'
     )
 
+splunk_image = build(
+    path='/Users/rfaircloth/PycharmProjects/pytest-splunk-addon/tests'
 
-@pytest.fixture(scope="session")
-def splunk_search_util(request):
-    splunk = CloudSplunk(splunkd_host=request.config.getoption('splunk_host'),
-                         splunkd_port=request.config.getoption('splunk_port'),
-                         username=request.config.getoption('splunk_user'),
-                         password=request.config.getoption('splunk_password')
-                         )
+)
+splunk_server_container = container(
+    image='{splunk_image.id}',
+    ports={
+        '8000/tcp': None,
+        '8089/tcp': None,
+    },
+    environment={
+        'SPLUNK_PASSWORD': 'Changed@11',
+        'SPLUNK_START_ARGS': '--accept-license'
+    }
+
+)
+
+
+#@pytest.fixture(scope="session")
+@pytest.fixture
+def splunk_search_util(request, splunk_server_container):
+
+
+    ip, port = splunk_server_container.get_addr('8089/tcp')
+
+    splunk = CloudSplunk(splunkd_host=ip,
+                      splunkd_port=port,
+                      username=request.config.getoption('splunk_user'),
+                      password=request.config.getoption('splunk_password')
+                      )
+
+    # splunk = CloudSplunk(splunkd_host=request.config.getoption('splunk_host'),
+    #                      splunkd_port=request.config.getoption('splunk_port'),
+    #                      username=request.config.getoption('splunk_user'),
+    #                      password=request.config.getoption('splunk_password')
+    #                      )
 
     conn = splunk.create_logged_in_connector()
     jobs = Jobs(conn)
