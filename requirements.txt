@@ -4,3 +4,4 @@ future
 httplib2
 https://download.splunk.com/misc/appinspect/splunk-appinspect-latest.tar.gz
 pytest-dependency
+flaky

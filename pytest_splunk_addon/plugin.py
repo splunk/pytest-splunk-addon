@@ -188,9 +188,9 @@ def pytest_generate_tests(metafunc):
                             condition = '( {} )'.format(' AND '.join(terms))
 
                         params.append(
-                            pytest.param({'sourcetype': section, 'field': matches},
+                            pytest.param({'sourcetype': section, 'field': condition},
                                          marks=pytest.mark.dependency(
-                                             depends=['splunk::addon::sourcetype[{}]'.format(condition)]
+                                             depends=['splunk::addon::sourcetype[{}]'.format(section)]
                                          ),
                                          id="{}::{}".format(section, name)
                                          )
