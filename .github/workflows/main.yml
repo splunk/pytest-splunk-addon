@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Docker Publish
-      uses: manusa/actions-publish-docker@v1.0.1
+      uses: manusa/actions-publish-docker@v1.0.2
       with:
         # Name of the Docker image
         name: docker.pkg.github.com/splunk/pytest-splunk-addon/pytest-splunk-addon

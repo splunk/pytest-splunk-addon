@@ -26,5 +26,5 @@ COPY pytest.ini /work
 
 WORKDIR /work
 
-ENTRYPOINT "pytest"
+ENTRYPOINT "/entrypoint.sh"
 CMD "tests"
