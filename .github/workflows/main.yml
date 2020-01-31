@@ -10,18 +10,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Docker Publish
-      uses: manusa/actions-publish-docker@v2.12
+      uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        # Name of the Docker image
+        registry: docker.pkg.github.com
         name: docker.pkg.github.com/splunk/pytest-splunk-addon/pytest-splunk-addon
-        # Tag for the Docker image
-        tag: 1.0.0
-        # Script body to compute tag name for the Docker image, has context as the main function argument
-        #tag script: # optional
-        # Username for Docker registry
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        # Registry URL
-        registry: docker.pkg.github.com
-        # Don't skip pull requests
-        include pull requests: # optional
+
+        snapshot: true
+        tags: master
