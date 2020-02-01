@@ -19,6 +19,7 @@ def test_splunk_connection(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        '--splunk_type=external',
         '--splunk_app=tests/addons/TA_fiction',
         '--splunk_type=external',
         f'--splunk_host=127.0.0.1',
@@ -51,6 +52,7 @@ def test_splunk_app_fiction(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        '--splunk_type=external',
         '--splunk_app=/Users/rfaircloth/PycharmProjects/pytest-splunk-addon/tests/addons/TA_fiction',
         f'--splunk_host=127.0.0.1',
         f'--splunk_port=8089',
