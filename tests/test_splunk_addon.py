@@ -2,7 +2,7 @@
 import pytest
 from flaky import flaky
 
-def test_splunk_connection(testdir,splunk_server):
+def test_splunk_connection(testdir):
     """Make sure that pytest accepts our fixture."""
 
     # create a temporary pytest test module
@@ -20,8 +20,9 @@ def test_splunk_connection(testdir,splunk_server):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         '--splunk_app=tests/addons/TA_fiction',
-        f'--splunk_host={splunk_server[0]}',
-        f'--splunk_port={splunk_server[1]}',
+        '--splunk_type=external',
+        f'--splunk_host=127.0.0.1',
+        f'--splunk_port=8089',
         '--splunk_password=Changed@11',
         '-v'
     )
@@ -36,7 +37,7 @@ def test_splunk_connection(testdir,splunk_server):
 
 
 @flaky(max_runs=5, min_passes=1)
-def test_splunk_app_fiction(testdir,splunk_server):
+def test_splunk_app_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile("""
@@ -44,15 +45,15 @@ def test_splunk_app_fiction(testdir,splunk_server):
         class Test_App(Basic):
             def empty_method():
                 pass
-            
+
     """)
 
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
         '--splunk_app=/Users/rfaircloth/PycharmProjects/pytest-splunk-addon/tests/addons/TA_fiction',
-        f'--splunk_host={splunk_server[0]}',
-        f'--splunk_port={splunk_server[1]}',
+        f'--splunk_host=127.0.0.1',
+        f'--splunk_port=8089',
         '--splunk_password=Changed@11',
         '--no-flaky-report',
         '-v',
@@ -61,45 +62,46 @@ def test_splunk_app_fiction(testdir,splunk_server):
     #'*test_fields*splunkd*EXTRACT-two*PASSED*',
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines([
-        '*test_basic_sourcetypes*splunkd*PASSED*',
-        '*test_basic_eventtype*splunkd*PASSED*',
-        '*test_fields*splunkd*EXTRACT-one*PASSED*',
-
-        '*test_fields*splunkd*FIELDALIAS-one*PASSED*'
+        '*test_basic_props*splunkd*PASSED*',
     ])
+
+    # '*test_basic_eventtype*splunkd*PASSED*',
+    # '*test_fields*splunkd*EXTRACT-one*PASSED*',
+    #
+    # '*test_fields*splunkd*FIELDALIAS-one*PASSED*'
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
 
 
-def test_splunk_app_broken_sourcetype(testdir,splunk_server):
-    """Make sure that pytest accepts our fixture."""
-
-    testdir.makepyfile("""
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
-        class Test_App(Basic):
-            def empty_method():
-                pass
-
-    """)
-
-    # run pytest with the following cmd args
-    result = testdir.runpytest(
-        '--splunk_app=/Users/rfaircloth/PycharmProjects/pytest-splunk-addon/tests/addons/TA_broken_sourcetype',
-        f'--splunk_host={splunk_server[0]}',
-        f'--splunk_port={splunk_server[1]}',
-        '--splunk_password=Changed@11',
-        '-v'
-    )
-
-    # fnmatch_lines does an assertion internally
-    result.stdout.fnmatch_lines([
-        '*test_basic_sourcetypes*notvalid*FAILED*',
-        '*test_fields*notvalid::EXTRACT-one* SKIPPED*',
-    ])
-
-    # The test suite should fail as this is a negative test
-    assert result.ret != 0
+# def test_splunk_app_broken_sourcetype(testdir,splunk_server):
+#     """Make sure that pytest accepts our fixture."""
+#
+#     testdir.makepyfile("""
+#         from pytest_splunk_addon.standard_lib.addon_basic import Basic
+#         class Test_App(Basic):
+#             def empty_method():
+#                 pass
+#
+#     """)
+#
+#     # run pytest with the following cmd args
+#     result = testdir.runpytest(
+#         '--splunk_app=/Users/rfaircloth/PycharmProjects/pytest-splunk-addon/tests/addons/TA_broken_sourcetype',
+#         f'--splunk_host={splunk_server[0]}',
+#         f'--splunk_port={splunk_server[1]}',
+#         '--splunk_password=Changed@11',
+#         '-v'
+#     )
+#
+#     # fnmatch_lines does an assertion internally
+#     result.stdout.fnmatch_lines([
+#         '*test_basic_sourcetypes*notvalid*FAILED*',
+#         '*test_fields*notvalid::EXTRACT-one* SKIPPED*',
+#     ])
+#
+#     # The test suite should fail as this is a negative test
+#     assert result.ret != 0
 
 
 def test_help_message(testdir):
