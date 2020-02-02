@@ -7,9 +7,10 @@ jobs:
 
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: [3.7]
-        splunk-version: [7.2,7.3,8.0]
+        splunk-version: [7.2,7.3,8.0,edge]
 
     steps:
     - uses: actions/checkout@v2
@@ -28,8 +29,7 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
-        export SPLUNK_VERSION=${{ matrix.splunk-version }}
-        pytest
+        pytest --splunk_version=${{ matrix.splunk-version }}
     - name: Lint with flake8
       run: |
         pip install flake8

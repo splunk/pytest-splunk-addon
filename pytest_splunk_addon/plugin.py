@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-
+import os
 import pytest
 import requests
 from splunk_appinspect import App
@@ -58,7 +58,13 @@ def pytest_addoption(parser):
         default='changeme',
         help='Splunk password'
     )
-
+    group.addoption(
+        '--splunk_version',
+        action='store',
+        dest='splunk_version',
+        default='latest',
+        help='Splunk password'
+    )
 
 def is_responsive(url):
     try:
@@ -90,6 +96,7 @@ def splunk(request):
         request.fixturenames.append('splunk_external')
         splunk = request.getfixturevalue("splunk_external")
     elif request.config.getoption('splunk_type') == 'docker':
+        os.environ['splunk_version'] = request.config.getoption('splunk_version')
         request.fixturenames.append('splunk_docker')
         splunk = request.getfixturevalue("splunk_docker")
     else:
