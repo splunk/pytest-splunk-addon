@@ -19,8 +19,6 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Check Docker
-      run: docker ps
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
