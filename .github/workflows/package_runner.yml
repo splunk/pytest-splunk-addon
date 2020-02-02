@@ -1,4 +1,4 @@
-name: CI
+name: Package Runner
 
 on: [push]
 
