@@ -1,6 +1,6 @@
-name: Review-Misspell
+name: Review Misspell
 
-on: [push]
+on: [pull_request]
 
 jobs:
   build:

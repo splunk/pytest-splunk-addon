@@ -1,6 +1,6 @@
 name: Review FLAKE8
 
-on: [push]
+on: [pull_request]
 
 jobs:
   build:
@@ -10,4 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run flake8 on your PR - with annotations!
-      uses: tayfun/flake8-your-pr@1.0.1
+      uses: suo/flake8-github-action@v1
+      with:
+        checkName: Review FLAKE8
