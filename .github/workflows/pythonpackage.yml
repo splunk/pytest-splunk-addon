@@ -29,7 +29,7 @@ jobs:
       run: |
         pip install pytest
         export SPLUNK_VERSION=${{ matrix.splunk-version }}
-        pytest --splunk_version=${{ matrix.splunk-version }}
+        pytest
     - name: Lint with flake8
       run: |
         pip install flake8
