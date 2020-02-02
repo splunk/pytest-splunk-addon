@@ -173,6 +173,7 @@ class CloudSplunk(Splunk):
         '''
         resultPrev = -1
         resultSameSince = sys.maxsize
+        lastPolledAt = int(time.time())
         counts = []
         while True:
             time.sleep(retry_interval)

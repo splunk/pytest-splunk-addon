@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import logging
-
+import os
 import pytest
+import requests
 from splunk_appinspect import App
 
 from .helmut.manager.jobs import Jobs
@@ -57,17 +58,91 @@ def pytest_addoption(parser):
         default='changeme',
         help='Splunk password'
     )
+    group.addoption(
+        '--splunk_version',
+        action='store',
+        dest='splunk_version',
+        default='latest',
+        help='Splunk password'
+    )
+
+def is_responsive(url):
+    try:
+        response = requests.get(url)
+        if response.status_code != 500:
+            return True
+    except ConnectionError:
+        return False
+
+
+def is_responsive_splunk(splunk):
+    try:
+        cs = CloudSplunk(splunkd_host=splunk['host'],
+                         splunkd_port=splunk['port'],
+                         username=splunk['username'],
+                         password=splunk['password']
+                         )
+
+        conn = cs.create_logged_in_connector()
+        jobs = Jobs(conn)
+        return True
+    except Exception:
+        return False
 
 
 @pytest.fixture(scope="session")
-def splunk_search_util(request):
-    splunk = CloudSplunk(splunkd_host=request.config.getoption('splunk_host'),
-                         splunkd_port=request.config.getoption('splunk_port'),
-                         username=request.config.getoption('splunk_user'),
-                         password=request.config.getoption('splunk_password')
-                         )
+def splunk(request):
+    if request.config.getoption('splunk_type') == 'external':
+        request.fixturenames.append('splunk_external')
+        splunk = request.getfixturevalue("splunk_external")
+    elif request.config.getoption('splunk_type') == 'docker':
+        os.environ['splunk_version'] = request.config.getoption('splunk_version')
+        request.fixturenames.append('splunk_docker')
+        splunk = request.getfixturevalue("splunk_docker")
+    else:
+        raise Exception
 
-    conn = splunk.create_logged_in_connector()
+    yield splunk
+
+
+@pytest.fixture(scope="session")
+def splunk_docker(request, docker_services, docker_ip):
+    port = docker_services.port_for("splunk", 8089)
+
+    splunk = {
+        'host': docker_ip,
+        'port': port,
+        'username': request.config.getoption('splunk_user'),
+        'password': request.config.getoption('splunk_password'),
+    }
+
+    docker_services.wait_until_responsive(
+        timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk)
+    )
+
+    return splunk
+
+
+@pytest.fixture(scope="session")
+def splunk_external(request):
+    splunk = {
+        'host': request.config.getoption('splunk_host'),
+        'port': request.config.getoption('splunk_port'),
+        'username': request.config.getoption('splunk_user'),
+        'password': request.config.getoption('splunk_password'),
+    }
+    return splunk
+
+
+@pytest.fixture(scope="session")
+def splunk_search_util(splunk):
+    cs = CloudSplunk(splunkd_host=splunk['host'],
+                     splunkd_port=splunk['port'],
+                     username=splunk['username'],
+                     password=splunk['password']
+                     )
+
+    conn = cs.create_logged_in_connector()
     jobs = Jobs(conn)
 
     return SearchUtil(jobs, logger)

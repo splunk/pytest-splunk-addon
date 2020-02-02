@@ -191,8 +191,8 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         return self._connectors[connector_id]
 
     def create_logged_in_connector(
-        self, set_as_default=False, contype=None, username=None,
-        password=None, *args, **kwargs):
+            self, set_as_default=False, contype=None, username=None,
+            password=None, *args, **kwargs):
         '''
         Creates and returns a new connector of type specified or of type
         L{SDKConnector} if none specified.
@@ -290,8 +290,8 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
     @classmethod
     def _attempt_login(cls, connector):
         if hasattr(connector, "is_logged_in") and connector._attempt_login_time > 0 and \
-            time.time() - connector._attempt_login_time > 30 * 60 and \
-            not connector.is_logged_in():
+                time.time() - connector._attempt_login_time > 30 * 60 and \
+                not connector.is_logged_in():
             connector.login()
 
     def connector(self, contype=None, username=None, password=None):

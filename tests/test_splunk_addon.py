@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
+import os
+import shutil
+
 import pytest
 from flaky import flaky
 
-def test_splunk_connection(testdir):
-    """Make sure that pytest accepts our fixture."""
-
-    # create a temporary pytest test module
-    testdir.makepyfile("""
+test_connection_only = """
         def test_connection_splunk(splunk_search_util):
             search = "search (index=_internal) | head 5"
 
@@ -15,14 +14,70 @@ def test_splunk_connection(testdir):
                 search,
                 interval=1, retries=1)
             assert result
-    """)
+    """
+
+
+@pytest.mark.xfail()
+def test_splunk_connection_external(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    # create a temporary pytest test module
+    testdir.makepyfile(test_connection_only)
+
+    # Copy the content of
+    # source to destination
+
+    destination = shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, 'addons/TA_fiction'),
+        os.path.join(testdir.tmpdir, 'tests/package')
+    )
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        '--splunk_app=tests/addons/TA_fiction',
+        '--splunk_type=external',
+        '--splunk_app=tests/package',
         '--splunk_type=external',
         f'--splunk_host=127.0.0.1',
         f'--splunk_port=8089',
+        '--splunk_password=Changed@11',
+        '-v'
+    )
+
+    # fnmatch_lines does an assertion internally
+    result.stdout.fnmatch_lines([
+        '*::test_connection_splunk PASSED*',
+    ])
+
+    # make sure that that we get a '0' exit code for the testsuite
+    assert result.ret == 0
+
+
+def test_splunk_connection_docker(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    # create a temporary pytest test module
+    testdir.makepyfile(test_connection_only)
+
+    # Copy the content of
+    # source to destination
+
+    destination = shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, 'addons/TA_fiction'),
+        os.path.join(testdir.tmpdir, 'tests/package')
+    )
+
+    destination = shutil.copy(
+        os.path.join(testdir.request.fspath.dirname, 'Dockerfile'),
+        os.path.join(testdir.tmpdir, 'tests/')
+    )
+    destination = shutil.copy(
+        os.path.join(testdir.request.fspath.dirname, 'docker-compose.yml'),
+        os.path.join(testdir.tmpdir, 'tests/')
+    )
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        '--splunk_type=docker',
+        '--splunk_app=tests/package',
         '--splunk_password=Changed@11',
         '-v'
     )
@@ -48,18 +103,28 @@ def test_splunk_app_fiction(testdir):
 
     """)
 
-
-    # run pytest with the following cmd args
-    result = testdir.runpytest(
-        '--splunk_app=/Users/rfaircloth/PycharmProjects/pytest-splunk-addon/tests/addons/TA_fiction',
-        f'--splunk_host=127.0.0.1',
-        f'--splunk_port=8089',
-        '--splunk_password=Changed@11',
-        '--no-flaky-report',
-        '-v',
+    destination = shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, 'addons/TA_fiction'),
+        os.path.join(testdir.tmpdir, 'tests/package')
     )
 
-    #'*test_fields*splunkd*EXTRACT-two*PASSED*',
+    destination = shutil.copy(
+        os.path.join(testdir.request.fspath.dirname, 'Dockerfile'),
+        os.path.join(testdir.tmpdir, 'tests/')
+    )
+    destination = shutil.copy(
+        os.path.join(testdir.request.fspath.dirname, 'docker-compose.yml'),
+        os.path.join(testdir.tmpdir, 'tests/')
+    )
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        '--splunk_type=docker',
+        '--splunk_app=tests/package',
+        '--splunk_password=Changed@11',
+        '-v'
+    )
+
+    # '*test_fields*splunkd*EXTRACT-two*PASSED*',
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines([
         '*test_basic_props*splunkd*PASSED*',

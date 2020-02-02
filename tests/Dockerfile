@@ -1,11 +1,6 @@
-#Splunk Connect for Syslog (SC4S) by Splunk, Inc.
-#
-#To the extent possible under law, the person who associated CC0 with
-#Splunk Connect for Syslog (SC4S) has waived all copyright and related or neighboring rights
-#to Splunk Connect for Syslog (SC4S).
-#
-#You should have received a copy of the CC0 legalcode along with this
-#work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
-FROM splunk/splunk:latest
+ARG SPLUNK_VERSION=latest
+FROM splunk/splunk:$SPLUNK_VERSION
+ARG SPLUNK_APP=TA_UNKNOWN
+ARG SOURCE_PACKAGE=package
 
-COPY addons /opt/splunk/etc/apps
+COPY $SOURCE_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP
