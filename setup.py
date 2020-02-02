@@ -20,6 +20,7 @@ requirements = [
     'pytest-dependency',
     'flaky',
     'pytest-docker',
+    'requests',
 ]
 
 setup_requirements = ['pytest-runner', ]
