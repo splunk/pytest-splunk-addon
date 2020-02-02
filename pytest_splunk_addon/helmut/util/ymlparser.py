@@ -4,7 +4,6 @@ from builtins import object
 from builtins import str
 
 import yaml
-
 from pytest_splunk_addon.helmut.util.hosts import Host, Hosts
 
 LOGGER = logging.getLogger('..util.ymlparser')
@@ -21,7 +20,7 @@ class YMLParser(object):
         if (os.path.isabs(yaml_file) == False):
             path = os.getcwd()
             while (path.endswith('new_test') == False and path.endswith(
-                'new_test' + os.sep) == False):
+                    'new_test' + os.sep) == False):
                 path = os.path.abspath(os.path.join(path, os.pardir))
             # if the input yaml_file path is not absolute, then we expect that
             # the path is relative to new_test/config/. so new_test/config/

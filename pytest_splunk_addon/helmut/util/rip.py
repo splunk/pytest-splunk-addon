@@ -371,7 +371,7 @@ class RESTInPeace(object):
         setattr(self, gen_check.__name__, gen_check)
 
         def gen_wait_to_be_created(
-            id_name, timeout=TIMEOUT, poll_frequency=POLL_FREQUENCY,
+                id_name, timeout=TIMEOUT, poll_frequency=POLL_FREQUENCY,
                 *args, **kwargs):
             '''
             Wait for the specific item to be created.
@@ -397,7 +397,7 @@ class RESTInPeace(object):
             response = self.conn.make_request('GET', uri, body=body)[0]
 
             while (response['status'] != self.SUCCESS['GET'] and (
-                datetime.datetime.now() - start_time).seconds < timeout):
+                    datetime.datetime.now() - start_time).seconds < timeout):
                 time.sleep(poll_frequency)
                 response = self.conn.make_request('GET', uri, body=body)[0]
 
@@ -427,7 +427,7 @@ class RESTInPeace(object):
         setattr(self, gen_wait_to_be_created.__name__, gen_wait_to_be_created)
 
         def gen_wait_to_be_deleted(
-            id_name, timeout=TIMEOUT, poll_frequency=POLL_FREQUENCY,
+                id_name, timeout=TIMEOUT, poll_frequency=POLL_FREQUENCY,
                 *args, **kwargs):
             '''
             Wait for the specific item to be deleted.
@@ -453,7 +453,7 @@ class RESTInPeace(object):
             response = self.conn.make_request('GET', uri, body=body)[0]
 
             while (response['status'] == self.SUCCESS['GET'] and (
-                datetime.datetime.now() - start_time).seconds < timeout):
+                    datetime.datetime.now() - start_time).seconds < timeout):
                 time.sleep(poll_frequency)
                 response = self.conn.make_request('GET', uri, body=body)[0]
 

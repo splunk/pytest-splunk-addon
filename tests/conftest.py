@@ -1,7 +1,4 @@
-import pytest
-
 pytest_plugins = "pytester"
-
 
 # @pytest.fixture()
 # def splunk_server(splunk_server_container):

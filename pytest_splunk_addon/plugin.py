@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import time
 
 import pytest
 import requests
@@ -69,13 +68,14 @@ def is_responsive(url):
     except ConnectionError:
         return False
 
+
 def is_responsive_splunk(splunk):
     try:
         cs = CloudSplunk(splunkd_host=splunk['host'],
-                             splunkd_port=splunk['port'],
-                             username=splunk['username'],
-                             password=splunk['password']
-                             )
+                         splunkd_port=splunk['port'],
+                         username=splunk['username'],
+                         password=splunk['password']
+                         )
 
         conn = cs.create_logged_in_connector()
         jobs = Jobs(conn)
@@ -96,6 +96,7 @@ def splunk(request):
         raise Exception
 
     yield splunk
+
 
 @pytest.fixture(scope="session")
 def splunk_docker(request, docker_services, docker_ip):
@@ -126,14 +127,13 @@ def splunk_external(request):
     return splunk
 
 
-
 @pytest.fixture(scope="session")
 def splunk_search_util(splunk):
     cs = CloudSplunk(splunkd_host=splunk['host'],
-                         splunkd_port=splunk['port'],
-                         username=splunk['username'],
-                         password=splunk['password']
-                         )
+                     splunkd_port=splunk['port'],
+                     username=splunk['username'],
+                     password=splunk['password']
+                     )
 
     conn = cs.create_logged_in_connector()
     jobs = Jobs(conn)

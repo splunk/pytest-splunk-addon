@@ -1,7 +1,6 @@
-import pytest
-import splunklib.client as client
-from splunk_appinspect import App
 import logging
+
+import pytest
 from flaky import flaky
 
 

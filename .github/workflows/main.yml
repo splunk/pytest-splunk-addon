@@ -8,15 +8,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Docker Publish
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        registry: docker.pkg.github.com
-        name: docker.pkg.github.com/splunk/pytest-splunk-addon/pytest-splunk-addon
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - uses: actions/checkout@v2
+      - name: Docker Publish
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          registry: docker.pkg.github.com
+          name: docker.pkg.github.com/splunk/pytest-splunk-addon/pytest-splunk-addon
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-        snapshot: true
-        tags: master
+          snapshot: true
+          tags: master
 

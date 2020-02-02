@@ -11,18 +11,20 @@ def read(fname):
     file_path = os.path.join(os.path.dirname(__file__), fname)
     return codecs.open(file_path, encoding='utf-8').read()
 
+
 requirements = [
     'pytest',
     'splunk-sdk',
     'future',
     'httplib2',
     'pytest-dependency',
+    'flaky',
+    'pytest-docker',
 ]
 
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = ['pytest>=5', ]
-
 
 setup(
     name='pytest-splunk-addon',
