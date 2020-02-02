@@ -9,10 +9,11 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7]
+        splunk-version: [7.2,7.3,8.0]
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python ${{ matrix.python-version }}-Splunk ${{ matrix.splunk-version }}
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
@@ -27,7 +28,8 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
-        pytest
+        export SPLUNK_VERSION=${{ matrix.splunk-version }}
+        pytest --splunk_version=${{ matrix.splunk-version }}
     - name: Lint with flake8
       run: |
         pip install flake8
