@@ -11,3 +11,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run misspell with reviewdog
       uses: reviewdog/action-misspell@v1.0.0
+      with:
+        # GITHUB_TOKEN.
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+#        # -locale flag of misspell. (US/UK)
+#        locale: # optional, default is
+#        # Report level for reviewdog [info,warning,error]
+#        level: # optional, default is error
