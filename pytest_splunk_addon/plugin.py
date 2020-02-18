@@ -10,6 +10,10 @@ from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 
+import pytest
+import requests
+import splunklib.client as client
+
 logger = logging.getLogger()
 
 
@@ -77,18 +81,18 @@ def is_responsive(url):
 
 def is_responsive_splunk(splunk):
     try:
-        cs = CloudSplunk(splunkd_host=splunk['host'],
-                         splunkd_port=splunk['port'],
-                         username=splunk['username'],
-                         password=splunk['password']
-                         )
-
-        conn = cs.create_logged_in_connector()
-        jobs = Jobs(conn)
+        client.connect(username=splunk['username'], password=splunk['password'], host=splunk['host'],
+                       port=splunk['port'])
         return True
     except Exception:
         return False
 
+@pytest.fixture(scope="session")
+def docker_compose_file(pytestconfig):
+    """Get an absolute path to the  `docker-compose.yml` file. Override this
+    fixture in your tests if you need a custom location."""
+
+    return os.path.join(str(pytestconfig.invocation_dir), "tests", "docker-compose.yml")
 
 @pytest.fixture(scope="session")
 def splunk(request):
@@ -96,7 +100,10 @@ def splunk(request):
         request.fixturenames.append('splunk_external')
         splunk = request.getfixturevalue("splunk_external")
     elif request.config.getoption('splunk_type') == 'docker':
-        os.environ['splunk_version'] = request.config.getoption('splunk_version')
+        os.environ['SPLUNK_PASSWORD'] = request.config.getoption(
+            'splunk_password')
+        # os.environ['SPLUNK_HEC_TOKEN'] = request.config.getoption(
+        #     'splunk_hec_token')
         request.fixturenames.append('splunk_docker')
         splunk = request.getfixturevalue("splunk_docker")
     else:
@@ -106,11 +113,12 @@ def splunk(request):
 
 
 @pytest.fixture(scope="session")
-def splunk_docker(request, docker_services, docker_ip):
+def splunk_docker(request, docker_services):
+    docker_services.start('splunk')
     port = docker_services.port_for("splunk", 8089)
 
     splunk = {
-        'host': docker_ip,
+        'host': docker_services.docker_ip,
         'port': port,
         'username': request.config.getoption('splunk_user'),
         'password': request.config.getoption('splunk_password'),
@@ -124,13 +132,14 @@ def splunk_docker(request, docker_services, docker_ip):
 
 
 @pytest.fixture(scope="session")
-def splunk_external(request):
+def splunk_external(request, docker_services):
     splunk = {
         'host': request.config.getoption('splunk_host'),
         'port': request.config.getoption('splunk_port'),
         'username': request.config.getoption('splunk_user'),
         'password': request.config.getoption('splunk_password'),
     }
+
     return splunk
 
 
