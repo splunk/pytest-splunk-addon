@@ -10,6 +10,10 @@ from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 
+import pytest
+import requests
+import splunklib.client as client
+
 logger = logging.getLogger()
 
 
@@ -89,14 +93,17 @@ def docker_compose_file(pytestconfig):
     fixture in your tests if you need a custom location."""
 
     return os.path.join(str(pytestconfig.invocation_dir), "tests", "docker-compose.yml")
-    
+
 @pytest.fixture(scope="session")
 def splunk(request):
     if request.config.getoption('splunk_type') == 'external':
         request.fixturenames.append('splunk_external')
         splunk = request.getfixturevalue("splunk_external")
     elif request.config.getoption('splunk_type') == 'docker':
-        os.environ['splunk_version'] = request.config.getoption('splunk_version')
+        os.environ['SPLUNK_PASSWORD'] = request.config.getoption(
+            'splunk_password')
+        # os.environ['SPLUNK_HEC_TOKEN'] = request.config.getoption(
+        #     'splunk_hec_token')
         request.fixturenames.append('splunk_docker')
         splunk = request.getfixturevalue("splunk_docker")
     else:
@@ -132,11 +139,6 @@ def splunk_external(request, docker_services):
         'username': request.config.getoption('splunk_user'),
         'password': request.config.getoption('splunk_password'),
     }
-
-
-    docker_services.wait_until_responsive(
-        timeout=180.0, pause=1.0, check=lambda: is_responsive_splunk(splunk)
-    )
 
     return splunk
 
