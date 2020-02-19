@@ -10,23 +10,13 @@ version: "3.7"
 services:
 
   splunk:
-    image: splunk/splunk:${SPLUNK_VERSION}
-    hostname: splunk
+    build:
+      context: .
+      args:
+        SPLUNK_APP: TA_fiction
     ports:
-      - "8000:8000"
-      - "8088:8088"
-      - "8089:8089"
+      - "8000"
+      - "8089"
     environment:
-      - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
-      - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
-      - SPLUNK_START_ARGS=${SPLUNK_START_ARGS}
-    volumes:
-      - pytest-splunk-addon-etc:/opt/splunk/etc
-      - pytest-splunk-addon-var:/opt/splunk/var
-
-volumes:
-
-  pytest-splunk-addon-etc:
-    external: true
-  pytest-splunk-addon-var:
-    external: false
+      - SPLUNK_PASSWORD=Changed@11
+      - SPLUNK_START_ARGS=--accept-license
