@@ -13,62 +13,64 @@ from .helmut_lib.SearchUtil import SearchUtil
 import pytest
 import requests
 import splunklib.client as client
+from time import sleep
 
 logger = logging.getLogger()
 
 
 def pytest_addoption(parser):
-    group = parser.getgroup('splunk-addon')
+    group = parser.getgroup("splunk-addon")
 
     group.addoption(
-        '--splunk_app',
-        action='store',
-        dest='splunk_app',
-        default='package',
-        help='Path to Splunk app'
+        "--splunk_app",
+        action="store",
+        dest="splunk_app",
+        default="package",
+        help="Path to Splunk app",
     )
     group.addoption(
-        '--splunk_type',
-        action='store',
-        dest='splunk_type',
-        default='external',
-        help='Type of Splunk'
+        "--splunk_type",
+        action="store",
+        dest="splunk_type",
+        default="external",
+        help="Type of Splunk",
     )
     group.addoption(
-        '--splunk_host',
-        action='store',
-        dest='splunk_host',
-        default='127.0.0.1',
-        help='Address of the Splunk Server'
+        "--splunk_host",
+        action="store",
+        dest="splunk_host",
+        default="127.0.0.1",
+        help="Address of the Splunk Server",
     )
     group.addoption(
-        '--splunk_port',
-        action='store',
-        dest='splunk_port',
-        default='8089',
-        help='Splunk rest port'
+        "--splunk_port",
+        action="store",
+        dest="splunk_port",
+        default="8089",
+        help="Splunk rest port",
     )
     group.addoption(
-        '--splunk_user',
-        action='store',
-        dest='splunk_user',
-        default='admin',
-        help='Splunk login user'
+        "--splunk_user",
+        action="store",
+        dest="splunk_user",
+        default="admin",
+        help="Splunk login user",
     )
     group.addoption(
-        '--splunk_password',
-        action='store',
-        dest='splunk_password',
-        default='changeme',
-        help='Splunk password'
+        "--splunk_password",
+        action="store",
+        dest="splunk_password",
+        default="changeme",
+        help="Splunk password",
     )
     group.addoption(
-        '--splunk_version',
-        action='store',
-        dest='splunk_version',
-        default='latest',
-        help='Splunk password'
+        "--splunk_version",
+        action="store",
+        dest="splunk_version",
+        default="latest",
+        help="Splunk password",
     )
+
 
 def is_responsive(url):
     try:
@@ -81,30 +83,36 @@ def is_responsive(url):
 
 def is_responsive_splunk(splunk):
     try:
-        client.connect(username=splunk['username'], password=splunk['password'], host=splunk['host'],
-                       port=splunk['port'])
+        client.connect(
+            username=splunk["username"],
+            password=splunk["password"],
+            host=splunk["host"],
+            port=splunk["port"],
+        )
         return True
     except Exception:
         return False
 
+
 @pytest.fixture(scope="session")
-def docker_compose_file(pytestconfig):
+def docker_compose_files(pytestconfig):
     """Get an absolute path to the  `docker-compose.yml` file. Override this
     fixture in your tests if you need a custom location."""
+    print(os.path.join(str(pytestconfig.invocation_dir), "docker-compose.yml"))
 
-    return os.path.join(str(pytestconfig.invocation_dir), "tests", "docker-compose.yml")
+    return [os.path.join(str(pytestconfig.invocation_dir), "docker-compose.yml")]
+
 
 @pytest.fixture(scope="session")
 def splunk(request):
-    if request.config.getoption('splunk_type') == 'external':
-        request.fixturenames.append('splunk_external')
+    if request.config.getoption("splunk_type") == "external":
+        request.fixturenames.append("splunk_external")
         splunk = request.getfixturevalue("splunk_external")
-    elif request.config.getoption('splunk_type') == 'docker':
-        os.environ['SPLUNK_PASSWORD'] = request.config.getoption(
-            'splunk_password')
+    elif request.config.getoption("splunk_type") == "docker":
+        os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
         # os.environ['SPLUNK_HEC_TOKEN'] = request.config.getoption(
         #     'splunk_hec_token')
-        request.fixturenames.append('splunk_docker')
+        request.fixturenames.append("splunk_docker")
         splunk = request.getfixturevalue("splunk_docker")
     else:
         raise Exception
@@ -114,14 +122,14 @@ def splunk(request):
 
 @pytest.fixture(scope="session")
 def splunk_docker(request, docker_services):
-    docker_services.start('splunk')
+    docker_services.start("splunk")
     port = docker_services.port_for("splunk", 8089)
 
     splunk = {
-        'host': docker_services.docker_ip,
-        'port': port,
-        'username': request.config.getoption('splunk_user'),
-        'password': request.config.getoption('splunk_password'),
+        "host": docker_services.docker_ip,
+        "port": port,
+        "username": request.config.getoption("splunk_user"),
+        "password": request.config.getoption("splunk_password"),
     }
 
     docker_services.wait_until_responsive(
@@ -132,24 +140,28 @@ def splunk_docker(request, docker_services):
 
 
 @pytest.fixture(scope="session")
-def splunk_external(request, docker_services):
+def splunk_external(request):
     splunk = {
-        'host': request.config.getoption('splunk_host'),
-        'port': request.config.getoption('splunk_port'),
-        'username': request.config.getoption('splunk_user'),
-        'password': request.config.getoption('splunk_password'),
+        "host": request.config.getoption("splunk_host"),
+        "port": request.config.getoption("splunk_port"),
+        "username": request.config.getoption("splunk_user"),
+        "password": request.config.getoption("splunk_password"),
     }
+
+    while not is_responsive_splunk(splunk):
+        sleep(1)
 
     return splunk
 
 
 @pytest.fixture(scope="session")
 def splunk_search_util(splunk):
-    cs = CloudSplunk(splunkd_host=splunk['host'],
-                     splunkd_port=splunk['port'],
-                     username=splunk['username'],
-                     password=splunk['password']
-                     )
+    cs = CloudSplunk(
+        splunkd_host=splunk["host"],
+        splunkd_port=splunk["port"],
+        username=splunk["username"],
+        password=splunk["password"],
+    )
 
     conn = cs.create_logged_in_connector()
     jobs = Jobs(conn)
@@ -159,9 +171,9 @@ def splunk_search_util(splunk):
 
 def pytest_generate_tests(metafunc):
     for fixture in metafunc.fixturenames:
-        if fixture.startswith('splunk_app'):
+        if fixture.startswith("splunk_app"):
             # Load associated test data
-            tests = load_splunk_tests(metafunc.config.getoption('splunk_app'), fixture)
+            tests = load_splunk_tests(metafunc.config.getoption("splunk_app"), fixture)
             if tests:
                 metafunc.parametrize(fixture, tests)
 
@@ -169,7 +181,7 @@ def pytest_generate_tests(metafunc):
 def load_splunk_tests(splunk_app_path, fixture):
     app = App(splunk_app_path, python_analyzer_enable=False)
     props = app.props_conf()
-    if fixture.endswith('props'):
+    if fixture.endswith("props"):
         yield load_splunk_props(props)
     else:
         yield None
@@ -177,18 +189,16 @@ def load_splunk_tests(splunk_app_path, fixture):
 
 def load_splunk_props(props):
     for p in props.sects:
-        if p.startswith('host::'):
+        if p.startswith("host::"):
             continue
-        elif p.startswith('source::'):
+        elif p.startswith("source::"):
             continue
         else:
             return return_props_param(p, p)
 
 
 def return_props_param(id, value):
-    return pytest.param({'field': 'sourcetype', 'value': value},
-                        id=id
-                        )
+    return pytest.param({"field": "sourcetype", "value": value}, id=id)
 
     # Tests are to be found in the variable `tests` of the module
     # for test in tests_module.tests.iteritems():
