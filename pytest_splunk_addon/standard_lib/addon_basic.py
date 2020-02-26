@@ -19,7 +19,7 @@ class Basic:
 
     # This test ensures the contained samples will produce at lease one event per sourcetype
     @pytest.mark.splunk_addon_searchtime
-    def test_basic_props(self, splunk_search_util, splunk_app_props):
+    def test_sourcetype(self, splunk_search_util, splunk_app_props, request):
         search = f"search (index=_internal OR index=*) AND {splunk_app_props['field']}=\"{splunk_app_props['value']}\""
 
         # run search
@@ -31,8 +31,22 @@ class Basic:
             return [
                 f"Search for {splunk_app_props['field']} {splunk_app_props['value']}"
                 f"        {search}"
-            ]
+                    ]
+    @pytest.mark.splunk_addon_searchtime
+    def test_sourcetype_fields(self, splunk_search_util, splunk_app_fields, request):
+        search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']}"
+        for f in splunk_app_fields['fields']:
+            search = search + f" AND ({f}=* AND NOT {f}=\"-\" AND NOT {f}=\"\")"
 
+        # run search
+        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
+            search, interval=1, retries=1
+        )
+
+        if not result:
+            return [
+                f"Search  {search}"
+            ]
     # # This test ensures the contained samples will produce at lease one event per eventtype
     # @pytest.mark.splunk_addon_searchtime
     # @flaky(max_runs=5, min_passes=1)

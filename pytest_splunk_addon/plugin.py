@@ -14,6 +14,7 @@ import pytest
 import requests
 import splunklib.client as client
 from time import sleep
+import re
 
 logger = logging.getLogger()
 
@@ -168,7 +169,10 @@ def splunk_search_util(splunk):
 
     return SearchUtil(jobs, logger)
 
-
+def pytest_configure(config):
+    config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
+    config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
+ 
 def pytest_generate_tests(metafunc):
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_app"):
@@ -180,9 +184,12 @@ def pytest_generate_tests(metafunc):
 
 def load_splunk_tests(splunk_app_path, fixture):
     app = App(splunk_app_path, python_analyzer_enable=False)
-    props = app.props_conf()
     if fixture.endswith("props"):
-        yield load_splunk_props(props)
+        props = app.props_conf()
+        yield from load_splunk_props(props)
+    elif fixture.endswith("fields"):
+        props = app.props_conf()
+        yield from load_splunk_fields(props)
     else:
         yield None
 
@@ -194,12 +201,45 @@ def load_splunk_props(props):
         elif p.startswith("source::"):
             continue
         else:
-            return return_props_param(p, p)
+            yield return_props_sourcetype_param(p, p)
+            
+def return_props_sourcetype_param(id, value):
+    idf = f"sourcetype::{id}" 
+    name = f"splunk_addon_props_sourcetype_{id}"
+    return pytest.param({
+        "field": "sourcetype", "value": value},
+        id=idf,
+        marks=[pytest.mark.dependency(name=name)]
+        )
+        
+def load_splunk_fields(props):
+    for p in props.sects:
+        section = props.sects[p]
+        for current in section.options:
+            options = section.options[current]
+            if current.startswith("EXTRACT-"):
+                yield return_props_extract(p,options)
 
+def return_props_extract(id, value):
+    name = f"{id}_field::{value.name}"
+    depends = f"splunk_addon_props_sourcetype_{id}"
 
-def return_props_param(id, value):
-    return pytest.param({"field": "sourcetype", "value": value}, id=id)
+    regex = r"\(\?<([^\>]+)\>"
+    matches = re.finditer(regex, value.value, re.MULTILINE)
+    fields = []
+    for matchNum, match in enumerate(matches, start=1):
+        for groupNum in range(0, len(match.groups())):
+            groupNum = groupNum + 1
 
+            fields.append(match.group(groupNum))
+
+    return pytest.param(
+        {"sourcetype": id, "fields": fields },
+        id=name,
+        marks=[pytest.mark.dependency(name=name,
+                                        depends=[depends])
+            ]
+        )
     # Tests are to be found in the variable `tests` of the module
     # for test in tests_module.tests.iteritems():
     #     yield test
