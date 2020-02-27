@@ -27,4 +27,4 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest
-          pytest -v --splunk_version=${{ matrix.splunk-version }}
+          pytest -v --splunk_version=${{ matrix.splunk-version }} --splunk_type=docker
