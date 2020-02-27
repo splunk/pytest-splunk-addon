@@ -24,7 +24,7 @@ class Basic:
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=1, retries=1
+            search, interval=10, retries=3
         )
         record_property('search',search)
 
@@ -42,7 +42,7 @@ class Basic:
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=1, retries=1
+            search, interval=10, retries=3
         )
         record_property('search',search)
 

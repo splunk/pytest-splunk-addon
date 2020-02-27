@@ -126,7 +126,10 @@ def test_splunk_app_fiction(testdir):
     # '*test_fields*splunkd*EXTRACT-two*PASSED*',
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines([
-        '*test_basic_props*splunkd*PASSED*',
+        '*test_splunk_app_fiction.py::Test_App::test_splunk_internal_errors PASSED*',
+        "*test_splunk_app_fiction.py::Test_App::test_sourcetype*sourcetype::splunkd* PASSED*",
+        "*test_splunk_app_fiction.py::Test_App::test_sourcetype_fields*splunkd_field::EXTRACT-one* PASSED*",
+        "*test_splunk_app_fiction.py::Test_App::test_sourcetype_fields*splunkd_field::EXTRACT-two* PASSED*",
     ])
 
     # '*test_basic_eventtype*splunkd*PASSED*',
@@ -173,8 +176,8 @@ def test_splunk_app_broken_sourcetype(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines([
-        '*test_basic_sourcetypes*notvalid*FAILED*',
-        '*test_fields*notvalid::EXTRACT-one* SKIPPED*',
+        '*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype*sourcetype::notvalid* FAILED*',
+        '*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalid_field::EXTRACT-one* SKIPPED*',
     ])
 
     # The test suite should fail as this is a negative test
