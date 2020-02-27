@@ -127,7 +127,8 @@ def splunk_docker(request, docker_services):
     port = docker_services.port_for("splunk", 8089)
 
     splunk = {
-        "host": docker_services.docker_ip,
+        #"host": docker_services.docker_ip,
+        "host": "127.0.0.1",
         "port": port,
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
