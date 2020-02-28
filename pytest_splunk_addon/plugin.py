@@ -133,10 +133,13 @@ def splunk_docker(request, docker_services):
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
     }
-
-    docker_services.wait_until_responsive(
-        timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk)
-    )
+    c =  0
+    while c < 60:
+        c +=1
+        docker_services.wait_until_responsive(
+            timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk)
+        )
+        sleep(1)
 
     return splunk
 
