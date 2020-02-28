@@ -1,7 +1,6 @@
 import logging
 
 import pytest
-from flaky import flaky
 
 
 class Basic:
@@ -19,19 +18,35 @@ class Basic:
 
     # This test ensures the contained samples will produce at lease one event per sourcetype
     @pytest.mark.splunk_addon_searchtime
-    def test_basic_props(self, splunk_search_util, splunk_app_props):
+    def test_sourcetype(self, splunk_search_util, splunk_app_props, request, record_property):
+        record_property(splunk_app_props['field'],splunk_app_props['value'])
         search = f"search (index=_internal OR index=*) AND {splunk_app_props['field']}=\"{splunk_app_props['value']}\""
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=1, retries=1
+            search, interval=10, retries=3
         )
+        record_property('search',search)
 
-        if not result:
-            return [
-                f"Search for {splunk_app_props['field']} {splunk_app_props['value']}"
-                f"        {search}"
-            ]
+
+        assert result == True
+
+    @pytest.mark.splunk_addon_searchtime
+    def test_sourcetype_fields(self, splunk_search_util, splunk_app_fields, record_property):
+        record_property('sourcetype',splunk_app_fields['sourcetype'])
+        record_property('fields',splunk_app_fields['fields'])
+
+        search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']}"
+        for f in splunk_app_fields['fields']:
+            search = search + f" AND ({f}=* AND NOT {f}=\"-\" AND NOT {f}=\"\")"
+
+        # run search
+        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
+            search, interval=10, retries=3
+        )
+        record_property('search',search)
+
+        assert result == True
 
     # # This test ensures the contained samples will produce at lease one event per eventtype
     # @pytest.mark.splunk_addon_searchtime

@@ -3,7 +3,6 @@ import os
 import shutil
 
 import pytest
-from flaky import flaky
 
 test_connection_only = """
         def test_connection_splunk(splunk_search_util):
@@ -17,7 +16,8 @@ test_connection_only = """
     """
 
 
-@pytest.mark.xfail()
+#@pytest.mark.xfail()
+@pytest.mark.skip(reason="no way of currently testing this")
 def test_splunk_connection_external(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -91,7 +91,6 @@ def test_splunk_connection_docker(testdir):
     assert result.ret == 0
 
 
-@flaky(max_runs=5, min_passes=1)
 def test_splunk_app_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -127,7 +126,10 @@ def test_splunk_app_fiction(testdir):
     # '*test_fields*splunkd*EXTRACT-two*PASSED*',
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines([
-        '*test_basic_props*splunkd*PASSED*',
+        '*test_splunk_app_fiction.py::Test_App::test_splunk_internal_errors PASSED*',
+        "*test_splunk_app_fiction.py::Test_App::test_sourcetype*sourcetype::splunkd* PASSED*",
+        "*test_splunk_app_fiction.py::Test_App::test_sourcetype_fields*splunkd_field::EXTRACT-one* PASSED*",
+        "*test_splunk_app_fiction.py::Test_App::test_sourcetype_fields*splunkd_field::EXTRACT-two* PASSED*",
     ])
 
     # '*test_basic_eventtype*splunkd*PASSED*',
@@ -139,34 +141,47 @@ def test_splunk_app_fiction(testdir):
     assert result.ret == 0
 
 
-# def test_splunk_app_broken_sourcetype(testdir,splunk_server):
-#     """Make sure that pytest accepts our fixture."""
-#
-#     testdir.makepyfile("""
-#         from pytest_splunk_addon.standard_lib.addon_basic import Basic
-#         class Test_App(Basic):
-#             def empty_method():
-#                 pass
-#
-#     """)
-#
-#     # run pytest with the following cmd args
-#     result = testdir.runpytest(
-#         '--splunk_app=/Users/rfaircloth/PycharmProjects/pytest-splunk-addon/tests/addons/TA_broken_sourcetype',
-#         f'--splunk_host={splunk_server[0]}',
-#         f'--splunk_port={splunk_server[1]}',
-#         '--splunk_password=Changed@11',
-#         '-v'
-#     )
-#
-#     # fnmatch_lines does an assertion internally
-#     result.stdout.fnmatch_lines([
-#         '*test_basic_sourcetypes*notvalid*FAILED*',
-#         '*test_fields*notvalid::EXTRACT-one* SKIPPED*',
-#     ])
-#
-#     # The test suite should fail as this is a negative test
-#     assert result.ret != 0
+def test_splunk_app_broken_sourcetype(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile("""
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+
+    """)
+
+    destination = shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, 'addons/TA_broken_sourcetype'),
+        os.path.join(testdir.tmpdir, 'tests/package')
+    )
+
+    destination = shutil.copy(
+        os.path.join(testdir.request.fspath.dirname, 'Dockerfile'),
+        os.path.join(testdir.tmpdir, 'tests/')
+    )
+    destination = shutil.copy(
+        os.path.join(testdir.request.fspath.dirname, 'docker-compose.yml'),
+        os.path.join(testdir.tmpdir, 'tests/')
+    )
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        '--splunk_type=docker',
+        '--splunk_app=tests/package',
+        '--splunk_password=Changed@11',
+        '-v'
+    )
+
+    # fnmatch_lines does an assertion internally
+    result.stdout.fnmatch_lines([
+        '*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype*sourcetype::notvalid* FAILED*',
+        '*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalid_field::EXTRACT-one* SKIPPED*',
+    ])
+
+    # The test suite should fail as this is a negative test
+    assert result.ret != 0
 
 
 def test_help_message(testdir):
