@@ -264,20 +264,13 @@ workflows:
           gh_token: ${GH_PAT}
           requires:
             - approval-tag-final-patch
-  publish:
-    jobs:
-      - splunk-app-package/package:
-          name: package
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*.*$/
-      - publish-gh:
-          requires:
-            - package
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d*\.\d*\.\d*.*$/
+  # publish:
+  #   jobs:
+  #     - publish-gh:
+  #         requires:
+  #           - package
+  #         filters:
+  #           branches:
+  #             ignore: /.*/
+  #           tags:
+  #             only: /^v\d*\.\d*\.\d*.*$/
