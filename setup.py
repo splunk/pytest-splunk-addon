@@ -15,7 +15,7 @@ def read(fname):
 def safe_version():
     try:
         return get_version()
-    except LookupError as identifier:
+    except:
         return "0.0.1"
 
 
