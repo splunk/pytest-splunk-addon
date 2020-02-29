@@ -57,12 +57,31 @@ class Basic:
         search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']} AND ("
         op = ""
         for f in splunk_app_fields['fields']:
-            search = search + f" ({op} {f}=\"-\""
+            search = search + f" {op} {f}=\"-\""
             op = "OR"
         search =  search +  ")"
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=10, retries=3
+            search, interval=1, retries=1
+        )
+        record_property('search',search)
+
+        assert result == False
+
+    @pytest.mark.splunk_addon_searchtime
+    def test_sourcetype_fields_no_empty(self, splunk_search_util, splunk_app_fields, record_property):
+        record_property('sourcetype',splunk_app_fields['sourcetype'])
+        record_property('fields',splunk_app_fields['fields'])
+
+        search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']} AND ("
+        op = ""
+        for f in splunk_app_fields['fields']:
+            search = search + f" {op} {f}=\"\""
+            op = "OR"
+        search =  search +  ")"
+        # run search
+        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
+            search, interval=1, retries=1
         )
         record_property('search',search)
 
