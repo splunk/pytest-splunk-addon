@@ -1,0 +1,277 @@
+#COPYRIGHT SPLUNK, Inc 2020
+
+version: 2.1
+orbs:
+  go: circleci/go@0.2.0
+  splunk-app-test:
+    executors:
+      python37:
+        docker:
+          - image: circleci/python:3.7
+    commands:
+      test_aio:
+        parameters:
+          splunk_version:
+            description: Image version
+            type: string
+            default: latest
+        steps:
+          - run:
+              name: Setup for testing
+              command: |
+                pip install -r requirements.txt
+                pip install git+https://github.com/pixelb/crudini        
+                mkdir test-results
+          - run:
+              name: Splunk up
+              command: |
+                ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
+                export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "<<parameters.splunk_version>>" VERSION)
+                docker-compose -f docker-compose-ci.yml build
+                docker-compose -f docker-compose-ci.yml up -d splunk
+                sleep 90
+          - run:
+              name: Test
+              when: always
+              command: |
+                docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
+                docker volume ls
+              no_output_timeout: 1h
+          - run:
+              name: collect results
+              when: always
+              command: |
+                docker volume ls
+                docker container create --name dummy \
+                                    -v project_results:/work/test-results \
+                                    registry.access.redhat.com/ubi7/ubi
+                docker cp dummy:/work/test-results/test.xml test-results/
+    jobs:
+      test_aio:
+        parameters:
+          splunk_version:
+            description: Image version
+            type: string
+            default: latest
+        executor: python37
+        steps:
+          - checkout
+          - run: git submodule sync
+          - run: git submodule update --init
+          - setup_remote_docker:
+              docker_layer_caching: true
+          - test_aio:
+              splunk_version: <<parameters.splunk_version>>
+          - store_artifacts:
+              path: test-results
+              destination: test-results
+          - store_test_results:
+              path: test-results
+
+  splunk-release:
+    executors:
+      python37:
+        docker:
+          - image: circleci/python:3.7
+    commands:
+      tag:
+        parameters:
+          gh_user:
+            description: Git Hub username
+            type: string
+          gh_token:
+            description: Git Hub token
+            type: string
+          tag_level:
+            description: Tag level
+            type: string
+        steps:
+          - run:
+              name: TAG
+              command: |
+                git remote set-url origin https://<<parameters.gh_user>>:<<parameters.gh_token>>@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git
+                ./semtag <<parameters.tag_level>>
+      merge-to-master:
+        parameters:
+          gh_user:
+            description: Git Hub username
+            type: string
+          gh_token:
+            description: Git Hub token
+            type: string
+        steps:
+          - run:
+              name: Merge
+              command: |
+                git remote set-url origin https://<<parameters.gh_user>>:<<parameters.gh_token>>@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git
+                git config --global user.email "addonreleasesrv@splunk.com"
+                git config --global user.name "Add on release service"
+                git pull origin master
+                git merge master -m "Merge from master"
+                git checkout master
+                git merge develop
+                git push
+    jobs:
+      tag:
+        parameters:
+          gh_user:
+            description: Git Hub username
+            type: string
+          gh_token:
+            description: Git Hub token
+            type: string
+          tag_level:
+            description: Tag level
+            type: string
+        executor: python37
+        steps:
+          - checkout
+          - tag:
+              tag_level: <<parameters.tag_level>>
+              gh_user: <<parameters.gh_user>>
+              gh_token: <<parameters.gh_token>>
+      merge-to-master:
+        executor: python37
+        parameters:
+          gh_user:
+            description: Git Hub username
+            type: string
+          gh_token:
+            description: Git Hub token
+            type: string
+        steps:
+          - checkout
+          - merge-to-master:
+              gh_user: <<parameters.gh_user>>
+              gh_token: <<parameters.gh_token>>
+
+jobs:
+  publish-gh:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - go/install
+      - run:
+          name: "Publish on GitHub"
+          command: |
+            PATH=$PATH:/usr/local/go/bin
+            PACKAGE=$(ls /tmp/workspace/build/package/splunkbase/*)
+            source /tmp/workspace/build/VERSION
+            go get -v -u github.com/tcnksm/ghr            
+            $HOME/go/bin/ghr -t ${GH_PAT} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${ISPRE} -delete ${VERSION} $PACKAGE
+
+workflows:
+  build:
+    jobs:
+      - splunk-app-test/test_aio:
+          name: test-splunk-8-0
+          splunk_version: "8.0"
+          filters:
+            branches:
+              only: /.*/
+      - splunk-app-test/test_aio:
+          name: test-splunk-7-3
+          splunk_version: "7.3"
+          filters:
+            branches:
+              only: /.*/
+      - splunk-app-test/test_aio:
+          name: test-splunk-7-2
+          splunk_version: "7.2"
+          filters:
+            branches:
+              only: /.*/
+      - splunk-release/tag:
+          name: tag-alpha
+          tag_level: alpha
+          gh_user: ${GH_USER}
+          gh_token: ${GH_PAT}
+          filters:
+            branches:
+              only: develop
+      - approval-tag-beta:
+          requires:
+            - tag-alpha
+          type: approval
+          filters:
+            branches:
+              only: develop
+      - splunk-release/tag:
+          name: tag-beta
+          tag_level: beta
+          gh_user: ${GH_USER}
+          gh_token: ${GH_PAT}
+          requires:
+            - approval-tag-beta
+      - approval-merge-beta-to-master:
+          requires:
+            - tag-beta
+          type: approval
+          filters:
+            branches:
+              only: develop
+      - splunk-release/merge-to-master:
+          name: merge-beta-to-master
+          gh_user: ${GH_USER}
+          gh_token: ${GH_PAT}
+          requires:
+            - approval-merge-beta-to-master
+          filters:
+            branches:
+              only: develop
+      - splunk-release/tag:
+          name: tag-candidate
+          tag_level: candidate
+          gh_user: ${GH_USER}
+          gh_token: ${GH_PAT}
+          filters:
+            branches:
+              only: master
+      - approval-tag-final-major:
+          type: approval
+          requires:
+            - tag-candidate
+      - splunk-release/tag:
+          name: tag-final-major
+          tag_level: final -s major
+          gh_user: ${GH_USER}
+          gh_token: ${GH_PAT}
+          requires:
+            - approval-tag-final-major
+      - approval-tag-final-minor:
+          type: approval
+          requires:
+            - tag-candidate
+      - splunk-release/tag:
+          name: tag-final-minor
+          tag_level: final -s minor
+          gh_user: ${GH_USER}
+          gh_token: ${GH_PAT}
+          requires:
+            - approval-tag-final-minor
+      - approval-tag-final-patch:
+          type: approval
+          requires:
+            - tag-candidate
+      - splunk-release/tag:
+          name: tag-final-patch
+          tag_level: final -s patch
+          gh_user: ${GH_USER}
+          gh_token: ${GH_PAT}
+          requires:
+            - approval-tag-final-patch
+  # publish:
+  #   jobs:
+  #     - publish-gh:
+  #         requires:
+  #           - package
+  #         filters:
+  #           branches:
+  #             ignore: /.*/
+  #           tags:
+  #             only: /^v\d*\.\d*\.\d*.*$/
