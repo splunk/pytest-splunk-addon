@@ -16,7 +16,6 @@ test_connection_only = """
     """
 
 
-#@pytest.mark.xfail()
 @pytest.mark.external
 def test_splunk_connection_external(testdir):
     """Make sure that pytest accepts our fixture."""
