@@ -95,13 +95,13 @@ def is_responsive_splunk(splunk):
         return False
 
 
-# @pytest.fixture(scope="session")
-# def docker_compose_files(pytestconfig):
-#     """Get an absolute path to the  `docker-compose.yml` file. Override this
-#     fixture in your tests if you need a custom location."""
-#     print(os.path.join(str(pytestconfig.invocation_dir), "docker-compose.yml"))
+@pytest.fixture(scope="session")
+def docker_compose_files(pytestconfig):
+    """Get an absolute path to the  `docker-compose.yml` file. Override this
+    fixture in your tests if you need a custom location."""
+    print(os.path.join(str(pytestconfig.invocation_dir), "docker-compose.yml"))
 
-#     return [os.path.join(str(pytestconfig.invocation_dir), "docker-compose.yml")]
+    return [os.path.join(str(pytestconfig.invocation_dir), "docker-compose.yml")]
 
 
 @pytest.fixture(scope="session")
