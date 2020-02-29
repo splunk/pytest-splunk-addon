@@ -13,7 +13,6 @@ RUN mkdir -p /work/tests
 RUN mkdir -p /work/test-results/functional
 
 COPY entrypoint.sh /
-COPY wait-for /bin/
 RUN apt-get update ; apt-get install -y netcat; apt-get clean
 
 COPY requirements.txt /
@@ -21,10 +20,11 @@ RUN pip3 install -r /requirements.txt
 
 COPY . /tmp/pytest-splunk-addon
 RUN pip3 install /tmp/pytest-splunk-addon
+#RUN pip3 uninstall lovely-pytest-docker  -y
 
-COPY pytest.ini /work
-
+COPY pytest-ci.ini /work/pytest.ini
+COPY tests /work/tests/
 WORKDIR /work
 
 ENTRYPOINT "/entrypoint.sh"
-CMD "tests"
+CMD tests

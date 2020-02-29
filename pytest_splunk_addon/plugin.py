@@ -127,14 +127,14 @@ def splunk_docker(request, docker_services):
     port = docker_services.port_for("splunk", 8089)
 
     splunk = {
-        #"host": docker_services.docker_ip,
-        "host": "127.0.0.1",
+        "host": docker_services.docker_ip,
+        #"host": "127.0.0.1",
         "port": port,
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
     }
     c =  0
-    while c < 5:
+    while c < 30:
         c +=1
         docker_services.wait_until_responsive(
             timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk)

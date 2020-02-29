@@ -17,7 +17,7 @@ test_connection_only = """
 
 
 #@pytest.mark.xfail()
-@pytest.mark.skip(reason="no way of currently testing this")
+@pytest.mark.external
 def test_splunk_connection_external(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -37,7 +37,7 @@ def test_splunk_connection_external(testdir):
         '--splunk_type=external',
         '--splunk_app=tests/package',
         '--splunk_type=external',
-        f'--splunk_host=127.0.0.1',
+        f'--splunk_host=splunk',
         f'--splunk_port=8089',
         '--splunk_password=Changed@11',
         '-v'
@@ -52,6 +52,7 @@ def test_splunk_connection_external(testdir):
     assert result.ret == 0
 
 
+@pytest.mark.docker
 def test_splunk_connection_docker(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -91,6 +92,7 @@ def test_splunk_connection_docker(testdir):
     assert result.ret == 0
 
 
+@pytest.mark.docker
 def test_splunk_app_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -141,6 +143,7 @@ def test_splunk_app_fiction(testdir):
     assert result.ret == 0
 
 
+@pytest.mark.docker
 def test_splunk_app_broken_sourcetype(testdir):
     """Make sure that pytest accepts our fixture."""
 
