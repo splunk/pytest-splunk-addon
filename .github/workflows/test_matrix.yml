@@ -28,4 +28,4 @@ jobs:
         run: |
           pip install pytest
           cd /home/runner/work/pytest-splunk-addon
-          pytest -v --splunk_version=${{ matrix.splunk-version }} -m docker
+          pytest -v --splunk_version=${{ matrix.splunk-version }} -m docker tests
