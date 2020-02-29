@@ -12,6 +12,13 @@ def read(fname):
     return codecs.open(file_path, encoding="utf-8").read()
 
 
+def safe_version():
+    try:
+        return get_version()
+    except LookupError as identifier:
+        return "0.0.1"
+
+
 setup_requirements = [
     "pytest-runner",
 ]
@@ -33,13 +40,15 @@ setup(
     long_description=read("README.rst"),
     python_requires=">=3.0, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     install_requires=[
-        "pytest>=5.3.5", 
+        "pytest>=5.3.5",
         "pytest-dependency",
         "lovely-pytest-docker",
-        "splunk-sdk", 
-        "future", "httplib2", "requests",
-        "lovely-pytest-docker"
-        ],
+        "splunk-sdk",
+        "future",
+        "httplib2",
+        "requests",
+        "lovely-pytest-docker",
+    ],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: Pytest",
@@ -55,5 +64,5 @@ setup(
     test_suite="tests",
     zip_safe=False,
     entry_points={"pytest11": ["splunk_addon = pytest_splunk_addon.plugin"]},
-    version=get_version(),
+    version=safe_version(),
 )
