@@ -48,6 +48,25 @@ class Basic:
 
         assert result == True
 
+
+    @pytest.mark.splunk_addon_searchtime
+    def test_sourcetype_fields_no_dash(self, splunk_search_util, splunk_app_fields, record_property):
+        record_property('sourcetype',splunk_app_fields['sourcetype'])
+        record_property('fields',splunk_app_fields['fields'])
+
+        search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']} AND ("
+        op = ""
+        for f in splunk_app_fields['fields']:
+            search = search + f" ({op} {f}=\"-\""
+            op = "OR"
+        search =  search +  ")"
+        # run search
+        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
+            search, interval=10, retries=3
+        )
+        record_property('search',search)
+
+        assert result == False
     # # This test ensures the contained samples will produce at lease one event per eventtype
     # @pytest.mark.splunk_addon_searchtime
     # @flaky(max_runs=5, min_passes=1)
