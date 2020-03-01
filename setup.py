@@ -37,7 +37,7 @@ setup(
         "requests",
         "lovely-pytest-docker",
     ],
-    setup_requires=["pytest-runner", "setuptools_scm"],
+    setup_requires=["pytest-runner"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: Pytest",
