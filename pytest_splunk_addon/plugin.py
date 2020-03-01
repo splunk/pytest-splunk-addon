@@ -212,8 +212,7 @@ def return_props_sourcetype_param(id, value):
     name = f"splunk_addon_props_sourcetype_{id}"
     return pytest.param({
         "field": "sourcetype", "value": value},
-        id=idf,
-        marks=[pytest.mark.dependency(name=name)]
+        id=idf
         )
         
 def load_splunk_fields(props):
@@ -226,8 +225,7 @@ def load_splunk_fields(props):
 
 def return_props_extract(id, value):
     name = f"{id}_field::{value.name}"
-    depends = f"splunk_addon_props_sourcetype_{id}"
-
+    
     regex = r"\(\?<([^\>]+)\>"
     matches = re.finditer(regex, value.value, re.MULTILINE)
     fields = []
@@ -239,10 +237,7 @@ def return_props_extract(id, value):
 
     return pytest.param(
         {"sourcetype": id, "fields": fields },
-        id=name,
-        marks=[pytest.mark.dependency(name=name,
-                                        depends=[depends])
-            ]
+        id=name
         )
     # Tests are to be found in the variable `tests` of the module
     # for test in tests_module.tests.iteritems():
