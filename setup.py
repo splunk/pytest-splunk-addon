@@ -3,7 +3,6 @@
 
 import codecs
 import os
-from setuptools_scm import get_version
 from setuptools import setup, find_packages
 
 
