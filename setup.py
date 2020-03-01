@@ -40,6 +40,7 @@ setup(
         "requests",
         "lovely-pytest-docker",
     ],
+    setup_requires=setup_requirements,
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: Pytest",
