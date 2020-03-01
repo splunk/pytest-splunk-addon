@@ -20,7 +20,7 @@ def safe_version():
 
 
 setup_requirements = [
-    "pytest-runner",
+    "pytest-runner", "setuptools_scm"
 ]
 
 test_requirements = [
@@ -64,5 +64,6 @@ setup(
     test_suite="tests",
     zip_safe=False,
     entry_points={"pytest11": ["splunk_addon = pytest_splunk_addon.plugin"]},
-    version=safe_version(),
+#    version=safe_version(),
+    use_scm_version=True,
 )
