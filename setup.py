@@ -55,6 +55,8 @@ setup(
     test_suite="tests",
     zip_safe=False,
     entry_points={"pytest11": ["splunk_addon = pytest_splunk_addon.plugin"]},
+    use_scm_version = {
+        "fallback_version": "0.1.0",
+    },
     use_scm_version=True,
-    version=get_version(fallback_version="0.1.0"),
 )
