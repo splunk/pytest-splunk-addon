@@ -12,13 +12,6 @@ def read(fname):
     return codecs.open(file_path, encoding="utf-8").read()
 
 
-def safe_version():
-    try:
-        return get_version()
-    except:
-        return "0.0.1"
-
-
 setup_requirements = [
     "pytest-runner",
 ]
@@ -64,5 +57,5 @@ setup(
     test_suite="tests",
     zip_safe=False,
     entry_points={"pytest11": ["splunk_addon = pytest_splunk_addon.plugin"]},
-    version=safe_version(),
+    version=get_version(fallback_version="0.1.0"),
 )
