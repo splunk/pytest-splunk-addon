@@ -18,74 +18,81 @@ class Basic:
 
     # This test ensures the contained samples will produce at lease one event per sourcetype
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype(self, splunk_search_util, splunk_app_props, request, record_property):
-        record_property(splunk_app_props['field'],splunk_app_props['value'])
+    def test_sourcetype(
+        self, splunk_search_util, splunk_app_props, request, record_property
+    ):
+        record_property(splunk_app_props["field"], splunk_app_props["value"])
         search = f"search (index=_internal OR index=*) AND {splunk_app_props['field']}=\"{splunk_app_props['value']}\""
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=10, retries=3
+            search, interval=10, retries=8
         )
-        record_property('search',search)
-
+        record_property("search", search)
 
         assert result == True
 
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype_fields(self, splunk_search_util, splunk_app_fields, record_property):
-        record_property('sourcetype',splunk_app_fields['sourcetype'])
-        record_property('fields',splunk_app_fields['fields'])
+    def test_sourcetype_fields(
+        self, splunk_search_util, splunk_app_fields, record_property
+    ):
+        record_property("sourcetype", splunk_app_fields["sourcetype"])
+        record_property("fields", splunk_app_fields["fields"])
 
         search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']}"
-        for f in splunk_app_fields['fields']:
-            search = search + f" AND ({f}=* AND NOT {f}=\"-\" AND NOT {f}=\"\")"
+        for f in splunk_app_fields["fields"]:
+            search = search + f' AND ({f}=* AND NOT {f}="-" AND NOT {f}="")'
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=10, retries=3
         )
-        record_property('search',search)
+        record_property("search", search)
 
         assert result == True
 
-
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype_fields_no_dash(self, splunk_search_util, splunk_app_fields, record_property):
-        record_property('sourcetype',splunk_app_fields['sourcetype'])
-        record_property('fields',splunk_app_fields['fields'])
+    def test_sourcetype_fields_no_dash(
+        self, splunk_search_util, splunk_app_fields, record_property
+    ):
+        record_property("sourcetype", splunk_app_fields["sourcetype"])
+        record_property("fields", splunk_app_fields["fields"])
 
         search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']} AND ("
         op = ""
-        for f in splunk_app_fields['fields']:
-            search = search + f" {op} {f}=\"-\""
+        for f in splunk_app_fields["fields"]:
+            search = search + f' {op} {f}="-"'
             op = "OR"
-        search =  search +  ")"
+        search = search + ")"
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=1, retries=1
         )
-        record_property('search',search)
+        record_property("search", search)
 
         assert result == False
 
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype_fields_no_empty(self, splunk_search_util, splunk_app_fields, record_property):
-        record_property('sourcetype',splunk_app_fields['sourcetype'])
-        record_property('fields',splunk_app_fields['fields'])
+    def test_sourcetype_fields_no_empty(
+        self, splunk_search_util, splunk_app_fields, record_property
+    ):
+        record_property("sourcetype", splunk_app_fields["sourcetype"])
+        record_property("fields", splunk_app_fields["fields"])
 
         search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']} AND ("
         op = ""
-        for f in splunk_app_fields['fields']:
-            search = search + f" {op} {f}=\"\""
+        for f in splunk_app_fields["fields"]:
+            search = search + f' {op} {f}=""'
             op = "OR"
-        search =  search +  ")"
+        search = search + ")"
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=1, retries=1
         )
-        record_property('search',search)
+        record_property("search", search)
 
         assert result == False
+
     # # This test ensures the contained samples will produce at lease one event per eventtype
     # @pytest.mark.splunk_addon_searchtime
     # @flaky(max_runs=5, min_passes=1)
