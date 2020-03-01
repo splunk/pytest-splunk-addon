@@ -11,8 +11,6 @@ def read(fname):
     return codecs.open(file_path, encoding="utf-8").read()
 
 
-setup_requirements = ["pytest-runner", "setuptools_scm"]
-
 test_requirements = [
     "pytest>=5",
 ]
@@ -39,7 +37,7 @@ setup(
         "requests",
         "lovely-pytest-docker",
     ],
-    setup_requires=setup_requirements,
+    setup_requires=["pytest-runner", "setuptools_scm"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: Pytest",
@@ -55,5 +53,6 @@ setup(
     test_suite="tests",
     zip_safe=False,
     entry_points={"pytest11": ["splunk_addon = pytest_splunk_addon.plugin"]},
-    use_scm_version={"fallback_version": "0.1.0",},
+    #use_scm_version={"fallback_version": "0.1.0",},
+    version = 0.1.0
 )
