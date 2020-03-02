@@ -1,6 +1,7 @@
 import logging
 
 import pytest
+import pprint
 
 
 class Basic:
@@ -20,7 +21,8 @@ class Basic:
         result, results = splunk_search_util.checkQueryCountIsZero(search)
         if not result:
             record_property("results", results.as_list)
-            print(results.as_list)
+            pp = pprint.PrettyPrinter(indent=4)
+            pp.pprint(results.as_list)
         assert result == True
 
     # This test ensures the contained samples will produce at lease one event per sourcetype
