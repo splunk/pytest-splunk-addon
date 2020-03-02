@@ -209,7 +209,6 @@ def load_splunk_props(props):
             
 def return_props_sourcetype_param(id, value):
     idf = f"sourcetype::{id}" 
-    name = f"splunk_addon_props_sourcetype_{id}"
     return pytest.param({
         "field": "sourcetype", "value": value},
         id=idf

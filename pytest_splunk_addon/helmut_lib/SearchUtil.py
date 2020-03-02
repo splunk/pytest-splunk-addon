@@ -35,7 +35,6 @@ class SearchUtilException(Exception):
 
 
 class SearchUtil(object):
-
     def __init__(self, jobs, logger):
         """
         Constructor of the SearchUtil object.
@@ -44,27 +43,47 @@ class SearchUtil(object):
         self.jobs = jobs
 
     def failTest(self, message):
-        '''
+        """
         Fail the test appropriately, QA uses pytest. Dev gets a generic message
-        '''
-        if 'pytest' in list(sys.modules.keys()):
+        """
+        if "pytest" in list(sys.modules.keys()):
             py.test.fail(message)
         else:
             raise SearchUtilException(message)
 
-    def checkQueryContainsRegex(self, query, field, regex, interval=15, retries=4, number_results=100, max_time=60):
+    def checkQueryContainsRegex(
+        self,
+        query,
+        field,
+        regex,
+        interval=15,
+        retries=4,
+        number_results=100,
+        max_time=60,
+    ):
         tryNum = 0
         r = re.compile(regex)
         while tryNum <= retries:
-            job = self.jobs.create(query, auto_finalize_ec=number_results, max_time=max_time)
+            job = self.jobs.create(
+                query, auto_finalize_ec=number_results, max_time=max_time
+            )
             job.wait()
             results = job.get_results()
             for result_no, result in enumerate(results.as_list):
                 if result_no > number_results:
-                    self.logger.debug("could not find re: %s in first %d results", regex, number_results)
+                    self.logger.debug(
+                        "could not find re: %s in first %d results",
+                        regex,
+                        number_results,
+                    )
                     return False
                 elif r.match(str(result[field])):
-                    self.logger.debug("result['%s']='%s' matches re: %s", field, str(result[field]), regex)
+                    self.logger.debug(
+                        "result['%s']='%s' matches re: %s",
+                        field,
+                        str(result[field]),
+                        regex,
+                    )
                     return True
             tryNum += 1
             time.sleep(interval)
@@ -81,14 +100,19 @@ class SearchUtil(object):
             if result_count == targetCount:
                 return True
             else:
-                self.logger.info("Count of results is not as expected, it is %d. Expected %d", result_count,
-                                 targetCount)
+                self.logger.info(
+                    "Count of results is not as expected, it is %d. Expected %d",
+                    result_count,
+                    targetCount,
+                )
                 tryNum += 1
                 time.sleep(interval)
 
         return False
 
-    def checkQueryCountIsGreaterThanZero(self, query, interval=15, retries=4, max_time=120):
+    def checkQueryCountIsGreaterThanZero(
+        self, query, interval=15, retries=4, max_time=120
+    ):
         self.logger.debug("query is %s", query)
         tryNum = 0
         while tryNum <= retries:
@@ -104,18 +128,35 @@ class SearchUtil(object):
                 time.sleep(interval)
         return False
 
-    def checkQueryFields(self,
-                         query,
-                         expected,  # can be list, set, tuple, or string
-                         expectedMinRow=1,
-                         interval=15,
-                         retries=4,
-                         namespace='SA-ThreatIntelligence'):
+    def checkQueryCountIsZero(self, query, max_time=120):
+        self.logger.debug("query is %s", query)
+        tryNum = 0
+        
+        job = self.jobs.create(query, auto_finalize_ec=200, max_time=max_time)
+        job.wait(max_time)
+        result_count = len(job.get_results())
+        
+        if result_count == 0:
+            self.logger.debug("Count of results is 0")
+            return True, None
+        else:
+            self.logger.debug("Count of results is > 0, it is:%d", result_count)            
+            return False, job.get_results()
 
-        '''Execute a query and check for a matching set (not necessarily
+    def checkQueryFields(
+        self,
+        query,
+        expected,  # can be list, set, tuple, or string
+        expectedMinRow=1,
+        interval=15,
+        retries=4,
+        namespace="SA-ThreatIntelligence",
+    ):
+
+        """Execute a query and check for a matching set (not necessarily
            complete) of output fields, and secondarily for a minimum
            number of results.
-        '''
+        """
 
         tryNum = 0
         status = False
@@ -133,21 +174,27 @@ class SearchUtil(object):
             if len(job.get_results()) > 0:
                 fields = list(results[0].keys())
                 if expected.issubset(fields):
-                    self.wrapLogOutput(msg='All expected fields found in result:',
-                                       actual=','.join(fields),
-                                       expected=','.join(expected),
-                                       errors='')
+                    self.wrapLogOutput(
+                        msg="All expected fields found in result:",
+                        actual=",".join(fields),
+                        expected=",".join(expected),
+                        errors="",
+                    )
                     status = True
                 else:
-                    self.wrapLogOutput(msg='Expected fields missing from result:',
-                                       actual=','.join(fields),
-                                       expected=','.join(expected),
-                                       errors=','.join(expected.difference(fields)))
+                    self.wrapLogOutput(
+                        msg="Expected fields missing from result:",
+                        actual=",".join(fields),
+                        expected=",".join(expected),
+                        errors=",".join(expected.difference(fields)),
+                    )
             else:
-                self.wrapLogOutput(msg='Zero results from search:',
-                                   actual='',
-                                   expected=','.join(expected),
-                                   errors='\n'.join(messages))
+                self.wrapLogOutput(
+                    msg="Zero results from search:",
+                    actual="",
+                    expected=",".join(expected),
+                    errors="\n".join(messages),
+                )
 
             if not status:
                 tryNum += 1
@@ -156,88 +203,109 @@ class SearchUtil(object):
         return status
 
     def wrapLogOutput(self, msg, actual, expected, errors, level="debug"):
-        '''Simple wrapper method for showing expected and actual output
+        """Simple wrapper method for showing expected and actual output
            in the debug log. Pass in level to adjust level from default (debug)
            to error or warning.
-        '''
+        """
 
-        errOutput = string.Template("""${msg}
+        errOutput = string.Template(
+            """${msg}
             ===ACTUAL=====
             ${actual}
             ===EXPECTED===
             ${expected}
             ===ERRORS=====
-            ${errors}\n""")
+            ${errors}\n"""
+        )
 
-        output = errOutput.substitute({'msg': msg,
-                                       'actual': actual,
-                                       'expected': expected,
-                                       'errors': errors})
+        output = errOutput.substitute(
+            {"msg": msg, "actual": actual, "expected": expected, "errors": errors}
+        )
 
         # This is solely so the definition of errOutput above can look good
         # while making the debug output readable.
         if level == "debug":
-            self.logger.debug('\n'.join(map(str.strip, list(map(str, output.splitlines())))))
+            self.logger.debug(
+                "\n".join(map(str.strip, list(map(str, output.splitlines()))))
+            )
         elif level == "warning":
-            self.logger.warning('\n'.join(map(str.strip, list(map(str, output.splitlines())))))
+            self.logger.warning(
+                "\n".join(map(str.strip, list(map(str, output.splitlines()))))
+            )
         elif level == "error":
-            self.logger.error('\n'.join(map(str.strip, list(map(str, output.splitlines())))))
+            self.logger.error(
+                "\n".join(map(str.strip, list(map(str, output.splitlines()))))
+            )
         else:
             # Whatever, if level specified badly just print as debug
-            self.logger.debug('\n'.join(map(str.strip, list(map(str, output.splitlines())))))
+            self.logger.debug(
+                "\n".join(map(str.strip, list(map(str, output.splitlines()))))
+            )
 
     def compareContentIgnoreOrder(self, actual, expected):
-        '''Compare two string sequences, generating a unified diff.'''
+        """Compare two string sequences, generating a unified diff."""
         # Strip EOL to avoid a common error. Note that one or more
         # inputs may be an empty list so check length first.
-        self.wrapLogOutput(msg='Before Strip actual',
-                           actual='<oted>',
-                           expected='<omitted>',
-                           errors=actual)
+        self.wrapLogOutput(
+            msg="Before Strip actual",
+            actual="<oted>",
+            expected="<omitted>",
+            errors=actual,
+        )
 
-        self.wrapLogOutput(msg='Before Strip expected',
-                           actual='<omitted>',
-                           expected='<omitted>',
-                           errors=expected)
+        self.wrapLogOutput(
+            msg="Before Strip expected",
+            actual="<omitted>",
+            expected="<omitted>",
+            errors=expected,
+        )
 
         if len(actual) > 0:
-            actual[-1] = actual[-1].rstrip('\n')
+            actual[-1] = actual[-1].rstrip("\n")
 
         if len(expected) > 0:
-            expected[-1] = expected[-1].rstrip('\n')
+            expected[-1] = expected[-1].rstrip("\n")
 
-        actual[-1] = actual[-1] + '\n'
-        expected[-1] = expected[-1] + '\n'
+        actual[-1] = actual[-1] + "\n"
+        expected[-1] = expected[-1] + "\n"
 
-        self.wrapLogOutput(msg='After Strip actual',
-                           actual='<omitted>',
-                           expected='<omitted>',
-                           errors=actual)
+        self.wrapLogOutput(
+            msg="After Strip actual",
+            actual="<omitted>",
+            expected="<omitted>",
+            errors=actual,
+        )
 
-        self.wrapLogOutput(msg='After Strip expected',
-                           actual='<omitted>',
-                           expected='<omitted>',
-                           errors=expected)
+        self.wrapLogOutput(
+            msg="After Strip expected",
+            actual="<omitted>",
+            expected="<omitted>",
+            errors=expected,
+        )
 
         status = True
         # Compare the lines
         for line in expected:
             if line not in actual:
-                self.wrapLogOutput(msg='The following line is not in the output from the command',
-                                   actual='<omitted>',
-                                   expected='<omitted>',
-                                   errors=line)
+                self.wrapLogOutput(
+                    msg="The following line is not in the output from the command",
+                    actual="<omitted>",
+                    expected="<omitted>",
+                    errors=line,
+                )
                 status = False
 
         # Make sure the number of lines is the expected
         if len(expected) != len(actual):
-            self.wrapLogOutput(msg='The line counts differ; the canon file and the output are different',
-                               actual='<omitted>',
-                               expected='<omitted>',
-                               errors=line)
+            self.wrapLogOutput(
+                msg="The line counts differ; the canon file and the output are different",
+                actual="<omitted>",
+                expected="<omitted>",
+                errors=line,
+            )
             status = False
 
-        if (status is False):
+        if status is False:
             # Log the difference
             result = difflib.unified_diff(actual, expected)
 
@@ -247,22 +315,26 @@ class SearchUtil(object):
                 mismatches.append(line)
 
             if len(mismatches) > 0:
-                self.wrapLogOutput(msg='Script output did not match expected',
-                                   actual='<omitted>',
-                                   expected='<omitted>',
-                                   errors='\n'.join(mismatches))
+                self.wrapLogOutput(
+                    msg="Script output did not match expected",
+                    actual="<omitted>",
+                    expected="<omitted>",
+                    errors="\n".join(mismatches),
+                )
 
         return status
 
-    def checkExactQueryContent(self,
-                               query,
-                               expected,
-                               namespace='SA-ThreatIntelligence',
-                               interval=15,
-                               retries=4,
-                               reformat=False):
+    def checkExactQueryContent(
+        self,
+        query,
+        expected,
+        namespace="SA-ThreatIntelligence",
+        interval=15,
+        retries=4,
+        reformat=False,
+    ):
 
-        '''Check for exact content in a specific search result.
+        """Check for exact content in a specific search result.
            Script will issue failure IF no results are obtained
            ( len(result) == 0 ) OR if the expected text does not exist
            in the raw result text.
@@ -273,16 +345,16 @@ class SearchUtil(object):
 
            This function is for use only by tests which do NOT
            require passing input to Splunk on STDIN.
-        '''
+        """
 
         tryNum = 0
         status = False
 
-        path_to_output = os.path.join(os.getcwd(), 'data')
+        path_to_output = os.path.join(os.getcwd(), "data")
         try:
-            output = open(os.path.join(path_to_output, expected), 'r')
+            output = open(os.path.join(path_to_output, expected), "r")
         except IOError:
-            self.failTest('Expected output file not found.')
+            self.failTest("Expected output file not found.")
         except AttributeError:
             if not reformat:
                 raise
@@ -304,20 +376,28 @@ class SearchUtil(object):
                 if reformat:
                     # reformat both actual and expected so that csv file
                     # exported by splunk web is acceptable
-                    actual = ['%s\n' % [str(field) for field in row] for row in
-                              [list(results[0].keys())] + [list(row.values()) for row in results]]
-                    expected = ['%s\n' % [str(field) for field in row] for row in csv.reader(output)]
+                    actual = [
+                        "%s\n" % [str(field) for field in row]
+                        for row in [list(results[0].keys())]
+                        + [list(row.values()) for row in results]
+                    ]
+                    expected = [
+                        "%s\n" % [str(field) for field in row]
+                        for row in csv.reader(output)
+                    ]
                 else:
-                    actual = [','.join(list(results[0].keys())) + '\n']
+                    actual = [",".join(list(results[0].keys())) + "\n"]
                     for result in results:
-                        actual.append(','.join(map(str, list(result.values()))) + '\n')
+                        actual.append(",".join(map(str, list(result.values()))) + "\n")
                     expected = output.readlines(True)
                 status = self.compareContent(actual, expected)
             else:
-                self.wrapLogOutput(msg='Zero results from search:',
-                                   actual='',
-                                   expected=expected,
-                                   errors='\n'.join(messages))
+                self.wrapLogOutput(
+                    msg="Zero results from search:",
+                    actual="",
+                    expected=expected,
+                    errors="\n".join(messages),
+                )
 
             if not status:
                 tryNum += 1
@@ -326,15 +406,17 @@ class SearchUtil(object):
         output.close()
         return status
 
-    def checkGapSearch(self,
-                       query,
-                       warningGapSizeLimit,
-                       warningGapCountLimit,
-                       interval=1,
-                       retries=0,
-                       namespace='splunk_for_vmware'):
+    def checkGapSearch(
+        self,
+        query,
+        warningGapSizeLimit,
+        warningGapCountLimit,
+        interval=1,
+        retries=0,
+        namespace="splunk_for_vmware",
+    ):
 
-        '''
+        """
             Execute a gap detection search to check that a certain number or less of
             gaps exist. Start by checking for gaps in a warning range. Issue Error for gaps longer
             than the warning range. Or if the number of gaps in the warning range is greater than a
@@ -360,7 +442,7 @@ class SearchUtil(object):
             | eval delta = (prev_endtime - _time)
             | search delta>[Expected time between events of the same identifier]
             | fields delta
-            '''
+            """
 
         tryNum = 0
         warningCount = 0
@@ -374,8 +456,12 @@ class SearchUtil(object):
             results = job.get_results()
             messages = job.get_messages()
 
-            self.logger.debug("Ran Gap Detection search=\"%s\" warningGapCountLimit=%s and warningGapSizeLimit=%s",
-                              query, str(warningGapCountLimit), str(warningGapSizeLimit))
+            self.logger.debug(
+                'Ran Gap Detection search="%s" warningGapCountLimit=%s and warningGapSizeLimit=%s',
+                query,
+                str(warningGapCountLimit),
+                str(warningGapSizeLimit),
+            )
 
             if len(job.get_results()) > 0:
                 warningCount = 0
@@ -384,68 +470,78 @@ class SearchUtil(object):
                     if float(str(result["delta"])) <= warningGapSizeLimit:
                         # This is a warning sized gap. just report the warning and increase the warningCount
                         warningCount += 1
-                        self.wrapLogOutput(msg='Warning Sized Gap detected with detection search',
-                                           actual="gapSize=" + str(result["delta"]),
-                                           expected="no gaps",
-                                           errors='None',
-                                           level='warning')
+                        self.wrapLogOutput(
+                            msg="Warning Sized Gap detected with detection search",
+                            actual="gapSize=" + str(result["delta"]),
+                            expected="no gaps",
+                            errors="None",
+                            level="warning",
+                        )
                     else:
                         # The gap is bigger than the warning limit, flag error, set status to false.
                         errorCount += 1
-                        self.wrapLogOutput(msg='Error Sized Gap detected with detection search',
-                                           actual="gapSize=" + str(result["delta"]),
-                                           expected="no gaps, or at least gaps shorter than " + str(
-                                               warningGapSizeLimit),
-                                           errors='Error sized gap detected.',
-                                           level='error')
+                        self.wrapLogOutput(
+                            msg="Error Sized Gap detected with detection search",
+                            actual="gapSize=" + str(result["delta"]),
+                            expected="no gaps, or at least gaps shorter than "
+                            + str(warningGapSizeLimit),
+                            errors="Error sized gap detected.",
+                            level="error",
+                        )
                         status = False
 
                 if warningCount >= warningGapCountLimit:
                     # Too many Warning sized gaps, this test failed.
                     status = False
-                    self.wrapLogOutput(msg='Too many warning sized gaps detected with detection search',
-                                       actual="warningGapCount=" + str(warningCount),
-                                       expected="warningGapCountLimit=" + str(warningGapCountLimit),
-                                       errors='Too many warning gaps detected.',
-                                       level='error')
+                    self.wrapLogOutput(
+                        msg="Too many warning sized gaps detected with detection search",
+                        actual="warningGapCount=" + str(warningCount),
+                        expected="warningGapCountLimit=" + str(warningGapCountLimit),
+                        errors="Too many warning gaps detected.",
+                        level="error",
+                    )
                 elif warningCount > 0:
-                    self.wrapLogOutput(msg='Safe number of warning sized gaps detected with detection search',
-                                       actual="warningGapCount=" + str(warningCount),
-                                       expected="warningGapCountLimit=" + str(warningGapCountLimit),
-                                       errors='',
-                                       level='warning')
+                    self.wrapLogOutput(
+                        msg="Safe number of warning sized gaps detected with detection search",
+                        actual="warningGapCount=" + str(warningCount),
+                        expected="warningGapCountLimit=" + str(warningGapCountLimit),
+                        errors="",
+                        level="warning",
+                    )
                 else:
-                    self.wrapLogOutput(msg='No warning sized gaps detected with detection search',
-                                       actual="warningGapCount=" + str(warningCount),
-                                       expected="warningGapCountLimit=" + str(warningGapCountLimit),
-                                       errors='',
-                                       level='debug')
+                    self.wrapLogOutput(
+                        msg="No warning sized gaps detected with detection search",
+                        actual="warningGapCount=" + str(warningCount),
+                        expected="warningGapCountLimit=" + str(warningGapCountLimit),
+                        errors="",
+                        level="debug",
+                    )
 
             else:
-                self.wrapLogOutput(msg='PASS: Zero results from gap detection search.',
-                                   actual='',
-                                   expected='',
-                                   errors='\n'.join(messages))
+                self.wrapLogOutput(
+                    msg="PASS: Zero results from gap detection search.",
+                    actual="",
+                    expected="",
+                    errors="\n".join(messages),
+                )
 
             if status:
                 tryNum += 1
                 time.sleep(interval)
 
-        self.wrapLogOutput(msg='Error-Sized Gap Detection Results for search',
-                           actual="errorGapCount=" + str(errorCount),
-                           expected="0",
-                           errors='',
-                           level='debug')
+        self.wrapLogOutput(
+            msg="Error-Sized Gap Detection Results for search",
+            actual="errorGapCount=" + str(errorCount),
+            expected="0",
+            errors="",
+            level="debug",
+        )
 
         return status
 
-    def checkFieldAgainstCanon(self,
-                               query,
-                               field,
-                               canon,
-                               interval=30,
-                               retries=4,
-                               namespace='splunk_for_vmware'):
+    def checkFieldAgainstCanon(
+        self, query, field, canon, interval=30, retries=4, namespace="splunk_for_vmware"
+    ):
         """
             Execute a search that returns results containing a particular field. Then
             check that every value of that field from every result is included in the
@@ -468,14 +564,14 @@ class SearchUtil(object):
         status = False
         tryNum = 0
 
-        self.logger.debug("Running canon test with canon=\"%s\"", str(canon))
+        self.logger.debug('Running canon test with canon="%s"', str(canon))
 
         while tryNum <= retries and not status:
             job = self.jobs.create(query, auto_finalize_ec=10, max_time=60)
             job.wait(TIMEOUT)
             results = job.get_results()
 
-            self.logger.debug("Ran canon test search=\"%s\"", query)
+            self.logger.debug('Ran canon test search="%s"', query)
 
             if len(job.get_results()) > 0:
                 # Build Result Set
@@ -484,16 +580,34 @@ class SearchUtil(object):
                     actual.add(str(result[field]))
 
                 if canon == actual:
-                    self.wrapLogOutput("PASS: results match canon exactly", str(actual), str(canon), "None.", "debug")
+                    self.wrapLogOutput(
+                        "PASS: results match canon exactly",
+                        str(actual),
+                        str(canon),
+                        "None.",
+                        "debug",
+                    )
                     status = True
                 else:
-                    self.wrapLogOutput("FAIL: actual and canon do not match", str(actual), str(canon),
-                                       "error=\"results do not match canon\"", "error")
-                    self.logger.debug("Results in canon and not in actual: %s", str(canon.difference(actual)))
-                    self.logger.debug("Results in actual and not in canon: %s", str(actual.difference(canon)))
+                    self.wrapLogOutput(
+                        "FAIL: actual and canon do not match",
+                        str(actual),
+                        str(canon),
+                        'error="results do not match canon"',
+                        "error",
+                    )
+                    self.logger.debug(
+                        "Results in canon and not in actual: %s",
+                        str(canon.difference(actual)),
+                    )
+                    self.logger.debug(
+                        "Results in actual and not in canon: %s",
+                        str(actual.difference(canon)),
+                    )
             else:
                 self.logger.debug(
-                    "No results from canon test search retrying after wait interval... (unless max tries exceeded)")
+                    "No results from canon test search retrying after wait interval... (unless max tries exceeded)"
+                )
 
             if not status:
                 tryNum += 1
@@ -501,29 +615,30 @@ class SearchUtil(object):
 
         return status
 
-    def checkQueryErrorMessage(self,
-                               query,
-                               expected,
-                               namespace='SA-ThreatIntelligence'):
+    def checkQueryErrorMessage(
+        self, query, expected, namespace="SA-ThreatIntelligence"
+    ):
 
-        '''Check for specific error text from a search.
+        """Check for specific error text from a search.
             Unlike checkQueryContent(), it is typically not necessary
             to repeat a test we expect to fail, so we do not retry.
-        '''
+        """
         status = False
         job = self.jobs.create(query, max_time=60)
         job.wait(TIMEOUT)
         messages = job.get_messages()
         if len(messages) > 0:
-            errors = messages.get('error', None)
+            errors = messages.get("error", None)
             if errors is not None:
                 matches = [error for error in errors if expected in error]
                 if any(matches):
                     # Expected error message found: PASS
-                    self.wrapLogOutput(msg='Expected error text found:',
-                                       actual='\n'.join(matches),
-                                       expected=expected,
-                                       errors='N/A')
+                    self.wrapLogOutput(
+                        msg="Expected error text found:",
+                        actual="\n".join(matches),
+                        expected=expected,
+                        errors="N/A",
+                    )
                     status = True
                 else:
                     # No matches, but error messages exist: FAIL.
@@ -533,25 +648,29 @@ class SearchUtil(object):
             pass
 
         if not status:
-            self.wrapLogOutput(msg='Expected error text NOT found:',
-                               actual='\n'.join(map(str, messages)),
-                               expected=expected,
-                               errors='N/A')
+            self.wrapLogOutput(
+                msg="Expected error text NOT found:",
+                actual="\n".join(map(str, messages)),
+                expected=expected,
+                errors="N/A",
+            )
 
         return status
 
-    def checkQueryFieldValues(self,
-                              query,
-                              expected_values,  # can be list, set, tuple, or string
-                              expectedMinRow=0,
-                              interval=15,
-                              retries=4,
-                              namespace='SA-ThreatIntelligence'):
+    def checkQueryFieldValues(
+        self,
+        query,
+        expected_values,  # can be list, set, tuple, or string
+        expectedMinRow=0,
+        interval=15,
+        retries=4,
+        namespace="SA-ThreatIntelligence",
+    ):
 
-        '''Execute a query and check for a matching set (not necessarily
+        """Execute a query and check for a matching set (not necessarily
            complete) of output fields, and secondarily for a minimum
            number of results.
-        '''
+        """
 
         tryNum = 0
         status = False
@@ -571,21 +690,27 @@ class SearchUtil(object):
                 print(values)
                 print(values.__class__.__name__)
                 if expected_values in values:
-                    self.wrapLogOutput(msg='All expected values found in result:',
-                                       actual=values,
-                                       expected=expected_values,
-                                       errors='')
+                    self.wrapLogOutput(
+                        msg="All expected values found in result:",
+                        actual=values,
+                        expected=expected_values,
+                        errors="",
+                    )
                     status = True
                 else:
-                    self.wrapLogOutput(msg='Expected field values missing from result:',
-                                       actual=values,
-                                       expected=expected_values,
-                                       errors='')
+                    self.wrapLogOutput(
+                        msg="Expected field values missing from result:",
+                        actual=values,
+                        expected=expected_values,
+                        errors="",
+                    )
             else:
-                self.wrapLogOutput(msg='Zero results from search:',
-                                   actual='',
-                                   expected=','.join(expected_values),
-                                   errors='\n'.join(messages))
+                self.wrapLogOutput(
+                    msg="Zero results from search:",
+                    actual="",
+                    expected=",".join(expected_values),
+                    errors="\n".join(messages),
+                )
 
             if not status:
                 tryNum += 1
@@ -593,19 +718,21 @@ class SearchUtil(object):
 
         return status
 
-    def checkQueryContent(self,
-                          query,
-                          expected,
-                          expectedRow,
-                          interval=15,
-                          retries=4,
-                          namespace='SA-ThreatIntelligence'):
+    def checkQueryContent(
+        self,
+        query,
+        expected,
+        expectedRow,
+        interval=15,
+        retries=4,
+        namespace="SA-ThreatIntelligence",
+    ):
 
-        '''Check for specific content in a specific search result row.
+        """Check for specific content in a specific search result row.
            Script will issue failure IF no results are obtained
            ( len(result) == 0 ) OR if the expected text does not exist
            in the raw result text.
-        '''
+        """
 
         tryNum = 0
         status = False
@@ -621,29 +748,37 @@ class SearchUtil(object):
                 # Careful when using _raw as it is a splunk.search.RawEvent,
                 # not a string. Casting to a string converts it to a
                 # lxml.etree._ElementStringResult which behaves like a string.
-                raw = str(results[0].get('_raw', None))
+                raw = str(results[0].get("_raw", None))
                 if raw is not None:
                     if expected in raw:
-                        self.wrapLogOutput(msg='Expected text found in result:',
-                                           actual=raw,
-                                           expected=expected,
-                                           errors='')
+                        self.wrapLogOutput(
+                            msg="Expected text found in result:",
+                            actual=raw,
+                            expected=expected,
+                            errors="",
+                        )
                         status = True
                     else:
-                        self.wrapLogOutput(msg='Expected text NOT found in result:',
-                                           actual=raw,
-                                           expected=expected,
-                                           errors='')
+                        self.wrapLogOutput(
+                            msg="Expected text NOT found in result:",
+                            actual=raw,
+                            expected=expected,
+                            errors="",
+                        )
                 else:
-                    self.wrapLogOutput(msg='Empty raw data from search:',
-                                       actual='',
-                                       expected=expected,
-                                       errors='\n'.join(messages))
+                    self.wrapLogOutput(
+                        msg="Empty raw data from search:",
+                        actual="",
+                        expected=expected,
+                        errors="\n".join(messages),
+                    )
             else:
-                self.wrapLogOutput(msg='Zero results from search:',
-                                   actual='',
-                                   expected=expected,
-                                   errors='\n'.join(messages))
+                self.wrapLogOutput(
+                    msg="Zero results from search:",
+                    actual="",
+                    expected=expected,
+                    errors="\n".join(messages),
+                )
 
             if not status:
                 tryNum += 1
@@ -652,14 +787,14 @@ class SearchUtil(object):
         return status
 
     def compareContent(self, actual, expected):
-        '''Compare two string sequences, generating a unified diff.'''
+        """Compare two string sequences, generating a unified diff."""
         # Strip EOL to avoid a common error. Note that one or more
         # inputs may be an empty list so check length first.
         if len(actual) > 0:
-            actual[-1] = actual[-1].rstrip('\n')
+            actual[-1] = actual[-1].rstrip("\n")
 
         if len(expected) > 0:
-            expected[-1] = expected[-1].rstrip('\n')
+            expected[-1] = expected[-1].rstrip("\n")
 
         # Note that readlines() RETAINS trailing end-of-line characters.
         # The True argument to splitlines() ensures that the actual output
@@ -673,23 +808,29 @@ class SearchUtil(object):
             mismatches.append(line)
 
         if len(mismatches) > 0:
-            self.wrapLogOutput(msg='Script output did not match expected',
-                               actual='<omitted>',
-                               expected='<omitted>',
-                               errors='\n'.join(mismatches))
+            self.wrapLogOutput(
+                msg="Script output did not match expected",
+                actual="<omitted>",
+                expected="<omitted>",
+                errors="\n".join(mismatches),
+            )
             status = False
         else:
-            self.wrapLogOutput(msg='Script output matches.',
-                               actual='<omitted>',
-                               expected='<omitted>',
-                               errors='No errors.')
+            self.wrapLogOutput(
+                msg="Script output matches.",
+                actual="<omitted>",
+                expected="<omitted>",
+                errors="No errors.",
+            )
         return status
 
-    def getRealtimeNotableSearchResults(self, searchName, interval=15, retries=4, minimumNumberEvents=1):
+    def getRealtimeNotableSearchResults(
+        self, searchName, interval=15, retries=4, minimumNumberEvents=1
+    ):
         self.logger.debug("Retry count: %d", retries)
 
         tryNum = 0
-        searchQuery = 'search `notable(' + searchName + ')`'
+        searchQuery = "search `notable(" + searchName + ")`"
         searchResults = []
         while tryNum <= retries:
             self.logger.debug("tryNum Value: %d", tryNum)
@@ -715,43 +856,49 @@ class SearchUtil(object):
         """
 
         def _rows(t):
-            return ' | '.join("append [stats count | %s]" % _row(r) for r in t)
+            return " | ".join("append [stats count | %s]" % _row(r) for r in t)
 
         def _row(r):
-            return ' | '.join("eval %s=%s" % i for i in list(r.items()))
+            return " | ".join("eval %s=%s" % i for i in list(r.items()))
 
         return "%s | fields - count" % _rows(table)
 
     def compareContentRegex(self, actual, expectedRx):
-        '''Compare string to a regex.'''
+        """Compare string to a regex."""
         match = expectedRx.search(actual)
 
         if not match:
-            self.wrapLogOutput(msg='Script output did not match expected',
-                               actual='<omitted>',
-                               expected='<omitted>',
-                               errors='<regex omitted>')
+            self.wrapLogOutput(
+                msg="Script output did not match expected",
+                actual="<omitted>",
+                expected="<omitted>",
+                errors="<regex omitted>",
+            )
             status = False
         else:
-            self.wrapLogOutput(msg='Script output matches.',
-                               actual='<omitted>',
-                               expected='<omitted>',
-                               errors='No errors.')
+            self.wrapLogOutput(
+                msg="Script output matches.",
+                actual="<omitted>",
+                expected="<omitted>",
+                errors="No errors.",
+            )
             status = True
         return status
 
-    def checkQueryFieldValueIsGreaterThanZero(self,
-                                              query,
-                                              field_name,  # can be list, set, tuple, or string
-                                              expectedMinRow=0,
-                                              interval=15,
-                                              retries=4,
-                                              namespace='SA-ThreatIntelligence'):
+    def checkQueryFieldValueIsGreaterThanZero(
+        self,
+        query,
+        field_name,  # can be list, set, tuple, or string
+        expectedMinRow=0,
+        interval=15,
+        retries=4,
+        namespace="SA-ThreatIntelligence",
+    ):
 
-        '''Execute a query and check for a matching set (not necessarily
+        """Execute a query and check for a matching set (not necessarily
            complete) of output fields, and secondarily for a minimum
            number of results.
-        '''
+        """
 
         tryNum = 0
         status = False
@@ -773,21 +920,27 @@ class SearchUtil(object):
                 dictionary = dict(list(zip(keys, values)))
                 print(dictionary)
                 if int(dictionary[field_name]) > 0:
-                    self.wrapLogOutput(msg='Expected field value is greater than 0 ',
-                                       actual=values,
-                                       expected=int(dictionary[field_name]),
-                                       errors='')
+                    self.wrapLogOutput(
+                        msg="Expected field value is greater than 0 ",
+                        actual=values,
+                        expected=int(dictionary[field_name]),
+                        errors="",
+                    )
                     status = True
                 else:
-                    self.wrapLogOutput(msg='Expected field values missing from result:',
-                                       actual=values,
-                                       expected=int(dictionary[field_name]),
-                                       errors='')
+                    self.wrapLogOutput(
+                        msg="Expected field values missing from result:",
+                        actual=values,
+                        expected=int(dictionary[field_name]),
+                        errors="",
+                    )
             else:
-                self.wrapLogOutput(msg='Zero results from search:',
-                                   actual='',
-                                   expected='greater than 0',
-                                   errors='\n'.join(messages))
+                self.wrapLogOutput(
+                    msg="Zero results from search:",
+                    actual="",
+                    expected="greater than 0",
+                    errors="\n".join(messages),
+                )
 
             if not status:
                 tryNum += 1
@@ -795,15 +948,12 @@ class SearchUtil(object):
 
         return status
 
-    def getFieldValuesDict(self,
-                           query,
-                           interval=15,
-                           retries=4):
+    def getFieldValuesDict(self, query, interval=15, retries=4):
 
-        '''Execute a query and check for a matching set (not necessarily
+        """Execute a query and check for a matching set (not necessarily
            complete) of output fields, and secondarily for a minimum
            number of results.
-        '''
+        """
 
         tryNum = 0
         status = False
@@ -827,10 +977,12 @@ class SearchUtil(object):
                 print(dictionary)
                 return dictionary
             else:
-                self.wrapLogOutput(msg='Zero results from search:',
-                                   actual='',
-                                   expected='greater than 0',
-                                   errors='\n'.join(messages))
+                self.wrapLogOutput(
+                    msg="Zero results from search:",
+                    actual="",
+                    expected="greater than 0",
+                    errors="\n".join(messages),
+                )
 
             if not status:
                 tryNum += 1
@@ -854,48 +1006,79 @@ class SearchUtil(object):
     def smbServiceCheck(self):
 
         # Skip test if running on Windows.
-        if (sys.platform == 'win32'):
+        if sys.platform == "win32":
             py.test.skip("nmblookup test on Windows not yet implemented.")
 
         # Skip if nmbd daemon is not running.
-        ps_task = subprocess.Popen(['ps', '-e'], stdout=subprocess.PIPE)
+        ps_task = subprocess.Popen(["ps", "-e"], stdout=subprocess.PIPE)
         stdout, stderr = ps_task.communicate()
-        if 'nmbd' not in stdout:
-            py.test.skip('NetBIOS services (nmbd) not running on host')
+        if "nmbd" not in stdout:
+            py.test.skip("NetBIOS services (nmbd) not running on host")
 
-    def checkQueryFieldAllValuesContainsRegex(self, query, field, regex, interval=15, retries=4, number_results=100,
-                                              max_time=60):
+    def checkQueryFieldAllValuesContainsRegex(
+        self,
+        query,
+        field,
+        regex,
+        interval=15,
+        retries=4,
+        number_results=100,
+        max_time=60,
+    ):
         tryNum = 0
         r = re.compile(regex)
         match_found = False
         while tryNum <= retries:
-            job = self.jobs.create(query, auto_finalize_ec=number_results, max_time=max_time)
+            job = self.jobs.create(
+                query, auto_finalize_ec=number_results, max_time=max_time
+            )
             job.wait()
             results = job.get_results()
 
             for result_no, result in enumerate(results.as_list):
                 if r.match(str(result[field])):
-                    self.logger.debug("result['%s']='%s' matches re: %s", field, str(result[field]), regex)
+                    self.logger.debug(
+                        "result['%s']='%s' matches re: %s",
+                        field,
+                        str(result[field]),
+                        regex,
+                    )
                     match_found = True
                 else:
-                    self.logger.debug("result['%s']='%s' does not match re: %s for %d row", field, str(result[field]),
-                                      regex, result_no)
+                    self.logger.debug(
+                        "result['%s']='%s' does not match re: %s for %d row",
+                        field,
+                        str(result[field]),
+                        regex,
+                        result_no,
+                    )
                     match_found = False
                     return False
                 if result_no > number_results:
-                    self.logger.debug("checked for re: %s in first %d results", regex, number_results)
+                    self.logger.debug(
+                        "checked for re: %s in first %d results", regex, number_results
+                    )
                     return match_found
             tryNum += 1
             time.sleep(interval)
         return match_found
 
-    def checkQueryAllFieldAllValuesContainsRegex(self, query, field_regex_json, interval=15, retries=4,
-                                                 number_results=100, max_time=60):
+    def checkQueryAllFieldAllValuesContainsRegex(
+        self,
+        query,
+        field_regex_json,
+        interval=15,
+        retries=4,
+        number_results=100,
+        max_time=60,
+    ):
         tryNum = 0
         match_found = False
         field_names = list(field_regex_json.keys())
         while tryNum <= retries:
-            job = self.jobs.create(query, auto_finalize_ec=number_results, max_time=max_time)
+            job = self.jobs.create(
+                query, auto_finalize_ec=number_results, max_time=max_time
+            )
             job.wait()
             results = job.get_results()
 
@@ -906,18 +1089,35 @@ class SearchUtil(object):
                     self.logger.debug("Looking for field %s in result set", field)
                     if field in list(result.keys()):
                         if r.match(str(result[field])):
-                            self.logger.debug("result['%s']='%s' matches re: %s", field, str(result[field]), regex)
+                            self.logger.debug(
+                                "result['%s']='%s' matches re: %s",
+                                field,
+                                str(result[field]),
+                                regex,
+                            )
                             match_found = True
                         else:
-                            self.logger.debug("result['%s']='%s' does not match re: %s for %d row", field,
-                                              str(result[field]), regex, result_no)
+                            self.logger.debug(
+                                "result['%s']='%s' does not match re: %s for %d row",
+                                field,
+                                str(result[field]),
+                                regex,
+                                result_no,
+                            )
                             match_found = False
                             return False
                         if result_no > number_results:
-                            self.logger.debug("checked for re: %s in first %d results", regex, number_results)
+                            self.logger.debug(
+                                "checked for re: %s in first %d results",
+                                regex,
+                                number_results,
+                            )
                             return match_found
                     else:
-                        self.logger.debug("field %s not found in result set fields", list(result.keys()))
+                        self.logger.debug(
+                            "field %s not found in result set fields",
+                            list(result.keys()),
+                        )
                         return False
             tryNum += 1
             time.sleep(interval)

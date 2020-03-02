@@ -7,19 +7,26 @@ class Basic:
     logger = logging.getLogger()
 
     @pytest.mark.splunk_addon_internal_errors
-    def test_splunk_internal_errors(self, splunk_search_util):
-        search = "search index=_internal CASE(ERROR) sourcetype!=splunkd_ui_access AND sourcetype!=splunk_web_access AND sourcetype!=splunk_web_service AND sourcetype!=splunkd_access AND sourcetype!=splunkd| dedup sourcetype| table sourcetype"
+    def test_splunk_internal_errors(self, splunk_search_util, record_property, caplog):
+        search = """
+            search index=_internal CASE(ERROR) 
+            sourcetype!=splunkd_ui_access 
+            AND sourcetype!=splunk_web_access 
+            AND sourcetype!=splunk_web_service 
+            AND sourcetype!=splunkd_access 
+            AND sourcetype!=splunkd
+            | table _raw"""
 
-        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=1, retries=1
-        )
-
-        assert result == False
+        result, results = splunk_search_util.checkQueryCountIsZero(search)
+        if not result:
+            record_property("results", results.as_list)
+            print(results.as_list)
+        assert result == True
 
     # This test ensures the contained samples will produce at lease one event per sourcetype
     @pytest.mark.splunk_addon_searchtime
     def test_sourcetype(
-        self, splunk_search_util, splunk_app_props, request, record_property
+        self, splunk_search_util, splunk_app_props, record_property, caplog
     ):
         record_property(splunk_app_props["field"], splunk_app_props["value"])
         search = f"search (index=_internal OR index=*) AND {splunk_app_props['field']}=\"{splunk_app_props['value']}\""
@@ -34,7 +41,7 @@ class Basic:
 
     @pytest.mark.splunk_addon_searchtime
     def test_sourcetype_fields(
-        self, splunk_search_util, splunk_app_fields, record_property
+        self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
         record_property("sourcetype", splunk_app_fields["sourcetype"])
         record_property("fields", splunk_app_fields["fields"])
@@ -53,7 +60,7 @@ class Basic:
 
     @pytest.mark.splunk_addon_searchtime
     def test_sourcetype_fields_no_dash(
-        self, splunk_search_util, splunk_app_fields, record_property
+        self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
         record_property("sourcetype", splunk_app_fields["sourcetype"])
         record_property("fields", splunk_app_fields["fields"])
@@ -74,7 +81,7 @@ class Basic:
 
     @pytest.mark.splunk_addon_searchtime
     def test_sourcetype_fields_no_empty(
-        self, splunk_search_util, splunk_app_fields, record_property
+        self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
         record_property("sourcetype", splunk_app_fields["sourcetype"])
         record_property("fields", splunk_app_fields["fields"])
