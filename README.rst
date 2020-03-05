@@ -52,6 +52,7 @@ Note: Must install docker desktop, vscode or pycharm pro optional
 Note2: Appinspect requires libmagic verify this has been installed correctly each time a new workstation/vm is used https://dev.splunk.com/enterprise/docs/releaseapps/appinspect/splunkappinspectclitool/installappinspect
 
 .. code:: bash
+
 #setup python venv must be 3.7
 /Library/Frameworks/Python.framework/Versions/3.7/bin/python3 -m venv .venv
 source .venv/bin/activate
