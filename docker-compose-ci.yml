@@ -26,7 +26,7 @@ services:
       - "8000"
       - "8089"
     environment:
-      - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
+      - SPLUNK_PASSWORD=Changed@11
       - SPLUNK_START_ARGS=--accept-license
 volumes:
   results:
