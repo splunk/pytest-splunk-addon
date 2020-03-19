@@ -12,6 +12,7 @@ from .helmut_lib.SearchUtil import SearchUtil
 
 import pytest
 import requests
+import urllib3
 import splunklib.client as client
 from time import sleep
 import re
@@ -51,6 +52,13 @@ def pytest_addoption(parser):
         help="Splunk rest port",
     )
     group.addoption(
+        "--splunk_web",
+        action="store",
+        dest="splunk_web",
+        default="8000",
+        help="Splunk web port",
+    )
+    group.addoption(
         "--splunk_user",
         action="store",
         dest="splunk_user",
@@ -61,7 +69,7 @@ def pytest_addoption(parser):
         "--splunk_password",
         action="store",
         dest="splunk_password",
-        default="changeme",
+        default="Changed@11",
         help="Splunk password",
     )
     group.addoption(
@@ -69,7 +77,7 @@ def pytest_addoption(parser):
         action="store",
         dest="splunk_version",
         default="latest",
-        help="Splunk password",
+        help="Splunk version",
     )
 
 
@@ -110,7 +118,9 @@ def splunk(request):
         request.fixturenames.append("splunk_external")
         splunk = request.getfixturevalue("splunk_external")
     elif request.config.getoption("splunk_type") == "docker":
+        os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
         os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
+        os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
         # os.environ['SPLUNK_HEC_TOKEN'] = request.config.getoption(
         #     'splunk_hec_token')
         request.fixturenames.append("splunk_docker")
@@ -124,18 +134,17 @@ def splunk(request):
 @pytest.fixture(scope="session")
 def splunk_docker(request, docker_services):
     docker_services.start("splunk")
-    port = docker_services.port_for("splunk", 8089)
 
     splunk = {
         "host": docker_services.docker_ip,
-        #"host": "127.0.0.1",
-        "port": port,
+        "port": docker_services.port_for("splunk", 8089),
+        "port_web": docker_services.port_for("splunk", 8000),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
     }
-    c =  0
+    c = 0
     while c < 30:
-        c +=1
+        c += 1
         docker_services.wait_until_responsive(
             timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk)
         )
@@ -149,6 +158,7 @@ def splunk_external(request):
     splunk = {
         "host": request.config.getoption("splunk_host"),
         "port": request.config.getoption("splunk_port"),
+        "port_web": request.config.getoption("splunk_web"),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
     }
@@ -173,10 +183,22 @@ def splunk_search_util(splunk):
 
     return SearchUtil(jobs, logger)
 
+
+@pytest.fixture(scope="session")
+def splunk_rest(splunk):
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    s = requests.Session()
+    s.auth = (splunk["username"], splunk["password"])
+    uri = '{https://{splunk["host"]}:{splunk["port"]}'
+
+    return s, uri
+
+
 def pytest_configure(config):
     config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
     config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
- 
+
+
 def pytest_generate_tests(metafunc):
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_app"):
@@ -206,25 +228,25 @@ def load_splunk_props(props):
             continue
         else:
             yield return_props_sourcetype_param(p, p)
-            
+
+
 def return_props_sourcetype_param(id, value):
-    idf = f"sourcetype::{id}" 
-    return pytest.param({
-        "field": "sourcetype", "value": value},
-        id=idf
-        )
-        
+    idf = f"sourcetype::{id}"
+    return pytest.param({"field": "sourcetype", "value": value}, id=idf)
+
+
 def load_splunk_fields(props):
     for p in props.sects:
         section = props.sects[p]
         for current in section.options:
             options = section.options[current]
             if current.startswith("EXTRACT-"):
-                yield return_props_extract(p,options)
+                yield return_props_extract(p, options)
+
 
 def return_props_extract(id, value):
     name = f"{id}_field::{value.name}"
-    
+
     regex = r"\(\?<([^\>]+)\>"
     matches = re.finditer(regex, value.value, re.MULTILINE)
     fields = []
@@ -234,10 +256,7 @@ def return_props_extract(id, value):
 
             fields.append(match.group(groupNum))
 
-    return pytest.param(
-        {"sourcetype": id, "fields": fields },
-        id=name
-        )
+    return pytest.param({"sourcetype": id, "fields": fields}, id=name)
     # Tests are to be found in the variable `tests` of the module
     # for test in tests_module.tests.iteritems():
     #     yield test

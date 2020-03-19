@@ -179,7 +179,7 @@ def test_splunk_app_broken_sourcetype(testdir):
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines([
         '*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype*sourcetype::notvalid* FAILED*',
-        '*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalid_field::EXTRACT-one* SKIPPED*',
+        '*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalid_field::EXTRACT-one* FAILED*',
     ])
 
     # The test suite should fail as this is a negative test
