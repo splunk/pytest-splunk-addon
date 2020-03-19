@@ -189,7 +189,7 @@ def splunk_rest(splunk):
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     s = requests.Session()
     s.auth = (splunk["username"], splunk["password"])
-    uri = '{https://{splunk["host"]}:{splunk["port"]}'
+    uri = f'https://{splunk["host"]}:{splunk["port"]}/'
 
     return s, uri
 
