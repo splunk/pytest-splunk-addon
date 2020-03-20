@@ -194,6 +194,13 @@ def splunk_rest(splunk):
     return s, uri
 
 
+@pytest.fixture(scope="session")
+def splunk_web(splunk):
+    uri = f'http://{splunk["host"]}:{splunk["port_web"]}/'
+
+    return uri
+
+
 def pytest_configure(config):
     config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
     config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
