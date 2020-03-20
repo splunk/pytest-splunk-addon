@@ -1,6 +1,6 @@
-'''
+"""
 @author: Sagar Bhatnagar
-'''
+"""
 
 from future import standard_library
 
@@ -33,12 +33,15 @@ class RESTConnector(Connector):
     get appended with the 'Authorization' key when sessionkey is used
 
     """
-    HEADERS = {'content-type': 'text/xml; charset=utf-8'}
-    METHODS = ['GET', 'POST', 'PUT', 'DELETE']
-    SUCCESS = {'GET': '200', 'POST': '201', 'DELETE': '200', 'PUT': '200'}
 
-    DEFAULT_OWNER = 'admin'
-    DEFAULT_APP = 'search'  # defaulting it search app for the case when app is not passed.
+    HEADERS = {"content-type": "text/xml; charset=utf-8"}
+    METHODS = ["GET", "POST", "PUT", "DELETE"]
+    SUCCESS = {"GET": "200", "POST": "201", "DELETE": "200", "PUT": "200"}
+
+    DEFAULT_OWNER = "admin"
+    DEFAULT_APP = (
+        "search"  # defaulting it search app for the case when app is not passed.
+    )
 
     def __init__(self, splunk, username=None, password=None, app=None, owner=None):
         """
@@ -60,12 +63,9 @@ class RESTConnector(Connector):
          @type app: str
 
         """
-        super(RESTConnector, self).__init__(splunk,
-                                            username=username,
-                                            password=password,
-                                            owner=owner,
-                                            app=app,
-                                            )
+        super(RESTConnector, self).__init__(
+            splunk, username=username, password=password, owner=owner, app=app,
+        )
         self.uri_base = splunk.uri_base()
         self._timeout = 60
         self._debug_level = 0
@@ -73,8 +73,10 @@ class RESTConnector(Connector):
         self._follow_redirects = False
         httplib2.debuglevel = self._debug_level
         self.sessionkey = None
-        self._service = httplib2.Http(timeout=self._timeout,
-                                      disable_ssl_certificate_validation=self._disable_ssl_certificate)
+        self._service = httplib2.Http(
+            timeout=self._timeout,
+            disable_ssl_certificate_validation=self._disable_ssl_certificate,
+        )
         self._service.follow_redirects = self._follow_redirects
         self._service.add_credentials(self._username, self._password)
 
@@ -82,17 +84,24 @@ class RESTConnector(Connector):
 
     @property
     def namespace(self):
-        '''
+        """
         The namespace for this RESTconnector.
 
         Will be in the format /<owner>/<app>
 
         @rtype: str
-        '''
-        return '/' + str(self._owner) + '/' + str(self._app)
+        """
+        return "/" + str(self._owner) + "/" + str(self._app)
 
-    def make_request(self, method, uri, body=None, urlparam=None,
-                     use_sessionkey=False, log_response=True):
+    def make_request(
+        self,
+        method,
+        uri,
+        body=None,
+        urlparam=None,
+        use_sessionkey=False,
+        log_response=True,
+    ):
         """
         Make a HTTP request to an endpoint
 
@@ -114,45 +123,56 @@ class RESTConnector(Connector):
 
         """
         if body is None:
-            body = ''
+            body = ""
         if type(body) != str and type(body) != str:
             body = urllib.parse.urlencode(body)
         if urlparam is None:
-            urlparam = ''
+            urlparam = ""
         if type(urlparam) != str:
             urlparam = urllib.parse.urlencode(urlparam)
-        if urlparam != '':
+        if urlparam != "":
             url = "%s%s?%s" % (self.uri_base, uri, urlparam)
         else:
             url = "%s%s" % (self.uri_base, uri)
 
         if use_sessionkey:
             self._service.clear_credentials()
-            self.update_headers('Authorization',
-                                'Splunk %s' % self.sessionkey)
+            self.update_headers("Authorization", "Splunk %s" % self.sessionkey)
         else:
             if not self._service.credentials.credentials:
                 self._service.add_credentials(self._username, self._password)
-            if 'Authorization' in self.HEADERS:
-                self.HEADERS.pop('Authorization')
+            if "Authorization" in self.HEADERS:
+                self.HEADERS.pop("Authorization")
         response, content = self._service.request(
-            url, method, body=body, headers=self.HEADERS)
+            url, method, body=body, headers=self.HEADERS
+        )
 
-        self.logger.info("Request  => {r}".format(r={
-            'method': method,
-            'url': url,
-            'body': body,
-            'auth': '{u}:{p}'.format(u=self._username, p=self._password),
-            'header': self.HEADERS
-        }))
+        self.logger.info(
+            "Request  => {r}".format(
+                r={
+                    "method": method,
+                    "url": url,
+                    "body": body,
+                    "auth": "{u}:{p}".format(u=self._username, p=self._password),
+                    "header": self.HEADERS,
+                }
+            )
+        )
         if log_response:
             self.logger.info("Response => {r}".format(r=response))
             self.logger.debug("Content  => {c}".format(c=content))
 
         return response, content
 
-    def make_requestNS(self, method, uri, body=None, urlparam=None,
-                       use_sessionkey=False, log_response=True):
+    def make_requestNS(
+        self,
+        method,
+        uri,
+        body=None,
+        urlparam=None,
+        use_sessionkey=False,
+        log_response=True,
+    ):
 
         """
         Wrapper on top of make_request. For uri, don't use any of /services
@@ -175,10 +195,15 @@ class RESTConnector(Connector):
         >>> conn.make_requestNS('GET', 'data/outputs/tcp/default')
 
         """
-        uri = '/servicesNS' + self.namespace + uri
+        uri = "/servicesNS" + self.namespace + uri
         response, content = self.make_request(
-            method, uri, body, urlparam=urlparam,
-            use_sessionkey=use_sessionkey, log_response=log_response)
+            method,
+            uri,
+            body,
+            urlparam=urlparam,
+            use_sessionkey=use_sessionkey,
+            log_response=log_response,
+        )
         return response, content
 
     def parse_content_json(self, content):
@@ -203,10 +228,10 @@ class RESTConnector(Connector):
 
         """
         return {
-            'username': self._username,
-            'password': self._password,
-            'namespace': self.namespace,
-            'uri_base': self.splunk.uri_base(),
+            "username": self._username,
+            "password": self._password,
+            "namespace": self.namespace,
+            "uri_base": self.splunk.uri_base(),
         }
 
     def _recreate_service(self):
@@ -219,14 +244,19 @@ class RESTConnector(Connector):
         _was_logged_in = self._was_logged_in()
         service = self._clone_existing_service()
         self._service = service
-        self.uri_base = self._service_arguments['uri_base']
+        self.uri_base = self._service_arguments["uri_base"]
         if _was_logged_in:
             try:
                 self.login()
             except AuthenticationError as autherr:
-                self.logger.warn('RESTConnector for username:{username} password:{password}'
-                                 ' login failed when recreating service. error msg:{error}'
-                                 .format(username=self.username, password=self.password, error=autherr.message))
+                self.logger.warn(
+                    "RESTConnector for username:{username} password:{password}"
+                    " login failed when recreating service. error msg:{error}".format(
+                        username=self.username,
+                        password=self.password,
+                        error=autherr.message,
+                    )
+                )
 
     def login(self):
         """
@@ -235,13 +265,17 @@ class RESTConnector(Connector):
          Just hits the auth endpoint and retreives and sets the sessionkey.
 
         """
-        body = urllib.parse.urlencode({'username': self._username,
-                                       'password': self._password})
-        url = "%s%s" % (self.uri_base, '/services/auth/login')
-        response, content = self._service.request(url, 'POST', body=body)
+        body = urllib.parse.urlencode(
+            {"username": self._username, "password": self._password}
+        )
+        url = "%s%s" % (self.uri_base, "/services/auth/login")
+        response, content = self._service.request(url, "POST", body=body)
         self._attempt_login_time = time.time()
         if response.status != 200:
-            msg = 'Login failed... response status: %s content: %s' % (response.status, content)
+            msg = "Login failed... response status: %s content: %s" % (
+                response.status,
+                content,
+            )
             self.logger.warn(msg)
             raise AuthenticationError(msg)
 
@@ -258,10 +292,13 @@ class RESTConnector(Connector):
          @rtype: http object
         """
         http = httplib2.Http(
-            timeout=self._timeout, disable_ssl_certificate_validation=self._disable_ssl_certificate)
+            timeout=self._timeout,
+            disable_ssl_certificate_validation=self._disable_ssl_certificate,
+        )
         http.follow_redirects = False
-        http.add_credentials(self._service_arguments['username'],
-                             self._service_arguments['password'])
+        http.add_credentials(
+            self._service_arguments["username"], self._service_arguments["password"]
+        )
         return http
 
     def logout(self):
@@ -271,8 +308,8 @@ class RESTConnector(Connector):
         This just unsets the sessionkey.
 
         """
-        if 'Authorization' in self.HEADERS:
-            self.HEADERS.pop('Authorization')
+        if "Authorization" in self.HEADERS:
+            self.HEADERS.pop("Authorization")
         self.sessionkey = None
         self._service.clear_credentials()
 
@@ -307,18 +344,22 @@ class RESTConnector(Connector):
 
         Hits an endpoint with that key and check response status is 401
         """
-        url = "%s%s" % (self.uri_base, '/services/data/outputs/tcp/default')
+        url = "%s%s" % (self.uri_base, "/services/data/outputs/tcp/default")
         self._service.clear_credentials()
-        self.update_headers('Authorization',
-                            'Splunk %s' % self.sessionkey)
-        response, content = self._service.request(url, 'GET',
-                                                  headers=self.HEADERS)
+        self.update_headers("Authorization", "Splunk %s" % self.sessionkey)
+        response, content = self._service.request(url, "GET", headers=self.HEADERS)
         self._service.add_credentials(self._username, self._password)
-        if response['status'] == '401':
-            self.logger.debug('Session is expired for RESTconnector %s:%s' % (self.username, self.password))
+        if response["status"] == "401":
+            self.logger.debug(
+                "Session is expired for RESTconnector %s:%s"
+                % (self.username, self.password)
+            )
             return True
         else:
-            self.logger.debug('Session is NOT expired for RESTconnector %s:%s' % (self.username, self.password))
+            self.logger.debug(
+                "Session is NOT expired for RESTconnector %s:%s"
+                % (self.username, self.password)
+            )
             return False
 
     def update_headers(self, key=None, value=None):

@@ -1,8 +1,8 @@
-'''
+"""
 @author: Nicklas Ansman-Giertz
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-23
-'''
+"""
 import splunklib.results as results
 
 from pytest_splunk_addon.helmut.manager.jobs.job import Job
@@ -11,14 +11,14 @@ from pytest_splunk_addon.helmut.manager.jobs.results import Results
 
 class SDKJobWrapper(Job):
     def __init__(self, sdk_connector, sdk_job):
-        '''
+        """
         The constructor of the SDKJobWrapper.
 
         @param sdk_connector: The SDKConnector object used to connect to Splunk.
         @type param: SDKConnector
         @param sdk_job: The Job object from the Python SDK.
         @type param: splunklib.client.Job
-        '''
+        """
         self._raw_sdk_job = sdk_job
 
         super(SDKJobWrapper, self).__init__(sdk_connector)
@@ -32,7 +32,7 @@ class SDKJobWrapper(Job):
         return self.raw_sdk_job.sid
 
     def __str__(self):
-        return 'SDK Job with SID {sid}'.format(sid=self.sid)
+        return "SDK Job with SID {sid}".format(sid=self.sid)
 
     # Endpoint specific
 
@@ -58,22 +58,22 @@ class SDKJobWrapper(Job):
         return self.raw_sdk_job.is_done()
 
     def is_failed(self):
-        return self.raw_sdk_job.refresh().content.isFailed == '1'
+        return self.raw_sdk_job.refresh().content.isFailed == "1"
 
     def is_finalized(self):
-        return self.raw_sdk_job.refresh().content.isFinalized == '1'
+        return self.raw_sdk_job.refresh().content.isFinalized == "1"
 
     def is_saved(self):
-        return self.raw_sdk_job.refresh().content.isSaved == '1'
+        return self.raw_sdk_job.refresh().content.isSaved == "1"
 
     def get_keywords(self):
         return self.raw_sdk_job.refresh().content.keywords
 
     def is_paused(self):
-        return self.raw_sdk_job.refresh().content.isPaused == '1'
+        return self.raw_sdk_job.refresh().content.isPaused == "1"
 
     def result_is_streaming(self):
-        return self.raw_sdk_job.refresh().content.resultIsStreaming == '1'
+        return self.raw_sdk_job.refresh().content.resultIsStreaming == "1"
 
     def get_messages(self):
         return self.raw_sdk_job.refresh().content.messages
@@ -102,11 +102,11 @@ class SDKJobWrapper(Job):
         return self.raw_sdk_job.refresh().content.eventSearch
 
     def event_is_streaming(self):
-        return self.raw_sdk_job.refresh().content.eventIsStreaming == '1'
+        return self.raw_sdk_job.refresh().content.eventIsStreaming == "1"
 
     def get_event_sorting(self):
         val = self.raw_sdk_job.refresh().content.eventSorting
-        return None if val == 'none' else val
+        return None if val == "none" else val
 
     def get_report_search(self):
         return self.raw_sdk_job.refresh().content.reportSearch
@@ -115,7 +115,7 @@ class SDKJobWrapper(Job):
         return self.raw_sdk_job.refresh().content.remoteSearch
 
     def event_is_truncated(self):
-        return self.raw_sdk_job.refresh().content.eventIsTruncated == '1'
+        return self.raw_sdk_job.refresh().content.eventIsTruncated == "1"
 
     def get_label(self):
         return self.raw_sdk_job.refresh().content.label
@@ -124,10 +124,10 @@ class SDKJobWrapper(Job):
         return self.raw_sdk_job.refresh().content.dispatchState
 
     def is_saved_search(self):
-        return self.raw_sdk_job.refresh().content.isSavedSearch == '1'
+        return self.raw_sdk_job.refresh().content.isSavedSearch == "1"
 
     def is_zombie(self):
-        return self.raw_sdk_job.refresh().content.isZombie == '1'
+        return self.raw_sdk_job.refresh().content.isZombie == "1"
 
     def get_search_providers(self):
         return self.raw_sdk_job.refresh().content.searchProviders
@@ -194,8 +194,7 @@ class SDKJobWrapper(Job):
         return self.raw_sdk_job.searchlog(**kwargs)
 
     def set_priority(self, value):
-        self.logger.info(
-            "Setting priority of job %s to: %s" % (self.sid, value))
+        self.logger.info("Setting priority of job %s to: %s" % (self.sid, value))
         self.raw_sdk_job.set_priority(value)
         return self
 
@@ -216,9 +215,9 @@ class SDKJobWrapper(Job):
 
 
 def _build_results_from_sdk_response(response):
-    '''
+    """
     Get results from the SDK and return them.
-    '''
+    """
     reader = results.ResultsReader(response)
     events = []
     for result in reader:
@@ -227,9 +226,9 @@ def _build_results_from_sdk_response(response):
 
 
 def _build_results_dict_from_sdk_response(response):
-    '''
+    """
     Get results from the SDK and return them.
-    '''
+    """
     reader = results.ResultsReader(response)
     resultset = []
     for result in reader:
@@ -238,9 +237,9 @@ def _build_results_dict_from_sdk_response(response):
 
 
 def _build_events_from_sdk_response(response):
-    '''
+    """
     Get results from the SDK and return them.
-    '''
+    """
     reader = results.ResultsReader(response)
     events = []
     for result in reader:
@@ -249,9 +248,9 @@ def _build_events_from_sdk_response(response):
 
 
 def _build_event_from_results_reader(reader):
-    '''
+    """
     Creates an event as a dict from an event in the SDK.
-    '''
+    """
     event = {}
     for field in list(reader.keys()):
         event[field] = reader[field]

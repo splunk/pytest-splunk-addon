@@ -1,10 +1,10 @@
-'''
+"""
 This module handles connections through the public python SDK.
 
 @author: Nicklas Ansman-Giertz
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-09
-'''
+"""
 import time
 
 from splunklib.binding import _NoAuthenticationToken, AuthenticationError
@@ -14,7 +14,7 @@ from .base import Connector
 
 
 class SDKConnector(Connector):
-    '''
+    """
     This class represents one connection through the public python SDK.
 
     One connection means one session.
@@ -47,17 +47,25 @@ class SDKConnector(Connector):
                         specified by the user.
     @cvar DEFAULT_APP: The default app that will be used if it isn't
                         specified by the user.
-    '''
+    """
 
-    DEFAULT_SHARING = 'system'
+    DEFAULT_SHARING = "system"
     DEFAULT_HANDLER = None
 
     # TODO: TEMPORARY FOR EST-1859
-    PATH_SERVER_SETTINGS = 'server/settings/settings/'
+    PATH_SERVER_SETTINGS = "server/settings/settings/"
 
-    def __init__(self, splunk, username=None, password=None, namespace=None,
-                 sharing=DEFAULT_SHARING, owner=None, app=None):
-        '''
+    def __init__(
+        self,
+        splunk,
+        username=None,
+        password=None,
+        namespace=None,
+        sharing=DEFAULT_SHARING,
+        owner=None,
+        app=None,
+    ):
+        """
         Creates a new connector.
 
         The connector will not be logged in when created so you have to manually
@@ -79,26 +87,30 @@ class SDKConnector(Connector):
         @type owner: str
         @param app: used by python sdk service
         @type app: str
-        '''
+        """
 
-        super(SDKConnector, self).__init__(splunk,
-                                           username=username,
-                                           password=password,
-                                           owner=owner,
-                                           app=app)
+        super(SDKConnector, self).__init__(
+            splunk, username=username, password=password, owner=owner, app=app
+        )
         if namespace is not None and namespace != self.namespace:
-            msg = "namespace is derecated. please use owner and app. " \
-                  "Your namespace setting : %s, owner&app setting:%s" % (namespace, self.namespace)
+            msg = (
+                "namespace is derecated. please use owner and app. "
+                "Your namespace setting : %s, owner&app setting:%s"
+                % (namespace, self.namespace)
+            )
             self.logger.error(msg)
             raise Exception(msg)
-        self.sharing = sharing  # accepting None value, so SDK takes owner and app blindly.
+        self.sharing = (
+            sharing  # accepting None value, so SDK takes owner and app blindly.
+        )
 
         self._service = Service(handler=self.DEFAULT_HANDLER, **self._service_arguments)
         splunk.register_start_listener(self._recreate_service)
 
         # TODO: TEMPORARY FOR EST-1859
-        self._server_settings_endpoint = Endpoint(self._service,
-                                                  self.PATH_SERVER_SETTINGS)
+        self._server_settings_endpoint = Endpoint(
+            self._service, self.PATH_SERVER_SETTINGS
+        )
 
     @property
     def _service_arguments(self):
@@ -110,16 +122,16 @@ class SDKConnector(Connector):
         @rtype: dict
         """
         return {
-            'username': self.username,
-            'password': self.password,
+            "username": self.username,
+            "password": self.password,
             # No longer used by SDK's splunklib.binding since 0.8.0 (beta)
             # 'namespace': self.namespace,
-            'owner': self.owner,
-            'app': self.app,
-            'sharing': self.sharing,
-            'scheme': self.splunk.splunkd_scheme(),
-            'host': self.splunk.splunkd_host(),
-            'port': self.splunk.splunkd_port(),
+            "owner": self.owner,
+            "app": self.app,
+            "sharing": self.sharing,
+            "scheme": self.splunk.splunkd_scheme(),
+            "host": self.splunk.splunkd_host(),
+            "port": self.splunk.splunkd_port(),
         }
 
     def __del__(self):
@@ -136,7 +148,7 @@ class SDKConnector(Connector):
 
         Called when Splunk starts.
         """
-        self.logger.debug('Recreating and cloning the current Service.')
+        self.logger.debug("Recreating and cloning the current Service.")
         _was_logged_in = self._was_logged_in()
         service = self._clone_existing_service()
         self._service = service
@@ -144,13 +156,19 @@ class SDKConnector(Connector):
             try:
                 self.login()
             except AuthenticationError as autherr:
-                self.logger.warn('SDKConnector for username:{username} password:{password}'
-                                 ' login failed when recreating service. error msg:{error}'
-                                 .format(username=self.username, password=self.password, error=autherr.message))
+                self.logger.warn(
+                    "SDKConnector for username:{username} password:{password}"
+                    " login failed when recreating service. error msg:{error}".format(
+                        username=self.username,
+                        password=self.password,
+                        error=autherr.message,
+                    )
+                )
 
         # TODO: TEMPORARY FOR EST-1859
-        self._server_settings_endpoint = Endpoint(self._service,
-                                                  self.PATH_SERVER_SETTINGS)
+        self._server_settings_endpoint = Endpoint(
+            self._service, self.PATH_SERVER_SETTINGS
+        )
 
     def _clone_existing_service(self):
         """
@@ -188,13 +206,17 @@ class SDKConnector(Connector):
         @rtype: bool
         """
         try:
-            self._service.get('authentication/current-context')
+            self._service.get("authentication/current-context")
             # FAST-8222
         except AuthenticationError as err:
-            self.logger.debug('SDKconnector %s:%s is NOT logged in' % (self.username, self.password))
+            self.logger.debug(
+                "SDKconnector %s:%s is NOT logged in" % (self.username, self.password)
+            )
             return False
         else:
-            self.logger.debug('SDKconnector %s:%s is logged in' % (self.username, self.password))
+            self.logger.debug(
+                "SDKconnector %s:%s is logged in" % (self.username, self.password)
+            )
             return True
 
     def _was_logged_in(self):

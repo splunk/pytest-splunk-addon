@@ -131,16 +131,16 @@ class SearchUtil(object):
     def checkQueryCountIsZero(self, query, max_time=120):
         self.logger.debug("query is %s", query)
         tryNum = 0
-        
+
         job = self.jobs.create(query, auto_finalize_ec=200, max_time=max_time)
         job.wait(max_time)
         result_count = len(job.get_results())
-        
+
         if result_count == 0:
             self.logger.debug("Count of results is 0")
             return True, None
         else:
-            self.logger.debug("Count of results is > 0, it is:%d", result_count)            
+            self.logger.debug("Count of results is > 0, it is:%d", result_count)
             return False, job.get_results()
 
     def checkQueryFields(

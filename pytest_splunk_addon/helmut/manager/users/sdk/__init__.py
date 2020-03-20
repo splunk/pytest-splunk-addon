@@ -1,8 +1,8 @@
-'''
+"""
 @author: Nicklas Ansman-Giertz
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-23
-'''
+"""
 from splunklib.client import HTTPError
 
 from pytest_splunk_addon.helmut.manager.users import UserNotFound
@@ -11,25 +11,27 @@ from pytest_splunk_addon.helmut.manager.users.sdk.user import SDKUserWrapper
 
 
 class SDKUsersWrapper(Users):
-    '''
+    """
     The Users subclass that wraps the Splunk Python SDK's Users object.
     It basically contains a collection of L{SDKUserWrapper}s.
-    '''
+    """
 
     @property
     def _service(self):
         return self.connector.service
 
     def create_user(self, username, password, roles, **kwargs):
-        self.logger.info("Creating user. Username: %s. Password: %s. Role: %s" %
-                         (username, password, roles))
+        self.logger.info(
+            "Creating user. Username: %s. Password: %s. Role: %s"
+            % (username, password, roles)
+        )
         try:
-            kwargs['password'] = password
-            kwargs['roles'] = roles
+            kwargs["password"] = password
+            kwargs["roles"] = roles
 
-            return SDKUserWrapper(username,
-                                  self.connector.service.users.create(
-                                      username, **kwargs))
+            return SDKUserWrapper(
+                username, self.connector.service.users.create(username, **kwargs)
+            )
         except HTTPError as err:
             # User already exists
             if not err.status == 400:
@@ -49,8 +51,10 @@ class SDKUsersWrapper(Users):
             username = user_or_username.name
         # If not it is (hopefully) the name of the User
         except AttributeError:
-            self.logger.debug("Value given to delete_user() had no attribute"
-                              " 'name'. Assuming it is of type 'str'.")
+            self.logger.debug(
+                "Value given to delete_user() had no attribute"
+                " 'name'. Assuming it is of type 'str'."
+            )
             username = user_or_username
         self.logger.info("Deleting user %s." % username)
         self.connector.service.users.delete(username)
