@@ -18,6 +18,7 @@ import re
 
 logger = logging.getLogger()
 
+
 def pytest_configure(config):
     config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
     config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")

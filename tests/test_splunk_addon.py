@@ -207,4 +207,3 @@ def test_help_message(testdir):
             "*--splunk_password=*",
         ]
     )
-
