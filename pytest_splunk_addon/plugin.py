@@ -14,7 +14,6 @@ import pytest
 import requests
 import urllib3
 import splunklib.client as client
-from time import sleep
 import re
 
 logger = logging.getLogger()
