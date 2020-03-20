@@ -30,22 +30,6 @@ def copyfiles(testdir):
         os.path.join(testdir.request.fspath.dirname, "docker-compose.yml"),
         os.path.join(testdir.tmpdir, "tests/"),
     )
-    shutil.copy(
-        os.path.join(testdir.request.config.invocation_dir, "Dockerfile"),
-        testdir.tmpdir,
-    )
-    shutil.copy(
-        os.path.join(testdir.request.config.invocation_dir, "docker-compose.yml"),
-        testdir.tmpdir,
-    )
-    shutil.copy(
-        os.path.join(testdir.request.config.invocation_dir, "entrypoint.sh"),
-        testdir.tmpdir,
-    )
-    shutil.copy(
-        os.path.join(testdir.request.config.invocation_dir, "requirements.txt"),
-        testdir.tmpdir,
-    )
 
 
 @pytest.mark.external
