@@ -1,4 +1,8 @@
 {
     "python.pythonPath": "venv/bin/python3",
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": [
+        "--enable=W0614"
+    ]
 }

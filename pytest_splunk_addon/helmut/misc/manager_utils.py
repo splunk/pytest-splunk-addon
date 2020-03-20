@@ -1,8 +1,8 @@
-'''
+"""
 @author: Nicklas Ansman-Giertz
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-23
-'''
+"""
 from pytest_splunk_addon.helmut.exceptions import UnsupportedConnectorError
 
 

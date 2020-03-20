@@ -2,7 +2,6 @@ from pytest_splunk_addon.helmut.log import Logging
 
 
 class BaseFileUtils(Logging):
-
     def isfile(self, path):
         raise NotImplementedError("Function not implemented")
 
@@ -15,7 +14,7 @@ class BaseFileUtils(Logging):
     def get_file_contents(self, path):
         raise NotImplementedError("Function not implemented")
 
-    def write_file_contents(self, path, contents, mode='w'):
+    def write_file_contents(self, path, contents, mode="w"):
         raise NotImplementedError("Function not implemented")
 
     def copy_file(self, source, target):

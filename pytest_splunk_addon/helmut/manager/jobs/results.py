@@ -1,8 +1,8 @@
-'''
+"""
 @author: Nicklas Ansman-Giertz
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-23
-'''
+"""
 import copy
 from builtins import object
 
@@ -64,7 +64,7 @@ class Results(object):
         @return: The representation
         @rtype: str
         """
-        return 'Results set with {count} result(s)'.format(count=len(self))
+        return "Results set with {count} result(s)".format(count=len(self))
 
     def get_field(self, field):
         """

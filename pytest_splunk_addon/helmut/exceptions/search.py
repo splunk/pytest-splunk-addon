@@ -1,7 +1,7 @@
 class SearchFailure(RuntimeError):
-    '''
+    """
     This exception is raised when a search fails and returns the error through sdk get_message function.
-    '''
+    """
 
     def __init__(self, search_message):
         self.search_message = search_message
@@ -9,5 +9,5 @@ class SearchFailure(RuntimeError):
 
     @property
     def _error_message(self):
-        message = 'Search failed with Error: {0}'
+        message = "Search failed with Error: {0}"
         return message.format(self.search_message)

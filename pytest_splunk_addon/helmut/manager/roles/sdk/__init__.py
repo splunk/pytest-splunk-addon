@@ -1,8 +1,8 @@
-'''
+"""
 @author: Nicklas Ansman-Giertz
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-23
-'''
+"""
 
 from splunklib.client import HTTPError
 
@@ -12,13 +12,13 @@ from pytest_splunk_addon.helmut.manager.roles.sdk.role import SDKRoleWrapper
 
 
 class SDKRolesWrapper(Roles):
-    '''
+    """
     The Roles subclass that wraps the Splunk Python SDK's Roles object.
     It basically contains a collection of L{SDKRoleWrapper}s.
 
     As a part of 6.3, copy_role returns disabled parameter. This param is not supported when making a REST call to authorization/roles to update a role
     Hence, deleting this param from copied_role
-    '''
+    """
 
     @property
     def _service(self):
@@ -36,18 +36,19 @@ class SDKRolesWrapper(Roles):
                 if "imported_" in key or value is None:
                     copied_role.pop(key)
                     if "imported_capabilities" == key:
-                        copied_role['capabilities'] += value
+                        copied_role["capabilities"] += value
 
-                if 'disabled' in key:
-                    del copied_role['content']['disabled']
+                if "disabled" in key:
+                    del copied_role["content"]["disabled"]
 
             self._service.roles[role_name].update(**copied_role)
         except HTTPError as err:
             # Role already exists
             if not err.status == 409:
                 raise
-            self.logger.warn("Role %s already existed. HTTPError: %s" %
-                             (role_name, err))
+            self.logger.warn(
+                "Role %s already existed. HTTPError: %s" % (role_name, err)
+            )
 
     def delete_role(self, role_name):
         self.logger.info("Deleting role %s" % role_name)

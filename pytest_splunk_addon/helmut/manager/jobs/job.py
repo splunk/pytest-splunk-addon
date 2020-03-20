@@ -1,8 +1,8 @@
-'''
+"""
 @author: Nicklas Ansman-Giertz
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-23
-'''
+"""
 import time
 from abc import abstractmethod, abstractproperty
 from builtins import str
@@ -13,11 +13,11 @@ from pytest_splunk_addon.helmut.manager.object import ItemFromManager
 
 
 class Job(ItemFromManager):
-    '''
+    """
     Job handles the individual searches that spawn jobs. This manager has the
     ability to stop, pause, finalize, etc jobs. You can also retrieve
     different data about the job such as event count.
-    '''
+    """
 
     _SECONDS_BETWEEN_JOB_IS_DONE_CHECKS = 1
 
@@ -61,21 +61,24 @@ class Job(ItemFromManager):
         while not self.is_done():
             try:
                 if self.is_failed():
-                    self.logger.warn('job %s failed. error message: %s' % (self.sid, self.get_messages()))
+                    self.logger.warn(
+                        "job %s failed. error message: %s"
+                        % (self.sid, self.get_messages())
+                    )
                     break
             except AttributeError as e:
                 self.logger.debug(str(e))
             _check_if_wait_has_timed_out(start_time, timeout)
             time.sleep(self._SECONDS_BETWEEN_JOB_IS_DONE_CHECKS)
 
-        self.logger.debug('Job %s wait is done.' % self.sid)
+        self.logger.debug("Job %s wait is done." % self.sid)
         return self
 
     def check_message(self):
         if self.get_messages():
             message = self.get_messages()
             for key in message:
-                if key == 'error':
+                if key == "error":
                     raise SearchFailure(message[key])
 
 
