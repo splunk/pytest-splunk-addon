@@ -18,15 +18,6 @@ import re
 
 logger = logging.getLogger()
 
-@pytest.fixture(scope="session")
-def docker_compose_files(pytestconfig):
-    """Get an absolute path to the  `docker-compose.yml` file. Override this
-    fixture in your tests if you need a custom location."""
-    print(os.path.join(str(pytestconfig.invocation_dir), "docker-compose.yml"))
-
-    return [os.path.join(str(pytestconfig.invocation_dir), "docker-compose.yml")]
-
-
 def pytest_configure(config):
     config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
     config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
