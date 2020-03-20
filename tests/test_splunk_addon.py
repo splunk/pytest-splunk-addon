@@ -82,6 +82,10 @@ def test_splunk_connection_docker(testdir):
         os.path.join(testdir.request.config.invocation_dir, "docker-compose.yml"),
         testdir.tmpdir
     )    
+    destination = shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "entrypoint.sh"),
+        testdir.tmpdir
+    )      
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk_type=docker",
@@ -134,6 +138,10 @@ def test_splunk_app_fiction(testdir):
         os.path.join(testdir.request.config.invocation_dir, "docker-compose.yml"),
         testdir.tmpdir
     )     
+    destination = shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "entrypoint.sh"),
+        testdir.tmpdir
+    )      
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk_type=docker",
@@ -197,6 +205,10 @@ def test_splunk_app_broken_sourcetype(testdir):
         os.path.join(testdir.request.config.invocation_dir, "docker-compose.yml"),
         testdir.tmpdir
     ) 
+    destination = shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "entrypoint.sh"),
+        testdir.tmpdir
+    )      
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk_type=docker",
