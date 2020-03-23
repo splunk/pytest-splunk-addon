@@ -1,30 +1,29 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import os
-import pytest
-import requests
-from splunk_appinspect import App
-
-from .helmut.manager.jobs import Jobs
-from .helmut.splunk.cloud import CloudSplunk
-from .helmut_lib.SearchUtil import SearchUtil
-
-import pytest
-import requests
-import urllib3
-import splunklib.client as client
 import re
+import pytest
 
-logger = logging.getLogger()
+from splunk_appinspect import App
+"""
+Module usage:
+- splunk_appinspect: To parse the configuration files from Add-on package
+"""
 
+logger = logging.getLogger("pytest_splunk_addon")
 
 def pytest_configure(config):
+    """
+    Setup configuration after command-line options are parsed
+    """
     config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
     config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
 
 
 def pytest_generate_tests(metafunc):
+    """
+    Parse the fixture dynamically. 
+    """
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_app"):
             # Load associated test data
@@ -34,6 +33,16 @@ def pytest_generate_tests(metafunc):
 
 
 def load_splunk_tests(splunk_app_path, fixture):
+    """
+    Utility function to load the test cases with the App fields
+    
+    Args:
+        splunk_app_path(string): Path of the Splunk App
+        fixture: The list of fixtures 
+
+    Yields:
+        List of knowledge objects as pytest parameters
+    """
     app = App(splunk_app_path, python_analyzer_enable=False)
     if fixture.endswith("props"):
         props = app.props_conf()
@@ -46,6 +55,15 @@ def load_splunk_tests(splunk_app_path, fixture):
 
 
 def load_splunk_props(props):
+    """
+    Parse the props.conf of the App & yield stanzas
+
+    Args:
+        props(): The configuration object of props
+
+    Yields:
+        generator of stanzas from the props
+    """
     for p in props.sects:
         if p.startswith("host::"):
             continue
@@ -56,11 +74,23 @@ def load_splunk_props(props):
 
 
 def return_props_sourcetype_param(id, value):
+    """
+    Convert sourcetype to pytest parameters
+    """
     idf = f"sourcetype::{id}"
     return pytest.param({"field": "sourcetype", "value": value}, id=idf)
 
 
 def load_splunk_fields(props):
+    """
+    Parse the App configuration files & yield fields
+
+    Args:
+        props(): The configuration object of props
+
+    Yields:
+        generator of fields
+    """
     for p in props.sects:
         section = props.sects[p]
         for current in section.options:
@@ -70,6 +100,16 @@ def load_splunk_fields(props):
 
 
 def return_props_extract(id, value):
+    """
+    Returns the fields parsed from EXTRACT as pytest parameters
+
+    Args:
+        id(str): parameter from the stanza
+        value(str): value of the parmeter
+
+    Returns:
+        List of pytest parameters
+    """
     name = f"{id}_field::{value.name}"
 
     regex = r"\(\?<([^\>]+)\>"
