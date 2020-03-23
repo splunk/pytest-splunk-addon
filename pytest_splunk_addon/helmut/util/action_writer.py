@@ -45,13 +45,13 @@ def write_action(action, logger=None, logger_msg=None):
         global _LEVEL, _LAST_OPENED
         # If there is one currently open print newline
         if _LEVEL > _LAST_OPENED:
-            sys.stdout.write('\n')
+            sys.stdout.write("\n")
 
         # Print tabs
         for _index in range(_LEVEL):
-            sys.stdout.write('\t')
+            sys.stdout.write("\t")
 
-        sys.stdout.write(action + '... ')
+        sys.stdout.write(action + "... ")
         sys.stdout.flush()
     if logger:
         logger.info(logger_msg or action)
@@ -72,9 +72,9 @@ def write_done():
         # If there has been actions in between, write tabs
         if _LAST_CLOSED > _LEVEL:
             for _index in range(_LEVEL):
-                sys.stdout.write('\t')
+                sys.stdout.write("\t")
 
-        sys.stdout.write('done!\n')
+        sys.stdout.write("done!\n")
 
         _LAST_CLOSED = _LEVEL
         sys.stdout.flush()
@@ -93,15 +93,15 @@ def write_failed(logger=None, msg=None):
     """
     if not LOG_ONLY:
         global _LEVEL
-        msg = msg or 'Testing failed, check your logs for more info'
+        msg = msg or "Testing failed, check your logs for more info"
 
         _LEVEL -= 1
 
         if _LAST_CLOSED > _LEVEL:
             for _index in range(_LEVEL):
-                sys.stdout.write('\t')
+                sys.stdout.write("\t")
 
-        sys.stdout.write('failed!\n')
+        sys.stdout.write("failed!\n")
         sys.stdout.flush()
 
     if logger:

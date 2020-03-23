@@ -28,8 +28,8 @@ def sdk_request_adapter(url, message, **kwargs):
         - body: A stream-like object supporting ``read(size=None)`` and ``close()`` methods to get the body of the response.
     """
     method = message.get("method", "GET").upper()
-    body = message.get("body", "") if method == 'POST' else None
-    headers = dict(message.get('headers', []))
+    body = message.get("body", "") if method == "POST" else None
+    headers = dict(message.get("headers", []))
     h = httplib2.Http(disable_ssl_certificate_validation=True)
     for i in range(RETRIES):
         try:
@@ -39,7 +39,9 @@ def sdk_request_adapter(url, message, **kwargs):
             # splunk restart is still in progress
             time.sleep(30)
         except Exception as ex:  # noqa: E722
-            logging.getLogger("..connector").exception("request failed, url=%s, attempts=%s", url, i + 1)
+            logging.getLogger("..connector").exception(
+                "request failed, url=%s, attempts=%s", url, i + 1
+            )
             if i == RETRIES - 1 or not _is_retry_safe(method, url):
                 raise
             else:

@@ -35,7 +35,7 @@ class App(object):
                    package exists.
     """
 
-    DEFAULT_NAMESPACE = 'nobody:{app_name}'
+    DEFAULT_NAMESPACE = "nobody:{app_name}"
 
     def __init__(self, name, splunk, package=None):
         """
@@ -53,7 +53,7 @@ class App(object):
         """
         super(App, self).__init__()
 
-        self.__logger = logging.getLogger('App-{0}'.format(name))
+        self.__logger = logging.getLogger("App-{0}".format(name))
 
         self._name = name
         self._splunk = splunk
@@ -63,46 +63,46 @@ class App(object):
 
     @property
     def confs(self):
-        '''
+        """
         The confs manager that is used for this app.
 
         The manager will have a namespace that has the app portion set to this
         app.
 
         @rtype: L{Confs}
-        '''
+        """
         if self._confs is None:
             self._confs = self._create_confs_manager()
         return self._confs
 
     def _create_confs_manager(self):
-        '''
+        """
         Creates a confs manager for this app.
 
         It uses the same connector factory as the Splunk instance.
 
         @return: The newly created confs manager.
         @rtype: L{Confs}
-        '''
+        """
         return Confs(self.splunk.default_connector)
 
     @property
     def namespace(self):
-        '''
+        """
         The namespace for this app.
 
         @rtype: str
-        '''
+        """
         return self.DEFAULT_NAMESPACE.format(app_name=self._name)
 
     @confs.setter
     def confs(self, value):
-        '''
+        """
         Updates the confs manager for this app.
 
         @param value: The new manager.
         @type value: L{Confs}
-        '''
+        """
         self._confs = value
 
     @property
@@ -174,12 +174,12 @@ class App(object):
         return self.splunk.install_app(self.name, self.package)
 
     def _verify_can_install(self):
-        '''
+        """
         Checks that this app can be installed and raising an exception if it
         can't.
 
         @raise AppHasNoPackage: If the app can't be installed.
-        '''
+        """
         if not self.package:
             raise AppHasNoPackage(self.name)
 
@@ -195,5 +195,5 @@ class App(object):
 
 class AppHasNoPackage(RuntimeError):
     def __init__(self, app_name):
-        msg = 'The app {0} has no package to install from'.format(app_name)
+        msg = "The app {0} has no package to install from".format(app_name)
         super(AppHasNoPackage, self).__init__(msg)

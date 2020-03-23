@@ -51,7 +51,11 @@ setup(
     packages=find_packages(include=["pytest_splunk_addon", "pytest_splunk_addon.*"]),
     test_suite="tests",
     zip_safe=False,
-    entry_points={"pytest11": ["splunk_addon = pytest_splunk_addon.plugin"]},
-    # use_scm_version={"fallback_version": "0.1.0",},
+    entry_points={
+        "pytest11": [
+            "plugin = pytest_splunk_addon.plugin",
+            "splunk = pytest_splunk_addon.splunk",
+        ]
+    },
     version="0.1.0",
 )

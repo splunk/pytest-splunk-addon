@@ -23,8 +23,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements_dev.txt
-          pip install .
+          python setup.py develop
       - name: Test with pytest
         run: |
           pip install pytest
-          pytest -v --splunk_version=${{ matrix.splunk-version }} -m docker tests
+          pytest -v --splunk_version=${{ matrix.splunk-version }} -m docker

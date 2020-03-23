@@ -1,30 +1,32 @@
-'''
+"""
 @author: Nicklas Ansman-Giertz
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-23
-'''
+"""
 from abc import abstractmethod
 
 from pytest_splunk_addon.helmut.manager import Manager
 from pytest_splunk_addon.helmut.misc.collection import Collection
-from pytest_splunk_addon.helmut.misc.manager_utils import create_wrapper_from_connector_mapping
+from pytest_splunk_addon.helmut.misc.manager_utils import (
+    create_wrapper_from_connector_mapping,
+)
 
-PATH_PERFIX = '/servicesNS/nobody/system/search/jobs/'
-EVENTS = '/events'
-RESULTS = '/results'
-SUMMARY = '/summary'
-CONTROL = '/control'
-RESULTS_PREVIEW = '/results_preview'
-TIMELINE = '/timeline'
-SEARCHLOG = '/search.log'
+PATH_PERFIX = "/servicesNS/nobody/system/search/jobs/"
+EVENTS = "/events"
+RESULTS = "/results"
+SUMMARY = "/summary"
+CONTROL = "/control"
+RESULTS_PREVIEW = "/results_preview"
+TIMELINE = "/timeline"
+SEARCHLOG = "/search.log"
 
 
 class Jobs(Manager, Collection):
-    '''
+    """
     Jobs is the manager that handles searches.
     It does not handle pausing, resuming, etc of individual searches, it just
     spawns and lists searches.
-    '''
+    """
 
     def __init__(self, connector):
         Manager.__init__(self, connector)
@@ -50,7 +52,7 @@ class JobNotFound(RuntimeError):
 
     @property
     def _error_message(self):
-        return 'Could not find a job with SID {sid}'.format(sid=self.sid)
+        return "Could not find a job with SID {sid}".format(sid=self.sid)
 
 
 # We need this at the bottom to avoid cyclic imports
@@ -62,5 +64,5 @@ from pytest_splunk_addon.helmut.manager.jobs.rest import RESTJobsWrapper
 
 _CONNECTOR_TO_WRAPPER_MAPPINGS = {
     SDKConnector: SDKJobsWrapper,
-    RESTConnector: RESTJobsWrapper
+    RESTConnector: RESTJobsWrapper,
 }

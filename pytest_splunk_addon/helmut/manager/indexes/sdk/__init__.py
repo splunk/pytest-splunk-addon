@@ -1,8 +1,8 @@
-'''
+"""
 @author: Nicklas Ansman-Giertz
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-23
-'''
+"""
 from splunklib.client import HTTPError
 
 from pytest_splunk_addon.helmut.manager.indexes import IndexNotFound
@@ -11,10 +11,10 @@ from pytest_splunk_addon.helmut.manager.indexes.sdk.index import SDKIndexWrapper
 
 
 class SDKIndexesWrapper(Indexes):
-    '''
+    """
     The Indexes subclass that wraps the Splunk Python SDK's Indexes object.
     It basically contains a collection of L{SDKIndexWrapper}s.
-    '''
+    """
 
     @property
     def _service(self):
@@ -28,7 +28,9 @@ class SDKIndexesWrapper(Indexes):
             # Index already exists
             if not err.status == 409:
                 raise
-            self.logger.warn("Index '%s' already exists. HTTPError: %s" % (index_name, err))
+            self.logger.warn(
+                "Index '%s' already exists. HTTPError: %s" % (index_name, err)
+            )
         return self[index_name]
 
     def __getitem__(self, index_name):
