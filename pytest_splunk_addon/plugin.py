@@ -3,8 +3,10 @@
 import logging
 import re
 import pytest
-
 from splunk_appinspect import App
+
+from pytest_splunk_addon.splunk import *
+
 """
 Module usage:
 - splunk_appinspect: To parse the configuration files from Add-on package
@@ -28,8 +30,7 @@ def pytest_generate_tests(metafunc):
         if fixture.startswith("splunk_app"):
             # Load associated test data
             tests = load_splunk_tests(metafunc.config.getoption("splunk_app"), fixture)
-            if tests:
-                metafunc.parametrize(fixture, tests)
+            metafunc.parametrize(fixture, tests)
 
 
 def load_splunk_tests(splunk_app_path, fixture):
@@ -64,13 +65,13 @@ def load_splunk_props(props):
     Yields:
         generator of stanzas from the props
     """
-    for p in props.sects:
-        if p.startswith("host::"):
+    for props_section in props.sects:
+        if props_section.startswith("host::"):
             continue
-        elif p.startswith("source::"):
+        elif props_section.startswith("source::"):
             continue
         else:
-            yield return_props_sourcetype_param(p, p)
+            yield return_props_sourcetype_param(props_section, props_section)
 
 
 def return_props_sourcetype_param(id, value):
@@ -91,12 +92,12 @@ def load_splunk_fields(props):
     Yields:
         generator of fields
     """
-    for p in props.sects:
-        section = props.sects[p]
+    for props_section in props.sects:
+        section = props.sects[props_section]
         for current in section.options:
             options = section.options[current]
             if current.startswith("EXTRACT-"):
-                yield return_props_extract(p, options)
+                yield return_props_extract(props_section, options)
 
 
 def return_props_extract(id, value):

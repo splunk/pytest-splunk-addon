@@ -7,11 +7,11 @@ from time import sleep
 import pytest
 import requests
 import splunklib.client as client
-
 from splunk_appinspect import App
 from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
+
 """
 Module usage:
 - splunk_appinspect: To parse the configuration files from Add-on package
@@ -19,9 +19,10 @@ Module usage:
 - helmut_lib: Provides various Utility functions to search on Splunk. Source: splunk-sdk 
 """
 
-RESPONSIVE_SPLUNK_TIMEOUT = 3600 # seconds
+RESPONSIVE_SPLUNK_TIMEOUT = 3600  # seconds
 
 logger = logging.getLogger("pytest_splunk_addon")
+
 
 def pytest_addoption(parser):
     """Add options for interaction with Splunk this allows the tool to work in two modes
