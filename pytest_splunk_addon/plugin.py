@@ -41,6 +41,9 @@ def load_splunk_tests(splunk_app_path, fixture):
     elif fixture.endswith("fields"):
         props = app.props_conf()
         yield from load_splunk_fields(props)
+    elif fixture.endswith("eventtypes"):
+        eventtypes = app.eventtypes_conf()
+        yield from load_splunk_eventtypes(eventtypes)
     else:
         yield None
 
@@ -82,3 +85,37 @@ def return_props_extract(id, value):
             fields.append(match.group(groupNum))
 
     return pytest.param({"sourcetype": id, "fields": fields}, id=name)
+
+def load_splunk_eventtypes(eventtypes):
+    """
+    Parse the App configuration files & yield eventtypes
+    Args:
+        eventtypes(): The configuration object of eventtypes.conf
+    Yields:
+        generator of list of eventtypes
+    """
+
+    for eventtype_section in eventtypes.sects:
+        yield return_eventtypes_param(eventtype_section, eventtype_section)
+            
+def return_eventtypes_param(id, value):
+
+    """
+    Returns the eventtype parsed from the eventtypes.conf file as pytest parameters
+    Args:
+        id(str): parameter from the stanza
+        value(str): value of the parmeter
+    Returns:
+        List of pytest parameters
+    """
+    regex = r"(^[a-zA-Z_]+)(-%[a-zA-Z]+%)+$"
+    result = re.match(regex, value)
+
+    if result:
+        value = "{}{}".format(result.group(1),'-*')
+
+    idf = f"eventtype::{id}" 
+    return pytest.param({
+        "field": "eventtype", "value": value},
+        id=idf
+        )
