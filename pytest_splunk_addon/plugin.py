@@ -41,8 +41,26 @@ def load_splunk_tests(splunk_app_path, fixture):
     elif fixture.endswith("fields"):
         props = app.props_conf()
         yield from load_splunk_fields(props)
+    elif fixture.endswith("tags"):
+        tags = app.get_config("tags.conf")
+        yield from load_splunk_tags(tags)
     else:
         yield None
+
+
+def load_splunk_tags(tags):
+    for stanza in tags.sects:
+        kv = tags.sects[stanza]
+        for key in kv.options:
+            options = kv.options[key]
+            yield return_tags(options, stanza)
+
+
+def return_tags(options, stanza):
+    return pytest.param(
+        {"condition": stanza, options.value + "_tag": options.name},
+        id=stanza + "|" + options.name + "_" + options.value,
+    )
 
 
 def load_splunk_props(props):
