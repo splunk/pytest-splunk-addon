@@ -14,6 +14,9 @@ Welcome to pytest-splunk-addon's documentation!
 About test cases
 -----------------
 
+* "test_common_<testcase>" - test cases that are not specific to a specific configuration element
+* "test_<conf>_<testcase>" - Configuration dependent test cases
+
 .. csv-table:: a title
    :header: "class", "testcase", "description"
    :widths: 15, 14, 40
