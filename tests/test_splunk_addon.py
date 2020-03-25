@@ -33,12 +33,12 @@ def test_splunk_connection_external(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk_type=external",
-        "--splunk_app=tests/package",
-        "--splunk_type=external",
-        f"--splunk_host=splunk",
-        f"--splunk_port=8089",
-        "--splunk_password=Changed@11",
+        "--splunk-type=external",
+        "--splunk-app=tests/package",
+        "--splunk-type=external",
+        f"--splunk-host=splunk",
+        f"--splunk-port=8089",
+        "--splunk-password=Changed@11",
         "-v",
     )
 
@@ -78,9 +78,9 @@ def test_splunk_connection_docker(testdir):
     )
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk_type=docker",
-        "--splunk_app=tests/package",
-        "--splunk_password=Changed@11",
+        "--splunk-type=docker",
+        "--splunk-app=tests/package",
+        "--splunk-password=Changed@11",
         "-v",
     )
 
@@ -125,9 +125,9 @@ def test_splunk_app_fiction(testdir):
     )
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk_type=docker",
-        "--splunk_app=tests/package",
-        "--splunk_password=Changed@11",
+        "--splunk-type=docker",
+        "--splunk-app=tests/package",
+        "--splunk-password=Changed@11",
         "-v",
     )
 
@@ -172,9 +172,9 @@ def test_splunk_app_broken_sourcetype(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk_type=docker",
-        "--splunk_app=tests/package",
-        "--splunk_password=Changed@11",
+        "--splunk-type=docker",
+        "--splunk-app=tests/package",
+        "--splunk-password=Changed@11",
         "-v",
     )
 
@@ -196,10 +196,10 @@ def test_help_message(testdir):
     result.stdout.fnmatch_lines(
         [
             "splunk-addon:",
-            "*--splunk_app=*",
-            "*--splunk_host=*",
-            "*--splunk_port=*",
-            "*--splunk_user=*",
-            "*--splunk_password=*",
+            "*--splunk-app=*",
+            "*--splunk-host=*",
+            "*--splunk-port=*",
+            "*--splunk-user=*",
+            "*--splunk-password=*",
         ]
     )
