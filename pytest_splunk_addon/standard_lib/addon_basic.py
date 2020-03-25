@@ -124,13 +124,13 @@ class Basic:
         else:
             tag = splunk_app_tags["disabled_tag"]
             enabled = False
-        condition = splunk_app_tags["condition"]
-        self.logger.info(f"Testing for tag {tag} with condition {condition}")
-        record_property("Event_with", condition)
+        tag_query = splunk_app_tags["tag_query"]
+        self.logger.info(f"Testing for tag {tag} with tag_query {tag_query}")
+        record_property("Event_with", tag_query)
         record_property("tag", tag)
         record_property("enabled", enabled)
 
-        search = f"search index=* {condition} AND tag={tag}"
+        search = f"search (index=* OR index=_internal) {tag_query} AND tag={tag}"
         self.logger.debug(f"Search: {search}")
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRY

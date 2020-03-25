@@ -58,7 +58,7 @@ def load_splunk_tags(tags):
 
 def return_tags(options, stanza):
     return pytest.param(
-        {"condition": stanza, options.value + "_tag": options.name},
+        {"tag_query": stanza, options.value + "_tag": options.name},
         id=stanza + "|" + options.name + "_" + options.value,
     )
 
