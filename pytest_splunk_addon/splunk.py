@@ -16,7 +16,7 @@ from .helmut_lib.SearchUtil import SearchUtil
 Module usage:
 - splunk_appinspect: To parse the configuration files from Add-on package
 - helmut : To connect to a Splunk instance. source: splunk-sdk
-- helmut_lib: Provides various Utility functions to search on Splunk. Source: splunk-sdk 
+- helmut_lib: Provides various Utility functions to search on Splunk. Source: splunk-sdk
 """
 
 RESPONSIVE_SPLUNK_TIMEOUT = 3600  # seconds
@@ -26,8 +26,10 @@ logger = logging.getLogger("pytest_splunk_addon")
 
 def pytest_addoption(parser):
     """Add options for interaction with Splunk this allows the tool to work in two modes
-    docker mode which is typically used by developers on their workstation manages a single instance of splunk
-    external interacts with a single instance of splunk that is lifecycle managed by another process such as a ci/cd pipeline    
+    1) docker mode which is typically used by developers on their workstation 
+        manages a single instance of splunk
+    2) external interacts with a single instance of splunk that is lifecycle managed
+        by another process such as a ci/cd pipeline
     """
     group = parser.getgroup("splunk-addon")
 
@@ -36,21 +38,24 @@ def pytest_addoption(parser):
         action="store",
         dest="splunk_app",
         default="package",
-        help="Path to Splunk app package. The package should have the configuration files in the default folder.",
+        help=("Path to Splunk app package. The package should have the "
+        "configuration files in the default folder."),
     )
     group.addoption(
         "--splunk-type",
         action="store",
         dest="splunk_type",
         default="external",
-        help="Type of the Splunk instance. supports external & docker as a value. Default is external.",
+        help=("Type of the Splunk instance. supports external & docker "
+         "as a value. Default is external."),
     )
     group.addoption(
         "--splunk-host",
         action="store",
         dest="splunk_host",
         default="127.0.0.1",
-        help="Address of the Splunk Server. Do not provide http scheme in the host. default is 127.0.0.1",
+        help=("Address of the Splunk Server. Do not provide "
+         "http scheme in the host. default is 127.0.0.1"),
     )
     group.addoption(
         "--splunk-port",
@@ -128,7 +133,8 @@ def is_responsive_splunk(splunk):
 
 def is_responsive(url):
     """
-    This function is called to verify the connection is accepted used to prevent tests from running before Splunk is ready 
+    This function is called to verify the connection is accepted 
+    used to prevent tests from running before Splunk is ready 
 
     Args:
         url (str): url to check if it's responsive or not
@@ -147,7 +153,8 @@ def is_responsive(url):
 @pytest.fixture(scope="session")
 def splunk(request):
     """
-    This fixture based on the passed option will provide a real fixture for external or docker Splunk
+    This fixture based on the passed option will provide a real fixture
+    for external or docker Splunk
 
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
@@ -172,8 +179,10 @@ def splunk(request):
 @pytest.fixture(scope="session")
 def splunk_docker(request, docker_services):
     """
-    Splunk docker depends on lovely-pytest-docker to create the docker instance of Splunk this may be changed in the future
-    docker-compose.yml in the project root must have a service "splunk" exposing port 8000 and 8089
+    Splunk docker depends on lovely-pytest-docker to create the docker instance
+    of Splunk this may be changed in the future.
+    docker-compose.yml in the project root must have
+    a service "splunk" exposing port 8000 and 8089
 
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
