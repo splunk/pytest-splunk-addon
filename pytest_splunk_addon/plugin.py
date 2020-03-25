@@ -28,6 +28,7 @@ def pytest_generate_tests(metafunc):
     """
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_app"):
+            logger.info("generating testcases for splunk_app. fixture=%s", fixture)
             # Load associated test data
             tests = load_splunk_tests(metafunc.config.getoption("splunk_app"), fixture)
             metafunc.parametrize(fixture, tests)
@@ -39,17 +40,20 @@ def load_splunk_tests(splunk_app_path, fixture):
     
     Args:
         splunk_app_path(string): Path of the Splunk App
-        fixture: The list of fixtures 
+        fixture: The list of fixtures
 
     Yields:
         List of knowledge objects as pytest parameters
     """
+    logger.info("Initializing App parsing mechanism.")
     app = App(splunk_app_path, python_analyzer_enable=False)
     if fixture.endswith("props"):
         props = app.props_conf()
+        logger.info("Successfully parsed props configurations")
         yield from load_splunk_props(props)
     elif fixture.endswith("fields"):
         props = app.props_conf()
+        logger.info("Successfully parsed props configurations")
         yield from load_splunk_fields(props)
     else:
         yield None
@@ -67,10 +71,13 @@ def load_splunk_props(props):
     """
     for props_section in props.sects:
         if props_section.startswith("host::"):
+            logger.info("Skipping host:: stanza=%s", props_section)
             continue
         elif props_section.startswith("source::"):
+            logger.info("Skipping source:: stanza=%s", props_section)
             continue
         else:
+            logger.info("parsing sourcetype stanza=%s", props_section)
             yield return_props_sourcetype_param(props_section, props_section)
 
 
@@ -79,6 +86,7 @@ def return_props_sourcetype_param(id, value):
     Convert sourcetype to pytest parameters
     """
     idf = f"sourcetype::{id}"
+    logger.info("Generated pytest.param of sourcetype with id=%s", idf)
     return pytest.param({"field": "sourcetype", "value": value}, id=idf)
 
 
@@ -95,6 +103,7 @@ def load_splunk_fields(props):
     for props_section in props.sects:
         section = props.sects[props_section]
         for current in section.options:
+            logger.info("Parsing parameter=%s of stanza=%s", current, props_section)
             options = section.options[current]
             if current.startswith("EXTRACT-"):
                 yield return_props_extract(props_section, options)
@@ -121,5 +130,5 @@ def return_props_extract(id, value):
             groupNum = groupNum + 1
 
             fields.append(match.group(groupNum))
-
+    logger.info("Genrated pytest.param for extract. stanza_name=%s, fields=%s", id, str(fields))
     return pytest.param({"sourcetype": id, "fields": fields}, id=name)
