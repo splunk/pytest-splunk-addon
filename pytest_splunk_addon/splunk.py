@@ -219,10 +219,6 @@ def splunk_docker(request, docker_services):
             timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk)
         )
         sleep(1)
-    else:
-        raise Exception(
-            "Could not connect to the docker Splunk. Please check the log file for possible errors."
-        )
 
     return splunk
 
