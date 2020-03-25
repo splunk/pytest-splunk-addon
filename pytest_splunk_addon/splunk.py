@@ -143,13 +143,8 @@ def is_responsive_splunk(splunk):
 
 def is_responsive(url):
     """
-<<<<<<< HEAD
     This function is called to verify the connection is accepted 
     used to prevent tests from running before Splunk is ready 
-=======
-    This function is called to verify the connection is accepted used to prevent tests
-    from running before Splunk is ready
->>>>>>> fa9d7a19d7722c94480fe9f508385089653daccd
 
     Args:
         url (str): url to check if it's responsive or not
