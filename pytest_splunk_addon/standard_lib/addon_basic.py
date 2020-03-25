@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging
 
 import pytest
@@ -48,6 +49,7 @@ class Basic:
         record_property("sourcetype", splunk_app_fields["sourcetype"])
         record_property("fields", splunk_app_fields["fields"])
 
+        
         search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']}"
         for f in splunk_app_fields["fields"]:
             search = search + f' AND ({f}=* AND NOT {f}="-" AND NOT {f}="")'
