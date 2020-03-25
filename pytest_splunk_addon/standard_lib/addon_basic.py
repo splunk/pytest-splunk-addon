@@ -5,17 +5,21 @@ import pprint
 
 INTERVAL = 20
 RETRY = 5
+
+
 class Basic:
     logger = logging.getLogger()
 
     @pytest.mark.splunk_addon_internal_errors
-    def test_splunk_internal_errors(self, splunk_search_util, record_property, caplog):
+    def test_splunk_internal_errors(
+        self, splunk_search_util, record_property, caplog
+    ):
         search = """
-            search index=_internal CASE(ERROR) 
-            sourcetype!=splunkd_ui_access 
-            AND sourcetype!=splunk_web_access 
-            AND sourcetype!=splunk_web_service 
-            AND sourcetype!=splunkd_access 
+            search index=_internal CASE(ERROR)
+            sourcetype!=splunkd_ui_access
+            AND sourcetype!=splunk_web_access
+            AND sourcetype!=splunk_web_service
+            AND sourcetype!=splunkd_access
             AND sourcetype!=splunkd
             | table _raw"""
 
@@ -24,7 +28,7 @@ class Basic:
             record_property("results", results.as_list)
             pp = pprint.PrettyPrinter(indent=4)
             pp.pprint(results.as_list)
-        assert result == True
+        assert result
 
     # This test ensures the contained samples will produce at lease one event per sourcetype
     @pytest.mark.splunk_addon_searchtime
@@ -103,38 +107,48 @@ class Basic:
 
         assert result == False
 
+    # This test will check if there is at least one event with specified tags
     @pytest.mark.splunk_addon_searchtime
-    def test_tags(self, splunk_search_util, splunk_app_tags, record_property, caplog):
+    def test_tags(
+        self, splunk_search_util, splunk_app_tags, record_property, caplog
+    ):
         """
         Test case to check tags mentioned in tags.conf
-        
-        This test case checks if a tag is assigned to the event if it is enabled,
-        also checks that a disabled tag is not assigned to the event if it is disabled.
-        
+
+        This test case checks if a tag is assigned to the event if enabled,
+        and also checks that a tag is not assigned to the event if disabled.
+
         Args:
-            splunk_search_util : A helmut_lib.SearchUtil.SearchUtil object that helps to search on Splunk.
+            splunk_search_util : A helmut_lib.SearchUtil.SearchUtil object that
+                helps to search on Splunk.
             splunk_app_tags : pytest parameters to test.
             record_property : pytest fixture to document facts of test cases.
-            caplog : fixture to capture logs. 
-
+            caplog : fixture to capture logs.
         """
+
         if splunk_app_tags.get("enabled_tag"):
             tag = splunk_app_tags["enabled_tag"]
             enabled = True
         else:
             tag = splunk_app_tags["disabled_tag"]
             enabled = False
+
         tag_query = splunk_app_tags["tag_query"]
         self.logger.info(f"Testing for tag {tag} with tag_query {tag_query}")
+
         record_property("Event_with", tag_query)
         record_property("tag", tag)
         record_property("enabled", enabled)
 
-        search = f"search (index=* OR index=_internal) {tag_query} AND tag={tag}"
+        search = (
+            f"search (index=* OR index=_internal) {tag_query} AND tag={tag}"
+        )
         self.logger.debug(f"Search: {search}")
+
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRY
         )
+
         record_property("search", search)
 
         assert result is enabled
