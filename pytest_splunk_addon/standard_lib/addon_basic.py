@@ -99,11 +99,7 @@ class Basic:
             search, interval=1, retries=1
         )
         record_property("search", search)
-        assert result == False
 
-    @pytest.mark.splunk_addon_searchtime
-    def test_dummy_test_Nandini():
-        result = True
         assert result == False
 
     # # This test ensures the contained samples will produce at lease one event per eventtype
