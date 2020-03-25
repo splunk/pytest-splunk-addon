@@ -3,7 +3,7 @@
 import logging
 import os
 from time import sleep
-
+import json
 import pytest
 import requests
 import splunklib.client as client
@@ -104,9 +104,12 @@ def docker_compose_files(pytestconfig):
         string: the path of the `docker-compose.yml` file 
 
     """
-    print(os.path.join(str(pytestconfig.invocation_dir), "docker-compose.yml"))
+    docker_compose_path = os.path.join(
+        str(pytestconfig.invocation_dir), "docker-compose.yml"
+    )
+    logger.info("docker-compose path: %s", docker_compose_path)
 
-    return [os.path.join(str(pytestconfig.invocation_dir), "docker-compose.yml")]
+    return [docker_compose_path]
 
 
 def is_responsive_splunk(splunk):
@@ -120,21 +123,33 @@ def is_responsive_splunk(splunk):
         bool: True if Splunk is responsive. False otherwise
     """
     try:
+        logger.info(
+            "Trying to connect Splunk instance...  splunk=%s", json.dumps(splunk)
+        )
         client.connect(
             username=splunk["username"],
             password=splunk["password"],
             host=splunk["host"],
             port=splunk["port"],
         )
+        logger.info("Connected to Splunk instance.")
         return True
-    except Exception:
+    except Exception as e:
+        logger.warn(
+            "Could not connect to Splunk yet. Will try again. exception=%s", str(e)
+        )
         return False
 
 
 def is_responsive(url):
     """
+<<<<<<< HEAD
     This function is called to verify the connection is accepted 
     used to prevent tests from running before Splunk is ready 
+=======
+    This function is called to verify the connection is accepted used to prevent tests
+    from running before Splunk is ready
+>>>>>>> fa9d7a19d7722c94480fe9f508385089653daccd
 
     Args:
         url (str): url to check if it's responsive or not
@@ -143,10 +158,15 @@ def is_responsive(url):
         bool: True if Splunk is responsive. False otherwise
     """
     try:
+        logger.info("Trying to connect with url=%s", url)
         response = requests.get(url)
         if response.status_code != 500:
+            logger.info("Connected to the url")
             return True
-    except ConnectionError:
+    except ConnectionError as e:
+        logger.warn(
+            "Could not connect to url yet. Will try again. exception=%s", str(e)
+        )
         return False
 
 
@@ -159,10 +179,12 @@ def splunk(request):
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
-    if request.config.getoption("splunk_type") == "external":
+    splunk_type = request.config.getoption("splunk_type")
+    logger.info("Get the Splunk instance of splunk_type=%s", splunk_type)
+    if splunk_type == "external":
         request.fixturenames.append("splunk_external")
         splunk = request.getfixturevalue("splunk_external")
-    elif request.config.getoption("splunk_type") == "docker":
+    elif splunk_type == "docker":
 
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
         os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
@@ -187,6 +209,7 @@ def splunk_docker(request, docker_services):
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
+    logger.info("Starting docker_service=splunk")
     docker_services.start("splunk")
 
     splunk = {
@@ -196,6 +219,13 @@ def splunk_docker(request, docker_services):
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
     }
+
+    logger.info(
+        "Docker container splunk info. host=%s, port=%s, port_web-%s",
+        docker_services.docker_ip,
+        docker_services.port_for("splunk", 8089),
+        docker_services.port_for("splunk", 8000),
+    )
 
     for _ in range(30):
         docker_services.wait_until_responsive(
@@ -226,6 +256,10 @@ def splunk_external(request):
         if is_responsive_splunk(splunk):
             break
         sleep(1)
+    else:
+        raise Exception(
+            "Could not connect to the external Splunk. Please check the log file for possible errors."
+        )
 
     return splunk
 
@@ -238,6 +272,7 @@ def splunk_search_util(splunk):
     Returns:
         helmut_lib.SearchUtil.SearchUtil: The SearchUtil object
     """
+    logger.info("Initializing SearchUtil for the Splunk instace.")
     cloud_splunk = CloudSplunk(
         splunkd_host=splunk["host"],
         splunkd_port=splunk["port"],
@@ -247,6 +282,7 @@ def splunk_search_util(splunk):
 
     conn = cloud_splunk.create_logged_in_connector()
     jobs = Jobs(conn)
+    logger.info("initialized SearchUtil for the Splunk instace.")
 
     return SearchUtil(jobs, logger)
 
@@ -259,6 +295,7 @@ def splunk_rest_uri(splunk):
     splunk_session = requests.Session()
     splunk_session.auth = (splunk["username"], splunk["password"])
     uri = f'https://{splunk["host"]}:{splunk["port"]}/'
+    logger.info("Fetched splunk_rest_uri=%s", uri)
 
     return splunk_session, uri
 
@@ -269,5 +306,5 @@ def splunk_web_uri(splunk):
     Provides a uri to the Splunk web port
     """
     uri = f'http://{splunk["host"]}:{splunk["port_web"]}/'
-
+    logger.info("Fetched splunk_web_uri=%s", uri)
     return uri
