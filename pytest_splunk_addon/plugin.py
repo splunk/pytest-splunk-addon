@@ -104,25 +104,25 @@ def load_splunk_fields(props):
     Yields:
         generator of fields
     """
-    for props_section in props.sects:
-        section = props.sects[props_section]
+    for stanza_name in props.sects:
+        section = props.sects[stanza_name]
         if section.name.startswith("source::"):
             stanza_type = "source"
-            stanza_list = list(get_list_of_sources(props_section))
+            stanza_list = list(get_list_of_sources(stanza_name))
         else:
             stanza_type = "sourcetype"
             stanza_list = [props_section]
         for current in section.options:
-            LOGGER.info("Parsing parameter=%s of stanza=%s", current, props_section)
+            LOGGER.info("Parsing parameter=%s of stanza=%s", current, stanza_name)
             field_data = section.options[current]
-            for stanza_name in stanza_list:
+            for each_stanza_name in stanza_list:
                 if current.startswith("EXTRACT-"):
-                    yield return_props_extract(stanza_name, field_data, stanza_type)
+                    yield return_props_extract(each_stanza_name, field_data, stanza_type)
                 elif current.startswith("EVAL-"):
-                    yield return_props_eval(stanza_name, field_data, stanza_type)
+                    yield return_props_eval(each_stanza_name, field_data, stanza_type)
                 elif current.startswith("sourcetype"):   
                     # Sourcetype assignment configuration
-                    yield return_props_sourcetype(stanza_name, field_data, stanza_type)
+                    yield return_props_sourcetype(each_stanza_name, field_data, stanza_type)
 
 
 def return_props_extract(stanza_name, value, stanza_type):
@@ -181,10 +181,10 @@ def return_props_sourcetype(stanza_name, field_data, stanza_type):
     Return:
         List of pytest parameters
     '''
-    name = f"{stanza_name}::{field_data.value}"
+    test_name = f"{stanza_name}::{field_data.value}"
     fields = [field_data.name]
     LOGGER.info("Generated pytest.param for sourcetype. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
-    return pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': fields}, id=name)
+    return pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': fields}, id=test_name)
 
 def get_list_of_sources(source):
     '''
@@ -198,7 +198,7 @@ def get_list_of_sources(source):
     sub_groups = re.findall("\([^\)]+\)", value)
     sub_group_list = []
     for each_group in sub_groups:
-        sub_group_list.append(list(each_group.strip("()").split("|")))
+        sub_group_list.append(each_group.strip("()").split("|"))
     template = re.sub(r'\([^\)]+\)', "{}",value)
     for each_permutation in product(*sub_group_list):
         yield template.format(*each_permutation)

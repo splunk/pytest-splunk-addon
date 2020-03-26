@@ -33,7 +33,7 @@ class Basic:
         
         This test case checks props stanza is not empty, blank and dash value.
         Args:
-            splunk_search_util(helmut_lib.SearchUtil.SearchUtil): Object that helps to search on Splunk.
+            splunk_search_util(SearchUtil): Object that helps to search on Splunk.
             splunk_props_fields(fixture): Test for stanza.
             record_property(fixture):  Document facts of test cases.
             caplog : fixture to capture logs. 
@@ -56,7 +56,7 @@ class Basic:
         
         This test case checks props field is not empty, blank and dash value.
         Args:
-            splunk_search_util(helmut_lib.SearchUtil.SearchUtil): Object that helps to search on Splunk.
+            splunk_search_util(SearchUtil): Object that helps to search on Splunk.
             splunk_app_fields(fixture): Test for stanza field.
             record_property(fixture):  Document facts of test cases.
             caplog : fixture to capture logs. 
