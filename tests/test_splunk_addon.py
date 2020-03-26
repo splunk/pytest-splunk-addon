@@ -187,6 +187,12 @@ def test_splunk_app_broken_sourcetype(testdir):
         [
             "*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype*sourcetype::notvalid* FAILED*",
             "*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalid_field::EXTRACT-one* FAILED*",
+            "*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalidlookup::LOOKUP-test_no_lookup* FAILED*",
+            "*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalidlookup::LOOKUP-test_nonexistent_lookup* FAILED*",
+            "*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalidlookup::LOOKUP-test_no_inputfield* FAILED*",
+            "*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalidlookup::LOOKUP-test_wrong_output* FAILED*",
+            "*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalidlookup::LOOKUP-test_wrong_outputnew* FAILED*",
+            "*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalidlookup::LOOKUP-test_no_output* FAILED*",
         ]
     )
 

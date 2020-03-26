@@ -1,3 +1,4 @@
-component ,context_test
-Metrics   ,Insights
-LMStackMgr,Costs
+component ,context_test, aliasone, status_test, test_name, type, sourcetype, status.test, context_test1, context_test2, context_test3, context_test4, context_test5, context_test6, context_test7, context_test8, context_test9, context_test10, context_test11, context_test12, context_test13, context_test14, context_test15, context_test16, context_test17, context_test18, context_test19, status2, status3
+Metrics   ,Insights, pipeline, 200, management, splunkd, splunkd, a, management1, management2, management3, management4, management5, management6, management7, management8, management9, management10, management11, management12, management13, management14, management15, management16, management17, management18, management19, 2001, 2002
+LMStackMgr,Costs, dutycycle, 201, ingest, mongod, mongod, b, Costs1, Costs2, Costs3, Costs4, Costs5, Costs6,Costs7, Costs8, Costs9, Costs10, Costs11, Costs12, Costs13, Costs14, Costs15, Costs16, Costs17, Costs18, Costs19, 2011, 2012
+HotDBManager,Stores, queue, 202, indexerpipe, splunkd_access, splunkd_access, c, Stores1, Stores2, Stores3, Stores4, Stores5, Stores6, Stores7, Stores8, Stores9, Stores10, Stores11, Stores12, Stores13, Stores14, Stores15, Stores16, Stores17, Stores18, Stores19, 2021, 2022

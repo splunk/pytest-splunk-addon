@@ -103,6 +103,42 @@ def return_props_extract(id, value):
 
     return pytest.param({"sourcetype": id, "fields": fields}, id=extract_test_name)
 
+def get_lookup_fields(lookup_str):
+    """
+    Returns the fields parsed from the lookup string value
+    Args:
+        lookup_str(str): The string for the lookup KO, that we want to parse
+    returns(dict):
+        lookup_stanza(str): The stanza name for the lookup in question in transforms.conf
+        input_fields(list): The fields in the input of the lookup
+        output_fields(list): The fields in the output of the lookup
+        output_flag(bool): Whether or not the lookup has a OUTPUT or OUTPUTNEW keyword in it
+    """
+    input_output_field_list = []
+    # Remove lookup name (first word)
+    lookup_stanza = re.split(', | ', lookup_str)[0]
+    lookup_str = " ".join(lookup_str.split(" ")[1:])
+    output_flag = False
+    if " OUTPUT " in lookup_str or " OUTPUTNEW " in lookup_str:
+        output_flag = True
+    # 0: Take the left side of the OUTPUT as input fields
+    # -1: Take the right side of the OUTPUT as output fields
+    for input_output_index in [0, -1]:
+        if " OUTPUT " not in lookup_str and " OUTPUTNEW " not in lookup_str:
+            lookup_str += " OUTPUT "
+
+        # Take input fields or output fields depending on the input_output_index
+        input_output_str = lookup_str.split(" OUTPUT ")[input_output_index].split(" OUTPUTNEW ")[input_output_index]
+
+        field_list = []
+        for each_field_group in input_output_str.split(","):
+            field_name = each_field_group.split(" as ")[-1].split(" AS ")[-1].strip()
+            if field_name:
+                field_list.append(field_name)
+        input_output_field_list.append(field_list)
+
+    return {"lookup_stanza": lookup_stanza, "input_fields": input_output_field_list[0], "output_fields": input_output_field_list[1], "output_flag": output_flag}
+
 
 def return_lookup_extract(id, value, app, splunk_app_path):
     """
@@ -128,53 +164,28 @@ def return_lookup_extract(id, value, app, splunk_app_path):
         List of pytest parameters containing fields
     """
     name = f"{id}lookup::{value.name}"
-    string = re.split(', | ', value.value)
-    lookup_stanza = string[0]
-    lookup_file = ''
-    output_flag = False
-    skip = 0
-    lookup_field_list = []
+    fields = get_lookup_fields(value.value)
+    lookup_field_list = fields["input_fields"] + fields["output_fields"]
     transforms = app.transforms_conf()
 
-    # Parse out the fields we want from the props.conf lookup setting
-    for iterator in range(1, len(string)):
-        if skip > 0:
-            skip -= 1
-            continue
-
-        if string[iterator] == "OUTPUT" or string[iterator] == "OUTPUTNEW":
-            output_flag = True
-            continue
-
-        if output_flag is False:
-            if iterator + 2 < len(string) and re.match("as", string[iterator+1], re.IGNORECASE) is not None:
-                lookup_field_list.append(string[iterator+2].strip())
-                skip = 2
-                continue
-            else:
-                lookup_field_list.append(string[iterator].strip())
-        else:
-            if iterator + 2 < len(string) and re.match("as", string[iterator+1], re.IGNORECASE) is not None:
-                lookup_field_list.append(string[iterator+2].strip())
-                skip = 2
-                continue
-            else:
-                lookup_field_list.append(string[iterator].strip())
-
     # If the OUTPUT or OUTPUTNEW argument is never used, then get the fields from the csv file
-    if output_flag is False:
+    if fields["output_flag"] is False:
         for stanzas in transforms.sects:
             stanza = transforms.sects[stanzas]
-            if(stanza.name == lookup_stanza):
+            if(stanza.name == fields["lookup_stanza"]):
                 for current in stanza.options:
                     if stanza.options[current].name == 'filename':
                         lookup_file = stanza.options[current].value
-        location = os.path.join(splunk_app_path, "lookups", lookup_file)
-        with open(location, "rU") as csvfile:
-            reader = csv.DictReader(csvfile)
-            fieldnames = reader.fieldnames
-            for items in fieldnames:
-                lookup_field_list.append(items.strip())
-            csvfile.close()
-
+        try:
+            location = os.path.join(splunk_app_path, "lookups", lookup_file)
+            with open(location, "rU") as csvfile:
+                reader = csv.DictReader(csvfile)
+                fieldnames = reader.fieldnames
+                for items in fieldnames:
+                    lookup_field_list.append(items.strip())
+                csvfile.close()
+        # If there is an error. the test should fail with the current fields
+        # This makes sure the test doesn't exit prematurely
+        except (OSError, IOError, UnboundLocalError):
+            pass
     return pytest.param({"sourcetype": id, "fields": lookup_field_list}, id=name)
