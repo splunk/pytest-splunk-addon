@@ -139,9 +139,10 @@ def return_props_extract(stanza_type, stanza_name, props_property):
                 field_test_name = "{}_field::{}".format(stanza_name, match.group(groupNum))
                 yield pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": [match.group(groupNum)]}, id=field_test_name)
                 fields.append(match.group(groupNum))
-    fields.reverse()
-    LOGGER.info("Generated pytest.param for extract. stanza_type=%s stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
-    yield pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
+    if fields:
+        fields.reverse()
+        LOGGER.info("Generated pytest.param for extract. stanza_type=%s stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
+        yield pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
 
 def return_props_eval(stanza_name, field_data, stanza_type):
     '''
