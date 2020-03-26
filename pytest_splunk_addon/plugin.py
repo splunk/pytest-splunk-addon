@@ -1,68 +1,107 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import os
+import re
 import pytest
-import requests
 from splunk_appinspect import App
 from pytest_splunk_addon.splunk import *
 from itertools import product
 
-from .helmut.manager.jobs import Jobs
-from .helmut.splunk.cloud import CloudSplunk
-from .helmut_lib.SearchUtil import SearchUtil
+from pytest_splunk_addon.splunk import *
 
-import pytest
-import requests
-import urllib3
-import splunklib.client as client
-import re
+"""
+Module usage:
+- splunk_appinspect: To parse the configuration files from Add-on package
+"""
 
-logger = logging.getLogger()
-
+logger = logging.getLogger("pytest_splunk_addon")
 
 def pytest_configure(config):
+    """
+    Setup configuration after command-line options are parsed
+    """
     config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
     config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
 
 
 def pytest_generate_tests(metafunc):
+    """
+    Parse the fixture dynamically. 
+    """
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_app"):
+            logger.info("generating testcases for splunk_app. fixture=%s", fixture)
             # Load associated test data
             tests = load_splunk_tests(metafunc.config.getoption("splunk_app"), fixture)
-            if tests:
-                metafunc.parametrize(fixture, tests)
+            metafunc.parametrize(fixture, tests)
 
 
 def load_splunk_tests(splunk_app_path, fixture):
+    """
+    Utility function to load the test cases with the App fields
+    
+    Args:
+        splunk_app_path(string): Path of the Splunk App
+        fixture: The list of fixtures
+
+    Yields:
+        List of knowledge objects as pytest parameters
+    """
+    logger.info("Initializing App parsing mechanism.")
     app = App(splunk_app_path, python_analyzer_enable=False)
     if fixture.endswith("props"):
         props = app.props_conf()
+        logger.info("Successfully parsed props configurations")
         yield from load_splunk_props(props)
     elif fixture.endswith("fields"):
         props = app.props_conf()
+        logger.info("Successfully parsed props configurations")
         yield from load_splunk_fields(props)
     else:
         yield None
 
 
 def load_splunk_props(props):
-    for p in props.sects:
-        if p.startswith("host::"):
+    """
+    Parse the props.conf of the App & yield stanzas
+
+    Args:
+        props(): The configuration object of props
+
+    Yields:
+        generator of stanzas from the props
+    """
+    for props_section in props.sects:
+        if props_section.startswith("host::"):
+            logger.info("Skipping host:: stanza=%s", props_section)
             continue
-        elif p.startswith("source::"):
+        elif props_section.startswith("source::"):
+            logger.info("Skipping source:: stanza=%s", props_section)
             continue
         else:
-            yield return_props_sourcetype_param(p, p)
+            logger.info("parsing sourcetype stanza=%s", props_section)
+            yield return_props_sourcetype_param(props_section, props_section)
 
 
 def return_props_sourcetype_param(id, value):
+    """
+    Convert sourcetype to pytest parameters
+    """
     idf = f"sourcetype::{id}"
+    logger.info("Generated pytest.param of sourcetype with id=%s", idf)
     return pytest.param({"field": "sourcetype", "value": value}, id=idf)
 
 
 def load_splunk_fields(props):
+    """
+    Parse the App configuration files & yield fields
+
+    Args:
+        props(): The configuration object of props
+
+    Yields:
+        generator of fields
+    """
     for stanza_name in props.sects:
         section = props.sects[stanza_name]
         if section.name.startswith("source::"):
@@ -72,6 +111,7 @@ def load_splunk_fields(props):
             stanza_type = "sourcetype"
             stanza_list = [stanza_name]
         for current in section.options:
+            logger.info("Parsing parameter=%s of stanza=%s", current, stanza_name)
             field_data = section.options[current]
             for stanza_name in stanza_list:
                 if current.startswith("EXTRACT-"):
@@ -80,8 +120,18 @@ def load_splunk_fields(props):
                     yield return_props_eval(stanza_name, field_data, stanza_type)
 
 def return_props_extract(stanza_name, value, stanza_type):
-    name = f"{stanza_name}_field::{value.name}"
+    """
+    Returns the fields parsed from EXTRACT as pytest parameters
 
+    Args:
+        stanza_name(str): parameter from the stanza
+        stanza_type(str): stanza type
+        value(str): value of the parameter
+
+    Returns:
+        List of pytest parameters
+    """
+    name = f"{stanza_name}_field::{value.name}"
     regex = r"\(\?<([^\>]+)\>"
     matches = re.finditer(regex, value.value, re.MULTILINE)
     fields = []
@@ -90,7 +140,7 @@ def return_props_extract(stanza_name, value, stanza_type):
             groupNum = groupNum + 1
 
             fields.append(match.group(groupNum))
-
+    logger.info("Generated pytest.param for extract. stanza_type=%s stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
     return pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
 
 def return_props_eval(stanza_name, field_data, stanza_type):
