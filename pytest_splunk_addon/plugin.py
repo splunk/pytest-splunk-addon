@@ -125,7 +125,7 @@ def load_splunk_fields(props):
                     yield return_props_sourcetype(stanza_name, field_data, stanza_type)
 
 
-def return_props_extract(id, value):
+def return_props_extract(stanza_name, value, stanza_type):
     """
     Returns the fields parsed from EXTRACT as pytest parameters
 
@@ -136,7 +136,7 @@ def return_props_extract(id, value):
     Returns:
         List of pytest parameters
     """
-    name = f"{id}_field::{value.name}"
+    name = f"{stanza_name}_field::{value.name}"
 
     regex = r"\(\?<([^\>]+)\>"
     matches = re.finditer(regex, value.value, re.MULTILINE)
@@ -146,8 +146,27 @@ def return_props_extract(id, value):
             groupNum = groupNum + 1
 
             fields.append(match.group(groupNum))
-    LOGGER.info("Genrated pytest.param for extract. stanza_name=%s, fields=%s", id, str(fields))
-    return pytest.param({"sourcetype": id, "fields": fields}, id=name)
+
+    return pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
+
+
+def return_props_eval(stanza_name, field_data, stanza_type):
+    '''
+    Return the fields parsed from EVAL as pytest parameters
+      
+    Args:
+        @stanza_name(str): source/sourcetype name
+        @field_data(object): Eval field details
+        @stanza_type: Stanza type (source/sourcetype)
+
+    Return:
+        List of pytest parameters
+    '''
+    name = f"{stanza_type}_{stanza_name}_field::{field_data.name}"
+    regex = r"EVAL-(?P<FIELD>.*)"
+    fields = re.findall(regex, field_data.name, re.IGNORECASE)
+
+    return pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': fields}, id=name)
 
 
 def return_props_sourcetype(stanza_name, field_data, stanza_type):
