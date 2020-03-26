@@ -112,33 +112,36 @@ def load_splunk_fields(props):
             field_data = section.options[current]
             for stanza_name in stanza_list:
                 if current.startswith("EXTRACT-"):
-                    yield return_props_extract(stanza_name, field_data, stanza_type)
+                    yield from return_props_extract(stanza_type, stanza_name, field_data)
                 elif current.startswith("EVAL-"):
                     yield return_props_eval(stanza_name, field_data, stanza_type)
 
-def return_props_extract(stanza_name, value, stanza_type):
+def return_props_extract(stanza_type, stanza_name, props_property):
     """
     Returns the fields parsed from EXTRACT as pytest parameters
 
     Args:
+        stanza_type(str): stanza type (source/sourcetype)
         stanza_name(str): parameter from the stanza
-        stanza_type(str): stanza type
-        value(str): value of the parameter
+        props_property(str): value of the parameter
 
-    Returns:
-        List of pytest parameters
+    Yields:
+        generator of fields as pytest parameters
     """
-    name = f"{stanza_name}_field::{value.name}"
-    regex = r"\(\?<([^\>]+)\>"
-    matches = re.finditer(regex, value.value, re.MULTILINE)
+    name = f"{stanza_name}_field::{props_property.name}"
+    regex = r"\(\?<([^\>]+)\>(?:.*(?i)in\s+(.*))?"
+    matches = re.finditer(regex, props_property.value, re.MULTILINE)
     fields = []
     for matchNum, match in enumerate(matches, start=1):
         for groupNum in range(0, len(match.groups())):
             groupNum = groupNum + 1
-
-            fields.append(match.group(groupNum))
+            if match.group(groupNum):
+                field_test_name = "{}_{}".format(stanza_name, match.group(groupNum))
+                yield pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": [match.group(groupNum)]}, id=field_test_name)
+                fields.append(match.group(groupNum))
+    fields.reverse()
     logger.info("Generated pytest.param for extract. stanza_type=%s stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
-    return pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
+    yield pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
 
 def return_props_eval(stanza_name, field_data, stanza_type):
     '''
