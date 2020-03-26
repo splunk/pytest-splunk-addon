@@ -115,7 +115,7 @@ def get_lookup_fields(lookup_str):
         output_flag(bool): Whether or not the lookup has a OUTPUT or OUTPUTNEW keyword in it
     """
     
-    lookup_str = re.split(', | ', re.sub(' +', ' ', lookup_str))
+    lookup_str = list(filter(lambda x: x != "", re.split(',| ', re.sub(' +', ' ', lookup_str))))
     lookup_stanza = lookup_str[0]
     output_flag = False
     skip = 0
