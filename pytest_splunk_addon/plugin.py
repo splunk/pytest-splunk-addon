@@ -4,10 +4,7 @@ import logging
 import re
 import pytest
 from splunk_appinspect import App
-from pytest_splunk_addon.splunk import *
 from itertools import product
-
-from pytest_splunk_addon.splunk import *
 
 """
 Module usage:
