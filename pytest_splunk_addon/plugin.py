@@ -80,7 +80,7 @@ def load_splunk_props(props):
                 yield return_props_stanza_param(props_section, props_source, "source")
         else:
             LOGGER.info("parsing sourcetype stanza=%s", props_section)
-            yield return_props_stanza_param(props_section, props_section)
+            yield return_props_stanza_param(props_section, props_section, "sourcetype")
 
 
 def return_props_stanza_param(stanza_id, stanza_value, stanza_type):
