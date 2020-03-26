@@ -104,14 +104,14 @@ def load_splunk_fields(props):
     Yields:
         generator of fields
     """
-    for stanza_name in props.sects:
-        section = props.sects[stanza_name]
+    for props_section in props.sects:
+        section = props.sects[props_section]
         if section.name.startswith("source::"):
             stanza_type = "source"
-            stanza_list = list(get_list_of_sources(stanza_name))
+            stanza_list = list(get_list_of_sources(props_section))
         else:
             stanza_type = "sourcetype"
-            stanza_list = [stanza_name]
+            stanza_list = [props_section]
         for current in section.options:
             LOGGER.info("Parsing parameter=%s of stanza=%s", current, props_section)
             field_data = section.options[current]
