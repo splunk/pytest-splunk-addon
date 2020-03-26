@@ -1,17 +1,25 @@
 # -*- coding: utf-8 -*-
+"""
+Module usage:
+- splunk_appinspect: To parse the configuration files from Add-on package
+"""
 
 import logging
 import re
 import pytest
 from splunk_appinspect import App
+<<<<<<< HEAD
 from itertools import product
 
 """
 Module usage:
 - splunk_appinspect: To parse the configuration files from Add-on package
 """
+=======
 
-logger = logging.getLogger("pytest_splunk_addon")
+LOGGER = logging.getLogger("pytest_splunk_addon")
+>>>>>>> ACD-3975-fix-best-practices
+
 
 def pytest_configure(config):
     """
@@ -23,11 +31,11 @@ def pytest_configure(config):
 
 def pytest_generate_tests(metafunc):
     """
-    Parse the fixture dynamically. 
+    Parse the fixture dynamically.
     """
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_app"):
-            logger.info("generating testcases for splunk_app. fixture=%s", fixture)
+            LOGGER.info("generating testcases for splunk_app. fixture=%s", fixture)
             # Load associated test data
             tests = load_splunk_tests(metafunc.config.getoption("splunk_app"), fixture)
             metafunc.parametrize(fixture, tests)
@@ -36,7 +44,7 @@ def pytest_generate_tests(metafunc):
 def load_splunk_tests(splunk_app_path, fixture):
     """
     Utility function to load the test cases with the App fields
-    
+
     Args:
         splunk_app_path(string): Path of the Splunk App
         fixture: The list of fixtures
@@ -44,15 +52,15 @@ def load_splunk_tests(splunk_app_path, fixture):
     Yields:
         List of knowledge objects as pytest parameters
     """
-    logger.info("Initializing App parsing mechanism.")
+    LOGGER.info("Initializing App parsing mechanism.")
     app = App(splunk_app_path, python_analyzer_enable=False)
     if fixture.endswith("props"):
         props = app.props_conf()
-        logger.info("Successfully parsed props configurations")
+        LOGGER.info("Successfully parsed props configurations")
         yield from load_splunk_props(props)
     elif fixture.endswith("fields"):
         props = app.props_conf()
-        logger.info("Successfully parsed props configurations")
+        LOGGER.info("Successfully parsed props configurations")
         yield from load_splunk_fields(props)
     else:
         yield None
@@ -70,13 +78,13 @@ def load_splunk_props(props):
     """
     for props_section in props.sects:
         if props_section.startswith("host::"):
-            logger.info("Skipping host:: stanza=%s", props_section)
+            LOGGER.info("Skipping host:: stanza=%s", props_section)
             continue
         elif props_section.startswith("source::"):
-            logger.info("Skipping source:: stanza=%s", props_section)
+            LOGGER.info("Skipping source:: stanza=%s", props_section)
             continue
         else:
-            logger.info("parsing sourcetype stanza=%s", props_section)
+            LOGGER.info("parsing sourcetype stanza=%s", props_section)
             yield return_props_sourcetype_param(props_section, props_section)
 
 
@@ -85,7 +93,7 @@ def return_props_sourcetype_param(id, value):
     Convert sourcetype to pytest parameters
     """
     idf = f"sourcetype::{id}"
-    logger.info("Generated pytest.param of sourcetype with id=%s", idf)
+    LOGGER.info("Generated pytest.param of sourcetype with id=%s", idf)
     return pytest.param({"field": "sourcetype", "value": value}, id=idf)
 
 
@@ -108,7 +116,7 @@ def load_splunk_fields(props):
             stanza_type = "sourcetype"
             stanza_list = [stanza_name]
         for current in section.options:
-            logger.info("Parsing parameter=%s of stanza=%s", current, stanza_name)
+            LOGGER.info("Parsing parameter=%s of stanza=%s", current, stanza_name)
             field_data = section.options[current]
             for stanza_name in stanza_list:
                 if current.startswith("EXTRACT-"):
@@ -140,7 +148,7 @@ def return_props_extract(stanza_type, stanza_name, props_property):
                 yield pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": [match.group(groupNum)]}, id=field_test_name)
                 fields.append(match.group(groupNum))
     fields.reverse()
-    logger.info("Generated pytest.param for extract. stanza_type=%s stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
+    LOGGER.info("Generated pytest.param for extract. stanza_type=%s stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
     yield pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
 
 def return_props_eval(stanza_name, field_data, stanza_type):
