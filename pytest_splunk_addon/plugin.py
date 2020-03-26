@@ -55,6 +55,7 @@ def load_splunk_tests(splunk_app_path, fixture):
         yield from load_splunk_fields(props)
     elif fixture.endswith("eventtypes"):
         eventtypes = app.eventtypes_conf()
+        LOGGER.info("Successfully parsed eventtypes configurations")
         yield from load_splunk_eventtypes(eventtypes)
     else:
         yield None
