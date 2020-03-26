@@ -114,30 +114,39 @@ def get_lookup_fields(lookup_str):
         output_fields(list): The fields in the output of the lookup
         output_flag(bool): Whether or not the lookup has a OUTPUT or OUTPUTNEW keyword in it
     """
-    input_output_field_list = []
-    # Remove lookup name (first word)
-    lookup_stanza = re.split(', | ', lookup_str)[0]
-    lookup_str = " ".join(lookup_str.split(" ")[1:])
+    
+    lookup_str = re.split(', | ', re.sub(' +', ' ', lookup_str))
+    lookup_stanza = lookup_str[0]
     output_flag = False
-    if " OUTPUT " in lookup_str or " OUTPUTNEW " in lookup_str:
-        output_flag = True
-    # 0: Take the left side of the OUTPUT as input fields
-    # -1: Take the right side of the OUTPUT as output fields
-    for input_output_index in [0, -1]:
-        if " OUTPUT " not in lookup_str and " OUTPUTNEW " not in lookup_str:
-            lookup_str += " OUTPUT "
+    skip = 0
+    input_list = []
+    output_list = []
 
-        # Take input fields or output fields depending on the input_output_index
-        input_output_str = lookup_str.split(" OUTPUT ")[input_output_index].split(" OUTPUTNEW ")[input_output_index]
+    # Parse out the fields we want from the props.conf lookup setting
+    for iterator in range(1, len(lookup_str)):
+        if skip > 0:
+            skip -= 1
+            continue
 
-        field_list = []
-        for each_field_group in input_output_str.split(","):
-            field_name = each_field_group.split(" as ")[-1].split(" AS ")[-1].strip()
-            if field_name:
-                field_list.append(field_name)
-        input_output_field_list.append(field_list)
+        if lookup_str[iterator] == "OUTPUT" or lookup_str[iterator] == "OUTPUTNEW":
+            output_flag = True
+            continue
 
-    return {"lookup_stanza": lookup_stanza, "input_fields": input_output_field_list[0], "output_fields": input_output_field_list[1], "output_flag": output_flag}
+        if output_flag is False:
+            if iterator + 2 < len(lookup_str) and re.match("as", lookup_str[iterator+1], re.IGNORECASE) is not None:
+                input_list.append(lookup_str[iterator+2].strip())
+                skip = 2
+                continue
+            else:
+                input_list.append(lookup_str[iterator].strip())
+        else:
+            if iterator + 2 < len(lookup_str) and re.match("as", lookup_str[iterator+1], re.IGNORECASE) is not None:
+                output_list.append(lookup_str[iterator+2].strip())
+                skip = 2
+                continue
+            else:
+                output_list.append(lookup_str[iterator].strip())
+    return {"input_fields": input_list, "output_fields": output_list, "lookup_stanza": lookup_stanza, "output_flag": output_flag}
 
 
 def return_lookup_extract(id, value, app, splunk_app_path):
