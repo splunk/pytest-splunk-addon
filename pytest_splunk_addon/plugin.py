@@ -61,6 +61,15 @@ def load_splunk_tests(splunk_app_path, fixture):
 
 
 def load_splunk_tags(tags):
+    """
+    Parse the tags.conf of the App & yield stanzas
+
+    Args:
+        tags(Object): The configuration object of tags
+
+    Yields:
+        generator of stanzas from the tags
+    """
     for stanza in tags.sects:
         kv = tags.sects[stanza]
         for key in kv.options:
@@ -68,10 +77,20 @@ def load_splunk_tags(tags):
             yield return_tags(options, stanza)
 
 
-def return_tags(options, stanza):
+def return_tags(tags_property, stanza_name):
+    """
+    Returns the fields parsed from tags as pytest parameters
+
+    Args:
+        tags_property(Object): The configuration object of tags
+        stanza_name(str): Name of Stanza
+
+    Returns:
+        List of pytest parameters
+    """
     return pytest.param(
-        {"tag_query": stanza, options.value + "_tag": options.name},
-        id=stanza + "|" + options.name + "_" + options.value,
+        {"tag_query": stanza_name, tags_property.value + "_tag": tags_property.name},
+        id=stanza_name + " | " + tags_property.name + "_" + tags_property.value,
     )
 
 

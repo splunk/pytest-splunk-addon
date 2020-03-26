@@ -128,17 +128,17 @@ class Basic:
 
         if splunk_app_tags.get("enabled_tag"):
             tag = splunk_app_tags["enabled_tag"]
-            tag_enabled = True
+            is_tag_enabled = True
         else:
             tag = splunk_app_tags["disabled_tag"]
-            tag_enabled = False
+            is_tag_enabled = False
 
         tag_query = splunk_app_tags["tag_query"]
         self.logger.info(f"Testing for tag {tag} with tag_query {tag_query}")
 
         record_property("Event_with", tag_query)
         record_property("tag", tag)
-        record_property("tag_enabled", tag_enabled)
+        record_property("is_tag_enabled", is_tag_enabled)
 
         search = (
             f"search (index=* OR index=_internal) {tag_query} AND tag={tag}"
@@ -151,7 +151,7 @@ class Basic:
 
         record_property("search", search)
 
-        assert result is tag_enabled
+        assert result is is_tag_enabled
 
     # # This test ensures the contained samples will produce at lease one event per eventtype
     # @pytest.mark.splunk_addon_searchtime
