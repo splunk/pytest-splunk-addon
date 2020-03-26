@@ -17,8 +17,12 @@ def pytest_configure(config):
     """
     Setup configuration after command-line options are parsed
     """
-    config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
-    config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
+    config.addinivalue_line(
+        "markers", "splunk_addon_internal_errors: Check Errors"
+    )
+    config.addinivalue_line(
+        "markers", "splunk_addon_searchtime: Test search time only"
+    )
 
 
 def pytest_generate_tests(metafunc):
@@ -27,9 +31,13 @@ def pytest_generate_tests(metafunc):
     """
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_app"):
-            LOGGER.info("generating testcases for splunk_app. fixture=%s", fixture)
+            LOGGER.info(
+                "generating testcases for splunk_app. fixture=%s", fixture
+            )
             # Load associated test data
-            tests = load_splunk_tests(metafunc.config.getoption("splunk_app"), fixture)
+            tests = load_splunk_tests(
+                metafunc.config.getoption("splunk_app"), fixture
+            )
             metafunc.parametrize(fixture, tests)
 
 
@@ -112,9 +120,17 @@ def load_splunk_fields(props):
             props_property = section.options[current]
             for stanza_name in stanza_list:
                 if current.startswith("EXTRACT-"):
-                    yield return_props_extract(stanza_type, stanza_name, props_property)
+                    yield return_props_extract(
+                        stanza_type, stanza_name, props_property
+                    )
                 elif current.startswith("EVAL-"):
-                    yield return_props_eval(stanza_type, stanza_name, props_property)
+                    yield return_props_eval(
+                        stanza_type, stanza_name, props_property
+                    )
+                elif current.startswith("LOOKUP-"):
+                    yield return_props_lookup(
+                        stanza_type, stanza_name, props_property
+                    )
 
 def return_props_extract(stanza_type, stanza_name, options):
     """
@@ -137,14 +153,20 @@ def return_props_extract(stanza_type, stanza_name, options):
             groupNum = groupNum + 1
 
             fields.append(match.group(groupNum))
-    
-    LOGGER.info("Genrated pytest.param for extract. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, id, str(fields))
-    return pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
+
+    LOGGER.info("Genrated pytest.param for extract.\
+                stanza_type=%s, stanza_name=%s, fields=%s",
+                stanza_type, id, str(fields))
+    return pytest.param(
+        {'stanza_type': stanza_type,
+         "stanza_name": stanza_name,
+         "fields": fields},
+        id=name)
 
 def return_props_eval(stanza_type, stanza_name, props_property):
     '''
     Return the fields parsed from EVAL as pytest parameters
-      
+
     Args:
         stanza_type: Stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
@@ -157,13 +179,20 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     regex = r"EVAL-(?P<FIELD>.*)"
     fields = re.findall(regex, props_property.name, re.IGNORECASE)
 
-    LOGGER.info("Genrated pytest.param for eval. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, id, str(fields))
-    return pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': fields}, id=name)
+    LOGGER.info(
+        "Genrated pytest.param for eval.\
+        stanza_type=%s, stanza_name=%s, fields=%s",
+        stanza_type, id, str(fields))
+    return pytest.param(
+        {'stanza_type': stanza_type,
+         'stanza_name': stanza_name,
+         'fields': fields},
+        id=name)
 
 def get_list_of_sources(source):
     '''
     Implement generator object of source list
-      
+
     Args:
         source(str): Source name
 
@@ -179,3 +208,74 @@ def get_list_of_sources(source):
     template = re.sub(r'\([^\)]+\)', "{}",value)
     for each_permutation in product(*sub_group_list):
         yield template.format(*each_permutation)
+
+def get_lookup_fields(lookup_str):
+    '''
+    Implement dictionary for the input and output fields of LOOKUP
+
+    Args:
+        source(str): LOOKUP value
+
+    Returns:
+        dictionary of the input fields and output fields of LOOKUP
+    '''
+    input_output_field_list = []
+    # Remove lookup name (first word)
+    lookup_str = " ".join(lookup_str.split(" ")[1:])
+
+    # 0: Take the left side of the OUTPUT as input fields
+    # -1: Take the right side of the OUTPUT as output fields
+    for input_output_index in [0, -1]:
+        if " OUTPUT " not in lookup_str and " OUTPUTNEW " not in lookup_str:
+            lookup_str += " OUTPUT "
+
+        # Take input fields/output fields depending on the input_output_index
+        input_output_str = lookup_str.split(" OUTPUT ")[
+            input_output_index
+        ].split(" OUTPUTNEW ")[input_output_index]
+
+        field_list = []
+        for each_field_group in input_output_str.split(","):
+            field_name = (
+                each_field_group.split(" as ")[-1].split(" AS ")[-1].strip()
+            )
+            if field_name:
+                field_list.append(field_name)
+        input_output_field_list.append(field_list)
+
+    return {
+        "input_fields": input_output_field_list[0],
+        "output_fields": input_output_field_list[1],
+    }
+
+def return_props_lookup(stanza_type, stanza_name, props_property):
+    '''
+    Return the input fields parsed from LOOKUP as pytest parameters
+
+    Args:
+        stanza_type: Stanza type (source/sourcetype)
+        stanza_name(str): source/sourcetype name
+        props_property(object): LOOKUP field details
+
+    Return:
+        List of pytest parameters
+    '''
+    input_fields = get_lookup_fields(props_property.value)["input_fields"]
+    lookup_test_name = f"{stanza_name}::{props_property.name}"
+    for input_field in input_fields:
+        field_test_name = "{}_field::{}".format(stanza_name, input_field)
+        yield pytest.param(
+            {
+                stanza_type: stanza_name,
+                "fields": input_field
+            },
+            id=field_test_name
+        )
+
+    return pytest.param(
+        {
+            stanza_type: stanza_name,
+            "fields": input_fields
+        },
+        id=lookup_test_name
+    )
