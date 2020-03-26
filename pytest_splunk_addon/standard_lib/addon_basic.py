@@ -5,7 +5,7 @@ import pprint
 
 
 class Basic:
-    logger = logging.getLogger()
+    LOGGER = logging.getLogger()
 
     @pytest.mark.splunk_addon_internal_errors
     def test_splunk_internal_errors(self, splunk_search_util, record_property, caplog):
@@ -27,12 +27,20 @@ class Basic:
 
     # This test ensures the contained samples will produce at lease one event per sourcetype
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype(
-        self, splunk_search_util, splunk_app_props, record_property, caplog
-    ):
+    def test_sourcetype(self, splunk_search_util, splunk_app_props, record_property, caplog):
+        """
+        Test case to check props stanza mentioned in props.conf
+        
+        This test case checks props stanza is not empty, blank and dash value.
+        Args:
+            splunk_search_util(helmut_lib.SearchUtil.SearchUtil): Object that helps to search on Splunk.
+            splunk_props_fields(fixture): Test for stanza.
+            record_property(fixture):  Document facts of test cases.
+            caplog : fixture to capture logs. 
+        """
         record_property(splunk_app_props["field"], splunk_app_props["value"])
         search = f"search (index=_internal OR index=*) AND {splunk_app_props['field']}=\"{splunk_app_props['value']}\""
-
+        self.LOGGER.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=10, retries=8
@@ -42,16 +50,26 @@ class Basic:
         assert result == True
 
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype_fields(
-        self, splunk_search_util, splunk_app_fields, record_property, caplog
-    ):
-        record_property("sourcetype", splunk_app_fields["sourcetype"])
+    def test_sourcetype_fields(self, splunk_search_util, splunk_app_fields, record_property, caplog):
+        """
+        Test case to check props property mentioned in props.conf
+        
+        This test case checks props field is not empty, blank and dash value.
+        Args:
+            splunk_search_util(helmut_lib.SearchUtil.SearchUtil): Object that helps to search on Splunk.
+            splunk_app_fields(fixture): Test for stanza field.
+            record_property(fixture):  Document facts of test cases.
+            caplog : fixture to capture logs. 
+        """
+        record_property("stanza_name", splunk_app_fields["stanza_name"])
+        record_property("stanza_type", splunk_app_fields["stanza_type"])
         record_property("fields", splunk_app_fields["fields"])
 
-        search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']}"
+        search = f"search (index=_internal OR index=*) {splunk_app_fields['stanza_type']}={splunk_app_fields['stanza_name']}"
         for f in splunk_app_fields["fields"]:
             search = search + f' AND ({f}=* AND NOT {f}="-" AND NOT {f}="")'
-
+        
+        self.LOGGER.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=10, retries=3
