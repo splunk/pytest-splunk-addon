@@ -111,7 +111,7 @@ def load_splunk_fields(props):
             stanza_list = list(get_list_of_sources(stanza_name))
         else:
             stanza_type = "sourcetype"
-            stanza_list = [props_section]
+            stanza_list = [stanza_name]
         for current in section.options:
             LOGGER.info("Parsing parameter=%s of stanza=%s", current, stanza_name)
             field_data = section.options[current]
