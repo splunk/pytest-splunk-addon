@@ -8,17 +8,14 @@ import logging
 import re
 import pytest
 from splunk_appinspect import App
-<<<<<<< HEAD
 from itertools import product
 
 """
 Module usage:
 - splunk_appinspect: To parse the configuration files from Add-on package
 """
-=======
 
 LOGGER = logging.getLogger("pytest_splunk_addon")
->>>>>>> ACD-3975-fix-best-practices
 
 
 def pytest_configure(config):
