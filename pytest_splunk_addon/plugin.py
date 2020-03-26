@@ -110,11 +110,14 @@ def load_splunk_fields(props):
         for current in section.options:
             LOGGER.info("Parsing parameter=%s of stanza=%s", current, stanza_name)
             field_data = section.options[current]
-            for stanza_name in stanza_list:
+            for each_stanza_name in stanza_list:
                 if current.startswith("EXTRACT-"):
-                    yield from return_props_extract(stanza_type, stanza_name, field_data)
+                    yield from return_props_extract(
+                        stanza_type, each_stanza_name, field_data
+                    )
                 elif current.startswith("EVAL-"):
-                    yield return_props_eval(stanza_name, field_data, stanza_type)
+                    yield return_props_eval(each_stanza_name, field_data, stanza_type)
+
 
 def return_props_extract(stanza_type, stanza_name, props_property):
     """
@@ -122,30 +125,47 @@ def return_props_extract(stanza_type, stanza_name, props_property):
 
     Args:
         stanza_type(str): stanza type (source/sourcetype)
-        stanza_name(str): parameter from the stanza
-        props_property(str): value of the parameter
-
+        stanza_name(str): source/sourcetype name
+        props_property(object): EXTRACT field details
     Yields:
         generator of fields as pytest parameters
     """
-    name = f"{stanza_name}::{props_property.name}"
+    test_name = f"{stanza_name}::{props_property.name}"
     regex = r"\(\?<([^\>]+)\>(?:.*(?i)in\s+(.*))?"
     matches = re.finditer(regex, props_property.value, re.MULTILINE)
     fields = []
-    for matchNum, match in enumerate(matches, start=1):
-        for groupNum in range(0, len(match.groups())):
-            groupNum = groupNum + 1
-            if match.group(groupNum):
-                field_test_name = "{}_field::{}".format(stanza_name, match.group(groupNum))
-                yield pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": [match.group(groupNum)]}, id=field_test_name)
-                fields.append(match.group(groupNum))
+    for match_num, match in enumerate(matches, start=1):
+        for group_num in range(0, len(match.groups())):
+            group_num = group_num + 1
+            if match.group(group_num):
+                field_test_name = "{}_field::{}".format(
+                    stanza_name, match.group(group_num)
+                )
+                yield pytest.param(
+                    {
+                        "stanza_type": stanza_type,
+                        "stanza_name": stanza_name,
+                        "fields": [match.group(group_num)],
+                    },
+                    id=field_test_name,
+                )
+                fields.append(match.group(group_num))
     if fields:
         fields.reverse()
-        LOGGER.info("Generated pytest.param for extract. stanza_type=%s stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
-        yield pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
+        LOGGER.info(
+            "Generated pytest.param for extract. stanza_type=%s stanza_name=%s, fields=%s",
+            stanza_type,
+            stanza_name,
+            str(fields),
+        )
+        yield pytest.param(
+            {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
+            id=test_name,
+        )
+
 
 def return_props_eval(stanza_name, field_data, stanza_type):
-    '''
+    """
     Return the fields parsed from EVAL as pytest parameters
       
     Args:
@@ -155,26 +175,30 @@ def return_props_eval(stanza_name, field_data, stanza_type):
 
     Return:
         List of pytest parameters
-    '''
+    """
     name = f"{stanza_type}_{stanza_name}_field::{field_data.name}"
     regex = r"EVAL-(?P<FIELD>.*)"
     fields = re.findall(regex, field_data.name, re.IGNORECASE)
 
-    return pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': fields}, id=name)
+    return pytest.param(
+        {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
+        id=name,
+    )
+
 
 def get_list_of_sources(source):
-    '''
+    """
     Implement generator object of source list
       
     Args:
         @param source(str): Source name
-    '''
+    """
     match_obj = re.search(r"source::(.*)", source)
     value = match_obj.group(1).replace("...", "*")
     sub_groups = re.findall("\([^\)]+\)", value)
     sub_group_list = []
     for each_group in sub_groups:
         sub_group_list.append(list(each_group.strip("()").split("|")))
-    template = re.sub(r'\([^\)]+\)', "{}",value)
+    template = re.sub(r"\([^\)]+\)", "{}", value)
     for each_permutation in product(*sub_group_list):
         yield template.format(*each_permutation)

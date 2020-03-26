@@ -27,7 +27,9 @@ class Basic:
 
     # This test ensures the contained samples will produce at lease one event per sourcetype
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype(self, splunk_search_util, splunk_app_props, record_property, caplog):
+    def test_sourcetype(
+        self, splunk_search_util, splunk_app_props, record_property, caplog
+    ):
         record_property(splunk_app_props["field"], splunk_app_props["value"])
         search = f"search (index=_internal OR index=*) AND {splunk_app_props['field']}=\"{splunk_app_props['value']}\""
 
@@ -40,13 +42,15 @@ class Basic:
         assert result == True
 
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype_fields(self, splunk_search_util, splunk_app_fields, record_property, caplog):
+    def test_sourcetype_fields(
+        self, splunk_search_util, splunk_app_fields, record_property, caplog
+    ):
         """
         Test case to check props property mentioned in props.conf
         
         This test case checks props field is not empty, blank and dash value.
         Args:
-            splunk_search_util(helmut_lib.SearchUtil.SearchUtil): Object that helps to search on Splunk.
+            splunk_search_util(SearchUtil): Object that helps to search on Splunk.
             splunk_app_fields(fixture): Test for stanza field.
             record_property(fixture):  Document facts of test cases.
             caplog : fixture to capture logs. 
@@ -58,7 +62,7 @@ class Basic:
         search = f"search (index=_internal OR index=*) {splunk_app_fields['stanza_type']}={splunk_app_fields['stanza_name']}"
         for f in splunk_app_fields["fields"]:
             search = search + f' AND ({f}=* AND NOT {f}="-" AND NOT {f}="")'
-        
+
         self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
@@ -69,13 +73,15 @@ class Basic:
         assert result == True
 
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype_fields_no_dash(self, splunk_search_util, splunk_app_fields, record_property, caplog):
+    def test_sourcetype_fields_no_dash(
+        self, splunk_search_util, splunk_app_fields, record_property, caplog
+    ):
         """
         Test case to check props property mentioned in props.conf
         
         This test case checks negative scenario for field dash value.
         Args:
-            splunk_search_util(helmut_lib.SearchUtil.SearchUtil): Object that helps to search on Splunk.
+            splunk_search_util(SearchUtil): Object that helps to search on Splunk.
             splunk_app_fields(fixture): Test for stanza field.
             record_property(fixture):  Document facts of test cases.
             caplog : fixture to capture logs. 
@@ -90,7 +96,7 @@ class Basic:
             search = search + f' {op} {f}="-"'
             op = "OR"
         search = search + ")"
-        
+
         self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
@@ -101,13 +107,15 @@ class Basic:
         assert result == False
 
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype_fields_no_empty(self, splunk_search_util, splunk_app_fields, record_property, caplog):
+    def test_sourcetype_fields_no_empty(
+        self, splunk_search_util, splunk_app_fields, record_property, caplog
+    ):
         """
         Test case to check props property mentioned in props.conf
         
         This test case checks negative scenario for field blank value.
         Args:
-            splunk_search_util(helmut_lib.SearchUtil.SearchUtil): Object that helps to search on Splunk.
+            splunk_search_util(SearchUtil): Object that helps to search on Splunk.
             splunk_app_fields(fixture): Test for stanza field.
             record_property(fixture):  Document facts of test cases.
             caplog : fixture to capture logs. 
@@ -122,7 +130,7 @@ class Basic:
             search = search + f' {op} {f}=""'
             op = "OR"
         search = search + ")"
-        
+
         self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
