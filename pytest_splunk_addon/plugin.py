@@ -144,26 +144,22 @@ def load_splunk_eventtypes(eventtypes):
     """
 
     for eventtype_section in eventtypes.sects:
-        yield return_eventtypes_param(eventtype_section, eventtype_section)
+        LOGGER.info("parsing eventtype stanza=%s", eventtype_section)
+        yield return_eventtypes_param(eventtype_section)
             
-def return_eventtypes_param(id, value):
+def return_eventtypes_param(stanza_id):
 
     """
     Returns the eventtype parsed from the eventtypes.conf file as pytest parameters
     Args:
-        id(str): parameter from the stanza
-        value(str): value of the parmeter
+        stanza_id(str): parameter from the stanza
     Returns:
         List of pytest parameters
     """
-    regex = r"(^[a-zA-Z_]+)(-%[a-zA-Z]+%)+$"
-    result = re.match(regex, value)
 
-    if result:
-        value = "{}{}".format(result.group(1),'-*')
-
-    idf = f"eventtype::{id}" 
+    idf = f"eventtype::{stanza_id}" 
+    LOGGER.info("Generated pytest.param of eventtype with id=%s", idf)
     return pytest.param({
-        "field": "eventtype", "value": value},
+        "field": "eventtype", "value": stanza_id},
         id=idf
         )

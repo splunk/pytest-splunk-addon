@@ -119,6 +119,9 @@ class Basic:
         record_property(splunk_app_eventtypes["field"], splunk_app_eventtypes["value"])
         search = f"search (index=_internal OR index=*) AND {splunk_app_eventtypes['field']}=\"{splunk_app_eventtypes['value']}\""
 
+        self.logger.info("Testing eventtype =%s", splunk_app_eventtypes['value'])
+        self.logger.debug("Search query for testing =%s", search)
+        
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=10, retries=8
