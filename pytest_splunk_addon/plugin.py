@@ -10,11 +10,6 @@ import pytest
 from splunk_appinspect import App
 from itertools import product
 
-"""
-Module usage:
-- splunk_appinspect: To parse the configuration files from Add-on package
-"""
-
 LOGGER = logging.getLogger("pytest_splunk_addon")
 
 
@@ -133,7 +128,7 @@ def return_props_extract(stanza_type, stanza_name, props_property):
     Yields:
         generator of fields as pytest parameters
     """
-    name = f"{stanza_name}_field::{props_property.name}"
+    name = f"{stanza_name}::{props_property.name}"
     regex = r"\(\?<([^\>]+)\>(?:.*(?i)in\s+(.*))?"
     matches = re.finditer(regex, props_property.value, re.MULTILINE)
     fields = []
@@ -141,7 +136,7 @@ def return_props_extract(stanza_type, stanza_name, props_property):
         for groupNum in range(0, len(match.groups())):
             groupNum = groupNum + 1
             if match.group(groupNum):
-                field_test_name = "{}_{}".format(stanza_name, match.group(groupNum))
+                field_test_name = "{}_field::{}".format(stanza_name, match.group(groupNum))
                 yield pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": [match.group(groupNum)]}, id=field_test_name)
                 fields.append(match.group(groupNum))
     fields.reverse()
