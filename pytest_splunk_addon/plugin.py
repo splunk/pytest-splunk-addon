@@ -118,18 +118,18 @@ def load_splunk_fields(props):
         for current in section.options:
             LOGGER.info("Parsing %s parameter=%s of stanza=%s", stanza_type, current, props_section)
             props_property = section.options[current]
-            for stanza_name in stanza_list:
+            for each_stanza_name in stanza_list:
                 if current.startswith("EXTRACT-"):
                     yield return_props_extract(
-                        stanza_type, stanza_name, props_property
+                        stanza_type, each_stanza_name, props_property
                     )
                 elif current.startswith("EVAL-"):
                     yield return_props_eval(
-                        stanza_type, stanza_name, props_property
+                        stanza_type, each_stanza_name, props_property
                     )
                 elif current.startswith("LOOKUP-"):
-                    yield return_props_lookup(
-                        stanza_type, stanza_name, props_property
+                    yield from return_props_lookup(
+                        stanza_type, each_stanza_name, props_property
                     )
 
 def return_props_extract(stanza_type, stanza_name, options):
@@ -266,16 +266,18 @@ def return_props_lookup(stanza_type, stanza_name, props_property):
         field_test_name = "{}_field::{}".format(stanza_name, input_field)
         yield pytest.param(
             {
-                stanza_type: stanza_name,
-                "fields": input_field
+                'stanza_type': stanza_type,
+                'stanza_name': stanza_name,
+                'fields': input_field
             },
             id=field_test_name
         )
 
-    return pytest.param(
+    yield pytest.param(
         {
-            stanza_type: stanza_name,
-            "fields": input_fields
+            'stanza_type': stanza_type,
+            'stanza_name': stanza_name,
+            'fields': input_fields
         },
         id=lookup_test_name
     )
