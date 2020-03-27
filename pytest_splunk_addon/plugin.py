@@ -74,9 +74,7 @@ def load_splunk_props(props):
             continue
         elif props_section.startswith("source::"):
             LOGGER.info("Parsing source stanza=%s", props_section)
-            list_of_sources = []
-            list_of_sources = list(get_list_of_sources(props_section))
-            for props_source in list_of_sources: 
+            for props_source in list(get_list_of_sources(props_section)): 
                 yield return_props_stanza_param(props_section, props_source, "source")
         else:
             LOGGER.info("parsing sourcetype stanza=%s", props_section)
@@ -95,22 +93,22 @@ def return_props_stanza_param(stanza_id, stanza_value, stanza_type):
         List of pytest parameters
     """
     if stanza_type == "sourcetype":
-        idf = f"sourcetype::{stanza_id}"
+        test_name = f"sourcetype::{stanza_id}"
     else:
-        idf = f"{stanza_id}"
-    LOGGER.info("Genrated pytest.param for source/sourcetype. stanza_type=%s, stanza_value=%s, stanza_id=%s", stanza_type, stanza_value, str(idf))
-    return pytest.param({"field": stanza_type, "value": stanza_value}, id=idf)
+        test_name = f"{stanza_id}"
+    LOGGER.info("Genrated pytest.param for source/sourcetype. stanza_type=%s, stanza_value=%s, stanza_id=%s", stanza_type, stanza_value, str(test_name))
+    return pytest.param({"field": stanza_type, "value": stanza_value}, id=test_name)
 
 
 def load_splunk_fields(props):
     """
-    Parse the App configuration files & yield fields
+    Parse the props.conf of the App & yield stanzas
 
     Args:
-        props(): The configuration object of props
+        props(splunk_appinspect.configuration_file.ConfigurationFile): The configuration object of props
 
     Yields:
-        generator of fields
+        generator of stanzas from the props
     """
     for stanza_name in props.sects:
         section = props.sects[stanza_name]
@@ -121,7 +119,7 @@ def load_splunk_fields(props):
             stanza_type = "sourcetype"
             stanza_list = [stanza_name]
         for current in section.options:
-            LOGGER.info("Parsing parameter=%s of stanza=%s", current, stanza_name)
+            LOGGER.info("Parsing %s parameter=%s of stanza=%s", stanza_type, current, stanza_name)
             props_property = section.options[current]
             for each_stanza_name in stanza_list:
                 if current.startswith("EXTRACT-"):
@@ -140,6 +138,8 @@ def return_props_extract(stanza_type, stanza_name, options):
         stanza_type(str): Stanza type (source/sourcetype)
         stanza_name(str): parameter from the stanza
         options(object): EXTRACT field details
+
+
     Returns:
         List of pytest parameters
     """
@@ -165,6 +165,11 @@ def return_props_eval(stanza_type, stanza_name, props_property):
         stanza_type: Stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
         props_property(object): Eval field details
+        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): The configuration setting object of eval
+            properties used:
+                name : key in the configuration settings
+                value : value of the respective name in the configuration
+
     Return:
         List of pytest parameters
     '''
@@ -172,7 +177,7 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     regex = r"EVAL-(?P<FIELD>.*)"
     fields = re.findall(regex, props_property.name, re.IGNORECASE)
 
-    LOGGER.info("Genrated pytest.param for eval. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, id, str(fields))
+    LOGGER.info("Genrated pytest.param for eval. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
     return pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': fields}, id=test_name)
 
 
@@ -199,7 +204,10 @@ def get_list_of_sources(source):
     Implement generator object of source list
       
     Args:
-        @param source(str): Source name
+        source(str): Source name
+
+    Yields:
+        generator of source name
     '''
     match_obj = re.search(r"source::(.*)", source)
     value = match_obj.group(1).replace("...", "*")

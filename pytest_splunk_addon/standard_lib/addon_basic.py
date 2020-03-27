@@ -5,7 +5,7 @@ import pprint
 
 
 class Basic:
-    LOGGER = logging.getLogger()
+    logger = logging.getLogger()
 
     @pytest.mark.splunk_addon_internal_errors
     def test_splunk_internal_errors(self, splunk_search_util, record_property, caplog):
@@ -25,9 +25,9 @@ class Basic:
             pp.pprint(results.as_list)
         assert result == True
 
-    # This test ensures the contained samples will produce at lease one event per sourcetype
+    # This test ensures the contained samples will produce at lease one event per sourcetype/source
     @pytest.mark.splunk_addon_searchtime
-    def test_props(self, splunk_search_util, splunk_app_props, record_property, caplog):
+    def test_props_stanza(self, splunk_search_util, splunk_app_props, record_property, caplog):
         """
         Test case to check props stanza mentioned in props.conf
         
@@ -38,6 +38,7 @@ class Basic:
             record_property(fixture):  Document facts of test cases.
             caplog : fixture to capture logs. 
         """
+
         record_property(splunk_app_props["field"], splunk_app_props["value"])
         search = f"search (index=_internal OR index=*) AND {splunk_app_props['field']}=\"{splunk_app_props['value']}\""
         self.LOGGER.debug(f"Executing the search query: {search}")
@@ -69,7 +70,7 @@ class Basic:
         for f in splunk_app_fields["fields"]:
             search = search + f' AND ({f}=* AND NOT {f}="-" AND NOT {f}="")'
         
-        self.LOGGER.debug(f"Executing the search query: {search}")
+        self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=10, retries=3
@@ -101,7 +102,7 @@ class Basic:
             op = "OR"
         search = search + ")"
         
-        self.LOGGER.debug(f"Executing the search query: {search}")
+        self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=1, retries=1
@@ -133,7 +134,7 @@ class Basic:
             op = "OR"
         search = search + ")"
         
-        self.LOGGER.debug(f"Executing the search query: {search}")
+        self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=1, retries=1
