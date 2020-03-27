@@ -136,7 +136,7 @@ def test_splunk_app_fiction(testdir):
         "\n".join(result.stdout.lines),
         "\n".join(result.stderr.lines),
     )
-    result.assert_outcomes(passed=32, failed=0)
+    result.assert_outcomes(passed=35, failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
