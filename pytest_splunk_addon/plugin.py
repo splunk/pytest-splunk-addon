@@ -20,6 +20,19 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
     config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
 
+def dedup_tests(test_list):
+    """
+    Deduplicate the test case parameters based on param.id
+    Args:
+        test_list(Generator): Generator of pytest.param
+    Yields:
+        Generator: De-duplicated pytest.param
+    """
+    seen_tests = set()
+    for each_param in test_list:
+        if each_param.id not in seen_tests:
+            yield each_param
+            seen_tests.add(each_param.id)
 
 def pytest_generate_tests(metafunc):
     """
@@ -30,7 +43,7 @@ def pytest_generate_tests(metafunc):
             LOGGER.info("generating testcases for splunk_app. fixture=%s", fixture)
             # Load associated test data
             tests = load_splunk_tests(metafunc.config.getoption("splunk_app"), fixture)
-            metafunc.parametrize(fixture, tests)
+            metafunc.parametrize(fixture, dedup_tests(tests))
 
 
 def load_splunk_tests(splunk_app_path, fixture):
@@ -126,7 +139,10 @@ def return_props_extract(stanza_type, stanza_name, props_property):
     Args:
         stanza_type(str): stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
-        props_property(object): EXTRACT field details
+        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): The configuration setting object of EXTRACT.
+            properties used:
+                    name : key in the configuration settings
+                    value : value of the respective name in the configuration
     Yields:
         generator of fields as pytest parameters
     """
