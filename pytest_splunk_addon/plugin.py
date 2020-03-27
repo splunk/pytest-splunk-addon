@@ -20,19 +20,6 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
     config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
 
-def dedup_tests(test_list):
-    """
-    Deduplicate the test case parameters based on param.id
-    Args:
-        test_list(Generator): Generator of pytest.param
-    Yields:
-        Generator: De-duplicated pytest.param
-    """
-    seen_tests = set()
-    for each_param in test_list:
-        if each_param.id not in seen_tests:
-            yield each_param
-            seen_tests.add(each_param.id)
 
 def pytest_generate_tests(metafunc):
     """
@@ -43,7 +30,7 @@ def pytest_generate_tests(metafunc):
             LOGGER.info("generating testcases for splunk_app. fixture=%s", fixture)
             # Load associated test data
             tests = load_splunk_tests(metafunc.config.getoption("splunk_app"), fixture)
-            metafunc.parametrize(fixture, dedup_tests(tests))
+            metafunc.parametrize(fixture, tests)
 
 
 def load_splunk_tests(splunk_app_path, fixture):
@@ -127,15 +114,15 @@ def load_splunk_fields(props):
             stanza_list = [stanza_name]
         for current in section.options:
             LOGGER.info("Parsing parameter=%s of stanza=%s", current, stanza_name)
-            field_data = section.options[current]
+            props_property = section.options[current]
             for each_stanza_name in stanza_list:
                 if current.startswith("EXTRACT-"):
-                    yield return_props_extract(each_stanza_name, field_data, stanza_type)
+                    yield return_props_extract(stanza_type, each_stanza_name, props_property)
                 elif current.startswith("EVAL-"):
-                    yield return_props_eval(each_stanza_name, field_data, stanza_type)
+                    yield return_props_eval(stanza_type, each_stanza_name, props_property)
                 elif current.startswith("sourcetype"):   
                     # Sourcetype assignment configuration
-                    yield return_props_sourcetype(each_stanza_name, field_data, stanza_type)
+                    yield return_props_sourcetype(stanza_type, each_stanza_name, props_property)
 
 
 def return_props_extract(stanza_type, stanza_name, props_property):
@@ -203,20 +190,20 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     return pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': fields}, id=test_name)
 
 
-def return_props_sourcetype(stanza_name, field_data, stanza_type):
+def return_props_sourcetype(stanza_type, stanza_name, props_property):
     '''
     Return the fields parsed from sourcetype as pytest parameters
       
     Args:
-        @stanza_name(str): source/sourcetype name
-        @field_data(object): sourcetype field details
         @stanza_type: Stanza type (source/sourcetype)
+        @stanza_name(str): source/sourcetype name
+        @props_property(object): sourcetype field details
 
     Return:
         List of pytest parameters
     '''
-    test_name = f"{stanza_name}::{field_data.value}"
-    fields = [field_data.name]
+    test_name = f"{stanza_name}::{props_property.value}"
+    fields = [props_property.name]
     LOGGER.info("Generated pytest.param for sourcetype. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
     return pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': fields}, id=test_name)
 
