@@ -41,7 +41,7 @@ class Basic:
 
         record_property(splunk_app_props["field"], splunk_app_props["value"])
         search = f"search (index=_internal OR index=*) AND {splunk_app_props['field']}=\"{splunk_app_props['value']}\""
-        self.LOGGER.debug(f"Executing the search query: {search}")
+        self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=10, retries=8
