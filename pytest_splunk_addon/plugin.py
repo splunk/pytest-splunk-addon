@@ -153,7 +153,7 @@ def return_props_extract(stanza_type, stanza_name, options):
 
             fields.append(match.group(groupNum))
     
-    LOGGER.info("Genrated pytest.param for extract. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, id, str(fields))
+    LOGGER.info("Generated pytest.param for extract. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, id, str(fields))
     return pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
 
 
