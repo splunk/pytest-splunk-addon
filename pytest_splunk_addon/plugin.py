@@ -7,6 +7,7 @@ Module usage:
 import logging
 import re
 import pytest
+from urllib.parse import unquote
 from splunk_appinspect import App
 
 LOGGER = logging.getLogger("pytest_splunk_addon")
@@ -81,9 +82,11 @@ def load_splunk_tags(tags):
     """
     for stanza in tags.sects:
         kv = tags.sects[stanza]
+        stanza = stanza.replace("=", '="')
+        stanza += '"'
         for key in kv.options:
             tags_property = kv.options[key]
-            yield return_tags(tags_property, stanza)
+            yield return_tags(tags_property, unquote(stanza))
 
 
 def return_tags(tags_property, stanza_name):
@@ -111,7 +114,7 @@ def return_tags(tags_property, stanza_name):
         id=stanza_name
         + " | "
         + tags_property.name
-        + "_"
+        + "="
         + tags_property.value,
     )
 
