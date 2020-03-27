@@ -101,7 +101,7 @@ class Basic:
             op = "OR"
         search = search + ")"
         
-        self.logger.debug(f"Executing the search query: {search}")
+        self.LOGGER.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=1, retries=1
@@ -133,12 +133,15 @@ class Basic:
             op = "OR"
         search = search + ")"
         
-        self.logger.debug(f"Executing the search query: {search}")
+        self.LOGGER.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=1, retries=1
         )
         record_property("search", search)
+
+        assert result == False
+
     # # This test ensures the contained samples will produce at lease one event per eventtype
     # @pytest.mark.splunk_addon_searchtime
     # @flaky(max_runs=5, min_passes=1)
