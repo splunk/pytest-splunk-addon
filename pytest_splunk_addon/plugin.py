@@ -139,7 +139,8 @@ def load_splunk_eventtypes(eventtypes):
     """
     Parse the App configuration files & yield eventtypes
     Args:
-        eventtypes(): The configuration object of eventtypes.conf
+        eventtypes(splunk_appinspect.configuration_file.ConfigurationFile): 
+        The configuration object of eventtypes.conf
     Yields:
         generator of list of eventtypes
     """

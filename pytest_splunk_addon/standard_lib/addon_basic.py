@@ -109,10 +109,10 @@ class Basic:
         """
         Tests if all eventtypes in eventtypes.conf are generated or not in Splunk.
         Args:
-            splunk_search_util(): Fixture to create a simple connection to Splunk via the SplunkSDK
-            splunk_app_eventtypes(): Fixture containing list of eventtypes
-            record_property(): Used to add user properties to test report
-            caplog(): Access and control log capturing
+            splunk_search_util: Fixture to create a simple connection to Splunk via the SplunkSDK
+            splunk_app_eventtypes: Fixture containing list of eventtypes
+            record_property: Used to add user properties to test report
+            caplog: Access and control log capturing
         Returns:
             Asserts whether test case passes or fails.
         """
@@ -121,42 +121,10 @@ class Basic:
 
         self.logger.info("Testing eventtype =%s", splunk_app_eventtypes['value'])
         self.logger.debug("Search query for testing =%s", search)
-        
+
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=10, retries=8
         )
         record_property("search", search)
         assert result == True
-
-    # # This test ensures the contained samples will produce at lease one event per eventtype
-    # @pytest.mark.splunk_addon_searchtime
-    # @flaky(max_runs=5, min_passes=1)
-    # def test_basic_eventtype(self, splunk_search_util, eventtypes):
-    #
-    #     self.logger.debug("Testing eventtype={}", eventtypes)
-    #     search = "search (index=_internal OR index=*) AND eventtype=\"{}\"".format(eventtypes)
-    #
-    #     # run search
-    #     result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-    #         search,
-    #         interval=1, retries=1)
-    #
-    #     if not result:
-    #         pytest.fail(search)
-    #
-    # @pytest.mark.splunk_addon_searchtime
-    # @flaky(max_runs=5, min_passes=1)
-    # def test_fields(self, splunk_search_util, prop_elements):
-    #     search = "search (index=_internal OR index=*) AND sourcetype=\"{}\" AND {}".format(
-    #         prop_elements['sourcetype'],
-    #         prop_elements['field']
-    #     )
-    #
-    #     # run search
-    #     result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-    #         search,
-    #         interval=2, retries=5)
-    #
-    #     if not result:
-    #         pytest.fail(search)
