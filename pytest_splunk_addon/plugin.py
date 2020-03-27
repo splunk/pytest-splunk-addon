@@ -25,6 +25,21 @@ def pytest_configure(config):
     )
 
 
+def dedup_tests(test_list):
+    """
+    Deduplicate the test case parameters based on param.id
+    Args:
+        test_list(Generator): Generator of pytest.param
+    Yields:
+        Generator: De-duplicated pytest.param
+    """
+    seen_tests = set()
+    for each_param in test_list:
+        if each_param.id not in seen_tests:
+            yield each_param
+            seen_tests.add(each_param.id)
+
+
 def pytest_generate_tests(metafunc):
     """
     Parse the fixture dynamically.
@@ -38,7 +53,7 @@ def pytest_generate_tests(metafunc):
             tests = load_splunk_tests(
                 metafunc.config.getoption("splunk_app"), fixture
             )
-            metafunc.parametrize(fixture, tests)
+            metafunc.parametrize(fixture, dedup_tests(tests))
 
 
 def load_splunk_tests(splunk_app_path, fixture):
@@ -116,21 +131,27 @@ def load_splunk_fields(props):
             stanza_type = "sourcetype"
             stanza_list = [props_section]
         for current in section.options:
-            LOGGER.info("Parsing %s parameter=%s of stanza=%s", stanza_type, current, props_section)
+            LOGGER.info(
+                "Parsing %s parameter=%s of stanza=%s",
+                stanza_type,
+                current,
+                props_section,
+            )
             props_property = section.options[current]
             for each_stanza_name in stanza_list:
-                if current.startswith("EXTRACT-"):
-                    yield return_props_extract(
+                # if current.startswith("EXTRACT-"):
+                #     yield return_props_extract(
+                #         stanza_type, each_stanza_name, props_property
+                #     )
+                # elif current.startswith("EVAL-"):
+                #     yield return_props_eval(
+                #         stanza_type, each_stanza_name, props_property
+                #     )
+                if current.lower().startswith("lookup"):
+                    yield from return_props_lookup_forward(
                         stanza_type, each_stanza_name, props_property
                     )
-                elif current.startswith("EVAL-"):
-                    yield return_props_eval(
-                        stanza_type, each_stanza_name, props_property
-                    )
-                elif current.startswith("LOOKUP-"):
-                    yield from return_props_lookup(
-                        stanza_type, each_stanza_name, props_property
-                    )
+
 
 def return_props_extract(stanza_type, stanza_name, options):
     """
@@ -154,17 +175,25 @@ def return_props_extract(stanza_type, stanza_name, options):
 
             fields.append(match.group(groupNum))
 
-    LOGGER.info("Genrated pytest.param for extract.\
+    LOGGER.info(
+        "Genrated pytest.param for extract.\
                 stanza_type=%s, stanza_name=%s, fields=%s",
-                stanza_type, id, str(fields))
+        stanza_type,
+        id,
+        str(fields),
+    )
     return pytest.param(
-        {'stanza_type': stanza_type,
-         "stanza_name": stanza_name,
-         "fields": fields},
-        id=name)
+        {
+            "stanza_type": stanza_type,
+            "stanza_name": stanza_name,
+            "fields": fields,
+        },
+        id=name,
+    )
+
 
 def return_props_eval(stanza_type, stanza_name, props_property):
-    '''
+    """
     Return the fields parsed from EVAL as pytest parameters
 
     Args:
@@ -174,7 +203,7 @@ def return_props_eval(stanza_type, stanza_name, props_property):
 
     Return:
         List of pytest parameters
-    '''
+    """
     name = f"{stanza_name}::{props_property.name}"
     regex = r"EVAL-(?P<FIELD>.*)"
     fields = re.findall(regex, props_property.name, re.IGNORECASE)
@@ -182,15 +211,22 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     LOGGER.info(
         "Genrated pytest.param for eval.\
         stanza_type=%s, stanza_name=%s, fields=%s",
-        stanza_type, id, str(fields))
+        stanza_type,
+        id,
+        str(fields),
+    )
     return pytest.param(
-        {'stanza_type': stanza_type,
-         'stanza_name': stanza_name,
-         'fields': fields},
-        id=name)
+        {
+            "stanza_type": stanza_type,
+            "stanza_name": stanza_name,
+            "fields": fields,
+        },
+        id=name,
+    )
+
 
 def get_list_of_sources(source):
-    '''
+    """
     Implement generator object of source list
 
     Args:
@@ -198,27 +234,29 @@ def get_list_of_sources(source):
 
     Yields:
         generator of source name
-    '''
+    """
     match_obj = re.search(r"source::(.*)", source)
     value = match_obj.group(1).replace("...", "*")
     sub_groups = re.findall("\([^\)]+\)", value)
     sub_group_list = []
     for each_group in sub_groups:
         sub_group_list.append(list(each_group.strip("()").split("|")))
-    template = re.sub(r'\([^\)]+\)', "{}",value)
+    template = re.sub(r"\([^\)]+\)", "{}", value)
     for each_permutation in product(*sub_group_list):
         yield template.format(*each_permutation)
 
+
 def get_lookup_fields(lookup_str):
-    '''
-    Implement dictionary for the input and output fields of LOOKUP
+    """
+    Get list of lookup fields by parsing the lookup string.
+    If a field is aliased to another field, take the aliased field into consideration
 
     Args:
-        source(str): LOOKUP value
+        lookup_str(str): Lookup string from props.conf
 
     Returns:
-        dictionary of the input fields and output fields of LOOKUP
-    '''
+        (list): List of lookup fields
+    """
     input_output_field_list = []
     # Remove lookup name (first word)
     lookup_str = " ".join(lookup_str.split(" ")[1:])
@@ -229,18 +267,33 @@ def get_lookup_fields(lookup_str):
         if " OUTPUT " not in lookup_str and " OUTPUTNEW " not in lookup_str:
             lookup_str += " OUTPUT "
 
-        # Take input fields/output fields depending on the input_output_index
+        # Take input or output fields depending on the input_output_index
         input_output_str = lookup_str.split(" OUTPUT ")[
             input_output_index
         ].split(" OUTPUTNEW ")[input_output_index]
 
+        field_parser = (
+                        r"(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+)\s*"
+                        r"(?:[aA][sS]\s*(\"(?:\\\"|[^\"])*\"|\'(?:\\\'"
+                        r"|[^\'])*\'|[^\s,]+))?"
+        )
+        # field_groups: Group of max 2 fields -
+        # (source, destination) for "source as destination"
+        field_groups = re.findall(field_parser, input_output_str)
+
         field_list = []
-        for each_field_group in input_output_str.split(","):
-            field_name = (
-                each_field_group.split(" as ")[-1].split(" AS ")[-1].strip()
+        # Take the last non-empty field from a field group.
+        # Taking last non-empty field ensures that the aliased value will have
+        # higher priority
+        for each_group in field_groups:
+            field_list.append(
+                [
+                    each_field
+                    for each_field in reversed(each_group)
+                    if each_field
+                ][0]
             )
-            if field_name:
-                field_list.append(field_name)
+
         input_output_field_list.append(field_list)
 
     return {
@@ -248,36 +301,54 @@ def get_lookup_fields(lookup_str):
         "output_fields": input_output_field_list[1],
     }
 
-def return_props_lookup(stanza_type, stanza_name, props_property):
-    '''
-    Return the input fields parsed from LOOKUP as pytest parameters
+
+def return_props_lookup_forward(stanza_type, stanza_name, props_property):
+    """
+    Yields the input fields parsed from LOOKUP as pytest parameters
 
     Args:
         stanza_type: Stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
-        props_property(object): LOOKUP field details
+        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): The configuration setting object of LOOKUP.
+            properties used:
+                    name : key in the configuration settings
+                    value : value of the respective name in the configuration
 
-    Return:
-        List of pytest parameters
-    '''
+    Yields:
+        Generator object of pytest parameters
+    """
     input_fields = get_lookup_fields(props_property.value)["input_fields"]
     lookup_test_name = f"{stanza_name}::{props_property.name}"
     for input_field in input_fields:
         field_test_name = "{}_field::{}".format(stanza_name, input_field)
+        LOGGER.info(
+            "Genrated pytest.param for lookup.\
+                stanza_type=%s, stanza_name=%s, fields=%s",
+            stanza_type,
+            stanza_name,
+            str(field_test_name),
+        )
         yield pytest.param(
             {
-                'stanza_type': stanza_type,
-                'stanza_name': stanza_name,
-                'fields': input_field
+                "stanza_type": stanza_type,
+                "stanza_name": stanza_name,
+                "fields": [input_field],
             },
-            id=field_test_name
+            id=field_test_name,
         )
-
+    LOGGER.info(
+        "Genrated pytest.param for lookup.\
+                stanza_type=%s, stanza_name=%s, fields=%s",
+        stanza_type,
+        stanza_name,
+        str(lookup_test_name),
+    )
     yield pytest.param(
         {
-            'stanza_type': stanza_type,
-            'stanza_name': stanza_name,
-            'fields': input_fields
+            "stanza_type": stanza_type,
+            "stanza_name": stanza_name,
+            "fields": input_fields,
         },
-        id=lookup_test_name
+        id=lookup_test_name,
     )
+
