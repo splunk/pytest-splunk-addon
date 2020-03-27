@@ -16,8 +16,12 @@ def pytest_configure(config):
     """
     Setup configuration after command-line options are parsed
     """
-    config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
-    config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
+    config.addinivalue_line(
+        "markers", "splunk_addon_internal_errors: Check Errors"
+    )
+    config.addinivalue_line(
+        "markers", "splunk_addon_searchtime: Test search time only"
+    )
 
 
 def pytest_generate_tests(metafunc):
@@ -26,9 +30,13 @@ def pytest_generate_tests(metafunc):
     """
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_app"):
-            LOGGER.info("generating testcases for splunk_app. fixture=%s", fixture)
+            LOGGER.info(
+                "generating testcases for splunk_app. fixture=%s", fixture
+            )
             # Load associated test data
-            tests = load_splunk_tests(metafunc.config.getoption("splunk_app"), fixture)
+            tests = load_splunk_tests(
+                metafunc.config.getoption("splunk_app"), fixture
+            )
             metafunc.parametrize(fixture, tests)
 
 
@@ -65,7 +73,8 @@ def load_splunk_tags(tags):
     Parse the tags.conf of the App & yield stanzas
 
     Args:
-        tags(Object): The configuration object of tags
+        tags(splunk_appinspect.configuration_file.ConfigurationFile):
+            The configuration object of tags.
 
     Yields:
         generator of stanzas from the tags
@@ -73,8 +82,8 @@ def load_splunk_tags(tags):
     for stanza in tags.sects:
         kv = tags.sects[stanza]
         for key in kv.options:
-            options = kv.options[key]
-            yield return_tags(options, stanza)
+            tags_property = kv.options[key]
+            yield return_tags(tags_property, stanza)
 
 
 def return_tags(tags_property, stanza_name):
@@ -82,15 +91,28 @@ def return_tags(tags_property, stanza_name):
     Returns the fields parsed from tags as pytest parameters
 
     Args:
-        tags_property(Object): The configuration object of tags
         stanza_name(str): Name of Stanza
+        tags_property(
+            splunk_appinspect.configuration_file.ConfigurationSetting
+            ):
+                The configuration setting object of tags.
+                properties used:
+                    name : key in the configuration settings
+                    value : value of the respective name in the configuration
 
     Returns:
         List of pytest parameters
     """
     return pytest.param(
-        {"tag_query": stanza_name, tags_property.value + "_tag": tags_property.name},
-        id=stanza_name + " | " + tags_property.name + "_" + tags_property.value,
+        {
+            "tag_query": stanza_name,
+            tags_property.value + "_tag": tags_property.name,
+        },
+        id=stanza_name
+        + " | "
+        + tags_property.name
+        + "_"
+        + tags_property.value,
     )
 
 
@@ -138,7 +160,9 @@ def load_splunk_fields(props):
     for props_section in props.sects:
         section = props.sects[props_section]
         for current in section.options:
-            LOGGER.info("Parsing parameter=%s of stanza=%s", current, props_section)
+            LOGGER.info(
+                "Parsing parameter=%s of stanza=%s", current, props_section
+            )
             options = section.options[current]
             if current.startswith("EXTRACT-"):
                 yield return_props_extract(props_section, options)
@@ -165,5 +189,9 @@ def return_props_extract(id, value):
             groupNum = groupNum + 1
 
             fields.append(match.group(groupNum))
-    LOGGER.info("Genrated pytest.param for extract. stanza_name=%s, fields=%s", id, str(fields))
+    LOGGER.info(
+        "Genrated pytest.param for extract. stanza_name=%s, fields=%s",
+        id,
+        str(fields),
+    )
     return pytest.param({"sourcetype": id, "fields": fields}, id=name)
