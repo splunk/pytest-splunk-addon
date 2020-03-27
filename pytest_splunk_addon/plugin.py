@@ -73,7 +73,7 @@ def load_splunk_props(props):
             LOGGER.info("Skipping host:: stanza=%s", props_section)
             continue
         elif props_section.startswith("source::"):
-            LOGGER.info("parsing source stanza=%s", props_section)
+            LOGGER.info("Parsing source stanza=%s", props_section)
             list_of_sources = []
             list_of_sources = list(get_list_of_sources(props_section))
             for props_source in list_of_sources: 
@@ -86,11 +86,19 @@ def load_splunk_props(props):
 def return_props_stanza_param(stanza_id, stanza_value, stanza_type):
     """
     Convert sourcetype/source to pytest parameters
+
+    Args:
+        stanza_id: source/sourcetype field details
+        stanza_value(str): source/sourcetype value
+        stanza_type: Stanza type (source/sourcetype)
+    Return:
+        List of pytest parameters
     """
     if stanza_type == "sourcetype":
         idf = f"sourcetype::{stanza_id}"
     else:
         idf = f"{stanza_id}"
+    LOGGER.info("Genrated pytest.param for source/sourcetype. stanza_type=%s, stanza_value=%s, stanza_id=%s", stanza_type, stanza_value, str(idf))
     return pytest.param({"field": stanza_type, "value": stanza_value}, id=idf)
 
 
@@ -173,9 +181,9 @@ def return_props_sourcetype(stanza_type, stanza_name, props_property):
     Return the fields parsed from sourcetype as pytest parameters
       
     Args:
-        @stanza_type: Stanza type (source/sourcetype)
-        @stanza_name(str): source/sourcetype name
-        @props_property(object): sourcetype field details
+        stanza_type: Stanza type (source/sourcetype)
+        stanza_name(str): source/sourcetype name
+        props_property(object): sourcetype field details
 
     Return:
         List of pytest parameters
