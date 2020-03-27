@@ -159,7 +159,7 @@ def return_eventtypes_param(stanza_id):
         List of pytest parameters
     """
 
-    LOGGER.info("Generated pytest.param of eventtype with id=%s", idf)
+    LOGGER.info("Generated pytest.param of eventtype with id=%s", f"eventtype::{stanza_id}")
     return pytest.param({
         "field": "eventtype", "value": stanza_id},
         id=f"eventtype::{stanza_id}"
