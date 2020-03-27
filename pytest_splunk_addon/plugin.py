@@ -125,51 +125,29 @@ def load_splunk_fields(props):
                     yield return_props_sourcetype(stanza_type, each_stanza_name, props_property)
 
 
-def return_props_extract(stanza_type, stanza_name, props_property):
+def return_props_extract(stanza_type, stanza_name, options):
     """
     Returns the fields parsed from EXTRACT as pytest parameters
     Args:
-        stanza_type(str): stanza type (source/sourcetype)
-        stanza_name(str): source/sourcetype name
-        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): The configuration setting object of EXTRACT.
-            properties used:
-                    name : key in the configuration settings
-                    value : value of the respective name in the configuration
-    Yields:
-        generator of fields as pytest parameters
+        stanza_type(str): Stanza type (source/sourcetype)
+        stanza_name(str): parameter from the stanza
+        options(object): EXTRACT field details
+    Returns:
+        List of pytest parameters
     """
-    test_name = f"{stanza_name}::{props_property.name}"
-    regex = r"\(\?<([^\>]+)\>(?:.*(?i)in\s+(.*))?"
-    matches = re.finditer(regex, props_property.value, re.MULTILINE)
+    name = f"{stanza_name}_field::{options.name}"
+    regex = r"\(\?<([^\>]+)\>"
+    matches = re.finditer(regex, options.value, re.MULTILINE)
     fields = []
-    for match_num, match in enumerate(matches, start=1):
-        for group_num in range(0, len(match.groups())):
-            group_num = group_num + 1
-            if match.group(group_num):
-                field_test_name = "{}_field::{}".format(
-                    stanza_name, match.group(group_num)
-                )
-                yield pytest.param(
-                    {
-                        "stanza_type": stanza_type,
-                        "stanza_name": stanza_name,
-                        "fields": [match.group(group_num)],
-                    },
-                    id=field_test_name,
-                )
-                fields.append(match.group(group_num))
-    if fields:
-        fields.reverse()
-        LOGGER.info(
-            "Generated pytest.param for extract. stanza_type=%s stanza_name=%s, fields=%s",
-            stanza_type,
-            stanza_name,
-            str(fields),
-        )
-        yield pytest.param(
-            {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
-            id=test_name,
-        )
+    for matchNum, match in enumerate(matches, start=1):
+        for groupNum in range(0, len(match.groups())):
+            groupNum = groupNum + 1
+
+            fields.append(match.group(groupNum))
+    
+    LOGGER.info("Genrated pytest.param for extract. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, id, str(fields))
+    return pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
+
 
 def return_props_eval(stanza_type, stanza_name, props_property):
     '''
