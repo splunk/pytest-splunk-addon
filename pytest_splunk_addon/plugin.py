@@ -140,6 +140,23 @@ def load_splunk_fields(props, transforms):
                     )
 
 
+def get_params_from_regex(regex, property_value, stanza_type, stanza_name, fields):
+    matches = re.finditer(regex, property_value, re.MULTILINE)
+    for matchNum, match in enumerate(matches, start=1):
+        for groupNum in range(0, len(match.groups())):
+            groupNum = groupNum + 1
+            field_test_name = "{}::{}".format(stanza_name, match.group(groupNum))
+            yield pytest.param(
+                {
+                    "stanza_type": stanza_type,
+                    "stanza_name": stanza_name,
+                    "fields": [match.group(groupNum)],
+                },
+                id=field_test_name,
+            )
+            fields.append(match.group(groupNum))
+
+
 def return_transforms_report(transforms, stanza_type, stanza_name, report_property):
     """
     Returns the fields parsed from transforms.conf  as pytest parameters
@@ -164,75 +181,44 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
         fields = []
         section = transforms.sects[transforms_section]
         if "SOURCE_KEY" in section.options:
-            param_name = "{}::{}".format(
-                stanza_name, section.options["SOURCE_KEY"].value
-            )
             yield pytest.param(
                 {
                     "stanza_type": stanza_type,
                     "stanza_name": stanza_name,
                     "fields": [section.options["SOURCE_KEY"].value],
                 },
-                id=param_name,
+                id="{}::{}".format(stanza_name, section.options["SOURCE_KEY"].value),
             )
             fields.append(section.options["SOURCE_KEY"].value)
-        for current in section.options:
-            if current == "REGEX":
-                regex = r"\(\?<([^\>]+)\>"
-                matches = re.finditer(
-                    regex, section.options[current].value, re.MULTILINE
+        if "REGEX" in section.options:
+            regex = r"\(\?<([^\>]+)\>"
+            yield from get_params_from_regex(
+                regex, section.options["REGEX"].value, stanza_type, stanza_name, fields,
+            )
+        if "FIELDS" in section.options:
+            fields_list = [
+                each_field.strip()
+                for each_field in section.options["FIELDS"].value.split(",")
+            ]
+            for each_field in fields_list:
+                yield pytest.param(
+                    {
+                        "stanza_type": stanza_type,
+                        "stanza_name": stanza_name,
+                        "fields": [each_field],
+                    },
+                    id="{}::{}".format(stanza_name, each_field),
                 )
-                for matchNum, match in enumerate(matches, start=1):
-                    for groupNum in range(0, len(match.groups())):
-                        groupNum = groupNum + 1
-                        field_test_name = "{}::{}".format(
-                            stanza_name, match.group(groupNum)
-                        )
-                        yield pytest.param(
-                            {
-                                "stanza_type": stanza_type,
-                                "stanza_name": stanza_name,
-                                "fields": [match.group(groupNum)],
-                            },
-                            id=field_test_name,
-                        )
-                        fields.append(match.group(groupNum))
-            elif current == "FIELDS":
-                fields_list = [
-                    each_field.strip()
-                    for each_field in section.options[current].value.split(",")
-                ]
-                for each_field in fields_list:
-                    field_test_name = "{}::{}".format(stanza_name, each_field)
-                    yield pytest.param(
-                        {
-                            "stanza_type": stanza_type,
-                            "stanza_name": stanza_name,
-                            "fields": [each_field],
-                        },
-                        id="{}::{}".format(stanza_name, each_field),
-                    )
-                    fields.append(each_field)
-            elif current == "FORMAT":
-                regex = r"(\S*)::"
-                matches = re.finditer(
-                    regex, section.options[current].value, re.MULTILINE
-                )
-                for matchNum, match in enumerate(matches, start=1):
-                    for groupNum in range(0, len(match.groups())):
-                        groupNum = groupNum + 1
-                        field_test_name = "{}::{}".format(
-                            stanza_name, match.group(groupNum)
-                        )
-                        yield pytest.param(
-                            {
-                                "stanza_type": stanza_type,
-                                "stanza_name": stanza_name,
-                                "fields": [match.group(groupNum)],
-                            },
-                            id=field_test_name,
-                        )
-                        fields.append(match.group(groupNum))
+                fields.append(each_field)
+        if "FORMAT" in section.options:
+            regex = r"(\S*)::"
+            yield from get_params_from_regex(
+                regex,
+                section.options["FORMAT"].value,
+                stanza_type,
+                stanza_name,
+                fields,
+            )
     yield pytest.param(
         {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
         id=report_test_name,
