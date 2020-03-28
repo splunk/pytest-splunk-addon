@@ -20,6 +20,7 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
     config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
 
+
 def dedup_tests(test_list):
     """
     Deduplicate the test case parameters based on param.id
@@ -33,6 +34,7 @@ def dedup_tests(test_list):
         if each_param.id not in seen_tests:
             yield each_param
             seen_tests.add(each_param.id)
+
 
 def pytest_generate_tests(metafunc):
     """
@@ -65,8 +67,9 @@ def load_splunk_tests(splunk_app_path, fixture):
         yield from load_splunk_props(props)
     elif fixture.endswith("fields"):
         props = app.props_conf()
+        transforms = app.transforms_conf()
         LOGGER.info("Successfully parsed props configurations")
-        yield from load_splunk_fields(props)
+        yield from load_splunk_fields(props, transforms)
     else:
         yield None
 
@@ -102,12 +105,13 @@ def return_props_sourcetype_param(id, value):
     return pytest.param({"field": "sourcetype", "value": value}, id=idf)
 
 
-def load_splunk_fields(props):
+def load_splunk_fields(props, transforms):
     """
     Parse the App configuration files & yield fields
 
     Args:
         props(): The configuration object of props
+        transforms(): The configuration object of transforms
 
     Yields:
         generator of fields
@@ -130,6 +134,109 @@ def load_splunk_fields(props):
                     )
                 elif current.startswith("EVAL-"):
                     yield return_props_eval(each_stanza_name, field_data, stanza_type)
+                if current.startswith("REPORT-"):
+                    yield from return_transforms_report(
+                        transforms, stanza_type, each_stanza_name, field_data
+                    )
+
+
+def return_transforms_report(transforms, stanza_type, stanza_name, report_property):
+    """
+    Returns the fields parsed from transforms.conf  as pytest parameters
+
+    Args:
+        transforms(): The configuration object of transforms
+        stanza_type(str): stanza type (source/sourcetype)
+        stanza_name(str): source/sourcetype name
+        report_property(splunk_appinspect.configuration_file.ConfigurationSetting): The configuration setting object of REPORT.
+            properties used:
+                    name : key in the configuration settings
+                    value : value of the respective name in the configuration
+    Yields:
+        generator of fields as pytest parameters
+    """
+    for transforms_section in [
+        each_stanza.strip() for each_stanza in report_property.value.split(",")
+    ]:
+        report_test_name = (
+            f"{stanza_name}::{report_property.name}::{transforms_section}"
+        )
+        fields = []
+        section = transforms.sects[transforms_section]
+        if "SOURCE_KEY" in section.options:
+            param_name = "{}::{}".format(
+                stanza_name, section.options["SOURCE_KEY"].value
+            )
+            yield pytest.param(
+                {
+                    "stanza_type": stanza_type,
+                    "stanza_name": stanza_name,
+                    "fields": [section.options["SOURCE_KEY"].value],
+                },
+                id=param_name,
+            )
+            fields.append(section.options["SOURCE_KEY"].value)
+        for current in section.options:
+            if current == "REGEX":
+                regex = r"\(\?<([^\>]+)\>"
+                matches = re.finditer(
+                    regex, section.options[current].value, re.MULTILINE
+                )
+                for matchNum, match in enumerate(matches, start=1):
+                    for groupNum in range(0, len(match.groups())):
+                        groupNum = groupNum + 1
+                        field_test_name = "{}::{}".format(
+                            stanza_name, match.group(groupNum)
+                        )
+                        yield pytest.param(
+                            {
+                                "stanza_type": stanza_type,
+                                "stanza_name": stanza_name,
+                                "fields": [match.group(groupNum)],
+                            },
+                            id=field_test_name,
+                        )
+                        fields.append(match.group(groupNum))
+            elif current == "FIELDS":
+                fields_list = [
+                    each_field.strip()
+                    for each_field in section.options[current].value.split(",")
+                ]
+                for each_field in fields_list:
+                    field_test_name = "{}::{}".format(stanza_name, each_field)
+                    yield pytest.param(
+                        {
+                            "stanza_type": stanza_type,
+                            "stanza_name": stanza_name,
+                            "fields": [each_field],
+                        },
+                        id="{}::{}".format(stanza_name, each_field),
+                    )
+                    fields.append(each_field)
+            elif current == "FORMAT":
+                regex = r"(\S*)::"
+                matches = re.finditer(
+                    regex, section.options[current].value, re.MULTILINE
+                )
+                for matchNum, match in enumerate(matches, start=1):
+                    for groupNum in range(0, len(match.groups())):
+                        groupNum = groupNum + 1
+                        field_test_name = "{}::{}".format(
+                            stanza_name, match.group(groupNum)
+                        )
+                        yield pytest.param(
+                            {
+                                "stanza_type": stanza_type,
+                                "stanza_name": stanza_name,
+                                "fields": [match.group(groupNum)],
+                            },
+                            id=field_test_name,
+                        )
+                        fields.append(match.group(groupNum))
+    yield pytest.param(
+        {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
+        id=report_test_name,
+    )
 
 
 def return_props_extract(stanza_type, stanza_name, props_property):
