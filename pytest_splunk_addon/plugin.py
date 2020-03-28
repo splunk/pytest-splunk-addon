@@ -103,50 +103,52 @@ def return_props_extract(id, value):
 
     return pytest.param({"sourcetype": id, "fields": fields}, id=extract_test_name)
 
+
 def get_lookup_fields(lookup_str):
     """
-    Returns the fields parsed from the lookup string value
+    Get list of lookup fields by parsing the lookup string.
+    If a field is aliased to another field, take the aliased field into consideration
+
     Args:
-        lookup_str(str): The string for the lookup KO, that we want to parse
+        lookup_str(str): Lookup string from props.conf
     returns(dict):
         lookup_stanza(str): The stanza name for the lookup in question in transforms.conf
         input_fields(list): The fields in the input of the lookup
         output_fields(list): The fields in the output of the lookup
         output_flag(bool): Whether or not the lookup has a OUTPUT or OUTPUTNEW keyword in it
     """
-    
-    lookup_str = list(filter(lambda x: x != "", re.split(',| ', re.sub(' +', ' ', lookup_str))))
-    lookup_stanza = lookup_str[0]
+
+    input_output_field_list = []
+    lookup_stanza = lookup_str.split(" ")[0]
+    lookup_str = " ".join(lookup_str.split(" ")[1:])
     output_flag = False
-    skip = 0
-    input_list = []
-    output_list = []
+    if " OUTPUT " in lookup_str or " OUTPUTNEW " in lookup_str:
+        output_flag = True
 
-    # Parse out the fields we want from the props.conf lookup setting
-    for iterator in range(1, len(lookup_str)):
-        if skip > 0:
-            skip -= 1
-            continue
+    # 0: Take the left side of the OUTPUT as input fields
+    # -1: Take the right side of the OUTPUT as output fields
+    for input_output_index in [0, -1]:
+        if " OUTPUT " not in lookup_str and " OUTPUTNEW " not in lookup_str:
+            lookup_str += " OUTPUT "
 
-        if lookup_str[iterator] == "OUTPUT" or lookup_str[iterator] == "OUTPUTNEW":
-            output_flag = True
-            continue
+        # Take input fields or output fields depending on the input_output_index
+        input_output_str = lookup_str.split(" OUTPUT ")[input_output_index].split(" OUTPUTNEW ")[input_output_index]
 
-        if output_flag is False:
-            if iterator + 2 < len(lookup_str) and re.match("as", lookup_str[iterator+1], re.IGNORECASE) is not None:
-                input_list.append(lookup_str[iterator+2].strip())
-                skip = 2
-                continue
-            else:
-                input_list.append(lookup_str[iterator].strip())
-        else:
-            if iterator + 2 < len(lookup_str) and re.match("as", lookup_str[iterator+1], re.IGNORECASE) is not None:
-                output_list.append(lookup_str[iterator+2].strip())
-                skip = 2
-                continue
-            else:
-                output_list.append(lookup_str[iterator].strip())
-    return {"input_fields": input_list, "output_fields": output_list, "lookup_stanza": lookup_stanza, "output_flag": output_flag}
+        
+        field_parser = r"(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+)\s*(?:[aA][sS]\s*(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+))?"
+        # field_groups: Group of max 2 fields - (source, destination) for "source as destination"
+        field_groups = re.findall(field_parser, input_output_str)
+
+        field_list = []
+        # Take the last non-empty field from a field group.
+        # Taking last non-empty field ensures that the aliased value will have
+        # higher priority
+        for each_group in field_groups:
+            field_list.append([each_field for each_field in reversed(each_group) if each_field][0])
+
+        input_output_field_list.append(field_list)
+
+    return {"input_fields": input_output_field_list[0], "output_fields": input_output_field_list[1], "lookup_stanza": lookup_stanza, "output_flag": output_flag}
 
 
 def return_lookup_extract(id, value, app, splunk_app_path):
@@ -173,6 +175,7 @@ def return_lookup_extract(id, value, app, splunk_app_path):
         List of pytest parameters containing fields
     """
     name = f"{id}lookup::{value.name}"
+    skip = False
     fields = get_lookup_fields(value.value)
     lookup_field_list = fields["input_fields"] + fields["output_fields"]
     transforms = app.transforms_conf()
@@ -187,14 +190,18 @@ def return_lookup_extract(id, value, app, splunk_app_path):
                         lookup_file = stanza.options[current].value
         try:
             location = os.path.join(splunk_app_path, "lookups", lookup_file)
-            with open(location, "rU") as csvfile:
+            with open(location, "r") as csvfile:
                 reader = csv.DictReader(csvfile)
                 fieldnames = reader.fieldnames
                 for items in fieldnames:
-                    lookup_field_list.append(items.strip())
+                    if items not in lookup_field_list:
+                        lookup_field_list.append(items.strip())
                 csvfile.close()
         # If there is an error. the test should fail with the current fields
         # This makes sure the test doesn't exit prematurely
-        except (OSError, IOError, UnboundLocalError):
-            pass
-    return pytest.param({"sourcetype": id, "fields": lookup_field_list}, id=name)
+        except (OSError, IOError, UnboundLocalError, TypeError):
+            skip = True
+    if(skip):
+        return None
+    else:
+        return pytest.param({"sourcetype": id, "fields": lookup_field_list}, id=name)
