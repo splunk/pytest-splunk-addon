@@ -185,53 +185,65 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
     Yields:
         generator of fields as pytest parameters
     """
-    for transforms_section in [
-        each_stanza.strip() for each_stanza in report_property.value.split(",")
-    ]:
-        report_test_name = (
-            f"{stanza_name}::{report_property.name}::{transforms_section}"
-        )
-        fields = []
-        section = transforms.sects[transforms_section]
-        if "SOURCE_KEY" in section.options:
-            yield pytest.param(
-                {
-                    "stanza_type": stanza_type,
-                    "stanza_name": stanza_name,
-                    "fields": [section.options["SOURCE_KEY"].value],
-                },
-                id="{}::{}".format(stanza_name, section.options["SOURCE_KEY"].value),
+    try:
+        for transforms_section in [
+            each_stanza.strip() for each_stanza in report_property.value.split(",")
+        ]:
+            report_test_name = (
+                f"{stanza_name}::{report_property.name}::{transforms_section}"
             )
-            fields.append(section.options["SOURCE_KEY"].value)
-        if "REGEX" in section.options:
-            regex = r"\(\?<([^\>]+)\>"
-            yield from get_params_from_regex(
-                regex, section.options["REGEX"].value, stanza_type, stanza_name, fields,
-            )
-        if "FIELDS" in section.options:
-            fields_list = [
-                each_field.strip()
-                for each_field in section.options["FIELDS"].value.split(",")
-            ]
-            for each_field in fields_list:
-                yield pytest.param(
-                    {
-                        "stanza_type": stanza_type,
-                        "stanza_name": stanza_name,
-                        "fields": [each_field],
-                    },
-                    id="{}::{}".format(stanza_name, each_field),
-                )
-                fields.append(each_field)
-        if "FORMAT" in section.options:
-            regex = r"(\S*)::"
-            yield from get_params_from_regex(
-                regex,
-                section.options["FORMAT"].value,
-                stanza_type,
-                stanza_name,
-                fields,
-            )
+            fields = []
+            section = transforms.sects[transforms_section]
+            if "SOURCE_KEY" in section.options:
+                if section.options["SOURCE_KEY"].value != "":
+                    yield pytest.param(
+                        {
+                            "stanza_type": stanza_type,
+                            "stanza_name": stanza_name,
+                            "fields": [section.options["SOURCE_KEY"].value],
+                        },
+                        id="{}::{}".format(
+                            stanza_name, section.options["SOURCE_KEY"].value
+                        ),
+                    )
+                    fields.append(section.options["SOURCE_KEY"].value)
+            if "REGEX" in section.options:
+                regex = r"\(\?<([^\>]+)\>"
+                if section.options["REGEX"].value != "":
+                    yield from get_params_from_regex(
+                        regex,
+                        section.options["REGEX"].value,
+                        stanza_type,
+                        stanza_name,
+                        fields,
+                    )
+            if "FIELDS" in section.options:
+                fields_list = [
+                    each_field.strip()
+                    for each_field in section.options["FIELDS"].value.split(",")
+                ]
+                for each_field in fields_list:
+                    yield pytest.param(
+                        {
+                            "stanza_type": stanza_type,
+                            "stanza_name": stanza_name,
+                            "fields": [each_field],
+                        },
+                        id="{}::{}".format(stanza_name, each_field),
+                    )
+                    fields.append(each_field)
+            if "FORMAT" in section.options:
+                regex = r"(\S*)::"
+                if section.options["FORMAT"].value != "":
+                    yield from get_params_from_regex(
+                        regex,
+                        section.options["FORMAT"].value,
+                        stanza_type,
+                        stanza_name,
+                        fields,
+                    )
+    except KeyError as e:
+        LOGGER.error(e)
     yield pytest.param(
         {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
         id=report_test_name,
