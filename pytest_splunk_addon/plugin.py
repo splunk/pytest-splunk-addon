@@ -128,7 +128,7 @@ def load_splunk_fields(app, props):
             if re.match('LOOKUP', current, re.IGNORECASE):
                 yield from return_lookup_extract(stanza_type, each_stanza_name, props_property, app)
 
-def return_props_extract(stanza_type, stanza_name, options):
+def return_props_extract(stanza_type, stanza_name, props_property):
     """
     Returns the fields parsed from EXTRACT as pytest parameters
     Args:
