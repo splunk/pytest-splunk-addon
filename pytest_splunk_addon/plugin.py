@@ -9,6 +9,7 @@ import re
 import pytest
 import csv
 from splunk_appinspect import App
+from itertools import product
 
 LOGGER = logging.getLogger("pytest_splunk_addon")
 
@@ -52,7 +53,7 @@ def load_splunk_tests(splunk_app_path, fixture):
         yield from load_splunk_props(props)
     elif fixture.endswith("fields"):
         props = app.props_conf()
-        yield from load_splunk_fields(app, props, splunk_app_path)
+        yield from load_splunk_fields(app, props)
     else:
         yield None
 
@@ -88,48 +89,54 @@ def return_props_sourcetype_param(id, value):
     return pytest.param({"field": "sourcetype", "value": value}, id=idf)
 
 
-def load_splunk_fields(app, props, splunk_app_path):
+def load_splunk_fields(app, props):
     """
     Parse the App configuration files & yield fields
     Args:
         app(object): App Inspect object for current app
-        props(): The configuration object of props
-        splunk_app_path (str): Local system filepath to lookup to be examined
-    Yields:
-        generator of fields
+        props(splunk_appinspect.configuration_file.ConfigurationFile): The configuration object of props
     """
-    for props_section in props.sects:
-        section = props.sects[props_section]
+    for stanza_name in props.sects:
+        section = props.sects[stanza_name]
+        if section.name.startswith("source::"):
+            stanza_type = "source"
+            stanza_list = list(get_list_of_sources(stanza_name))
+        else:
+            stanza_type = "sourcetype"
+            stanza_list = [stanza_name]
         for current in section.options:
-            LOGGER.info("Parsing parameter=%s of stanza=%s", current, props_section)
-            options = section.options[current]
-            if current.startswith("EXTRACT-"):
-                yield return_props_extract(props_section, options)
+            LOGGER.info("Parsing %s parameter=%s of stanza=%s", stanza_type, current, stanza_name)
+            props_property = section.options[current]
+            for each_stanza_name in stanza_list:
+                if current.startswith("EXTRACT-"):
+                    yield return_props_extract(stanza_type, each_stanza_name, props_property)
+                elif current.startswith("EVAL-"):
+                    yield return_props_eval(stanza_type, each_stanza_name, props_property)
             if re.match('LOOKUP', current, re.IGNORECASE) is not None:
-                yield from return_lookup_extract(props_section, options, app, splunk_app_path)
+                yield from return_lookup_extract(stanza_type, each_stanza_name, props_property, app)
 
-
-def return_props_extract(id, value):
+def return_props_extract(stanza_type, stanza_name, options):
     """
     Returns the fields parsed from EXTRACT as pytest parameters
     Args:
-        id(str): parameter from the stanza
-        value(str): value of the parmeter
-    Yields:
-        List of pytest parameters containing fields
-    """
-    extract_test_name = f"{id}_field::{value.name}"
+        stanza_type(str): Stanza type (source/sourcetype)
+        stanza_name(str): parameter from the stanza
+        options(object): EXTRACT field details
 
+    Returns:
+        List of pytest parameters
+    """
+    name = f"{stanza_name}_field::{options.name}"
     regex = r"\(\?<([^\>]+)\>"
-    matches = re.finditer(regex, value.value, re.MULTILINE)
+    matches = re.finditer(regex, options.value, re.MULTILINE)
     fields = []
     for matchNum, match in enumerate(matches, start=1):
         for groupNum in range(0, len(match.groups())):
             groupNum = groupNum + 1
 
             fields.append(match.group(groupNum))
-    LOGGER.info("Genrated pytest.param for extract. stanza_name=%s, fields=%s", id, str(fields))
-    return pytest.param({"sourcetype": id, "fields": fields}, id=extract_test_name)
+    LOGGER.info("Genrated pytest.param for extract. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
+    return pytest.param({'stanza_type': stanza_type, "stanza_name": stanza_name, "fields": fields}, id=name)
 
 
 def get_lookup_fields(lookup_str):
@@ -175,15 +182,19 @@ def get_lookup_fields(lookup_str):
     return {"input_fields": input_output_field_list[0], "output_fields": input_output_field_list[1], "lookup_stanza": lookup_stanza}
 
 
-def return_lookup_extract(id, value, app, splunk_app_path):
+def return_lookup_extract(stanza_type, stanza_name, props_property, app):
     """
     This extracts the lookup fields in which we will use for testing later on.
 
     Args:
-        id(str): parameter from the stanza
-        value(str): value of the parameter
+        stanza_type: Stanza type (source/sourcetype)
+        stanza_name(str): source/sourcetype name
+        props_property(splunk_appinspect.configuration_file.ConfigurationSetting):
+            The configuration setting object of eval
+            properties used:
+                name : key in the configuration settings
+                value : value of the respective name in the configuration
         app(object): App Inspect object for current app
-        splunk_app_path (str): Local system filepath to lookup to be examined
 
     Variables:
         test_name(str): The id of the test created
@@ -195,8 +206,8 @@ def return_lookup_extract(id, value, app, splunk_app_path):
     returns:
         List of pytest parameters containing fields
     """
-    test_name = f"{id}::{value.name}"
-    parsed_fields = get_lookup_fields(value.value)
+    test_name = f"{id}::{props_property.name}"
+    parsed_fields = get_lookup_fields(props_property.value)
     lookup_field_list = parsed_fields["input_fields"] + parsed_fields["output_fields"]
     transforms = app.transforms_conf()
 
@@ -208,7 +219,7 @@ def return_lookup_extract(id, value, app, splunk_app_path):
             if 'filename' in stanza.options:
                 lookup_file = stanza.options['filename'].value
                 try:
-                    location = os.path.join(splunk_app_path, "lookups", lookup_file)
+                    location = os.path.join(app.package.working_app_path, "lookups", lookup_file)
                     with open(location, "r") as csv_file:
                         reader = csv.DictReader(csv_file)
                         fieldnames = reader.fieldnames
@@ -219,7 +230,7 @@ def return_lookup_extract(id, value, app, splunk_app_path):
                 # If there is an error. the test should fail with the current fields
                 # This makes sure the test doesn't exit prematurely
                 except (OSError, IOError, UnboundLocalError, TypeError) as e:
-                    LOGGER.warning("Could not read the lookup file. error=%s", str(e))
+                    LOGGER.info("Could not read the lookup file, skipping test. error=%s", str(e))
 
     # Test individual fields
     for each_field in lookup_field_list:
@@ -227,4 +238,47 @@ def return_lookup_extract(id, value, app, splunk_app_path):
         yield pytest.param({stanza_type: stanza_name, "fields": [each_field]}, id=field_test_name)
 
     # Test Lookup as a whole
-    yield pytest.param({"sourcetype": id, "fields": lookup_field_list}, id=test_name)
+    yield pytest.param({stanza_type: stanza_name, "fields": lookup_field_list}, id=test_name)
+    
+
+def return_props_eval(stanza_type, stanza_name, props_property):
+    '''
+    Return the fields parsed from EVAL as pytest parameters
+      
+    Args:
+        stanza_type: Stanza type (source/sourcetype)
+        stanza_name(str): source/sourcetype name
+        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): The configuration setting object of eval
+            properties used:
+                name : key in the configuration settings
+                value : value of the respective name in the configuration
+
+    Return:
+        List of pytest parameters
+    '''
+    test_name = f"{stanza_name}::{props_property.name}"
+    regex = r"EVAL-(?P<FIELD>.*)"
+    fields = re.findall(regex, props_property.name, re.IGNORECASE)
+
+    LOGGER.info("Genrated pytest.param for eval. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
+    return pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': fields}, id=test_name)
+
+def get_list_of_sources(source):
+    '''
+    Implement generator object of source list
+      
+    Args:
+        source(str): Source name
+
+    Yields:
+        generator of source name
+    '''
+    match_obj = re.search(r"source::(.*)", source)
+    value = match_obj.group(1).replace("...", "*")
+    sub_groups = re.findall("\([^\)]+\)", value)
+    sub_group_list = []
+    for each_group in sub_groups:
+        sub_group_list.append(each_group.strip("()").split("|"))
+    template = re.sub(r'\([^\)]+\)', "{}",value)
+    for each_permutation in product(*sub_group_list):
+        yield template.format(*each_permutation)
