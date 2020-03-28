@@ -166,7 +166,7 @@ def get_lookup_fields(lookup_str):
         input_output_str = lookup_str.split(" OUTPUT ")[input_output_index].split(" OUTPUTNEW ")[input_output_index]
 
         
-        field_parser = r"(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+)\s*(?:[aA][sS]\s*(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+))?"
+        field_parser = r"(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+)\s+(?:[aA][sS]\s+(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+))?"
         # field_groups: Group of max 2 fields - (source, destination) for "source as destination"
         field_groups = re.findall(field_parser, input_output_str)
 
@@ -206,7 +206,7 @@ def return_lookup_extract(stanza_type, stanza_name, props_property, app):
     returns:
         List of pytest parameters containing fields
     """
-    test_name = f"{id}::{props_property.name}"
+    test_name = f"{stanza_name}::{props_property.name}"
     parsed_fields = get_lookup_fields(props_property.value)
     lookup_field_list = parsed_fields["input_fields"] + parsed_fields["output_fields"]
     transforms = app.transforms_conf()
@@ -235,10 +235,10 @@ def return_lookup_extract(stanza_type, stanza_name, props_property, app):
     # Test individual fields
     for each_field in lookup_field_list:
         field_test_name = f"{stanza_name}_field::{each_field}"
-        yield pytest.param({stanza_type: stanza_name, "fields": [each_field]}, id=field_test_name)
+        yield  pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': [each_field]}, id=field_test_name)
 
     # Test Lookup as a whole
-    yield pytest.param({stanza_type: stanza_name, "fields": lookup_field_list}, id=test_name)
+    yield  pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': lookup_field_list}, id=test_name)
     
 
 def return_props_eval(stanza_type, stanza_name, props_property):
