@@ -114,44 +114,34 @@ def return_props_sourcetype_param(id, value):
 
 def load_splunk_fields(props):
     """
-    Parse the App configuration files & yield fields
+    Parse the props.conf of the App & yield stanzas
 
     Args:
-        props(): The configuration object of props
+        props(splunk_appinspect.configuration_file.ConfigurationFile): The configuration object of props
 
     Yields:
-        generator of fields
+        generator of stanzas from the props
     """
-    for props_section in props.sects:
-        section = props.sects[props_section]
+    for stanza_name in props.sects:
+        section = props.sects[stanza_name]
         if section.name.startswith("source::"):
             stanza_type = "source"
-            stanza_list = list(get_list_of_sources(props_section))
+            stanza_list = list(get_list_of_sources(stanza_name))
         else:
             stanza_type = "sourcetype"
-            stanza_list = [props_section]
+            stanza_list = [stanza_name]
         for current in section.options:
-            LOGGER.info(
-                "Parsing %s parameter=%s of stanza=%s",
-                stanza_type,
-                current,
-                props_section,
-            )
+            LOGGER.info("Parsing %s parameter=%s of stanza=%s", stanza_type, current, stanza_name)
             props_property = section.options[current]
             for each_stanza_name in stanza_list:
-                # if current.startswith("EXTRACT-"):
-                #     yield return_props_extract(
-                #         stanza_type, each_stanza_name, props_property
-                #     )
-                # elif current.startswith("EVAL-"):
-                #     yield return_props_eval(
-                #         stanza_type, each_stanza_name, props_property
-                #     )
-                if current.lower().startswith("lookup"):
+                if current.startswith("EXTRACT-"):
+                    yield return_props_extract(stanza_type, each_stanza_name, props_property)
+                elif current.startswith("EVAL-"):
+                    yield return_props_eval(stanza_type, each_stanza_name, props_property)
+                elif current.lower().startswith("lookup"):
                     yield from return_props_lookup_forward(
                         stanza_type, each_stanza_name, props_property
                     )
-
 
 def return_props_extract(stanza_type, stanza_name, options):
     """
@@ -199,31 +189,20 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     Args:
         stanza_type: Stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
-        props_property(object): Eval field details
+        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): The configuration setting object of eval
+            properties used:
+                name : key in the configuration settings
+                value : value of the respective name in the configuration
 
     Return:
         List of pytest parameters
     """
-    name = f"{stanza_name}::{props_property.name}"
+    test_name = f"{stanza_name}::{props_property.name}"
     regex = r"EVAL-(?P<FIELD>.*)"
     fields = re.findall(regex, props_property.name, re.IGNORECASE)
 
-    LOGGER.info(
-        "Genrated pytest.param for eval.\
-        stanza_type=%s, stanza_name=%s, fields=%s",
-        stanza_type,
-        id,
-        str(fields),
-    )
-    return pytest.param(
-        {
-            "stanza_type": stanza_type,
-            "stanza_name": stanza_name,
-            "fields": fields,
-        },
-        id=name,
-    )
-
+    LOGGER.info("Genrated pytest.param for eval. stanza_type=%s, stanza_name=%s, fields=%s", stanza_type, stanza_name, str(fields))
+    return pytest.param({'stanza_type': stanza_type, 'stanza_name': stanza_name, 'fields': fields}, id=test_name)
 
 def get_list_of_sources(source):
     """
@@ -240,8 +219,8 @@ def get_list_of_sources(source):
     sub_groups = re.findall("\([^\)]+\)", value)
     sub_group_list = []
     for each_group in sub_groups:
-        sub_group_list.append(list(each_group.strip("()").split("|")))
-    template = re.sub(r"\([^\)]+\)", "{}", value)
+        sub_group_list.append(each_group.strip("()").split("|"))
+    template = re.sub(r'\([^\)]+\)', "{}",value)
     for each_permutation in product(*sub_group_list):
         yield template.format(*each_permutation)
 
@@ -258,7 +237,7 @@ def get_lookup_fields(lookup_str):
         (list): List of lookup fields
     """
     input_output_field_list = []
-    # Remove lookup name (first word)
+    # Remove the name of the lookup file
     lookup_str = " ".join(lookup_str.split(" ")[1:])
 
     # 0: Take the left side of the OUTPUT as input fields
@@ -309,7 +288,8 @@ def return_props_lookup_forward(stanza_type, stanza_name, props_property):
     Args:
         stanza_type: Stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
-        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): The configuration setting object of LOOKUP.
+        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): 
+            The configuration setting object of LOOKUP.
             properties used:
                     name : key in the configuration settings
                     value : value of the respective name in the configuration
