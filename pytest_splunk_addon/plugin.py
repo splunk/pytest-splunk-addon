@@ -134,7 +134,7 @@ def load_splunk_fields(props, transforms):
                     )
                 elif current.startswith("EVAL-"):
                     yield return_props_eval(each_stanza_name, field_data, stanza_type)
-                if current.startswith("REPORT-"):
+                elif current.startswith("REPORT-"):
                     yield from return_transforms_report(
                         transforms, stanza_type, each_stanza_name, field_data
                     )
@@ -242,8 +242,12 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
                         stanza_name,
                         fields,
                     )
-    except KeyError as e:
-        LOGGER.error(e)
+    except KeyError:
+        LOGGER.error(
+            "The stanza {} doesnot exists in transforms.conf.".format(
+                transforms_section
+            ),
+        )
     yield pytest.param(
         {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
         id=report_test_name,
