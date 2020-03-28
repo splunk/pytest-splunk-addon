@@ -141,6 +141,19 @@ def load_splunk_fields(props, transforms):
 
 
 def get_params_from_regex(regex, property_value, stanza_type, stanza_name, fields):
+    """
+    Returns the fields captured using regex as pytest parameters
+
+    Args:
+        regex(str): The regular expression used to capture the fields
+        property_value(str): The property string on which regex will be applied to extract fields.
+        stanza_type(str): stanza type (source/sourcetype)
+        stanza_name(str): source/sourcetype name
+        fields(list): list of fields preset in a props property.
+        
+    Yields:
+        generator of fields as pytest parameters
+    """
     matches = re.finditer(regex, property_value, re.MULTILINE)
     for matchNum, match in enumerate(matches, start=1):
         for groupNum in range(0, len(match.groups())):
