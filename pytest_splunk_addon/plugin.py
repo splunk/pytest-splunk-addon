@@ -1,43 +1,54 @@
 # -*- coding: utf-8 -*-
-
-import logging
+"""
+Module usage:
+- splunk_appinspect: To parse the configuration files from Add-on package
+"""
 import os
+import logging
+import re
 import pytest
-import requests
+import csv
 from splunk_appinspect import App
 
-from .helmut.manager.jobs import Jobs
-from .helmut.splunk.cloud import CloudSplunk
-from .helmut_lib.SearchUtil import SearchUtil
-
-import pytest
-import requests
-import urllib3
-import splunklib.client as client
-import re
-import csv
-
-logger = logging.getLogger()
+LOGGER = logging.getLogger("pytest_splunk_addon")
 
 
 def pytest_configure(config):
+    """
+    Setup configuration after command-line options are parsed
+    """
     config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
     config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
 
 
 def pytest_generate_tests(metafunc):
+    """
+    Parse the fixture dynamically.
+    """
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_app"):
+            LOGGER.info("generating testcases for splunk_app. fixture=%s", fixture)
             # Load associated test data
             tests = load_splunk_tests(metafunc.config.getoption("splunk_app"), fixture)
-            if tests:
-                metafunc.parametrize(fixture, tests)
+            metafunc.parametrize(fixture, tests)
 
 
 def load_splunk_tests(splunk_app_path, fixture):
+    """
+    Utility function to load the test cases with the App fields
+
+    Args:
+        splunk_app_path(string): Path of the Splunk App
+        fixture: The list of fixtures
+
+    Yields:
+        List of knowledge objects as pytest parameters
+    """
+    LOGGER.info("Initializing App parsing mechanism.")
     app = App(splunk_app_path, python_analyzer_enable=False)
     if fixture.endswith("props"):
         props = app.props_conf()
+        LOGGER.info("Successfully parsed props configurations")
         yield from load_splunk_props(props)
     elif fixture.endswith("fields"):
         props = app.props_conf()
@@ -47,17 +58,33 @@ def load_splunk_tests(splunk_app_path, fixture):
 
 
 def load_splunk_props(props):
-    for p in props.sects:
-        if p.startswith("host::"):
+    """
+    Parse the props.conf of the App & yield stanzas
+
+    Args:
+        props(): The configuration object of props
+
+    Yields:
+        generator of stanzas from the props
+    """
+    for props_section in props.sects:
+        if props_section.startswith("host::"):
+            LOGGER.info("Skipping host:: stanza=%s", props_section)
             continue
-        elif p.startswith("source::"):
+        elif props_section.startswith("source::"):
+            LOGGER.info("Skipping source:: stanza=%s", props_section)
             continue
         else:
-            yield return_props_sourcetype_param(p, p)
+            LOGGER.info("parsing sourcetype stanza=%s", props_section)
+            yield return_props_sourcetype_param(props_section, props_section)
 
 
 def return_props_sourcetype_param(id, value):
+    """
+    Convert sourcetype to pytest parameters
+    """
     idf = f"sourcetype::{id}"
+    LOGGER.info("Generated pytest.param of sourcetype with id=%s", idf)
     return pytest.param({"field": "sourcetype", "value": value}, id=idf)
 
 
@@ -74,11 +101,12 @@ def load_splunk_fields(app, props, splunk_app_path):
     for props_section in props.sects:
         section = props.sects[props_section]
         for current in section.options:
+            LOGGER.info("Parsing parameter=%s of stanza=%s", current, props_section)
             options = section.options[current]
             if current.startswith("EXTRACT-"):
                 yield return_props_extract(props_section, options)
             if re.match('LOOKUP', current, re.IGNORECASE) is not None:
-                yield return_lookup_extract(props_section, options, app, splunk_app_path)
+                yield from return_lookup_extract(props_section, options, app, splunk_app_path)
 
 
 def return_props_extract(id, value):
@@ -100,7 +128,7 @@ def return_props_extract(id, value):
             groupNum = groupNum + 1
 
             fields.append(match.group(groupNum))
-
+    LOGGER.info("Genrated pytest.param for extract. stanza_name=%s, fields=%s", id, str(fields))
     return pytest.param({"sourcetype": id, "fields": fields}, id=extract_test_name)
 
 
@@ -115,15 +143,11 @@ def get_lookup_fields(lookup_str):
         lookup_stanza(str): The stanza name for the lookup in question in transforms.conf
         input_fields(list): The fields in the input of the lookup
         output_fields(list): The fields in the output of the lookup
-        output_flag(bool): Whether or not the lookup has a OUTPUT or OUTPUTNEW keyword in it
     """
 
     input_output_field_list = []
     lookup_stanza = lookup_str.split(" ")[0]
     lookup_str = " ".join(lookup_str.split(" ")[1:])
-    output_flag = False
-    if " OUTPUT " in lookup_str or " OUTPUTNEW " in lookup_str:
-        output_flag = True
 
     # 0: Take the left side of the OUTPUT as input fields
     # -1: Take the right side of the OUTPUT as output fields
@@ -148,7 +172,7 @@ def get_lookup_fields(lookup_str):
 
         input_output_field_list.append(field_list)
 
-    return {"input_fields": input_output_field_list[0], "output_fields": input_output_field_list[1], "lookup_stanza": lookup_stanza, "output_flag": output_flag}
+    return {"input_fields": input_output_field_list[0], "output_fields": input_output_field_list[1], "lookup_stanza": lookup_stanza}
 
 
 def return_lookup_extract(id, value, app, splunk_app_path):
@@ -162,46 +186,45 @@ def return_lookup_extract(id, value, app, splunk_app_path):
         splunk_app_path (str): Local system filepath to lookup to be examined
 
     Variables:
-        name(str): The id of the test created
-        string(list(str)): The string of the lookup value
+        test_name(str): The id of the test created
         lookup_stanza(str): The stanza in transforms.conf corresponding to the lookup
         lookup_file(str): The name of the lookup fole that is being used
-        output_flag(bool): A boolean to check when and if the lookup has a output argument
-        skip(int): How many times we want our iterator to skip over the string
         lookup_field_list(list): The list of lookup fields we want to return
         transforms(object): Splunk app object/dictionary holding information of the apps transforms.conf file
 
     returns:
         List of pytest parameters containing fields
     """
-    name = f"{id}lookup::{value.name}"
-    skip = False
-    fields = get_lookup_fields(value.value)
-    lookup_field_list = fields["input_fields"] + fields["output_fields"]
+    test_name = f"{id}::{value.name}"
+    parsed_fields = get_lookup_fields(value.value)
+    lookup_field_list = parsed_fields["input_fields"] + parsed_fields["output_fields"]
     transforms = app.transforms_conf()
 
     # If the OUTPUT or OUTPUTNEW argument is never used, then get the fields from the csv file
-    if fields["output_flag"] is False:
-        for stanzas in transforms.sects:
-            stanza = transforms.sects[stanzas]
-            if(stanza.name == fields["lookup_stanza"]):
-                for current in stanza.options:
-                    if stanza.options[current].name == 'filename':
-                        lookup_file = stanza.options[current].value
-        try:
-            location = os.path.join(splunk_app_path, "lookups", lookup_file)
-            with open(location, "r") as csvfile:
-                reader = csv.DictReader(csvfile)
-                fieldnames = reader.fieldnames
-                for items in fieldnames:
-                    if items not in lookup_field_list:
-                        lookup_field_list.append(items.strip())
-                csvfile.close()
-        # If there is an error. the test should fail with the current fields
-        # This makes sure the test doesn't exit prematurely
-        except (OSError, IOError, UnboundLocalError, TypeError):
-            skip = True
-    if(skip):
-        return None
-    else:
-        return pytest.param({"sourcetype": id, "fields": lookup_field_list}, id=name)
+    if not parsed_fields["output_fields"]:
+
+        if parsed_fields["lookup_stanza"] in transforms.sects:
+            stanza = transforms.sects[parsed_fields["lookup_stanza"]]
+            if 'filename' in stanza.options:
+                lookup_file = stanza.options['filename'].value
+                try:
+                    location = os.path.join(splunk_app_path, "lookups", lookup_file)
+                    with open(location, "r") as csv_file:
+                        reader = csv.DictReader(csv_file)
+                        fieldnames = reader.fieldnames
+                        for items in fieldnames:
+                            items = items.strip()
+                            if items not in lookup_field_list:
+                                lookup_field_list.append(items.strip())
+                # If there is an error. the test should fail with the current fields
+                # This makes sure the test doesn't exit prematurely
+                except (OSError, IOError, UnboundLocalError, TypeError) as e:
+                    LOGGER.warning("Could not read the lookup file. error=%s", str(e))
+
+    # Test individual fields
+    for each_field in lookup_field_list:
+        field_test_name = f"{stanza_name}_field::{each_field}"
+        yield pytest.param({stanza_type: stanza_name, "fields": [each_field]}, id=field_test_name)
+
+    # Test Lookup as a whole
+    yield pytest.param({"sourcetype": id, "fields": lookup_field_list}, id=test_name)
