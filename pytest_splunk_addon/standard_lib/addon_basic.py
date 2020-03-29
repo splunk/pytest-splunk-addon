@@ -27,7 +27,9 @@ class Basic:
 
     # This test ensures the contained samples will produce at lease one event per sourcetype/source
     @pytest.mark.splunk_addon_searchtime
-    def test_props_stanza(self, splunk_search_util, splunk_app_props, record_property, caplog):
+    def test_props_stanza(
+        self, splunk_search_util, splunk_app_props, record_property, caplog
+    ):
         record_property(splunk_app_props["field"], splunk_app_props["value"])
         search = f"search (index=_internal OR index=*) AND {splunk_app_props['field']}=\"{splunk_app_props['value']}\""
 
@@ -40,7 +42,9 @@ class Basic:
         assert result == True
 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_fields(self, splunk_search_util, splunk_app_fields, record_property, caplog):
+    def test_props_fields(
+        self, splunk_search_util, splunk_app_fields, record_property, caplog
+    ):
         """
         Test case to check props property mentioned in props.conf
         
@@ -58,7 +62,7 @@ class Basic:
         search = f"search (index=_internal OR index=*) {splunk_app_fields['stanza_type']}={splunk_app_fields['stanza_name']}"
         for f in splunk_app_fields["fields"]:
             search = search + f' AND ({f}=* AND NOT {f}="-" AND NOT {f}="")'
-        
+
         self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
@@ -69,7 +73,9 @@ class Basic:
         assert result == True
 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_fields_no_dash(self, splunk_search_util, splunk_app_fields, record_property, caplog):
+    def test_props_fields_no_dash(
+        self, splunk_search_util, splunk_app_fields, record_property, caplog
+    ):
         """
         Test case to check props property mentioned in props.conf
         
@@ -90,7 +96,7 @@ class Basic:
             search = search + f' {op} {f}="-"'
             op = "OR"
         search = search + ")"
-        
+
         self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
@@ -101,7 +107,9 @@ class Basic:
         assert result == False
 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_fields_no_empty(self, splunk_search_util, splunk_app_fields, record_property, caplog):
+    def test_props_fields_no_empty(
+        self, splunk_search_util, splunk_app_fields, record_property, caplog
+    ):
         """
         Test case to check props property mentioned in props.conf
         
@@ -122,7 +130,7 @@ class Basic:
             search = search + f' {op} {f}=""'
             op = "OR"
         search = search + ")"
-        
+
         self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
