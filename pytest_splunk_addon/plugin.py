@@ -128,12 +128,12 @@ def load_splunk_fields(props, transforms):
             LOGGER.info("Parsing parameter=%s of stanza=%s", current, stanza_name)
             field_data = section.options[current]
             for each_stanza_name in stanza_list:
-                # if current.startswith("EXTRACT-"):
-                #     yield from return_props_extract(
-                #         stanza_type, each_stanza_name, field_data
-                #     )
-                # elif current.startswith("EVAL-"):
-                #     yield return_props_eval(each_stanza_name, field_data, stanza_type)
+                if current.startswith("EXTRACT-"):
+                    yield from return_props_extract(
+                        stanza_type, each_stanza_name, field_data
+                    )
+                elif current.startswith("EVAL-"):
+                    yield return_props_eval(each_stanza_name, field_data, stanza_type)
                 if current.startswith("REPORT-"):
                     yield from return_transforms_report(
                         transforms, stanza_type, each_stanza_name, field_data
