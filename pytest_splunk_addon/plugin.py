@@ -181,7 +181,7 @@ def return_props_extract(stanza_type, stanza_name, props_property):
         )
 
 
-def return_props_eval(stanza_name, field_data, stanza_type):
+def return_props_eval(stanza_type, stanza_name, field_data):
     """
     Return the fields parsed from EVAL as pytest parameters
       
