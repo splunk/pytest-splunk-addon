@@ -136,7 +136,7 @@ def test_splunk_app_fiction(testdir):
         "\n".join(result.stdout.lines),
         "\n".join(result.stderr.lines),
     )
-    result.assert_outcomes(passed=83, failed=0)
+    result.assert_outcomes(passed=92, failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
@@ -184,7 +184,7 @@ def test_splunk_app_broken_sourcetype(testdir):
         "\n".join(result.stdout.lines),
         "\n".join(result.stderr.lines),
     )
-    result.assert_outcomes(passed=27, failed=9)
+    result.assert_outcomes(passed=33, failed=9)
 
     # The test suite should fail as this is a negative test
     assert result.ret != 0
