@@ -128,13 +128,13 @@ def load_splunk_fields(props, transforms):
             LOGGER.info("Parsing parameter=%s of stanza=%s", current, stanza_name)
             field_data = section.options[current]
             for each_stanza_name in stanza_list:
-                if current.startswith("EXTRACT-"):
-                    yield from return_props_extract(
-                        stanza_type, each_stanza_name, field_data
-                    )
-                elif current.startswith("EVAL-"):
-                    yield return_props_eval(each_stanza_name, field_data, stanza_type)
-                elif current.startswith("REPORT-"):
+                # if current.startswith("EXTRACT-"):
+                #     yield from return_props_extract(
+                #         stanza_type, each_stanza_name, field_data
+                #     )
+                # elif current.startswith("EVAL-"):
+                #     yield return_props_eval(each_stanza_name, field_data, stanza_type)
+                if current.startswith("REPORT-"):
                     yield from return_transforms_report(
                         transforms, stanza_type, each_stanza_name, field_data
                     )
@@ -242,16 +242,20 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
                     stanza_name,
                     fields,
                 )
+            yield pytest.param(
+                {
+                    "stanza_type": stanza_type,
+                    "stanza_name": stanza_name,
+                    "fields": fields,
+                },
+                id=report_test_name,
+            )
     except KeyError:
         LOGGER.error(
             "The stanza {} doesnot exists in transforms.conf.".format(
                 transforms_section
             ),
         )
-    yield pytest.param(
-        {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
-        id=report_test_name,
-    )
 
 
 def return_props_extract(stanza_type, stanza_name, props_property):
