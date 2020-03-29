@@ -218,20 +218,21 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
                         fields,
                     )
             if "FIELDS" in section.options:
-                fields_list = [
-                    each_field.strip()
-                    for each_field in section.options["FIELDS"].value.split(",")
-                ]
-                for each_field in fields_list:
-                    yield pytest.param(
-                        {
-                            "stanza_type": stanza_type,
-                            "stanza_name": stanza_name,
-                            "fields": [each_field],
-                        },
-                        id="{}::{}".format(stanza_name, each_field),
-                    )
-                    fields.append(each_field)
+                if section.options["FIELDS"].value != "":
+                    fields_list = [
+                        each_field.strip()
+                        for each_field in section.options["FIELDS"].value.split(",")
+                    ]
+                    for each_field in fields_list:
+                        yield pytest.param(
+                            {
+                                "stanza_type": stanza_type,
+                                "stanza_name": stanza_name,
+                                "fields": [each_field],
+                            },
+                            id="{}::{}".format(stanza_name, each_field),
+                        )
+                        fields.append(each_field)
             if "FORMAT" in section.options:
                 regex = r"(\S*)::"
                 if section.options["FORMAT"].value != "":
