@@ -240,7 +240,7 @@ def return_props_field_alias(stanza_type, stanza_name, props_property):
 
     Regex:
         Description:
-            Find all field alias group seperated by space or comma
+            Find all field alias group separated by space or comma
         Examples:
             field_source AS field_destination
             "Field Source" as "Field Destination"
