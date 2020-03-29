@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 import shutil
-
+import logging
 import pytest
+
+logger = logging.getLogger("test_pytest_splunk_addon")
 
 test_connection_only = """
         def test_connection_splunk(splunk_search_util):
@@ -23,29 +25,30 @@ def test_splunk_connection_external(testdir):
     # create a temporary pytest test module
     testdir.makepyfile(test_connection_only)
 
-    # Copy the content of
-    # source to destination
-
-    destination = shutil.copytree(
+    # Copy the content of source to destination
+    shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
         os.path.join(testdir.tmpdir, "tests/package"),
     )
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk_type=external",
-        "--splunk_app=tests/package",
-        "--splunk_type=external",
-        f"--splunk_host=splunk",
-        f"--splunk_port=8089",
-        "--splunk_password=Changed@11",
+        "--splunk-type=external",
+        "--splunk-app=tests/package",
+        "--splunk-type=external",
+        f"--splunk-host=splunk",
+        f"--splunk-port=8089",
+        "--splunk-password=Changed@11",
         "-v",
     )
 
     # fnmatch_lines does an assertion internally
-    result.stdout.fnmatch_lines(
-        ["*::test_connection_splunk PASSED*",]
+    logger.info(
+        "Result from the test execution: \nstdout=%s\nstderr=%s",
+        "\n".join(result.stdout.lines),
+        "\n".join(result.stderr.lines),
     )
+    result.assert_outcomes(passed=1, failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
@@ -58,34 +61,36 @@ def test_splunk_connection_docker(testdir):
     # create a temporary pytest test module
     testdir.makepyfile(test_connection_only)
 
-    # Copy the content of
-    # source to destination
+    # Copy the content of source to destination
 
-    destination = shutil.copytree(
+    shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
         os.path.join(testdir.tmpdir, "tests/package"),
     )
 
-    destination = shutil.copy(
+    shutil.copy(
         os.path.join(testdir.request.fspath.dirname, "Dockerfile"),
         os.path.join(testdir.tmpdir, "tests/"),
     )
-    destination = shutil.copy(
+    shutil.copy(
         os.path.join(testdir.request.fspath.dirname, "docker-compose.yml"),
         os.path.join(testdir.tmpdir, "tests/"),
     )
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk_type=docker",
-        "--splunk_app=tests/package",
-        "--splunk_password=Changed@11",
+        "--splunk-type=docker",
+        "--splunk-app=tests/package",
+        "--splunk-password=Changed@11",
         "-v",
     )
 
     # fnmatch_lines does an assertion internally
-    result.stdout.fnmatch_lines(
-        ["*::test_connection_splunk PASSED*",]
+    logger.info(
+        "Result from the test execution: \nstdout=%s\nstderr=%s",
+        "\n".join(result.stdout.lines),
+        "\n".join(result.stderr.lines),
     )
+    result.assert_outcomes(passed=1, failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
@@ -105,42 +110,33 @@ def test_splunk_app_fiction(testdir):
     """
     )
 
-    destination = shutil.copytree(
+    shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
         os.path.join(testdir.tmpdir, "tests/package"),
     )
 
-    destination = shutil.copy(
+    shutil.copy(
         os.path.join(testdir.request.fspath.dirname, "Dockerfile"),
         os.path.join(testdir.tmpdir, "tests/"),
     )
-    destination = shutil.copy(
+    shutil.copy(
         os.path.join(testdir.request.fspath.dirname, "docker-compose.yml"),
         os.path.join(testdir.tmpdir, "tests/"),
     )
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk_type=docker",
-        "--splunk_app=tests/package",
-        "--splunk_password=Changed@11",
+        "--splunk-type=docker",
+        "--splunk-app=tests/package",
+        "--splunk-password=Changed@11",
         "-v",
     )
 
-    # '*test_fields*splunkd*EXTRACT-two*PASSED*',
-    # fnmatch_lines does an assertion internally
-    result.stdout.fnmatch_lines(
-        [
-            "*test_splunk_app_fiction.py::Test_App::test_splunk_internal_errors PASSED*",
-            "*test_splunk_app_fiction.py::Test_App::test_sourcetype*sourcetype::splunkd* PASSED*",
-            "*test_splunk_app_fiction.py::Test_App::test_sourcetype_fields*splunkd_field::EXTRACT-one* PASSED*",
-            "*test_splunk_app_fiction.py::Test_App::test_sourcetype_fields*splunkd_field::EXTRACT-two* PASSED*",
-        ]
+    logger.info(
+        "Result from the test execution: \nstdout=%s\nstderr=%s",
+        "\n".join(result.stdout.lines),
+        "\n".join(result.stderr.lines),
     )
-
-    # '*test_basic_eventtype*splunkd*PASSED*',
-    # '*test_fields*splunkd*EXTRACT-one*PASSED*',
-    #
-    # '*test_fields*splunkd*FIELDALIAS-one*PASSED*'
+    result.assert_outcomes(passed=8, failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
@@ -160,35 +156,35 @@ def test_splunk_app_broken_sourcetype(testdir):
     """
     )
 
-    destination = shutil.copytree(
+    shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_broken_sourcetype"),
         os.path.join(testdir.tmpdir, "tests/package"),
     )
 
-    destination = shutil.copy(
+    shutil.copy(
         os.path.join(testdir.request.fspath.dirname, "Dockerfile"),
         os.path.join(testdir.tmpdir, "tests/"),
     )
-    destination = shutil.copy(
+    shutil.copy(
         os.path.join(testdir.request.fspath.dirname, "docker-compose.yml"),
         os.path.join(testdir.tmpdir, "tests/"),
     )
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk_type=docker",
-        "--splunk_app=tests/package",
-        "--splunk_password=Changed@11",
+        "--splunk-type=docker",
+        "--splunk-app=tests/package",
+        "--splunk-password=Changed@11",
         "-v",
     )
 
     # fnmatch_lines does an assertion internally
-    result.stdout.fnmatch_lines(
-        [
-            "*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype*sourcetype::notvalid* FAILED*",
-            "*test_splunk_app_broken_sourcetype.py::Test_App::test_sourcetype_fields*notvalid_field::EXTRACT-one* FAILED*",
-        ]
+    logger.info(
+        "Result from the test execution: \nstdout=%s\nstderr=%s",
+        "\n".join(result.stdout.lines),
+        "\n".join(result.stderr.lines),
     )
+    result.assert_outcomes(passed=3, failed=2)
 
     # The test suite should fail as this is a negative test
     assert result.ret != 0
@@ -200,10 +196,10 @@ def test_help_message(testdir):
     result.stdout.fnmatch_lines(
         [
             "splunk-addon:",
-            "*--splunk_app=*",
-            "*--splunk_host=*",
-            "*--splunk_port=*",
-            "*--splunk_user=*",
-            "*--splunk_password=*",
+            "*--splunk-app=*",
+            "*--splunk-host=*",
+            "*--splunk-port=*",
+            "*--splunk-user=*",
+            "*--splunk-password=*",
         ]
     )
