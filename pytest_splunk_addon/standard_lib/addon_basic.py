@@ -8,7 +8,7 @@ class Basic:
     logger = logging.getLogger()
 
     @pytest.mark.splunk_addon_internal_errors
-    def test_splunk_internal_errors(self, splunk_search_util, record_property, caplog):
+    def test_common_internal_errors(self, splunk_search_util, record_property, caplog):
         search = """
             search index=_internal CASE(ERROR) 
             sourcetype!=splunkd_ui_access 
@@ -27,7 +27,7 @@ class Basic:
 
     # This test ensures the contained samples will produce at lease one event per sourcetype/source
     @pytest.mark.splunk_addon_searchtime
-    def test_props_stanza(
+    def test_props_sourcetype(
         self, splunk_search_util, splunk_app_props, record_property, caplog
     ):
         record_property(splunk_app_props["field"], splunk_app_props["value"])
@@ -42,7 +42,7 @@ class Basic:
         assert result == True
 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_fields(
+    def test_props_sourcetype_fields(
         self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
         """
@@ -73,7 +73,7 @@ class Basic:
         assert result == True
 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_fields_no_dash(
+    def test_props_sourcetype_fields_no_dash(
         self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
         """
@@ -107,7 +107,7 @@ class Basic:
         assert result == False
 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_fields_no_empty(
+    def test_props_sourcetype_fields_no_empty(
         self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
         """
@@ -140,34 +140,3 @@ class Basic:
 
         assert result == False
 
-    # # This test ensures the contained samples will produce at lease one event per eventtype
-    # @pytest.mark.splunk_addon_searchtime
-    # @flaky(max_runs=5, min_passes=1)
-    # def test_basic_eventtype(self, splunk_search_util, eventtypes):
-    #
-    #     self.logger.debug("Testing eventtype={}", eventtypes)
-    #     search = "search (index=_internal OR index=*) AND eventtype=\"{}\"".format(eventtypes)
-    #
-    #     # run search
-    #     result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-    #         search,
-    #         interval=1, retries=1)
-    #
-    #     if not result:
-    #         pytest.fail(search)
-    #
-    # @pytest.mark.splunk_addon_searchtime
-    # @flaky(max_runs=5, min_passes=1)
-    # def test_fields(self, splunk_search_util, prop_elements):
-    #     search = "search (index=_internal OR index=*) AND sourcetype=\"{}\" AND {}".format(
-    #         prop_elements['sourcetype'],
-    #         prop_elements['field']
-    #     )
-    #
-    #     # run search
-    #     result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-    #         search,
-    #         interval=2, retries=5)
-    #
-    #     if not result:
-    #         pytest.fail(search)
