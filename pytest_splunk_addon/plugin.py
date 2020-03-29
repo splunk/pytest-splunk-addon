@@ -194,55 +194,54 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
             )
             fields = []
             section = transforms.sects[transforms_section]
-            if "SOURCE_KEY" in section.options:
-                if section.options["SOURCE_KEY"].value != "":
+            if (
+                "SOURCE_KEY" in section.options
+                and section.options["SOURCE_KEY"].value != ""
+            ):
+                yield pytest.param(
+                    {
+                        "stanza_type": stanza_type,
+                        "stanza_name": stanza_name,
+                        "fields": [section.options["SOURCE_KEY"].value],
+                    },
+                    id="{}::{}".format(
+                        stanza_name, section.options["SOURCE_KEY"].value
+                    ),
+                )
+                fields.append(section.options["SOURCE_KEY"].value)
+            if "REGEX" in section.options and section.options["REGEX"].value != "":
+                regex = r"\(\?<([^\>]+)\>"
+                yield from get_params_from_regex(
+                    regex,
+                    section.options["REGEX"].value,
+                    stanza_type,
+                    stanza_name,
+                    fields,
+                )
+            if "FIELDS" in section.options and section.options["FIELDS"].value != "":
+                fields_list = [
+                    each_field.strip()
+                    for each_field in section.options["FIELDS"].value.split(",")
+                ]
+                for each_field in fields_list:
                     yield pytest.param(
                         {
                             "stanza_type": stanza_type,
                             "stanza_name": stanza_name,
-                            "fields": [section.options["SOURCE_KEY"].value],
+                            "fields": [each_field],
                         },
-                        id="{}::{}".format(
-                            stanza_name, section.options["SOURCE_KEY"].value
-                        ),
+                        id="{}::{}".format(stanza_name, each_field),
                     )
-                    fields.append(section.options["SOURCE_KEY"].value)
-            if "REGEX" in section.options:
-                regex = r"\(\?<([^\>]+)\>"
-                if section.options["REGEX"].value != "":
-                    yield from get_params_from_regex(
-                        regex,
-                        section.options["REGEX"].value,
-                        stanza_type,
-                        stanza_name,
-                        fields,
-                    )
-            if "FIELDS" in section.options:
-                if section.options["FIELDS"].value != "":
-                    fields_list = [
-                        each_field.strip()
-                        for each_field in section.options["FIELDS"].value.split(",")
-                    ]
-                    for each_field in fields_list:
-                        yield pytest.param(
-                            {
-                                "stanza_type": stanza_type,
-                                "stanza_name": stanza_name,
-                                "fields": [each_field],
-                            },
-                            id="{}::{}".format(stanza_name, each_field),
-                        )
-                        fields.append(each_field)
-            if "FORMAT" in section.options:
+                    fields.append(each_field)
+            if "FORMAT" in section.options and section.options["FORMAT"].value != "":
                 regex = r"(\S*)::"
-                if section.options["FORMAT"].value != "":
-                    yield from get_params_from_regex(
-                        regex,
-                        section.options["FORMAT"].value,
-                        stanza_type,
-                        stanza_name,
-                        fields,
-                    )
+                yield from get_params_from_regex(
+                    regex,
+                    section.options["FORMAT"].value,
+                    stanza_type,
+                    stanza_name,
+                    fields,
+                )
     except KeyError:
         LOGGER.error(
             "The stanza {} doesnot exists in transforms.conf.".format(
