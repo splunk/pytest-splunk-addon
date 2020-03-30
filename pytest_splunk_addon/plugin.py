@@ -243,9 +243,7 @@ def get_list_of_sources(source):
     for each_permutation in product(*sub_group_list):
         yield template.format(*each_permutation)
 
-            fields.append(match.group(groupNum))
-    LOGGER.info("Genrated pytest.param for extract. stanza_name=%s, fields=%s", id, str(fields))
-    return pytest.param({"sourcetype": id, "fields": fields}, id=name)
+
 
 def load_splunk_eventtypes(eventtypes):
     """
