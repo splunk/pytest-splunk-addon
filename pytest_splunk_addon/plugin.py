@@ -207,6 +207,12 @@ def load_splunk_fields(props):
                     yield return_props_eval(
                         stanza_type, each_stanza_name, props_property
                     )
+                elif current.startswith("FIELDALIAS-"):
+                    yield from return_props_field_alias(
+                        stanza_type, each_stanza_name, props_property
+                    )
+                elif current.startswith("EVAL-"):
+                    yield return_props_eval(stanza_type, each_stanza_name, props_property)
 
 
 def return_props_extract(stanza_type, stanza_name, props_property):
@@ -301,6 +307,57 @@ def return_props_eval(stanza_type, stanza_name, props_property):
         },
         id=test_name,
     )
+
+
+def return_props_field_alias(stanza_type, stanza_name, props_property):
+    """
+    Return the fields parsed from FIELDALIAS as pytest parameters
+
+    Args:
+        stanza_type: Stanza type (source/sourcetype)
+        stanza_name(str): source/sourcetype name
+        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): 
+            The configuration setting object of FIELDALIAS
+            properties used:
+                name : key in the configuration settings
+                value : value of the respective name in the configuration
+
+    Regex:
+        Description:
+            Find all field alias group separated by space or comma
+        Examples:
+            field_source AS field_destination
+            "Field Source" as "Field Destination"
+            field_source ASNEW 'Field Destination'
+            field_source asnew field_destination
+
+    Return:
+        List of pytest parameters
+    """
+    regex = (
+        r"(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+)"
+        r"\s+(?i)(?:as(?:new)?)\s+"
+        r"(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+)"
+    )
+    fields_tuples = re.findall(regex, props_property.value, re.IGNORECASE)
+    # Convert list of tuples into list
+    fields = set([item for t in fields_tuples for item in t])
+
+    LOGGER.info(
+        (
+            "Genrated pytest.param for FIELDALIAS. "
+            "stanza_type=%s, stanza_name=%s, fields=%s"
+        ),
+        stanza_type,
+        id,
+        str(fields),
+    )
+    for field in fields:
+        test_name = f"{stanza_name}::FIELDALIAS-{field}"
+        yield pytest.param(
+            {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": [field]},
+            id=test_name,
+        )
 
 
 def get_list_of_sources(source):
