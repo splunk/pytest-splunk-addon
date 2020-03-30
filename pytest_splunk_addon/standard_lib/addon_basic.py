@@ -3,8 +3,8 @@ import logging
 import pytest
 import pprint
 
-INTERVAL = 1
-RETRY = 1
+INTERVAL = 3
+RETRY = 3
 
 
 class Basic:
@@ -38,9 +38,11 @@ class Basic:
         self, splunk_search_util, splunk_app_props, record_property, caplog
     ):
         record_property(splunk_app_props["field"], splunk_app_props["value"])
-        search = (f"search (index=_internal OR index=*) AND "
-                  f"{splunk_app_props['field']}="
-                  f"\"{splunk_app_props['value']}\"")
+        search = (
+            f"search (index=_internal OR index=*) AND "
+            f"{splunk_app_props['field']}="
+            f"\"{splunk_app_props['value']}\""
+        )
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
@@ -72,9 +74,11 @@ class Basic:
         record_property("stanza_type", splunk_app_fields["stanza_type"])
         record_property("fields", splunk_app_fields["fields"])
 
-        search = (f"search (index=_internal OR index=*)"
-                  f" {splunk_app_fields['stanza_type']}="
-                  f"{splunk_app_fields['stanza_name']}")
+        search = (
+            f"search (index=_internal OR index=*)"
+            f" {splunk_app_fields['stanza_type']}="
+            f"{splunk_app_fields['stanza_name']}"
+        )
         for f in splunk_app_fields["fields"]:
             search = search + f' AND ({f}=* AND NOT {f}="-" AND NOT {f}="")'
 
@@ -109,9 +113,11 @@ class Basic:
         record_property("stanza_type", splunk_app_fields["stanza_type"])
         record_property("fields", splunk_app_fields["fields"])
 
-        search = (f"search (index=_internal OR index=*)"
-                  f" {splunk_app_fields['stanza_type']}="
-                  f"{splunk_app_fields['stanza_name']} AND (")
+        search = (
+            f"search (index=_internal OR index=*)"
+            f" {splunk_app_fields['stanza_type']}="
+            f"{splunk_app_fields['stanza_name']} AND ("
+        )
         op = ""
         for f in splunk_app_fields["fields"]:
             search = search + f' {op} {f}="-"'
@@ -149,9 +155,11 @@ class Basic:
         record_property("stanza_type", splunk_app_fields["stanza_type"])
         record_property("fields", splunk_app_fields["fields"])
 
-        search = (f"search (index=_internal OR index=*)"
-                  f" {splunk_app_fields['stanza_type']}="
-                  f"{splunk_app_fields['stanza_name']} AND (")
+        search = (
+            f"search (index=_internal OR index=*)"
+            f" {splunk_app_fields['stanza_type']}="
+            f"{splunk_app_fields['stanza_name']} AND ("
+        )
         op = ""
         for f in splunk_app_fields["fields"]:
             search = search + f' {op} {f}=""'
@@ -212,3 +220,38 @@ class Basic:
         record_property("search", search)
 
         assert result is is_tag_enabled
+
+    @pytest.mark.splunk_addon_searchtime
+    def test_eventtype(
+        self,
+        splunk_search_util,
+        splunk_app_eventtypes,
+        record_property,
+        caplog,
+    ):
+        """
+        Tests if all eventtypes in eventtypes.conf are generated or not in Splunk.
+        Args:
+            splunk_search_util: Fixture to create a simple connection to Splunk via the SplunkSDK
+            splunk_app_eventtypes: Fixture containing list of eventtypes
+            record_property: Used to add user properties to test report
+            caplog: Access and control log capturing
+        Returns:
+            Asserts whether test case passes or fails.
+        """
+        record_property(
+            splunk_app_eventtypes["field"], splunk_app_eventtypes["value"]
+        )
+        search = f"search (index=_internal OR index=*) AND {splunk_app_eventtypes['field']}=\"{splunk_app_eventtypes['value']}\""
+
+        self.logger.info(
+            "Testing eventtype =%s", splunk_app_eventtypes["value"]
+        )
+        self.logger.debug("Search query for testing =%s", search)
+
+        # run search
+        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
+            search, interval=10, retries=8
+        )
+        record_property("search", search)
+        assert result == True
