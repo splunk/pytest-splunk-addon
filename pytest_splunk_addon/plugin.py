@@ -69,7 +69,7 @@ def load_splunk_tests(splunk_app_path, fixture):
     elif fixture.endswith("fields"):
         props = app.props_conf()
         LOGGER.info("Successfully parsed props configurations")
-        yield from load_splunk_fields(props)
+        yield from load_splunk_fields(app, props)
     elif fixture.endswith("eventtypes"):
         eventtypes = app.eventtypes_conf()
         LOGGER.info("Successfully parsed eventtypes configurations")
