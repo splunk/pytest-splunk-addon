@@ -3,8 +3,8 @@ import logging
 import pytest
 import pprint
 
-INTERVAL = 20
-RETRY = 5
+INTERVAL = 1
+RETRY = 1
 
 
 class Basic:
@@ -21,7 +21,8 @@ class Basic:
             AND sourcetype!=splunk_web_service
             AND sourcetype!=splunkd_access
             AND sourcetype!=splunkd
-            | table _raw"""
+            | table _raw
+        """
 
         result, results = splunk_search_util.checkQueryCountIsZero(search)
         if not result:
@@ -30,13 +31,16 @@ class Basic:
             pp.pprint(results.as_list)
         assert result
 
-    # This test ensures the contained samples will produce at lease one event per sourcetype
+    # This test ensures the contained samples will produce
+    # at lease one event per sourcetype/source
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype(
+    def test_props_sourcetype(
         self, splunk_search_util, splunk_app_props, record_property, caplog
     ):
         record_property(splunk_app_props["field"], splunk_app_props["value"])
-        search = f"search (index=_internal OR index=*) AND {splunk_app_props['field']}=\"{splunk_app_props['value']}\""
+        search = (f"search (index=_internal OR index=*) AND "
+                  f"{splunk_app_props['field']}="
+                  f"\"{splunk_app_props['value']}\"")
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
@@ -44,68 +48,124 @@ class Basic:
         )
         record_property("search", search)
 
-        assert result == True
+        assert result
 
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype_fields(
+    def test_props_sourcetype_fields(
         self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
-        record_property("sourcetype", splunk_app_fields["sourcetype"])
+        """
+        Test case to check props property mentioned in props.conf
+
+        This test case checks props field is not empty, blank and dash value.
+        Args:
+            splunk_search_util(SearchUtil):
+                Object that helps to search on Splunk.
+            splunk_app_fields(fixture):
+                Test for stanza field.
+            record_property(fixture):
+                Document facts of test cases.
+            caplog :
+                fixture to capture logs.
+        """
+        record_property("stanza_name", splunk_app_fields["stanza_name"])
+        record_property("stanza_type", splunk_app_fields["stanza_type"])
         record_property("fields", splunk_app_fields["fields"])
 
-        search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']}"
+        search = (f"search (index=_internal OR index=*)"
+                  f" {splunk_app_fields['stanza_type']}="
+                  f"{splunk_app_fields['stanza_name']}")
         for f in splunk_app_fields["fields"]:
             search = search + f' AND ({f}=* AND NOT {f}="-" AND NOT {f}="")'
 
+        self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=10, retries=3
         )
         record_property("search", search)
 
-        assert result == True
+        assert result
 
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype_fields_no_dash(
+    def test_props_sourcetype_fields_no_dash(
         self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
-        record_property("sourcetype", splunk_app_fields["sourcetype"])
+        """
+        Test case to check props property mentioned in props.conf
+
+        This test case checks negative scenario for field dash value.
+        Args:
+            splunk_search_util(SearchUtil):
+                Object that helps to search on Splunk.
+            splunk_app_fields(fixture):
+                Test for stanza field.
+            record_property(fixture):
+                Document facts of test cases.
+            caplog :
+                fixture to capture logs.
+        """
+        record_property("stanza_name", splunk_app_fields["stanza_name"])
+        record_property("stanza_type", splunk_app_fields["stanza_type"])
         record_property("fields", splunk_app_fields["fields"])
 
-        search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']} AND ("
+        search = (f"search (index=_internal OR index=*)"
+                  f" {splunk_app_fields['stanza_type']}="
+                  f"{splunk_app_fields['stanza_name']} AND (")
         op = ""
         for f in splunk_app_fields["fields"]:
             search = search + f' {op} {f}="-"'
             op = "OR"
         search = search + ")"
+
+        self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=1, retries=1
         )
         record_property("search", search)
 
-        assert result == False
+        assert not result
 
     @pytest.mark.splunk_addon_searchtime
-    def test_sourcetype_fields_no_empty(
+    def test_props_sourcetype_fields_no_empty(
         self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
-        record_property("sourcetype", splunk_app_fields["sourcetype"])
+        """
+        Test case to check props property mentioned in props.conf
+
+        This test case checks negative scenario for field blank value.
+        Args:
+            splunk_search_util(SearchUtil):
+                Object that helps to search on Splunk.
+            splunk_app_fields(fixture):
+                Test for stanza field.
+            record_property(fixture):
+                Document facts of test cases.
+            caplog :
+                fixture to capture logs.
+        """
+        record_property("stanza_name", splunk_app_fields["stanza_name"])
+        record_property("stanza_type", splunk_app_fields["stanza_type"])
         record_property("fields", splunk_app_fields["fields"])
 
-        search = f"search (index=_internal OR index=*) sourcetype={splunk_app_fields['sourcetype']} AND ("
+        search = (f"search (index=_internal OR index=*)"
+                  f" {splunk_app_fields['stanza_type']}="
+                  f"{splunk_app_fields['stanza_name']} AND (")
         op = ""
         for f in splunk_app_fields["fields"]:
             search = search + f' {op} {f}=""'
             op = "OR"
         search = search + ")"
+
+        self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=1, retries=1
         )
         record_property("search", search)
 
-        assert result == False
+        assert not result
 
     # This test will check if there is at least one event with specified tags
     @pytest.mark.splunk_addon_searchtime
@@ -152,35 +212,3 @@ class Basic:
         record_property("search", search)
 
         assert result is is_tag_enabled
-
-    # # This test ensures the contained samples will produce at lease one event per eventtype
-    # @pytest.mark.splunk_addon_searchtime
-    # @flaky(max_runs=5, min_passes=1)
-    # def test_basic_eventtype(self, splunk_search_util, eventtypes):
-    #
-    #     self.logger.debug("Testing eventtype={}", eventtypes)
-    #     search = "search (index=_internal OR index=*) AND eventtype=\"{}\"".format(eventtypes)
-    #
-    #     # run search
-    #     result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-    #         search,
-    #         interval=1, retries=1)
-    #
-    #     if not result:
-    #         pytest.fail(search)
-    #
-    # @pytest.mark.splunk_addon_searchtime
-    # @flaky(max_runs=5, min_passes=1)
-    # def test_fields(self, splunk_search_util, prop_elements):
-    #     search = "search (index=_internal OR index=*) AND sourcetype=\"{}\" AND {}".format(
-    #         prop_elements['sourcetype'],
-    #         prop_elements['field']
-    #     )
-    #
-    #     # run search
-    #     result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-    #         search,
-    #         interval=2, retries=5)
-    #
-    #     if not result:
-    #         pytest.fail(search)

@@ -9,6 +9,7 @@ import re
 import pytest
 from urllib.parse import unquote
 from splunk_appinspect import App
+from itertools import product
 
 LOGGER = logging.getLogger("pytest_splunk_addon")
 
@@ -25,6 +26,21 @@ def pytest_configure(config):
     )
 
 
+def dedup_tests(test_list):
+    """
+    Deduplicate the test case parameters based on param.id
+    Args:
+        test_list(Generator): Generator of pytest.param
+    Yields:
+        Generator: De-duplicated pytest.param
+    """
+    seen_tests = set()
+    for each_param in test_list:
+        if each_param.id not in seen_tests:
+            yield each_param
+            seen_tests.add(each_param.id)
+
+
 def pytest_generate_tests(metafunc):
     """
     Parse the fixture dynamically.
@@ -38,7 +54,7 @@ def pytest_generate_tests(metafunc):
             tests = load_splunk_tests(
                 metafunc.config.getoption("splunk_app"), fixture
             )
-            metafunc.parametrize(fixture, tests)
+            metafunc.parametrize(fixture, dedup_tests(tests))
 
 
 def load_splunk_tests(splunk_app_path, fixture):
@@ -152,49 +168,151 @@ def return_props_sourcetype_param(id, value):
 
 def load_splunk_fields(props):
     """
-    Parse the App configuration files & yield fields
+    Parse the props.conf of the App & yield stanzas
 
     Args:
-        props(): The configuration object of props
+        props(
+            splunk_appinspect.configuration_file.ConfigurationFile
+            ): The configuration object of props
 
     Yields:
-        generator of fields
+        generator of stanzas from the props
     """
-    for props_section in props.sects:
-        section = props.sects[props_section]
+    for stanza_name in props.sects:
+        section = props.sects[stanza_name]
+        if section.name.startswith("source::"):
+            stanza_type = "source"
+            stanza_list = list(get_list_of_sources(stanza_name))
+        else:
+            stanza_type = "sourcetype"
+            stanza_list = [stanza_name]
         for current in section.options:
             LOGGER.info(
-                "Parsing parameter=%s of stanza=%s", current, props_section
+                "Parsing %s parameter=%s of stanza=%s",
+                stanza_type,
+                current,
+                stanza_name,
             )
-            options = section.options[current]
-            if current.startswith("EXTRACT-"):
-                yield return_props_extract(props_section, options)
+            props_property = section.options[current]
+            for each_stanza_name in stanza_list:
+                if current.startswith("EXTRACT-"):
+                    yield from return_props_extract(
+                        stanza_type, each_stanza_name, props_property
+                    )
+                elif current.startswith("EVAL-"):
+                    yield return_props_eval(
+                        stanza_type, each_stanza_name, props_property
+                    )
 
 
-def return_props_extract(id, value):
+def return_props_extract(stanza_type, stanza_name, props_property):
     """
     Returns the fields parsed from EXTRACT as pytest parameters
+    Args:
+        stanza_type(str): stanza type (source/sourcetype)
+        stanza_name(str): source/sourcetype name
+        props_property(
+            splunk_appinspect.configuration_file.ConfigurationSetting
+            ): The configuration setting object of EXTRACT.
+            properties used:
+                    name : key in the configuration settings
+                    value : value of the respective name in the configuration
+    Yields:
+        generator of fields as pytest parameters
+    """
+    test_name = f"{stanza_name}::{props_property.name}"
+    regex = r"\(\?<([^\>]+)\>(?:.*(?i)in\s+(.*))?"
+    matches = re.finditer(regex, props_property.value, re.MULTILINE)
+    fields = []
+    for match_num, match in enumerate(matches, start=1):
+        for group_num in range(0, len(match.groups())):
+            group_num = group_num + 1
+            if match.group(group_num):
+                field_test_name = "{}_field::{}".format(
+                    stanza_name, match.group(group_num)
+                )
+                yield pytest.param(
+                    {
+                        "stanza_type": stanza_type,
+                        "stanza_name": stanza_name,
+                        "fields": [match.group(group_num)],
+                    },
+                    id=field_test_name,
+                )
+                fields.append(match.group(group_num))
+    if fields:
+        fields.reverse()
+        LOGGER.info(
+            "(Generated pytest.param for extract."
+            "stanza_type=%s stanza_name=%s, fields=%s)",
+            stanza_type,
+            stanza_name,
+            str(fields),
+        )
+        yield pytest.param(
+            {
+                "stanza_type": stanza_type,
+                "stanza_name": stanza_name,
+                "fields": fields,
+            },
+            id=test_name,
+        )
+
+
+def return_props_eval(stanza_type, stanza_name, props_property):
+    """
+    Return the fields parsed from EVAL as pytest parameters
 
     Args:
-        id(str): parameter from the stanza
-        value(str): value of the parmeter
+        stanza_type: Stanza type (source/sourcetype)
+        stanza_name(str): source/sourcetype name
+        props_property(
+            splunk_appinspect.configuration_file.ConfigurationSetting
+            ): The configuration setting object of eval
+            properties used:
+                name : key in the configuration settings
+                value : value of the respective name in the configuration
 
-    Returns:
+    Return:
         List of pytest parameters
     """
-    name = f"{id}_field::{value.name}"
+    test_name = f"{stanza_name}::{props_property.name}"
+    regex = r"EVAL-(?P<FIELD>.*)"
+    fields = re.findall(regex, props_property.name, re.IGNORECASE)
 
-    regex = r"\(\?<([^\>]+)\>"
-    matches = re.finditer(regex, value.value, re.MULTILINE)
-    fields = []
-    for matchNum, match in enumerate(matches, start=1):
-        for groupNum in range(0, len(match.groups())):
-            groupNum = groupNum + 1
-
-            fields.append(match.group(groupNum))
     LOGGER.info(
-        "Genrated pytest.param for extract. stanza_name=%s, fields=%s",
-        id,
+        ("Genrated pytest.param for eval. stanza_type=%s,"
+         "stanza_name=%s, fields=%s"),
+        stanza_type,
+        stanza_name,
         str(fields),
     )
-    return pytest.param({"sourcetype": id, "fields": fields}, id=name)
+    return pytest.param(
+        {
+            "stanza_type": stanza_type,
+            "stanza_name": stanza_name,
+            "fields": fields,
+        },
+        id=test_name,
+    )
+
+
+def get_list_of_sources(source):
+    """
+    Implement generator object of source list
+
+    Args:
+        source(str): Source name
+
+    Yields:
+        generator of source name
+    """
+    match_obj = re.search(r"source::(.*)", source)
+    value = match_obj.group(1).replace("...", "*")
+    sub_groups = re.findall("\([^\)]+\)", value)
+    sub_group_list = []
+    for each_group in sub_groups:
+        sub_group_list.append(each_group.strip("()").split("|"))
+    template = re.sub(r"\([^\)]+\)", "{}", value)
+    for each_permutation in product(*sub_group_list):
+        yield template.format(*each_permutation)
