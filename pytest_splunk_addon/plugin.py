@@ -220,7 +220,6 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     Args:
         stanza_type: Stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
-        props_property(object): Eval field details
         props_property(splunk_appinspect.configuration_file.ConfigurationSetting): The configuration setting object of eval
             properties used:
                 name : key in the configuration settings
