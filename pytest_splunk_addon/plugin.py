@@ -69,6 +69,10 @@ def load_splunk_tests(splunk_app_path, fixture):
         props = app.props_conf()
         LOGGER.info("Successfully parsed props configurations")
         yield from load_splunk_fields(props)
+    elif fixture.endswith("eventtypes"):
+        eventtypes = app.eventtypes_conf()
+        LOGGER.info("Successfully parsed eventtypes configurations")
+        yield from load_splunk_eventtypes(eventtypes)
     else:
         yield None
 
@@ -295,3 +299,35 @@ def get_list_of_sources(source):
     template = re.sub(r"\([^\)]+\)", "{}", value)
     for each_permutation in product(*sub_group_list):
         yield template.format(*each_permutation)
+
+
+
+def load_splunk_eventtypes(eventtypes):
+    """
+    Parse the App configuration files & yield eventtypes
+    Args:
+        eventtypes(splunk_appinspect.configuration_file.ConfigurationFile): 
+        The configuration object of eventtypes.conf
+    Yields:
+        generator of list of eventtypes
+    """
+
+    for eventtype_section in eventtypes.sects:
+        LOGGER.info("parsing eventtype stanza=%s", eventtype_section)
+        yield return_eventtypes_param(eventtype_section)
+            
+def return_eventtypes_param(stanza_id):
+
+    """
+    Returns the eventtype parsed from the eventtypes.conf file as pytest parameters
+    Args:
+        stanza_id(str): parameter from the stanza
+    Returns:
+        List of pytest parameters
+    """
+
+    LOGGER.info("Generated pytest.param of eventtype with id=%s", f"eventtype::{stanza_id}")
+    return pytest.param({
+        "field": "eventtype", "value": stanza_id},
+        id=f"eventtype::{stanza_id}"
+        )        
