@@ -140,3 +140,29 @@ class Basic:
 
         assert result == False
 
+    @pytest.mark.splunk_addon_searchtime
+    def test_eventtype(
+        self, splunk_search_util, splunk_app_eventtypes, record_property, caplog
+    ):
+        """
+        Tests if all eventtypes in eventtypes.conf are generated or not in Splunk.
+        Args:
+            splunk_search_util: Fixture to create a simple connection to Splunk via the SplunkSDK
+            splunk_app_eventtypes: Fixture containing list of eventtypes
+            record_property: Used to add user properties to test report
+            caplog: Access and control log capturing
+        Returns:
+            Asserts whether test case passes or fails.
+        """
+        record_property(splunk_app_eventtypes["field"], splunk_app_eventtypes["value"])
+        search = f"search (index=_internal OR index=*) AND {splunk_app_eventtypes['field']}=\"{splunk_app_eventtypes['value']}\""
+
+        self.logger.info("Testing eventtype =%s", splunk_app_eventtypes['value'])
+        self.logger.debug("Search query for testing =%s", search)
+
+        # run search
+        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
+            search, interval=10, retries=8
+        )
+        record_property("search", search)
+        assert result == True
