@@ -116,7 +116,7 @@ def return_props_stanza_param(stanza_id, stanza_value, stanza_type):
     else:
         test_name = f"{stanza_id}"
     LOGGER.info(
-        "Genrated pytest.param for source/sourcetype. stanza_type=%s, stanza_value=%s, stanza_id=%s",
+        "Generated pytest.param for source/sourcetype. stanza_type=%s, stanza_value=%s, stanza_id=%s",
         stanza_type,
         stanza_value,
         str(test_name),
@@ -233,7 +233,7 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     fields = re.findall(regex, props_property.name, re.IGNORECASE)
 
     LOGGER.info(
-        "Genrated pytest.param for eval. stanza_type=%s, stanza_name=%s, fields=%s",
+        "Generated pytest.param for eval. stanza_type=%s, stanza_name=%s, fields=%s",
         stanza_type,
         stanza_name,
         str(fields),
@@ -249,7 +249,7 @@ def return_props_sourcetype(stanza_type, stanza_name, props_property):
     Return the fields parsed from sourcetype as pytest parameters
       
     Args:
-        stanza_type: Stanza type (source/sourcetype)
+        stanza_type: stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
         props_property(object): sourcetype field details
 
