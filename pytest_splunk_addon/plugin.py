@@ -142,10 +142,12 @@ def load_splunk_fields(props, transforms):
                         stanza_type, each_stanza_name, props_property
                     )
                 elif current.startswith("EVAL-"):
-                    yield return_props_eval(each_stanza_name, field_data, stanza_type)
+                    yield return_props_eval(
+                        stanza_type, each_stanza_name, props_property
+                    )
                 elif current.startswith("REPORT-"):
                     yield from return_transforms_report(
-                        transforms, stanza_type, each_stanza_name, field_data
+                        transforms, stanza_type, each_stanza_name, props_property
                     )
 
 
@@ -397,4 +399,3 @@ def return_eventtypes_param(stanza_id):
     return pytest.param(
         {"field": "eventtype", "value": stanza_id}, id=f"eventtype::{stanza_id}"
     )
-
