@@ -92,20 +92,36 @@ def load_splunk_props(props):
             LOGGER.info("Skipping host:: stanza=%s", props_section)
             continue
         elif props_section.startswith("source::"):
-            LOGGER.info("Skipping source:: stanza=%s", props_section)
-            continue
+            LOGGER.info("Parsing source stanza=%s", props_section)
+            for props_source in list(get_list_of_sources(props_section)):
+                yield return_props_stanza_param(props_section, props_source, "source")
         else:
             LOGGER.info("parsing sourcetype stanza=%s", props_section)
-            yield return_props_sourcetype_param(props_section, props_section)
+            yield return_props_stanza_param(props_section, props_section, "sourcetype")
 
 
-def return_props_sourcetype_param(id, value):
+def return_props_stanza_param(stanza_id, stanza_value, stanza_type):
     """
-    Convert sourcetype to pytest parameters
+    Convert sourcetype/source to pytest parameters
+
+    Args:
+        stanza_id: source/sourcetype field details
+        stanza_value(str): source/sourcetype value
+        stanza_type: Stanza type (source/sourcetype)
+    Return:
+        List of pytest parameters
     """
-    idf = f"sourcetype::{id}"
-    LOGGER.info("Generated pytest.param of sourcetype with id=%s", idf)
-    return pytest.param({"field": "sourcetype", "value": value}, id=idf)
+    if stanza_type == "sourcetype":
+        test_name = f"sourcetype::{stanza_id}"
+    else:
+        test_name = f"{stanza_id}"
+    LOGGER.info(
+        "Generated pytest.param for source/sourcetype. stanza_type=%s, stanza_value=%s, stanza_id=%s",
+        stanza_type,
+        stanza_value,
+        str(test_name),
+    )
+    return pytest.param({"field": stanza_type, "value": stanza_value}, id=test_name)
 
 
 def load_splunk_fields(props):
@@ -147,8 +163,11 @@ def load_splunk_fields(props):
                     yield from return_props_field_alias(
                         stanza_type, each_stanza_name, props_property
                     )
-                elif current.startswith("EVAL-"):
-                    yield return_props_eval(stanza_type, each_stanza_name, props_property)
+                elif current.startswith("sourcetype"):
+                    # Sourcetype assignment configuration
+                    yield return_props_sourcetype(
+                        stanza_type, each_stanza_name, props_property
+                    )
 
 
 def return_props_extract(stanza_type, stanza_name, props_property):
@@ -218,7 +237,33 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     fields = re.findall(regex, props_property.name, re.IGNORECASE)
 
     LOGGER.info(
-        "Genrated pytest.param for eval. stanza_type=%s, stanza_name=%s, fields=%s",
+        "Generated pytest.param for eval. stanza_type=%s, stanza_name=%s, fields=%s",
+        stanza_type,
+        stanza_name,
+        str(fields),
+    )
+    return pytest.param(
+        {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
+        id=test_name,
+    )
+
+
+def return_props_sourcetype(stanza_type, stanza_name, props_property):
+    """
+    Return the fields parsed from sourcetype as pytest parameters
+      
+    Args:
+        stanza_type: stanza type (source/sourcetype)
+        stanza_name(str): source/sourcetype name
+        props_property(object): sourcetype field details
+
+    Return:
+        List of pytest parameters
+    """
+    test_name = f"{stanza_name}::{props_property.value}"
+    fields = [props_property.name]
+    LOGGER.info(
+        "Generated pytest.param for sourcetype. stanza_type=%s, stanza_name=%s, fields=%s",
         stanza_type,
         stanza_name,
         str(fields),
@@ -301,7 +346,6 @@ def get_list_of_sources(source):
         yield template.format(*each_permutation)
 
 
-
 def load_splunk_eventtypes(eventtypes):
     """
     Parse the App configuration files & yield eventtypes
@@ -315,7 +359,8 @@ def load_splunk_eventtypes(eventtypes):
     for eventtype_section in eventtypes.sects:
         LOGGER.info("parsing eventtype stanza=%s", eventtype_section)
         yield return_eventtypes_param(eventtype_section)
-            
+
+
 def return_eventtypes_param(stanza_id):
 
     """
@@ -326,8 +371,9 @@ def return_eventtypes_param(stanza_id):
         List of pytest parameters
     """
 
-    LOGGER.info("Generated pytest.param of eventtype with id=%s", f"eventtype::{stanza_id}")
-    return pytest.param({
-        "field": "eventtype", "value": stanza_id},
-        id=f"eventtype::{stanza_id}"
-        )        
+    LOGGER.info(
+        "Generated pytest.param of eventtype with id=%s", f"eventtype::{stanza_id}"
+    )
+    return pytest.param(
+        {"field": "eventtype", "value": stanza_id}, id=f"eventtype::{stanza_id}"
+    )
