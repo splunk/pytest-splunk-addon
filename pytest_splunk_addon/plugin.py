@@ -256,6 +256,7 @@ def load_splunk_fields(app, props, transforms):
                     yield from return_props_lookup(
                         stanza_type, each_stanza_name, props_property, app
 
+                    )
 
 def get_params_from_regex(
     regex, property_value, stanza_type, stanza_name, fields
