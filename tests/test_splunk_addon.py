@@ -157,7 +157,9 @@ def test_splunk_app_broken_sourcetype(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_broken_sourcetype"),
+        os.path.join(
+            testdir.request.fspath.dirname, "addons/TA_broken_sourcetype"
+        ),
         os.path.join(testdir.tmpdir, "tests/package"),
     )
 

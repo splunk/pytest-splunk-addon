@@ -8,6 +8,7 @@ import logging
 import re
 import pytest
 import csv
+from urllib.parse import unquote
 from splunk_appinspect import App
 from itertools import product
 
@@ -18,8 +19,12 @@ def pytest_configure(config):
     """
     Setup configuration after command-line options are parsed
     """
-    config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
-    config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
+    config.addinivalue_line(
+        "markers", "splunk_addon_internal_errors: Check Errors"
+    )
+    config.addinivalue_line(
+        "markers", "splunk_addon_searchtime: Test search time only"
+    )
 
 
 def dedup_tests(test_list):
@@ -43,9 +48,13 @@ def pytest_generate_tests(metafunc):
     """
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_app"):
-            LOGGER.info("generating testcases for splunk_app. fixture=%s", fixture)
+            LOGGER.info(
+                "generating testcases for splunk_app. fixture=%s", fixture
+            )
             # Load associated test data
-            tests = load_splunk_tests(metafunc.config.getoption("splunk_app"), fixture)
+            tests = load_splunk_tests(
+                metafunc.config.getoption("splunk_app"), fixture
+            )
             metafunc.parametrize(fixture, dedup_tests(tests))
 
 
@@ -71,12 +80,65 @@ def load_splunk_tests(splunk_app_path, fixture):
         transforms = app.transforms_conf()
         LOGGER.info("Successfully parsed props configurations")
         yield from load_splunk_fields(app, props, transforms)
+    elif fixture.endswith("tags"):
+        tags = app.get_config("tags.conf")
+        yield from load_splunk_tags(tags)
     elif fixture.endswith("eventtypes"):
         eventtypes = app.eventtypes_conf()
         LOGGER.info("Successfully parsed eventtypes configurations")
         yield from load_splunk_eventtypes(eventtypes)
     else:
         yield None
+
+
+def load_splunk_tags(tags):
+    """
+    Parse the tags.conf of the App & yield stanzas
+
+    Args:
+        tags(splunk_appinspect.configuration_file.ConfigurationFile):
+            The configuration object of tags.
+
+    Yields:
+        generator of stanzas from the tags
+    """
+    for stanza in tags.sects:
+        kv = tags.sects[stanza]
+        stanza = stanza.replace("=", '="')
+        stanza += '"'
+        for key in kv.options:
+            tags_property = kv.options[key]
+            yield return_tags(tags_property, unquote(stanza))
+
+
+def return_tags(tags_property, stanza_name):
+    """
+    Returns the fields parsed from tags as pytest parameters
+
+    Args:
+        stanza_name(str): Name of Stanza
+        tags_property(
+            splunk_appinspect.configuration_file.ConfigurationSetting
+            ):
+                The configuration setting object of tags.
+                properties used:
+                    name : key in the configuration settings
+                    value : value of the respective name in the configuration
+
+    Returns:
+        List of pytest parameters
+    """
+    return pytest.param(
+        {
+            "tag_query": stanza_name,
+            tags_property.value + "_tag": tags_property.name,
+        },
+        id=stanza_name
+        + " | "
+        + tags_property.name
+        + "="
+        + tags_property.value,
+    )
 
 
 def load_splunk_props(props):
@@ -96,10 +158,14 @@ def load_splunk_props(props):
         elif props_section.startswith("source::"):
             LOGGER.info("Parsing source stanza=%s", props_section)
             for props_source in list(get_list_of_sources(props_section)):
-                yield return_props_stanza_param(props_section, props_source, "source")
+                yield return_props_stanza_param(
+                    props_section, props_source, "source"
+                )
         else:
             LOGGER.info("parsing sourcetype stanza=%s", props_section)
-            yield return_props_stanza_param(props_section, props_section, "sourcetype")
+            yield return_props_stanza_param(
+                props_section, props_section, "sourcetype"
+            )
 
 
 def return_props_stanza_param(stanza_id, stanza_value, stanza_type):
@@ -118,12 +184,17 @@ def return_props_stanza_param(stanza_id, stanza_value, stanza_type):
     else:
         test_name = f"{stanza_id}"
     LOGGER.info(
-        "Generated pytest.param for source/sourcetype. stanza_type=%s, stanza_value=%s, stanza_id=%s",
+        (
+            "Generated pytest.param for source/sourcetype."
+            "stanza_type=%s, stanza_value=%s, stanza_id=%s"
+        ),
         stanza_type,
         stanza_value,
         str(test_name),
     )
-    return pytest.param({"field": stanza_type, "value": stanza_value}, id=test_name)
+    return pytest.param(
+        {"field": stanza_type, "value": stanza_value}, id=test_name
+    )
 
 
 def load_splunk_fields(app, props, transforms):
@@ -131,9 +202,12 @@ def load_splunk_fields(app, props, transforms):
     Parse the props.conf of the App & yield stanzas
 
     Args:
-        props(splunk_appinspect.configuration_file.ConfigurationFile): The configuration object of props
-        transforms(splunk_appinspect.configuration_file.ConfigurationFile): The configuration object of transforms
-
+        props(
+            splunk_appinspect.configuration_file.ConfigurationFile
+            ): The configuration object of props
+        transforms(
+            splunk_appinspect.configuration_file.ConfigurationFile
+            ): The configuration object of transforms
     Yields:
         generator of stanzas from the props
     """
@@ -173,25 +247,34 @@ def load_splunk_fields(app, props, transforms):
                     )
                 elif current.startswith("REPORT-"):
                     yield from return_transforms_report(
-                        transforms, stanza_type, each_stanza_name, props_property
+                        transforms,
+                        stanza_type,
+                        each_stanza_name,
+                        props_property,
                     )
                 elif re.match('LOOKUP', current, re.IGNORECASE):
                     yield from return_props_lookup(
                         stanza_type, each_stanza_name, props_property, app
-                    )
 
 
-def get_params_from_regex(regex, property_value, stanza_type, stanza_name, fields):
+def get_params_from_regex(
+    regex, property_value, stanza_type, stanza_name, fields
+):
     """
     Returns the fields captured using regex as pytest parameters
 
     Args:
-        regex(str): The regular expression used to capture the fields
-        property_value(str): The property string on which regex will be applied to extract fields.
-        stanza_type(str): stanza type (source/sourcetype)
-        stanza_name(str): source/sourcetype name
-        fields(list): list of fields preset in a props property.
-        
+        regex(str):
+            The regular expression used to capture the fields
+        property_value(str):
+            The property string on which regex will be applied to extract fields.
+        stanza_type(str):
+            stanza type (source/sourcetype)
+        stanza_name(str):
+            source/sourcetype name
+        fields(list):
+            list of fields preset in a props property.
+
     Yields:
         generator of fields as pytest parameters
     """
@@ -199,7 +282,9 @@ def get_params_from_regex(regex, property_value, stanza_type, stanza_name, field
     for matchNum, match in enumerate(matches, start=1):
         for groupNum in range(0, len(match.groups())):
             groupNum = groupNum + 1
-            field_test_name = "{}_field::{}".format(stanza_name, match.group(groupNum))
+            field_test_name = "{}_field::{}".format(
+                stanza_name, match.group(groupNum)
+            )
             yield pytest.param(
                 {
                     "stanza_type": stanza_type,
@@ -211,7 +296,9 @@ def get_params_from_regex(regex, property_value, stanza_type, stanza_name, field
             fields.append(match.group(groupNum))
 
 
-def return_transforms_report(transforms, stanza_type, stanza_name, report_property):
+def return_transforms_report(
+    transforms, stanza_type, stanza_name, report_property
+):
     """
     Returns the fields parsed from transforms.conf  as pytest parameters
 
@@ -228,7 +315,8 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
     """
     try:
         for transforms_section in [
-            each_stanza.strip() for each_stanza in report_property.value.split(",")
+            each_stanza.strip()
+            for each_stanza in report_property.value.split(",")
         ]:
             report_test_name = (
                 f"{stanza_name}::{report_property.name}::{transforms_section}"
@@ -250,7 +338,10 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
                     ),
                 )
                 fields.append(section.options["SOURCE_KEY"].value)
-            if "REGEX" in section.options and section.options["REGEX"].value != "":
+            if (
+                "REGEX" in section.options
+                and section.options["REGEX"].value != ""
+            ):
                 regex = r"\(\?<([^\>]+)\>"
                 yield from get_params_from_regex(
                     regex,
@@ -259,10 +350,15 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
                     stanza_name,
                     fields,
                 )
-            if "FIELDS" in section.options and section.options["FIELDS"].value != "":
+            if (
+                "FIELDS" in section.options
+                and section.options["FIELDS"].value != ""
+            ):
                 fields_list = [
                     each_field.strip()
-                    for each_field in section.options["FIELDS"].value.split(",")
+                    for each_field in section.options["FIELDS"].value.split(
+                        ","
+                    )
                 ]
                 for each_field in fields_list:
                     yield pytest.param(
@@ -274,7 +370,10 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
                         id="{}_field::{}".format(stanza_name, each_field),
                     )
                     fields.append(each_field)
-            if "FORMAT" in section.options and section.options["FORMAT"].value != "":
+            if (
+                "FORMAT" in section.options
+                and section.options["FORMAT"].value != ""
+            ):
                 regex = r"(\S*)::"
                 yield from get_params_from_regex(
                     regex,
@@ -305,7 +404,9 @@ def return_props_extract(stanza_type, stanza_name, props_property):
     Args:
         stanza_type(str): stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
-        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): The configuration setting object of EXTRACT.
+        props_property(
+            splunk_appinspect.configuration_file.ConfigurationSetting
+            ): The configuration setting object of EXTRACT.
             properties used:
                     name : key in the configuration settings
                     value : value of the respective name in the configuration
@@ -335,13 +436,18 @@ def return_props_extract(stanza_type, stanza_name, props_property):
     if fields:
         fields.reverse()
         LOGGER.info(
-            "Generated pytest.param for extract. stanza_type=%s stanza_name=%s, fields=%s",
+            "(Generated pytest.param for extract."
+            "stanza_type=%s stanza_name=%s, fields=%s)",
             stanza_type,
             stanza_name,
             str(fields),
         )
         yield pytest.param(
-            {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
+            {
+                "stanza_type": stanza_type,
+                "stanza_name": stanza_name,
+                "fields": fields,
+            },
             id=test_name,
         )
 
@@ -455,7 +561,9 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     Args:
         stanza_type: Stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
-        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): The configuration setting object of eval
+        props_property(
+            splunk_appinspect.configuration_file.ConfigurationSetting
+            ): The configuration setting object of eval
             properties used:
                 name : key in the configuration settings
                 value : value of the respective name in the configuration
@@ -467,14 +575,21 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     fields = re.findall(regex, props_property.name, re.IGNORECASE)
 
     LOGGER.info(
-        "Generated pytest.param for eval. stanza_type=%s, stanza_name=%s, fields=%s",
+        (
+            "Generated pytest.param for eval. stanza_type=%s,"
+            "stanza_name=%s, fields=%s"
+        ),
         stanza_type,
         stanza_name,
         str(fields),
     )
     test_name = f"{stanza_name}_field::{fields[0]}"
     return pytest.param(
-        {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
+        {
+            "stanza_type": stanza_type,
+            "stanza_name": stanza_name,
+            "fields": fields,
+        },
         id=test_name,
     )
 
@@ -482,7 +597,7 @@ def return_props_eval(stanza_type, stanza_name, props_property):
 def return_props_sourcetype(stanza_type, stanza_name, props_property):
     """
     Return the fields parsed from sourcetype as pytest parameters
-      
+
     Args:
         stanza_type: stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
@@ -494,13 +609,20 @@ def return_props_sourcetype(stanza_type, stanza_name, props_property):
     test_name = f"{stanza_name}::{props_property.value}"
     fields = [props_property.name]
     LOGGER.info(
-        "Generated pytest.param for sourcetype. stanza_type=%s, stanza_name=%s, fields=%s",
+        (
+            "Generated pytest.param for sourcetype."
+            "stanza_type=%s, stanza_name=%s, fields=%s"
+        ),
         stanza_type,
         stanza_name,
         str(fields),
     )
     return pytest.param(
-        {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
+        {
+            "stanza_type": stanza_type,
+            "stanza_name": stanza_name,
+            "fields": fields,
+        },
         id=test_name,
     )
 
@@ -512,7 +634,7 @@ def return_props_field_alias(stanza_type, stanza_name, props_property):
     Args:
         stanza_type: Stanza type (source/sourcetype)
         stanza_name(str): source/sourcetype name
-        props_property(splunk_appinspect.configuration_file.ConfigurationSetting): 
+        props_property(splunk_appinspect.configuration_file.ConfigurationSetting):
             The configuration setting object of FIELDALIAS
             properties used:
                 name : key in the configuration settings
@@ -551,7 +673,11 @@ def return_props_field_alias(stanza_type, stanza_name, props_property):
     for field in fields:
         test_name = f"{stanza_name}_field::{field}"
         yield pytest.param(
-            {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": [field]},
+            {
+                "stanza_type": stanza_type,
+                "stanza_name": stanza_name,
+                "fields": [field],
+            },
             id=test_name,
         )
 
@@ -581,7 +707,7 @@ def load_splunk_eventtypes(eventtypes):
     """
     Parse the App configuration files & yield eventtypes
     Args:
-        eventtypes(splunk_appinspect.configuration_file.ConfigurationFile): 
+        eventtypes(splunk_appinspect.configuration_file.ConfigurationFile):
         The configuration object of eventtypes.conf
     Yields:
         generator of list of eventtypes
@@ -595,7 +721,7 @@ def load_splunk_eventtypes(eventtypes):
 def return_eventtypes_param(stanza_id):
 
     """
-    Returns the eventtype parsed from the eventtypes.conf file as pytest parameters
+    Returns the eventtype parsed from the eventtypes.conf as pytest parameters
     Args:
         stanza_id(str): parameter from the stanza
     Returns:
@@ -603,8 +729,10 @@ def return_eventtypes_param(stanza_id):
     """
 
     LOGGER.info(
-        "Generated pytest.param of eventtype with id=%s", f"eventtype::{stanza_id}"
+        "Generated pytest.param of eventtype with id=%s",
+        f"eventtype::{stanza_id}",
     )
     return pytest.param(
-        {"field": "eventtype", "value": stanza_id}, id=f"eventtype::{stanza_id}"
+        {"field": "eventtype", "value": stanza_id},
+        id=f"eventtype::{stanza_id}",
     )

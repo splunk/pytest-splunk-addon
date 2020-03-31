@@ -133,7 +133,8 @@ def is_responsive_splunk(splunk):
     """
     try:
         LOGGER.info(
-            "Trying to connect Splunk instance...  splunk=%s", json.dumps(splunk)
+            "Trying to connect Splunk instance...  splunk=%s",
+            json.dumps(splunk),
         )
         client.connect(
             username=splunk["username"],
@@ -145,7 +146,8 @@ def is_responsive_splunk(splunk):
         return True
     except Exception as e:
         LOGGER.warning(
-            "Could not connect to Splunk yet. Will try again. exception=%s", str(e)
+            "Could not connect to Splunk yet. Will try again. exception=%s",
+            str(e),
         )
         return False
 
@@ -169,7 +171,8 @@ def is_responsive(url):
             return True
     except ConnectionError as e:
         LOGGER.warning(
-            "Could not connect to url yet. Will try again. exception=%s", str(e)
+            "Could not connect to url yet. Will try again. exception=%s",
+            str(e),
         )
         return False
 
@@ -191,8 +194,12 @@ def splunk(request):
     elif splunk_type == "docker":
 
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
-        os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
-        os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
+        os.environ["SPLUNK_PASSWORD"] = request.config.getoption(
+            "splunk_password"
+        )
+        os.environ["SPLUNK_VERSION"] = request.config.getoption(
+            "splunk_version"
+        )
 
         request.fixturenames.append("splunk_docker")
         splunk_info = request.getfixturevalue("splunk_docker")
@@ -233,7 +240,9 @@ def splunk_docker(request, docker_services):
 
     for _ in range(30):
         docker_services.wait_until_responsive(
-            timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk_info)
+            timeout=180.0,
+            pause=0.5,
+            check=lambda: is_responsive_splunk(splunk_info),
         )
         sleep(1)
 
