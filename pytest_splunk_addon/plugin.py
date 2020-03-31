@@ -165,21 +165,13 @@ def load_splunk_fields(props, transforms):
                     yield from return_props_field_alias(
                         stanza_type, each_stanza_name, props_property
                     )
-                elif current.startswith("sourcetype"):
-                    # Sourcetype assignment configuration
-                    yield return_props_sourcetype(
-                        stanza_type, each_stanza_name, props_property
-                    )
                 elif current.startswith("REPORT-"):
-                elif current.startswith("EVAL-"):
-                    yield return_props_eval(stanza_type, each_stanza_name, props_property)
-
-                    elif current.startswith("REPORT-"):
                     yield from return_transforms_report(
                         transforms, stanza_type, each_stanza_name, props_property
                     )
-                elif current.startswith("FIELDALIAS-"):
-                    yield from return_props_field_alias(
+                elif current.startswith("sourcetype"):
+                    # Sourcetype assignment configuration
+                    yield return_props_sourcetype(
                         stanza_type, each_stanza_name, props_property
                     )
 
