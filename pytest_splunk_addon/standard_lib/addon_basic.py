@@ -4,7 +4,7 @@ import pytest
 import pprint
 
 INTERVAL = 3
-RETRY = 3
+RETRIES = 3
 
 
 class Basic:
@@ -61,7 +61,7 @@ class Basic:
         self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=10, retries=8
+            search, interval=INTERVAL, retries=RETRIES
         )
         record_property("search", search)
 
@@ -100,7 +100,7 @@ class Basic:
         self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=10, retries=3
+            search, interval=INTERVAL, retries=RETRIES
         )
         record_property("search", search)
 
@@ -142,7 +142,7 @@ class Basic:
         self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=1, retries=1
+            search, interval=INTERVAL, retries=RETRIES
         )
         record_property("search", search)
 
@@ -184,7 +184,7 @@ class Basic:
         self.logger.debug(f"Executing the search query: {search}")
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=1, retries=1
+            search, interval=INTERVAL, retries=RETRIES
         )
         record_property("search", search)
 
@@ -229,7 +229,7 @@ class Basic:
         self.logger.debug(f"Search: {search}")
 
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=INTERVAL, retries=RETRY
+            search, interval=INTERVAL, retries=RETRIES
         )
 
         record_property("search", search)
@@ -272,7 +272,7 @@ class Basic:
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=10, retries=8
+            search, interval=INTERVAL, retries=RETRIES
         )
         record_property("search", search)
         assert result
