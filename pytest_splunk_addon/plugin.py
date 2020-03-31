@@ -463,7 +463,6 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     Return:
         List of pytest parameters
     """
-    test_name = f"{stanza_name}_field::{props_property.name}"
     regex = r"EVAL-(?P<FIELD>.*)"
     fields = re.findall(regex, props_property.name, re.IGNORECASE)
 
@@ -473,6 +472,7 @@ def return_props_eval(stanza_type, stanza_name, props_property):
         stanza_name,
         str(fields),
     )
+    test_name = f"{stanza_name}_field::{fields[0]}"
     return pytest.param(
         {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": fields},
         id=test_name,
