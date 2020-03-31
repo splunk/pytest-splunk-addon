@@ -136,7 +136,7 @@ def test_splunk_app_fiction(testdir):
         "\n".join(result.stdout.lines),
         "\n".join(result.stderr.lines),
     )
-    result.assert_outcomes(passed=127, failed=0)
+    result.assert_outcomes(passed=188, failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
@@ -157,7 +157,9 @@ def test_splunk_app_broken_sourcetype(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_broken_sourcetype"),
+        os.path.join(
+            testdir.request.fspath.dirname, "addons/TA_broken_sourcetype"
+        ),
         os.path.join(testdir.tmpdir, "tests/package"),
     )
 
@@ -184,7 +186,7 @@ def test_splunk_app_broken_sourcetype(testdir):
         "\n".join(result.stdout.lines),
         "\n".join(result.stderr.lines),
     )
-    result.assert_outcomes(passed=54, failed=17)
+    result.assert_outcomes(passed=71, failed=26)
 
     # The test suite should fail as this is a negative test
     assert result.ret != 0
