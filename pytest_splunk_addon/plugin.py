@@ -176,7 +176,7 @@ def load_splunk_fields(app, props, transforms):
                         transforms, stanza_type, each_stanza_name, props_property
                     )
                 elif re.match('LOOKUP', current, re.IGNORECASE):
-                    yield from return_lookup_extract(
+                    yield from return_props_lookup(
                         stanza_type, each_stanza_name, props_property, app
                     )
 
@@ -389,7 +389,7 @@ def get_lookup_fields(lookup_str):
     return {"input_fields": input_output_field_list[0], "output_fields": input_output_field_list[1], "lookup_stanza": lookup_stanza}
 
 
-def return_lookup_extract(stanza_type, stanza_name, props_property, app):
+def return_props_lookup(stanza_type, stanza_name, props_property, app):
     """
     This extracts the lookup fields in which we will use for testing later on.
 
@@ -463,7 +463,7 @@ def return_props_eval(stanza_type, stanza_name, props_property):
     Return:
         List of pytest parameters
     """
-    test_name = f"{stanza_name}::{props_property.name}"
+    test_name = f"{stanza_name}_field::{props_property.name}"
     regex = r"EVAL-(?P<FIELD>.*)"
     fields = re.findall(regex, props_property.name, re.IGNORECASE)
 
