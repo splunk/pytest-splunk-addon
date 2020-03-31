@@ -171,16 +171,9 @@ def load_splunk_fields(app, props, transforms):
                     yield return_props_sourcetype(
                         stanza_type, each_stanza_name, props_property
                     )
-                elif current.startswith("EVAL-"):
-                    yield return_props_eval(stanza_type, each_stanza_name, props_property)
-
                 elif current.startswith("REPORT-"):
                     yield from return_transforms_report(
                         transforms, stanza_type, each_stanza_name, props_property
-                    )
-                elif current.startswith("FIELDALIAS-"):
-                    yield from return_props_field_alias(
-                        stanza_type, each_stanza_name, props_property
                     )
                 elif re.match('LOOKUP', current, re.IGNORECASE):
                     yield from return_lookup_extract(
@@ -206,7 +199,7 @@ def get_params_from_regex(regex, property_value, stanza_type, stanza_name, field
     for matchNum, match in enumerate(matches, start=1):
         for groupNum in range(0, len(match.groups())):
             groupNum = groupNum + 1
-            field_test_name = "{}::{}".format(stanza_name, match.group(groupNum))
+            field_test_name = "{}_field::{}".format(stanza_name, match.group(groupNum))
             yield pytest.param(
                 {
                     "stanza_type": stanza_type,
@@ -252,7 +245,7 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
                         "stanza_name": stanza_name,
                         "fields": [section.options["SOURCE_KEY"].value],
                     },
-                    id="{}::{}".format(
+                    id="{}_field::{}".format(
                         stanza_name, section.options["SOURCE_KEY"].value
                     ),
                 )
@@ -278,7 +271,7 @@ def return_transforms_report(transforms, stanza_type, stanza_name, report_proper
                             "stanza_name": stanza_name,
                             "fields": [each_field],
                         },
-                        id="{}::{}".format(stanza_name, each_field),
+                        id="{}_field::{}".format(stanza_name, each_field),
                     )
                     fields.append(each_field)
             if "FORMAT" in section.options and section.options["FORMAT"].value != "":
@@ -556,7 +549,7 @@ def return_props_field_alias(stanza_type, stanza_name, props_property):
         str(fields),
     )
     for field in fields:
-        test_name = f"{stanza_name}::FIELDALIAS-{field}"
+        test_name = f"{stanza_name}_field::{field}"
         yield pytest.param(
             {"stanza_type": stanza_type, "stanza_name": stanza_name, "fields": [field]},
             id=test_name,
