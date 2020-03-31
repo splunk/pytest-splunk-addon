@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging
 
 import pytest
@@ -68,7 +69,7 @@ class Basic:
         assert result
 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_stanza_fields(
+    def test_props_fields(
         self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
         """
@@ -107,7 +108,7 @@ class Basic:
         assert result
 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_stanza_fields_no_dash(
+    def test_props_fields_no_dash(
         self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
         """
@@ -149,7 +150,7 @@ class Basic:
         assert not result
 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_stanza_fields_no_empty(
+    def test_props_fields_no_empty(
         self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
         """
