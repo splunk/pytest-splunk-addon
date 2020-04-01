@@ -3,6 +3,7 @@ import os
 import shutil
 import logging
 import pytest
+from tests import constants
 
 logger = logging.getLogger("test_pytest_splunk_addon")
 
@@ -136,7 +137,9 @@ def test_splunk_app_fiction(testdir):
         "\n".join(result.stdout.lines),
         "\n".join(result.stderr.lines),
     )
-    result.assert_outcomes(passed=195, failed=0)
+
+    result.stdout.fnmatch_lines_random(constants.TA_FICTION_PASSED)
+    result.assert_outcomes(passed=len(constants.TA_FICTION_PASSED), failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
@@ -157,9 +160,7 @@ def test_splunk_app_broken_sourcetype(testdir):
     )
 
     shutil.copytree(
-        os.path.join(
-            testdir.request.fspath.dirname, "addons/TA_broken_sourcetype"
-        ),
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_broken_sourcetype"),
         os.path.join(testdir.tmpdir, "tests/package"),
     )
 
@@ -186,7 +187,13 @@ def test_splunk_app_broken_sourcetype(testdir):
         "\n".join(result.stdout.lines),
         "\n".join(result.stderr.lines),
     )
-    result.assert_outcomes(passed=55, failed=33)
+    result.stdout.fnmatch_lines_random(
+        constants.TA_BROKEN_SOURCETYPE_PASSED + constants.TA_BROKEN_SOURCETYPE_FAILED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_BROKEN_SOURCETYPE_PASSED),
+        failed=len(constants.TA_BROKEN_SOURCETYPE_FAILED),
+    )
 
     # The test suite should fail as this is a negative test
     assert result.ret != 0
