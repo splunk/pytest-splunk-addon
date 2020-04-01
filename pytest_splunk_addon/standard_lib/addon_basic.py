@@ -137,7 +137,7 @@ class Basic:
         operator = ""
         for field in splunk_app_fields["fields"]:
             search = search + f'{operator} ( {field}="-" OR {field}="") '
-            operator = "OR")
+            operator = "OR"
 
         self.logger.debug(f"Executing the search query: {search}")
         # run search
