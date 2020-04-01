@@ -108,7 +108,7 @@ class Basic:
         assert result
 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_fields_no_dash(
+    def test_props_fields_no_dash_not_empty(
         self, splunk_search_util, splunk_app_fields, record_property, caplog
     ):
         """
@@ -136,60 +136,21 @@ class Basic:
         )
         op = ""
         for f in splunk_app_fields["fields"]:
-            search = search + f' {op} {f}="-"'
+            search = search + f' {op} {f}="-" OR {f}=""'
             op = "OR"
         search = search + ")"
 
         self.logger.debug(f"Executing the search query: {search}")
         # run search
-        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=INTERVAL, retries=RETRIES
-        )
+        result, results = splunk_search_util.checkQueryCountIsZero(search)
+
+        if not result:
+            record_property("results", results.as_list)
+            pp = pprint.PrettyPrinter(indent=4)
+            pp.pprint(results.as_list[-10:])      
         record_property("search", search)
+        assert result
 
-        assert not result
-
-    @pytest.mark.splunk_addon_searchtime
-    def test_props_fields_no_empty(
-        self, splunk_search_util, splunk_app_fields, record_property, caplog
-    ):
-        """
-        Test case to check props property mentioned in props.conf
-
-        This test case checks negative scenario for field blank value.
-        Args:
-            splunk_search_util(SearchUtil):
-                Object that helps to search on Splunk.
-            splunk_app_fields(fixture):
-                Test for stanza field.
-            record_property(fixture):
-                Document facts of test cases.
-            caplog :
-                fixture to capture logs.
-        """
-        record_property("stanza_name", splunk_app_fields["stanza_name"])
-        record_property("stanza_type", splunk_app_fields["stanza_type"])
-        record_property("fields", splunk_app_fields["fields"])
-
-        search = (
-            f"search (index=_internal OR index=*)"
-            f" {splunk_app_fields['stanza_type']}="
-            f"{splunk_app_fields['stanza_name']} AND ("
-        )
-        op = ""
-        for f in splunk_app_fields["fields"]:
-            search = search + f' {op} {f}=""'
-            op = "OR"
-        search = search + ")"
-
-        self.logger.debug(f"Executing the search query: {search}")
-        # run search
-        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=INTERVAL, retries=RETRIES
-        )
-        record_property("search", search)
-
-        assert not result
 
     # This test will check if there is at least one event with specified tags
     @pytest.mark.splunk_addon_searchtime
