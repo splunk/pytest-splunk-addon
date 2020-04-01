@@ -132,13 +132,12 @@ class Basic:
         search = (
             f"search (index=_internal OR index=*)"
             f" {splunk_app_fields['stanza_type']}="
-            f"{splunk_app_fields['stanza_name']} AND ("
+            f"{splunk_app_fields['stanza_name']} AND "
         )
         operator = ""
         for field in splunk_app_fields["fields"]:
-            search = search + f' {operator} {field}="-" OR {field}=""'
-            operator = "OR"
-        search = search + ")"
+            search = search + f'{operator} ( {field}="-" OR {field}="") '
+            operator = "OR")
 
         self.logger.debug(f"Executing the search query: {search}")
         # run search
