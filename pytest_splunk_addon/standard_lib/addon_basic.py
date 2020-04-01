@@ -95,8 +95,8 @@ class Basic:
             f" {splunk_app_fields['stanza_type']}="
             f"{splunk_app_fields['stanza_name']}"
         )
-        for f in splunk_app_fields["fields"]:
-            search = search + f' AND ({f}=* AND NOT {f}="-" AND NOT {f}="")'
+        for field in splunk_app_fields["fields"]:
+            search = search + f' AND ({field}=* AND NOT {field}="-" AND NOT {field}="")'
 
         self.logger.debug(f"Executing the search query: {search}")
         # run search
