@@ -187,6 +187,7 @@ def test_splunk_app_broken_sourcetype(testdir):
         "\n".join(result.stdout.lines),
         "\n".join(result.stderr.lines),
     )
+
     result.stdout.fnmatch_lines_random(
         constants.TA_BROKEN_SOURCETYPE_PASSED + constants.TA_BROKEN_SOURCETYPE_FAILED
     )
