@@ -1,15 +1,27 @@
-# -*- coding: utf-8 -*-
-import logging
-
-import pytest
 import pprint
+import logging
+import pytest
+INTERVAL = 1
+RETRIES = 1
+# CIM Testing 
 
-INTERVAL = 3
-RETRIES = 3
-
+def temp_writer(msg):
+    with open("mylogger.log", "a") as fff:
+        fff.write(str(msg) + "\n")
 
 class Basic:
     logger = logging.getLogger()
+
+
+    def test_cim_fields(self):
+        # Search query
+        query = "tag = A AND field=*"
+        assert query 
+
+    def test_cim_only_one_model(self):
+        # List the data models mapped for a tags.conf stanza 
+        # Fail if it has more than one mapped. 
+        pass
 
     @pytest.mark.splunk_addon_internal_errors
     def test_splunk_internal_errors(
@@ -24,7 +36,7 @@ class Basic:
             AND sourcetype!=splunkd
             | table _raw
         """
-
+        # return
         result, results = splunk_search_util.checkQueryCountIsZero(search)
         if not result:
             record_property("results", results.as_list)
@@ -32,46 +44,12 @@ class Basic:
             pp.pprint(results.as_list)
         assert result
 
-    # This test ensures the contained samples will produce
-    # at lease one event per sourcetype/source
+
+# Field testing 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_stanza(
-        self, splunk_search_util, splunk_app_props, record_property, caplog
-    ):
-        """
-        Test case to check props stanza mentioned in props.conf
-
-        This test case checks props stanza is not empty, blank and dash value.
-        Args:
-            splunk_search_util(SearchUtil):
-                Object that helps to search on Splunk.
-            splunk_props_fields(fixture):
-                Test for stanza.
-            record_property(fixture):
-                Document facts of test cases.
-            caplog :
-                fixture to capture logs.
-        """
-
-        record_property(splunk_app_props["field"], splunk_app_props["value"])
-        search = (
-            f"search (index=_internal OR index=*) AND "
-            f"{splunk_app_props['field']}="
-            f"\"{splunk_app_props['value']}\""
-        )
-        self.logger.debug(f"Executing the search query: {search}")
-        # run search
-        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=INTERVAL, retries=RETRIES
-        )
-        record_property("search", search)
-
-        assert result
-
-    @pytest.mark.splunk_addon_searchtime
-    def test_props_fields(
-        self, splunk_search_util, splunk_app_fields, record_property, caplog
-    ):
+    def test_props_fields_positive(
+            self, splunk_search_util, splunk_app_positive_fields, record_property, request
+        ):
         """
         Test case to check props property mentioned in props.conf
 
@@ -86,19 +64,30 @@ class Basic:
             caplog :
                 fixture to capture logs.
         """
-        record_property("stanza_name", splunk_app_fields["stanza_name"])
-        record_property("stanza_type", splunk_app_fields["stanza_type"])
-        record_property("fields", splunk_app_fields["fields"])
+
+        # Search Query 
+        record_property("stanza_name", splunk_app_positive_fields["stanza"])
+        record_property("stanza_type", splunk_app_positive_fields["stanza_type"])
+        record_property("fields", splunk_app_positive_fields["fields"])
 
         search = (
             f"search (index=_internal OR index=*)"
-            f" {splunk_app_fields['stanza_type']}="
-            f"{splunk_app_fields['stanza_name']}"
+            f" {splunk_app_positive_fields['stanza_type']}=\""
+            f"{splunk_app_positive_fields['stanza']}\""
         )
-        for field in splunk_app_fields["fields"]:
-            search = search + f' AND ({field}=* AND NOT {field}="-" AND NOT {field}="")'
+        for field in splunk_app_positive_fields["fields"]:
+            positive_values = ", ".join([f'"{each}"' for each in field.positive_values])
+            negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
+
+            search = (search + f' AND ({field} IN ({positive_values})'
+             f' AND NOT {field} IN ({negative_values}))')
 
         self.logger.debug(f"Executing the search query: {search}")
+        temp_writer(request.node.name)
+        temp_writer(search)
+        temp_writer("")
+
+        # return 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRIES
@@ -106,55 +95,51 @@ class Basic:
         record_property("search", search)
 
         assert result
+    
 
     @pytest.mark.splunk_addon_searchtime
-    def test_props_fields_no_dash_not_empty(
-        self, splunk_search_util, splunk_app_fields, record_property, caplog
-    ):
-        """
-        Test case to check props property mentioned in props.conf
+    def test_props_fields_negative(
+            self, splunk_search_util, splunk_app_negative_fields, record_property, request
+        ):
 
-        This test case checks negative scenario for field dash value.
-        Args:
-            splunk_search_util(SearchUtil):
-                Object that helps to search on Splunk.
-            splunk_app_fields(fixture):
-                Test for stanza field.
-            record_property(fixture):
-                Document facts of test cases.
-            caplog :
-                fixture to capture logs.
-        """
-        record_property("stanza_name", splunk_app_fields["stanza_name"])
-        record_property("stanza_type", splunk_app_fields["stanza_type"])
-        record_property("fields", splunk_app_fields["fields"])
+        # Search Query 
+        record_property("stanza_name", splunk_app_negative_fields["stanza"])
+        record_property("stanza_type", splunk_app_negative_fields["stanza_type"])
+        record_property("fields", splunk_app_negative_fields["fields"])
 
         search = (
             f"search (index=_internal OR index=*)"
-            f" {splunk_app_fields['stanza_type']}="
-            f"{splunk_app_fields['stanza_name']} AND "
+            f" {splunk_app_negative_fields['stanza_type']}=\""
+            f"{splunk_app_negative_fields['stanza']}\""
         )
-        operator = ""
-        for field in splunk_app_fields["fields"]:
-            search = search + f'{operator} ( {field}="-" OR {field}="") '
-            operator = "OR"
+
+        for field in splunk_app_negative_fields["fields"]:
+            negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
+
+            search = (search + f' AND ({field} IN ({negative_values}))')
+
+        temp_writer(request.node.name)
+        temp_writer(search)
+        temp_writer("")
+        # return
 
         self.logger.debug(f"Executing the search query: {search}")
-        # run search
-        result, results = splunk_search_util.checkQueryCountIsZero(search)
 
+        # run search
+        result, results = splunk_search_util.checkQueryCountIsZero(
+            search
+        )
+        record_property("search", search)
         if not result:
             record_property("results", results.as_list)
             pp = pprint.PrettyPrinter(indent=4)
-            pp.pprint(results.as_list[-10:])      
-        record_property("search", search)
+            pp.pprint(results.as_list)
         assert result
-
 
     # This test will check if there is at least one event with specified tags
     @pytest.mark.splunk_addon_searchtime
     def test_tags(
-        self, splunk_search_util, splunk_app_tags, record_property, caplog
+        self, splunk_search_util, splunk_app_tags, record_property, caplog, request
     ):
         """
         Test case to check tags mentioned in tags.conf
@@ -170,14 +155,9 @@ class Basic:
             caplog : fixture to capture logs.
         """
 
-        if splunk_app_tags.get("enabled_tag"):
-            tag = splunk_app_tags["enabled_tag"]
-            is_tag_enabled = True
-        else:
-            tag = splunk_app_tags["disabled_tag"]
-            is_tag_enabled = False
-
-        tag_query = splunk_app_tags["tag_query"]
+        is_tag_enabled = splunk_app_tags.get("enabled", True)
+        tag_query = splunk_app_tags["stanza"]
+        tag = splunk_app_tags["tag"]
         self.logger.info(f"Testing for tag {tag} with tag_query {tag_query}")
 
         record_property("Event_with", tag_query)
@@ -188,6 +168,12 @@ class Basic:
             f"search (index=* OR index=_internal) {tag_query} AND tag={tag}"
         )
         self.logger.debug(f"Search: {search}")
+        temp_writer(request.node.name)
+        temp_writer(search)
+        temp_writer("")
+
+        # return 
+
 
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRIES
@@ -204,6 +190,7 @@ class Basic:
         splunk_app_eventtypes,
         record_property,
         caplog,
+        request
     ):
         """
         Tests if all eventtypes in eventtypes.conf are generated in Splunk.
@@ -220,16 +207,22 @@ class Basic:
             Asserts whether test case passes or fails.
         """
         record_property(
-            splunk_app_eventtypes["field"], splunk_app_eventtypes["value"]
+            "eventtype", splunk_app_eventtypes["stanza"]
         )
         search = (f"search (index=_internal OR index=*) AND "
-                  f"{splunk_app_eventtypes['field']}="
-                  f"\"{splunk_app_eventtypes['value']}\"")
+                  f"eventtype="
+                  f"\"{splunk_app_eventtypes['stanza']}\"")
 
         self.logger.info(
-            "Testing eventtype =%s", splunk_app_eventtypes["value"]
+            "Testing eventtype =%s", splunk_app_eventtypes["stanza"]
         )
+
         self.logger.debug("Search query for testing =%s", search)
+        temp_writer(request.node.name)
+        temp_writer(search)
+        temp_writer("")
+        # return 
+
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
