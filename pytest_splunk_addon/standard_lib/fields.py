@@ -5,7 +5,8 @@ class Field(object):
         self.field_type = field_json.get("field_type")
         self.expected_values = field_json.get("expected_values", ["*"])
         self.negative_values = field_json.get("negative_values", ["-", ""])
-        self.condition = 
+        self.condition = field_json.get("condition", ["-", ""])
+        self.validity = field_json.get("condition", "")
 
     def __str__(self):
         return self.name
@@ -22,19 +23,5 @@ def convert_to_fields(func):
     def inner_func(*args, **kwargs):
         for each_field in func(*args, **kwargs):
             if each_field:
-                yield Field(each_field)
+                yield Field({"name": each_field})
     return inner_func
-
-
-"""
-If positive values = None and negative value != ["-", ""]
- -> Search  1+) field=* 
-            2-) field = "-" OR field = "" 
-
-if positive value = splunkd and negative value = any 
- -> Search 1+) field in ( splunkd )
-           2-) NOT field in (splunkd) 
-    Events should be present with mentioned value 
-    There should not be any other value than positive_values 
-
-"""

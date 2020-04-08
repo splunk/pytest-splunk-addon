@@ -36,7 +36,7 @@ class Basic:
             AND sourcetype!=splunkd
             | table _raw
         """
-        # return
+        return
         result, results = splunk_search_util.checkQueryCountIsZero(search)
         if not result:
             record_property("results", results.as_list)
@@ -76,10 +76,10 @@ class Basic:
             f"{splunk_app_positive_fields['stanza']}\""
         )
         for field in splunk_app_positive_fields["fields"]:
-            positive_values = ", ".join([f'"{each}"' for each in field.positive_values])
+            expected_values = ", ".join([f'"{each}"' for each in field.expected_values])
             negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
 
-            search = (search + f' AND ({field} IN ({positive_values})'
+            search = (search + f' AND ({field} IN ({expected_values})'
              f' AND NOT {field} IN ({negative_values}))')
 
         self.logger.debug(f"Executing the search query: {search}")
@@ -87,7 +87,7 @@ class Basic:
         temp_writer(search)
         temp_writer("")
 
-        # return 
+        return 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRIES
@@ -121,7 +121,7 @@ class Basic:
         temp_writer(request.node.name)
         temp_writer(search)
         temp_writer("")
-        # return
+        return
 
         self.logger.debug(f"Executing the search query: {search}")
 
@@ -172,7 +172,7 @@ class Basic:
         temp_writer(search)
         temp_writer("")
 
-        # return 
+        return 
 
 
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
@@ -221,7 +221,7 @@ class Basic:
         temp_writer(request.node.name)
         temp_writer(search)
         temp_writer("")
-        # return 
+        return 
 
 
         # run search

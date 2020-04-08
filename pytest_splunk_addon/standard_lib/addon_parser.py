@@ -8,6 +8,7 @@ from itertools import product
 from splunk_appinspect import App
 
 from .fields import convert_to_fields, Field
+
 LOGGER = logging.getLogger("pytest_splunk_addon")
 
 
@@ -150,9 +151,10 @@ class AddonParser(object):
 
         Returns: the sourcetype field with possible value
         """
-        yield Field(
-            props_property.name, 
-            positive_values=[props_property.value])
+        yield Field({
+            "name": props_property.name,
+            "expected_values": [props_property.value]
+        })
 
     @convert_to_fields
     def get_eval_fields(self, props_property):
