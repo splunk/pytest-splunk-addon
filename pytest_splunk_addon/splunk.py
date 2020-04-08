@@ -101,6 +101,13 @@ def pytest_addoption(parser):
             " of 8.0.0. "
         ),
     )
+    group.addoption(
+        "--field-bank",
+        action="store",
+        dest="field_bank",
+        default="",
+        help="Path of the field JSON file. Refer to ReadMe for the Json format.",
+    )
 
 
 @pytest.fixture(scope="session")

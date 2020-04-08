@@ -6,8 +6,10 @@ from .cim_test_generator import CIMTestGenerator
 class AppTestGenerator(object):
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
+        self.seen_tests = set()
         self.fieldtest_generator = FieldTestGenerator(
-                self.pytest_config.getoption("splunk_app")
+                self.pytest_config.getoption("splunk_app"),
+                field_bank = self.pytest_config.getoption("field_bank", False)
             )
         # self.test_generator = CIMTestGenerator(
         #         True or self.pytest_config.getoption("dm_path"),
@@ -40,8 +42,7 @@ class AppTestGenerator(object):
         Yields:
             Generator: De-duplicated pytest.param
         """
-        seen_tests = set()
         for each_param in test_list:
-            if each_param.id not in seen_tests:
+            if each_param.id not in self.seen_tests:
                 yield each_param
-                seen_tests.add(each_param.id)
+                self.seen_tests.add(each_param.id)

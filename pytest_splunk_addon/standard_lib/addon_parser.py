@@ -32,7 +32,8 @@ class AddonParser(object):
             else:
                 yield "sourcetype", stanza.name, stanza
 
-    def get_list_of_sources(self, source):
+    @staticmethod
+    def get_list_of_sources(source):
         """
         Implement generator object of source list
 

@@ -1,16 +1,50 @@
-from .addon_parser import AddonParser
 from .base_test_generator import BaseTestGenerator
 import pytest
+from itertools import chain
+import json
+from .fields import Field
+from .addon_parser import AddonParser
 
 class FieldTestGenerator(BaseTestGenerator):
     """
     A class who knows what kind of test case should be generated for testing the field extraction of the add-on
     """
-    def __init__(self, addon_path):
+    def __init__(self, addon_path, field_bank=None):
         self.addon_parser = AddonParser(addon_path)
+        self.field_bank = field_bank
 
-    def generate_field_tests(self, is_positive=True):
-        for fields_group in self.addon_parser.get_props_fields():
+
+    def init_field_bank_tests(self):
+        if self.field_bank:
+            with open(self.field_bank) as field_file:
+                stanza_list = json.load(field_file)
+            for each_stanza in stanza_list:
+                if each_stanza.startswith("host::"):
+                    continue
+                field_list = Field.parse_fields(stanza_list[each_stanza]) 
+                if each_stanza.startswith("source::"):
+                    for each_source in AddonParser.get_list_of_sources(each_stanza):
+                        yield {
+                            "stanza": each_source,
+                            "stanza_type": "source",
+                            "classname": "field_bank",
+                            "fields": field_list
+                        }
+                else:
+                    yield { 
+                        "stanza": each_stanza,
+                        "stanza_type": "sourcetype",
+                        "classname": "field_bank",
+                        "fields": field_list
+                    }
+                
+
+    def generate_field_tests(self, is_positive):
+        field_itr = chain(
+            self.init_field_bank_tests(), 
+            self.addon_parser.get_props_fields()
+        )
+        for fields_group in field_itr:
             # Generate test case for the stanza 
             # Do not generate if it is a negative test case
             if is_positive:
