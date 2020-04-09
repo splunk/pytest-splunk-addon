@@ -1,8 +1,17 @@
+# -*- coding: utf-8 -*-
+
 from .fields import Field
 
 class DataSet(object):
+    """
+    Handles a single data set
+
+    Args:
+        data_set_json(dict): Json of a single DataSet
+    """
     def __init__(self, data_set_json):
         # Attrs 
+        self.name = ""
         self.fields = [] # Field 
         self.child_dataset = []
 

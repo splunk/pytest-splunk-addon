@@ -1,9 +1,17 @@
-from .base_test_generator import BaseTestGenerator
+# -*- coding: utf-8 -*-
+
 from .fields_test_generator import FieldTestGenerator
 from .cim_test_generator import CIMTestGenerator
 
 
 class AppTestGenerator(object):
+    """
+    Test Generator for an App.
+    Generates test cases of Fields and CIM.
+
+    Args:
+        pytest_config: To get the options given to pytest
+    """
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
         self.seen_tests = set()
@@ -17,6 +25,17 @@ class AppTestGenerator(object):
         #     )
 
     def generate_tests(self, fixture):
+        """
+        Generate the test cases based on the fixture provided 
+        supported fixtures:
+            - splunk_app_positive_fields
+            - splunk_app_negative_fields
+            - splunk_app_tags
+            - splunk_app_eventtypes
+            - splunk_app_cim
+        Args:
+            fixture(str): fixture name
+        """
         if fixture.endswith("fields"):
             is_positive = "positive" in fixture or not "negative" in fixture
             yield from self.dedup_tests(

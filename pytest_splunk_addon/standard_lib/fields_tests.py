@@ -1,27 +1,20 @@
+# -*- coding: utf-8 -*-
+
 import pprint
 import logging
 import pytest
-INTERVAL = 1
-RETRIES = 1
-# CIM Testing 
+INTERVAL = 3
+RETRIES = 3
 
 def temp_writer(msg):
     with open("mylogger.log", "a") as fff:
         fff.write(str(msg) + "\n")
 
-class Basic:
+class FieldTests:
+    """
+    Test templates to test the knowledge objects of an App
+    """
     logger = logging.getLogger()
-
-
-    def test_cim_fields(self):
-        # Search query
-        query = "tag = A AND field=*"
-        assert query 
-
-    def test_cim_only_one_model(self):
-        # List the data models mapped for a tags.conf stanza 
-        # Fail if it has more than one mapped. 
-        pass
 
     @pytest.mark.splunk_addon_internal_errors
     def test_splunk_internal_errors(

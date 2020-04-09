@@ -1,4 +1,9 @@
+# -*- coding: utf-8 -*-
+
 class Field(object):
+    """
+        Contains the field properties 
+    """
 
     def __init__(self, field_json=None):
         self.name = field_json.get("name")

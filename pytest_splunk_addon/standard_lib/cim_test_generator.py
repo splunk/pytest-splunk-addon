@@ -1,14 +1,19 @@
-from .base_test_generator import BaseTestGenerator
+# -*- coding: utf-8 -*-
+
 from .data_model_handler import DataModelHandler
 from .addon_parser import AddonParser
 
-class CIMTestGenerator(BaseTestGenerator):
+class CIMTestGenerator(object):
+    """
+    Generate the CIM based test cases. 
+        1. Parse the data model JSON
+        2. Parse the add-on 
+        3. Check which data model is mapped for each tags stanza
+        4. Generate test cases for each data model mapped
+    """
 
     def __init__(
-        self, data_model_path, addon_path, 
-        only_required_fields=False,
-        only_recommended_fields=False,
-        only_cim_fields=False
+        self, addon_path, data_model_path="data_models", 
     ):
 
         self.data_model_handler = DataModelHandler(data_model_path)
