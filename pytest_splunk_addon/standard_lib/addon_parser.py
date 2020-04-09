@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-The module provides the Add-on parsing mechanism.
+The module provides the Add-on parsing mechanism. It can
+parse the knowledge objects from an Add-on's configuration files
+
+Supports: fields from props & transforms, tags, eventtypes
 
 Dependencies: 
-    - splunk_appinspect.App: To parse the configuration files 
+    splunk_appinspect.App: To parse the configuration files 
 """
 import os
 import re
@@ -19,7 +22,7 @@ LOGGER = logging.getLogger("pytest_splunk_addon")
 
 class AddonParser(object):
     """
-    Parse the knowledge objects from an Add-on configuration files.
+    Parse the knowledge objects from an Add-on's configuration files.
     Supports: fields from props & transforms, tags, eventtypes
 
     Args:
@@ -58,7 +61,7 @@ class AddonParser(object):
         Uses itertools.product to list the combinations 
 
         Args:
-            source(str): Source name
+            source (str): Source name
 
         Yields:
             generator of source name
@@ -79,7 +82,7 @@ class AddonParser(object):
         Get the parsing method depending on classname
         
         Args:
-            class_name: class name of the props property 
+            class_name (str): class name of the props property 
 
         Returns:
             instance method to parse the property
@@ -124,6 +127,7 @@ class AddonParser(object):
     def get_eventtypes(self):
         """
         Parse the App configuration files & yield eventtypes
+        
         Yields:
             generator of list of eventtypes
         """
@@ -160,13 +164,14 @@ class AddonParser(object):
     def get_extract_fields(self, props_property):
         """
         Returns the fields parsed from EXTRACT
+
         Args:
-            props_property(
-                splunk_appinspect.configuration_file.ConfigurationSetting
-                ): The configuration setting object of EXTRACT.
-                properties used:
-                        name : key in the configuration settings
-                        value : value of the respective name in the configuration
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
+                The configuration setting object of EXTRACT.
+                properties used:\n
+                * name : key in the configuration settings
+                * value : value of the respective name in the configuration
+
         Yields:
             generator of fields
         """
@@ -190,13 +195,14 @@ class AddonParser(object):
         Return the fields parsed from sourcetype
 
         Args:
-            props_property(splunk_appinspect.configuration_file.ConfigurationSetting): 
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
                 The configuration setting object of REPORT.
-                properties used:
-                        name : key in the configuration settings
-                        value : value of the respective name in the configuration
+                properties used:\n
+                * name : key in the configuration settings
+                * value : value of the respective name in the configuration
 
-        Yields: the sourcetype field with possible value
+        Yields:
+            the sourcetype field with possible value
         """
         yield Field({
             "name": props_property.name,
@@ -209,12 +215,11 @@ class AddonParser(object):
         Return the fields parsed from EVAL
 
         Args:
-            props_property(
-                splunk_appinspect.configuration_file.ConfigurationSetting
-                ): The configuration setting object of eval
-                properties used:
-                    name : key in the configuration settings
-                    value : value of the respective name in the configuration
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
+                The configuration setting object of eval
+                properties used:\n
+                * name : key in the configuration settings
+                * value : value of the respective name in the configuration
 
         Yields:
             generator of fields
@@ -229,22 +234,22 @@ class AddonParser(object):
         Return the fields parsed from FIELDALIAS
 
         Args:
-            props_property(splunk_appinspect.configuration_file.ConfigurationSetting):
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
                 The configuration setting object of FIELDALIAS
-                properties used:
-                    name : key in the configuration settings
-                    value : value of the respective name in the configuration
+                properties used:\n
+                * name : key in the configuration settings
+                * value : value of the respective name in the configuration
 
         Regex:
-            Description:
-                Find all field alias group separated by space or comma
-            Examples:
-                field_source AS field_destination
-                "Field Source" as "Field Destination"
-                field_source ASNEW 'Field Destination'
-                field_source asnew field_destination
+            Description:\n
+            * Find all field alias group separated by space or comma\n
+            Examples:\n
+            * field_source AS field_destination
+            * "Field Source" as "Field Destination"
+            * field_source ASNEW 'Field Destination'
+            * field_source asnew field_destination
 
-        Yield:
+        Yields:
             generator of fields
         """
         regex = (
@@ -262,17 +267,18 @@ class AddonParser(object):
         Returns the fields parsed from transforms.conf
 
         Args:
-            props_property(splunk_appinspect.configuration_file.ConfigurationSetting): 
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
                 The configuration setting object of REPORT.
-                properties used:
-                        name : key in the configuration settings
-                        value : value of the respective name in the configuration
-        
-        Regex: 
+                properties used:\n
+                * name : key in the configuration settings
+                * value : value of the respective name in the configuration
+
+        Regex:
             Parse the fields from a regex. Examples,
                 (?<name>regex)
                 (?'name'regex)
                 (?P<name>regex)
+
         Yields:
             generator of fields parsed from transforms.conf 
         """
@@ -307,13 +313,13 @@ class AddonParser(object):
         Extracts the lookup fields 
 
         Args:
-            props_property(splunk_appinspect.configuration_file.ConfigurationSetting):
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
                 The configuration setting object of eval
-                properties used:
-                    name : key in the configuration settings
-                    value : value of the respective name in the configuration
+                properties used:\n
+                * name : key in the configuration settings
+                * value : value of the respective name in the configuration
 
-        returns:
+        Returns:
             List of lookup fields
         """
         parsed_fields = self.parse_lookup_str(props_property.value)
@@ -352,15 +358,18 @@ class AddonParser(object):
         Get list of lookup fields by parsing the lookup string.
         If a field is aliased to another field, take the aliased field into consideration
 
-        Regex: Parse the fields from the lookup string. Example,
-            field1 AS field2, field3 field4 as field5 
-
         Args:
-            lookup_str(str): Lookup string from props.conf
-        returns(dict):
-            lookup_stanza(str): The stanza name for the lookup in question in transforms.conf
-            input_fields(list): The fields in the input of the lookup
-            output_fields(list): The fields in the output of the lookup
+            lookup_str (str): Lookup string from props.conf\n
+
+        Regex:
+            Parse the fields from the lookup string. Examples,\n
+            * field1 AS field2, field3 field4 as field5 
+
+        Returns:
+            (dict):
+                lookup_stanza (str): The stanza name for the lookup in question in transforms.conf
+                input_fields (list): The fields in the input of the lookup
+                output_fields (list): The fields in the output of the lookup
         """
 
         input_output_field_list = []

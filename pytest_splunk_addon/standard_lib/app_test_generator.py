@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+Test Generator for an App.
+Generates test cases of Fields and CIM.
+"""
 
 from .fields_test_generator import FieldTestGenerator
 from .cim_test_generator import CIMTestGenerator
@@ -27,12 +31,13 @@ class AppTestGenerator(object):
     def generate_tests(self, fixture):
         """
         Generate the test cases based on the fixture provided 
-        supported fixtures:
-            - splunk_app_positive_fields
-            - splunk_app_negative_fields
-            - splunk_app_tags
-            - splunk_app_eventtypes
-            - splunk_app_cim
+        supported fixtures:\n
+        *  splunk_app_positive_fields
+        *  splunk_app_negative_fields
+        *  splunk_app_tags
+        *  splunk_app_eventtypes
+        *  splunk_app_cim
+
         Args:
             fixture(str): fixture name
         """
@@ -56,8 +61,10 @@ class AppTestGenerator(object):
     def dedup_tests(self, test_list):
         """
         Deduplicate the test case parameters based on param.id
+
         Args:
             test_list(Generator): Generator of pytest.param
+
         Yields:
             Generator: De-duplicated pytest.param
         """

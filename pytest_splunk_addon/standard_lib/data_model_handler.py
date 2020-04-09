@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
-
+"""
+Provides Data Model handling functionalities. Such as\n
+* Parse all the data model JSON files
+* Get Mapped data model for an eventtype 
+"""
 import os
 import json
 from .data_model import DataModel
 
 class DataModelHandler(object):
     """
-    Provides Data Model handling functionalities. Such as 
-        - Parse all the data model JSON files
-        - Get Mapped data model for an eventtype  
+    Provides Data Model handling functionalities. Such as\n
+    * Parse all the data model JSON files
+    * Get Mapped data model for an eventtype  
 
     Args:
         data_model_path(str): path to the data model JSON files

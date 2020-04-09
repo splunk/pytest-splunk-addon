@@ -1,8 +1,16 @@
 # -*- coding: utf-8 -*-
+"""
+Provides the Field class containing all the field properties and a decorator 
+to convert a list to field list
+"""
 
+from functools import wraps
 class Field(object):
     """
-        Contains the field properties 
+        Contains the field properties okay?
+
+        Args:
+            field_json (dict): dictionary containing field properties 
     """
 
     def __init__(self, field_json=None):
@@ -18,6 +26,12 @@ class Field(object):
 
     @classmethod
     def parse_fields(cls, field_list):
+        """
+        Parse the fields from a list 
+
+        Args:
+            field_list (list): list of field names 
+        """
         for each_fields in field_list:
             yield Field(each_fields)
 
@@ -25,6 +39,7 @@ def convert_to_fields(func):
     """
     Decorator to initialize the list of fields 
     """
+    @wraps(func)
     def inner_func(*args, **kwargs):
         for each_field in func(*args, **kwargs):
             if each_field:

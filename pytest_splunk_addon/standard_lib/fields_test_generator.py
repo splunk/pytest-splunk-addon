@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-
+"""
+Module include class to generate the test cases
+to test the knowledge objects of an Add-on.
+"""
 import pytest
 import json
 from itertools import chain

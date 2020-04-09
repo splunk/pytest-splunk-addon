@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-
+"""
+Includes DataSet class which handles a single data set
+"""
 from .fields import Field
 
 class DataSet(object):

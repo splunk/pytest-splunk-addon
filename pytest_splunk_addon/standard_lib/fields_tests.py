@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-
+"""
+Includes the test scenarios to check the field extractions of an Add-on.
+"""
 import pprint
 import logging
 import pytest
@@ -48,14 +50,10 @@ class FieldTests:
 
         This test case checks props field is not empty, blank and dash value.
         Args:
-            splunk_search_util(SearchUtil):
-                Object that helps to search on Splunk.
-            splunk_app_fields(fixture):
-                Test for stanza field.
-            record_property(fixture):
-                Document facts of test cases.
-            caplog :
-                fixture to capture logs.
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            splunk_app_fields (fixture): Test for stanza field.
+            record_property (fixture): Document facts of test cases.
+            caplog (fixture): fixture to capture logs.
         """
 
         # Search Query 
@@ -141,11 +139,11 @@ class FieldTests:
         and also checks that a tag is not assigned to the event if disabled.
 
         Args:
-            splunk_search_util : A helmut_lib.SearchUtil.SearchUtil object that
-                helps to search on Splunk.
-            splunk_app_tags : pytest parameters to test.
-            record_property : pytest fixture to document facts of test cases.
-            caplog : fixture to capture logs.
+            splunk_search_util (helmut_lib.SearchUtil.SearchUtil): 
+                object that helps to search on Splunk.
+            splunk_app_tags (fixture): pytest parameters to test.
+            record_property (fixture): pytest fixture to document facts of test cases.
+            caplog (fixture): fixture to capture logs.
         """
 
         is_tag_enabled = splunk_app_tags.get("enabled", True)
@@ -188,13 +186,13 @@ class FieldTests:
         """
         Tests if all eventtypes in eventtypes.conf are generated in Splunk.
         Args:
-            splunk_search_util:
+            splunk_search_util (fixture): 
                 Fixture to create a simple connection to Splunk via SplunkSDK
-            splunk_app_eventtypes:
+            splunk_app_eventtypes (fixture): 
                 Fixture containing list of eventtypes
-            record_property:
+            record_property (fixture): 
                 Used to add user properties to test report
-            caplog:
+            caplog (fixture): 
                 Access and control log capturing
         Returns:
             Asserts whether test case passes or fails.
