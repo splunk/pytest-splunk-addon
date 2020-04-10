@@ -7,8 +7,8 @@ import pytest
 import json
 from itertools import chain
 
-from .fields import Field
-from .addon_parser import AddonParser
+from ..addon_parser.fields import Field
+from ..addon_parser.addon_parser import AddonParser
 from .field_bank import FieldBank
 
 class FieldTestGenerator(object):

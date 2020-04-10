@@ -3,7 +3,7 @@
 Generates test cases to verify the CIM compatibility . 
 """
 from .data_model_handler import DataModelHandler
-from .addon_parser import AddonParser
+from ..addon_parser.addon_parser import AddonParser
 
 class CIMTestGenerator(object):
     """
@@ -25,9 +25,13 @@ class CIMTestGenerator(object):
         yield from self.data_model_handler.get_mapped_data_models(self.addon_parser)
 
     def generate_cim_fields(self):
+        """
+        1. List the CIM models
+        """
         for each_model in self.get_cim_models():
             # get each fields from the model 
             # Generate test case for each model 
+            print(each_model)
             pass
 
     def generate_tests(self):

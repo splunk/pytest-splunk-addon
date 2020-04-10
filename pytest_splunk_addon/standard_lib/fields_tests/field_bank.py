@@ -4,8 +4,9 @@ To enhance the test cases while verifying the field extractions.
 """
 import json
 
-from .fields import Field
-from .addon_parser import AddonParser
+from ..addon_parser.fields import Field
+from ..addon_parser.addon_parser import PropsParser
+
 class FieldBank(object):
     """
     Supports field_bank: List of fields with patterns and expected
@@ -52,7 +53,7 @@ class FieldBank(object):
                     continue
                 field_list = Field.parse_fields(stanza_list[each_stanza]) 
                 if each_stanza.startswith("source::"):
-                    for each_source in AddonParser.get_list_of_sources(each_stanza):
+                    for each_source in PropsParser.get_list_of_sources(each_stanza):
                         yield {
                             "stanza": each_source,
                             "stanza_type": "source",

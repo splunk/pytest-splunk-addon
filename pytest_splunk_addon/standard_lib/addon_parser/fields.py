@@ -19,7 +19,7 @@ class Field(object):
         self.expected_values = field_json.get("expected_values", ["*"])
         self.negative_values = field_json.get("negative_values", ["-", ""])
         self.condition = field_json.get("condition", ["-", ""])
-        self.validity = field_json.get("condition", "")
+        self.validity = field_json.get("validity", "")
 
     def __str__(self):
         return self.name

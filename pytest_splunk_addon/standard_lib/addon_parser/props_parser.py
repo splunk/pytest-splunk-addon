@@ -1,40 +1,82 @@
 # -*- coding: utf-8 -*-
 """
-The module provides the Add-on parsing mechanism. It can
-parse the knowledge objects from an Add-on's configuration files
-
-Supports: fields from props & transforms, tags, eventtypes
-
-Dependencies: 
-    splunk_appinspect.App: To parse the configuration files 
+Provides props.conf parsing mechanism
 """
-import os
-import re
 import logging
-import csv
-from urllib.parse import unquote
+import re 
 from itertools import product
-from splunk_appinspect import App
-
 from .fields import convert_to_fields, Field
-
+from .transforms_parser import TransformsParser
 LOGGER = logging.getLogger("pytest_splunk_addon")
 
-class AddonParser(object):
+class PropsParser(object):
     """
-    Parse the knowledge objects from an Add-on's configuration files.
-    Supports: fields from props & transforms, tags, eventtypes
-
+    Parses props.conf and extracts the fields.
+    
     Args:
-        splunk_app_path (str): Path to the Splunk App
+        splunk_app_path (str): Path of the Splunk app
+        app (splunk_appinspect.App): Object of Splunk app
     """
-    def __init__(self, splunk_app_path):
+
+    def __init__(self, splunk_app_path, app):
+        self.app = app 
         self.splunk_app_path = splunk_app_path
-        self.app = App(splunk_app_path, python_analyzer_enable=False)
         self.props = self.app.props_conf()
-        self.transforms = self.app.transforms_conf()
-        self.tags = self.app.get_config("tags.conf")
-        self.eventtypes = self.app.eventtypes_conf()
+        self.transforms_parser = TransformsParser(self.splunk_app_path, self.app)
+
+    def get_props_fields(self):
+        """
+        Parse the props.conf and yield all supported fields
+
+        Yields:
+            generator of all the supported fields 
+        """
+        for stanza_type, stanza_name, stanza in self.get_props_stanzas():
+            for classname in stanza.options:
+                LOGGER.info(
+                    "Parsing parameter=%s of stanza=%s",
+                    classname,
+                    stanza_name,
+                )
+                props_property = stanza.options[classname]
+                if not re.match("REPORT", classname, re.IGNORECASE):
+                    parsing_method = self.get_props_method(classname)
+                    if parsing_method:
+                        yield {
+                            "stanza": stanza_name,
+                            "stanza_type": stanza_type,
+                            "classname": classname,
+                            "fields": list(parsing_method(props_property))
+                        }
+                else:
+                    for transform_stanza, fields in self.get_report_fields(props_property):
+                        yield {
+                            "stanza": stanza_name,
+                            "stanza_type": stanza_type,
+                            "classname": f"{classname}::{transform_stanza}",
+                            "fields": list(fields)
+                        }
+
+    def get_props_method(self, class_name):
+        """
+        Get the parsing method depending on classname
+        
+        Args:
+            class_name (str): class name of the props property 
+
+        Returns:
+            instance method to parse the property
+        """
+        method_mapping = {
+            "EXTRACT": self.get_extract_fields,
+            "EVAL": self.get_eval_fields,
+            "FIELDALIAS": self.get_fieldalias_fields,
+            "sourcetype": self.get_sourcetype_assignments,
+            "LOOKUP": self.get_lookup_fields
+        }
+        for each_type in method_mapping:
+            if re.match(each_type, class_name, re.IGNORECASE):
+                return method_mapping[each_type]
 
     def get_props_stanzas(self):
         """
@@ -59,6 +101,14 @@ class AddonParser(object):
         """
         For source with | (OR), it will return all combinations.
         Uses itertools.product to list the combinations 
+        Example:\n
+            input "(preA|preB)str(postX|postY)"
+            output [
+                preAstrpostX
+                preBstrpostX
+                preAstrpostY
+                preBstrpostY
+            ]
 
         Args:
             source (str): Source name
@@ -77,93 +127,35 @@ class AddonParser(object):
             yield template.format(*each_permutation)
 
 
-    def get_props_method(self, class_name):
+    def get_sourcetype_assignments(self, props_property):
         """
-        Get the parsing method depending on classname
-        
+        Get the sourcetype assigned for the source
+        Example:\n
+            [source::/splunk/var/log/splunkd.log]
+            sourcetype = splunkd
+
+
         Args:
-            class_name (str): class name of the props property 
-
-        Returns:
-            instance method to parse the property
-        """
-        method_mapping = {
-            "EXTRACT": self.get_extract_fields,
-            "EVAL": self.get_eval_fields,
-            "FIELDALIAS": self.get_fieldalias_fields,
-            "sourcetype": self.get_sourcetype_assignments,
-            "REPORT": self.get_report_fields,
-            "LOOKUP": self.get_lookup_fields
-        }
-        for each_type in method_mapping:
-            if re.match(each_type, class_name, re.IGNORECASE):
-                return method_mapping[each_type]
-
-    def get_tags(self):
-        """
-        Parse the tags.conf of the App & yield stanzas
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
+                The configuration setting object of REPORT.
+                properties used:\n
+                * name : key in the configuration settings
+                * value : value of the respective name in the configuration
 
         Yields:
-            generator of stanzas from the tags
+            the sourcetype field with possible value
         """
-        for stanza in self.tags.sects:
-            tag_sections = self.tags.sects[stanza]
-            stanza = stanza.replace("=", '="') + '"'
-            stanza = unquote(stanza)
-
-            for key in tag_sections.options:
-                tags_property = tag_sections.options[key]
-                tag_container = {
-                    "stanza": stanza,
-                    "tag": tags_property.name,
-                    # "enabled": True
-                }
-                if tags_property.value == "enabled":
-                    tag_container["enabled"] = True
-                else:
-                    tag_container["enabled"]= False
-                yield tag_container
-
-    def get_eventtypes(self):
-        """
-        Parse the App configuration files & yield eventtypes
-        
-        Yields:
-            generator of list of eventtypes
-        """
-        for eventtype_section in self.eventtypes.sects:
-            yield {
-                "stanza": eventtype_section
-            }
-
-    def get_props_fields(self):
-        """
-        Parse the props.conf and yield all supported fields
-
-        Yields:
-            generator of all the supported fields 
-        """
-        for stanza_type, stanza_name, stanza in self.get_props_stanzas():
-            for classname in stanza.options:
-                LOGGER.info(
-                    "Parsing parameter=%s of stanza=%s",
-                    classname,
-                    stanza_name,
-                )
-                props_property = stanza.options[classname]
-                parsing_method = self.get_props_method(classname)
-                if parsing_method:
-                    yield {
-                        "stanza": stanza_name,
-                        "stanza_type": stanza_type,
-                        "classname": classname,
-                        "fields": list(parsing_method(props_property))
-                    }
+        yield Field({
+            "name": props_property.name,
+            "expected_values": [props_property.value]
+        })
 
     @convert_to_fields
     def get_extract_fields(self, props_property):
         """
         Returns the fields parsed from EXTRACT
+        Example:
+            EXTRACT-one = regex with (?<capturing_group>.*)
 
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
@@ -171,6 +163,12 @@ class AddonParser(object):
                 properties used:\n
                 * name : key in the configuration settings
                 * value : value of the respective name in the configuration
+
+        Regex:
+            Parse the fields from a regex. Examples,\n
+            * (?<name>regex)
+            * (?'name'regex)
+            * (?P<name>regex)
 
         Yields:
             generator of fields
@@ -190,29 +188,13 @@ class AddonParser(object):
             yield extract_source_key.group(1)
             fields_group.insert(0, extract_source_key.group(1))
 
-    def get_sourcetype_assignments(self, props_property):
-        """
-        Return the fields parsed from sourcetype
-
-        Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
-                The configuration setting object of REPORT.
-                properties used:\n
-                * name : key in the configuration settings
-                * value : value of the respective name in the configuration
-
-        Yields:
-            the sourcetype field with possible value
-        """
-        yield Field({
-            "name": props_property.name,
-            "expected_values": [props_property.value]
-        })
 
     @convert_to_fields
     def get_eval_fields(self, props_property):
         """
         Return the fields parsed from EVAL
+        Example:
+            EVAL-action = if(isnull(action), "unknown", action)
 
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
@@ -232,6 +214,8 @@ class AddonParser(object):
     def get_fieldalias_fields(self, props_property):
         """
         Return the fields parsed from FIELDALIAS
+        Example:
+            FIELDALIAS-class = source AS dest, sc2 AS dest2
 
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
@@ -261,11 +245,12 @@ class AddonParser(object):
         # Convert list of tuples into list
         return list(set([item for t in fields_tuples for item in t]))
 
-    @convert_to_fields
+
     def get_report_fields(self, props_property):
         """
-        Returns the fields parsed from transforms.conf
-
+        Returns the fields parsed from REPORT
+        In order to parse the fields REPORT, the method parses the 
+            transforms.conf and returns the list
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
                 The configuration setting object of REPORT.
@@ -273,39 +258,17 @@ class AddonParser(object):
                 * name : key in the configuration settings
                 * value : value of the respective name in the configuration
 
-        Regex:
-            Parse the fields from a regex. Examples,
-                (?<name>regex)
-                (?'name'regex)
-                (?P<name>regex)
-
         Yields:
-            generator of fields parsed from transforms.conf 
+            generator of (transform_stanza ,fields) parsed from transforms.conf 
         """
-        try:
-            transforms_itr = (each_stanza.strip() for each_stanza in props_property.value.split(","))
-            for transforms_section in transforms_itr:
-                transforms_section = self.transforms.sects[transforms_section]
-                if "SOURCE_KEY" in transforms_section.options:
-                    yield transforms_section.options["SOURCE_KEY"].value
 
-                if "REGEX" in transforms_section.options:
-                    regex = r"\(\?P?(?:[<'])([^\>'\s]+)[\>']"
-                    yield from re.findall(regex, transforms_section.options["REGEX"].value)
+        transforms_itr = (each_stanza.strip() for each_stanza in props_property.value.split(","))
+        for transforms_section in transforms_itr:
+            yield (
+                transforms_section, 
+                self.transforms_parser.get_transform_fields(transforms_section)
+            ) 
 
-                if "FIELDS" in transforms_section.options:
-                    for each_field in transforms_section.options["FIELDS"].value.split(","):
-                        yield each_field.strip()
-
-                if "FORMAT" in transforms_section.options:
-                    regex = r"(\S*)::"
-                    yield from re.findall(regex, transforms_section.options["FORMAT"].value)
-        except KeyError:
-            LOGGER.error(
-                "The stanza {} does not exists in transforms.conf.".format(
-                    transforms_section
-                ),
-            )
 
     @convert_to_fields
     def get_lookup_fields(self, props_property):
@@ -327,36 +290,18 @@ class AddonParser(object):
 
         # If the OUTPUT or OUTPUTNEW argument is never used, then get the fields from the csv file
         if not parsed_fields["output_fields"]:
-            lookup_field_list += list(self.get_lookup_csv_fields(parsed_fields["lookup_stanza"]))
+            lookup_field_list += list(
+                    self.transforms_parser.get_lookup_csv_fields(parsed_fields["lookup_stanza"])
+                )
         return list(set(lookup_field_list))
-
-    def get_lookup_csv_fields(self, lookup_stanza):
-        if lookup_stanza in self.transforms.sects:
-            stanza = self.transforms.sects[lookup_stanza]
-            if "filename" in stanza.options:
-                lookup_file = stanza.options["filename"].value
-                try:
-                    location = os.path.join(
-                        self.splunk_app_path, "lookups", lookup_file
-                    )
-                    with open(location, "r") as csv_file:
-                        reader = csv.DictReader(csv_file)
-                        fieldnames = reader.fieldnames
-                        for items in fieldnames:
-                            yield items.strip()
-                # If there is an error. the test should fail with the current fields
-                # This makes sure the test doesn't exit prematurely
-                except (OSError, IOError, UnboundLocalError, TypeError) as e:
-                    LOGGER.info(
-                        "Could not read the lookup file, skipping test. error=%s",
-                        str(e),
-                    )
 
 
     def parse_lookup_str(self, lookup_str):
         """
         Get list of lookup fields by parsing the lookup string.
         If a field is aliased to another field, take the aliased field into consideration
+        Example:
+            LOOKUP-class = lookup_stanza input_field OUTPUT output_field
 
         Args:
             lookup_str (str): Lookup string from props.conf\n
@@ -407,4 +352,5 @@ class AddonParser(object):
             "output_fields": input_output_field_list[1],
             "lookup_stanza": lookup_stanza,
         }
+
 

@@ -4,8 +4,8 @@ Test Generator for an App.
 Generates test cases of Fields and CIM.
 """
 
-from .fields_test_generator import FieldTestGenerator
-from .cim_test_generator import CIMTestGenerator
+from .fields_tests.fields_test_generator import FieldTestGenerator
+from .cim_tests.cim_test_generator import CIMTestGenerator
 
 
 class AppTestGenerator(object):

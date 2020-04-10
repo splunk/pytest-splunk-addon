@@ -2,7 +2,7 @@
 """
 Includes DataSet class which handles a single data set
 """
-from .fields import Field
+from ..addon_parser.fields import Field
 
 class DataSet(object):
     """
