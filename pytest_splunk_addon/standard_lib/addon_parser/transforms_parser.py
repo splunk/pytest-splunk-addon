@@ -73,7 +73,7 @@ class TransformsParser(object):
         except KeyError:
             LOGGER.error(
                 "The stanza {} does not exists in transforms.conf.".format(
-                    transforms_section
+                    transforms_stanza
                 ),
             )
 
