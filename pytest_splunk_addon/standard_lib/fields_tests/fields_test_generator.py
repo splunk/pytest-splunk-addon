@@ -5,12 +5,14 @@ to test the knowledge objects of an Add-on.
 """
 import pytest
 import json
+import logging
 from itertools import chain
 
 from ..addon_parser.fields import Field
 from ..addon_parser.addon_parser import AddonParser
 from .field_bank import FieldBank
 
+LOGGER = logging.getLogger("pytest-splunk-addon")
 class FieldTestGenerator(object):
     """
     Generates test cases to test the knowledge objects of an Add-on.
@@ -24,6 +26,7 @@ class FieldTestGenerator(object):
     """
 
     def __init__(self, app_path, field_bank=None):
+        LOGGER.debug("initializing AddonParser to parse the app")
         self.addon_parser = AddonParser(app_path)
         self.field_bank = field_bank
                 
@@ -37,6 +40,7 @@ class FieldTestGenerator(object):
         Yields:
             pytest.params for the test templates 
         """
+        LOGGER.info("generating field tests")
         field_itr = chain(
             FieldBank.init_field_bank_tests(self.field_bank), 
             self.addon_parser.get_props_fields()

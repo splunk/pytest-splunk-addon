@@ -7,7 +7,7 @@ import re
 import os
 import csv 
 from urllib.parse import unquote
-LOGGER = logging.getLogger("pytest_splunk_addon")
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 from .fields import convert_to_fields
 class TransformsParser(object):
@@ -20,6 +20,7 @@ class TransformsParser(object):
     def __init__(self, splunk_app_path, app):
         self.app = app 
         self.splunk_app_path = splunk_app_path
+        LOGGER.debug("Parsing transforms.conf")
         self.transforms = self.app.transforms_conf()
 
     @convert_to_fields
@@ -50,17 +51,22 @@ class TransformsParser(object):
         try:
             transforms_section = self.transforms.sects[transforms_stanza]
             if "SOURCE_KEY" in transforms_section.options:
+                LOGGER.info("Parsing source_key of %s", transforms_stanza)
                 yield transforms_section.options["SOURCE_KEY"].value
 
             if "REGEX" in transforms_section.options:
+                LOGGER.info("Parsing REGEX of %s", transforms_stanza)
+
                 regex = r"\(\?P?(?:[<'])([^\>'\s]+)[\>']"
                 yield from re.findall(regex, transforms_section.options["REGEX"].value)
 
             if "FIELDS" in transforms_section.options:
+                LOGGER.info("Parsing FIELDS of %s", transforms_stanza)
                 for each_field in transforms_section.options["FIELDS"].value.split(","):
                     yield each_field.strip()
 
             if "FORMAT" in transforms_section.options:
+                LOGGER.info("Parsing FORMAT of %s", transforms_stanza)
                 regex = r"(\S*)::"
                 yield from re.findall(regex, transforms_section.options["FORMAT"].value)
 
@@ -97,7 +103,7 @@ class TransformsParser(object):
                 # If there is an error. the test should fail with the current fields
                 # This makes sure the test doesn't exit prematurely
                 except (OSError, IOError, UnboundLocalError, TypeError) as e:
-                    LOGGER.info(
+                    LOGGER.error(
                         "Could not read the lookup file, skipping test. error=%s",
                         str(e),
                     )

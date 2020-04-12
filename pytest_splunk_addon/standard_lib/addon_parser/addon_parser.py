@@ -18,7 +18,7 @@ from .props_parser import PropsParser
 from .tags_parser import TagsParser
 from .eventtype_parser import EventTypeParser
 
-LOGGER = logging.getLogger("pytest_splunk_addon")
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class AddonParser(object):
     """
@@ -30,6 +30,7 @@ class AddonParser(object):
     """
     def __init__(self, splunk_app_path):
         self.splunk_app_path = splunk_app_path
+        LOGGER.info(f"Initializing the splunk_appinspect.App from path={splunk_app_path}")
         self.app = App(splunk_app_path, python_analyzer_enable=False)
         self.props_parser = PropsParser(self.splunk_app_path, self.app)
         self.tags_parser = TagsParser(self.splunk_app_path, self.app)

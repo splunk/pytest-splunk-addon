@@ -8,15 +8,11 @@ import pytest
 INTERVAL = 3
 RETRIES = 3
 
-def temp_writer(msg):
-    with open("mylogger.log", "a") as fff:
-        fff.write(str(msg) + "\n")
-
 class FieldTests:
     """
     Test templates to test the knowledge objects of an App
     """
-    logger = logging.getLogger()
+    logger = logging.getLogger("pytest-splunk-addon-tests")
 
     @pytest.mark.splunk_addon_internal_errors
     def test_splunk_internal_errors(
@@ -31,24 +27,24 @@ class FieldTests:
             AND sourcetype!=splunkd
             | table _raw
         """
-        return
+        record_property("search", search)
         result, results = splunk_search_util.checkQueryCountIsZero(search)
         if not result:
             record_property("results", results.as_list)
             pp = pprint.PrettyPrinter(indent=4)
             pp.pprint(results.as_list)
-        assert result
+        assert result, (f"Query result greater than 0.\nsearch={search}\n"
+        f"found result={results.as_list[:10]}")
 
 
 # Field testing 
     @pytest.mark.splunk_addon_searchtime
     def test_props_fields_positive(
-            self, splunk_search_util, splunk_app_positive_fields, record_property, request
+            self, splunk_search_util, splunk_app_positive_fields, record_property
         ):
         """
-        Test case to check props property mentioned in props.conf
+        This test case checks that a field value has the expected values.
 
-        This test case checks props field is not empty, blank and dash value.
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
             splunk_app_fields (fixture): Test for stanza field.
@@ -73,25 +69,34 @@ class FieldTests:
             search = (search + f' AND ({field} IN ({expected_values})'
              f' AND NOT {field} IN ({negative_values}))')
 
-        self.logger.debug(f"Executing the search query: {search}")
-        temp_writer(request.node.name)
-        temp_writer(search)
-        temp_writer("")
+        self.logger.info(f"Executing the search query: {search}")
 
-        return 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRIES
         )
         record_property("search", search)
 
-        assert result
-    
+        assert result, (f"No result found for the search.\nsearch={search}\n"
+            f"interval={INTERVAL}, retries={RETRIES}")
 
     @pytest.mark.splunk_addon_searchtime
     def test_props_fields_negative(
-            self, splunk_search_util, splunk_app_negative_fields, record_property, request
+            self, splunk_search_util, splunk_app_negative_fields, record_property
         ):
+        """
+        This test case checks negative scenario for the field value.
+
+        Args:
+            splunk_search_util (SearchUtil): 
+                Object that helps to search on Splunk.
+            splunk_app_fields (fixture): 
+                Test for stanza field.
+            record_property (fixture): 
+                Document facts of test cases.
+            caplog (fixture): 
+                fixture to capture logs.
+        """
 
         # Search Query 
         record_property("stanza_name", splunk_app_negative_fields["stanza"])
@@ -109,12 +114,7 @@ class FieldTests:
 
             search = (search + f' AND ({field} IN ({negative_values}))')
 
-        temp_writer(request.node.name)
-        temp_writer(search)
-        temp_writer("")
-        return
-
-        self.logger.debug(f"Executing the search query: {search}")
+        self.logger.info(f"Executing the search query: {search}")
 
         # run search
         result, results = splunk_search_util.checkQueryCountIsZero(
@@ -125,12 +125,13 @@ class FieldTests:
             record_property("results", results.as_list)
             pp = pprint.PrettyPrinter(indent=4)
             pp.pprint(results.as_list)
-        assert result
+        assert result, (f"Query result greater than 0.\nsearch={search}\n"
+        f"found result={results.as_list[:10]}")
 
     # This test will check if there is at least one event with specified tags
     @pytest.mark.splunk_addon_searchtime
     def test_tags(
-        self, splunk_search_util, splunk_app_tags, record_property, caplog, request
+        self, splunk_search_util, splunk_app_tags, record_property, caplog
     ):
         """
         Test case to check tags mentioned in tags.conf
@@ -147,6 +148,7 @@ class FieldTests:
         """
 
         is_tag_enabled = splunk_app_tags.get("enabled", True)
+        expected_value = "enabled" if is_tag_enabled else "disabled"
         tag_query = splunk_app_tags["stanza"]
         tag = splunk_app_tags["tag"]
         self.logger.info(f"Testing for tag {tag} with tag_query {tag_query}")
@@ -158,13 +160,7 @@ class FieldTests:
         search = (
             f"search (index=* OR index=_internal) {tag_query} AND tag={tag}"
         )
-        self.logger.debug(f"Search: {search}")
-        temp_writer(request.node.name)
-        temp_writer(search)
-        temp_writer("")
-
-        return 
-
+        self.logger.info(f"Search: {search}")
 
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRIES
@@ -172,7 +168,9 @@ class FieldTests:
 
         record_property("search", search)
 
-        assert result is is_tag_enabled
+        assert result is is_tag_enabled, (f"Tag={tag} is not {expected_value}."
+            f"\nsearch={search}"
+            f"\ninterval={INTERVAL}, retries={RETRIES}")
 
     @pytest.mark.splunk_addon_searchtime
     def test_eventtype(
@@ -180,8 +178,7 @@ class FieldTests:
         splunk_search_util,
         splunk_app_eventtypes,
         record_property,
-        caplog,
-        request
+        caplog
     ):
         """
         Tests if all eventtypes in eventtypes.conf are generated in Splunk.
@@ -208,16 +205,12 @@ class FieldTests:
             "Testing eventtype =%s", splunk_app_eventtypes["stanza"]
         )
 
-        self.logger.debug("Search query for testing =%s", search)
-        temp_writer(request.node.name)
-        temp_writer(search)
-        temp_writer("")
-        return 
-
+        self.logger.info("Search query for testing =%s", search)
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRIES
         )
         record_property("search", search)
-        assert result
+        assert result, (f"No result found for the search.\nsearch={search}\n"
+            f"interval={INTERVAL}, retries={RETRIES}")

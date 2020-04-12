@@ -7,7 +7,7 @@ import re
 from itertools import product
 from .fields import convert_to_fields, Field
 from .transforms_parser import TransformsParser
-LOGGER = logging.getLogger("pytest_splunk_addon")
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class PropsParser(object):
     """
@@ -21,6 +21,7 @@ class PropsParser(object):
     def __init__(self, splunk_app_path, app):
         self.app = app 
         self.splunk_app_path = splunk_app_path
+        LOGGER.debug("Parsing props.conf")
         self.props = self.app.props_conf()
         self.transforms_parser = TransformsParser(self.splunk_app_path, self.app)
 
@@ -40,6 +41,7 @@ class PropsParser(object):
                 )
                 props_property = stanza.options[classname]
                 if not re.match("REPORT", classname, re.IGNORECASE):
+                    LOGGER.info("Trying to parse classname=%s", classname)
                     parsing_method = self.get_props_method(classname)
                     if parsing_method:
                         yield {
@@ -76,7 +78,10 @@ class PropsParser(object):
         }
         for each_type in method_mapping:
             if re.match(each_type, class_name, re.IGNORECASE):
+                LOGGER.info("Matched method of type=%s", each_type)
                 return method_mapping[each_type]
+        else:
+            LOGGER.warning("No parser available for %s. Skipping...", class_name)
 
     def get_props_stanzas(self):
         """
@@ -89,11 +94,14 @@ class PropsParser(object):
         for stanza_name in self.props.sects:
             stanza = self.props.sects[stanza_name]
             if stanza.name.startswith("host::"):
+                LOGGER.warning("Host stanza is not supported. Skipping..")
                 continue
             if stanza.name.startswith("source::"):
+                LOGGER.info("Parsing Source based stanza: %s", stanza.name)
                 for each_source in self.get_list_of_sources(stanza_name):
                     yield "source", each_source, stanza
             else:
+                LOGGER.info("Parsing Sourcetype based stanza: %s", stanza.name)
                 yield "sourcetype", stanza.name, stanza
 
     @staticmethod
@@ -116,6 +124,7 @@ class PropsParser(object):
         Yields:
             generator of source name
         """
+        LOGGER.debug("Finding combinations of a source..")
         match_obj = re.search(r"source::(.*)", source)
         value = match_obj.group(1).replace("...", "*")
         sub_groups = re.findall(r"\([^\)]+\)", value)
@@ -123,8 +132,11 @@ class PropsParser(object):
         for each_group in sub_groups:
             sub_group_list.append(each_group.strip("()").split("|"))
         template = re.sub(r"\([^\)]+\)", "{}", value)
+        count = 0
         for each_permutation in product(*sub_group_list):
+            count += 1
             yield template.format(*each_permutation)
+        LOGGER.debug("Found %d combinations", count)
 
 
     def get_sourcetype_assignments(self, props_property):
@@ -185,6 +197,7 @@ class PropsParser(object):
             regex_for_source_key, props_property.value, re.MULTILINE
         )
         if extract_source_key:
+            LOGGER.info("Found a source key in %s", props_property.name)
             yield extract_source_key.group(1)
             fields_group.insert(0, extract_source_key.group(1))
 
@@ -290,6 +303,9 @@ class PropsParser(object):
 
         # If the OUTPUT or OUTPUTNEW argument is never used, then get the fields from the csv file
         if not parsed_fields["output_fields"]:
+            LOGGER.info("OUTPUT fields not found classname=%s. Parsing the lookup csv file",
+                props_property.name
+            )
             lookup_field_list += list(
                     self.transforms_parser.get_lookup_csv_fields(parsed_fields["lookup_stanza"])
                 )
@@ -346,7 +362,6 @@ class PropsParser(object):
                 )
 
             input_output_field_list.append(field_list)
-
         return {
             "input_fields": input_output_field_list[0],
             "output_fields": input_output_field_list[1],

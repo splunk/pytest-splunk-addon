@@ -19,7 +19,7 @@ from .helmut_lib.SearchUtil import SearchUtil
 
 RESPONSIVE_SPLUNK_TIMEOUT = 3600  # seconds
 
-LOGGER = logging.getLogger("pytest_splunk_addon")
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 def pytest_addoption(parser):

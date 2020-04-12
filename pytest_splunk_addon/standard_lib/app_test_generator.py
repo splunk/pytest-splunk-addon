@@ -3,10 +3,12 @@
 Test Generator for an App.
 Generates test cases of Fields and CIM.
 """
+import logging
 
 from .fields_tests.fields_test_generator import FieldTestGenerator
 from .cim_tests.cim_test_generator import CIMTestGenerator
 
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class AppTestGenerator(object):
     """
@@ -19,6 +21,7 @@ class AppTestGenerator(object):
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
         self.seen_tests = set()
+        LOGGER.debug("Initializing FieldTestGenerator to generate the test cases")
         self.fieldtest_generator = FieldTestGenerator(
                 self.pytest_config.getoption("splunk_app"),
                 field_bank = self.pytest_config.getoption("field_bank", False)
