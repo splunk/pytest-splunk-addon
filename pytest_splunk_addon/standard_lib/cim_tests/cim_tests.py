@@ -15,12 +15,4 @@ class CIMTests:
     """
     logger = logging.getLogger()
 
-
-    def test_cim_fields(self):
-        # Search query
-        pass 
-
-    def test_cim_only_one_model(self):
-        # List the data models mapped for a tags.conf stanza 
-        # Fail if it has more than one mapped. 
-        pass
+    # TODO: Add Test scenarios 
