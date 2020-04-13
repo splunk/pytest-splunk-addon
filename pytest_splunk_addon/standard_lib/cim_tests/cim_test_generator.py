@@ -11,7 +11,7 @@ class CIMTestGenerator(object):
     1. Parse the data model JSON
     2. Parse the add-on 
     3. Check which data model is mapped for each tags stanza
-    4. Generate test cases for each data model mapped
+    4. Generate field based test cases for each data model mapped
     """
 
     def __init__(
@@ -24,16 +24,15 @@ class CIMTestGenerator(object):
     def get_cim_models(self):
         yield from self.data_model_handler.get_mapped_data_models(self.addon_parser)
 
-    def generate_cim_fields(self):
+    def generate_cim_tests(self):
         """
-        1. List the CIM models
+        1. List CIM mapped models 
+        2. Iterate through each field in CIM data model 
+        3. Generate & Yield pytest.param for each test case
+        4. Include the cluster test case as well. 
         """
         for each_model in self.get_cim_models():
-            # get each fields from the model 
+            # get each fields from the model
             # Generate test case for each model 
             print(each_model)
-            pass
-
-    def generate_tests(self):
-
-        pass
+            yield True

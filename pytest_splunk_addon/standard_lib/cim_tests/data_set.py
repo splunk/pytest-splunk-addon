@@ -12,28 +12,32 @@ class DataSet(object):
         data_set_json(dict): Json of a single DataSet
     """
     def __init__(self, data_set_json):
-        # Attrs 
-        self.name = ""
-        self.fields = [] # Field 
-        self.child_dataset = []
-
+        # TODO: Assign all required attrs  
+        self.name = data_set_json.get("name")
+        self.tags = data_set_json.get("tags")
+        self.child_dataset = data_set_json.get("child_datasets")
+        self.field_cluster = data_set_json.get("field_cluster")
         self._parse_fields(data_set_json)
-        self._parse_constraint(data_set_json["constraint"]["search"])
+        self.search_constraints = self._parse_constraint(data_set_json.get("search_constraints"))
 
-
-    def add_child_dataset(self, dataset):
-        self.child_dataset.append(dataset)
-
-    def get_child_datasets(self):
-        return self.child_dataset
-
-    def _parse_constraint(self, constraint_search):
-        self.consraint = [  ] # List of tag tuples 
+    @classmethod
+    def _parse_constraint(cls, constraint_search):
+        """
+        For future implementation when 
+        Constraint parsing mechanism should be added.
+        This would come in picture while we parse data model Json.
+        """ 
+        return constraint_search
 
     def _parse_fields(self, data_set_json):
-        field_json = data_set_json["fields"]
-        self.fields.append( Field(field_json) )
+        """
+        Parse all the fields from the data_model_json
+        """
+        self.fields = Field.parse_fields(data_set_json["fields"])
 
     def match_tags(self, addon_tag_list):
-        return (addon_tag_list in self.consraint)
-            
+        """
+        Check if the tags are mapped with this data set
+        """
+        for each_tag_group in self.tags:
+            return set(each_tag_group).issubset(set(addon_tag_list))
