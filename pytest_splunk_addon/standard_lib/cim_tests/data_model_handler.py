@@ -7,7 +7,7 @@ Provides Data Model handling functionalities. Such as\n
 import os
 import json
 from .data_model import DataModel
-from .json_parser import JsonParser
+from .json_schema import JSONSchema
 class DataModelHandler(object):
     """
     Provides Data Model handling functionalities. Such as\n
@@ -30,7 +30,7 @@ class DataModelHandler(object):
         # Parse each fields and load data models
         json_list = [each for each in os.listdir() if each.endswith(".json")]
         for each_json in json_list:
-            yield DataModel(JsonParser.parse_data_model(each_json))
+            yield DataModel(JSONSchema.parse_data_model(each_json))
 
     def get_mapped_data_models(self, addon_parser):
         """
