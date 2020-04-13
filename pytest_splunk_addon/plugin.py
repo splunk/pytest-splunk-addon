@@ -4,21 +4,7 @@ import sys
 import traceback
 from .standard_lib.app_test_generator import AppTestGenerator
 
-
 LOG_FILE = 'pytest_splunk_addon.log'
-def init_pytest_splunk_addon_logger():
-    fh = logging.FileHandler(LOG_FILE)
-    fh.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s')
-    fh.setFormatter(formatter)
-    logger = logging.getLogger('pytest-splunk-addon')
-    logger.addHandler(fh)
-    logging.root.propagate = False
-    logger.setLevel(logging.DEBUG)
-    return logger
-
-init_pytest_splunk_addon_logger()
-LOGGER = logging.getLogger("pytest-splunk-addon")
 
 def pytest_configure(config):
     """
@@ -53,6 +39,9 @@ def pytest_generate_tests(metafunc):
                             )
 
 def pytest_collection_modifyitems(items):
+    """
+    To mark the Test cases dynamically 
+    """
     for item in items:
         if "splunk_app_cim" in item.fixturenames:
             field = item.callspec.params['splunk_app_cim']['field']
@@ -60,4 +49,18 @@ def pytest_collection_modifyitems(items):
                 item.add_marker(pytest.mark.cim_required)
             elif field.is_recommended:
                 item.add_marker(pytest.mark.cim_recommended)
+
+def init_pytest_splunk_addon_logger():
+    fh = logging.FileHandler(LOG_FILE)
+    fh.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s')
+    fh.setFormatter(formatter)
+    logger = logging.getLogger('pytest-splunk-addon')
+    logger.addHandler(fh)
+    logging.root.propagate = False
+    logger.setLevel(logging.DEBUG)
+    return logger
+
+init_pytest_splunk_addon_logger()
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
