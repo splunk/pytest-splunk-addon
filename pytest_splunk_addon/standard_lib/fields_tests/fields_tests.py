@@ -32,12 +32,11 @@ class FieldTests:
         if not result:
             record_property("results", results.as_list)
             pp = pprint.PrettyPrinter(indent=4)
-            pp.pprint(results.as_list)
+            result_str = pp.pformat(results.as_list[:10])
         assert result, (f"Query result greater than 0.\nsearch={search}\n"
-        f"found result={results.as_list[:10]}")
+        f"found result={result_str}")
 
 
-# Field testing 
     @pytest.mark.splunk_addon_searchtime
     def test_props_fields_positive(
             self, splunk_search_util, splunk_app_positive_fields, record_property
@@ -79,6 +78,7 @@ class FieldTests:
 
         assert result, (f"No result found for the search.\nsearch={search}\n"
             f"interval={INTERVAL}, retries={RETRIES}")
+
 
     @pytest.mark.splunk_addon_searchtime
     def test_props_fields_negative(
@@ -124,11 +124,11 @@ class FieldTests:
         if not result:
             record_property("results", results.as_list)
             pp = pprint.PrettyPrinter(indent=4)
-            pp.pprint(results.as_list)
+            result_str = pp.pformat(results.as_list[:10])
         assert result, (f"Query result greater than 0.\nsearch={search}\n"
-        f"found result={results.as_list[:10]}")
+        f"found result={result_str}")
 
-    # This test will check if there is at least one event with specified tags
+
     @pytest.mark.splunk_addon_searchtime
     def test_tags(
         self, splunk_search_util, splunk_app_tags, record_property, caplog
@@ -171,6 +171,7 @@ class FieldTests:
         assert result is is_tag_enabled, (f"Tag={tag} is not {expected_value}."
             f"\nsearch={search}"
             f"\ninterval={INTERVAL}, retries={RETRIES}")
+
 
     @pytest.mark.splunk_addon_searchtime
     def test_eventtype(
