@@ -2,8 +2,8 @@
 """
 Generates test cases to verify the CIM compatibility . 
 """
-from .data_model_handler import DataModelHandler
-from ..addon_parser.addon_parser import AddonParser
+from . import DataModelHandler
+from ..addon_parser import AddonParser
 
 class CIMTestGenerator(object):
     """

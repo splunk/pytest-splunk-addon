@@ -27,3 +27,6 @@ To test the CIM compatibility, the following modules of cim_tests package are ut
 5. data_set
 
 """
+
+from .app_test_generator import AppTestGenerator
+from .app_tests import BaseTest
