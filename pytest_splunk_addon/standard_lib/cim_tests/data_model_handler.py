@@ -6,8 +6,8 @@ Provides Data Model handling functionalities. Such as\n
 """
 import os
 import json
-from .data_model import DataModel
-from .json_schema import JSONSchema
+from . import DataModel
+from . import JSONSchema
 class DataModelHandler(object):
     """
     Provides Data Model handling functionalities. Such as\n

@@ -2,7 +2,7 @@ import logging
 import pytest
 import sys
 import traceback
-from .standard_lib.app_test_generator import AppTestGenerator
+from .standard_lib import AppTestGenerator
 
 LOG_FILE = 'pytest_splunk_addon.log'
 

@@ -103,7 +103,7 @@ def test_splunk_app_fiction(testdir):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.app_tests import BaseTest
+        from pytest_splunk_addon.standard_lib import BaseTest
         class Test_App(BaseTest):
             def empty_method():
                 pass
@@ -151,7 +151,7 @@ def test_splunk_app_broken_sourcetype(testdir):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.app_tests import BaseTest
+        from pytest_splunk_addon.standard_lib import BaseTest
         class Test_App(BaseTest):
             def empty_method():
                 pass

@@ -5,8 +5,9 @@ Provides props.conf parsing mechanism
 import logging
 import re 
 from itertools import product
-from .fields import convert_to_fields, Field
-from .transforms_parser import TransformsParser
+from . import convert_to_fields, Field
+from . import TransformsParser
+
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class PropsParser(object):

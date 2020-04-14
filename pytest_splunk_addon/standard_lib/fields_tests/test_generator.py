@@ -8,21 +8,21 @@ import json
 import logging
 from itertools import chain
 
-from ..addon_parser.fields import Field
-from ..addon_parser.addon_parser import AddonParser
-from .field_bank import FieldBank
+from ..addon_parser import Field
+from ..addon_parser import AddonParser
+from . import FieldBank
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 class FieldTestGenerator(object):
     """
     Generates test cases to test the knowledge objects of an Add-on.
-    - Provides the pytest parameters to the test templates.
-    - Supports field_bank: List of fields with patterns and expected
+    * Provides the pytest parameters to the test templates.
+    * Supports field_bank: List of fields with patterns and expected
         values which should be tested for the Add-on.
     
     Args:
-        app_path(str): Path of the app package
-        field_bank(str): Path of the fields Json file 
+        app_path (str): Path of the app package
+        field_bank (str): Path of the fields Json file 
     """
 
     def __init__(self, app_path, field_bank=None):
@@ -35,7 +35,7 @@ class FieldTestGenerator(object):
         Generate test case for fields
 
         Args:
-            is_positive(bool): Test type to generate 
+            is_positive (bool): Test type to generate 
 
         Yields:
             pytest.params for the test templates 
