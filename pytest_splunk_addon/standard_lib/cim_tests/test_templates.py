@@ -5,7 +5,7 @@ Includes the test scenarios to check the CIM compatibility of an Add-on.
 
 import logging
 
-class CIMTests:
+class CIMTestTemplates(object):
     """
     Test scenarios to check the CIM compatibility of an Add-on 
     Supported Test scenarios:
