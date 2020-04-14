@@ -4,13 +4,13 @@ Base class for test cases. Provides test cases to verify
 field extractions and CIM compatibility.
 """
 
-from .fields_tests import FieldTests
-from .cim_tests import CIMTests
+from .fields_tests import FieldTestTemplates
+from .cim_tests import CIMTestTemplates
 
 
-class BaseTest(FieldTests, CIMTests):
+class BaseTest(FieldTestTemplates, CIMTestTemplates):
     """
     Base class for test cases. Inherit this class to include the test 
-cases for an Add-on.
+        cases for an Add-on.
     """
     pass

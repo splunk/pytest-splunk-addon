@@ -8,7 +8,7 @@ import pytest
 INTERVAL = 3
 RETRIES = 3
 
-class FieldTests:
+class FieldTestTemplates(object):
     """
     Test templates to test the knowledge objects of an App
     """
