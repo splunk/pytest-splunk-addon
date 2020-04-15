@@ -8,7 +8,7 @@ from .fields_tests import FieldTestTemplates
 from .cim_tests import CIMTestTemplates
 
 
-class BaseTest(FieldTestTemplates, CIMTestTemplates):
+class Basic(FieldTestTemplates, CIMTestTemplates):
     """
     Base class for test cases. Inherit this class to include the test 
         cases for an Add-on.
