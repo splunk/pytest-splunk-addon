@@ -29,4 +29,4 @@ To test the CIM compatibility, the following modules of cim_tests package are ut
 """
 
 from .app_test_generator import AppTestGenerator
-from .app_tests import BaseTest
+from .addon_basic import Basic
