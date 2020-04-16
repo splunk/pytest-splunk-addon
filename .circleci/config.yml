@@ -19,7 +19,6 @@ orbs:
           - run:
               name: Setup for testing
               command: |
-                pip install -r requirements.txt
                 pip install git+https://github.com/pixelb/crudini        
                 mkdir test-results
           - run:

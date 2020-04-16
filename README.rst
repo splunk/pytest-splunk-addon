@@ -57,7 +57,82 @@ Note2: Appinspect requires libmagic verify this has been installed correctly eac
 Usage
 -----
 
-* TODO
+Installation for external Splunk
+
+... code:: bash
+
+    pip install pytest-splunk-addon
+
+Installation with built in docker orchestration
+... code:: bash
+
+    pip install pytest-splunk-addon[docker]
+
+
+Basic project structure
+
+The tool assumes the Splunk Add-on is located in a folder "package" in the project root
+
+Triggering the tool: 
+
+Create a test file in the tests folder
+
+... code:: python3
+
+    from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+
+Create a Dockerfile-splunk file
+
+... code:: Dockerfile
+    ARG SPLUNK_VERSION=latest
+    FROM splunk/splunk:$SPLUNK_VERSION
+    ARG SPLUNK_APP=TA_UNKNOWN
+    ARG SOURCE_PACKAGE=package
+    COPY deps/apps /opt/splunk/etc/apps/
+
+    COPY $SOURCE_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP
+
+
+Create a docker-compose.yml update the value of SPLUNK_APP
+
+... code:: yaml
+
+    version: "3.7"
+    services:
+    splunk:
+        build:
+        context: .
+        dockerfile: Dockerfile-splunk
+        args:
+            - SPLUNK_APP=xxxxxxx
+        ports:
+        - "8000"
+        - "8089"
+        environment:
+        - SPLUNK_PASSWORD=Changed@11
+        - SPLUNK_START_ARGS=--accept-license
+
+Run pytest with the add-on and SA-eventgen installed and enabled in an external Splunk deployment
+
+... code::: bash
+        pytest \
+        --splunk-type=external \
+        --splunk-type=external \
+        --splunk-host=splunk \
+        --splunk-port=8089 \
+        --splunk-password=Changed@11 \
+        -v
+
+Run pytest with the add-on and SA-eventgen installed and enabled in docker
+
+... code::: bash
+        pytest \
+        --splunk-password=Changed@11 \
+        -v
+
 
 Contributing
 ------------
