@@ -267,8 +267,6 @@ workflows:
   publish:
     jobs:
       - publish-pypi:
-          requires:
-            - package
           filters:
             branches:
               ignore: /.*/
