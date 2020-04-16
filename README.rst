@@ -13,11 +13,6 @@ pytest-splunk-addon
 
 A Dynamic test tool for Splunk Apps and Add-ons
 
-----
-
-This `pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`_'s `cookiecutter-pytest-plugin`_ template.
-
-
 Features
 --------
 
