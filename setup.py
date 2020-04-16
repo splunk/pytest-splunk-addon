@@ -34,9 +34,7 @@ setup(
         "future~=0.18",
         "httplib2~=0.17",
         "requests2~=2.16",
-    ],
-    dependency_links=[
-        "https://download.splunk.com/misc/appinspect/splunk-appinspect-latest.tar.gz"
+        "splunk_appinspect @ https://download.splunk.com/misc/appinspect/splunk-appinspect-latest.tar.gz",
     ],
     extras_require={"docker": ["lovely-pytest-docker>=0.1.0"]},
     setup_requires=["pytest-runner"],
