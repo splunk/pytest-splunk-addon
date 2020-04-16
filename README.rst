@@ -10,8 +10,6 @@ pytest-splunk-addon
     :target: https://pypi.org/project/pytest-splunk-addon
     :alt: Python versions
 
-.. image:: https://circleci.com/gh/splunk/pytest-splunk-addon.svg?style=svg
-    :target: https://circleci.com/gh/splunk/pytest-splunk-addon
 
 A Dynamic test tool for Splunk Apps and Add-ons
 
