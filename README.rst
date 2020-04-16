@@ -10,7 +10,8 @@ pytest-splunk-addon
     :target: https://pypi.org/project/pytest-splunk-addon
     :alt: Python versions
 
-[![CircleCI](https://circleci.com/gh/splunk/pytest-splunk-addon.svg?style=svg)](https://circleci.com/gh/splunk/pytest-splunk-addon)
+.. image:: https://circleci.com/gh/splunk/pytest-splunk-addon.svg?style=svg
+    :target: https://circleci.com/gh>/splunk/pytest-splunk-addon
 
 .. image:: https://ci.appveyor.com/api/projects/status/github/splunk/pytest-splunk-addon?branch=master
     :target: https://ci.appveyor.com/project/splunk/pytest-splunk-addon/branch/master
@@ -26,13 +27,14 @@ This `pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`
 Features
 --------
 
-* TODO
+* Generate tests for Splunk Knowledge objects in your Splunk Technology Add-ons
+* Validate your add-ons using Splunk + Docker and this test tool
 
 
 Requirements
 ------------
 
-* TODO
+* Docker or an external single instance Splunk deployment
 
 
 Installation
