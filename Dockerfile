@@ -16,9 +16,7 @@ COPY entrypoint.sh /
 RUN apt-get update ; apt-get install -y netcat; apt-get clean
 
 COPY . /tmp/pytest-splunk-addon
-RUN pip3 install https://download.splunk.com/misc/appinspect/splunk-appinspect-latest.tar.gz
-RUN pip3 install /tmp/pytest-splunk-addon
-#RUN pip3 uninstall lovely-pytest-docker  -y
+RUN pip3 install -e $(pwd)[docker] 
 
 COPY pytest-ci.ini /work/pytest.ini
 COPY tests /work/tests/
