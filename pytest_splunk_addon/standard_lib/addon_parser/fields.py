@@ -15,11 +15,11 @@ class Field(object):
 
     def __init__(self, field_json=None):
         self.name = field_json.get("name")
-        self.field_type = field_json.get("field_type")
+        self.field_type = field_json.get("field_type", "required")
         self.expected_values = field_json.get("expected_values", ["*"])
         self.negative_values = field_json.get("negative_values", ["-", ""])
-        self.condition = field_json.get("condition", ["-", ""])
-        self.validity = field_json.get("validity", "")
+        self.condition = field_json.get("condition", "")
+        self.validity = field_json.get("validity", self.name)
 
     def __str__(self):
         return self.name
@@ -34,6 +34,17 @@ class Field(object):
         """
         for each_fields in field_list:
             yield Field(each_fields)
+
+    def get_properties(self):
+        return (
+            f"{self.name}"
+            f"\nfield_type={self.field_type}"
+            f"\ncondition={self.condition}"
+            f"\nvalidity={self.validity}"
+            f"\nexpected_values={self.expected_values}"
+            f"\nnegative_values={self.negative_values}"
+        )
+
 
 def convert_to_fields(func):
     """
