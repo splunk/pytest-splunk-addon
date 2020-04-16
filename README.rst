@@ -13,10 +13,6 @@ pytest-splunk-addon
 .. image:: https://circleci.com/gh/splunk/pytest-splunk-addon.svg?style=svg
     :target: https://circleci.com/gh/splunk/pytest-splunk-addon
 
-.. image:: https://ci.appveyor.com/api/projects/status/github/splunk/pytest-splunk-addon?branch=master
-    :target: https://ci.appveyor.com/project/splunk/pytest-splunk-addon/branch/master
-    :alt: See Build Status on AppVeyor
-
 A Dynamic test tool for Splunk Apps and Add-ons
 
 ----
