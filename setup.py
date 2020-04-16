@@ -4,6 +4,7 @@
 import codecs
 import os
 from setuptools import setup, find_packages
+import versioneer
 
 
 def read(fname):
@@ -57,5 +58,6 @@ setup(
             "splunk = pytest_splunk_addon.splunk",
         ]
     },
-    version="0.1.0",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
 )
