@@ -146,7 +146,7 @@ orbs:
               gh_token: <<parameters.gh_token>>
 
 jobs:
-  publish-gh:
+  publish-pypi:
     docker:
       - image: circleci/python:3.7
     steps:
@@ -155,15 +155,13 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - checkout
-      - go/install
       - run:
-          name: "Publish on GitHub"
+          name: "Publish on PyPI"
           command: |
             PATH=$PATH:/usr/local/go/bin
-            PACKAGE=$(ls /tmp/workspace/build/package/splunkbase/*)
-            source /tmp/workspace/build/VERSION
-            go get -v -u github.com/tcnksm/ghr            
-            $HOME/go/bin/ghr -t ${GH_PAT} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${ISPRE} -delete ${VERSION} $PACKAGE
+            pip install twine
+            python setup.py sdist bdist_wheel
+            twine upload dist/*
 
 workflows:
   build:
@@ -265,13 +263,12 @@ workflows:
           gh_token: ${GH_PAT}
           requires:
             - approval-tag-final-patch
-  # publish:
-  #   jobs:
-  #     - publish-gh:
-  #         requires:
-  #           - package
-  #         filters:
-  #           branches:
-  #             ignore: /.*/
-  #           tags:
-  #             only: /^v\d*\.\d*\.\d*.*$/
+
+  publish:
+    jobs:
+      - publish-pypi:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d*\.\d*\.\d*.*$/
