@@ -15,9 +15,6 @@ RUN mkdir -p /work/test-results/functional
 COPY entrypoint.sh /
 RUN apt-get update ; apt-get install -y netcat; apt-get clean
 
-COPY requirements.txt /
-RUN pip3 install -r /requirements.txt
-
 COPY . /tmp/pytest-splunk-addon
 RUN pip3 install /tmp/pytest-splunk-addon
 #RUN pip3 uninstall lovely-pytest-docker  -y
