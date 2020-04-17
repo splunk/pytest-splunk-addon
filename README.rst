@@ -46,13 +46,10 @@ Note2: Appinspect requires libmagic verify this has been installed correctly eac
 
     $ source .venv/bin/activate
 
-    $ pip3 install -r requirements_dev.txt
-
     $ pip3 install https://download.splunk.com/misc/appinspect/splunk-appinspect-latest.tar.gz
 
     $ python setup.py develop
     
-
 
 Usage
 -----
