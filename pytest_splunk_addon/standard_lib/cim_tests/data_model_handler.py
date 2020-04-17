@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Provides Data Model handling functionalities. Such as\n
+Provides Data Model handling functionalities. Such as
+
 * Parse all the data model JSON files
 * Get Mapped data model for an eventtype 
 """
@@ -10,7 +11,8 @@ from . import DataModel
 from . import JSONSchema
 class DataModelHandler(object):
     """
-    Provides Data Model handling functionalities. Such as\n
+    Provides Data Model handling functionalities. Such as
+
     * Parse all the data model JSON files
     * Get Mapped data model for an eventtype  
 
@@ -42,7 +44,8 @@ class DataModelHandler(object):
             addon_parser (addon_parser.AddonParser): Object of Addon_parser
 
         Yields:
-            tag stanza mapped with list of data sets\n
+            tag stanza mapped with list of data sets
+
                 {
                     tag_stanza: "eventtype=sample",
                     "data_sets": DataSet(performance)

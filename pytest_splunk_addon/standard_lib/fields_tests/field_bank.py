@@ -12,8 +12,10 @@ class FieldBank(object):
     Supports field_bank: List of fields with patterns and expected
         values which should be tested for the Add-on.
 
-    Steps to use:\n 
-    1. Create a json file with the list of fields. Example,\n 
+    Steps to use:
+
+    1. Create a json file with the list of fields. Example, 
+
             {
                 "stanza_name": [    # Key should be stanza_name
                     {
@@ -25,12 +27,15 @@ class FieldBank(object):
                     }
                 ]
             }
-        supported stanza_type: 1. source 2. sourcetype\n
-        Description:\n
+        supported stanza_type: 1. source 2. sourcetype
+
+        Description:
+
         * condition: A filtering SPL command.
         * validity: An EVAL statement. Filter out invalid value of a field 
         * expected_fields: List of expected_fields 
-        * negative_fields: The list of values the field should not have\n
+        * negative_fields: The list of values the field should not have
+
     2. Provide path of the json file with --field-bank=path parameter 
     """
 
