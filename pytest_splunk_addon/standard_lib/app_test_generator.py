@@ -34,7 +34,8 @@ class AppTestGenerator(object):
     def generate_tests(self, fixture):
         """
         Generate the test cases based on the fixture provided 
-        supported fixtures:\n
+        supported fixtures:
+
         *  splunk_app_positive_fields
         *  splunk_app_negative_fields
         *  splunk_app_tags

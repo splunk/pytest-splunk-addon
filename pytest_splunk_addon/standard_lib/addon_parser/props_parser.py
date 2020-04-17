@@ -110,7 +110,8 @@ class PropsParser(object):
         """
         For source with | (OR), it will return all combinations.
         Uses itertools.product to list the combinations 
-        Example:\n
+        Example:
+
             input "(preA|preB)str(postX|postY)"
             output [
                 preAstrpostX
@@ -143,7 +144,8 @@ class PropsParser(object):
     def get_sourcetype_assignments(self, props_property):
         """
         Get the sourcetype assigned for the source
-        Example:\n
+        Example:
+
             [source::/splunk/var/log/splunkd.log]
             sourcetype = splunkd
 
@@ -151,7 +153,8 @@ class PropsParser(object):
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
                 The configuration setting object of REPORT.
-                properties used:\n
+                properties used:
+
                 * name : key in the configuration settings
                 * value : value of the respective name in the configuration
 
@@ -173,12 +176,14 @@ class PropsParser(object):
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
                 The configuration setting object of EXTRACT.
-                properties used:\n
+                properties used:
+
                 * name : key in the configuration settings
                 * value : value of the respective name in the configuration
 
         Regex:
-            Parse the fields from a regex. Examples,\n
+            Parse the fields from a regex. Examples,
+
             * (?<name>regex)
             * (?'name'regex)
             * (?P<name>regex)
@@ -213,7 +218,8 @@ class PropsParser(object):
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
                 The configuration setting object of eval
-                properties used:\n
+                properties used:
+
                 * name : key in the configuration settings
                 * value : value of the respective name in the configuration
 
@@ -234,14 +240,18 @@ class PropsParser(object):
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
                 The configuration setting object of FIELDALIAS
-                properties used:\n
+                properties used:
+
                 * name : key in the configuration settings
                 * value : value of the respective name in the configuration
 
         Regex:
-            Description:\n
-            * Find all field alias group separated by space or comma\n
-            Examples:\n
+            Description:
+
+            * Find all field alias group separated by space or comma
+
+            Examples:
+
             * field_source AS field_destination
             * "Field Source" as "Field Destination"
             * field_source ASNEW 'Field Destination'
@@ -268,7 +278,8 @@ class PropsParser(object):
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
                 The configuration setting object of REPORT.
-                properties used:\n
+                properties used:
+
                 * name : key in the configuration settings
                 * value : value of the respective name in the configuration
 
@@ -292,7 +303,8 @@ class PropsParser(object):
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
                 The configuration setting object of eval
-                properties used:\n
+                properties used:
+
                 * name : key in the configuration settings
                 * value : value of the respective name in the configuration
 
@@ -321,10 +333,11 @@ class PropsParser(object):
             LOOKUP-class = lookup_stanza input_field OUTPUT output_field
 
         Args:
-            lookup_str (str): Lookup string from props.conf\n
+            lookup_str (str): Lookup string from props.conf
 
         Regex:
-            Parse the fields from the lookup string. Examples,\n
+            Parse the fields from the lookup string. Examples,
+
             * field1 AS field2, field3 field4 as field5 
 
         Returns:

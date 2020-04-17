@@ -16,7 +16,8 @@ class BaseSchema(ABC):
         Parse the DataModel file
         Convert it to JSON
 
-        Expected Output: \n
+        Expected Output: 
+
             {
                 "name":"Default_Authentication",
                 "tags": ["authentication","default"],
