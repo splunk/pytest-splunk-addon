@@ -46,22 +46,26 @@ Note2: Appinspect requires libmagic verify this has been installed correctly eac
 
     $ source .venv/bin/activate
 
+    $ pip3 install -r requirements_dev.txt
+
     $ pip3 install https://download.splunk.com/misc/appinspect/splunk-appinspect-latest.tar.gz
 
     $ python setup.py develop
     
+
 
 Usage
 -----
 
 Installation for external Splunk
 
-... code:: bash
+.. code:: bash
 
     pip install pytest-splunk-addon
 
 Installation with built in docker orchestration
-... code:: bash
+
+.. code:: bash
 
     pip install pytest-splunk-addon[docker]
 
@@ -74,7 +78,7 @@ Triggering the tool:
 
 Create a test file in the tests folder
 
-... code:: python3
+.. code:: python3
 
     from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
@@ -83,7 +87,8 @@ Create a test file in the tests folder
 
 Create a Dockerfile-splunk file
 
-... code:: Dockerfile
+.. code:: Dockerfile
+
     ARG SPLUNK_VERSION=latest
     FROM splunk/splunk:$SPLUNK_VERSION
     ARG SPLUNK_APP=TA_UNKNOWN
@@ -95,7 +100,7 @@ Create a Dockerfile-splunk file
 
 Create a docker-compose.yml update the value of SPLUNK_APP
 
-... code:: yaml
+.. code:: yaml
 
     version: "3.7"
     services:
@@ -114,7 +119,8 @@ Create a docker-compose.yml update the value of SPLUNK_APP
 
 Run pytest with the add-on and SA-eventgen installed and enabled in an external Splunk deployment
 
-... code::: bash
+.. code::: bash
+
         pytest \
         --splunk-type=external \
         --splunk-type=external \
@@ -125,7 +131,8 @@ Run pytest with the add-on and SA-eventgen installed and enabled in an external 
 
 Run pytest with the add-on and SA-eventgen installed and enabled in docker
 
-... code::: bash
+.. code::: bash
+
         pytest \
         --splunk-password=Changed@11 \
         -v
