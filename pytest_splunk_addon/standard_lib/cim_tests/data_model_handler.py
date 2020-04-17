@@ -20,7 +20,19 @@ class DataModelHandler(object):
         data_model_path (str): path to the data model JSON files
     """
     def __init__(self, data_model_path):
-        self.data_models = self.load_data_models(data_model_path)
+        self.data_models = list(self.load_data_models(data_model_path))
+
+
+    def _get_all_tags_per_stanza(self, addon_parser):
+
+        tag_stanzas = {}
+        for each_tag in addon_parser.get_tags():
+            stanza_name = each_tag['stanza']
+            tags = each_tag['tag']
+
+            tag_stanzas.setdefault(stanza_name, []).append(tags)
+
+        return tag_stanzas
 
     def load_data_models(self, data_model_path):
         """
@@ -51,11 +63,15 @@ class DataModelHandler(object):
                     "data_sets": DataSet(performance)
                 }
         """
-        for each_tag_stanza in addon_parser.get_tags():
+
+        tags_in_each_stanza = self._get_all_tags_per_stanza(addon_parser)
+
+        for eventtype, tags in tags_in_each_stanza.items():
+
             for each_data_model in self.data_models:
-                # Last for loop is optional. Can be changed 
-                for each_mapped_dataset in each_data_model.get_mapped_datasets():
+
+                for each_mapped_dataset in each_data_model.get_mapped_datasets(tags):
                     yield {
-                        "tag_stanza": each_tag_stanza,
+                        "tag_stanza": eventtype,
                         "data_sets": each_mapped_dataset
                     }
