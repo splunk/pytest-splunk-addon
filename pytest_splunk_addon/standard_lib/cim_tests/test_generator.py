@@ -2,12 +2,13 @@
 """
 Generates test cases to verify the CIM compatibility . 
 """
-from .data_model_handler import DataModelHandler
-from ..addon_parser.addon_parser import AddonParser
+from . import DataModelHandler
+from ..addon_parser import AddonParser
 
 class CIMTestGenerator(object):
     """
-    Generates test cases to verify the CIM compatibility.\n 
+    Generates test cases to verify the CIM compatibility.
+
     1. Parse the data model JSON
     2. Parse the add-on 
     3. Check which data model is mapped for each tags stanza

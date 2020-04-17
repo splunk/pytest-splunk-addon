@@ -9,7 +9,8 @@ import csv
 from urllib.parse import unquote
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-from .fields import convert_to_fields
+from . import convert_to_fields
+
 class TransformsParser(object):
     """
     Parses transforms.conf and extracts fields 

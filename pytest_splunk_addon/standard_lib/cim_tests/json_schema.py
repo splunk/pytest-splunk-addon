@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Includes JSON schema for data models
+"""
 import json
-from .base_parser import BaseParser
+from .base_schema import BaseSchema
 
-class JsonParser(BaseParser):
+class JSONSchema(BaseSchema):
     """
     Json Parser of the Data model files 
     """

@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-Provides Data Model handling functionalities. Such as\n
+Provides Data Model handling functionalities. Such as
+
 * Parse all the data model JSON files
 * Get Mapped data model for an eventtype 
 """
 import os
 import json
-from .data_model import DataModel
-from .json_parser import JsonParser
+from . import DataModel
+from . import JSONSchema
 class DataModelHandler(object):
     """
-    Provides Data Model handling functionalities. Such as\n
+    Provides Data Model handling functionalities. Such as
+
     * Parse all the data model JSON files
     * Get Mapped data model for an eventtype  
 
@@ -30,7 +32,7 @@ class DataModelHandler(object):
         # Parse each fields and load data models
         json_list = [each for each in os.listdir() if each.endswith(".json")]
         for each_json in json_list:
-            yield DataModel(JsonParser.parse_data_model(each_json))
+            yield DataModel(JSONSchema.parse_data_model(each_json))
 
     def get_mapped_data_models(self, addon_parser):
         """
@@ -42,7 +44,8 @@ class DataModelHandler(object):
             addon_parser (addon_parser.AddonParser): Object of Addon_parser
 
         Yields:
-            tag stanza mapped with list of data sets\n
+            tag stanza mapped with list of data sets
+
                 {
                     tag_stanza: "eventtype=sample",
                     "data_sets": DataSet(performance)

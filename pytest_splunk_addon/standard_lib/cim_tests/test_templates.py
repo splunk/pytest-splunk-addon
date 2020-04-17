@@ -6,7 +6,7 @@ import logging
 import pytest
 
 
-class CIMTests:
+class CIMTestTemplates(object):
     """
     Test scenarios to check the CIM compatibility of an Add-on 
     Supported Test scenarios:

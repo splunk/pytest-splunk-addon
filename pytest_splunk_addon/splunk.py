@@ -101,13 +101,6 @@ def pytest_addoption(parser):
             " of 8.0.0. "
         ),
     )
-    group.addoption(
-        "--field-bank",
-        action="store",
-        dest="field_bank",
-        default="",
-        help="Path of the field JSON file. Refer to ReadMe for the Json format.",
-    )
 
 
 @pytest.fixture(scope="session")
@@ -277,7 +270,7 @@ def splunk_web_uri(splunk):
 
 def is_responsive_splunk(splunk):
     """
-    Verify if Splunk is responsive or not
+    Verify if the management port of Splunk is responsive or not
 
     Args:
         splunk (dict): details of the Splunk instance

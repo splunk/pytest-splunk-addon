@@ -5,8 +5,8 @@ Generates test cases of Fields and CIM.
 """
 import logging
 
-from .fields_tests.fields_test_generator import FieldTestGenerator
-from .cim_tests.cim_test_generator import CIMTestGenerator
+from .fields_tests import FieldTestGenerator
+from .cim_tests import CIMTestGenerator
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -34,7 +34,8 @@ class AppTestGenerator(object):
     def generate_tests(self, fixture):
         """
         Generate the test cases based on the fixture provided 
-        supported fixtures:\n
+        supported fixtures:
+
         *  splunk_app_positive_fields
         *  splunk_app_negative_fields
         *  splunk_app_tags

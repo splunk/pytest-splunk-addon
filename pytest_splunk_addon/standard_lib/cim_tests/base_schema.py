@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Includes base class for data model schema. 
+"""
 from abc import ABC, abstractclassmethod
 
-class BaseParser(ABC):
+class BaseSchema(ABC):
     """
     Abstract class to parse the Data model files. 
-    The possible format can be Json, YML, csv, Cim_json
+    The possible format can be JSON, YML, CSV, Cim_json
     """
 
     @abstractclassmethod
@@ -12,7 +16,8 @@ class BaseParser(ABC):
         Parse the DataModel file
         Convert it to JSON
 
-        Expected Output: \n
+        Expected Output: 
+
             {
                 "name":"Default_Authentication",
                 "tags": ["authentication","default"],

@@ -7,7 +7,7 @@ to convert a list to field list
 from functools import wraps
 class Field(object):
     """
-        Contains the field properties okay?
+        Contains the field properties
 
         Args:
             field_json (dict): dictionary containing field properties 
