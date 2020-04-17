@@ -19,7 +19,7 @@ from .helmut_lib.SearchUtil import SearchUtil
 
 RESPONSIVE_SPLUNK_TIMEOUT = 3600  # seconds
 
-LOGGER = logging.getLogger("pytest_splunk_addon")
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 def pytest_addoption(parser):
@@ -104,78 +104,26 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope="session")
-def docker_compose_files(pytestconfig):
+def splunk_search_util(splunk):
     """
-    Get an absolute path to the  `docker-compose.yml` file. Override this
-    fixture in your tests if you need a custom location.
+    This is a simple connection to Splunk via the SplunkSDK
 
     Returns:
-        string: the path of the `docker-compose.yml` file
-
+        helmut_lib.SearchUtil.SearchUtil: The SearchUtil object
     """
-    docker_compose_path = os.path.join(
-        str(pytestconfig.invocation_dir), "docker-compose.yml"
+    LOGGER.info("Initializing SearchUtil for the Splunk instace.")
+    cloud_splunk = CloudSplunk(
+        splunkd_host=splunk["host"],
+        splunkd_port=splunk["port"],
+        username=splunk["username"],
+        password=splunk["password"],
     )
-    LOGGER.info("docker-compose path: %s", docker_compose_path)
 
-    return [docker_compose_path]
+    conn = cloud_splunk.create_logged_in_connector()
+    jobs = Jobs(conn)
+    LOGGER.info("initialized SearchUtil for the Splunk instace.")
 
-
-def is_responsive_splunk(splunk):
-    """
-    Verify if Splunk is responsive or not
-
-    Args:
-        splunk (dict): details of the Splunk instance
-
-    Returns:
-        bool: True if Splunk is responsive. False otherwise
-    """
-    try:
-        LOGGER.info(
-            "Trying to connect Splunk instance...  splunk=%s",
-            json.dumps(splunk),
-        )
-        client.connect(
-            username=splunk["username"],
-            password=splunk["password"],
-            host=splunk["host"],
-            port=splunk["port"],
-        )
-        LOGGER.info("Connected to Splunk instance.")
-        return True
-    except Exception as e:
-        LOGGER.warning(
-            "Could not connect to Splunk yet. Will try again. exception=%s",
-            str(e),
-        )
-        return False
-
-
-def is_responsive(url):
-    """
-    This function is called to verify the connection is accepted
-    used to prevent tests from running before Splunk is ready
-
-    Args:
-        url (str): url to check if it's responsive or not
-
-    Returns:
-        bool: True if Splunk is responsive. False otherwise
-    """
-    try:
-        LOGGER.info("Trying to connect with url=%s", url)
-        response = requests.get(url)
-        if response.status_code != 500:
-            LOGGER.info("Connected to the url")
-            return True
-    except ConnectionError as e:
-        LOGGER.warning(
-            "Could not connect to url yet. Will try again. exception=%s",
-            str(e),
-        )
-        return False
-
+    return SearchUtil(jobs, LOGGER)
 
 @pytest.fixture(scope="session")
 def splunk(request):
@@ -207,6 +155,24 @@ def splunk(request):
         raise Exception
 
     yield splunk_info
+
+
+@pytest.fixture(scope="session")
+def docker_compose_files(pytestconfig):
+    """
+    Get an absolute path to the  `docker-compose.yml` file. Override this
+    fixture in your tests if you need a custom location.
+
+    Returns:
+        string: the path of the `docker-compose.yml` file
+
+    """
+    docker_compose_path = os.path.join(
+        str(pytestconfig.invocation_dir), "docker-compose.yml"
+    )
+    LOGGER.info("docker-compose path: %s", docker_compose_path)
+
+    return [docker_compose_path]
 
 
 @pytest.fixture(scope="session")
@@ -278,28 +244,6 @@ def splunk_external(request):
     return splunk_info
 
 
-@pytest.fixture(scope="session")
-def splunk_search_util(splunk):
-    """
-    This is a simple connection to Splunk via the SplunkSDK
-
-    Returns:
-        helmut_lib.SearchUtil.SearchUtil: The SearchUtil object
-    """
-    LOGGER.info("Initializing SearchUtil for the Splunk instace.")
-    cloud_splunk = CloudSplunk(
-        splunkd_host=splunk["host"],
-        splunkd_port=splunk["port"],
-        username=splunk["username"],
-        password=splunk["password"],
-    )
-
-    conn = cloud_splunk.create_logged_in_connector()
-    jobs = Jobs(conn)
-    LOGGER.info("initialized SearchUtil for the Splunk instace.")
-
-    return SearchUtil(jobs, LOGGER)
-
 
 @pytest.fixture(scope="session")
 def splunk_rest_uri(splunk):
@@ -322,3 +266,60 @@ def splunk_web_uri(splunk):
     uri = f'http://{splunk["host"]}:{splunk["port_web"]}/'
     LOGGER.info("Fetched splunk_web_uri=%s", uri)
     return uri
+
+
+def is_responsive_splunk(splunk):
+    """
+    Verify if the management port of Splunk is responsive or not
+
+    Args:
+        splunk (dict): details of the Splunk instance
+
+    Returns:
+        bool: True if Splunk is responsive. False otherwise
+    """
+    try:
+        LOGGER.info(
+            "Trying to connect Splunk instance...  splunk=%s",
+            json.dumps(splunk),
+        )
+        client.connect(
+            username=splunk["username"],
+            password=splunk["password"],
+            host=splunk["host"],
+            port=splunk["port"],
+        )
+        LOGGER.info("Connected to Splunk instance.")
+        return True
+    except Exception as e:
+        LOGGER.warning(
+            "Could not connect to Splunk yet. Will try again. exception=%s",
+            str(e),
+        )
+        return False
+
+
+def is_responsive(url):
+    """
+    This function is called to verify the connection is accepted
+    used to prevent tests from running before Splunk is ready
+
+    Args:
+        url (str): url to check if it's responsive or not
+
+    Returns:
+        bool: True if Splunk is responsive. False otherwise
+    """
+    try:
+        LOGGER.info("Trying to connect with url=%s", url)
+        response = requests.get(url)
+        if response.status_code != 500:
+            LOGGER.info("Connected to the url")
+            return True
+    except ConnectionError as e:
+        LOGGER.warning(
+            "Could not connect to url yet. Will try again. exception=%s",
+            str(e),
+        )
+        return False
+
