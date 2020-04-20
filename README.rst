@@ -10,31 +10,20 @@ pytest-splunk-addon
     :target: https://pypi.org/project/pytest-splunk-addon
     :alt: Python versions
 
-.. image:: https://travis-ci.org/splunk/pytest-splunk-addon.svg?branch=master
-    :target: https://travis-ci.org/splunk/pytest-splunk-addon
-    :alt: See Build Status on Travis CI
-
-.. image:: https://ci.appveyor.com/api/projects/status/github/splunk/pytest-splunk-addon?branch=master
-    :target: https://ci.appveyor.com/project/splunk/pytest-splunk-addon/branch/master
-    :alt: See Build Status on AppVeyor
 
 A Dynamic test tool for Splunk Apps and Add-ons
-
-----
-
-This `pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`_'s `cookiecutter-pytest-plugin`_ template.
-
 
 Features
 --------
 
-* TODO
+* Generate tests for Splunk Knowledge objects in your Splunk Technology Add-ons
+* Validate your add-ons using Splunk + Docker and this test tool
 
 
 Requirements
 ------------
 
-* TODO
+* Docker or an external single instance Splunk deployment
 
 
 Installation
@@ -68,11 +57,86 @@ Note2: Appinspect requires libmagic verify this has been installed correctly eac
 Usage
 -----
 
-* TODO
+Installation for external Splunk
+
+... code:: bash
+
+    pip install pytest-splunk-addon
+
+Installation with built in docker orchestration
+... code:: bash
+
+    pip install pytest-splunk-addon[docker]
+
+
+Basic project structure
+
+The tool assumes the Splunk Add-on is located in a folder "package" in the project root
+
+Triggering the tool: 
+
+Create a test file in the tests folder
+
+... code:: python3
+
+    from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+
+Create a Dockerfile-splunk file
+
+... code:: Dockerfile
+    ARG SPLUNK_VERSION=latest
+    FROM splunk/splunk:$SPLUNK_VERSION
+    ARG SPLUNK_APP=TA_UNKNOWN
+    ARG SOURCE_PACKAGE=package
+    COPY deps/apps /opt/splunk/etc/apps/
+
+    COPY $SOURCE_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP
+
+
+Create a docker-compose.yml update the value of SPLUNK_APP
+
+... code:: yaml
+
+    version: "3.7"
+    services:
+    splunk:
+        build:
+        context: .
+        dockerfile: Dockerfile-splunk
+        args:
+            - SPLUNK_APP=xxxxxxx
+        ports:
+        - "8000"
+        - "8089"
+        environment:
+        - SPLUNK_PASSWORD=Changed@11
+        - SPLUNK_START_ARGS=--accept-license
+
+Run pytest with the add-on and SA-eventgen installed and enabled in an external Splunk deployment
+
+... code::: bash
+        pytest \
+        --splunk-type=external \
+        --splunk-type=external \
+        --splunk-host=splunk \
+        --splunk-port=8089 \
+        --splunk-password=Changed@11 \
+        -v
+
+Run pytest with the add-on and SA-eventgen installed and enabled in docker
+
+... code::: bash
+        pytest \
+        --splunk-password=Changed@11 \
+        -v
+
 
 Contributing
 ------------
-Contributions are very welcome. Tests can be run with `tox`_, please ensure
+Contributions are very welcome. Tests can be run with `pytest`_, please ensure
 the coverage at least stays the same before you submit a pull request.
 
 License
@@ -86,15 +150,8 @@ Issues
 
 If you encounter any problems, please `file an issue`_ along with a detailed description.
 
-.. _`Cookiecutter`: https://github.com/audreyr/cookiecutter
-.. _`@hackebrot`: https://github.com/hackebrot
-.. _`MIT`: http://opensource.org/licenses/MIT
-.. _`BSD-3`: http://opensource.org/licenses/BSD-3-Clause
-.. _`GNU GPL v3.0`: http://www.gnu.org/licenses/gpl-3.0.txt
 .. _`Apache Software License 2.0`: http://www.apache.org/licenses/LICENSE-2.0
-.. _`cookiecutter-pytest-plugin`: https://github.com/pytest-dev/cookiecutter-pytest-plugin
 .. _`file an issue`: https://github.com/splunk/pytest-splunk-addon/issues
 .. _`pytest`: https://github.com/pytest-dev/pytest
-.. _`tox`: https://tox.readthedocs.io/en/latest/
 .. _`pip`: https://pypi.org/project/pip/
 .. _`PyPI`: https://pypi.org/project
