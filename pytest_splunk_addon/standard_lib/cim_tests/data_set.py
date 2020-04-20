@@ -22,6 +22,15 @@ class DataSet(object):
 
     @classmethod
     def load_dataset(cls, dataset_list):
+        """
+        Parse all the fields from the data_model_json
+
+        Args:
+            dataset_list(list): Contains list of datasets
+
+        Yields:
+            data_set.DataSet: Dataset object for the given list
+        """
         if dataset_list is not None:
             for each_dataset in dataset_list:
                 yield cls(each_dataset)

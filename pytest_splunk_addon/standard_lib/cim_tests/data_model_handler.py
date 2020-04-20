@@ -24,6 +24,19 @@ class DataModelHandler(object):
 
 
     def _get_all_tags_per_stanza(self, addon_parser):
+        """
+        Get list of all tags mapped with single stanza in tags.conf
+
+        Args:
+            addon_parser (addon_parser.AddonParser): Object of Addon_parser
+
+        Returns:
+            tags mapped with stanzas in tags.conf
+
+                {
+                    stanza_name: [List of tags mapped to the stanza]
+                }
+        """
 
         tag_stanzas = {}
         for each_tag in addon_parser.get_tags():
