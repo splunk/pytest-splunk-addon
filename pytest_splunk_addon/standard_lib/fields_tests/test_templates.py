@@ -5,6 +5,7 @@ Includes the test scenarios to check the field extractions of an Add-on.
 import pprint
 import logging
 import pytest
+from ..addon_parser import Field
 INTERVAL = 3
 RETRIES = 3
 
@@ -61,7 +62,8 @@ class FieldTestTemplates(object):
             f" {splunk_app_positive_fields['stanza_type']}=\""
             f"{splunk_app_positive_fields['stanza']}\""
         )
-        for field in splunk_app_positive_fields["fields"]:
+        for field_dict in splunk_app_positive_fields["fields"]:
+            field = Field(field_dict)
             expected_values = ", ".join([f'"{each}"' for each in field.expected_values])
             negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
 
@@ -109,7 +111,8 @@ class FieldTestTemplates(object):
             f"{splunk_app_negative_fields['stanza']}\""
         )
 
-        for field in splunk_app_negative_fields["fields"]:
+        for field_dict in splunk_app_negative_fields["fields"]:
+            field = Field(field_dict)
             negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
 
             search = (search + f' AND ({field} IN ({negative_values}))')
