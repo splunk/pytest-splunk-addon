@@ -16,7 +16,7 @@ class CIMTestGenerator(object):
     """
 
     def __init__(
-        self, addon_path, data_model_path="data_models", 
+        self, addon_path, data_model_path, 
     ):
 
         self.data_model_handler = DataModelHandler(data_model_path)

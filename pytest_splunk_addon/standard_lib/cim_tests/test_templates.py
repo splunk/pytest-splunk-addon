@@ -18,4 +18,14 @@ class CIMTestTemplates(object):
     """
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
 
-    # TODO: Add Test scenarios 
+    def test_sample(
+        self, splunk_search_util, splunk_app_cim, record_property, caplog
+    ):
+        '''
+        This test case check that event type is not be mapped with more than one data model 
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            record_property (fixture): Document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        '''
+        pass

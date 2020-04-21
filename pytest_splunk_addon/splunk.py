@@ -101,6 +101,15 @@ def pytest_addoption(parser):
             " of 8.0.0. "
         ),
     )
+    group.addoption(
+        "--dm-path",
+        action="store",
+        dest="dm_path",
+        default="datamodels",
+        help=(
+            "Path to the datamodels directory"
+        ),
+    )
 
 
 @pytest.fixture(scope="session")

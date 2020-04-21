@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
+  "title": "Schema for DataModel json files used with pytest-splunk-addon.",
+  "type": "object",
+  "definitions": {
+    "dataset": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "fields_cluster": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "fields": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/field" }
+        },
+        "child_dataset": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/dataset" }
+        },
+        "search_constraints": { "type": "string" }
+      },
+      "required": [
+        "name",
+        "tags",
+        "fields_cluster",
+        "fields",
+        "child_dataset",
+        "search_constraints"
+      ]
+    },
+    "field": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "condition": { "type": "string" },
+        "expected_values": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "validity": { "type": "string" },
+        "comment": { "type": "string" }
+      },
+      "required": ["name", "type", "comment"]
+    }
+  },
+  "properties": {
+    "model_name": { "type": "string" },
+    "version": { "type": "string" },
+    "objects": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/dataset" }
+    }
+  }
+}

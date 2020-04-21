@@ -9,6 +9,8 @@ import os
 import json
 from . import DataModel
 from . import JSONSchema
+
+
 class DataModelHandler(object):
     """
     Provides Data Model handling functionalities. Such as
@@ -19,6 +21,7 @@ class DataModelHandler(object):
     Args:
         data_model_path (str): path to the data model JSON files
     """
+
     def __init__(self, data_model_path):
         self.data_models = self.load_data_models(data_model_path)
 
@@ -30,9 +33,13 @@ class DataModelHandler(object):
             (data_model.DataModel): parsed data model object 
         """
         # Parse each fields and load data models
-        json_list = [each for each in os.listdir() if each.endswith(".json")]
+        json_list = [
+            each for each in os.listdir(data_model_path) if each.endswith(".json")
+        ]
         for each_json in json_list:
-            yield DataModel(JSONSchema.parse_data_model(each_json))
+            yield DataModel(
+                JSONSchema.parse_data_model("{}/{}".format(data_model_path, each_json))
+            )
 
     def get_mapped_data_models(self, addon_parser):
         """
@@ -53,9 +60,9 @@ class DataModelHandler(object):
         """
         for each_tag_stanza in addon_parser.get_tags():
             for each_data_model in self.data_models:
-                # Last for loop is optional. Can be changed 
+                # Last for loop is optional. Can be changed
                 for each_mapped_dataset in each_data_model.get_mapped_datasets():
                     yield {
                         "tag_stanza": each_tag_stanza,
-                        "data_sets": each_mapped_dataset
+                        "data_sets": each_mapped_dataset,
                     }

@@ -4,6 +4,11 @@ Includes JSON schema for data models
 """
 import json
 from .base_schema import BaseSchema
+from jsonschema import Draft7Validator
+import logging
+
+LOGGER = logging.getLogger("pytest-splunk-addon")
+
 
 class JSONSchema(BaseSchema):
     """
@@ -15,6 +20,35 @@ class JSONSchema(BaseSchema):
         """
         Parse the Json file
         """
-        with open(file_path) as json_f:
-            return json.load(json_f)
+        try:
+            with open(file_path, "r") as json_f:
+                with open("schema_to_validate_datamodels.json", "r") as schema:
+                    json_data, json_schema = json.load(json_f), json.load(schema)
+                    validator = Draft7Validator(json_schema)
+                    errors = validator.iter_errors(json_data)
+                    error_location = ""
+                    exc = "Validating {}".format(file_path)
+                    LOGGER.info(exc)
+                    for error in errors:
+                        for i in error.path:
+                            error_location = error_location + "[{}]".format(i)
+                        if type(error.instance) == dict:
+                            exc = exc + "\n{} for {}".format(
+                                error.message, error_location
+                            )
+                        elif type(error.instance) in [str, list]:
+                            exc = exc + "\n Type mismatch: {} in property {}".format(
+                                error.message, error_location
+                            )
+                        else:
+                            LOGGER.error(error)
+                    if not error_location:
+                        LOGGER.info("Valid Json")
+                        return json_data
+                    else:
+                        LOGGER.exception(exc)
+                        raise Exception(exc)
 
+        except json.decoder.JSONDecodeError as err:
+            LOGGER.error("Json Decoding error in {} ".format(file_path))
+            raise Exception("{} in file {}".format(err.args[0], file_path))

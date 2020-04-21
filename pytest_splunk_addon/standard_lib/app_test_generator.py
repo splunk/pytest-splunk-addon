@@ -10,6 +10,7 @@ from .cim_tests import CIMTestGenerator
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
+
 class AppTestGenerator(object):
     """
     Test Generator for an App.
@@ -18,18 +19,19 @@ class AppTestGenerator(object):
     Args:
         pytest_config: To get the options given to pytest
     """
+
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
         self.seen_tests = set()
         LOGGER.debug("Initializing FieldTestGenerator to generate the test cases")
         self.fieldtest_generator = FieldTestGenerator(
-                self.pytest_config.getoption("splunk_app"),
-                field_bank = self.pytest_config.getoption("field_bank", False)
-            )
-        # self.test_generator = CIMTestGenerator(
-        #         True or self.pytest_config.getoption("dm_path"),
-        #         self.pytest_config.getoption("splunk_app"),
-        #     )
+            self.pytest_config.getoption("splunk_app"),
+            field_bank=self.pytest_config.getoption("field_bank", False),
+        )
+        self.test_generator = CIMTestGenerator(
+            self.pytest_config.getoption("splunk_app"),
+            self.pytest_config.getoption("dm_path"),
+        )
 
     def generate_tests(self, fixture):
         """
@@ -51,16 +53,16 @@ class AppTestGenerator(object):
                 self.fieldtest_generator.generate_field_tests(is_positive=is_positive)
             )
         elif fixture.endswith("tags"):
-            yield from self.dedup_tests(
-                self.fieldtest_generator.generate_tag_tests()
-            )
-        elif fixture.endswith("eventtypes") :
+            yield from self.dedup_tests(self.fieldtest_generator.generate_tag_tests())
+        elif fixture.endswith("eventtypes"):
             yield from self.dedup_tests(
                 self.fieldtest_generator.generate_eventtype_tests()
             )
 
         elif fixture.endswith("cim"):
-            pass
+            yield from self.dedup_tests(
+                self.test_generator.generate_cim_tests()
+            )
 
     def dedup_tests(self, test_list):
         """
