@@ -5,6 +5,7 @@ Includes the test scenarios to check the CIM compatibility of an Add-on.
 
 import logging
 
+
 class CIMTestTemplates(object):
     """
     Test scenarios to check the CIM compatibility of an Add-on 
@@ -16,16 +17,7 @@ class CIMTestTemplates(object):
         - Not Allowed Fields should not be extracted 
         - TODO 
     """
+
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
 
-    def test_sample(
-        self, splunk_search_util, splunk_app_cim, record_property, caplog
-    ):
-        '''
-        This test case check that event type is not be mapped with more than one data model 
-        Args:
-            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
-            record_property (fixture): Document facts of test cases.
-            caplog (fixture): fixture to capture logs.
-        '''
-        pass
+    # TODO: Add Test scenarios

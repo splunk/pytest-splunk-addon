@@ -28,10 +28,10 @@ class AppTestGenerator(object):
             self.pytest_config.getoption("splunk_app"),
             field_bank=self.pytest_config.getoption("field_bank", False),
         )
-        self.test_generator = CIMTestGenerator(
-            self.pytest_config.getoption("splunk_app"),
-            self.pytest_config.getoption("dm_path"),
-        )
+        # self.test_generator = CIMTestGenerator(
+        #     self.pytest_config.getoption("splunk_app"),
+        #     self.pytest_config.getoption("dm_path"),
+        # )
 
     def generate_tests(self, fixture):
         """
@@ -60,9 +60,7 @@ class AppTestGenerator(object):
             )
 
         elif fixture.endswith("cim"):
-            yield from self.dedup_tests(
-                self.test_generator.generate_cim_tests()
-            )
+            yield from self.dedup_tests(self.test_generator.generate_cim_tests())
 
     def dedup_tests(self, test_list):
         """
