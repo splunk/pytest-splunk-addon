@@ -4,6 +4,7 @@
 import codecs
 import os
 from setuptools import setup, find_packages
+import versioneer
 
 
 def read(fname):
@@ -28,14 +29,14 @@ setup(
     long_description=read("README.rst"),
     python_requires=">=3.0, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     install_requires=[
-        "pytest>=5.3.5",
-        "lovely-pytest-docker",
-        "splunk-sdk",
-        "future",
-        "httplib2",
-        "requests",
-        "lovely-pytest-docker",
+        "pytest~=5.3",
+        "splunk-sdk~=1.6",
+        "future~=0.18",
+        "httplib2~=0.17",
+        "requests2~=2.16",
+        "splunk_appinspect>=2.0.1",
     ],
+    extras_require={"docker": ["lovely-pytest-docker>=0.1.0"]},
     setup_requires=["pytest-runner"],
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -44,7 +45,6 @@ setup(
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: Apache Software License",
     ],
@@ -57,5 +57,6 @@ setup(
             "splunk = pytest_splunk_addon.splunk",
         ]
     },
-    version="0.1.0",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
 )

@@ -1,7 +1,0 @@
-pytest
-splunk-sdk
-future
-httplib2
-https://download.splunk.com/misc/appinspect/splunk-appinspect-latest.tar.gz
-lovely-pytest-docker
-requests
