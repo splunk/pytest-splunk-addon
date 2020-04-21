@@ -5,36 +5,37 @@ Includes the test scenarios to check the field extractions of an Add-on.
 import pprint
 import logging
 import pytest
-INTERVAL = 1
-RETRIES = 1
-from .field_test_helper import FieldTestHelper
+INTERVAL = 3
+RETRIES = 3
+
 class FieldTestTemplates(object):
     """
     Test templates to test the knowledge objects of an App
     """
     logger = logging.getLogger("pytest-splunk-addon-tests")
 
-    # @pytest.mark.splunk_addon_internal_errors
-    # def test_splunk_internal_errors(
-    #     self, splunk_search_util, record_property, caplog
-    # ):
-    #     search = """
-    #         search index=_internal CASE(ERROR)
-    #         sourcetype!=splunkd_ui_access
-    #         AND sourcetype!=splunk_web_access
-    #         AND sourcetype!=splunk_web_service
-    #         AND sourcetype!=splunkd_access
-    #         AND sourcetype!=splunkd
-    #         | table _raw
-    #     """
-    #     record_property("search", search)
-    #     result, results = splunk_search_util.checkQueryCountIsZero(search)
-    #     if not result:
-    #         record_property("results", results.as_list)
-    #         pp = pprint.PrettyPrinter(indent=4)
-    #         result_str = pp.pformat(results.as_list[:10])
-    #     assert result, (f"Query result greater than 0.\nsearch={search}\n"
-    #     f"found result={result_str}")
+    @pytest.mark.splunk_addon_internal_errors
+    def test_splunk_internal_errors(
+        self, splunk_search_util, record_property, caplog
+    ):
+        search = """
+            search index=_internal CASE(ERROR)
+            sourcetype!=splunkd_ui_access
+            AND sourcetype!=splunk_web_access
+            AND sourcetype!=splunk_web_service
+            AND sourcetype!=splunkd_access
+            AND sourcetype!=splunkd
+            | table _raw
+        """
+        record_property("search", search)
+        result, results = splunk_search_util.checkQueryCountIsZero(search)
+        if not result:
+            record_property("results", results.as_list)
+            pp = pprint.PrettyPrinter(indent=4)
+            result_str = pp.pformat(results.as_list[:10])
+        assert result, (f"Query result greater than 0.\nsearch={search}\n"
+        f"found result={result_str}")
+
 
     @pytest.mark.splunk_addon_searchtime
     def test_props_fields_positive(
@@ -55,134 +56,77 @@ class FieldTestTemplates(object):
         record_property("stanza_type", splunk_app_positive_fields["stanza_type"])
         record_property("fields", splunk_app_positive_fields["fields"])
 
-        base_search = (
+        search = (
             f"search (index=_internal OR index=*)"
             f" {splunk_app_positive_fields['stanza_type']}=\""
             f"{splunk_app_positive_fields['stanza']}\""
         )
+        for field in splunk_app_positive_fields["fields"]:
+            expected_values = ", ".join([f'"{each}"' for each in field.expected_values])
+            negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
 
-        test_helper = FieldTestHelper(
-            splunk_search_util, 
-            splunk_app_positive_fields["fields"],
-            interval=INTERVAL, retries=RETRIES
+            search = (search + f' AND ({field} IN ({expected_values})'
+             f' AND NOT {field} IN ({negative_values}))')
+
+        self.logger.info(f"Executing the search query: {search}")
+
+        # run search
+        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
+            search, interval=INTERVAL, retries=RETRIES
+        )
+        record_property("search", search)
+
+        assert result, (f"No result found for the search.\nsearch={search}\n"
+            f"interval={INTERVAL}, retries={RETRIES}")
+
+
+    @pytest.mark.splunk_addon_searchtime
+    def test_props_fields_negative(
+            self, splunk_search_util, splunk_app_negative_fields, record_property
+        ):
+        """
+        This test case checks negative scenario for the field value.
+
+        Args:
+            splunk_search_util (SearchUtil): 
+                Object that helps to search on Splunk.
+            splunk_app_fields (fixture): 
+                Test for stanza field.
+            record_property (fixture): 
+                Document facts of test cases.
+            caplog (fixture): 
+                fixture to capture logs.
+        """
+
+        # Search Query 
+        record_property("stanza_name", splunk_app_negative_fields["stanza"])
+        record_property("stanza_type", splunk_app_negative_fields["stanza_type"])
+        record_property("fields", splunk_app_negative_fields["fields"])
+
+        search = (
+            f"search (index=_internal OR index=*)"
+            f" {splunk_app_negative_fields['stanza_type']}=\""
+            f"{splunk_app_negative_fields['stanza']}\""
         )
 
-        # Execute the query and get the results 
-        result = test_helper.test_field(base_search)
+        for field in splunk_app_negative_fields["fields"]:
+            negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
 
-        assert result["event_count"] > 0, (
-            "0 Events found.\n"
-            f"\n{test_helper.get_exc_message()}"
+            search = (search + f' AND ({field} IN ({negative_values}))')
+
+        self.logger.info(f"Executing the search query: {search}")
+
+        # run search
+        result, results = splunk_search_util.checkQueryCountIsZero(
+            search
         )
-
-        if "fields" in result:
-            assert all([
-                each_field["field_count"] > 0 
-                for each_field in result["fields"]
-            ]), (
-                    "Fields are not extracted in any events"
-                    f"\n{test_helper.get_exc_message()}"
-                )
-            assert all([
-                each_field["field_count"] == each_field["valid_field_count"] 
-                for each_field in result["fields"]
-            ]), (
-                    "Fields do not have valid values."
-                    f"\n{test_helper.get_exc_message()}"
-            )
-
-        record_property("search", test_helper.search)
-
-    # @pytest.mark.splunk_addon_searchtime
-    # def test_props_fields_positive(
-    #         self, splunk_search_util, splunk_app_positive_fields, record_property
-    #     ):
-    #     """
-    #     This test case checks that a field value has the expected values.
-
-    #     Args:
-    #         splunk_search_util (SearchUtil): Object that helps to search on Splunk.
-    #         splunk_app_fields (fixture): Test for stanza field.
-    #         record_property (fixture): Document facts of test cases.
-    #         caplog (fixture): fixture to capture logs.
-    #     """
-
-    #     # Search Query 
-    #     record_property("stanza_name", splunk_app_positive_fields["stanza"])
-    #     record_property("stanza_type", splunk_app_positive_fields["stanza_type"])
-    #     record_property("fields", splunk_app_positive_fields["fields"])
-
-    #     search = (
-    #         f"search (index=_internal OR index=*)"
-    #         f" {splunk_app_positive_fields['stanza_type']}=\""
-    #         f"{splunk_app_positive_fields['stanza']}\""
-    #     )
-    #     for field in splunk_app_positive_fields["fields"]:
-    #         expected_values = ", ".join([f'"{each}"' for each in field.expected_values])
-    #         negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
-
-    #         search = (search + f' AND ({field} IN ({expected_values})'
-    #          f' AND NOT {field} IN ({negative_values}))')
-
-    #     self.logger.info(f"Executing the search query: {search}")
-
-    #     # run search
-    #     result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-    #         search, interval=INTERVAL, retries=RETRIES
-    #     )
-    #     record_property("search", search)
-
-    #     assert result, (f"No result found for the search.\nsearch={search}\n"
-    #         f"interval={INTERVAL}, retries={RETRIES}")
-
-
-    # @pytest.mark.splunk_addon_searchtime
-    # def test_props_fields_negative(
-    #         self, splunk_search_util, splunk_app_negative_fields, record_property
-    #     ):
-    #     """
-    #     This test case checks negative scenario for the field value.
-
-    #     Args:
-    #         splunk_search_util (SearchUtil): 
-    #             Object that helps to search on Splunk.
-    #         splunk_app_fields (fixture): 
-    #             Test for stanza field.
-    #         record_property (fixture): 
-    #             Document facts of test cases.
-    #         caplog (fixture): 
-    #             fixture to capture logs.
-    #     """
-
-    #     # Search Query 
-    #     record_property("stanza_name", splunk_app_negative_fields["stanza"])
-    #     record_property("stanza_type", splunk_app_negative_fields["stanza_type"])
-    #     record_property("fields", splunk_app_negative_fields["fields"])
-
-    #     search = (
-    #         f"search (index=_internal OR index=*)"
-    #         f" {splunk_app_negative_fields['stanza_type']}=\""
-    #         f"{splunk_app_negative_fields['stanza']}\""
-    #     )
-
-    #     for field in splunk_app_negative_fields["fields"]:
-    #         negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
-
-    #         search = (search + f' AND ({field} IN ({negative_values}))')
-
-    #     self.logger.info(f"Executing the search query: {search}")
-
-    #     # run search
-    #     result, results = splunk_search_util.checkQueryCountIsZero(
-    #         search
-    #     )
-    #     record_property("search", search)
-    #     if not result:
-    #         record_property("results", results.as_list)
-    #         pp = pprint.PrettyPrinter(indent=4)
-    #         result_str = pp.pformat(results.as_list[:10])
-    #     assert result, (f"Query result greater than 0.\nsearch={search}\n"
-    #     f"found result={result_str}")
+        record_property("search", search)
+        if not result:
+            record_property("results", results.as_list)
+            pp = pprint.PrettyPrinter(indent=4)
+            result_str = pp.pformat(results.as_list[:10])
+        assert result, (f"Query result greater than 0.\nsearch={search}\n"
+        f"found result={result_str}")
 
 
     @pytest.mark.splunk_addon_searchtime
