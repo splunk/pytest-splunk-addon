@@ -58,7 +58,7 @@ class FieldTestGenerator(object):
 
             # Generate a test case for all the fields in the classname 
             if self._contains_classname(fields_group, ["EXTRACT", "REPORT"]):
-                # Convert the Field objects to dictionary to resolve the shared
+                # ACD-4136: Convert the Field objects to dictionary to resolve the shared
                 # memory issue with pytest-xdist parallel execution
                 test_group = fields_group.copy()
                 test_group["fields"] = [each.__dict__ for each in test_group["fields"]]
@@ -74,9 +74,8 @@ class FieldTestGenerator(object):
 
             # Generate test-cases for each field in classname one by one 
             for each_field in fields_group["fields"]:
-
                 # Create a dictionary for a single field with classname and stanza
-                # Convert the Field object to dictionary to resolve the shared
+                # ACD-4136: Convert the Field object to dictionary to resolve the shared
                 # memory issue with pytest-xdist parallel execution
                 one_field_group = fields_group.copy()
                 one_field_group["fields"] = [each_field.__dict__]
