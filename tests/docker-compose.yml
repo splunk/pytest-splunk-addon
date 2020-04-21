@@ -8,7 +8,6 @@
 #work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 version: "3.7"
 services:
-
   splunk:
     build:
       context: .
@@ -16,7 +15,8 @@ services:
         SPLUNK_APP: TA_fiction
     ports:
       - "8000"
+      - "8088"
       - "8089"
     environment:
-      - SPLUNK_PASSWORD=Changed@11
+      - SPLUNK_PASSWORD={SPLUNK_PASSWORD}
       - SPLUNK_START_ARGS=--accept-license
