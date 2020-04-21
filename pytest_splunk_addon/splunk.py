@@ -8,7 +8,6 @@ Module usage:
 
 import logging
 import os
-from filelock import FileLock
 from time import sleep
 import json
 import pytest
@@ -68,7 +67,7 @@ def pytest_addoption(parser):
         dest="splunk_hec_scheme",
         default="https",
         help="Splunk HTTP event collector port. default is https.",
-    )    
+    )
     group.addoption(
         "--splunk-hec-port",
         action="store",
@@ -208,28 +207,6 @@ def splunk_docker(request, docker_services, tmp_path_factory, worker_id):
     """
     LOGGER.info("Starting docker_service=splunk")
 
-    if not worker_id:
-        # not executing in with multiple workers, just produce the data and let
-        # pytest's fixture caching do its job
-        docker_services.start("splunk")
-        return docker_start_splunk(docker_services, request)
-
-    # get the temp directory shared by all workers
-    root_tmp_dir = tmp_path_factory.getbasetemp().parent
-
-    fn = root_tmp_dir / "docker.splunk.json"
-    with FileLock(str(fn) + ".lock"):
-        if fn.is_file():
-            splunk_info = docker_start_splunk(docker_services, request)
-        else:
-            docker_services.start("splunk")
-            splunk_info = docker_start_splunk(docker_services, request)
-
-    return splunk_info
-
-
-def docker_start_splunk(docker_services, request):
-
     splunk_info = {
         "host": docker_services.docker_ip,
         "port": docker_services.port_for("splunk", 8089),
@@ -247,11 +224,10 @@ def docker_start_splunk(docker_services, request):
         docker_services.port_for("splunk", 8000),
     )
 
-    for _ in range(30):
-        docker_services.wait_until_responsive(
-            timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk_info),
-        )
-        sleep(1)
+    docker_services.wait_until_responsive(
+        timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk_info),
+    )
+
     return splunk_info
 
 
@@ -304,20 +280,24 @@ def splunk_hec_uri(request, splunk):
     Provides a uri to the Splunk hec port
     """
     splunk_session = requests.Session()
-    splunk_session.headers = {'Authorization': f'Splunk: {request.config.getoption("splunk_hec_token")}'}
+    splunk_session.headers = {
+        "Authorization": f'Splunk: {request.config.getoption("splunk_hec_token")}'
+    }
     uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["host"]}:{splunk["splunk_hec"]}/services/collector'
     LOGGER.info("Fetched splunk_hec_uri=%s", uri)
 
     return splunk_session, uri
 
-    
+
 @pytest.fixture(scope="session")
 def splunk_hec_uri_raw(request, splunk):
     """
     Provides a raw uri to the Splunk hec port
     """
     splunk_session = requests.Session()
-    splunk_session.headers = {'Authorization': f'Splunk: {request.config.getoption("splunk_hec_token")}'}
+    splunk_session.headers = {
+        "Authorization": f'Splunk: {request.config.getoption("splunk_hec_token")}'
+    }
     uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["host"]}:{splunk["splunk_hec"]}/services/collector/raw'
     LOGGER.info("Fetched splunk_hec_uri=%s", uri)
 
