@@ -25,9 +25,8 @@ class JSONSchema(BaseSchema):
                 with open("schema_to_validate_datamodels.json", "r") as schema:
                     json_data, json_schema = json.load(json_f), json.load(schema)
                     errors = Draft7Validator(json_schema).iter_errors(json_data)
-                    error_location = ""
-                    exc = "Validating {}".format(file_path)
-                    LOGGER.info(exc)
+                    error_location, exc = "", ""
+                    LOGGER.info("Validating {}".format(file_path))
                     for error in errors:
                         for i in error.path:
                             error_location = error_location + "[{}]".format(i)
