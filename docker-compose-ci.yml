@@ -24,9 +24,11 @@ services:
         SPLUNK_VERSION: ${SPLUNK_VERSION}
     ports:
       - "8000"
+      - "8088"
       - "8089"
     environment:
       - SPLUNK_PASSWORD=Changed@11
+      - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
       - SPLUNK_START_ARGS=--accept-license
 volumes:
   results:

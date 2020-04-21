@@ -163,10 +163,10 @@ def splunk(request):
         splunk_info = request.getfixturevalue("splunk_external")
     elif splunk_type == "docker":
 
+        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
         os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
         os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
-        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
 
         request.fixturenames.append("splunk_docker")
         splunk_info = request.getfixturevalue("splunk_docker")
@@ -206,6 +206,7 @@ def splunk_docker(request, docker_services):
         dict: Details of the splunk instance including host, port, username & password.
     """
     LOGGER.info("Starting docker_service=splunk")
+    docker_services.start("splunk")
 
     splunk_info = {
         "host": docker_services.docker_ip,
