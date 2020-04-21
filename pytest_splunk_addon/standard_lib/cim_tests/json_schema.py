@@ -24,8 +24,7 @@ class JSONSchema(BaseSchema):
             with open(file_path, "r") as json_f:
                 with open("schema_to_validate_datamodels.json", "r") as schema:
                     json_data, json_schema = json.load(json_f), json.load(schema)
-                    validator = Draft7Validator(json_schema)
-                    errors = validator.iter_errors(json_data)
+                    errors = Draft7Validator(json_schema).iter_errors(json_data)
                     error_location = ""
                     exc = "Validating {}".format(file_path)
                     LOGGER.info(exc)
@@ -37,11 +36,11 @@ class JSONSchema(BaseSchema):
                                 error.message, error_location
                             )
                         elif type(error.instance) in [str, list]:
-                            exc = exc + "\n Type mismatch: {} in property {}".format(
+                            exc = exc + "\nType mismatch: {} in property {}".format(
                                 error.message, error_location
                             )
                         else:
-                            LOGGER.error(error)
+                            exc = exc + "\n{}".format(error)
                     if not error_location:
                         LOGGER.info("Valid Json")
                         return json_data

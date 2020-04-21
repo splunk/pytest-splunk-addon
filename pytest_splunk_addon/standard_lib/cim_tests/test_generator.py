@@ -5,6 +5,7 @@ Generates test cases to verify the CIM compatibility .
 from . import DataModelHandler
 from ..addon_parser import AddonParser
 
+
 class CIMTestGenerator(object):
     """
     Generates test cases to verify the CIM compatibility.
@@ -16,7 +17,7 @@ class CIMTestGenerator(object):
     """
 
     def __init__(
-        self, addon_path, data_model_path, 
+        self, addon_path, data_model_path,
     ):
 
         self.data_model_handler = DataModelHandler(data_model_path)
@@ -34,6 +35,6 @@ class CIMTestGenerator(object):
         """
         for each_model in self.get_cim_models():
             # get each fields from the model
-            # Generate test case for each model 
+            # Generate test case for each model
             print(each_model)
             yield True

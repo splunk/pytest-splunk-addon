@@ -38,7 +38,7 @@ class DataModelHandler(object):
         ]
         for each_json in json_list:
             yield DataModel(
-                JSONSchema.parse_data_model("{}/{}".format(data_model_path, each_json))
+                JSONSchema.parse_data_model("{}\{}".format(data_model_path, each_json))
             )
 
     def get_mapped_data_models(self, addon_parser):
