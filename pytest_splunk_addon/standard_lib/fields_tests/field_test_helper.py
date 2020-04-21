@@ -6,6 +6,14 @@ import logging
 from ..addon_parser import Field
 
 class FieldTestAdapater(Field):
+    """
+    Field adapter to include the testing related properties on top of Field
+
+    Properties:
+        valid_field (str): New field generated which can only have the valid values
+        validity_query (str): The query which extracts the valid_field out of the field
+
+    """
     VALID_FIELD = "{}_valid"
     FIELD_COUNT = "{}_count"
     VALID_FIELD_COUNT = "{}_valid_count"
@@ -14,10 +22,19 @@ class FieldTestAdapater(Field):
         self.__dict__ = field.__dict__.copy()
         self.valid_field = self.VALID_FIELD.format(field)
         self.validity_query = None
-        self.search = ""
 
     @staticmethod
     def get_query_from_values(values):
+        """
+        List of values into SPL list
+            Example: ["a", "b"] to '\"a\", \"b\"'
+
+        Args:
+            values (list): List of str values 
+        
+        Returns:
+            str: SPL query list
+        """
         query = '\\", \\"'.join(values)
         return f'\\"{query}\\"'
 
@@ -71,6 +88,9 @@ class FieldTestHelper(object):
         self.retries = retries
 
     def _make_search_query(self, base_search):
+        """
+        Make the search query by using the list of fields 
+        """
         self.search = f"{base_search} {self._gen_condition()}"
         self.search_event = self.search
         for each_field in self.fields:
@@ -84,7 +104,8 @@ class FieldTestHelper(object):
     def test_field(self, base_search):
         """
         Generate a query for the list of fields and return the result 
-        Format of the query is \n 
+        Format of the query is
+
             <condition> 
             | eval <validity> 
             | eval <expected_values>
@@ -106,10 +127,12 @@ class FieldTestHelper(object):
     def get_exc_message(self):
         """
         1) There's no field in the result 
+
             Event Count = 100 
             Search = <search query>
 
         2) There's only 1 field in the result 
+
             Event Count = 100
             Field Count = 100
             Valid Field Count = 50
@@ -119,6 +142,7 @@ class FieldTestHelper(object):
             . . . 
 
         3) There are multiple fields in the result
+
             Fields    Field Count     Valid Field Count 
             ---------------------------------
             one         10             10
@@ -162,6 +186,18 @@ class FieldTestHelper(object):
             return exc_message
 
     def _parse_result(self, result):
+        """
+        Convert the result into the following format
+
+            {
+                "event_count": int,
+                "fields": {
+                    "field": Field,
+                    "field_count": int,
+                    "valid_field_count": int
+                }
+            }
+        """
         self.parsed_result = {
             "event_count": int(result.get("event_count"))
         }

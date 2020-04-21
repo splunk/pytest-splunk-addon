@@ -42,9 +42,10 @@ class DataModelHandler(object):
             (data_model.DataModel): parsed data model object 
         """
         # Parse each fields and load data models
-        json_list = [each for each in os.listdir() if each.endswith(".json")]
+        json_list = [each for each in os.listdir(data_model_path) if each.endswith(".json")]
         for each_json in json_list:
-            yield DataModel(JSONSchema.parse_data_model(each_json))
+            parsed_json = JSONSchema.parse_data_model(os.path.join(data_model_path, each_json))
+            yield DataModel(parsed_json)
 
     def get_mapped_data_models(self, addon_parser):
         """
@@ -58,20 +59,11 @@ class DataModelHandler(object):
         Yields:
             tag stanza mapped with list of data sets
 
-                {
-                    tag_stanza: "eventtype=sample",
-                    "data_sets": DataSet(performance)
-                }
+                "eventtype=sample", DataSet(performance)
         """
 
         tags_in_each_stanza = self._get_all_tags_per_stanza(addon_parser)
-
         for eventtype, tags in tags_in_each_stanza.items():
-
             for each_data_model in self.data_models:
-
                 for each_mapped_dataset in each_data_model.get_mapped_datasets(tags):
-                    yield {
-                        "tag_stanza": eventtype,
-                        "data_sets": each_mapped_dataset
-                    }
+                    yield eventtype, each_mapped_dataset

@@ -33,7 +33,7 @@ def pytest_generate_tests(metafunc):
                         log_message = log_f.read()
                 except Exception as log_err:
                     log_message = f"Could not capture the logs: {log_err}"
-
+                log_message = "\n".join(log_message.split("\n")[-50:])
                 raise type(e)(f"{e}.\nStacktrace:\n{traceback.format_exc()}"
                               f"\nLogs:\n{log_message}"
                             )
@@ -44,11 +44,12 @@ def pytest_collection_modifyitems(items):
     """
     for item in items:
         if "splunk_app_cim" in item.fixturenames:
-            field = item.callspec.params['splunk_app_cim']['field']
-            if field.is_required:
-                item.add_marker(pytest.mark.cim_required)
-            elif field.is_recommended:
-                item.add_marker(pytest.mark.cim_recommended)
+            item.add_marker(pytest.mark.cim)
+        else:
+            for fixture in item.fixturenames:
+                if fixture.startswith("splunk_app"):
+                    item.add_marker(pytest.mark.fields)
+
 
 def init_pytest_splunk_addon_logger():
     fh = logging.FileHandler(LOG_FILE)

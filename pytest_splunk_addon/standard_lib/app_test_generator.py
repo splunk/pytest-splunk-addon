@@ -4,7 +4,7 @@ Test Generator for an App.
 Generates test cases of Fields and CIM.
 """
 import logging
-
+import os
 from .fields_tests import FieldTestGenerator
 from .cim_tests import CIMTestGenerator
 
@@ -26,10 +26,11 @@ class AppTestGenerator(object):
                 self.pytest_config.getoption("splunk_app"),
                 field_bank = self.pytest_config.getoption("field_bank", False)
             )
-        # self.test_generator = CIMTestGenerator(
-        #         True or self.pytest_config.getoption("dm_path"),
-        #         self.pytest_config.getoption("splunk_app"),
-        #     )
+        data_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data_models')
+        self.cim_test_generator = CIMTestGenerator(
+                self.pytest_config.getoption("splunk_app"),
+                self.pytest_config.getoption("dm_path", data_model_path),
+            )
 
     def generate_tests(self, fixture):
         """
@@ -60,7 +61,9 @@ class AppTestGenerator(object):
             )
 
         elif fixture.endswith("cim"):
-            pass
+            yield from self.dedup_tests(
+                self.cim_test_generator.generate_cim_tests()
+            )
 
     def dedup_tests(self, test_list):
         """
