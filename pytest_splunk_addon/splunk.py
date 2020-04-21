@@ -195,7 +195,7 @@ def docker_compose_files(pytestconfig):
 
 
 @pytest.fixture(scope="session")
-def splunk_docker(request, docker_services, tmp_path_factory, worker_id):
+def splunk_docker(request, docker_services):
     """
     Splunk docker depends on lovely-pytest-docker to create the docker instance
     of Splunk this may be changed in the future.
