@@ -50,6 +50,8 @@ class Basic(FieldTestTemplates, CIMTestTemplates):
             search, interval=INTERVAL, retries=RETRIES
         )
 
-        assert (
-            result
-        ), f"\nMessage:\nApp {app_name} is not installed/enabled in this Splunk instance. \nThe plugin requires the {app_name} to be installed/enabled in the Splunk instance. Please install the app and execute the tests again"
+        assert result, (
+            f"\nMessage: App {app_name} is not installed/enabled in this Splunk instance."
+            f"The plugin requires the {app_name} to be installed/enabled in the Splunk instance."
+            f"Please install the app and execute the tests again."
+        )
