@@ -78,4 +78,6 @@ class AppTestGenerator(object):
                 param_list.append(each_param)
                 self.seen_tests.add(each_param.id)
 
+        # Sort the test generated.
+        # As pytest-xdist expects the tests to be ordered
         return sorted(param_list, key=lambda param:param.id)

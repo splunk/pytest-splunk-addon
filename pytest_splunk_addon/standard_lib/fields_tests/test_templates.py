@@ -16,7 +16,6 @@ class FieldTestTemplates(object):
     logger = logging.getLogger("pytest-splunk-addon-tests")
 
     @pytest.mark.splunk_addon_internal_errors
-    @pytest.mark.skip
     def test_splunk_internal_errors(
         self, splunk_search_util, record_property, caplog
     ):
@@ -63,8 +62,8 @@ class FieldTestTemplates(object):
             f" {splunk_app_positive_fields['stanza_type']}=\""
             f"{splunk_app_positive_fields['stanza']}\""
         )
-        for field in splunk_app_positive_fields["fields"]:
-            field = Field(field)
+        for field_dict in splunk_app_positive_fields["fields"]:
+            field = Field(field_dict)
             expected_values = ", ".join([f'"{each}"' for each in field.expected_values])
             negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
 
@@ -112,8 +111,8 @@ class FieldTestTemplates(object):
             f"{splunk_app_negative_fields['stanza']}\""
         )
 
-        for field in splunk_app_negative_fields["fields"]:
-            field = Field(field)
+        for field_dict in splunk_app_negative_fields["fields"]:
+            field = Field(field_dict)
             negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
 
             search = (search + f' AND ({field} IN ({negative_values}))')
@@ -134,7 +133,6 @@ class FieldTestTemplates(object):
 
 
     @pytest.mark.splunk_addon_searchtime
-    @pytest.mark.skip
     def test_tags(
         self, splunk_search_util, splunk_app_tags, record_property, caplog
     ):
@@ -179,7 +177,6 @@ class FieldTestTemplates(object):
 
 
     @pytest.mark.splunk_addon_searchtime
-    @pytest.mark.skip
     def test_eventtype(
         self,
         splunk_search_util,
