@@ -3,4 +3,5 @@ FROM splunk/splunk:$SPLUNK_VERSION
 ARG SPLUNK_APP=TA_UNKNOWN
 ARG SOURCE_PACKAGE=package
 
+COPY Splunk_SA_CIM /opt/splunk/etc/apps/Splunk_SA_CIM
 COPY $SOURCE_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP
