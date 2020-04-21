@@ -90,6 +90,20 @@ def pytest_addoption(parser):
         help="Splunk Management port. default is 8089.",
     )
     group.addoption(
+        "--splunk-s2s-port",
+        action="store",
+        dest="splunk_s2s",
+        default="9997",
+        help="Splunk s2s port. default is 9997.",
+    )    
+    group.addoption(
+        "--splunk-s2s-scheme",
+        action="store",
+        dest="splunk_s2s_scheme",
+        default="tcp",
+        help="Splunk s2s scheme. tls|tcp default is tcp.",
+    )    
+    group.addoption(
         "--splunkweb-port",
         action="store",
         dest="splunk_web",
@@ -212,17 +226,19 @@ def splunk_docker(request, docker_services):
         "host": docker_services.docker_ip,
         "port": docker_services.port_for("splunk", 8089),
         "port_hec": docker_services.port_for("splunk", 8088),
+        "port_s2s": docker_services.port_for("splunk", 9997),
         "port_web": docker_services.port_for("splunk", 8000),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
     }
 
     LOGGER.info(
-        "Docker container splunk info. host=%s, port=%s, port_web-%s",
+        "Docker container splunk info. host=%s, port=%s, port_web=%s port_hec=%s port_s2s=%s",
         docker_services.docker_ip,
         docker_services.port_for("splunk", 8089),
         docker_services.port_for("splunk", 8088),
         docker_services.port_for("splunk", 8000),
+        docker_services.port_for("splunk", 9997),
     )
 
     docker_services.wait_until_responsive(
@@ -244,6 +260,7 @@ def splunk_external(request):
         "host": request.config.getoption("splunk_host"),
         "port": request.config.getoption("splunkd_port"),
         "port_hec": request.config.getoption("splunk_hec"),
+        "port_s2s": request.config.getoption("splunk_s2s"),
         "port_web": request.config.getoption("splunk_web"),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),

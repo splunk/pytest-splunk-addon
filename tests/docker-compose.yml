@@ -18,6 +18,7 @@ services:
       - "8000"
       - "8088"
       - "8089"
+      - "9997"
     environment:
       - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
       - SPLUNK_START_ARGS=--accept-license
