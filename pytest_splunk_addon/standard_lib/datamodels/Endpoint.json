@@ -81,7 +81,7 @@
         },
         {
           "name": "transport_dest_port",
-          "type": "not_allowed",
+          "type": "not_extracted",
           "condition": "",
           "expected_values": [],
           "validity": "",

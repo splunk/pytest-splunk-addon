@@ -15,7 +15,7 @@
       "fields": [
         {
           "name": "action",
-          "type": "not_allowed",
+          "type": "not_extracted",
           "condition": "",
           "validity": "",
           "expected_values": ["allowed", "blocked", "teardown", "flow"],
@@ -55,7 +55,7 @@
         },
         {
           "name": "channel",
-          "type": "not_allowed",
+          "type": "not_extracted",
           "condition": "",
           "validity": "valid_channel=(isnum(channel), 1, null())",
           "expected_values": [],
@@ -287,7 +287,7 @@
         },
         {
           "name": "ssid",
-          "type": "not_allowed",
+          "type": "not_extracted",
           "condition": "",
           "validity": "",
           "expected_values": [],
@@ -295,7 +295,7 @@
         },
         {
           "name": "wifi",
-          "type": "not_allowed",
+          "type": "not_extracted",
           "condition": "",
           "validity": "",
           "expected_values": [],

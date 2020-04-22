@@ -263,7 +263,7 @@
         },
         {
           "name": "cookie",
-          "type": "not_allowed",
+          "type": "not_extracted",
           "condition": "",
           "validity": "",
           "expected_values": [],
@@ -271,7 +271,7 @@
         },
         {
           "name": "http_referrer",
-          "type": "not_allowed",
+          "type": "not_extracted",
           "condition": "",
           "validity": "",
           "expected_values": [],
@@ -279,7 +279,7 @@
         },
         {
           "name": "site",
-          "type": "not_allowed",
+          "type": "not_extracted",
           "condition": "",
           "validity": "",
           "expected_values": [],

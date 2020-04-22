@@ -137,11 +137,16 @@ def pytest_addoption(parser):
         ),
     )
     group.addoption(
-        "--dm-path",
+        "--splunk-dm-path",
         action="store",
-        dest="dm_path",
+        dest="splunk_dm_path",
         default="pytest-splunk-addon\pytest_splunk_addon\standard_lib\datamodels",
-        help=("Path to the datamodels directory"),
+        help=("Path to the datamodels directory
+            "Relative or absolute path can be provided."
+            "Json files are expected in the directory."
+            "Json files must follow the schema mentioned in DatamodelSchema.json"
+            "pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\DatamodelSchema.json"
+        "),
     )
 
 
