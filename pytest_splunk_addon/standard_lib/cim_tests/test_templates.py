@@ -45,26 +45,30 @@ class CIMTestTemplates(object):
 
         # Execute the query and get the results 
         result = test_helper.test_field(base_search)
+        record_property("search", test_helper.search)
 
         assert result["event_count"] > 0, (
             "0 Events found."
-            f"\n{test_helper.get_exc_message()}"
+            f"\n{test_helper.format_exc_message()}"
         )
-
-        if "fields" in result:
-            assert all([
-                each_field["field_count"] > 0 
-                for each_field in result["fields"]
-            ]), (
-                    "Fields are not extracted in any events."
-                    f"\n{test_helper.get_exc_message()}"
+        if len(result["fields"]) == 1:
+            test_field = result["fields"][0]
+            assert test_field["field_count"] > 0, (
+                    f"Field {test_field['field']} not extracted in any events"
+                    f"\n{test_helper.format_exc_message()}"
                 )
-            assert all([
-                each_field["field_count"] == each_field["valid_field_count"] 
-                for each_field in result["fields"]
-            ]), (
-                    "Fields do not have valid values."
-                    f"\n{test_helper.get_exc_message()}"
+            assert test_field["field_count"] == test_field["valid_field_count"], (
+                f"Field {test_field['field']} have invalid values={test_field['invalid_values'][:10]}"
+                f"\n{test_helper.format_exc_message()}"
+            )
+        elif len(result["fields"]) > 1:
+            field_list = [
+                    each_field["field_count"] for each_field in result["fields"]
+                ] + [
+                    each_field["valid_field_count"] for each_field in result["fields"]
+                ]
+            assert len(set(field_list)) == 1, (
+                    "All fields from the field-cluster should be extracted with valid values if any one field is extracted."
+                    f"\n{test_helper.format_exc_message()}"
             )
 
-        record_property("search", test_helper.search)

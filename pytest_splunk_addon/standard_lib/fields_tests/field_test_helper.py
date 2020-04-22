@@ -131,7 +131,7 @@ class FieldTestHelper(object):
         self.result = self.search_util.getFieldValuesDict(self.search)
         return self._parse_result(self.result)
 
-    def get_exc_message(self):
+    def format_exc_message(self):
         """
         1) There's no field in the result 
 
@@ -236,8 +236,6 @@ class FieldTestHelper(object):
         self.parsed_result = {
             "event_count": int(result.get("event_count"))
         }
-        if not self.fields:
-            return self.parsed_result
         self.parsed_result["fields"] = []
         for each_field in self.fields:
             each_obj = {
