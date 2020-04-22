@@ -1,0 +1,12 @@
+<dashboard script="cim_setup.js" stylesheet="cim_setup.css" hideEdit="true" isDashboard="false">
+  <label>CIM Setup</label>
+  <row>
+    <panel>
+      <html>
+        <div id="cim_setup_container">
+            <div class="loading">Fetching data models...</div>
+        </div>
+      </html>
+    </panel>
+  </row>
+</dashboard>

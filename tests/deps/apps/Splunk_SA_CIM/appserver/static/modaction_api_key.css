@@ -1,0 +1,51 @@
+.dashboard-body {
+    padding: 0px;
+}
+.dashboard-header {
+    padding: 10px 20px 20px 20px;
+}
+.dashboard-header div.breadcrumb {
+    padding-top: 20px;
+}
+.panel-body.html {
+    padding: 0px !important;
+}
+.dashboard-body .dashboard-row {
+    margin: 30px auto 30px auto;
+    width: 50%;
+    min-width: 1000px;
+}
+.dashboard-panel {
+    background: transparent !important;
+}
+.dashboard-layout-row-column {
+    float: left;
+    margin: 30px;
+}
+.form-board {
+    width: 30%;
+    text-align:center;
+}
+.btn.nopointer {
+    pointer-events: none;
+    cursor: default;
+}
+#buttons > .btn-save {
+    float: left;
+    width: 30%;
+}
+#buttons > .btn-show {
+    display: inline-block;
+    width: 30%;
+    margin:0 auto;
+}
+#buttons > .btn-delete {
+    float: right;
+    width: 30%;
+}
+#status {
+    margin-top: 10px;
+}
+input {
+    width: 100%
+}
