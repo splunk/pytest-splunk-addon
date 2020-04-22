@@ -16,8 +16,8 @@ class DataSet(object):
         self.name = data_set_json.get("name")
         self.tags = data_set_json.get("tags")
         self.child_dataset = list(self.load_dataset(data_set_json.get("child_dataset")))
+        self.fields = list(Field.parse_fields(data_set_json.get("fields")))
         self.fields_cluster = self._parse_fields_cluster(data_set_json.get("fields_cluster"))
-        self.fields = Field.parse_fields(data_set_json.get("fields"))
         self.search_constraints = self._parse_constraint(data_set_json.get("search_constraints"))
 
     @classmethod
@@ -40,10 +40,14 @@ class DataSet(object):
         """
         Parse all the fields from the data_model_json
         """
-        fields_clusters = []
+        parsed_fields_clusters = []
         for each_cluster in fields_clusters:
-             fields_clusters.append(list(Field.parse_fields(each_cluster)))
-        return fields_clusters
+            parsed_cluster = list(filter(lambda f:f.name in each_cluster, self.fields))
+            assert len(each_cluster) == len(parsed_cluster), (
+                f"Dataset={self.name}, Each cluster field should be included in fields list"
+            )
+            parsed_fields_clusters.append(parsed_cluster)
+        return parsed_fields_clusters
 
     def match_tags(self, addon_tag_list):
         """

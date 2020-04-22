@@ -2,8 +2,8 @@
 """
 Includes the test scenarios to check the CIM compatibility of an Add-on.
 """
-
 import logging
+import pytest
 from ..fields_tests.field_test_helper import FieldTestHelper
 
 INTERVAL = 3
@@ -22,6 +22,7 @@ class CIMTestTemplates(object):
     """
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
 
+    @pytest.mark.splunk_addon_cim
     def test_cim_required_fields(
         self, splunk_search_util, splunk_app_cim, record_property
     ):

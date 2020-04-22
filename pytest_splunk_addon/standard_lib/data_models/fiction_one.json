@@ -10,7 +10,8 @@
 		],
 		"fields_cluster": [
 			["date_hour", "date_minute", "date_second"],
-			["date_mday","date_wday"]
+			["date_mday","date_wday"],
+			["date_mday", "log_level"]
 		],
 		"fields": [
 			{
@@ -34,13 +35,13 @@
 				"name": "date_second",
 				"type": "conditional",
 				"condition": "date_hour=*",
-				"validity": "if(date_second>=1 AND date_second<=60,1,null())",
+				"validity": "if(date_second>=0 AND date_second<60,1,null())",
 				"comment": "Conditional field with condition and validity both"
 			},
 			{
 				"name": "log_level",
 				"type": "required",
-				"expected_values": ["INFO","WARN","ERROR"],
+				"expected_values": ["ERROR"],
 				"comment": "Required field with expected_values"
 			},
 			{

@@ -12,19 +12,22 @@ def pytest_configure(config):
     """
     config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
     config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
+    config.addinivalue_line("markers", "splunk_addon_cim: Test CIM compatibility only")
 
 
 def pytest_generate_tests(metafunc):
     """
     Parse the fixture dynamically.
     """
+    test_generator = None
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_app"):
             LOGGER.info("generating testcases for splunk_app. fixture=%s", fixture)
 
             try:
                 # Load associated test data
-                test_generator = AppTestGenerator(metafunc.config)
+                if test_generator is None:
+                    test_generator = AppTestGenerator(metafunc.config)
                 metafunc.parametrize(fixture, test_generator.generate_tests(fixture))
             except Exception as e:
                 log_message = ""
@@ -38,20 +41,11 @@ def pytest_generate_tests(metafunc):
                               f"\nLogs:\n{log_message}"
                             )
 
-def pytest_collection_modifyitems(items):
-    """
-    To mark the Test cases dynamically 
-    """
-    for item in items:
-        if "splunk_app_cim" in item.fixturenames:
-            item.add_marker(pytest.mark.cim)
-        else:
-            for fixture in item.fixturenames:
-                if fixture.startswith("splunk_app"):
-                    item.add_marker(pytest.mark.fields)
-
 
 def init_pytest_splunk_addon_logger():
+    """
+    Configure file based logger for the plugin
+    """
     fh = logging.FileHandler(LOG_FILE)
     fh.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s')
