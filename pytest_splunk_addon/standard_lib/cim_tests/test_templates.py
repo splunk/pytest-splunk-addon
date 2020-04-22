@@ -66,13 +66,15 @@ class CIMTestTemplates(object):
             else:
                 search += f'| append [| tstats count from datamodel={datamodel}  by eventtype | eval dm_type="{datamodel}"]\n'
 
-        search += '| stats delim=", " dc(dm_type) as datamodel_count, values(dm_type) as datamodels by eventtype | nomv datamodels | where datamodel_count > 1 and eventtype!="err0r"'
+        search += """| stats delim=", " dc(dm_type) as datamodel_count, values(dm_type) as datamodels by eventtype | nomv datamodels
+        | where datamodel_count > 1 and eventtype!="err0r"
+        """
 
         record_property("search", search)
         result, results = splunk_search_util.checkQueryCountIsZero(search)
         if not result:
             record_property("results", results.as_list)
-            # Iterate results lists to create a table format string which displays the event type, event type associated data models and count
+            # Iterate results lists to create a table format string
             result_str = "{:<70} {:<20} {:<200} \n".format(
                 "Eventtype", "Count", "Datamodels"
             )
@@ -82,6 +84,6 @@ class CIMTestTemplates(object):
                 )
 
         assert result, (
-            f"Query result greater than 0.\nsearch={search} \n \n"
+            f"Query result greater than 0.\nsearch=\n{search} \n \n"
             f"Event type which associated with multiple data model \n{result_str}"
         )
