@@ -15,6 +15,12 @@ class JSONSchema(BaseSchema):
     Json Parser of the Data model files 
     """
 
+    def __init__(
+        self,
+        schema_path="pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\DatamodelSchema.json",
+    ):
+        self.schema_path = schema_path
+
     @classmethod
     def parse_data_model(cls, file_path):
         """
@@ -22,7 +28,7 @@ class JSONSchema(BaseSchema):
         """
         try:
             with open(file_path, "r") as json_f:
-                with open("schema_to_validate_datamodels.json", "r") as schema:
+                with open(cls().schema_path, "r",) as schema:
                     json_data, json_schema = json.load(json_f), json.load(schema)
                     errors = Draft7Validator(json_schema).iter_errors(json_data)
                     error_location, exc = "", ""
