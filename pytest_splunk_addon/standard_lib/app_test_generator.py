@@ -72,7 +72,12 @@ class AppTestGenerator(object):
         Yields:
             Generator: De-duplicated pytest.param
         """
+        param_list = []
         for each_param in test_list:
             if each_param.id not in self.seen_tests:
-                yield each_param
+                param_list.append(each_param)
                 self.seen_tests.add(each_param.id)
+
+        # Sort the test generated.
+        # ACD-4138: As pytest-xdist expects the tests to be ordered
+        return sorted(param_list, key=lambda param:param.id)
