@@ -167,10 +167,15 @@ class FieldTestHelper(object):
             )
         if len(self.parsed_result["fields"]) == 1:
             parsed_field_stats = self.parsed_result['fields'][0]
-            sep = "\', \'"
+            if parsed_field_stats['invalid_values']:
+                invalid_values =  "'{}'".format("\', \'".join(
+                    parsed_field_stats['invalid_values'][:10])
+                )
+            else:
+                invalid_values = '-'
             return (
                 f"Field = {parsed_field_stats['field']}"
-                f"\nInvalid Field Values = \'{sep.join(parsed_field_stats['invalid_values'][:10])}\'"
+                f"\nInvalid Field Values = {invalid_values}"
                 f"\nInvalid Field Count = {parsed_field_stats['field_count'] - parsed_field_stats['valid_field_count']}"
                 f"\n\nEvent Count = {self.result.get('event_count')}"
                 f"\nField Count = {parsed_field_stats['field_count']}"
