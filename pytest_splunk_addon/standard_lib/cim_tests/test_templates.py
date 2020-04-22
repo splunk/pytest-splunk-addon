@@ -5,6 +5,32 @@ Includes the test scenarios to check the CIM compatibility of an Add-on.
 import logging
 import pytest
 
+DATA_MODELS = [
+    "Alerts",
+    "Authentication",
+    "Certificates",
+    "Change",
+    "Compute_Inventory",
+    "DLP",
+    "Databases",
+    "Email",
+    "Endpoint",
+    "Event_Signatures",
+    "Interprocess_Messaging",
+    "Intrusion_Detection",
+    "JVM",
+    "Malware",
+    "Network_Resolution",
+    "Network_Sessions",
+    "Network_Traffic",
+    "Performance",
+    "Splunk_Audit",
+    "Ticket_Management",
+    "Updates",
+    "Vulnerabilities",
+    "Web"
+]
+
 
 class CIMTestTemplates(object):
     """
@@ -31,34 +57,16 @@ class CIMTestTemplates(object):
             record_property (fixture): Document facts of test cases.
             caplog (fixture): fixture to capture logs.
         """
-        search = """
-            | tstats count from datamodel=Alerts  by eventtype | eval dm_type="Alerts" 
-            | append [| tstats count from datamodel=Application_State  by eventtype | eval dm_type="Application_State"] 
-            | append [| tstats count from datamodel=Authentication  by eventtype | eval dm_type="Authentication"] 
-            | append [| tstats count from datamodel=Certificates  by eventtype | eval dm_type="Certificates"] 
-            | append [| tstats count from datamodel=Change  by eventtype | eval dm_type="Change"] 
-            | append [| tstats count from datamodel=Change_Analysis  by eventtype | eval dm_type="Change_Analysis"] 
-            | append [| tstats count from datamodel=Compute_Inventory  by eventtype | eval dm_type="Compute_Inventory"] 
-            | append [| tstats count from datamodel=DLP  by eventtype | eval dm_type="DLP"] 
-            | append [| tstats count from datamodel=Databases  by eventtype | eval dm_type="Databases"] 
-            | append [| tstats count from datamodel=Email  by eventtype | eval dm_type="Email"] 
-            | append [| tstats count from datamodel=Endpoint  by eventtype | eval dm_type="Endpoint"] 
-            | append [| tstats count from datamodel=Event_Signatures  by eventtype | eval dm_type="Event_Signatures"] 
-            | append [| tstats count from datamodel=Interprocess_Messaging  by eventtype | eval dm_type="Interprocess_Messaging"] 
-            | append [| tstats count from datamodel=Intrusion_Detection  by eventtype | eval dm_type="Intrusion_Detection"] 
-            | append [| tstats count from datamodel=JVM  by eventtype | eval dm_type="JVM"] 
-            | append [| tstats count from datamodel=Malware  by eventtype | eval dm_type="Malware"] 
-            | append [| tstats count from datamodel=Network_Resolution  by eventtype | eval dm_type="Network_Resolution"] 
-            | append [| tstats count from datamodel=Network_Sessions  by eventtype | eval dm_type="Network_Sessions"] 
-            | append [| tstats count from datamodel=Network_Traffic  by eventtype | eval dm_type="Network_Traffic"] 
-            | append [| tstats count from datamodel=Performance  by eventtype | eval dm_type="Performance"] 
-            | append [| tstats count from datamodel=Splunk_Audit  by eventtype | eval dm_type="Splunk_Audit"] 
-            | append [| tstats count from datamodel=Ticket_Management  by eventtype | eval dm_type="Ticket_Management"] 
-            | append [| tstats count from datamodel=Updates  by eventtype | eval dm_type="Updates"] 
-            | append [| tstats count from datamodel=Vulnerabilities  by eventtype | eval dm_type="Vulnerabilities"] 
-            | append [| tstats count from datamodel=Web  by eventtype | eval dm_type="Web"] 
-            | stats delim=", " dc(dm_type) as datamodel_count, values(dm_type) as datamodels by eventtype | nomv datamodels | where datamodel_count > 1 and eventtype!="err0r"
-        """
+
+        search = ""
+        # Iterate data models list to create a search query
+        for index, datamodel in enumerate(DATA_MODELS):
+            if index == 0:
+                search += f'| tstats count from datamodel={datamodel}  by eventtype | eval dm_type="{datamodel}"\n'
+            else:
+                search += f'| append [| tstats count from datamodel={datamodel}  by eventtype | eval dm_type="{datamodel}"]\n'
+
+        search += '| stats delim=", " dc(dm_type) as datamodel_count, values(dm_type) as datamodels by eventtype | nomv datamodels | where datamodel_count > 1 and eventtype!="err0r"'
 
         record_property("search", search)
         result, results = splunk_search_util.checkQueryCountIsZero(search)
