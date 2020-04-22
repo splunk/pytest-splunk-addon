@@ -287,5 +287,5 @@ TA_BROKEN_SOURCETYPE_FAILED = [
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*source="/opt/splunk/var/log/splunk/splunkd.log"::tag::tags_negative_testing* FAILED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::is_splunkd* FAILED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::is_splunkd-%host%* FAILED*',
-    '*test_splunk_app_fiction.py::Test_App::test_eventtype_mapped_datamodel FAILED*'
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype_mapped_datamodel FAILED*'
 ]
