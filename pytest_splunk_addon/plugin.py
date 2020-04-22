@@ -10,9 +10,14 @@ def pytest_configure(config):
     """
     Setup configuration after command-line options are parsed
     """
-    config.addinivalue_line("markers", "splunk_addon_internal_errors: Check Errors")
-    config.addinivalue_line("markers", "splunk_addon_searchtime: Test search time only")
-    config.addinivalue_line("markers", "splunk_addon_cim: Test CIM compatibility only")
+    config.addinivalue_line("markers", "splunk_app_internal_errors: Check Errors in logs")
+    config.addinivalue_line("markers", "splunk_app_searchtime: Test search time only")
+    config.addinivalue_line("markers", "splunk_app_fields: Test search time fields only")
+    config.addinivalue_line("markers", "splunk_app_negative: Test search time negative scenarios only")
+    config.addinivalue_line("markers", "splunk_app_tags: Test search time tags only")
+    config.addinivalue_line("markers", "splunk_app_eventtypes: Test search time eventtypes only")
+    config.addinivalue_line("markers", "splunk_app_cim: Test CIM compatibility only")
+    config.addinivalue_line("markers", "splunk_app_cim_fields: Test CIM required fields only")
 
 
 def pytest_generate_tests(metafunc):

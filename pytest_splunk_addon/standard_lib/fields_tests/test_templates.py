@@ -15,7 +15,8 @@ class FieldTestTemplates(object):
     """
     logger = logging.getLogger("pytest-splunk-addon-tests")
 
-    @pytest.mark.splunk_addon_internal_errors
+    @pytest.mark.splunk_app_searchtime
+    @pytest.mark.splunk_app_internal_errors
     def test_splunk_internal_errors(
         self, splunk_search_util, record_property, caplog
     ):
@@ -38,7 +39,8 @@ class FieldTestTemplates(object):
         f"found result={result_str}")
 
 
-    @pytest.mark.splunk_addon_searchtime
+    @pytest.mark.splunk_app_searchtime
+    @pytest.mark.splunk_app_searchtime_fields
     def test_props_fields_positive(
             self, splunk_search_util, splunk_app_searchtime_fields, record_property
         ):
@@ -82,7 +84,8 @@ class FieldTestTemplates(object):
             f"interval={INTERVAL}, retries={RETRIES}")
 
 
-    @pytest.mark.splunk_addon_searchtime
+    @pytest.mark.splunk_app_searchtime
+    @pytest.mark.splunk_app_searchtime_negative
     def test_props_fields_negative(
             self, splunk_search_util, splunk_app_searchtime_negative, record_property
         ):
@@ -132,7 +135,8 @@ class FieldTestTemplates(object):
         f"found result={result_str}")
 
 
-    @pytest.mark.splunk_addon_searchtime
+    @pytest.mark.splunk_app_searchtime
+    @pytest.mark.splunk_app_searchtime_tags
     def test_tags(
         self, splunk_search_util, splunk_app_searchtime_tags, record_property, caplog
     ):
@@ -176,7 +180,8 @@ class FieldTestTemplates(object):
             f"\ninterval={INTERVAL}, retries={RETRIES}")
 
 
-    @pytest.mark.splunk_addon_searchtime
+    @pytest.mark.splunk_app_searchtime
+    @pytest.mark.splunk_app_searchtime_eventtypes
     def test_eventtype(
         self,
         splunk_search_util,

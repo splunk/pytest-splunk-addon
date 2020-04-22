@@ -22,23 +22,24 @@ class CIMTestTemplates(object):
     """
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
 
-    @pytest.mark.splunk_addon_cim
+    @pytest.mark.splunk_app_cim
+    @pytest.mark.splunk_app_cim_fields
     def test_cim_required_fields(
-        self, splunk_search_util, splunk_app_cim, record_property
+        self, splunk_search_util, splunk_app_cim_fields, record_property
     ):
 
         # Search Query 
         base_search = "search "
-        for each_set in splunk_app_cim["data_set"]:
+        for each_set in splunk_app_cim_fields["data_set"]:
             base_search += " ({})".format(each_set.search_constraints)
 
         base_search += " AND ({})".format(
-            splunk_app_cim["tag_stanza"]
+            splunk_app_cim_fields["tag_stanza"]
         )
 
         test_helper = FieldTestHelper(
             splunk_search_util, 
-            splunk_app_cim["fields"],
+            splunk_app_cim_fields["fields"],
             interval=INTERVAL, retries=RETRIES
         )
 
