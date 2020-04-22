@@ -1,8 +1,0 @@
-<form isDashboard="false">
-	<label>Eventtype &amp; Tag Center</label>
-	
-	<row>
-		<html><p>This view has been deprecated.</p></html>
-	</row>
-
-</form>
