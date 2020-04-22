@@ -4,7 +4,7 @@ Test Generator for an App.
 Generates test cases of Fields and CIM.
 """
 import logging
-
+import os
 from .fields_tests import FieldTestGenerator
 from .cim_tests import CIMTestGenerator
 
@@ -37,20 +37,15 @@ class AppTestGenerator(object):
         """
         Generate the test cases based on the fixture provided 
         supported fixtures:
-
-        *  splunk_app_positive_fields
-        *  splunk_app_negative_fields
-        *  splunk_app_tags
-        *  splunk_app_eventtypes
-        *  splunk_app_cim
+        *  splunk_app_searchtime_*
+        *  splunk_app_cim_*
 
         Args:
             fixture(str): fixture name
         """
-        if fixture.endswith("fields"):
-            is_positive = "positive" in fixture or not "negative" in fixture
+        if fixture.startswith("splunk_app_searchtime"):
             yield from self.dedup_tests(
-                self.fieldtest_generator.generate_field_tests(is_positive=is_positive)
+                self.fieldtest_generator.generate_tests(fixture)
             )
         elif fixture.endswith("tags"):
             yield from self.dedup_tests(self.fieldtest_generator.generate_tag_tests())
@@ -59,8 +54,8 @@ class AppTestGenerator(object):
                 self.fieldtest_generator.generate_eventtype_tests()
             )
 
-        elif fixture.endswith("cim"):
-            yield from self.dedup_tests(self.test_generator.generate_cim_tests())
+        elif fixture.startswith("splunk_app_cim"):
+            yield from self.dedup_tests(self.cim_test_generator.generate_tests(fixture))
 
     def dedup_tests(self, test_list):
         """
@@ -80,4 +75,4 @@ class AppTestGenerator(object):
 
         # Sort the test generated.
         # ACD-4138: As pytest-xdist expects the tests to be ordered
-        return sorted(param_list, key=lambda param:param.id)
+        return sorted(param_list, key=lambda param: param.id)
