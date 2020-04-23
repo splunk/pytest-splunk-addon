@@ -990,6 +990,51 @@ class SearchUtil(object):
 
         return status
 
+    def getFieldValuesList(self, query, interval=15, retries=4):
+        """
+        Get list of results from the query. Where each result will be
+        a dictionary. The search job will retry at given interval if 
+        no results found.
+
+        Args:
+            query (str): query to search on Splunk instance
+            interval (int): at what interval each retry should be made
+            retries (int): number of retries to make if no results found
+        """
+
+        tryNum = 0
+        status = False
+
+        while tryNum <= retries and not status:
+            with open("jay_check.log", "a") as fff:
+                fff.write(str(tryNum))
+                fff.write("\n")
+
+            job = self.jobs.create(query, max_time=60)
+            job.wait(240)
+            result_count = len(job.get_results())
+            results = job.get_results()
+            messages = job.get_messages()
+
+            if result_count > 0:
+                for each_result in results:
+                    keys = list(map(str, list(each_result.keys())))
+                    values = list(map(str, list(each_result.values())))
+                    yield dict(list(zip(keys, values)))
+            else:
+                self.wrapLogOutput(
+                    msg="Zero results from search:",
+                    actual="",
+                    expected="greater than 0",
+                    errors="\n".join(messages),
+                )
+
+            if not status:
+                tryNum += 1
+                time.sleep(interval)
+
+        return status
+
     def checkRemoteSearch(self, query, starts_with=None, max_time=120):
         self.logger.debug("query is %s", query)
         job = self.jobs.create(query, auto_finalize_ec=200, max_time=max_time)
