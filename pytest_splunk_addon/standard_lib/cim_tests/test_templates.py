@@ -4,11 +4,10 @@ Includes the test scenarios to check the CIM compatibility of an Add-on.
 """
 import logging
 import pytest
-from ..fields_tests.field_test_helper import FieldTestHelper
+from .field_test_helper import FieldTestHelper
 
 INTERVAL = 3
 RETRIES = 3
-
 
 class CIMTestTemplates(object):
     """
@@ -19,7 +18,6 @@ class CIMTestTemplates(object):
         - Field Cluster should be verified (should be included with required field test)
         - Verify if CIM installed or not 
         - Not Allowed Fields should not be extracted 
-        - TODO 
     """
 
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
@@ -86,15 +84,14 @@ class CIMTestTemplates(object):
             # Check that count for all the fields in cluster is same. 
             # If all the fields are not extracted in an event, that's a passing scenario
             # The count of the field may or may not be same with the count of event. 
-            field_list = [
-                    each_field["field_count"] 
-                    for each_field in results
-                ] + [
-                    each_field["valid_field_count"] 
-                    for each_field in results
-                ]
-            assert len(set(field_list)) == 1, (
+            sourcetype_fields = dict()
+            for each_result in results:
+                sourcetype_fields.setdefault(each_result["sourcetype"], list()).extend(
+                    [each_result["field_count"], each_result["valid_field_count"]] 
+                )
+            for sourcetype_fields in sourcetype_fields.values():
+                assert len(set(sourcetype_fields)) == 1, (
                     "All fields from the field-cluster should be extracted with valid values if any one field is extracted."
                     f"\n{test_helper.format_exc_message()}"
-            )
+                )
 
