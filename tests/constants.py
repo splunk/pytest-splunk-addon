@@ -187,7 +187,9 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::is_splunkd* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::for_tags_positive* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::is_splunkd-%host%* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_eventtype_mapped_datamodel PASSED*'
+    '*test_splunk_app_fiction.py::Test_App::test_tags*eventtype="for_multiple_tags_positive"::tag::authentication* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::for_multiple_tags_positive* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_eventtype_mapped_datamodel* PASSED*'
 ]
 
 
@@ -246,7 +248,10 @@ TA_BROKEN_SOURCETYPE_PASSED = [
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::name* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::nofield* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::aliasthree* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::alert* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::authentication* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*sourcetype="splunkd"::tag::tags_negative_testing* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::for_multiple_tags_negative* PASSED'
 ]
 
 """

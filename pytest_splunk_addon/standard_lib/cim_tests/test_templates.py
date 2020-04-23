@@ -28,7 +28,7 @@ DATA_MODELS = [
     "Ticket_Management",
     "Updates",
     "Vulnerabilities",
-    "Web"
+    "Web",
 ]
 
 
