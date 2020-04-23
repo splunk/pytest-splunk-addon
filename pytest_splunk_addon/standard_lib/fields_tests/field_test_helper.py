@@ -4,108 +4,24 @@ Provides the helper methods to test addon_parser.Field object
 """
 import logging
 import json
-from ..addon_parser import Field
-
-class FieldTestAdapater(Field):
-    """
-    Field adapter to include the testing related properties on top of Field
-
-    Properties:
-        valid_field (str): New field generated which can only have the valid values
-        validity_query (str): The query which extracts the valid_field out of the field
-
-    """
-    VALID_FIELD = "{}_valid"
-    INVALID_FIELD = "{}_invalid"
-    FIELD_COUNT = "{}_count"
-    VALID_FIELD_COUNT = "{}_valid_count"
-    INVALID_FIELD_VALUES = "{}_invalid_values"
-
-    def __init__(self, field):
-        self.__dict__ = field.__dict__.copy()
-        self.valid_field = self.VALID_FIELD.format(field)
-        self.invalid_field = self.INVALID_FIELD.format(field)
-        self.validity_query = None
-
-    @staticmethod
-    def get_query_from_values(values):
-        """
-        List of values into SPL list
-            Example: ["a", "b"] to '\"a\", \"b\"'
-
-        Args:
-            values (list): List of str values 
-        
-        Returns:
-            str: SPL query list
-        """
-        query = '\\", \\"'.join(values)
-        return f'\\"{query}\\"'
-
-    def gen_validity_query(self):
-        if not self.validity_query is None:
-            return self.validity_query
-        else:
-            self.validity_query = ""
-            
-            self.validity_query += ("\n"
-                f"| eval {self.valid_field}={self.validity}")
-            if self.expected_values:
-                self.validity_query += ("\n"
-                     "| eval {valid_field}=if(searchmatch(\"{valid_field} IN ({values})\"), {valid_field}, null())".format(
-                         valid_field=self.valid_field,
-                         values=self.get_query_from_values(self.expected_values)
-                     )
-                )
-            if self.negative_values:
-                self.validity_query += ("\n"
-                     "| eval {valid_field}=if(searchmatch(\"{valid_field} IN ({values})\"), null(), {valid_field})".format(
-                         valid_field=self.valid_field,
-                         values=self.get_query_from_values(self.negative_values)
-                     )
-                )
-            self.validity_query += ("\n"
-                f"| eval {self.invalid_field}=if(isnull({self.valid_field}), {self.name}, null())")
-            return self.validity_query
-
-    def get_stats_query(self):
-        query = f", count({self.name}) as {self.FIELD_COUNT.format(self.name)}"
-        if self.gen_validity_query():
-            query += f", count({self.valid_field}) as {self.VALID_FIELD_COUNT.format(self.name)}"
-            query += f", values({self.invalid_field}) as {self.INVALID_FIELD_VALUES.format(self.name)}"
-        return query
-
-    @classmethod
-    def get_test_fields(cls, fields):
-        return [cls(each_field) for each_field in fields]
-             
+from .field_test_adapter import FieldTestAdapater
 
 class FieldTestHelper(object):
     """
     Provides the helper methods to test addon_parser.Field object
 
     Args:
+        search_util (SearchUtil): the util class to search on the Splunk instance
         fields (list addon_parser.Field): The field to be tested 
-    """ 
+        interval (int): at what interval each retry should be made
+        retries (int): number of retries to make if no results found
+    """
     logger = logging.getLogger("pytest-splunk-addon-tests")
     def __init__(self, search_util, fields, interval=10, retries=4):
         self.search_util = search_util
         self.fields = FieldTestAdapater.get_test_fields(fields)
         self.interval = interval
         self.retries = retries
-
-    def _make_search_query(self, base_search):
-        """
-        Make the search query by using the list of fields 
-        """
-        self.search = f"{base_search} {self._gen_condition()}"
-        self.search_event = self.search
-        for each_field in self.fields:
-            self.search += each_field.gen_validity_query()
-        
-        self.search += " \n| stats count as event_count"
-        for each_field in self.fields:
-            self.search += each_field.get_stats_query()
 
 
     def test_field(self, base_search):
@@ -128,127 +44,149 @@ class FieldTestHelper(object):
         """
         self._make_search_query(base_search)
         self.logger.info(f"Executing the search query: {self.search}")
-        self.result = self.search_util.getFieldValuesDict(self.search)
-        return self._parse_result(self.result)
+        self.results = list(self.search_util.getFieldValuesList(
+                self.search, self.interval, self.retries
+            ))
+        return self._parse_result(self.results)
+
+
+    def _make_search_query(self, base_search):
+        """
+        Make the search query by using the list of fields 
+
+        Args:
+            base_search (str): The base search 
+        """
+        self.search = f"{base_search} {self._gen_condition()}"
+        self.search_event = self.search
+        for each_field in self.fields:
+            self.search += each_field.gen_validity_query()
+        
+        self.search += " \n| stats count as event_count"
+        for each_field in self.fields:
+            self.search += each_field.get_stats_query()
+        self.search += " by sourcetype"
+
+
+    def _parse_result(self, results):
+        """
+        Flatten the result into the following format
+
+            [{
+                "sourcetype": str
+                "event_count": int,
+                "field": Field,
+                "field_count": int,
+                "valid_field_count": int
+                "invalid_values": list
+            }]
+        """
+        self.parsed_result = list()
+        for each_sourcetype_result in results:
+            sourcetype = each_sourcetype_result["sourcetype"]
+            event_count = int(each_sourcetype_result.get("event_count"))
+            for each_field in self.fields:
+                field_dict = {
+                    "field": each_field,
+                    "field_count": int(each_sourcetype_result.get(
+                        FieldTestAdapater.FIELD_COUNT.format(each_field.name))),
+                }
+                if each_field.gen_validity_query():
+                    field_dict["valid_field_count"]= int(each_sourcetype_result.get(
+                        FieldTestAdapater.VALID_FIELD_COUNT.format(each_field.name)))
+                    field_dict["invalid_values"] = each_sourcetype_result.get(
+                            FieldTestAdapater.INVALID_FIELD_VALUES.format(each_field.name), '[]').replace("'", "\"")
+                field_dict.update({
+                    "sourcetype": sourcetype,
+                    "event_count": event_count
+                })
+                self.parsed_result.append(field_dict)
+            if not self.fields:
+                self.parsed_result.append({
+                        "sourcetype": sourcetype,
+                        "event_count": event_count
+                })
+        return self.parsed_result
+
+
+    def _gen_condition(self):
+        return " AND ".join([each_field.condition for each_field in self.fields if each_field.condition])
+
 
     def format_exc_message(self):
         """
+        Format the exception message to display 
         1) There's no field in the result 
 
-            Event Count = 100 
+            Sourcetype      Event Count
+            ---------------------------
+            splunkd         10
+            scheduler       0
+            ---------------------------
             Search = <search query>
 
-        2) There's only 1 field in the result 
+        2) There are multiple fields in the result
 
-            Event Count = 100
-            Invalid Field Values = ["-", "unknown"]
-
-            Field Count = 100
-            Valid Field Count = 50
-            Search = <search query>
-
-            Properties for the field :: One 
-            . . . 
-
-        3) There are multiple fields in the result
-
-            Fields    Field Count     Valid Field Count 
-            ---------------------------------
-            one         10             10
-            two         20             20
-            ---------------------------------
-            Event count = 20 
+            Sourcetype  Field  Total Count  Field Count  Invalid Field Count  Invalid Values
+            --------------------------------------------------------------------------------
+            splunkd     One    10           10           5                   'unknown'
+            scheduler   Two    20           20           7                   '-', 'invalid'
+            --------------------------------------------------------------------------------
+            Event count = 20
             Search = <search_query>
+
+            Properties for the field :: One
+            . . .
         """
-        if not "fields" in self.parsed_result:
-            return (
-                f"Event Count = {self.parsed_result.get('event_count')}"
-                f"\nSearch = {self.search}"
-            )
-        if len(self.parsed_result["fields"]) == 1:
-            parsed_field_stats = self.parsed_result['fields'][0]
-            if parsed_field_stats['invalid_values']:
-                invalid_values =  "'{}'".format("\', \'".join(
-                    parsed_field_stats['invalid_values'][:10])
-                )
-            else:
-                invalid_values = '-'
-            return (
-                f"Field = {parsed_field_stats['field']}"
-                f"\nInvalid Field Values = {invalid_values}"
-                f"\nInvalid Field Count = {parsed_field_stats['field_count'] - parsed_field_stats['valid_field_count']}"
-                f"\n\nEvent Count = {self.result.get('event_count')}"
-                f"\nField Count = {parsed_field_stats['field_count']}"
-                f"\n\nSearch = {self.search}"
-                f"\n\nProperties for the field :: {parsed_field_stats['field'].get_properties()}"
-            )
-        else:
+        if not self.fields:
             exc_message = self.get_table_output(
-                headers=["Field", "Field Count", "Invalid Field Count", "- Values"],
+                headers=["Sourcetype", "Event Count"],
                 value_list=[
-                    [
-                        each_field["field"].name,
-                        each_field["field_count"],
-                        each_field["field_count"] - each_field.get(
-                            "valid_field_count", each_field["field_count"]
-                        ),
-                        ("'{}'".format("', '".join(each_field["invalid_values"][:10])) 
-                        if each_field["invalid_values"] else "-")
-                    ]
-                    for each_field in self.parsed_result["fields"]
+                    [each_result["sourcetype"], each_result["event_count"]]
+                    for each_result in self.parsed_result
                 ]
             )
-            exc_message += (
-                f"\nEvent Count = {self.parsed_result.get('event_count')}"
-                f"\n\nSearch = {self.search}"
+        elif len(self.fields) >= 1:
+            exc_message = self.get_table_output(
+                headers=[
+                    "Sourcetype", "Field", "Total Count", 
+                    "Field Count", "Invalid Field Count", "Invalid Values"
+                ],
+                value_list=[
+                    [
+                        each_result["sourcetype"],
+                        each_result["field"].name,
+                        each_result["event_count"],
+                        each_result["field_count"],
+                        each_result["field_count"] - each_result.get(
+                            "valid_field_count", each_result["field_count"]
+                        ),
+                        (each_result["invalid_values"]
+                        if each_result["invalid_values"] else "-")
+                    ]
+                    for each_result in self.parsed_result
+                ]
             )
-            return exc_message
+        exc_message += (
+            f"\n\nSearch = {self.search}"
+        )
+        for each_field in self.fields:
+            exc_message += f"\n\nProperties for the field :: {each_field.get_properties()}"
+        return exc_message
+
 
     @staticmethod
     def get_table_output(headers, value_list):
         table_output = ("{:<20}"*(len(headers))).format(
                      *headers
                 )
-        table_output += "\n" + "-"*100
+        table_output += "\n" + "-"*20*len(headers)
         for each_value in value_list:
             table_output += (
-                ("\n" + "{:<20}"*(len(headers))).format(
+                ("\n" + "{:<20}"*(len(headers)-1) + "{}").format(
                 *each_value
             ))
-        table_output += "\n" + "-"*100
+        table_output += "\n" + "-"*20*len(headers)
 
         return table_output
 
-    def _parse_result(self, result):
-        """
-        Convert the result into the following format
-
-            {
-                "event_count": int,
-                "fields": {
-                    "field": Field,
-                    "field_count": int,
-                    "valid_field_count": int
-                    "invalid_values": list
-                }
-            }
-        """
-        self.parsed_result = {
-            "event_count": int(result.get("event_count"))
-        }
-        self.parsed_result["fields"] = []
-        for each_field in self.fields:
-            each_obj = {
-                "field": each_field,
-                "field_count": int(result.get(FieldTestAdapater.FIELD_COUNT.format(each_field.name))),
-            }
-            if each_field.gen_validity_query():
-                each_obj["valid_field_count"]= int(self.result.get(FieldTestAdapater.VALID_FIELD_COUNT.format(each_field.name)))
-                each_obj["invalid_values"] = json.loads(
-                    self.result.get(FieldTestAdapater.INVALID_FIELD_VALUES.format(each_field.name), '[]').replace("'", "\"")
-                )
-            self.parsed_result["fields"].append(each_obj)
-        return self.parsed_result
-
-    def _gen_condition(self):
-        return " AND ".join([each_field.condition for each_field in self.fields if each_field.condition])
