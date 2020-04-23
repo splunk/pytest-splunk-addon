@@ -4,10 +4,10 @@ Define the TA_fiction add-on passed test case list.
 """
 TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_splunk_internal_errors PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive*/opt/splunk/var/log/splunk/splunkd.log** PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive*/opt/splunk/var/log/splunk/splunkd.log* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive*/opt/splunk/var/log/splunk/splunkd.log*::field::component* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive**/opt/splunk/var/log/splunk/metrics.log** PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive**/opt/splunk/var/log/splunk/metrics.log*::field::splunk_server* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive**/opt/splunk/var/log/splunk/splunkd.log** PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive**/opt/splunk/var/log/splunk/splunkd.log*::field::splunk_server* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive**/opt/splunk/var/log/splunk/splunkd_access.log** PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive**/opt/splunk/var/log/splunk/splunkd_access.log*::field::splunk_server* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive*splunkd* PASSED*',
@@ -92,8 +92,8 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive*splunkd::field::context_test* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive*splunkd::field::test_name* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_positive*splunkd::field::status_test* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_props_fields_negative*/opt/splunk/var/log/splunk/splunkd.log*::field::component* PASSED*'
-    '*test_splunk_app_fiction.py::Test_App::test_props_fields_negative**/opt/splunk/var/log/splunk/metrics.log*::field::splunk_server* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_negative*/opt/splunk/var/log/splunk/splunkd.log::field::component* PASSED*'
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_negative**/opt/splunk/var/log/splunk/splunkd.log*::field::splunk_server* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_negative**/opt/splunk/var/log/splunk/splunkd_access.log*::field::splunk_server* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_negative*splunkd::EXTRACT-one* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_negative*splunkd::field::extractone* PASSED*',
