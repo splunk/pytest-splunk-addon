@@ -66,3 +66,27 @@ class CIMTestTemplates(object):
             ), ("Fields do not have valid values." f"\n{test_helper.get_exc_message()}")
 
         record_property("search", test_helper.search)
+
+    @pytest.mark.splunk_app_cim
+    @pytest.mark.splunk_app_cim_fields_not_extracted
+    def test_cim_required_fields(
+        self, splunk_search_util, splunk_app_cim_fields_not_extracted, record_property
+    ):
+        # Search Query
+        base_search = "search "
+        for each_set in splunk_app_cim_fields_not_extracted["data_set"]:
+            base_search += " ({})".format(each_set.search_constraints)
+
+        base_search += " AND ({})".format(
+            splunk_app_cim_fields_not_extracted["tag_stanza"]
+        )
+
+        # test_helper = FieldTestHelper(
+        #     splunk_search_util,
+        #     splunk_app_cim_fields_not_extracted["fields"],
+        #     interval=INTERVAL,
+        #     retries=RETRIES,
+        # )
+
+        # Execute the query and get the results
+        # result = test_helper.test_field(base_search)

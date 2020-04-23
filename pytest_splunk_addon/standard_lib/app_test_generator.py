@@ -28,7 +28,7 @@ class AppTestGenerator(object):
             self.pytest_config.getoption("splunk_app"),
             field_bank=self.pytest_config.getoption("field_bank", False),
         )
-        # self.test_generator = CIMTestGenerator(
+        # self.cim_test_generator = CIMTestGenerator(
         #     self.pytest_config.getoption("splunk_app"),
         #     self.pytest_config.getoption("splunk_dm_path"),
         # )

@@ -3,9 +3,10 @@
 Generates test cases to verify the CIM compatibility . 
 """
 import pytest
-
+import json
 from . import DataModelHandler
 from ..addon_parser import AddonParser
+from ..addon_parser import Field
 
 
 class CIMTestGenerator(object):
@@ -19,12 +20,18 @@ class CIMTestGenerator(object):
     """
 
     def __init__(
-        self, addon_path, data_model_path, test_field_type=["required", "conditional"]
+        self,
+        addon_path,
+        data_model_path,
+        test_field_type=["required", "conditional"],
+        restricted_field_type=["not_extracted", "not_allowed"],
+        common_fields_path="pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\CommonFields.json",
     ):
 
         self.data_model_handler = DataModelHandler(data_model_path)
         self.addon_parser = AddonParser(addon_path)
         self.test_field_type = test_field_type
+        self.common_fields_path = common_fields_path
 
     def generate_tests(self, fixture):
         """
@@ -89,7 +96,52 @@ class CIMTestGenerator(object):
                 )
 
     def generate_not_allowed_tests(self):
-        pass
+        """
+        Get a list of fields from common fields json.
+        Get a list of fields whose extractions are defined in props
+        Compare and get the list whose extractions are defined.
+        and remaining fields are sent in the 2nd template
+        """
+        with open(self.common_fields_path, "r") as cf_json:
+            common_fields_json = json.load(cf_json)
+            not_allowed_fields = list(Field.parse_fields(common_fields_json["fields"]))
+            for tag_stanza, dataset_list in self.get_mapped_datasets():
+                test_dataset = dataset_list[-1]
+                not_allowed_fields.extend(
+                    [
+                        each_field
+                        for each_field in test_dataset.fields
+                        if each_field.type in self.restricted_field_type
+                    ]
+                )
 
     def generate_not_extracted_tests(self):
-        pass
+        """
+
+        """
+        with open(self.common_fields_path, "r") as cf_json:
+            common_fields_json = json.load(cf_json)
+            common_fields_list = list(Field.parse_fields(common_fields_json["fields"]))
+            not_extracted_fields = [
+                each_field
+                for each_field in common_fields_list
+                if each_field.type == "not_extracted"
+            ]
+            for tag_stanza, dataset_list in self.get_mapped_datasets():
+                test_dataset = dataset_list[-1]
+                not_extracted_fields.extend(
+                    [
+                        each_field
+                        for each_field in test_dataset.fields
+                        if each_field.type == "not_extracted"
+                    ]
+                )
+                # Test for each required fields
+            yield pytest.param(
+                {
+                    "tag_stanza": tag_stanza,
+                    "data_set": dataset_list,
+                    "fields": not_extracted_fields,
+                },
+                id=f"{tag_stanza}::{test_dataset}::not_extracted_fields",
+            )
