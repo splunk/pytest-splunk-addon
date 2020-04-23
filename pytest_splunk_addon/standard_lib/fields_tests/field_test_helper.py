@@ -11,7 +11,10 @@ class FieldTestHelper(object):
     Provides the helper methods to test addon_parser.Field object
 
     Args:
+        search_util (SearchUtil): the util class to search on the Splunk instance
         fields (list addon_parser.Field): The field to be tested 
+        interval (int): at what interval each retry should be made
+        retries (int): number of retries to make if no results found
     """
     logger = logging.getLogger("pytest-splunk-addon-tests")
     def __init__(self, search_util, fields, interval=10, retries=4):
@@ -41,10 +44,10 @@ class FieldTestHelper(object):
         """
         self._make_search_query(base_search)
         self.logger.info(f"Executing the search query: {self.search}")
-        self.result = self.search_util.getFieldValuesList(
+        self.results = list(self.search_util.getFieldValuesList(
                 self.search, self.interval, self.retries
-            )
-        return self._parse_result(self.result)
+            ))
+        return self._parse_result(self.results)
 
 
     def _make_search_query(self, base_search):
@@ -65,41 +68,44 @@ class FieldTestHelper(object):
         self.search += " by sourcetype"
 
 
-    def _parse_result(self, result):
+    def _parse_result(self, results):
         """
-        Convert the result into the following format
+        Flatten the result into the following format
 
-            {
-                "str": {    // sourcetype
-                    "event_count": int,
-                    "fields": [{
-                        "field": Field,
-                        "field_count": int,
-                        "valid_field_count": int
-                        "invalid_values": list
-                    }]
-                }
-            }
+            [{
+                "sourcetype": str
+                "event_count": int,
+                "field": Field,
+                "field_count": int,
+                "valid_field_count": int
+                "invalid_values": list
+            }]
         """
-        self.parsed_result = dict()
-        for each_sourcetype_result in result:
+        self.parsed_result = list()
+        for each_sourcetype_result in results:
             sourcetype = each_sourcetype_result["sourcetype"]
-            self.parsed_result[sourcetype] = {
-                "event_count": int(each_sourcetype_result.get("event_count"))
-            }
-            self.parsed_result[sourcetype]["fields"] = []
+            event_count = int(each_sourcetype_result.get("event_count"))
             for each_field in self.fields:
-                each_obj = {
+                field_dict = {
                     "field": each_field,
                     "field_count": int(each_sourcetype_result.get(
                         FieldTestAdapater.FIELD_COUNT.format(each_field.name))),
                 }
                 if each_field.gen_validity_query():
-                    each_obj["valid_field_count"]= int(each_sourcetype_result.get(
+                    field_dict["valid_field_count"]= int(each_sourcetype_result.get(
                         FieldTestAdapater.VALID_FIELD_COUNT.format(each_field.name)))
-                    each_obj["invalid_values"] = each_sourcetype_result.get(
+                    field_dict["invalid_values"] = each_sourcetype_result.get(
                             FieldTestAdapater.INVALID_FIELD_VALUES.format(each_field.name), '[]').replace("'", "\"")
-                self.parsed_result[sourcetype]["fields"].append(each_obj)
+                field_dict.update({
+                    "sourcetype": sourcetype,
+                    "event_count": event_count
+                })
+                self.parsed_result.append(field_dict)
+            if not self.fields:
+                self.parsed_result.append({
+                        "sourcetype": sourcetype,
+                        "event_count": event_count
+                })
         return self.parsed_result
 
 
@@ -123,8 +129,8 @@ class FieldTestHelper(object):
 
             Sourcetype  Field  Total Count  Field Count  Invalid Field Count  Invalid Values
             --------------------------------------------------------------------------------
-            splunkd     one    10           10           5                   'unknown'
-            scheduler   two    20           20           7                   '-', 'invalid'
+            splunkd     One    10           10           5                   'unknown'
+            scheduler   Two    20           20           7                   '-', 'invalid'
             --------------------------------------------------------------------------------
             Event count = 20
             Search = <search_query>
@@ -136,8 +142,8 @@ class FieldTestHelper(object):
             exc_message = self.get_table_output(
                 headers=["Sourcetype", "Event Count"],
                 value_list=[
-                    [sourcetype, value["event_count"]]
-                    for sourcetype, value in self.parsed_result.items()
+                    [each_result["sourcetype"], each_result["event_count"]]
+                    for each_result in self.parsed_result
                 ]
             )
         elif len(self.fields) >= 1:
@@ -148,18 +154,17 @@ class FieldTestHelper(object):
                 ],
                 value_list=[
                     [
-                        sourcetype,
-                        each_field["field"].name,
-                        value["event_count"],
-                        each_field["field_count"],
-                        each_field["field_count"] - each_field.get(
-                            "valid_field_count", each_field["field_count"]
+                        each_result["sourcetype"],
+                        each_result["field"].name,
+                        each_result["event_count"],
+                        each_result["field_count"],
+                        each_result["field_count"] - each_result.get(
+                            "valid_field_count", each_result["field_count"]
                         ),
-                        (each_field["invalid_values"]
-                        if each_field["invalid_values"] else "-")
+                        (each_result["invalid_values"]
+                        if each_result["invalid_values"] else "-")
                     ]
-                    for sourcetype, value in self.parsed_result.items()
-                    for each_field in value["fields"]
+                    for each_result in self.parsed_result
                 ]
             )
         exc_message += (
@@ -178,7 +183,7 @@ class FieldTestHelper(object):
         table_output += "\n" + "-"*20*len(headers)
         for each_value in value_list:
             table_output += (
-                ("\n" + "{:<20}"*(len(headers))).format(
+                ("\n" + "{:<20}"*(len(headers)-1) + "{}").format(
                 *each_value
             ))
         table_output += "\n" + "-"*20*len(headers)

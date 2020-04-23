@@ -41,7 +41,7 @@
 			{
 				"name": "log_level",
 				"type": "required",
-				"expected_values": ["ERROR"],
+				"expected_values": ["ERROR", "INFO", "WARN", "FATAL"],
 				"comment": "Required field with expected_values"
 			},
 			{

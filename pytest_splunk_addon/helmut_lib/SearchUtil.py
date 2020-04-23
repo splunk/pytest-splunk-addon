@@ -1006,10 +1006,6 @@ class SearchUtil(object):
         status = False
 
         while tryNum <= retries and not status:
-            with open("jay_check.log", "a") as fff:
-                fff.write(str(tryNum))
-                fff.write("\n")
-
             job = self.jobs.create(query, max_time=60)
             job.wait(240)
             result_count = len(job.get_results())
@@ -1021,6 +1017,7 @@ class SearchUtil(object):
                     keys = list(map(str, list(each_result.keys())))
                     values = list(map(str, list(each_result.values())))
                     yield dict(list(zip(keys, values)))
+                break
             else:
                 self.wrapLogOutput(
                     msg="Zero results from search:",
