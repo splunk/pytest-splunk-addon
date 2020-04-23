@@ -151,7 +151,7 @@
         },
         {
           "name": "bytes",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "valid_bytes=case(isnum(bytes),bytes,isnum(bytes_in) AND isnum(bytes_out),bytes_in+bytes_out,1=1,null())",
           "expected_values": [],
@@ -159,7 +159,7 @@
         },
         {
           "name": "bytes_in",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "valid_bytes_in=case(isnum(bytes_in),bytes_in,isnum(bytes) AND isnum(bytes_out),bytes-bytes_out,1=1,null())",
           "expected_values": [],
@@ -167,7 +167,7 @@
         },
         {
           "name": "bytes_out",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "valid_bytes_out=case(isnum(bytes_out),bytes_out,isnum(bytes) AND isnum(bytes_in),bytes-bytes_in,1=1,null())",
           "expected_values": [],
@@ -175,7 +175,7 @@
         },
         {
           "name": "http_user_agent",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "",
           "expected_values": [],
@@ -183,7 +183,7 @@
         },
         {
           "name": "http_user_agent_length",
-          "type": "related",
+          "type": "conditional",
           "condition": "len(http_user_agent)",
           "validity": "",
           "expected_values": [],
