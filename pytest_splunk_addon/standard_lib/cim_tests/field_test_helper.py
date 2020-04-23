@@ -33,14 +33,17 @@ class FieldTestHelper(object):
             | eval <validity> 
             | eval <expected_values>
             | eval <not negative_values>
+            | eval <invalid_fields>
             | stats count as event_count, count(field) as field_count,
-                count(valid_field) as valid_field_count
+                count(valid_field) as valid_field_count,
+                values(invalid_field) by sourcetype 
 
         Args:
             base_search (str): Base search. Must be a search command.
 
         Yields:
-            dict: with field, event_count, field_count, valid_field_count keys
+            dict: with sourcetype, field, event_count, field_count,
+             valid_field_count, invalid_values keys
         """
         self._make_search_query(base_search)
         self.logger.info(f"Executing the search query: {self.search}")
@@ -53,6 +56,15 @@ class FieldTestHelper(object):
     def _make_search_query(self, base_search):
         """
         Make the search query by using the list of fields 
+
+            <base_search> <condition> 
+            | eval valid_field=<validity> 
+            | eval valid_field = if(field in <expected_values>)
+            | eval valid_field = if(field not in <not negative_values>)
+            | eval invalid_field = field if isnull(valid_field)
+            | stats count as event_count, count(field) as field_count,
+                count(valid_field) as valid_field_count,
+                values(invalid_field) by sourcetype 
 
         Args:
             base_search (str): The base search 
@@ -110,7 +122,9 @@ class FieldTestHelper(object):
 
 
     def _gen_condition(self):
-        return " AND ".join([each_field.condition for each_field in self.fields if each_field.condition])
+        return " AND ".join([
+            each_field.condition for each_field in self.fields if each_field.condition
+        ])
 
 
     def format_exc_message(self):
@@ -177,6 +191,15 @@ class FieldTestHelper(object):
 
     @staticmethod
     def get_table_output(headers, value_list):
+        """
+        Generate a table output of the following format 
+
+            Header1 Header2
+            ---------------
+            One     Value1
+            Two     Value2
+            --------------
+        """
         table_output = ("{:<20}"*(len(headers))).format(
                      *headers
                 )

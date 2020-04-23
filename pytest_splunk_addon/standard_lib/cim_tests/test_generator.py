@@ -12,10 +12,12 @@ class CIMTestGenerator(object):
     """
     Generates test cases to verify the CIM compatibility.
 
-    1. Parse the data model JSON
-    2. Parse the add-on 
-    3. Check which data model is mapped for each tags stanza
-    4. Generate field based test cases for each data model mapped
+    Args:
+        addon_path (str): Relative or absolute path to the add-on
+        data_model_path (str): 
+            Relative or absolute path to the data model json files
+        test_field_type (list): 
+            For which types of fields, the test cases should be generated
     """
 
     def __init__(
@@ -48,6 +50,12 @@ class CIMTestGenerator(object):
 
 
     def get_mapped_datasets(self):
+        """
+        Get all mapped data_sets for each tags stanza from an add-on
+
+        Yields:
+            tuple: Tag Stanza, mapped DataSet
+        """
         yield from self.data_model_handler.get_mapped_data_models(self.addon_parser)
 
     def generate_cim_fields_tests(self):
@@ -90,7 +98,7 @@ class CIMTestGenerator(object):
                         "fields": each_fields_cluster
                     }, 
                     id= (f"{tag_stanza}::{test_dataset}::"
-                    f"{' + '.join([each_field.name for each_field in each_fields_cluster])}")
+                    f"{'+'.join([each_field.name for each_field in each_fields_cluster])}")
                 )
 
     def generate_not_allowed_tests(self):

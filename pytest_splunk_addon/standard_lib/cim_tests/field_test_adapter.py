@@ -6,6 +6,7 @@ class FieldTestAdapater(Field):
 
     Properties:
         valid_field (str): New field generated which can only have the valid values
+        invalid_field (str): New field generated which can only have the invalid values
         validity_query (str): The query which extracts the valid_field out of the field
 
     """
@@ -37,6 +38,15 @@ class FieldTestAdapater(Field):
         return f'\\"{query}\\"'
 
     def gen_validity_query(self):
+        """
+        Generate validation search query
+
+            | eval valid_field = <validity>
+            | eval valid_field = if(searchmatch(valid_field in <expected_values>), valid_field, null())
+            | eval valid_field = if(searchmatch(valid_field in <negative_values>), null(), valid_field)
+            | eval invalid_field=if(isnull(valid_field),field, null())
+
+        """
         if not self.validity_query is None:
             return self.validity_query
         else:
@@ -63,6 +73,11 @@ class FieldTestAdapater(Field):
             return self.validity_query
 
     def get_stats_query(self):
+        """
+        Generate stats search query
+
+            count(field) as field_count, count(valid_field) as valid_field_count, values(invalid_field) as invalid_values
+        """
         query = f", count({self.name}) as {self.FIELD_COUNT.format(self.name)}"
         if self.gen_validity_query():
             query += f", count({self.valid_field}) as {self.VALID_FIELD_COUNT.format(self.name)}"
