@@ -31,7 +31,7 @@
         },
         {
           "name": "bytes",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "valid_bytes=case(isnum(bytes),bytes,isnum(bytes_in) AND isnum(bytes_out),bytes_in+bytes_out,1=1,null())",
           "expected_values": [],
@@ -39,7 +39,7 @@
         },
         {
           "name": "bytes_in",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "valid_bytes_in=case(isnum(bytes_in),bytes_in,isnum(bytes) AND isnum(bytes_out),bytes-bytes_out,1=1,null())",
           "expected_values": [],
@@ -47,7 +47,7 @@
         },
         {
           "name": "bytes_out",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "valid_bytes_out=case(isnum(bytes_out),bytes_out,isnum(bytes) AND isnum(bytes_in),bytes-bytes_in,1=1,null())",
           "expected_values": [],
@@ -103,7 +103,7 @@
         },
         {
           "name": "dest_translated_ip",
-          "type": "related",
+          "type": "conditional",
           "condition": "protocol='IP' OR protocol='ICMP'| stats count, count(dest_translated_port) as field_count",
           "validity": "",
           "expected_values": [],
@@ -119,7 +119,7 @@
         },
         {
           "name": "dest_zone",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "",
           "expected_values": [],
@@ -175,7 +175,7 @@
         },
         {
           "name": "icmp_code",
-          "type": "related",
+          "type": "conditional",
           "condition": "protocol='icmp'| stats count, count(icmp_code) as field_count",
           "validity": "",
           "expected_values": [],
@@ -183,7 +183,7 @@
         },
         {
           "name": "icmp_type",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "valid_icmp_type=(isnum(duration),1,null())",
           "expected_values": ["0-254"],
@@ -191,7 +191,7 @@
         },
         {
           "name": "packets",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "valid_packets=case(isnum(packets),packets,isnum(packets_in) AND isnum(packets_out),packets_in+packets_out,1=1,null())",
           "expected_values": [],
@@ -199,7 +199,7 @@
         },
         {
           "name": "packets_in",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "valid_packets_in=case(isnum(packets_in),packets_in,isnum(packets) AND isnum(packets_out),packets-packets_out,1=1,null())",
           "expected_values": [],
@@ -207,7 +207,7 @@
         },
         {
           "name": "packets_out",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "valid_packets_out=case(isnum(packets_out),packets_out,isnum(packets) AND isnum(packets_in),packets-packets_in,1=1,null())",
           "expected_values": [],
@@ -271,7 +271,7 @@
         },
         {
           "name": "src_translated_ip",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "",
           "expected_values": [],
@@ -279,7 +279,7 @@
         },
         {
           "name": "src_zone",
-          "type": "related",
+          "type": "conditional",
           "condition": "",
           "validity": "",
           "expected_values": [],
