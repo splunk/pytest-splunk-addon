@@ -7,6 +7,7 @@ import pytest
 from . import DataModelHandler
 from ..addon_parser import AddonParser
 
+
 class CIMTestGenerator(object):
     """
     Generates test cases to verify the CIM compatibility.

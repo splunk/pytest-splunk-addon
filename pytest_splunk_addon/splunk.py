@@ -95,14 +95,14 @@ def pytest_addoption(parser):
         dest="splunk_s2s",
         default="9997",
         help="Splunk s2s port. default is 9997.",
-    )    
+    )
     group.addoption(
         "--splunk-s2s-scheme",
         action="store",
         dest="splunk_s2s_scheme",
         default="tcp",
         help="Splunk s2s scheme. tls|tcp default is tcp.",
-    )    
+    )
     group.addoption(
         "--splunkweb-port",
         action="store",
@@ -134,6 +134,19 @@ def pytest_addoption(parser):
             " is set to docker. Examples, "
             " 1) latest: latest Splunk Enterprise tagged by the https://github.com/splunk/docker-splunk"
             " 2) 8.0.0: GA release of 8.0.0."
+        ),
+    )
+    group.addoption(
+        "--splunk-dm-path",
+        action="store",
+        dest="splunk_dm_path",
+        default="pytest-splunk-addon\pytest_splunk_addon\standard_lib\datamodels",
+        help=(
+            "Path to the datamodels directory"
+            "Relative or absolute path can be provided."
+            "Json files are expected in the directory."
+            "Json files must follow the schema mentioned in DatamodelSchema.json"
+            "pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\DatamodelSchema.json"
         ),
     )
 

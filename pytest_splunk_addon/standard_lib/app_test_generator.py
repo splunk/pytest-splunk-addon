@@ -10,6 +10,7 @@ from .cim_tests import CIMTestGenerator
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
+
 class AppTestGenerator(object):
     """
     Test Generator for an App.
@@ -18,6 +19,7 @@ class AppTestGenerator(object):
     Args:
         pytest_config: To get the options given to pytest
     """
+
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
         self.seen_tests = set()

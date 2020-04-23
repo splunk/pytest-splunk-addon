@@ -1,0 +1,277 @@
+{
+  "modelName": "Change",
+  "version": "1.0.0",
+  "objects": [
+    {
+      "name": "All_Changes",
+      "tags": [["All_Changes", "Account_Management"]],
+      "fields_cluster": [],
+      "search_constraints": "tag=change NOT (object_category=file OR object_category=directory OR object_category=registry)",
+      "fields": [
+        {
+          "name": "action",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": [
+            "created",
+            "deleted",
+            "acl_modified",
+            "cleared",
+            "modified",
+            "read",
+            "stopped",
+            "updated"
+          ],
+          "comment": "The action performed on the resource."
+        },
+        {
+          "name": "change_type",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": ["restart"],
+          "comment": "The type of change, such as filesystem or AAA (authentication, authorization, and accounting)."
+        },
+        {
+          "name": "command",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": [],
+          "comment": "The command that initiated the change."
+        },
+        {
+          "name": "dest",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": [],
+          "comment": "The resource where change occurred. You can alias this from more specific fields not included in this data model, such as dest_host, dest_ip, or dest_name."
+        },
+        {
+          "name": "dvc",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": [],
+          "comment": "The device that reported the change, if applicable, such as a FIP or CIM server. You can alias this from more specific fields not included in this data model, such as dvc_host, dvc_ip, or dvc_name."
+        },
+        {
+          "name": "object",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": [],
+          "comment": "Name of the affected object on the resource (such as a router interface, user account, or server volume)."
+        },
+        {
+          "name": "object_attrs",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": [],
+          "comment": "The attributes that were updated on the updated resource object, if applicable."
+        },
+        {
+          "name": "object_category",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": ["registry", "directory", "file", "group", "user"],
+          "comment": "Generic name for the class of the updated resource object. Expected values may be specific to an app."
+        },
+        {
+          "name": "object_id",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": [],
+          "comment": "The unique updated resource object ID as presented to the system, if applicable (for instance, a SID, UUID, or GUID value)."
+        },
+        {
+          "name": "object_path",
+          "type": "conditional",
+          "condition": "object_path=if(IN(object_category ,'directory','file', 'registry'), 'request', 'false')| stats count as event_count, count(object_path) as field_count",
+          "validity": "",
+          "expected_values": [],
+          "comment": "The path of the modified resource object, if applicable (such as a file, directory, or volume)."
+        },
+        {
+          "name": "result",
+          "type": "optional",
+          "condition": "",
+          "validity": "",
+          "expected_values": ["lockout"],
+          "comment": "The vendor-specific result of a change, or clarification of an action status. For instance, status=failure may be accompanied by result=blocked by policy or result=disk full. result is a string. Please use a msg_severity_id field (not included in the data model) for severity ID fields that are integer data types."
+        },
+        {
+          "name": "result_id",
+          "type": "optional",
+          "condition": "",
+          "validity": "",
+          "expected_values": [],
+          "comment": "A result indicator for an action status."
+        },
+        {
+          "name": "src",
+          "type": "optional",
+          "condition": "",
+          "validity": "",
+          "expected_values": [],
+          "comment": "The resource where the change was originated. You can alias this from more specific fields not included in the data model, such as src_host, src_ip, or src_name."
+        },
+        {
+          "name": "status",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": ["success", "failure"],
+          "comment": "Status of the update."
+        },
+        {
+          "name": "tag",
+          "type": "optional",
+          "condition": "",
+          "validity": "",
+          "expected_values": [],
+          "comment": "This automatically generated field is used to access tags from within data models. Add-on builders do not need to populate it."
+        },
+        {
+          "name": "user",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": [],
+          "comment": "The user or entity performing the change. For account changes, this is the account that was changed (see src_user for user or entity performing the change)."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "condition": "",
+          "validity": "",
+          "expected_values": [],
+          "comment": "The vendor and product or service that detected the change. This field can be automatically populated by vendor and product fields in your data."
+        }
+      ],
+      "child_dataset": [
+        {
+          "name": "Account_Management",
+          "tags": [["Account_Management"]],
+          "fields_cluster": [],
+          "search_constraints": "tag=account",
+          "fields": [
+            {
+              "name": "dest_nt_domain",
+              "type": "required",
+              "condition": "",
+              "validity": "",
+              "expected_values": [],
+              "comment": "The NT domain of the destination, if applicable."
+            },
+            {
+              "name": "src_nt_domain",
+              "type": "required",
+              "condition": "",
+              "validity": "",
+              "expected_values": [],
+              "comment": "The NT domain of the source, if applicable."
+            },
+            {
+              "name": "src_user",
+              "type": "conditional",
+              "condition": "object_category=user | stats count, count(src_user) as field_count",
+              "validity": "",
+              "expected_values": [],
+              "comment": "For account changes, the user or entity performing the change."
+            }
+          ],
+          "child_dataset": [
+            {
+              "name": "Accounts_Created",
+              "tags": [["change", "account"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=\"created\""
+            },
+            {
+              "name": "Accounts_Deleted",
+              "tags": [["change", "account"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=\"deleted\""
+            },
+            {
+              "name": "Account_Lockouts",
+              "tags": [["change", "account"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=\"lockout\""
+            },
+            {
+              "name": "Accounts_Updated",
+              "tags": [["change", "account"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=\"updated\" OR action=\"modified\""
+            }
+          ]
+        },
+        {
+          "name": "Auditing_Changes",
+          "tags": [["change", "audit"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [],
+          "search_constraints": "tag=audit"
+        },
+        {
+          "name": "Endpoint_Changes",
+          "tags": [["change", "endpoint"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [
+            {
+              "name": "Endpoint_Restarts",
+              "tags": [["change", "endpoint"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=modified change_type=restart"
+            },
+            {
+              "name": "Other_Endpoint_Changes",
+              "tags": [["change", "endpoint"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "NOT change_type=restart"
+            }
+          ],
+          "search_constraints": "tag=endpoint"
+        },
+        {
+          "name": "Network_Changes",
+          "tags": [["change", "network"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [
+            {
+              "name": "Device_Restarts",
+              "tags": [["change", "network"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=modified change_type=restart"
+            }
+          ],
+          "search_constraints": "tag=network"
+        }
+      ]
+    }
+  ]
+}
