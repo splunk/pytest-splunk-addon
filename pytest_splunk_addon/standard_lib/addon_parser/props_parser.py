@@ -74,7 +74,6 @@ class PropsParser(object):
             "EXTRACT": self.get_extract_fields,
             "EVAL": self.get_eval_fields,
             "FIELDALIAS": self.get_fieldalias_fields,
-            "sourcetype": self.get_sourcetype_assignments,
             "LOOKUP": self.get_lookup_fields
         }
         for each_type in method_mapping:
