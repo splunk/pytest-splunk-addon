@@ -199,6 +199,119 @@ def test_splunk_app_broken_sourcetype(testdir):
     # The test suite should fail as this is a negative test
     assert result.ret != 0
 
+@pytest.mark.docker
+def test_splunk_app_cim_fiction(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_CIM_Fiction"),
+        os.path.join(testdir.tmpdir, "tests/package"),
+    )
+
+    shutil.copy(
+        os.path.join(testdir.request.fspath.dirname, "Dockerfile"),
+        os.path.join(testdir.tmpdir, "tests/"),
+    )
+    shutil.copy(
+        os.path.join(testdir.request.fspath.dirname, "docker-compose.yml"),
+        os.path.join(testdir.tmpdir, "tests/"),
+    )
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+        os.path.join(testdir.tmpdir, "tests/data_models"),
+    )
+    # run pytest with the following cmd args
+
+    result = testdir.runpytest(
+        "--splunk-type=docker",
+        "--splunk-app=tests/package",
+        "--splunk-password=Changed@11",
+        "--splunk-dm-path=tests/data_models",
+        "-v",
+        "-m splunk_app_cim"
+    )
+
+    logger.info(
+        "Result from the test execution: \nstdout=%s\nstderr=%s",
+        "\n".join(result.stdout.lines),
+        "\n".join(result.stderr.lines),
+    )
+
+    result.stdout.fnmatch_lines_random(constants.TA_CIM_FICTION_PASSED)
+    result.assert_outcomes(passed=len(constants.TA_CIM_FICTION_PASSED), failed=0)
+
+    # make sure that that we get a '0' exit code for the testsuite
+    assert result.ret == 0
+
+@pytest.mark.docker
+def test_splunk_app_cim_broken(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_CIM_Broken"),
+        os.path.join(testdir.tmpdir, "tests/package"),
+    )
+
+    shutil.copy(
+        os.path.join(testdir.request.fspath.dirname, "Dockerfile"),
+        os.path.join(testdir.tmpdir, "tests/"),
+    )
+    shutil.copy(
+        os.path.join(testdir.request.fspath.dirname, "docker-compose.yml"),
+        os.path.join(testdir.tmpdir, "tests/"),
+    )
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+        os.path.join(testdir.tmpdir, "tests/data_models"),
+    )
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        "--splunk-type=docker",
+        "--splunk-app=tests/package",
+        "--splunk-password=Changed@11",
+        "--splunk-dm-path=tests/data_models",
+        "-v",
+        "-m splunk_app_cim"
+    )
+
+    # fnmatch_lines does an assertion internally
+    logger.info(
+        "Result from the test execution: \nstdout=%s\nstderr=%s",
+        "\n".join(result.stdout.lines),
+        "\n".join(result.stderr.lines),
+    )
+
+    result.stdout.fnmatch_lines_random(
+        constants.TA_CIM_BROKEN_PASSED + constants.TA_CIM_BROKEN_FAILED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_CIM_BROKEN_PASSED),
+        failed=len(constants.TA_CIM_BROKEN_FAILED),
+    )
+
+    # The test suite should fail as this is a negative test
+    assert result.ret != 0
 
 def test_help_message(testdir):
     result = testdir.runpytest("--help",)
@@ -213,3 +326,4 @@ def test_help_message(testdir):
             "*--splunk-password=*",
         ]
     )
+

@@ -1,0 +1,42 @@
+{
+	"version":"1.0.0",
+	"model_name": "Fiction_Two",
+	"objects": [{
+		"name": "Fiction_Two",
+		"tags": [
+			[
+				"tag_splunkd_fiction_two_A",
+				"tag_splunkd_fiction_two_B"
+			]
+		],
+		"fields_cluster": [],
+		"fields": [
+			{
+				"name": "component",
+				"type": "required",
+				"comment": "Required field without condition, validity or expected values"
+			}
+		],
+		"child_dataset": [],    
+		"search_constraints": "tag=tag_splunkd_fiction_two_A AND tag=tag_splunkd_fiction_two_B"
+	},
+	{
+		"name": "Fiction_Two_Second",
+		"tags": [
+			[
+				"tag_splunkd_fiction_two_second"
+			]
+		],
+		"fields_cluster": [],
+		"fields": [
+			{
+				"name": "log_level",
+				"type": "required",
+				"comment": "Required field without condition, validity or expected values"
+			}
+		],
+		"child_dataset": [],    
+		"search_constraints": "tag=tag_splunkd_fiction_two_second"
+	}]
+
+}
