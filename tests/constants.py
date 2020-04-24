@@ -313,6 +313,17 @@ TA_CIM_FICTION_PASSED = [
     '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_three"::tag_splunkd_fiction_three_Error_Logs* PASSED*',
     '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_two"::Fiction_Two* PASSED*',
     '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_two"::Fiction_Two::component* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_fiction_one"::Fiction_One* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_fiction_one"::Info_Logs* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_fiction_one"::Warn_Logs* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_fiction_second"::Fiction_Two_Second* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_fiction_three"::Fiction_Three* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_fiction_three"::Fiction_Three_Child* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_fiction_three"::Info_Logs* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_fiction_three"::Warn_Logs* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_fiction_three"::tag_splunkd_fiction_three_Error_Logs* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_fiction_two"::Fiction_Two* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_not_allowed_fields*searchtime_cim_fields* PASSED*',
 
 ]
 
@@ -330,6 +341,7 @@ TA_CIM_BROKEN_PASSED = [
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::date_minute* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::date_second* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::log_level* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_not_allowed_fields*searchtime_cim_fields* PASSED*',
 ]
 
 TA_CIM_BROKEN_FAILED = [
@@ -338,4 +350,6 @@ TA_CIM_BROKEN_FAILED = [
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::broken_field_two* FAILED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::date_hour* FAILED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::log_level* FAILED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_broken"::Broken* FAILED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_not_extracted_fields*eventtype="eventtype_splunkd_broken_2"::Broken* FAILED*',
 ]
