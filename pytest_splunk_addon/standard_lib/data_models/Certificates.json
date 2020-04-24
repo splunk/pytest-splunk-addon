@@ -20,7 +20,7 @@
           "name": "dest_port",
           "type": "optional",
           "condition": "",
-          "validity": "valid_dest_port=(isnum(dest_port), 1, null())",
+          "validity": "(isnum(dest_port), 1, null())",
           "expected_values": [],
           "comment": "The port number of the target."
         },
@@ -36,7 +36,7 @@
           "name": "duration",
           "type": "optional",
           "condition": "",
-          "validity": "valid_duration=(isnum(duration), 1, null())",
+          "validity": "(isnum(duration), 1, null())",
           "expected_values": [],
           "comment": "The amount of time for the completion of the certificate management event, in seconds."
         },
@@ -44,7 +44,7 @@
           "name": "response_time",
           "type": "optional",
           "condition": "",
-          "validity": "valid_response_time=(isnum(response_time), 1, null())",
+          "validity": "(isnum(response_time), 1, null())",
           "expected_values": [],
           "comment": "The amount of time it took to receive a response in the certificate management event, if applicable."
         },
@@ -60,7 +60,7 @@
           "name": "src_port",
           "type": "optional",
           "condition": "",
-          "validity": "valid_src_port=(isnum(src_port), 1, null())",
+          "validity": "(isnum(src_port), 1, null())",
           "expected_values": [],
           "comment": "The port number of the source."
         },
@@ -308,7 +308,7 @@
               "name": "ssl_validity_window",
               "type": "required",
               "condition": "",
-              "validity": "valid_ssl_validity_window=(isnum(ssl_validity_window), 1, null())",
+              "validity": "(isnum(ssl_validity_window), 1, null())",
               "expected_values": [],
               "comment": "The length of time (in seconds) for which this certificate is valid."
             },

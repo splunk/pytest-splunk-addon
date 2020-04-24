@@ -38,7 +38,7 @@
           "name": "dest_port",
           "type": "required",
           "condition": "",
-          "validity": "valid_dest_port=(isnum(dest_port),1,null())",
+          "validity": "(isnum(dest_port),1,null())",
           "expected_values": [],
           "comment": "The destination port of the web traffic."
         },
@@ -153,7 +153,7 @@
           "name": "bytes",
           "type": "conditional",
           "condition": "",
-          "validity": "valid_bytes=case(isnum(bytes),bytes,isnum(bytes_in) AND isnum(bytes_out),bytes_in+bytes_out,1=1,null())",
+          "validity": "case(isnum(bytes),bytes,isnum(bytes_in) AND isnum(bytes_out),bytes_in+bytes_out,1=1,null())",
           "expected_values": [],
           "comment": "The total number of bytes transferred (bytes_in + bytes_out)."
         },
@@ -161,7 +161,7 @@
           "name": "bytes_in",
           "type": "conditional",
           "condition": "",
-          "validity": "valid_bytes_in=case(isnum(bytes_in),bytes_in,isnum(bytes) AND isnum(bytes_out),bytes-bytes_out,1=1,null())",
+          "validity": "case(isnum(bytes_in),bytes_in,isnum(bytes) AND isnum(bytes_out),bytes-bytes_out,1=1,null())",
           "expected_values": [],
           "comment": "The number of inbound bytes transferred."
         },
@@ -169,7 +169,7 @@
           "name": "bytes_out",
           "type": "conditional",
           "condition": "",
-          "validity": "valid_bytes_out=case(isnum(bytes_out),bytes_out,isnum(bytes) AND isnum(bytes_in),bytes-bytes_in,1=1,null())",
+          "validity": "case(isnum(bytes_out),bytes_out,isnum(bytes) AND isnum(bytes_in),bytes-bytes_in,1=1,null())",
           "expected_values": [],
           "comment": "The number of outbound bytes transferred."
         },
@@ -200,7 +200,7 @@
           "name": "duration",
           "type": "optional",
           "condition": "",
-          "validity": "valid_duration=(isnum(duration),1,null())",
+          "validity": "(isnum(duration),1,null())",
           "expected_values": [],
           "comment": "The time taken by the proxy event, in milliseconds."
         },
@@ -233,7 +233,7 @@
           "name": "response_time",
           "type": "optional",
           "condition": "",
-          "validity": "valid_response_time=(isnum(response_time),1,null())",
+          "validity": "(isnum(response_time),1,null())",
           "expected_values": [],
           "comment": "The amount of time it took to receive a response, if applicable, in milliseconds."
         },
