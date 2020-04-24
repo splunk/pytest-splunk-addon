@@ -14,16 +14,16 @@ class DataModel(object):
     """
     def __init__(self, data_model_json):
 
-        self.root_data_set = data_model_json.get("root_object")
+        self.root_data_set = list(DataSet.load_dataset(data_model_json.get("objects")))
         self.name = data_model_json.get("modelName")
 
-    def _get_mapped_datasets(self, addon_tags, data_sets):
+    def _get_mapped_datasets(self, addon_tags, data_sets, mapped_datasets=[]):
         """
         Recursive function to get the data_sets mapped with addon_tags
         If the parent data_set is mapped, check the child data_sets too
 
         Args:
-            addon_tags(dict): {"stanza":str, "tags":list}
+            addon_tags(list): Contains tags mapped to a stanza
             data_sets(list): list of data sets to check with 
         
         Yields:
@@ -31,8 +31,10 @@ class DataModel(object):
         """
         for each_data_set in data_sets:
             if each_data_set.match_tags(addon_tags):
-                yield each_data_set
-                yield from self._get_mapped_datasets(addon_tags, each_data_set.get_child_datasets())
+                current_mapped_ds = mapped_datasets[:]
+                current_mapped_ds.append(each_data_set)
+                yield current_mapped_ds
+                yield from self._get_mapped_datasets(addon_tags, each_data_set.child_dataset, current_mapped_ds)
 
 
     def get_mapped_datasets(self, addon_tags):
@@ -40,7 +42,7 @@ class DataModel(object):
         Get all mapped dataSets for an Add-on's tags stanza
 
         Args:
-            addon_tags(dict): {"stanza":str, "tags":list}
+            addon_tags(list): Contains tags mapped to a stanza
 
         Yields:
             data_set.DataSet: data set object mapped with the tags
