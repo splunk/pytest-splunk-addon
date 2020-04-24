@@ -80,6 +80,7 @@ class CIMTestTemplates(object):
         self, splunk_search_util, splunk_app_cim_fields_not_extracted, record_property
     ):
         # Search Query
+
         base_search = "search"
         for each_set in splunk_app_cim_fields_not_extracted["data_set"]:
             base_search += " ({})".format(each_set.search_constraints)
@@ -92,6 +93,7 @@ class CIMTestTemplates(object):
         for each_field in splunk_app_cim_fields_not_extracted["fields"]:
             base_search += " ({}=*) OR".format(each_field.name)
 
+        # To remove the extra OR at the end of search
         base_search = base_search[:-2]
         base_search += ")"
 
@@ -106,23 +108,22 @@ class CIMTestTemplates(object):
         base_search += " by sourcetype"
         record_property("search", base_search)
 
-        result, results = splunk_search_util.checkQueryCountIsZero(
-            base_search, interval=INTERVAL, retries=RETRIES
+        results = list(
+            splunk_search_util.getFieldValuesList(
+                base_search, interval=INTERVAL, retries=RETRIES
+            )
         )
 
         violations = []
         if results:
             violations = [
-                {
-                    "sourcetype": each_elem["sourcetype"],
-                    "field": field,
-                    "event_count": each_elem.get(field),
-                }
-                for each_elem in results.as_list
-                for field in results.fields
-                if not each_elem.get(field) == "0"
-                and not each_elem.get(field) == each_elem["sourcetype"]
+                [each_elem["sourcetype"], field.name, each_elem.get(field.name)]
+                for each_elem in results
+                for field in splunk_app_cim_fields_not_extracted["fields"]
+                if not each_elem.get(field.name) == "0"
+                and not each_elem.get(field.name) == each_elem["sourcetype"]
             ]
+
             violation_str = (
                 "\n These fields are automatically provided by asset and identity"
                 " correlation features of applications like Splunk Enterprise Security."
@@ -130,15 +131,7 @@ class CIMTestTemplates(object):
                 " Expected eventcount: 0 \n"
             )
             violation_str += FieldTestHelper.get_table_output(
-                headers=["Sourcetype", "Fields", "Event Count"],
-                value_list=[
-                    [
-                        each_violation["sourcetype"],
-                        each_violation["field"],
-                        each_violation["event_count"],
-                    ]
-                    for each_violation in violations
-                ],
+                headers=["Sourcetype", "Fields", "Event Count"], value_list=violations
             )
 
         assert not violations, violation_str

@@ -119,40 +119,39 @@ class CIMTestGenerator(object):
         5. Compare and get the list of fields whose extractions are not allowed but defined.
         6. yield the field list
         """
-        with open(self.common_fields_path, "r") as cf_json:
-            common_fields_json = json.load(cf_json)
-            common_fields_list = list(Field.parse_fields(common_fields_json["fields"]))
-            for tag_stanza, dataset_list in self.get_mapped_datasets():
-                test_dataset = dataset_list[-1]
-                common_fields_list.extend(
-                    [
-                        each_field
-                        for each_field in test_dataset.fields
-                        if each_field.type in ["not_extracted", "not_allowed"]
-                    ]
-                )
+        common_fields_list = self.get_common_fields(
+            test_type=["not_extracted", "not_allowed"]
+        )
+        for tag_stanza, dataset_list in self.get_mapped_datasets():
+            test_dataset = dataset_list[-1]
+            common_fields_list.extend(
+                [
+                    each_field
+                    for each_field in test_dataset.fields
+                    if each_field.type in ["not_extracted", "not_allowed"]
+                ]
+            )
 
-            addon_stanzas = self.addon_parser.get_props_fields()
-            not_allowed_fields = []
-            for field_group in addon_stanzas:
-                test_group = field_group.copy()
-                not_allowed_fields.extend(
-                    [
-                        {
-                            "name": each_common_field.name,
-                            "stanza": test_group.get("stanza"),
-                            "classname": test_group.get("classname"),
-                        }
-                        for each in test_group["fields"]
-                        for each_common_field in common_fields_list
-                        if each_common_field.name == each.name
-                    ]
-                )
+        addon_stanzas = self.addon_parser.get_props_fields()
+        not_allowed_fields = []
+        for field_group in addon_stanzas:
+            test_group = field_group.copy()
+            not_allowed_fields.extend(
+                [
+                    {
+                        "name": each_common_field.name,
+                        "stanza": test_group.get("stanza"),
+                        "classname": test_group.get("classname"),
+                    }
+                    for each in test_group["fields"]
+                    for each_common_field in common_fields_list
+                    if each_common_field.name == each.name
+                ]
+            )
 
-            if not_allowed_fields:
-                yield pytest.param(
-                    {"fields": not_allowed_fields}, id=f"extractions_found",
-                )
+        yield pytest.param(
+            {"fields": not_allowed_fields}, id=f"searchtime_cim_fields",
+        )
 
     def generate_not_extracted_tests(self):
         """
@@ -162,28 +161,38 @@ class CIMTestGenerator(object):
         4. yield the field list
         5. Expected event_count for the fields: 0
         """
+
+        not_extracted_fields = self.get_common_fields(test_type=["not_extracted"])
+        for tag_stanza, dataset_list in self.get_mapped_datasets():
+            test_dataset = dataset_list[-1]
+            not_extracted_fields.extend(
+                [
+                    each_field
+                    for each_field in test_dataset.fields
+                    if each_field.type == "not_extracted"
+                ]
+            )
+            yield pytest.param(
+                {
+                    "tag_stanza": tag_stanza,
+                    "data_set": dataset_list,
+                    "fields": not_extracted_fields,
+                },
+                id=f"{tag_stanza}::{test_dataset}",
+            )
+
+    def get_common_fields(self, test_type=[]):
+        """
+        To obtain list object of common fields mentioned in COMMON_FIELDS_PATH
+        """
         with open(self.common_fields_path, "r") as cf_json:
             common_fields_json = json.load(cf_json)
-            common_fields_list = list(Field.parse_fields(common_fields_json["fields"]))
-            not_extracted_fields = [
+        common_fields_list = list(Field.parse_fields(common_fields_json["fields"]))
+        if len(test_type) == 1:
+            return [
                 each_field
                 for each_field in common_fields_list
-                if each_field.type == "not_extracted"
+                if each_field.type in test_type
             ]
-            for tag_stanza, dataset_list in self.get_mapped_datasets():
-                test_dataset = dataset_list[-1]
-                not_extracted_fields.extend(
-                    [
-                        each_field
-                        for each_field in test_dataset.fields
-                        if each_field.type == "not_extracted"
-                    ]
-                )
-                yield pytest.param(
-                    {
-                        "tag_stanza": tag_stanza,
-                        "data_set": dataset_list,
-                        "fields": not_extracted_fields,
-                    },
-                    id=f"{tag_stanza}::{test_dataset}",
-                )
+        else:
+            return common_fields_list
