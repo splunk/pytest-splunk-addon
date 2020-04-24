@@ -249,9 +249,10 @@ TA_BROKEN_SOURCETYPE_PASSED = [
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::nofield* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::aliasthree* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::alert* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::change* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::authentication* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*sourcetype="splunkd"::tag::tags_negative_testing* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::for_multiple_tags_negative* PASSED'
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::for_multiple_tags_negative* PASSED*'
 ]
 
 """
