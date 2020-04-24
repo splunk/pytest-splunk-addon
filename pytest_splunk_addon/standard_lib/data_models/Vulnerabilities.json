@@ -44,7 +44,7 @@
           "name": "cvss",
           "type": "required",
           "condition": "",
-          "validity": "valid_cvss=(isnum(cvss), 1, null())",
+          "validity": "(isnum(cvss), 1, null())",
           "expected_values": [],
           "comment": "Numeric indicator of the common vulnerability scoring system."
         },

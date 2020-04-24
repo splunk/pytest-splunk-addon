@@ -6,6 +6,7 @@ import logging
 import json
 from .field_test_adapter import FieldTestAdapater
 
+
 class FieldTestHelper(object):
     """
     Provides the helper methods to test addon_parser.Field object
@@ -16,13 +17,14 @@ class FieldTestHelper(object):
         interval (int): at what interval each retry should be made
         retries (int): number of retries to make if no results found
     """
+
     logger = logging.getLogger("pytest-splunk-addon-tests")
+
     def __init__(self, search_util, fields, interval=10, retries=4):
         self.search_util = search_util
         self.fields = FieldTestAdapater.get_test_fields(fields)
         self.interval = interval
         self.retries = retries
-
 
     def test_field(self, base_search):
         """
@@ -47,11 +49,12 @@ class FieldTestHelper(object):
         """
         self._make_search_query(base_search)
         self.logger.info(f"Executing the search query: {self.search}")
-        self.results = list(self.search_util.getFieldValuesList(
+        self.results = list(
+            self.search_util.getFieldValuesList(
                 self.search, self.interval, self.retries
-            ))
+            )
+        )
         return self._parse_result(self.results)
-
 
     def _make_search_query(self, base_search):
         """
@@ -73,12 +76,11 @@ class FieldTestHelper(object):
         self.search_event = self.search
         for each_field in self.fields:
             self.search += each_field.gen_validity_query()
-        
+
         self.search += " \n| stats count as event_count"
         for each_field in self.fields:
             self.search += each_field.get_stats_query()
         self.search += " by sourcetype"
-
 
     def _parse_result(self, results):
         """
@@ -100,32 +102,36 @@ class FieldTestHelper(object):
             for each_field in self.fields:
                 field_dict = {
                     "field": each_field,
-                    "field_count": int(each_sourcetype_result.get(
-                        FieldTestAdapater.FIELD_COUNT.format(each_field.name))),
+                    "field_count": int(
+                        each_sourcetype_result.get(
+                            FieldTestAdapater.FIELD_COUNT.format(each_field.name)
+                        )
+                    ),
                 }
                 if each_field.gen_validity_query():
-                    field_dict["valid_field_count"]= int(each_sourcetype_result.get(
-                        FieldTestAdapater.VALID_FIELD_COUNT.format(each_field.name)))
+                    field_dict["valid_field_count"] = int(
+                        each_sourcetype_result.get(
+                            FieldTestAdapater.VALID_FIELD_COUNT.format(each_field.name)
+                        )
+                    )
                     field_dict["invalid_values"] = each_sourcetype_result.get(
-                            FieldTestAdapater.INVALID_FIELD_VALUES.format(each_field.name), '[]').replace("'", "\"")
-                field_dict.update({
-                    "sourcetype": sourcetype,
-                    "event_count": event_count
-                })
+                        FieldTestAdapater.INVALID_FIELD_VALUES.format(each_field.name),
+                        "[]",
+                    ).replace("'", '"')
+                field_dict.update(
+                    {"sourcetype": sourcetype, "event_count": event_count}
+                )
                 self.parsed_result.append(field_dict)
             if not self.fields:
-                self.parsed_result.append({
-                        "sourcetype": sourcetype,
-                        "event_count": event_count
-                })
+                self.parsed_result.append(
+                    {"sourcetype": sourcetype, "event_count": event_count}
+                )
         return self.parsed_result
 
-
     def _gen_condition(self):
-        return " AND ".join([
-            each_field.condition for each_field in self.fields if each_field.condition
-        ])
-
+        return " AND ".join(
+            [each_field.condition for each_field in self.fields if each_field.condition]
+        )
 
     def format_exc_message(self):
         """
@@ -158,13 +164,17 @@ class FieldTestHelper(object):
                 value_list=[
                     [each_result["sourcetype"], each_result["event_count"]]
                     for each_result in self.parsed_result
-                ]
+                ],
             )
         elif len(self.fields) >= 1:
             exc_message = self.get_table_output(
                 headers=[
-                    "Sourcetype", "Field", "Total Count", 
-                    "Field Count", "Invalid Field Count", "Invalid Values"
+                    "Sourcetype",
+                    "Field",
+                    "Total Count",
+                    "Field Count",
+                    "Invalid Field Count",
+                    "Invalid Values",
                 ],
                 value_list=[
                     [
@@ -172,25 +182,28 @@ class FieldTestHelper(object):
                         each_result["field"].name,
                         each_result["event_count"],
                         each_result["field_count"],
-                        each_result["field_count"] - each_result.get(
+                        each_result["field_count"]
+                        - each_result.get(
                             "valid_field_count", each_result["field_count"]
                         ),
-                        (each_result["invalid_values"][:200]
-                        if each_result["invalid_values"] else "-")
+                        (
+                            each_result["invalid_values"][:200]
+                            if each_result["invalid_values"]
+                            else "-"
+                        ),
                     ]
                     for each_result in self.parsed_result
-                ]
+                ],
             )
-        exc_message += (
-            f"\n\nSearch = {self.search}"
-        )
+        exc_message += f"\n\nSearch = {self.search}"
         for each_field in self.fields:
-            exc_message += f"\n\nProperties for the field :: {each_field.get_properties()}"
+            exc_message += (
+                f"\n\nProperties for the field :: {each_field.get_properties()}"
+            )
         return exc_message
 
-
     @staticmethod
-    def get_table_output(headers, value_list):
+    def get_table_output(headers, value_list, column_width=40):
         """
         Generate a table output of the following format 
 
@@ -200,16 +213,14 @@ class FieldTestHelper(object):
             Two     Value2
             --------------
         """
-        table_output = ("{:<20}"*(len(headers))).format(
-                     *headers
-                )
-        table_output += "\n" + "-"*20*len(headers)
+        table_output = ("\n" + "{:<{col}}" * (len(headers))).format(
+            col=column_width, *headers
+        )
+        table_output += "\n" + "-" * column_width * len(headers)
         for each_value in value_list:
-            table_output += (
-                ("\n" + "{:<20}"*(len(headers)-1) + "{}").format(
-                *each_value
-            ))
-        table_output += "\n" + "-"*20*len(headers)
+            table_output += ("\n" + "{:<{col}}" * (len(headers) - 1) + "{}").format(
+                col=column_width, *each_value
+            )
+        table_output += "\n" + "-" * column_width * len(headers)
 
         return table_output
-

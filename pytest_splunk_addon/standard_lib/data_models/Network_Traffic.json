@@ -33,7 +33,7 @@
           "name": "bytes",
           "type": "conditional",
           "condition": "",
-          "validity": "valid_bytes=case(isnum(bytes),bytes,isnum(bytes_in) AND isnum(bytes_out),bytes_in+bytes_out,1=1,null())",
+          "validity": "case(isnum(bytes),bytes,isnum(bytes_in) AND isnum(bytes_out),bytes_in+bytes_out,1=1,null())",
           "expected_values": [],
           "comment": "Total count of bytes handled by this device/interface (bytes_in + bytes_out)."
         },
@@ -41,7 +41,7 @@
           "name": "bytes_in",
           "type": "conditional",
           "condition": "",
-          "validity": "valid_bytes_in=case(isnum(bytes_in),bytes_in,isnum(bytes) AND isnum(bytes_out),bytes-bytes_out,1=1,null())",
+          "validity": "case(isnum(bytes_in),bytes_in,isnum(bytes) AND isnum(bytes_out),bytes-bytes_out,1=1,null())",
           "expected_values": [],
           "comment": "How many bytes this device/interface received."
         },
@@ -49,7 +49,7 @@
           "name": "bytes_out",
           "type": "conditional",
           "condition": "",
-          "validity": "valid_bytes_out=case(isnum(bytes_out),bytes_out,isnum(bytes) AND isnum(bytes_in),bytes-bytes_in,1=1,null())",
+          "validity": "case(isnum(bytes_out),bytes_out,isnum(bytes) AND isnum(bytes_in),bytes-bytes_in,1=1,null())",
           "expected_values": [],
           "comment": "How many bytes this device/interface transmitted."
         },
@@ -57,7 +57,7 @@
           "name": "channel",
           "type": "not_extracted",
           "condition": "",
-          "validity": "valid_channel=(isnum(channel), 1, null())",
+          "validity": "(isnum(channel), 1, null())",
           "expected_values": [],
           "comment": "The 802.11 channel used by a wireless network."
         },
@@ -80,7 +80,7 @@
         {
           "name": "dest_ip",
           "type": "conditional",
-          "condition": "dest_ip=case(regex dest_ip='([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}',dest)| stats count, count(dest_ip) as field_count",
+          "condition": "dest_ip=case(regex dest_ip='([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}',dest)",
           "validity": "",
           "expected_values": [],
           "comment": "The IP address of the destination."
@@ -88,7 +88,7 @@
         {
           "name": "dest_mac",
           "type": "conditional",
-          "condition": "dest_mac=case(regex dest_mac='^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$',dest)| stats count, count(dest_mac) as field_count",
+          "condition": "dest_mac=case(regex dest_mac='^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$',dest)",
           "validity": "",
           "expected_values": [],
           "comment": "The destination TCP/IP layer 2 Media Access Control (MAC) address of a packet's destination, such as 06:10:9f:eb:8f:14. Note: Always force lower case on this field and use colons instead of dashes, spaces, or no separator."
@@ -96,15 +96,15 @@
         {
           "name": "dest_port",
           "type": "conditional",
-          "condition": "protocol='ip'| stats count, count(dest_port) as field_count",
-          "validity": "valid_dest_port=(isnum(dest_port),1,null())",
+          "condition": "protocol='ip'",
+          "validity": "(isnum(dest_port),1,null())",
           "expected_values": [],
           "comment": "The destination port of the network traffic. Note: Do not translate the value of this field to a string (tcp/80 is 80, not http). You can set up the corresponding string value in the dest_svc field."
         },
         {
           "name": "dest_translated_ip",
           "type": "conditional",
-          "condition": "protocol='IP' OR protocol='ICMP'| stats count, count(dest_translated_port) as field_count",
+          "condition": "protocol='IP' OR protocol='ICMP'",
           "validity": "",
           "expected_values": [],
           "comment": "The NATed IPv4 or IPv6 address to which a packet has been sent."
@@ -112,7 +112,7 @@
         {
           "name": "dest_translated_port",
           "type": "conditional",
-          "condition": "protocol='ip' AND dest_translated_ip!=NULL| stats count, count(dest_translated_port) as field_count",
+          "condition": "protocol='ip' AND dest_translated_ip!=NULL",
           "validity": "",
           "expected_values": [],
           "comment": "The NATed port to which a packet has been sent. Note: Do not translate the values of this field to strings (tcp/80 is 80, not http)."
@@ -137,7 +137,7 @@
           "name": "duration",
           "type": "optional",
           "condition": "",
-          "validity": "valid_duration=(isnum(duration),1,null())",
+          "validity": "(isnum(duration),1,null())",
           "expected_values": [],
           "comment": "The amount of time for the completion of the network event, in seconds."
         },
@@ -176,7 +176,7 @@
         {
           "name": "icmp_code",
           "type": "conditional",
-          "condition": "protocol='icmp'| stats count, count(icmp_code) as field_count",
+          "condition": "protocol='icmp'",
           "validity": "",
           "expected_values": [],
           "comment": "The RFC 2780 or RFC 4443 human-readable code value of the traffic, such as Destination Unreachable or Parameter Problem . See the ICMP Type Numbers and the ICMPv6 Type Numbers."
@@ -185,7 +185,7 @@
           "name": "icmp_type",
           "type": "conditional",
           "condition": "",
-          "validity": "valid_icmp_type=(isnum(duration),1,null())",
+          "validity": "(isnum(duration),1,null())",
           "expected_values": ["0-254"],
           "comment": "The RFC 2780 or RFC 4443 numeric value of the traffic. See the ICMP Type Numbers and the ICMPv6 Type Numbers."
         },
@@ -193,7 +193,7 @@
           "name": "packets",
           "type": "conditional",
           "condition": "",
-          "validity": "valid_packets=case(isnum(packets),packets,isnum(packets_in) AND isnum(packets_out),packets_in+packets_out,1=1,null())",
+          "validity": "case(isnum(packets),packets,isnum(packets_in) AND isnum(packets_out),packets_in+packets_out,1=1,null())",
           "expected_values": [],
           "comment": "The total count of packets handled by this device/interface (packets_in + packets_out)."
         },
@@ -201,7 +201,7 @@
           "name": "packets_in",
           "type": "conditional",
           "condition": "",
-          "validity": "valid_packets_in=case(isnum(packets_in),packets_in,isnum(packets) AND isnum(packets_out),packets-packets_out,1=1,null())",
+          "validity": "case(isnum(packets_in),packets_in,isnum(packets) AND isnum(packets_out),packets-packets_out,1=1,null())",
           "expected_values": [],
           "comment": "The total count of packets received by this device/interface."
         },
@@ -209,7 +209,7 @@
           "name": "packets_out",
           "type": "conditional",
           "condition": "",
-          "validity": "valid_packets_out=case(isnum(packets_out),packets_out,isnum(packets) AND isnum(packets_in),packets-packets_in,1=1,null())",
+          "validity": "case(isnum(packets_out),packets_out,isnum(packets) AND isnum(packets_in),packets-packets_in,1=1,null())",
           "expected_values": [],
           "comment": "The total count of packets transmitted by this device/interface."
         },
@@ -233,7 +233,7 @@
           "name": "response_time",
           "type": "optional",
           "condition": "",
-          "validity": "valid_response_time=(isnum(response_time),1,null())",
+          "validity": "(isnum(response_time),1,null())",
           "expected_values": [],
           "comment": "The amount of time it took to receive a response in the network event, in seconds."
         },
@@ -256,8 +256,8 @@
         {
           "name": "src",
           "type": "required",
-          "condition": "|eval is_valid=case((protocol=='ip' OR protocol=='icmp') AND like(src,'([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}'), 1,  like(src,'^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$'), 1, true(), 0 )|where is_valid=1",
-          "validity": "",
+          "condition": "",
+          "validity": "case((protocol==\"ip\" OR protocol==\"icmp\") AND like(src,\"([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}\"), src,  like(src,\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\"), src)",
           "expected_values": [],
           "comment": "The source of the network traffic (the client requesting the connection). You can alias this from more specific fields, such as src_host, src_ip, or src_name.'"
         },
@@ -321,7 +321,7 @@
           "name": "ttl",
           "type": "optional",
           "condition": "",
-          "validity": "valid_ttl=(isnum(ttl),1,null())",
+          "validity": "(isnum(ttl),1,null())",
           "expected_values": [],
           "comment": "The 'time to live' of a packet or diagram, in seconds."
         },
@@ -360,15 +360,15 @@
         {
           "name": "src_ip",
           "type": "conditional",
-          "condition": "src_ip=case(regex src_ip='([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}',src)| stats count, count(src_ip) as field_count",
-          "validity": "",
+          "condition": "",
+          "validity": "case(src_ip,'([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}',src)",
           "expected_values": [],
           "comment": "The ip address of the source."
         },
         {
           "name": "src_mac",
           "type": "conditional",
-          "condition": "src_mac=case(regex src_mac='^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$',src)| stats count, count(src_mac) as field_count",
+          "condition": "src_mac=case(regex src_mac='^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$',src)",
           "validity": "",
           "expected_values": [],
           "comment": "The source TCP/IP layer 2 Media Access Control (MAC) address of a packet's destination, such as 06:10:9f:eb:8f:14. Note: Always force lower case on this field and use colons instead of dashes, spaces, or no separator."
@@ -376,16 +376,16 @@
         {
           "name": "src_port",
           "type": "conditional",
-          "condition": "protocol='ip'| stats count, count(src_port) as field_count ",
-          "validity": "valid_src_port=(isnum(src_port),1,null())",
+          "condition": "protocol='ip'",
+          "validity": "(isnum(src_port),1,null())",
           "expected_values": [],
           "comment": "The source port of the network traffic. Note: Do not translate the value of this field to a string (tcp/80 is 80, not http). You can set up the corresponding string value in the src_svc field."
         },
         {
           "name": "src_translated_port",
           "type": "conditional",
-          "condition": "protocol='ip' AND src_translated_ip!=NULL| stats count, count(src_translated_port) as field_count",
-          "validity": "valid_src_translated_port=(isnum(src_translated_port),1,null())",
+          "condition": "protocol='ip' AND src_translated_ip!=NULL",
+          "validity": "(isnum(src_translated_port),1,null())",
           "expected_values": [],
           "comment": "The NATed port from which a packet has been sent. Note: Do not translate the values of this field to strings (tcp/80 is 80, not http."
         }

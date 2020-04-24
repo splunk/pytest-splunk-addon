@@ -24,11 +24,11 @@ class Field(object):
 
     def __init__(self, field_json=None):
         self.name = field_json.get("name")
-        self.type = field_json.get("type", "required")
-        self.expected_values = field_json.get("expected_values", ["*"])
-        self.negative_values = field_json.get("negative_values", ["-", ""])
-        self.condition = field_json.get("condition", "")
-        self.validity = field_json.get("validity", self.name)
+        self.type = field_json.get("type") or "required"
+        self.expected_values = field_json.get("expected_values") or ["*"]
+        self.negative_values = field_json.get("negative_values") or ["-", ""]
+        self.condition = field_json.get("condition") or ""
+        self.validity = field_json.get("validity") or self.name
 
     def __str__(self):
         return self.name

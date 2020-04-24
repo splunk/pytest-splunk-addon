@@ -43,7 +43,7 @@
         {
           "name": "file_hash",
           "type": "conditional",
-          "condition": "file_hash='host' | stats count, count(file_hash) as field_count",
+          "condition": "file_hash='host' ",
           "validity": "",
           "expected_values": [],
           "comment": "A cryptographic identifier assigned to the file object affected by the event."
@@ -51,7 +51,7 @@
         {
           "name": "file_name",
           "type": "conditional",
-          "condition": "file_name='host' | stats count, count(file_name) as field_count",
+          "condition": "file_name='host' ",
           "validity": "",
           "expected_values": [],
           "comment": "The name of the file, such as notepad.exe."
@@ -59,7 +59,7 @@
         {
           "name": "file_path",
           "type": "conditional",
-          "condition": "file_path='host' | stats count, count(file_path) as field_count",
+          "condition": "file_path='host' ",
           "validity": "",
           "expected_values": [],
           "comment": "The path of the file, such as C:\\Windows\\System32\\notepad.exe."
@@ -67,7 +67,7 @@
         {
           "name": "ids_type",
           "type": "required",
-          "condition": "ids_type='network' OR ids_type='host'| stats count, count(file_path) as field_count",
+          "condition": "ids_type='network' OR ids_type='host'",
           "validity": "",
           "expected_values": ["network", "host"],
           "comment": "The type of IDS that generated the event."
@@ -97,7 +97,7 @@
         {
           "name": "src",
           "type": "conditional",
-          "condition": "network=NULL host=* | stats count, count(src) as field_count",
+          "condition": "network=NULL host=* ",
           "validity": "",
           "expected_values": [],
           "comment": "The source involved in the attack detected by the IDS. You can alias this from more specific fields not included in this data model, such as src_host, src_ip, or src_name."
@@ -105,7 +105,7 @@
         {
           "name": "transport",
           "type": "conditional",
-          "condition": "network=NULL host=* | stats count, count(transport) as field_count",
+          "condition": "network=NULL host=* ",
           "validity": "",
           "expected_values": [],
           "comment": "The OSI layer 4 (transport) protocol of the intrusion, in lower case."
@@ -113,7 +113,7 @@
         {
           "name": "user",
           "type": "conditional",
-          "condition": "network=NULL host=* | stats count, count(user) as field_count",
+          "condition": "network=NULL host=* ",
           "validity": "",
           "expected_values": [],
           "comment": "The user involved with the intrusion detection event."
