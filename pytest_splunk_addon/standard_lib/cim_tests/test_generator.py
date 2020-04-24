@@ -4,6 +4,7 @@ Generates test cases to verify the CIM compatibility .
 """
 import pytest
 import json
+import os.path as op
 from . import DataModelHandler
 from ..addon_parser import AddonParser
 from ..addon_parser import Field
@@ -14,25 +15,32 @@ class CIMTestGenerator(object):
     Generates test cases to verify the CIM compatibility.
 
     Args:
-        addon_path (str): Relative or absolute path to the add-on
+        addon_path (str): 
+            Relative or absolute path to the add-on
         data_model_path (str): 
             Relative or absolute path to the data model json files
         test_field_type (list): 
             For which types of fields, the test cases should be generated
+        common_fields_path (str): 
+            Relative or absolute path of the json file with common fields
     """
+
+    COMMON_FIELDS_PATH = "CommonFields.json"
 
     def __init__(
         self,
         addon_path,
         data_model_path,
         test_field_type=["required", "conditional"],
-        common_fields_path="pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\CommonFields.json",
+        common_fields_path=None,
     ):
 
         self.data_model_handler = DataModelHandler(data_model_path)
         self.addon_parser = AddonParser(addon_path)
         self.test_field_type = test_field_type
-        self.common_fields_path = common_fields_path
+        self.common_fields_path = common_fields_path or op.join(
+            op.dirname(op.abspath(__file__)), self.COMMON_FIELDS_PATH
+        )
 
     def generate_tests(self, fixture):
         """
@@ -104,12 +112,12 @@ class CIMTestGenerator(object):
 
     def generate_not_allowed_tests(self):
         """
-        Get a list of fields from common fields json.
-        Get a list of fields whose extractions are defined in props
-        Compare and get the list whose extractions are defined.
-        and remaining fields are sent in the 2nd template
-
-        which template to use
+        1. Get a list of fields of type in ["not_extracted", "not_allowed"] from common fields json.
+        2. Get a list of fields of type in ["not_extracted", "not_allowed"] from mapped datasets.
+        3. Combine list1 and list2
+        4. Get a list of fields whose extractions are defined in props.
+        5. Compare and get the list of fields whose extractions are not allowed but defined.
+        6. yield the field list
         """
         with open(self.common_fields_path, "r") as cf_json:
             common_fields_json = json.load(cf_json)
@@ -148,7 +156,11 @@ class CIMTestGenerator(object):
 
     def generate_not_extracted_tests(self):
         """
-
+        1. Get the list of type="not_extracted" fields from common fields json.
+        2. Get the list of type="not_extracted" fields from mapped datasets.
+        3. Combine list1 and list2
+        4. yield the field list
+        5. Expected event_count for the fields: 0
         """
         with open(self.common_fields_path, "r") as cf_json:
             common_fields_json = json.load(cf_json)

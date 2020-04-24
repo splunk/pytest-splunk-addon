@@ -29,11 +29,11 @@ class CIMTestTemplates(object):
         self, splunk_search_util, splunk_app_cim_fields, record_property
     ):
         """
-        Test the the required fields in the data models are extracted with valid values. 
+        Test the the required fields in the data models are extracted with valid values.
         Supports 3 scenarios. The test order is maintained for better test report.
-        1. Check that there is at least 1 event mapped with the data model 
+        1. Check that there is at least 1 event mapped with the data model
         2. Check that each required field is extracted in all of the events mapped with the data model.
-        3. Check that if there are inter dependent fields, either all fields should be extracted or 
+        3. Check that if there are inter dependent fields, either all fields should be extracted or
             none of them should be extracted.
         """
 
@@ -104,9 +104,12 @@ class CIMTestTemplates(object):
             base_search += " count({fname}) AS {fname}".format(fname=each_field.name)
 
         base_search += " by sourcetype"
-        result, results = splunk_search_util.checkQueryCountIsZero(base_search)
-
         record_property("search", base_search)
+
+        result, results = splunk_search_util.checkQueryCountIsZero(
+            base_search, interval=INTERVAL, retries=RETRIES
+        )
+
         violations = []
         if results:
             violations = [
@@ -120,17 +123,23 @@ class CIMTestTemplates(object):
                 if not each_elem.get(field) == "0"
                 and not each_elem.get(field) == each_elem["sourcetype"]
             ]
-            violation_str = "\n{:<30} | {:<40} | {:<100}\n".format(
-                "Sourcetype", "Field", "EventCount"
+            violation_str = (
+                "\n These fields are automatically provided by asset and identity"
+                " correlation features of applications like Splunk Enterprise Security."
+                "\n Do not define extractions for these fields when writing add-ons.\n"
+                " Expected eventcount: 0 \n"
             )
-            violation_str += "=" * 90
-            for each_violation in violations:
-                violation_str += "\n{:<30} | {:<40} | {:<100}\n".format(
-                    each_violation["sourcetype"],
-                    each_violation["field"],
-                    each_violation["event_count"],
-                )
-                violation_str += "-" * 90
+            violation_str += FieldTestHelper.get_table_output(
+                headers=["Sourcetype", "Fields", "Event Count"],
+                value_list=[
+                    [
+                        each_violation["sourcetype"],
+                        each_violation["field"],
+                        each_violation["event_count"],
+                    ]
+                    for each_violation in violations
+                ],
+            )
 
         assert not violations, violation_str
 
@@ -139,15 +148,18 @@ class CIMTestTemplates(object):
     def test_cim_not_allowed_fields(
         self, splunk_app_cim_fields_not_allowed, record_property
     ):
-        res_str = "\n These fields are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for these fields when writing add-ons."
-
-        result_str = "\n{:<30} | {:<40} | {:<100}\n".format(
-            "Stanza", "Classname", "Fieldname"
+        result_str = (
+            "\n These fields are automatically provided by asset and identity"
+            " correlation features of applications like Splunk Enterprise Security."
+            "\n Do not define extractions for these fields when writing add-ons.\n"
         )
-        result_str += "=" * 90
-        for data in splunk_app_cim_fields_not_allowed["fields"]:
-            result_str += "\n{:<40} | {:<40} | {:<100} \n".format(
-                data["stanza"], data["classname"], data["name"]
-            )
-            result_str += "-" * 90
-        assert False, result_str
+
+        result_str += FieldTestHelper.get_table_output(
+            headers=["Stanza", "Classname", "Fieldname"],
+            value_list=[
+                [data["stanza"], data["classname"], data["name"]]
+                for data in splunk_app_cim_fields_not_allowed["fields"]
+            ],
+        )
+
+        assert not splunk_app_cim_fields_not_allowed["fields"], result_str
