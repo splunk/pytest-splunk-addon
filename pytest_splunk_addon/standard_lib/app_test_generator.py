@@ -4,11 +4,12 @@ Test Generator for an App.
 Generates test cases of Fields and CIM.
 """
 import logging
-
+import os
 from .fields_tests import FieldTestGenerator
 from .cim_tests import CIMTestGenerator
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
+
 
 class AppTestGenerator(object):
     """
@@ -18,6 +19,7 @@ class AppTestGenerator(object):
     Args:
         pytest_config: To get the options given to pytest
     """
+
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
         self.seen_tests = set()
@@ -26,41 +28,32 @@ class AppTestGenerator(object):
                 self.pytest_config.getoption("splunk_app"),
                 field_bank = self.pytest_config.getoption("field_bank", False)
             )
-        # self.test_generator = CIMTestGenerator(
-        #         True or self.pytest_config.getoption("dm_path"),
-        #         self.pytest_config.getoption("splunk_app"),
-        #     )
+
+        data_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data_models')
+        LOGGER.debug("Initializing CIMTestGenerator to generate the test cases")
+        self.cim_test_generator = CIMTestGenerator(
+                self.pytest_config.getoption("splunk_app"),
+                self.pytest_config.getoption("splunk_dm_path") or data_model_path,
+            )
 
     def generate_tests(self, fixture):
         """
         Generate the test cases based on the fixture provided 
         supported fixtures:
-
-        *  splunk_app_positive_fields
-        *  splunk_app_negative_fields
-        *  splunk_app_tags
-        *  splunk_app_eventtypes
-        *  splunk_app_cim
+        *  splunk_app_searchtime_*
+        *  splunk_app_cim_*
 
         Args:
             fixture(str): fixture name
         """
-        if fixture.endswith("fields"):
-            is_positive = "positive" in fixture or not "negative" in fixture
+        if fixture.startswith("splunk_app_searchtime"):
             yield from self.dedup_tests(
-                self.fieldtest_generator.generate_field_tests(is_positive=is_positive)
+                self.fieldtest_generator.generate_tests(fixture)
             )
-        elif fixture.endswith("tags"):
+        elif fixture.startswith("splunk_app_cim"):
             yield from self.dedup_tests(
-                self.fieldtest_generator.generate_tag_tests()
+                self.cim_test_generator.generate_tests(fixture)
             )
-        elif fixture.endswith("eventtypes") :
-            yield from self.dedup_tests(
-                self.fieldtest_generator.generate_eventtype_tests()
-            )
-
-        elif fixture.endswith("cim"):
-            pass
 
     def dedup_tests(self, test_list):
         """

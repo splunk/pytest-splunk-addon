@@ -4,6 +4,7 @@ Includes the test scenarios to check the CIM compatibility of an Add-on.
 """
 import logging
 import pytest
+from .field_test_helper import FieldTestHelper
 
 DATA_MODELS = [
     "Alerts",
@@ -31,6 +32,8 @@ DATA_MODELS = [
     "Web",
 ]
 
+INTERVAL = 3
+RETRIES = 3
 
 class CIMTestTemplates(object):
     """
@@ -41,7 +44,6 @@ class CIMTestTemplates(object):
         - Field Cluster should be verified (should be included with required field test)
         - Verify if CIM installed or not 
         - Not Allowed Fields should not be extracted 
-        - TODO 
     """
 
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
@@ -58,6 +60,11 @@ class CIMTestTemplates(object):
             caplog (fixture): fixture to capture logs.
         """
 
+        test_helper = FieldTestHelper(
+            splunk_search_util, 
+            [],
+            interval=INTERVAL, retries=RETRIES
+        )
         search = ""
         # Iterate data models list to create a search query
         for index, datamodel in enumerate(DATA_MODELS):
@@ -69,21 +76,96 @@ class CIMTestTemplates(object):
         search += """| stats delim=", " dc(dm_type) as datamodel_count, values(dm_type) as datamodels by eventtype | nomv datamodels
         | where datamodel_count > 1 and eventtype!="err0r"
         """
-
         record_property("search", search)
-        result, results = splunk_search_util.checkQueryCountIsZero(search)
-        if not result:
-            record_property("results", results.as_list)
-            # Iterate results lists to create a table format string
-            result_str = "{:<70} {:<20} {:<200} \n".format(
-                "Eventtype", "Count", "Datamodels"
-            )
-            for data in results.as_list:
-                result_str += "{:<70} {:<20} {:<200} \n".format(
-                    data["eventtype"], data["datamodel_count"], data["datamodels"]
-                )
 
-        assert result, (
+        results = list(splunk_search_util.getFieldValuesList(
+            search, INTERVAL, RETRIES
+        ))
+        if results:
+            record_property("results", results)
+            result_str = test_helper.get_table_output(
+                headers=["Count", "Eventtype", "Datamodels"],
+                value_list=[
+                    [each_result["datamodel_count"], each_result["eventtype"],  each_result["datamodels"]]
+                    for each_result in results
+                ]
+            )
+
+        assert not results, (
             f"Query result greater than 0.\nsearch=\n{search} \n \n"
             f"Event type which associated with multiple data model \n{result_str}"
         )
+        
+    @pytest.mark.splunk_app_cim
+    @pytest.mark.splunk_app_cim_fields
+    def test_cim_required_fields(
+        self, splunk_search_util, splunk_app_cim_fields, record_property
+    ):
+        """
+        Test the the required fields in the data models are extracted with valid values. 
+        Supports 3 scenarios. The test order is maintained for better test report.
+        1. Check that there is at least 1 event mapped with the data model 
+        2. Check that each required field is extracted in all of the events mapped with the data model.
+        3. Check that if there are inter dependent fields, either all fields should be extracted or 
+            none of them should be extracted.
+        """
+
+        # Search Query 
+        base_search = "search "
+        for each_set in splunk_app_cim_fields["data_set"]:
+            base_search += " ({})".format(each_set.search_constraints)
+
+        base_search += " AND ({})".format(
+            splunk_app_cim_fields["tag_stanza"]
+        )
+
+        test_helper = FieldTestHelper(
+            splunk_search_util, 
+            splunk_app_cim_fields["fields"],
+            interval=INTERVAL, retries=RETRIES
+        )
+
+        # Execute the query and get the results 
+        results = test_helper.test_field(base_search)
+        record_property("search", test_helper.search)
+
+        # All assertion are made in the same tests to make the test report with
+        # very clear order of scenarios. with this approach, a user will be able to identify 
+        # what went wrong very quickly.
+        assert all([each_result["event_count"] > 0 
+            for each_result in results
+        ]), (
+            "0 Events found in at least one sourcetype mapped with the dataset."
+            f"\n{test_helper.format_exc_message()}"
+        )
+        if len(splunk_app_cim_fields["fields"]) == 1:
+            test_field = splunk_app_cim_fields["fields"][0].name
+            assert all([
+                each_field["field_count"] > 0
+                for each_field in results
+            ]), (
+                    f"Field {test_field} not extracted in any events."
+                    f"\n{test_helper.format_exc_message()}"
+                )
+            assert all([
+                each_field["field_count"] == each_field["valid_field_count"]
+                for each_field in results
+                ]), (
+                f"Field {test_field} have invalid values."
+                f"\n{test_helper.format_exc_message()}"
+            )
+        elif len(splunk_app_cim_fields["fields"]) > 1:
+            # Check that count for all the fields in cluster is same. 
+            # If all the fields are not extracted in an event, that's a passing scenario
+            # The count of the field may or may not be same with the count of event. 
+            sourcetype_fields = dict()
+            for each_result in results:
+                sourcetype_fields.setdefault(each_result["sourcetype"], list()).extend(
+                    [each_result["field_count"], each_result["valid_field_count"]] 
+                )
+            for sourcetype_fields in sourcetype_fields.values():
+                assert len(set(sourcetype_fields)) == 1, (
+                    "All fields from the field-cluster should be extracted with valid values if any one field is extracted."
+                    f"\n{test_helper.format_exc_message()}"
+                )
+
