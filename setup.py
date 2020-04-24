@@ -33,6 +33,7 @@ setup(
         "splunk-sdk~=1.6",
         "future~=0.18",
         "httplib2~=0.17",
+        "logutils",
         "requests2~=2.16",
         "splunk_appinspect>=2.0.1",
     ],
