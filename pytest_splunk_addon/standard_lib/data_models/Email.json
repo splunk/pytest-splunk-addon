@@ -20,7 +20,7 @@
           "name": "delay",
           "type": "optional",
           "condition": "",
-          "validity": "valid_delay=(isnum(delay), 1, null())",
+          "validity": "(isnum(delay), 1, null())",
           "expected_values": [],
           "comment": "Total sending delay in milliseconds"
         },
@@ -36,7 +36,7 @@
           "name": "duration",
           "type": "optional",
           "condition": "",
-          "validity": "valid_duration=(isnum(duration), 1, null())",
+          "validity": "(isnum(duration), 1, null())",
           "expected_values": [],
           "comment": "The amount of time for the completion of the messaging event, in seconds."
         },
@@ -60,7 +60,7 @@
           "name": "file_size",
           "type": "optional",
           "condition": "",
-          "validity": "valid_file_size=(isnum(file_size), 1, null())",
+          "validity": "(isnum(file_size), 1, null())",
           "expected_values": [],
           "comment": "The size of the files attached the message, in bytes."
         },
@@ -124,7 +124,7 @@
           "name": "process_id",
           "type": "conditional",
           "condition": "",
-          "validity": "valid_process_id=(isnum(process_id), 1, null())",
+          "validity": "(isnum(process_id), 1, null())",
           "expected_values": [],
           "comment": "The numeric identifier of the process invoked to send the message."
         },
@@ -164,7 +164,7 @@
           "name": "response_time",
           "type": "optional",
           "condition": "",
-          "validity": "valid_response_time=(isnum(response_time), 1, null())",
+          "validity": "(isnum(response_time), 1, null())",
           "expected_values": [],
           "comment": "The amount of time it took to receive a response in the messaging event, in seconds."
         },
@@ -172,7 +172,7 @@
           "name": "retries",
           "type": "optional",
           "condition": "",
-          "validity": "valid_retries=(isnum(retries), 1, null())",
+          "validity": "(isnum(retries), 1, null())",
           "expected_values": [],
           "comment": "The number of times that the message was automatically resent because it was bounced back, or a similar transmission error condition."
         },
@@ -188,7 +188,7 @@
           "name": "size",
           "type": "optional",
           "condition": "",
-          "validity": "valid_size=(isnum(size), 1, null())",
+          "validity": "(isnum(size), 1, null())",
           "expected_values": [],
           "comment": "The size of the message, in bytes."
         },
@@ -298,7 +298,7 @@
               "name": "filter_score",
               "type": "optional",
               "condition": "",
-              "validity": "valid_filter_score=(isnum(filter_score), 1, null())",
+              "validity": "(isnum(filter_score), 1, null())",
               "expected_values": [],
               "comment": "Numeric indicator assigned to specific emails by an email filter"
             },

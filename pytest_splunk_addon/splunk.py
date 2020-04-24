@@ -140,7 +140,6 @@ def pytest_addoption(parser):
         "--splunk-dm-path",
         action="store",
         dest="splunk_dm_path",
-        default="pytest-splunk-addon\pytest_splunk_addon\standard_lib\datamodels",
         help=(
             "Path to the datamodels directory"
             "Relative or absolute path can be provided."

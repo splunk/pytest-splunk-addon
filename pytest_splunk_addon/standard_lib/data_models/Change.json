@@ -92,7 +92,7 @@
         {
           "name": "object_path",
           "type": "conditional",
-          "condition": "object_path=if(IN(object_category ,'directory','file', 'registry'), 'request', 'false')| stats count as event_count, count(object_path) as field_count",
+          "condition": "object_path=if(IN(object_category ,'directory','file', 'registry'), 'request', 'false')",
           "validity": "",
           "expected_values": [],
           "comment": "The path of the modified resource object, if applicable (such as a file, directory, or volume)."
@@ -180,7 +180,7 @@
             {
               "name": "src_user",
               "type": "conditional",
-              "condition": "object_category=user | stats count, count(src_user) as field_count",
+              "condition": "object_category=user ",
               "validity": "",
               "expected_values": [],
               "comment": "For account changes, the user or entity performing the change."

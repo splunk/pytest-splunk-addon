@@ -4,7 +4,7 @@ Includes the test scenarios to check the CIM compatibility of an Add-on.
 """
 import logging
 import pytest
-from ..fields_tests.field_test_helper import FieldTestHelper
+from .field_test_helper import FieldTestHelper
 
 INTERVAL = 3
 RETRIES = 3
@@ -19,7 +19,6 @@ class CIMTestTemplates(object):
         - Field Cluster should be verified (should be included with required field test)
         - Verify if CIM installed or not 
         - Not Allowed Fields should not be extracted 
-        - TODO 
     """
 
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
@@ -29,6 +28,14 @@ class CIMTestTemplates(object):
     def test_cim_required_fields(
         self, splunk_search_util, splunk_app_cim_fields, record_property
     ):
+        """
+        Test the the required fields in the data models are extracted with valid values. 
+        Supports 3 scenarios. The test order is maintained for better test report.
+        1. Check that there is at least 1 event mapped with the data model 
+        2. Check that each required field is extracted in all of the events mapped with the data model.
+        3. Check that if there are inter dependent fields, either all fields should be extracted or 
+            none of them should be extracted.
+        """
 
         # Search Query
         base_search = "search "

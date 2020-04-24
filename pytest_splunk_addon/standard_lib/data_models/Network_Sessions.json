@@ -51,7 +51,7 @@
           "name": "duration",
           "type": "optional",
           "condition": "",
-          "validity": "valid_duration=(isnum(duration), 1,null())",
+          "validity": "(isnum(duration), 1,null())",
           "expected_values": [],
           "comment": "The amount of time for the completion of the network session event, in seconds."
         },
@@ -59,7 +59,7 @@
           "name": "response_time",
           "type": "optional",
           "condition": "",
-          "validity": "valid_response_time=(isnum(response_time), 1,null())",
+          "validity": "(isnum(response_time), 1,null())",
           "expected_values": [],
           "comment": "The amount of time it took to receive a response in the network session event, in seconds."
         },
@@ -130,7 +130,7 @@
               "name": "lease_duration",
               "type": "conditional",
               "condition": "",
-              "validity": "valid_lease_duration=(isnum(lease_duration), 1,null())",
+              "validity": "(isnum(lease_duration), 1,null())",
               "expected_values": [],
               "comment": "The duration of the Dynamic Host Configuration Protocol (DHCP) lease, in seconds."
             },
