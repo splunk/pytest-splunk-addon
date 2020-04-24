@@ -175,7 +175,7 @@ class FieldTestHelper(object):
                         each_result["field_count"] - each_result.get(
                             "valid_field_count", each_result["field_count"]
                         ),
-                        (each_result["invalid_values"]
+                        (each_result["invalid_values"][:200]
                         if each_result["invalid_values"] else "-")
                     ]
                     for each_result in self.parsed_result

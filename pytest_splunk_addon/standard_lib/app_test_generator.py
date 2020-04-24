@@ -33,7 +33,7 @@ class AppTestGenerator(object):
         LOGGER.debug("Initializing CIMTestGenerator to generate the test cases")
         self.cim_test_generator = CIMTestGenerator(
                 self.pytest_config.getoption("splunk_app"),
-                self.pytest_config.getoption("dm_path", data_model_path),
+                self.pytest_config.getoption("splunk_dm_path", data_model_path),
             )
 
     def generate_tests(self, fixture):
