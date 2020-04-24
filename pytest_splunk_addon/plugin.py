@@ -10,14 +10,14 @@ def pytest_configure(config):
     """
     Setup configuration after command-line options are parsed
     """
-    config.addinivalue_line("markers", "splunk_app_internal_errors: Check Errors in logs")
-    config.addinivalue_line("markers", "splunk_app_searchtime: Test search time only")
-    config.addinivalue_line("markers", "splunk_app_fields: Test search time fields only")
-    config.addinivalue_line("markers", "splunk_app_negative: Test search time negative scenarios only")
-    config.addinivalue_line("markers", "splunk_app_tags: Test search time tags only")
-    config.addinivalue_line("markers", "splunk_app_eventtypes: Test search time eventtypes only")
-    config.addinivalue_line("markers", "splunk_app_cim: Test CIM compatibility only")
-    config.addinivalue_line("markers", "splunk_app_cim_fields: Test CIM required fields only")
+    config.addinivalue_line("markers", "splunk_searchtime_internal_errors: Check Errors in logs")
+    config.addinivalue_line("markers", "splunk_searchtime_fields: Test search time fields only")
+    config.addinivalue_line("markers", "splunk_searchtime_fields_positive: Test search time fields positive scenarios only")
+    config.addinivalue_line("markers", "splunk_searchtime_fields_negative: Test search time fields negative scenarios only")
+    config.addinivalue_line("markers", "splunk_searchtime_fields_tags: Test search time tags only")
+    config.addinivalue_line("markers", "splunk_searchtime_fields_eventtypes: Test search time eventtypes only")
+    config.addinivalue_line("markers", "splunk_searchtime_cim: Test CIM compatibility only")
+    config.addinivalue_line("markers", "splunk_searchtime_cim_fields: Test CIM required fields only")
 
 
 def pytest_generate_tests(metafunc):
@@ -26,8 +26,8 @@ def pytest_generate_tests(metafunc):
     """
     test_generator = None
     for fixture in metafunc.fixturenames:
-        if fixture.startswith("splunk_app"):
-            LOGGER.info("generating testcases for splunk_app. fixture=%s", fixture)
+        if fixture.startswith("splunk_searchtime"):
+            LOGGER.info("generating testcases for splunk_app_searchtime. fixture=%s", fixture)
 
             try:
                 # Load associated test data

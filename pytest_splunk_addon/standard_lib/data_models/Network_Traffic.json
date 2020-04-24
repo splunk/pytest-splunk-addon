@@ -1,7 +1,7 @@
 {
   "modelName": "Network_Traffic",
   "version": "1.0.0",
-  "objects": {
+  "objects": [{
     "name": "All_Traffic",
     "tags": [
       [
@@ -9,7 +9,7 @@
         "communicate"
       ]
     ],
-    "field_cluster": [
+    "fields_cluster": [
       ["bytes", "bytes_in", "bytes_out"],
       ["dest_translated_ip", "src_translated_ip"],
       ["dest_zone", "src_zone"],
@@ -339,5 +339,5 @@
       }
     ],
     "search_constraints": "tag=network tag=communicate"
-  }
+  }]
 }

@@ -22,10 +22,10 @@ class CIMTestTemplates(object):
 
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
 
-    @pytest.mark.splunk_app_cim
-    @pytest.mark.splunk_app_cim_fields
+    @pytest.mark.splunk_searchtime_cim
+    @pytest.mark.splunk_searchtime_cim_fields
     def test_cim_required_fields(
-        self, splunk_search_util, splunk_app_cim_fields, record_property
+        self, splunk_search_util, splunk_searchtime_cim_fields, record_property
     ):
         """
         Test the the required fields in the data models are extracted with valid values. 
@@ -38,16 +38,16 @@ class CIMTestTemplates(object):
 
         # Search Query 
         base_search = "search "
-        for each_set in splunk_app_cim_fields["data_set"]:
+        for each_set in splunk_searchtime_cim_fields["data_set"]:
             base_search += " ({})".format(each_set.search_constraints)
 
         base_search += " AND ({})".format(
-            splunk_app_cim_fields["tag_stanza"]
+            splunk_searchtime_cim_fields["tag_stanza"]
         )
 
         test_helper = FieldTestHelper(
             splunk_search_util, 
-            splunk_app_cim_fields["fields"],
+            splunk_searchtime_cim_fields["fields"],
             interval=INTERVAL, retries=RETRIES
         )
 
@@ -64,8 +64,8 @@ class CIMTestTemplates(object):
             "0 Events found in at least one sourcetype mapped with the dataset."
             f"\n{test_helper.format_exc_message()}"
         )
-        if len(splunk_app_cim_fields["fields"]) == 1:
-            test_field = splunk_app_cim_fields["fields"][0].name
+        if len(splunk_searchtime_cim_fields["fields"]) == 1:
+            test_field = splunk_searchtime_cim_fields["fields"][0].name
             assert all([
                 each_field["field_count"] > 0
                 for each_field in results
@@ -80,7 +80,7 @@ class CIMTestTemplates(object):
                 f"Field {test_field} have invalid values."
                 f"\n{test_helper.format_exc_message()}"
             )
-        elif len(splunk_app_cim_fields["fields"]) > 1:
+        elif len(splunk_searchtime_cim_fields["fields"]) > 1:
             # Check that count for all the fields in cluster is same. 
             # If all the fields are not extracted in an event, that's a passing scenario
             # The count of the field may or may not be same with the count of event. 

@@ -1,13 +1,13 @@
 {
     "version":"1.0.0",
     "modelName": "Updates",
-    "objects":
+    "objects":[
     {
-        "name:": "Updates",
+        "name": "Updates",
         "tags": [
             ["update","status"]
         ],
-        "field_cluster": [],
+        "fields_cluster": [],
         "search_constraints": "tag=update tag=status",
         "fields": [
             {
@@ -102,5 +102,5 @@
                 "search_constraints":"status=\"restart_required\""
             }
         ]
-    }
+    }]
 }

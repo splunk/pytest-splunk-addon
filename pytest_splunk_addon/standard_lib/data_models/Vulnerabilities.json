@@ -2,12 +2,12 @@
     "modelName": "Vulnerabilities",
     "version": "1.0.0",
     "objects":
-    {
-        "name:": "Vulnerabilities",
+    [{
+        "name": "Vulnerabilities",
         "tags": [
             ["vulnerability","report"]
         ],
-        "field_cluster": [],
+        "fields_cluster": [],
         "search_constraints": "tag=vulnerability tag=report",
         "fields": [
             {
@@ -126,5 +126,5 @@
                 "search_constraints":"(severity=\"low\" OR severity=\"informational\")"
             }
         ]
-    }
+    }]
 }

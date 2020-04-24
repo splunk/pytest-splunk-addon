@@ -1,7 +1,7 @@
 {
   "modelName": "Network_Sessions",
   "version": "1.0.0",
-  "objects": {
+  "objects": [{
     "name": "All_Sessions",
     "tags": [
       [
@@ -10,7 +10,7 @@
       ]
     ],
     "search_constraints": "tag=network tag=session",
-    "field_cluster": [],
+    "fields_cluster": [],
     "fields": [{
         "name": "action",
         "type": "required",
@@ -156,5 +156,5 @@
         "search_constraints": "tag=vpn"
       }
     ]
-  }
+  }]
 }

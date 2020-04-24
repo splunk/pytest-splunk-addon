@@ -1,13 +1,13 @@
 {
     "modelName": "Alerts",
     "version": "1.0.0",
-    "objects":
+    "objects":[
     {
-        "name:": "Alerts",
+        "name": "Alerts",
         "tags": [
             ["alert"]
         ],
-        "field_cluster": [],
+        "fields_cluster": [],
         "search_constraints": "tag=alert",
         "fields": [
             {
@@ -71,5 +71,5 @@
             }
         ],
         "child_dataset": []
-    }
+    }]
 }

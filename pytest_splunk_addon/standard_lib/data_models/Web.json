@@ -1,14 +1,14 @@
 {
     "modelName": "Web",
     "version":"1.0.0",
-    "objects": {
+    "objects": [{
         "name": "Web",
         "tags": [
             [
                 "web"
             ]
         ],
-        "field_cluster": [
+        "fields_cluster": [
             ["bytes", "bytes_in", "bytes_out"],
             ["http_user_agent", "http_user_agent_length"]
         ],
@@ -238,5 +238,5 @@
             "search_constraints": "tag=proxy"
         }],
         "search_constraints": "tag=web"
-    }
+    }]
 }

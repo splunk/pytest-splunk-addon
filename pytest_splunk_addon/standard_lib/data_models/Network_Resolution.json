@@ -1,7 +1,7 @@
 {
   "modelName": "Network_Resolution",
   "version":"1.0.0",
-  "objects": {
+  "objects": [{
     "name": "DNS",
     "tags": [
       [
@@ -10,7 +10,7 @@
         "dns"
       ]
     ],
-    "field_cluster": [],
+    "fields_cluster": [],
     "fields": [{
         "name": "additional_answer_count",
         "type": "required",
@@ -186,5 +186,5 @@
     ],
     "child_dataset": [],
     "search_constraints": "tag=network tag=resolution tag=dns"
-  }
+  }]
 }
