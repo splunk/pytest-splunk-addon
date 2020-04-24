@@ -24,7 +24,6 @@ class CIMTestGenerator(object):
         addon_path,
         data_model_path,
         test_field_type=["required", "conditional"],
-        restricted_field_type=["not_extracted", "not_allowed"],
         common_fields_path="pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\CommonFields.json",
     ):
 
@@ -101,18 +100,42 @@ class CIMTestGenerator(object):
         Get a list of fields whose extractions are defined in props
         Compare and get the list whose extractions are defined.
         and remaining fields are sent in the 2nd template
+
+        which template to use
         """
         with open(self.common_fields_path, "r") as cf_json:
             common_fields_json = json.load(cf_json)
-            not_allowed_fields = list(Field.parse_fields(common_fields_json["fields"]))
+            common_fields_list = list(Field.parse_fields(common_fields_json["fields"]))
             for tag_stanza, dataset_list in self.get_mapped_datasets():
                 test_dataset = dataset_list[-1]
-                not_allowed_fields.extend(
+                common_fields_list.extend(
                     [
                         each_field
                         for each_field in test_dataset.fields
-                        if each_field.type in self.restricted_field_type
+                        if each_field.type in ["not_extracted", "not_allowed"]
                     ]
+                )
+
+            addon_stanzas = self.addon_parser.get_props_fields()
+            not_allowed_fields = []
+            for field_group in addon_stanzas:
+                test_group = field_group.copy()
+                not_allowed_fields.extend(
+                    [
+                        {
+                            "name": each_common_field.name,
+                            "stanza": test_group.get("stanza"),
+                            "classname": test_group.get("classname"),
+                        }
+                        for each in test_group["fields"]
+                        for each_common_field in common_fields_list
+                        if each_common_field.name == each.name
+                    ]
+                )
+
+            if not_allowed_fields:
+                yield pytest.param(
+                    {"fields": not_allowed_fields}, id=f"extractions_found",
                 )
 
     def generate_not_extracted_tests(self):
@@ -136,12 +159,11 @@ class CIMTestGenerator(object):
                         if each_field.type == "not_extracted"
                     ]
                 )
-                # Test for each required fields
-            yield pytest.param(
-                {
-                    "tag_stanza": tag_stanza,
-                    "data_set": dataset_list,
-                    "fields": not_extracted_fields,
-                },
-                id=f"{tag_stanza}::{test_dataset}::not_extracted_fields",
-            )
+                yield pytest.param(
+                    {
+                        "tag_stanza": tag_stanza,
+                        "data_set": dataset_list,
+                        "fields": not_extracted_fields,
+                    },
+                    id=f"{tag_stanza}::{test_dataset}",
+                )
