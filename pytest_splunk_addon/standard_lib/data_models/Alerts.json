@@ -1,93 +1,75 @@
 {
-  "modelName": "Alerts",
-  "version": "1.0.0",
-  "objects": [
+    "modelName": "Alerts",
+    "version": "1.0.0",
+    "objects":
     {
-      "name": "Alerts",
-      "tags": [["alert"]],
-      "fields_cluster": [],
-      "search_constraints": "tag=alert",
-      "fields": [
-        {
-          "name": "app",
-          "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
-          "comment": "The application involved in the event, such as win:app:trendmicro, vmware, nagios."
-        },
-        {
-          "name": "body",
-          "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
-          "comment": "The body of a message."
-        },
-        {
-          "name": "dest",
-          "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
-          "comment": "The destination of the alert message, such as an email address or SNMP trap. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
-        },
-        {
-          "name": "id",
-          "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
-          "comment": "The unique identifier of a message."
-        },
-        {
-          "name": "severity",
-          "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [
-            "critical",
-            "high",
-            "medium",
-            "low",
-            "informational"
-          ],
-          "comment": "The severity of a message."
-        },
-        {
-          "name": "severity_id",
-          "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
-          "comment": "A numeric severity indicator for a message."
-        },
-        {
-          "name": "src",
-          "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
-          "comment": "The source of the message. You can alias this from more specific fields, such as src_host, src_ip, or src_name."
-        },
-        {
-          "name": "subject",
-          "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
-          "comment": "The message subject."
-        },
-        {
-          "name": "type",
-          "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": ["alarm", "alert", "event", "task"],
-          "comment": "The message type."
-        }
-      ],
-      "child_dataset": []
+        "name:": "Alerts",
+        "tags": [
+            ["alert"]
+        ],
+        "field_cluster": [],
+        "search_constraints": "tag=alert",
+        "fields": [
+            {
+                "name": "app",
+                "type": "required",
+                "comment":"The application involved in the event, such as win:app:trendmicro, vmware, nagios."
+            },
+            {
+                "name": "body",
+                "type": "required",
+                "comment":"The body of a message." 
+            },
+            {
+                "name": "dest",
+                "type": "required",
+                "comment":"The destination of the alert message, such as an email address or SNMP trap. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."                
+            },
+            {
+                "name": "id",
+                "type": "required",
+                "comment":"The unique identifier of a message." 
+            },
+            {
+                "name": "severity",
+                "type": "required",
+                "condition":"",
+                "expected_values": [
+                    "critical",
+                    "high",
+                    "medium",
+                    "low",
+                    "informational"
+                  ],
+                "comment":"The severity of a message." 
+            },
+            {
+                "name": "severity_id",
+                "type": "optional",
+                "comment":"A numeric severity indicator for a message." 
+            },
+            {
+                "name": "src",
+                "type": "optional",
+                "comment":"The source of the message. You can alias this from more specific fields, such as src_host, src_ip, or src_name." 
+            },
+            {
+                "name": "subject",
+                "type": "optional",
+                "comment":"The message subject." 
+            },
+            {
+                "name": "type",
+                "type": "required",
+                "expected_values":[
+                    "alarm",
+                    "alert",
+                    "event",
+                    "task"
+                ],
+                "comment":"The message type." 
+            }
+        ],
+        "child_dataset": []
     }
-  ]
 }
