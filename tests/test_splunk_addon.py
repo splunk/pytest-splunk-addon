@@ -130,6 +130,7 @@ def test_splunk_app_fiction(testdir):
         "--splunk-app=tests/package",
         "--splunk-password=Changed@11",
         "-v",
+        "-m splunk_app_searchtime",
     )
 
     logger.info(
@@ -179,6 +180,7 @@ def test_splunk_app_broken_sourcetype(testdir):
         "--splunk-app=tests/package",
         "--splunk-password=Changed@11",
         "-v",
+        "-m splunk_app_searchtime",
     )
 
     # fnmatch_lines does an assertion internally
