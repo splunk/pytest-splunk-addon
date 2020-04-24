@@ -1,6 +1,8 @@
 ARG SPLUNK_VERSION=latest
 FROM splunk/splunk:$SPLUNK_VERSION
+ARG SPLUNK_VERSION=latest
 ARG SPLUNK_APP=TA_UNKNOWN
 ARG SOURCE_PACKAGE=package
-
+RUN echo ${SPLUNK_VERSION} $SOURCE_PACKAGE
 COPY $SOURCE_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP
+COPY deps/apps /opt/splunk/etc/apps/
