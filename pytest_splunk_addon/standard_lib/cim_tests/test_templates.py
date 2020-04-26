@@ -23,7 +23,7 @@ class CIMTestTemplates(object):
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
 
     @pytest.mark.parametrize(
-        "app_name", [pytest.param("Splunk_SA_CIM", marks=[pytest.mark.searchtime_cim])]
+        "app_name", [pytest.param("Splunk_SA_CIM", marks=[pytest.mark.splunk_searchtime_cim])]
     )
     def test_app_installed(self, splunk_search_util, app_name, record_property):
         """
