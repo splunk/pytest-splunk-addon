@@ -1,0 +1,48 @@
+{
+  "model_name": "Authentication",
+  "version": "1.0.0",
+  "objects": [
+    {
+      "name": "Authentication",
+      "tags": [["authentication"]],
+      "fields_cluster": [],
+      "fields": [
+        {
+          "name": "action",
+          "type": "required",
+          "condition": "",
+          "expected_values": ["success", "failure", "error"],
+          "validity": "",
+          "comment": "The action performed on the resource."
+        },
+        {
+          "name": "app",
+          "type": "required",
+          "condition": "",
+          "expected_values": [],
+          "validity": "",
+          "comment": "The application involved in the event (such as ssh, splunk, win:local)."
+        }
+      ],
+      "child_dataset": [
+        {
+          "name": "Failed_Authentication",
+          "tags": [["authentication"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [],
+          "search_constraints": "action='failure'"
+        },
+        {
+          "name": "Successful_Authentication",
+          "tags": [["authentication"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [],
+          "search_constraints": "action='success'"
+        }
+      ],
+      "search_constraints": "tag=authentication NOT (action=success user=*$)"
+    }
+  ]
+}

@@ -14,8 +14,8 @@ class DataModel(object):
     """
     def __init__(self, data_model_json):
 
+        self.name = data_model_json.get("model_name")
         self.root_data_set = list(DataSet.load_dataset(data_model_json.get("objects")))
-        self.name = data_model_json.get("modelName")
 
     def _get_mapped_datasets(self, addon_tags, data_sets, mapped_datasets=[]):
         """
@@ -48,3 +48,6 @@ class DataModel(object):
             data_set.DataSet: data set object mapped with the tags
         """
         yield from self._get_mapped_datasets(addon_tags, self.root_data_set)
+
+    def __str__(self):
+        return self.name

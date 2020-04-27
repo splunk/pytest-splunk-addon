@@ -29,7 +29,30 @@ class FieldTestGenerator(object):
         LOGGER.debug("initializing AddonParser to parse the app")
         self.addon_parser = AddonParser(app_path)
         self.field_bank = field_bank
-                
+
+
+    def generate_tests(self, fixture):
+        """
+        Generate the test cases based on the fixture provided 
+        supported fixtures:
+        * splunk_app_searchtime_fields
+        * splunk_app_searchtime_negative
+        * splunk_app_searchtime_eventtypes
+        * splunk_app_searchtime_tags
+
+        Args:
+            fixture(str): fixture name
+
+        """
+        if fixture.endswith("fields"):
+            yield from self.generate_field_tests(is_positive=True)
+        elif fixture.endswith("negative"):
+            yield from self.generate_field_tests(is_positive=False)
+        elif fixture.endswith("tags"):
+            yield from self.generate_tag_tests()
+        elif fixture.endswith("eventtypes") :
+            yield from self.generate_eventtype_tests()
+
     def generate_field_tests(self, is_positive):
         """
         Generate test case for fields

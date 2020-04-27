@@ -36,6 +36,7 @@ setup(
         "logutils",
         "requests2~=2.16",
         "splunk_appinspect>=2.0.1",
+        "jsonschema~=3.2.0",
     ],
     extras_require={"docker": ["lovely-pytest-docker>=0.1.0"]},
     setup_requires=["pytest-runner"],
