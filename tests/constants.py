@@ -185,12 +185,13 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::is_splunkd-%host%* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_tags*eventtype="for_multiple_tags_positive"::tag::authentication* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::for_multiple_tags_positive* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication*',
-    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication::action*',
-    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication::app*',
-    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Failed_Authentication*',
-    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Successful_Authentication*',
-    '*test_splunk_app_fiction.py::Test_App::test_eventtype_mapped_datamodel* PASSED*'
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication::action* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication::app* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Failed_Authentication* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Successful_Authentication* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_eventtype_mapped_datamodel* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*'
 ]
 
 
@@ -262,19 +263,20 @@ TA_BROKEN_SOURCETYPE_PASSED = [
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::change* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::authentication* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*sourcetype="splunkd"::tag::tags_negative_testing* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::for_multiple_tags_negative* PASSED*'
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts*',
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::app*',
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::body*',
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::dest*',
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::id*',
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::severity*',
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::type*',
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication*',
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication::action*',
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication::app*',
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Failed_Authentication*',
-    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Successful_Authentication*'
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::for_multiple_tags_negative* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::app* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::body* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::dest* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::id* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::severity* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::type* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication::action* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication::app* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Failed_Authentication* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Successful_Authentication* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*'
 ]
 
 """

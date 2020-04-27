@@ -35,6 +35,7 @@ DATA_MODELS = [
 INTERVAL = 3
 RETRIES = 3
 
+
 class CIMTestTemplates(object):
     """
     Test scenarios to check the CIM compatibility of an Add-on 
@@ -61,9 +62,7 @@ class CIMTestTemplates(object):
         """
 
         test_helper = FieldTestHelper(
-            splunk_search_util, 
-            [],
-            interval=INTERVAL, retries=RETRIES
+            splunk_search_util, [], interval=INTERVAL, retries=RETRIES
         )
         search = ""
         # Iterate data models list to create a search query
@@ -78,24 +77,26 @@ class CIMTestTemplates(object):
         """
         record_property("search", search)
 
-        results = list(splunk_search_util.getFieldValuesList(
-            search, INTERVAL, RETRIES
-        ))
+        results = list(splunk_search_util.getFieldValuesList(search, INTERVAL, RETRIES))
         if results:
             record_property("results", results)
             result_str = test_helper.get_table_output(
                 headers=["Count", "Eventtype", "Datamodels"],
                 value_list=[
-                    [each_result["datamodel_count"], each_result["eventtype"],  each_result["datamodels"]]
+                    [
+                        each_result["datamodel_count"],
+                        each_result["eventtype"],
+                        each_result["datamodels"],
+                    ]
                     for each_result in results
-                ]
+                ],
             )
 
         assert not results, (
             f"Query result greater than 0.\nsearch=\n{search} \n \n"
             f"Event type which associated with multiple data model \n{result_str}"
         )
-        
+
     @pytest.mark.splunk_app_cim
     @pytest.mark.splunk_app_cim_fields
     def test_cim_required_fields(
@@ -110,58 +111,54 @@ class CIMTestTemplates(object):
             none of them should be extracted.
         """
 
-        # Search Query 
+        # Search Query
         base_search = "search "
         for each_set in splunk_app_cim_fields["data_set"]:
             base_search += " ({})".format(each_set.search_constraints)
 
-        base_search += " AND ({})".format(
-            splunk_app_cim_fields["tag_stanza"]
-        )
+        base_search += " AND ({})".format(splunk_app_cim_fields["tag_stanza"])
 
         test_helper = FieldTestHelper(
-            splunk_search_util, 
+            splunk_search_util,
             splunk_app_cim_fields["fields"],
-            interval=INTERVAL, retries=RETRIES
+            interval=INTERVAL,
+            retries=RETRIES,
         )
 
-        # Execute the query and get the results 
+        # Execute the query and get the results
         results = test_helper.test_field(base_search)
         record_property("search", test_helper.search)
 
         # All assertion are made in the same tests to make the test report with
-        # very clear order of scenarios. with this approach, a user will be able to identify 
+        # very clear order of scenarios. with this approach, a user will be able to identify
         # what went wrong very quickly.
-        assert all([each_result["event_count"] > 0 
-            for each_result in results
-        ]), (
+        assert all([each_result["event_count"] > 0 for each_result in results]), (
             "0 Events found in at least one sourcetype mapped with the dataset."
             f"\n{test_helper.format_exc_message()}"
         )
         if len(splunk_app_cim_fields["fields"]) == 1:
             test_field = splunk_app_cim_fields["fields"][0].name
-            assert all([
-                each_field["field_count"] > 0
-                for each_field in results
-            ]), (
-                    f"Field {test_field} not extracted in any events."
-                    f"\n{test_helper.format_exc_message()}"
-                )
-            assert all([
-                each_field["field_count"] == each_field["valid_field_count"]
-                for each_field in results
-                ]), (
+            assert all([each_field["field_count"] > 0 for each_field in results]), (
+                f"Field {test_field} not extracted in any events."
+                f"\n{test_helper.format_exc_message()}"
+            )
+            assert all(
+                [
+                    each_field["field_count"] == each_field["valid_field_count"]
+                    for each_field in results
+                ]
+            ), (
                 f"Field {test_field} have invalid values."
                 f"\n{test_helper.format_exc_message()}"
             )
         elif len(splunk_app_cim_fields["fields"]) > 1:
-            # Check that count for all the fields in cluster is same. 
+            # Check that count for all the fields in cluster is same.
             # If all the fields are not extracted in an event, that's a passing scenario
-            # The count of the field may or may not be same with the count of event. 
+            # The count of the field may or may not be same with the count of event.
             sourcetype_fields = dict()
             for each_result in results:
                 sourcetype_fields.setdefault(each_result["sourcetype"], list()).extend(
-                    [each_result["field_count"], each_result["valid_field_count"]] 
+                    [each_result["field_count"], each_result["valid_field_count"]]
                 )
             for sourcetype_fields in sourcetype_fields.values():
                 assert len(set(sourcetype_fields)) == 1, (
@@ -169,3 +166,32 @@ class CIMTestTemplates(object):
                     f"\n{test_helper.format_exc_message()}"
                 )
 
+    @pytest.mark.parametrize(
+        "app_name",
+        [pytest.param("Splunk_SA_CIM", marks=[pytest.mark.splunk_searchtime_cim])],
+    )
+    def test_app_installed(self, splunk_search_util, app_name, record_property):
+        """
+        This test case checks that addon is installed/enabled in the Splunk instance.
+
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            app_name (string): Add-on name.
+            record_property (fixture): Document facts of test cases.
+        """
+
+        record_property("app_name", app_name)
+        # Search Query
+        search = "| rest /servicesNS/nobody/{}/configs/conf-app/ui".format(app_name)
+        self.logger.info(f"Executing the search query: {search}")
+        record_property("search", search)
+
+        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
+            search, interval=INTERVAL, retries=RETRIES
+        )
+
+        assert result, (
+            f"\nMessage: App {app_name} is not installed/enabled in this Splunk instance."
+            f"The plugin requires the {app_name} to be installed/enabled in the Splunk instance."
+            f"Please install the app and execute the tests again."
+        )
