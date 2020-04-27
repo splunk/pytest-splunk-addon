@@ -263,6 +263,18 @@ TA_BROKEN_SOURCETYPE_PASSED = [
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::authentication* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*sourcetype="splunkd"::tag::tags_negative_testing* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::for_multiple_tags_negative* PASSED*'
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts*',
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::app*',
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::body*',
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::dest*',
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::id*',
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::severity*',
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::type*',
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication*',
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication::action*',
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication::app*',
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Failed_Authentication*',
+    '*test_splunk_app_broken_sourcetype\.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Successful_Authentication*'
 ]
 
 """
