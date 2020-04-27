@@ -14,6 +14,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: true
       - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}::Splunk=${{ matrix.splunk-version }}
         uses: actions/setup-python@v1
         with:
