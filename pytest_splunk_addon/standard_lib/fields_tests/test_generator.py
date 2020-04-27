@@ -44,7 +44,7 @@ class FieldTestGenerator(object):
             fixture(str): fixture name
 
         """
-        if fixture.endswith("fields"):
+        if fixture.endswith("positive"):
             yield from self.generate_field_tests(is_positive=True)
         elif fixture.endswith("negative"):
             yield from self.generate_field_tests(is_positive=False)

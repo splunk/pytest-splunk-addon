@@ -88,7 +88,7 @@
     },
     {
       "name": "tag",
-      "type": "not_allowed",
+      "type": "extraction_not_allowed",
       "comment": "This automatically-generated field is used to access tags from within data models. Do not define extractions for this field when writing add-ons."
     }
   ]
