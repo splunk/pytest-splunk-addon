@@ -185,6 +185,11 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::is_splunkd-%host%* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_tags*eventtype="for_multiple_tags_positive"::tag::authentication* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::for_multiple_tags_positive* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication::action*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication::app*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Failed_Authentication*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Successful_Authentication*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype_mapped_datamodel* PASSED*'
 ]
 
@@ -253,8 +258,6 @@ TA_BROKEN_SOURCETYPE_PASSED = [
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::context_test_4* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::hotWarmPath* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::name* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::nofield* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::aliasthree* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::alert* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::change* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::authentication* PASSED*',
