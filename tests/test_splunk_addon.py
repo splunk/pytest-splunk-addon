@@ -70,7 +70,7 @@ def test_splunk_connection_docker(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "deps"),
+        os.path.join(testdir.request.config.invocation_dir, "deps"),
         os.path.join(testdir.tmpdir, "tests/deps"),
     )
 
@@ -122,7 +122,7 @@ def test_splunk_app_fiction(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "deps"),
+        os.path.join(testdir.request.config.invocation_dir, "deps"),
         os.path.join(testdir.tmpdir, "tests/deps"),
     )
 
@@ -174,7 +174,7 @@ def test_splunk_app_broken_sourcetype(testdir):
         os.path.join(testdir.tmpdir, "tests/package"),
     )
     shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "deps"),
+        os.path.join(testdir.request.config.invocation_dir, "deps"),
         os.path.join(testdir.tmpdir, "tests/deps"),
     )
 
