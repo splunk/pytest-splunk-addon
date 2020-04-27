@@ -6,32 +6,6 @@ import logging
 import pytest
 from .field_test_helper import FieldTestHelper
 
-DATA_MODELS = [
-    "Alerts",
-    "Authentication",
-    "Certificates",
-    "Change",
-    "Compute_Inventory",
-    "DLP",
-    "Databases",
-    "Email",
-    "Endpoint",
-    "Event_Signatures",
-    "Interprocess_Messaging",
-    "Intrusion_Detection",
-    "JVM",
-    "Malware",
-    "Network_Resolution",
-    "Network_Sessions",
-    "Network_Traffic",
-    "Performance",
-    "Splunk_Audit",
-    "Ticket_Management",
-    "Updates",
-    "Vulnerabilities",
-    "Web",
-]
-
 INTERVAL = 3
 RETRIES = 3
 
@@ -60,6 +34,32 @@ class CIMTestTemplates(object):
             record_property (fixture): Document facts of test cases.
             caplog (fixture): fixture to capture logs.
         """
+
+        DATA_MODELS = [
+            "Alerts",
+            "Authentication",
+            "Certificates",
+            "Change",
+            "Compute_Inventory",
+            "DLP",
+            "Databases",
+            "Email",
+            "Endpoint",
+            "Event_Signatures",
+            "Interprocess_Messaging",
+            "Intrusion_Detection",
+            "JVM",
+            "Malware",
+            "Network_Resolution",
+            "Network_Sessions",
+            "Network_Traffic",
+            "Performance",
+            "Splunk_Audit",
+            "Ticket_Management",
+            "Updates",
+            "Vulnerabilities",
+            "Web",
+        ]
 
         test_helper = FieldTestHelper(
             splunk_search_util, [], interval=INTERVAL, retries=RETRIES
