@@ -203,7 +203,7 @@ class FieldTestHelper(object):
         return exc_message
 
     @staticmethod
-    def get_table_output(headers, value_list, column_width=40):
+    def get_table_output(headers, value_list):
         """
         Generate a table output of the following format 
             Header1 Header2

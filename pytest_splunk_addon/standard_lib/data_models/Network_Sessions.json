@@ -110,12 +110,12 @@
             },
             {
               "name": "src_ip",
-              "type": "not_allowed",
+              "type": "not_allowed_in_search",
               "comment": "The IP address of the client initializing a network session. Not applicable for DHCP events."
             },
             {
               "name": "src_mac",
-              "type": "not_allowed",
+              "type": "not_allowed_in_search",
               "comment": "The MAC address of the client initializing a network session. Not applicable for DHCP events.Note: Always force lower case on this field.Note: Always use colons instead of dashes, spaces, or no separator."
             }
           ],
