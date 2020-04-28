@@ -141,7 +141,7 @@ class FieldTestHelper(object):
 
         2) There are multiple fields in the result
 
-            Sourcetype  Field  Total Count  Field Count  Invalid Field Count  Invalid Values
+            Sourcetype  Field  Event Count  Field Count  Invalid Field Count  Invalid Values
             --------------------------------------------------------------------------------
             splunkd     One    10           10           5                   'unknown'
             scheduler   Two    20           20           7                   '-', 'invalid'
@@ -163,7 +163,7 @@ class FieldTestHelper(object):
         elif len(self.fields) >= 1:
             exc_message = self.get_table_output(
                 headers=[
-                    "Sourcetype", "Field", "Total Count", 
+                    "Sourcetype", "Field", "Event Count", 
                     "Field Count", "Invalid Field Count", "Invalid Values"
                 ],
                 value_list=[
