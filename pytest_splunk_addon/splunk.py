@@ -194,6 +194,8 @@ def splunk(request):
         os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
         os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
 
+        
+
         request.fixturenames.append("splunk_docker")
         splunk_info = request.getfixturevalue("splunk_docker")
     else:
@@ -203,25 +205,7 @@ def splunk(request):
 
 
 @pytest.fixture(scope="session")
-def docker_compose_files(pytestconfig):
-    """
-    Get an absolute path to the  `docker-compose.yml` file. Override this
-    fixture in your tests if you need a custom location.
-
-    Returns:
-        string: the path of the `docker-compose.yml` file
-
-    """
-    docker_compose_path = os.path.join(
-        str(pytestconfig.invocation_dir), "docker-compose.yml"
-    )
-    LOGGER.info("docker-compose path: %s", docker_compose_path)
-
-    return [docker_compose_path]
-
-
-@pytest.fixture(scope="session")
-def splunk_docker(request, docker_services):
+def splunk_docker(request, docker_services, docker_compose_files):
     """
     Splunk docker depends on lovely-pytest-docker to create the docker instance
     of Splunk this may be changed in the future.

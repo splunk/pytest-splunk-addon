@@ -25,6 +25,16 @@ def setup_test_dir(testdir):
         os.path.join(testdir.tmpdir, "deps"),
     )
 
+    shutil.copytree(
+        os.path.join(testdir.request.config.invocation_dir, "tests/addons"),
+        os.path.join(testdir.tmpdir, "tests/addons"),
+    )
+
+    shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "tests/conftest.py"),
+        os.path.join(testdir.tmpdir, ""),
+    )
+
     shutil.copy(
         os.path.join(testdir.request.config.invocation_dir, "Dockerfile.splunk"),
         testdir.tmpdir,
@@ -92,7 +102,7 @@ def test_splunk_connection_docker(testdir):
     setup_test_dir(testdir)
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker", "--splunk-password=Changed@11", "-v",
+        "--splunk-type=docker", "-v",
     )
 
     # fnmatch_lines does an assertion internally
@@ -129,7 +139,7 @@ def test_splunk_app_fiction(testdir):
     setup_test_dir(testdir)
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker", "--splunk-password=Changed@11", "-v",
+        "--splunk-type=docker",  "-v",
     )
 
     logger.info(
@@ -167,7 +177,7 @@ def test_splunk_app_broken_sourcetype(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker", "--splunk-password=Changed@11", "-v",
+        "--splunk-type=docker",  "-v",
     )
 
     # fnmatch_lines does an assertion internally
