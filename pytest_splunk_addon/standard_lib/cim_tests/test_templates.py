@@ -59,7 +59,7 @@ class CIMTestTemplates(object):
         # All assertion are made in the same tests to make the test report with
         # very clear order of scenarios. with this approach, a user will be able to identify
         # what went wrong very quickly.
-        assert all([each_result["event_count"] > 0 for each_result in results]), (
+        assert results and all([each_result["event_count"] > 0 for each_result in results]), (
             "0 Events found in at least one sourcetype mapped with the dataset."
             f"\n{test_helper.format_exc_message()}"
         )
