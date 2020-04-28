@@ -25,6 +25,7 @@ class EventTypeParser(object):
                 self._eventtypes = self.app.eventtypes_conf()
             return self._eventtypes
         except OSError:
+            LOGGER.warning("eventtypes.conf not found.")
             return None
 
     def get_eventtypes(self):

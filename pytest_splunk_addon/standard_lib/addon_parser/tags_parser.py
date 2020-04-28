@@ -26,6 +26,7 @@ class TagsParser(object):
                 self._tags = self.app.get_config("tags.conf")
             return self._tags
         except OSError:
+            LOGGER.warning("tags.conf not found.")
             return None
 
     def get_tags(self):

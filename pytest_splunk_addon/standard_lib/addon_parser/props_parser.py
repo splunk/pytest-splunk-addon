@@ -32,6 +32,7 @@ class PropsParser(object):
                 self._props = self.app.props_conf()
             return self._props
         except OSError:
+            LOGGER.warning("props.conf not found.")
             return None
 
     def get_props_fields(self):

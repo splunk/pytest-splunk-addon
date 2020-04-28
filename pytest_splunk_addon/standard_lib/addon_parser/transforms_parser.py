@@ -31,6 +31,7 @@ class TransformsParser(object):
                 self._transforms = self.app.transforms_conf()
             return self._transforms
         except OSError:
+            LOGGER.warning("transforms.conf not found.")
             return None
 
     @convert_to_fields
