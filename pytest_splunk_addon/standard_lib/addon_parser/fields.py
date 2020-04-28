@@ -25,8 +25,8 @@ class Field(object):
     def __init__(self, field_json=None):
         self.name = field_json.get("name")
         self.type = field_json.get("type") or "required"
-        self.expected_values = field_json.get("expected_values") or ["*"]
-        self.negative_values = field_json.get("negative_values") or ["-", "", "null", "unknown", "(null)"]
+        self.expected_values = field_json.get("expected_values", ["*"])
+        self.negative_values = field_json.get("negative_values", ["-", ""])
         self.condition = field_json.get("condition") or ""
         self.validity = field_json.get("validity") or self.name
 
@@ -34,7 +34,7 @@ class Field(object):
         return self.name
 
     @classmethod
-    def parse_fields(cls, field_list):
+    def parse_fields(cls, field_list, **kwargs):
         """
         Parse the fields from a list 
 
@@ -42,7 +42,7 @@ class Field(object):
             field_list (list): list of field names 
         """
         for each_fields in field_list:
-            yield Field(each_fields)
+            yield Field(dict(kwargs, **each_fields))
 
     def get_properties(self):
         return (
