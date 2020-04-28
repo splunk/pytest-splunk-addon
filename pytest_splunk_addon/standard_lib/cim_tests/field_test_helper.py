@@ -203,7 +203,7 @@ class FieldTestHelper(object):
         return exc_message
 
     @staticmethod
-    def get_table_output(headers, value_list):
+    def get_table_output(headers, value_list, column_width=40):
         """
         Generate a table output of the following format 
             Header1 Header2
@@ -212,12 +212,12 @@ class FieldTestHelper(object):
             Two     Value2
             --------------
         """
-
         table_output = ''
         myList = [headers] + value_list
-        colSize = [max(map(len,col)) for col in zip(*myList)]
+        colSize = [max(map(len,map(str,col))) for col in zip(*myList)]
         formatStr = ' | '.join(["{{:<{}}}".format(i) for i in colSize])
         # Separating line
         myList.insert(1, ['-' * i for i in colSize])
-        for each_value in myList: table_output += formatStr.format(*each_value) + "\n"
+        for each_value in myList: 
+            table_output += formatStr.format(*map(str,each_value)) + "\n"
         return table_output

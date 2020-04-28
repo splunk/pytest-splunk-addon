@@ -327,7 +327,7 @@ TA_CIM_FICTION_PASSED = [
     '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_three"::tag_splunkd_fiction_three_Error_Logs* PASSED*',
     '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_two"::Fiction_Two* PASSED*',
     '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_two"::Fiction_Two::component* PASSED*',
-    '*test_splunk_app_cim_fiction.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*'
+    '*test_splunk_app_cim_fiction.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*',
     '*test_splunk_app_cim_fiction.py::Test_App::test_eventtype_mapped_datamodel* PASSED*',
 
 ]
