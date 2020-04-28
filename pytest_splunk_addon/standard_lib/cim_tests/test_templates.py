@@ -65,7 +65,10 @@ class CIMTestTemplates(object):
         )
         if len(splunk_searchtime_cim_fields["fields"]) == 1:
             test_field = splunk_searchtime_cim_fields["fields"][0].name
-            assert all([each_field["field_count"] > 0 for each_field in results]), (
+            assert all([
+                    each_field["field_count"] == each_field["event_count"]
+                    for each_field in results
+                ]), (
                 f"Field {test_field} not extracted in any events."
                 f"\n{test_helper.format_exc_message()}"
             )
