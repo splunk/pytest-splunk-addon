@@ -19,7 +19,7 @@ services:
 
   splunk:
     build:
-      context: tests
+      context: .
       dockerfile: Dockerfile.tests
       args:
         SPLUNK_APP: TA_fiction
