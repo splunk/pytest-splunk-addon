@@ -6,10 +6,13 @@ Provides Data Model handling functionalities. Such as
 * Get Mapped data model for an eventtype 
 """
 import os
+import logging
+
 import json
 from . import DataModel
 from . import JSONSchema
 
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class DataModelHandler(object):
     """
@@ -84,5 +87,10 @@ class DataModelHandler(object):
         tags_in_each_stanza = self._get_all_tags_per_stanza(addon_parser)
         for eventtype, tags in tags_in_each_stanza.items():
             for each_data_model in self.data_models:
-                for each_mapped_dataset in each_data_model.get_mapped_datasets(tags):
-                    yield eventtype, each_mapped_dataset
+                mapped_datasets = list(each_data_model.get_mapped_datasets(tags))
+                if mapped_datasets:
+                    LOGGER.info("Data Model=%s mapped for %s", each_data_model, eventtype)
+                    for each_mapped_dataset in mapped_datasets:
+                        yield eventtype, each_mapped_dataset
+                else:
+                    LOGGER.info("No Data Model mapped for %s", eventtype)

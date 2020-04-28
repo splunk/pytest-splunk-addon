@@ -66,7 +66,8 @@ class DataSet(object):
         Check if the tags are mapped with this data set
         """
         for each_tag_group in self.tags:
-            return set(each_tag_group).issubset(set(addon_tag_list))
+            if set(each_tag_group).issubset(set(addon_tag_list)):
+                return True
 
     def __str__(self):
         return self.name
