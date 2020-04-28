@@ -40,11 +40,11 @@ def pytest_configure(config):
     )
     config.addinivalue_line(
         "markers",
-        "splunk_searchtime_cim_fields_not_allowed: Test CIM fields for mapped datamodels whose extractions should not be defined in the addon.",
+        "splunk_searchtime_cim_fields_not_allowed_in_props: Test CIM fields for mapped datamodels whose extractions should not be defined in the addon.",
     )
     config.addinivalue_line(
         "markers",
-        "splunk_searchtime_cim_fields_not_extracted:  Test CIM fields for mapped datamodels which should not be extracted in splunk. i.e expected event count for the fields: 0",
+        "splunk_searchtime_cim_fields_not_allowed_in_search:  Test CIM fields for mapped datamodels which should not be extracted in splunk. i.e expected event count for the fields: 0",
     )
 
 

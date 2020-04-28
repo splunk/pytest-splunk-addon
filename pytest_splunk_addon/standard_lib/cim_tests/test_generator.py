@@ -55,10 +55,10 @@ class CIMTestGenerator(object):
         """
         if fixture.endswith("fields"):
             yield from self.generate_cim_fields_tests()
-        elif fixture.endswith("not_allowed"):
-            yield from self.generate_not_allowed_tests()
-        elif fixture.endswith("not_extracted"):
-            yield from self.generate_not_extracted_tests()
+        elif fixture.endswith("not_allowed_in_props"):
+            yield from self.generate_field_extractions_test()
+        elif fixture.endswith("not_allowed_in_search"):
+            yield from self.generate_fields_event_count_test()
 
     def get_mapped_datasets(self):
         """
@@ -110,27 +110,16 @@ class CIMTestGenerator(object):
                     ),
                 )
 
-    def generate_not_allowed_tests(self):
+    def generate_field_extractions_test(self):
         """
         1. Get a list of fields of type in ["not_extracted", "not_allowed"] from common fields json.
-        2. Get a list of fields of type in ["not_extracted", "not_allowed"] from mapped datasets.
-        3. Combine list1 and list2
-        4. Get a list of fields whose extractions are defined in props.
-        5. Compare and get the list of fields whose extractions are not allowed but defined.
-        6. yield the field list
+        2. Get a list of fields whose extractions are defined in props.
+        3. Compare and get the list of fields whose extractions are not allowed but defined.
+        4. yield the field list
         """
         common_fields_list = self.get_common_fields(
-            test_type=["not_extracted", "not_allowed"]
+            test_type=["not_extracted", "extraction_not_allowed"]
         )
-        for tag_stanza, dataset_list in self.get_mapped_datasets():
-            test_dataset = dataset_list[-1]
-            common_fields_list.extend(
-                [
-                    each_field
-                    for each_field in test_dataset.fields
-                    if each_field.type in ["not_extracted", "not_allowed"]
-                ]
-            )
 
         addon_stanzas = self.addon_parser.get_props_fields()
         not_allowed_fields = []
@@ -154,7 +143,7 @@ class CIMTestGenerator(object):
             {"fields": not_allowed_fields}, id=f"searchtime_cim_fields",
         )
 
-    def generate_not_extracted_tests(self):
+    def generate_fields_event_count_test(self):
         """
         1. Get the list of type="not_extracted" fields from common fields json.
         2. Get the list of type="not_extracted" fields from mapped datasets.
@@ -163,22 +152,23 @@ class CIMTestGenerator(object):
         5. Expected event_count for the fields: 0
         """
 
-        not_extracted_fields = self.get_common_fields(test_type=["not_extracted"])
+        not_allowed_fields = self.get_common_fields(test_type=["not_extracted"])
+
         for tag_stanza, dataset_list in self.get_mapped_datasets():
             test_dataset = dataset_list[-1]
-            not_extracted_fields.extend(
+            not_allowed_fields.extend(
                 [
                     each_field
                     for each_field in test_dataset.fields
-                    if each_field.type == "not_extracted"
-                    and each_field not in not_extracted_fields
+                    if each_field.type == "not_allowed"
+                    and each_field not in not_allowed_fields
                 ]
             )
             yield pytest.param(
                 {
                     "tag_stanza": tag_stanza,
                     "data_set": dataset_list,
-                    "fields": not_extracted_fields,
+                    "fields": not_allowed_fields,
                 },
                 id=f"{tag_stanza}::{test_dataset}",
             )
