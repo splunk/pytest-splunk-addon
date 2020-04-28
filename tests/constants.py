@@ -183,6 +183,14 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::is_splunkd* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::for_tags_positive* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::is_splunkd-%host%* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_tags*eventtype="for_multiple_tags_positive"::tag::authentication* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::for_multiple_tags_positive* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication::action* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication::app* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Failed_Authentication* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Successful_Authentication* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_eventtype_mapped_datamodel* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*'
 ]
 
@@ -251,7 +259,23 @@ TA_BROKEN_SOURCETYPE_PASSED = [
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::context_test_4* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::hotWarmPath* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::name* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::alert* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::change* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::authentication* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*sourcetype="splunkd"::tag::tags_negative_testing* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::for_multiple_tags_negative* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::app* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::body* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::dest* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::id* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::severity* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::type* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication::action* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication::app* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Failed_Authentication* PASSED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Successful_Authentication* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*'
 ]
 
@@ -301,5 +325,6 @@ TA_BROKEN_SOURCETYPE_FAILED = [
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*RandomField="RandomValue"::tag::RandomTag* FAILED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*source="/opt/splunk/var/log/splunk/splunkd.log"::tag::tags_negative_testing* FAILED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::is_splunkd* FAILED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::is_splunkd-%host%* FAILED*'
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::is_splunkd-%host%* FAILED*',
+    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype_mapped_datamodel FAILED*'
 ]
