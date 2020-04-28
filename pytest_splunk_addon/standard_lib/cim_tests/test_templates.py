@@ -40,9 +40,9 @@ class CIMTestTemplates(object):
         # Search Query
         base_search = "search "
         for each_set in splunk_searchtime_cim_fields["data_set"]:
-            base_search += " ({})".format(each_set.search_constraints)
+            base_search += " | search {}".format(each_set.search_constraints)
 
-        base_search += " AND ({})".format(
+        base_search += " | search {}".format(
             splunk_searchtime_cim_fields["tag_stanza"]
         )
 
