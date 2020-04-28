@@ -27,7 +27,7 @@ orbs:
                 ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
                 export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "<<parameters.splunk_version>>" VERSION)
                 docker-compose -f docker-compose-ci.yml build
-                docker-compose -f docker-compose-ci.yml up -d splunk
+                SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up -d splunk
                 sleep 90
           - run:
               name: Test
