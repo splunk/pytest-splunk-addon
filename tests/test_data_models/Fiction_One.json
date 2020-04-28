@@ -56,7 +56,7 @@
 			},
 			{
 				"name": "not_allowed_field",
-				"type": "not_extracted",
+				"type": "not_allowed_in_search",
 				"comment": "Not allowed field check"		
 			}
 		],

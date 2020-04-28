@@ -33,7 +33,7 @@
 				"name": "date_second",
 				"type": "conditional",
 				"condition": "date_hour=*",
-				"validity": "if(date_second>=1 AND date_second<=60,date_second,null())",
+				"validity": "if(date_second>=0 AND date_second<=60,date_second,null())",
 				"comment": "Conditional field with condition and validity both"
 			},
 			{
@@ -56,7 +56,7 @@
 			},
 			{
 				"name": "component",
-				"type": "not_extracted",
+				"type": "not_allowed_in_props",
 				"comment": "Not allowed field check"		
 			}
 		],
