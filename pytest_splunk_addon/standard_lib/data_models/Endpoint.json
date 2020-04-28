@@ -61,7 +61,7 @@
         },
         {
           "name": "transport_dest_port",
-          "type": "not_allowed",
+          "type": "not_allowed_in_search",
           "comment": "Calculated as transport/dest_port, such as tcp/53."
         },
         {

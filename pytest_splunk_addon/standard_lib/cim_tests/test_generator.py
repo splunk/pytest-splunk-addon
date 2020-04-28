@@ -118,8 +118,20 @@ class CIMTestGenerator(object):
         4. yield the field list
         """
         common_fields_list = self.get_common_fields(
-            test_type=["not_extracted", "extraction_not_allowed"]
+            test_type=["not_allowed_in_search_and_props", "not_allowed_in_props"]
         )
+
+        for tag_stanza, dataset_list in self.get_mapped_datasets():
+            test_dataset = dataset_list[-1]
+            common_fields_list.extend(
+                [
+                    each_field
+                    for each_field in test_dataset.fields
+                    if each_field.type
+                    in ["not_allowed_in_search_and_props", "not_allowed_in_props"]
+                    and each_field not in common_fields_list
+                ]
+            )
 
         addon_stanzas = self.addon_parser.get_props_fields()
         not_allowed_fields = []
@@ -152,7 +164,9 @@ class CIMTestGenerator(object):
         5. Expected event_count for the fields: 0
         """
 
-        not_allowed_fields = self.get_common_fields(test_type=["not_extracted"])
+        not_allowed_fields = self.get_common_fields(
+            test_type=["not_allowed_in_search_and_props", "not_allowed_in_search"]
+        )
 
         for tag_stanza, dataset_list in self.get_mapped_datasets():
             test_dataset = dataset_list[-1]
@@ -160,7 +174,8 @@ class CIMTestGenerator(object):
                 [
                     each_field
                     for each_field in test_dataset.fields
-                    if each_field.type == "not_allowed"
+                    if each_field.type
+                    in ["not_allowed_in_search_and_props", "not_allowed_in_search"]
                     and each_field not in not_allowed_fields
                 ]
             )
@@ -180,11 +195,8 @@ class CIMTestGenerator(object):
         with open(self.common_fields_path, "r") as cf_json:
             common_fields_json = json.load(cf_json)
         common_fields_list = list(Field.parse_fields(common_fields_json["fields"]))
-        if len(test_type) == 1:
-            return [
-                each_field
-                for each_field in common_fields_list
-                if each_field.type in test_type and each_field not in common_fields_json
-            ]
-        else:
-            return common_fields_list
+        return [
+            each_field
+            for each_field in common_fields_list
+            if each_field.type in test_type
+        ]
