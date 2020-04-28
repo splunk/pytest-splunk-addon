@@ -33,7 +33,7 @@ orbs:
               name: Test
               when: always
               command: |
-                docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
+                SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
                 docker volume ls
               no_output_timeout: 1h
           - run:
