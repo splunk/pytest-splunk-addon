@@ -109,7 +109,11 @@ class FieldTestTemplates(object):
         """
 
         # Search Query 
+        record_property("stanza_name", splunk_searchtime_fields_negative["stanza"])
         record_property("stanza_type", splunk_searchtime_fields_negative["stanza_type"])
+        record_property("fields", splunk_searchtime_fields_negative["fields"])
+
+        search = (
             f"search (index=_internal OR index=*)"
             f" {splunk_searchtime_fields_negative['stanza_type']}=\""
             f"{splunk_searchtime_fields_negative['stanza']}\""
