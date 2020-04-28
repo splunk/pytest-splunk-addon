@@ -23,6 +23,7 @@ class CIMTestTemplates(object):
 
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
 
+    @pytest.mark.splunk_searchtime_cim
     def test_eventtype_mapped_datamodel(
         self, splunk_search_util, record_property, caplog
     ):
