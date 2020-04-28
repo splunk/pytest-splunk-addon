@@ -23,6 +23,80 @@ class CIMTestTemplates(object):
 
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
 
+    def test_eventtype_mapped_datamodel(
+        self, splunk_search_util, record_property, caplog
+    ):
+        """
+        This test case check that event type is not be mapped with more than one data model 
+
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            record_property (fixture): Document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        """
+
+        DATA_MODELS = [
+            "Alerts",
+            "Authentication",
+            "Certificates",
+            "Change",
+            "Compute_Inventory",
+            "DLP",
+            "Databases",
+            "Email",
+            "Endpoint",
+            "Event_Signatures",
+            "Interprocess_Messaging",
+            "Intrusion_Detection",
+            "JVM",
+            "Malware",
+            "Network_Resolution",
+            "Network_Sessions",
+            "Network_Traffic",
+            "Performance",
+            "Splunk_Audit",
+            "Ticket_Management",
+            "Updates",
+            "Vulnerabilities",
+            "Web",
+        ]
+
+        test_helper = FieldTestHelper(
+            splunk_search_util, [], interval=INTERVAL, retries=RETRIES
+        )
+        search = ""
+        # Iterate data models list to create a search query
+        for index, datamodel in enumerate(DATA_MODELS):
+            if index == 0:
+                search += f'| tstats count from datamodel={datamodel}  by eventtype | eval dm_type="{datamodel}"\n'
+            else:
+                search += f'| append [| tstats count from datamodel={datamodel}  by eventtype | eval dm_type="{datamodel}"]\n'
+
+        search += """| stats delim=", " dc(dm_type) as datamodel_count, values(dm_type) as datamodels by eventtype | nomv datamodels
+        | where datamodel_count > 1 and eventtype!="err0r"
+        """
+        record_property("search", search)
+
+        results = list(splunk_search_util.getFieldValuesList(search, INTERVAL, RETRIES))
+        if results:
+            record_property("results", results)
+            result_str = test_helper.get_table_output(
+                headers=["Count", "Eventtype", "Datamodels"],
+                value_list=[
+                    [
+                        each_result["datamodel_count"],
+                        each_result["eventtype"],
+                        each_result["datamodels"],
+                    ]
+                    for each_result in results
+                ],
+            )
+
+        assert not results, (
+            f"Query result greater than 0.\nsearch=\n{search} \n \n"
+            f"Event type which associated with multiple data model \n{result_str}"
+        )
+
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_fields
     def test_cim_required_fields(
@@ -205,3 +279,4 @@ class CIMTestTemplates(object):
             f"\nMessage: App {app_name} is not installed/enabled in this Splunk instance."
             f"The plugin requires the {app_name} to be installed/enabled in the Splunk instance."
             f"Please install the app and execute the tests again."
+        )
