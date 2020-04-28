@@ -38,7 +38,7 @@ class CIMTestTemplates(object):
         """
 
         # Search Query
-        base_search = "search "
+        base_search = ""
         for each_set in splunk_searchtime_cim_fields["data_set"]:
             base_search += " | search {}".format(each_set.search_constraints)
 
