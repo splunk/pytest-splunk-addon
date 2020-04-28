@@ -21,8 +21,17 @@ class TransformsParser(object):
     def __init__(self, splunk_app_path, app):
         self.app = app 
         self.splunk_app_path = splunk_app_path
-        LOGGER.debug("Parsing transforms.conf")
-        self.transforms = self.app.transforms_conf()
+        self._transforms = None
+
+    @property
+    def transforms(self):
+        try:
+            if not self._transforms:
+                LOGGER.debug("Parsing transforms.conf")
+                self._transforms = self.app.transforms_conf()
+            return self._transforms
+        except OSError:
+            return None
 
     @convert_to_fields
     def get_transform_fields(self, transforms_stanza):
@@ -50,6 +59,8 @@ class TransformsParser(object):
         """
 
         try:
+            if not self.transforms:
+                return
             transforms_section = self.transforms.sects[transforms_stanza]
             if "SOURCE_KEY" in transforms_section.options:
                 LOGGER.info("Parsing source_key of %s", transforms_stanza)
@@ -88,6 +99,8 @@ class TransformsParser(object):
         Yields:
             string of field names  
         """
+        if not self.transforms:
+            return
         if lookup_stanza in self.transforms.sects:
             stanza = self.transforms.sects[lookup_stanza]
             if "filename" in stanza.options:
