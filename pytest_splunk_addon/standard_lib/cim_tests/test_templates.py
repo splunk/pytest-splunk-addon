@@ -23,8 +23,8 @@ class CIMTestTemplates(object):
 
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
 
-    @pytest.mark.splunk_app_cim
-    @pytest.mark.splunk_app_cim_fields
+    @pytest.mark.splunk_searchtime_cim
+    @pytest.mark.splunk_searchtime_cim_fields
     def test_cim_required_fields(
         self, splunk_search_util, splunk_searchtime_cim_fields, record_property
     ):
