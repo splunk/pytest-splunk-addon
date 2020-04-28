@@ -19,6 +19,27 @@ test_connection_only = """
     """
 
 
+def setup_test_dir(testdir):
+    shutil.copytree(
+        os.path.join(testdir.request.config.invocation_dir, "deps"), 
+        os.path.join(testdir.tmpdir, "deps"),
+    )
+
+    shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "Dockerfile.splunk"),
+        testdir.tmpdir,
+    )
+    shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "Dockerfile.tests"),
+        testdir.tmpdir,
+    )
+
+    shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "docker-compose.yml"),
+        testdir.tmpdir,
+    )
+
+
 @pytest.mark.external
 def test_splunk_connection_external(testdir):
     """Make sure that pytest accepts our fixture."""
@@ -29,17 +50,17 @@ def test_splunk_connection_external(testdir):
     # Copy the content of source to destination
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
-        os.path.join(testdir.tmpdir, "tests/package"),
+        os.path.join(testdir.tmpdir, "package"),
     )
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=external",
-        "--splunk-app=tests/package",
+        "--splunk-app=package",
         "--splunk-type=external",
         f"--splunk-host=splunk",
         f"--splunk-port=8089",
-        "--splunk-password=Changed@11",
+        "--splunk-password=Changed@11",        
         "-v",
     )
 
@@ -66,26 +87,13 @@ def test_splunk_connection_docker(testdir):
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
-        os.path.join(testdir.tmpdir, "tests/package"),
+        os.path.join(testdir.tmpdir, "package"),
     )
 
-    shutil.copytree(
-        os.path.join(testdir.request.config.invocation_dir, "deps"),
-        os.path.join(testdir.tmpdir, "tests/deps"),
-    )
-
-    shutil.copy(
-        os.path.join(testdir.request.fspath.dirname, "Dockerfile"),
-        os.path.join(testdir.tmpdir, "tests/"),
-    )
-    shutil.copy(
-        os.path.join(testdir.request.fspath.dirname, "docker-compose.yml"),
-        os.path.join(testdir.tmpdir, "tests/"),
-    )
+    setup_test_dir(testdir)
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "--splunk-app=tests/package",
         "--splunk-password=Changed@11",
         "-v",
     )
@@ -100,6 +108,7 @@ def test_splunk_connection_docker(testdir):
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
+
 
 
 @pytest.mark.docker
@@ -118,26 +127,13 @@ def test_splunk_app_fiction(testdir):
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
-        os.path.join(testdir.tmpdir, "tests/package"),
+        os.path.join(testdir.tmpdir, "package"),
     )
 
-    shutil.copytree(
-        os.path.join(testdir.request.config.invocation_dir, "deps"),
-        os.path.join(testdir.tmpdir, "tests/deps"),
-    )
-
-    shutil.copy(
-        os.path.join(testdir.request.fspath.dirname, "Dockerfile"),
-        os.path.join(testdir.tmpdir, "tests/"),
-    )
-    shutil.copy(
-        os.path.join(testdir.request.fspath.dirname, "docker-compose.yml"),
-        os.path.join(testdir.tmpdir, "tests/"),
-    )
+    setup_test_dir(testdir)
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "--splunk-app=tests/package",
         "--splunk-password=Changed@11",
         "-v",
     )
@@ -171,26 +167,13 @@ def test_splunk_app_broken_sourcetype(testdir):
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_broken_sourcetype"),
-        os.path.join(testdir.tmpdir, "tests/package"),
+        os.path.join(testdir.tmpdir, "package"),
     )
-    shutil.copytree(
-        os.path.join(testdir.request.config.invocation_dir, "deps"),
-        os.path.join(testdir.tmpdir, "tests/deps"),
-    )
-
-    shutil.copy(
-        os.path.join(testdir.request.fspath.dirname, "Dockerfile"),
-        os.path.join(testdir.tmpdir, "tests/"),
-    )
-    shutil.copy(
-        os.path.join(testdir.request.fspath.dirname, "docker-compose.yml"),
-        os.path.join(testdir.tmpdir, "tests/"),
-    )
+    setup_test_dir(testdir)
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "--splunk-app=tests/package",
         "--splunk-password=Changed@11",
         "-v",
     )
