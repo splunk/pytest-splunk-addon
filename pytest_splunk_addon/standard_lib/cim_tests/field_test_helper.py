@@ -200,16 +200,12 @@ class FieldTestHelper(object):
             Two     Value2
             --------------
         """
-        table_output = ("{:<20}"*(len(headers))).format(
-                     *headers
-                )
-        table_output += "\n" + "-"*20*len(headers)
-        for each_value in value_list:
-            table_output += (
-                ("\n" + "{:<20}"*(len(headers)-1) + "{}").format(
-                *each_value
-            ))
-        table_output += "\n" + "-"*20*len(headers)
 
+        table_output = ''
+        myList = [headers] + value_list
+        colSize = [max(map(lambda cell: len(str(cell)),col)) for col in zip(*myList)]
+        formatStr = ' | '.join(["{{:<{}}}".format(i) for i in colSize])
+        # Separating line
+        myList.insert(1, ['-' * i for i in colSize])
+        for each_value in myList: table_output += formatStr.format(*each_value) + "\n"
         return table_output
-

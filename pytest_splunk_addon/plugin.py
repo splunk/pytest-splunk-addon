@@ -18,6 +18,7 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "splunk_searchtime_fields_eventtypes: Test search time eventtypes only")
     config.addinivalue_line("markers", "splunk_searchtime_cim: Test CIM compatibility only")
     config.addinivalue_line("markers", "splunk_searchtime_cim_fields: Test CIM required fields only")
+    config.addinivalue_line("markers", "splunk_searchtime_cim_mapped_datamodel: Test an eventtype is mapped with only one data models")
 
 
 def pytest_generate_tests(metafunc):
