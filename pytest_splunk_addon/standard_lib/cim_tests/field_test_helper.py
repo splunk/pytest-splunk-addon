@@ -203,25 +203,15 @@ class FieldTestHelper(object):
         return exc_message
 
     @staticmethod
-    def get_table_output(headers, value_list, column_width=40):
+    def get_table_output(headers, value_list):
         """
         Generate a table output of the following format 
-
             Header1 Header2
             ---------------
             One     Value1
             Two     Value2
             --------------
         """
-        table_output = ("\n" + "{:<{col}}" * (len(headers))).format(
-            col=column_width, *headers
-        )
-        table_output += "\n" + "-" * column_width * len(headers)
-        for each_value in value_list:
-            table_output += ("\n" + "{:<{col}}" * (len(headers) - 1) + "{}").format(
-                col=column_width, *each_value
-            )
-        table_output += "\n" + "-" * column_width * len(headers)
 
         table_output = ''
         myList = [headers] + value_list
