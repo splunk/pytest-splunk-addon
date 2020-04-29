@@ -22,7 +22,7 @@ class TagsParser(object):
     def tags(self):
         try:
             if not self._tags:
-                LOGGER.debug("Parsing tags.conf")
+                LOGGER.info("Parsing tags.conf")
                 self._tags = self.app.get_config("tags.conf")
             return self._tags
         except OSError:

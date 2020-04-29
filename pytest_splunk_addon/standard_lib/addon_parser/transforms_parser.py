@@ -27,7 +27,7 @@ class TransformsParser(object):
     def transforms(self):
         try:
             if not self._transforms:
-                LOGGER.debug("Parsing transforms.conf")
+                LOGGER.info("Parsing transforms.conf")
                 self._transforms = self.app.transforms_conf()
             return self._transforms
         except OSError:

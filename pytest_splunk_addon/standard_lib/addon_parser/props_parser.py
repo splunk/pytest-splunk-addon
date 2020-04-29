@@ -29,6 +29,7 @@ class PropsParser(object):
     def props(self):
         try:
             if not self._props:
+                LOGGER.info("Parsing props.conf")
                 self._props = self.app.props_conf()
             return self._props
         except OSError:

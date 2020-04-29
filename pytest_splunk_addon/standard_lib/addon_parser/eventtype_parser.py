@@ -21,7 +21,7 @@ class EventTypeParser(object):
     def eventtypes(self):
         try:
             if not self._eventtypes:
-                LOGGER.debug("Parsing eventtypes.conf")
+                LOGGER.info("Parsing eventtypes.conf")
                 self._eventtypes = self.app.eventtypes_conf()
             return self._eventtypes
         except OSError:
