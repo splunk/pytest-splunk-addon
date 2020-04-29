@@ -54,8 +54,8 @@ class CIMTestTemplates(object):
             cim_fields,
             interval=INTERVAL, retries=RETRIES
         )
-        # is_required = True if there are any fields in list which is required
-        is_required = any(
+        # fields_are_optional = True if there is no field in the list which is required
+        fields_are_optional = not any(
             [
                 each_field.type=="required" 
                 for each_field in cim_fields
@@ -70,7 +70,7 @@ class CIMTestTemplates(object):
         # very clear order of scenarios. with this approach, a user will be able to identify
         # what went wrong very quickly.
         # 1: If the field is required, there should be at least 1 sourcetype in the results
-        assert (results or not is_required), (
+        assert (results or (cim_fields and fields_are_optional)), (
             "0 Events found in at least one sourcetype mapped with the dataset."
             f"\n{test_helper.format_exc_message()}"
         )
