@@ -26,7 +26,7 @@
           "fields_cluster": [],
           "fields": [],
           "child_dataset": [],
-          "search_constraints": "action='failure'"
+          "search_constraints": "action=\"failure\""
         },
         {
           "name": "Successful_Authentication",
@@ -34,7 +34,7 @@
           "fields_cluster": [],
           "fields": [],
           "child_dataset": [],
-          "search_constraints": "action='success'"
+          "search_constraints": "action=\"success\""
         }
       ],
       "search_constraints": "tag=authentication NOT (action=success user=*$)"
