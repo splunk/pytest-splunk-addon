@@ -177,7 +177,8 @@ class CIMTestTemplates(object):
             )
 
         assert not results, (
-            f"Query result greater than 0.\nsearch=\n{search} \n \n"
+            "Multiple data models are mapped with an eventtype"
+            f"\nQuery result greater than 0.\nsearch=\n{search} \n \n"
             f"Event type which associated with multiple data model \n{result_str}"
         )
 
@@ -238,6 +239,7 @@ class CIMTestTemplates(object):
             ]
 
             violation_str = (
+                "The fields should not be extracted in the dataset"
                 "\nThese fields are automatically provided by asset and identity"
                 " correlation features of applications like Splunk Enterprise Security."
                 "\nDo not define extractions for these fields when writing add-ons."
@@ -255,6 +257,7 @@ class CIMTestTemplates(object):
         self, splunk_searchtime_cim_fields_not_allowed_in_props, record_property
     ):
         result_str = (
+            "The field extractions are not allowed in the configuration files"
             "\nThese fields are automatically provided by asset and identity"
             " correlation features of applications like Splunk Enterprise Security."
             "\nDo not define extractions for these fields when writing add-ons.\n\n"
@@ -297,7 +300,7 @@ class CIMTestTemplates(object):
         )
 
         assert result, (
-            f"\nMessage: App {app_name} is not installed/enabled in this Splunk instance."
-            f"The plugin requires the {app_name} to be installed/enabled in the Splunk instance."
-            f"Please install the app and execute the tests again."
+            f"App {app_name} is not installed/enabled in this Splunk instance."
+            f"\nThe plugin requires the {app_name} to be installed/enabled in the Splunk instance."
+            f"\nPlease install the app and execute the tests again."
         )
