@@ -147,7 +147,7 @@ class FieldTestHelper(object):
 
         2) There are multiple fields in the result
 
-            Sourcetype  Field  Total Count  Field Count  Invalid Field Count  Invalid Values
+            Sourcetype  Field  Event Count  Field Count  Invalid Field Count  Invalid Values
             --------------------------------------------------------------------------------
             splunkd     One    10           10           5                   'unknown'
             scheduler   Two    20           20           7                   '-', 'invalid'
@@ -171,7 +171,7 @@ class FieldTestHelper(object):
                 headers=[
                     "Sourcetype",
                     "Field",
-                    "Total Count",
+                    "Event Count",
                     "Field Count",
                     "Invalid Field Count",
                     "Invalid Values",
@@ -212,13 +212,16 @@ class FieldTestHelper(object):
             One     Value1
             Two     Value2
             --------------
+        Args:
+            headers (list): list of headers 
+            value_list (list of list): list of rows for the table
         """
         table_output = ""
-        myList = [headers] + value_list
-        colSize = [max(map(len, col)) for col in zip(*myList)]
-        formatStr = " | ".join(["{{:<{}}}".format(i) for i in colSize])
+        table_list = [headers] + value_list
+        col_length = [max(map(lambda cell: len(str(cell)),col)) for col in zip(*table_list)]
+        format_str = " | ".join(["{{:<{}}}".format(i) for i in col_length])
         # Separating line
-        myList.insert(1, ["-" * i for i in colSize])
-        for each_value in myList:
-            table_output += formatStr.format(*each_value) + "\n"
+        table_list.insert(1, ["-" * i for i in col_length])
+        for each_value in table_list:
+            table_output += format_str.format(*each_value) + "\n"
         return table_output

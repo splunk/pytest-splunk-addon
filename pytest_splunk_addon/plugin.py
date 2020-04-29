@@ -46,6 +46,10 @@ def pytest_configure(config):
         "markers",
         "splunk_searchtime_cim_fields_not_allowed_in_search:  Test CIM fields for mapped datamodels which should not be extracted in splunk. i.e expected event count for the fields: 0",
     )
+    config.addinivalue_line(
+        "markers",
+        "splunk_searchtime_cim_mapped_datamodel: Test an eventtype is mapped with only one data models"
+    )
 
 
 def pytest_generate_tests(metafunc):
