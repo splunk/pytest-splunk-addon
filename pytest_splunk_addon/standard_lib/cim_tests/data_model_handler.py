@@ -26,7 +26,15 @@ class DataModelHandler(object):
     """
 
     def __init__(self, data_model_path):
-        self.data_models = list(self.load_data_models(data_model_path))
+        self.data_model_path = data_model_path
+        self._data_models = None
+
+    @property
+    def data_models(self):
+        if not self._data_models:
+            self._data_models= list(self.load_data_models(self.data_model_path))
+        return self._data_models
+
 
     def _get_all_tags_per_stanza(self, addon_parser):
         """
