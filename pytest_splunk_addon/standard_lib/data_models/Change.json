@@ -4,7 +4,7 @@
   "objects": [
     {
       "name": "All_Changes",
-      "tags": [["All_Changes", "Account_Management"]],
+      "tags": [["change", "account"]],
       "fields_cluster": [],
       "search_constraints": "tag=change NOT (object_category=file OR object_category=directory OR object_category=registry)",
       "fields": [
@@ -112,7 +112,7 @@
       "child_dataset": [
         {
           "name": "Account_Management",
-          "tags": [["Account_Management"]],
+          "tags": [["account"]],
           "fields_cluster": [],
           "search_constraints": "tag=account",
           "fields": [
