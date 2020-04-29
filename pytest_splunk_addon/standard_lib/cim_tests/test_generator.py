@@ -170,6 +170,8 @@ class CIMTestGenerator(object):
 
         for tag_stanza, dataset_list in self.get_mapped_datasets():
             test_dataset = dataset_list[-1]
+            if not test_dataset.fields:
+                continue
             test_fields = not_allowed_fields[:]
             test_fields.extend(
                 [
