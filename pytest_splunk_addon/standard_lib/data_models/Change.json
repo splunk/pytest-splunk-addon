@@ -118,12 +118,12 @@
           "fields": [
             {
               "name": "dest_nt_domain",
-              "type": "required",
+              "type": "optional",
               "comment": "The NT domain of the destination, if applicable."
             },
             {
               "name": "src_nt_domain",
-              "type": "required",
+              "type": "optional",
               "comment": "The NT domain of the source, if applicable."
             },
             {
