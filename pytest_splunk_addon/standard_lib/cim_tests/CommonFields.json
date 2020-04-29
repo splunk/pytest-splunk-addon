@@ -1,6 +1,5 @@
 {
-  "comment": "This fields are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for these fields when writing add-ons.",
-  "description": "not_allowed indicates field is not allowed in props as well as in search.",
+  "description": "This fields are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for these fields when writing add-ons.",
   "fields": [
     {
       "name": "dest_bunit",

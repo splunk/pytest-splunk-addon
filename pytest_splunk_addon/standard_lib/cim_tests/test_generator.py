@@ -170,20 +170,23 @@ class CIMTestGenerator(object):
 
         for tag_stanza, dataset_list in self.get_mapped_datasets():
             test_dataset = dataset_list[-1]
-            not_allowed_fields.extend(
+            if not test_dataset.fields:
+                continue
+            test_fields = not_allowed_fields[:]
+            test_fields.extend(
                 [
                     each_field
                     for each_field in test_dataset.fields
                     if each_field.type
                     in ["not_allowed_in_search_and_props", "not_allowed_in_search"]
-                    and each_field not in not_allowed_fields
+                    and each_field not in test_fields
                 ]
             )
             yield pytest.param(
                 {
                     "tag_stanza": tag_stanza,
                     "data_set": dataset_list,
-                    "fields": not_allowed_fields,
+                    "fields": test_fields,
                 },
                 id=f"{tag_stanza}::{test_dataset}",
             )

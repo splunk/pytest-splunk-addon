@@ -63,7 +63,7 @@
         },
         "type": {
           "type": "string",
-          "description": "Type of the field, here 'not_allowed' indicates fields is not allowed in props as well as in search.",
+          "description": "Type of the field.",
           "enum": [
             "required",
             "conditional",
