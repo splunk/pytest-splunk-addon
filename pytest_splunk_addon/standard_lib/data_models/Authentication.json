@@ -96,7 +96,7 @@
             },
             {
               "name": "Successful_Default_Authentication",
-              "tags": ["authentication", "default"],
+              "tags": [["authentication", "default"]],
               "fields_cluster": [],
               "fields": [],
               "child_dataset": [],
