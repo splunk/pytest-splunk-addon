@@ -198,7 +198,7 @@
         },
         {
           "name": "src_translated_ip",
-          "type": "conditional",
+          "type": "required",
           "comment": "The interface that is listening locally or sending packets remotely. Can also be referred to as the 'ingress interface.'"
         },
         {
