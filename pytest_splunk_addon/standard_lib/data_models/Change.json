@@ -129,7 +129,7 @@
             {
               "name": "src_user",
               "type": "conditional",
-              "condition": "object_category=user ",
+              "condition": "object_category=user",
               "comment": "For account changes, the user or entity performing the change."
             }
           ],

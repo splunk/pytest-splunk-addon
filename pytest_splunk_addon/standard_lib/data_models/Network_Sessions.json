@@ -70,7 +70,7 @@
         },
         {
           "name": "user",
-          "type": "conditional",
+          "type": "required",
           "comment": "The user in a network session event, where applicable. For example, a VPN session or an authenticated DHCP event."
         }
       ],

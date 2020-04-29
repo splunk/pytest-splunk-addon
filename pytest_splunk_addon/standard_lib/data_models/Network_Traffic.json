@@ -50,7 +50,7 @@
         {
           "name": "dest",
           "type": "required",
-          "validity": "case((protocol==ip OR protocol==icmp) and like(dest,\"([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}\"), dest,  like(dest,\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\"), dest, true(), null())",
+          "validity": "case((protocol==ip OR protocol==icmp), if(match(dest,\"([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}\"), dest, null()), like(dest,\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\"), dest, true(), null())",
           "comment": "The destination of the network traffic (the remote host). You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
         },
         {
@@ -61,13 +61,15 @@
         {
           "name": "dest_ip",
           "type": "conditional",
-          "validity": "if(match(dest,\"([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}\") and dest_ip==dest,dest_ip,null())",
+          "condition": "| rex dest=\"([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}\")",
+          "validity": "if(dest_ip==dest,dest_ip,null())",
           "comment": "The IP address of the destination."
         },
         {
           "name": "dest_mac",
           "type": "conditional",
-          "validity": "if(match(dest,\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\"),dest_mac,null())",
+          "condition": "| rex dest=\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\")",
+          "validity": "if(dest==dest_mac,dest_mac,null())",
           "comment": "The destination TCP/IP layer 2 Media Access Control (MAC) address of a packet's destination, such as 06:10:9f:eb:8f:14. Note: Always force lower case on this field and use colons instead of dashes, spaces, or no separator."
         },
         {
@@ -86,7 +88,7 @@
         {
           "name": "dest_translated_port",
           "type": "conditional",
-          "condition": "protocol=ip AND dest_translated_ip!=NULL",
+          "condition": "protocol=ip AND dest_translated_ip=*",
           "comment": "The NATed port to which a packet has been sent. Note: Do not translate the values of this field to strings (tcp/80 is 80, not http)."
         },
         {
@@ -135,25 +137,25 @@
         {
           "name": "icmp_type",
           "type": "conditional",
-          "condition": "icmp_type=*",
+          "condition": "protocol=icmp",
           "validity": "if(isnum(duration) and duration>0 and duration<254,duration,null())",
           "comment": "The RFC 2780 or RFC 4443 numeric value of the traffic. See the ICMP Type Numbers and the ICMPv6 Type Numbers."
         },
         {
           "name": "packets",
-          "type": "conditional",
+          "type": "required",
           "validity": "if(isnum(packets) and packets==packets_in+packets_out,packets,null())",
           "comment": "The total count of packets handled by this device/interface (packets_in + packets_out)."
         },
         {
           "name": "packets_in",
-          "type": "conditional",
+          "type": "required",
           "validity": "if(isnum(packets_in),packets_in,null())",
           "comment": "The total count of packets received by this device/interface."
         },
         {
           "name": "packets_out",
-          "type": "conditional",
+          "type": "required",
           "validity": "if(isnum(packets_out),packets_out,null())",
           "comment": "The total count of packets transmitted by this device/interface."
         },
@@ -274,7 +276,7 @@
         {
           "name": "src_translated_port",
           "type": "conditional",
-          "condition": "protocol=ip AND src_translated_ip!=NULL",
+          "condition": "protocol=ip AND src_translated_ip=*",
           "validity": "if(isnum(src_translated_port),src_translated_port,null())",
           "comment": "The NATed port from which a packet has been sent. Note: Do not translate the values of this field to strings (tcp/80 is 80, not http."
         }

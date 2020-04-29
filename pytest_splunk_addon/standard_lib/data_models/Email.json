@@ -103,7 +103,7 @@
         {
           "name": "recipient_count",
           "type": "required",
-          "condition": "mvcount(recipient)",
+          "validity":"if(isnum(recipient_count) and recipient_count==mvcount(recipient),recipient_count, null())",
           "comment": "The total number of intended message recipients."
         },
         {
