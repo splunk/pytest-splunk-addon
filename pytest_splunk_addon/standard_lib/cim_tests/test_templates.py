@@ -153,6 +153,9 @@ class CIMTestTemplates(object):
         for index, datamodel in enumerate(data_models):
             if index == 0:
                 search += f'| tstats count from datamodel={datamodel}  by eventtype | eval dm_type="{datamodel}"\n'
+            elif datamodel == "Splunk_Audit":
+                # Exclude the internal search logs in the results
+                search += f'| append [| tstats count from datamodel={datamodel} WHERE index!="_*"  by eventtype | eval dm_type="{datamodel}"]\n'
             else:
                 search += f'| append [| tstats count from datamodel={datamodel}  by eventtype | eval dm_type="{datamodel}"]\n'
 
