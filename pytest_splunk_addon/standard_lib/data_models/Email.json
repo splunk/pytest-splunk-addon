@@ -11,257 +11,173 @@
         {
           "name": "action",
           "type": "required",
-          "condition": "",
-          "validity": "",
           "expected_values": ["delivered", "blocked", "quarantined", "deleted"],
           "comment": "Action taken by the reporting device"
         },
         {
           "name": "delay",
           "type": "optional",
-          "condition": "",
-          "validity": "(isnum(delay), 1, null())",
-          "expected_values": [],
+          "validity": "if(isnum(delay),delay,null())",
           "comment": "Total sending delay in milliseconds"
         },
         {
           "name": "dest",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The endpoint system to which the message was delivered"
         },
         {
           "name": "duration",
           "type": "optional",
-          "condition": "",
-          "validity": "(isnum(duration), 1, null())",
-          "expected_values": [],
+          "validity": "if(isnum(duration),duration, null())",
           "comment": "The amount of time for the completion of the messaging event, in seconds."
         },
         {
           "name": "file_hash",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The hashes for the files attached to the message, if any exist."
         },
         {
           "name": "file_name",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The names of the files attached to the message, if any exist."
         },
         {
           "name": "file_size",
           "type": "optional",
-          "condition": "",
-          "validity": "(isnum(file_size), 1, null())",
-          "expected_values": [],
+          "validity": "if(isnum(file_size),file_size, null())",
           "comment": "The size of the files attached the message, in bytes."
         },
         {
           "name": "internal_message_id",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "Host-specific unique message identifier (such as aid in sendmail, IMI in Domino, Internal-Message-ID in Exchange, and MID in Ironport)."
         },
         {
           "name": "message_id",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The globally-unique message identifier."
         },
         {
           "name": "message_info",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "Additional information about the message."
         },
         {
           "name": "orig_dest",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The original destination host of the message. The message destination host can change when a message is relayed or bounced."
         },
         {
           "name": "orig_recipient",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The original recipient of the message. The message recipient can change when the original email address is an alias and has to be resolved to the actual recipient."
         },
         {
           "name": "orig_src",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The original source of the message."
         },
         {
           "name": "process",
-          "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
+          "type": "conditional",
+          "condition": "process_id=*",
           "comment": "The name of the email executable that carries out the message transaction, such as sendmail, postfix, or the name of an email client."
         },
         {
           "name": "process_id",
-          "type": "conditional",
-          "condition": "",
-          "validity": "(isnum(process_id), 1, null())",
-          "expected_values": [],
+          "type": "optional",
+          "validity": "if(isnum(process_id), process_id, null())",
           "comment": "The numeric identifier of the process invoked to send the message."
         },
         {
           "name": "protocol",
-          "type": "conditional",
-          "condition": "",
-          "validity": "",
+          "type": "required",
           "expected_values": ["smtp", "imap", "pop3", "mapi"],
           "comment": "The email protocol involved, such as SMTP or RPC."
         },
         {
           "name": "recipient",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "A field listing individual recipient email addresses, such as recipient='foo@splunk.com', recipient='bar@splunk.com'"
         },
         {
           "name": "recipient_count",
           "type": "required",
           "condition": "mvcount(recipient)",
-          "validity": "",
-          "expected_values": [],
           "comment": "The total number of intended message recipients."
         },
         {
           "name": "recipient_status",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The recipient delivery status, if available."
         },
         {
           "name": "response_time",
           "type": "optional",
-          "condition": "",
-          "validity": "(isnum(response_time), 1, null())",
-          "expected_values": [],
+          "validity": "if(isnum(response_time),response_time, null())",
           "comment": "The amount of time it took to receive a response in the messaging event, in seconds."
         },
         {
           "name": "retries",
           "type": "optional",
-          "condition": "",
-          "validity": "(isnum(retries), 1, null())",
-          "expected_values": [],
+          "validity": "if(isnum(retries),retries, null())",
           "comment": "The number of times that the message was automatically resent because it was bounced back, or a similar transmission error condition."
         },
         {
           "name": "return_addr",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The return address for the message."
         },
         {
           "name": "size",
           "type": "optional",
-          "condition": "",
-          "validity": "(isnum(size), 1, null())",
-          "expected_values": [],
+          "validity": "if(isnum(size),size, null())",
           "comment": "The size of the message, in bytes."
         },
         {
           "name": "src",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The system that sent the message. You can alias this from more specific fields, such as src_host, src_ip, or src_name."
         },
         {
           "name": "src_user",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The email address of the message sender."
         },
         {
           "name": "status_code",
           "type": "conditional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
+          "condition": "protocol=smtp",
           "comment": "The status code associated with the message."
         },
         {
           "name": "subject",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The subject of the message."
         },
         {
           "name": "url",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The URL associated with the message, if any."
         },
         {
           "name": "user",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The user context for the process. This is not the email address for the sender. For that, look at the src_user field."
         },
         {
           "name": "vendor_product",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The vendor and product of the email server used for the email transaction. This field can be automatically populated by vendor and product fields in your data."
         },
         {
           "name": "xdelay",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "Extended delay information for the message transaction. May contain details of all the delays from all the servers in the message transmission chain."
         },
         {
           "name": "xref",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "An external reference. Can contain message IDs or recipient addresses from related messages."
         }
       ],
@@ -291,39 +207,27 @@
             {
               "name": "filter_action",
               "type": "optional",
-              "condition": "",
               "comment": "The status produced by the filter, such as 'accepted', 'rejected', or 'dropped'"
             },
             {
               "name": "filter_score",
               "type": "optional",
-              "condition": "",
-              "validity": "(isnum(filter_score), 1, null())",
-              "expected_values": [],
+              "validity": "if(isnum(filter_score),filter_score, null())",
               "comment": "Numeric indicator assigned to specific emails by an email filter"
             },
             {
               "name": "signature",
               "type": "optional",
-              "condition": "",
-              "validity": "",
-              "expected_values": [],
               "comment": "The name of the filter applied."
             },
             {
               "name": "signature_extra",
               "type": "optional",
-              "condition": "",
-              "validity": "",
-              "expected_values": [],
               "comment": "Any additional information about the filter."
             },
             {
               "name": "signature_id",
               "type": "optional",
-              "condition": "",
-              "validity": "",
-              "expected_values": [],
               "comment": "The id associated with the filter name."
             }
           ],

@@ -10,17 +10,12 @@
         {
           "name": "action",
           "type": "required",
-          "condition": "",
           "expected_values": ["success", "failure", "error"],
-          "validity": "",
           "comment": "The action performed on the resource."
         },
         {
           "name": "app",
           "type": "required",
-          "condition": "",
-          "expected_values": [],
-          "validity": "",
           "comment": "The application involved in the event (such as ssh, splunk, win:local)."
         }
       ],

@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
   "modelName": "Web",
+  "version": "1.0.0",
   "objects": [
     {
       "name": "Web",
@@ -13,48 +13,32 @@
         {
           "name": "action",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The action taken by the server or proxy."
         },
         {
           "name": "app",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The application detected or hosted by the server/site such as wordpress, splunk, or facebook."
         },
         {
           "name": "dest",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The destination of the network traffic (the remote host). You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
         },
         {
           "name": "dest_port",
           "type": "required",
-          "condition": "",
-          "validity": "(isnum(dest_port),1,null())",
-          "expected_values": [],
+          "validity": "if(isnum(dest_port),dest_port,null())",
           "comment": "The destination port of the web traffic."
         },
         {
           "name": "src",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The source of the network traffic (the client requesting the connection)."
         },
         {
           "name": "status",
           "type": "required",
-          "condition": "",
-          "validity": "",
           "expected_values": [
             "100",
             "101",
@@ -120,103 +104,78 @@
         {
           "name": "uri_path",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The path of the resource served by the webserver or proxy."
         },
         {
           "name": "url",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The URL of the requested HTTP resource."
         },
         {
           "name": "url_length",
           "type": "required",
-          "condition": "len(url)",
-          "validity": "",
-          "expected_values": [],
+          "condition": "url_length=len(url)",
           "comment": "The length of the URL."
         },
         {
           "name": "category",
           "type": "conditional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
+          "condition": "category=*",
           "comment": "The category of traffic, such as may be provided by a proxy server."
         },
         {
           "name": "bytes",
           "type": "conditional",
-          "condition": "",
+          "condition": "bytes=*",
           "validity": "case(isnum(bytes),bytes,isnum(bytes_in) AND isnum(bytes_out),bytes_in+bytes_out,1=1,null())",
-          "expected_values": [],
           "comment": "The total number of bytes transferred (bytes_in + bytes_out)."
         },
         {
           "name": "bytes_in",
           "type": "conditional",
-          "condition": "",
+          "condition": "bytes_in=*",
           "validity": "case(isnum(bytes_in),bytes_in,isnum(bytes) AND isnum(bytes_out),bytes-bytes_out,1=1,null())",
-          "expected_values": [],
           "comment": "The number of inbound bytes transferred."
         },
         {
           "name": "bytes_out",
           "type": "conditional",
-          "condition": "",
+          "condition": "bytes_out=*",
           "validity": "case(isnum(bytes_out),bytes_out,isnum(bytes) AND isnum(bytes_in),bytes-bytes_in,1=1,null())",
-          "expected_values": [],
           "comment": "The number of outbound bytes transferred."
         },
         {
           "name": "http_user_agent",
           "type": "conditional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
+          "condition": "http_user_agent=*",
           "comment": "The user agent used in the request."
         },
         {
           "name": "http_user_agent_length",
           "type": "conditional",
-          "condition": "len(http_user_agent)",
-          "validity": "",
-          "expected_values": [],
+          "condition": "http_user_agent_length=len(http_user_agent)",
           "comment": "The length of the user agent used in the request."
         },
         {
           "name": "cached",
           "type": "optional",
-          "condition": "",
           "expected_values": ["true", "false", "1", "0"],
           "comment": "Indicates whether the event data is cached or not."
         },
         {
           "name": "duration",
           "type": "optional",
-          "condition": "",
-          "validity": "(isnum(duration),1,null())",
-          "expected_values": [],
+          "validity": "if(isnum(duration),duration,null())",
           "comment": "The time taken by the proxy event, in milliseconds."
         },
         {
           "name": "http_content_type",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The content-type of the requested HTTP resource."
         },
         {
           "name": "http_content_type",
           "type": "optional",
-          "condition": "",
-          "validity": "",
           "expected_values": [
             "GET",
             "PUT",
@@ -232,57 +191,37 @@
         {
           "name": "response_time",
           "type": "optional",
-          "condition": "",
-          "validity": "(isnum(response_time),1,null())",
-          "expected_values": [],
+          "validity": "if(isnum(response_time),response_time,null())",
           "comment": "The amount of time it took to receive a response, if applicable, in milliseconds."
         },
         {
           "name": "uri_query",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The path of the resource requested by the client."
         },
         {
           "name": "user",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The user that requested the HTTP resource."
         },
         {
           "name": "vendor_product",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The vendor and product of the proxy server, such as Squid Proxy Server. This field can be automatically populated by vendor and product fields in your data."
         },
         {
           "name": "cookie",
-          "type": "not_extracted",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
+          "type": "not_allowed_in_search",
           "comment": "The cookie file recorded in the event."
         },
         {
           "name": "http_referrer",
-          "type": "not_extracted",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
+          "type": "not_allowed_in_search",
           "comment": "The HTTP referrer used in the request. The W3C specification and many implementations misspell this as http_referer. Use a FIELDALIAS to handle both key names."
         },
         {
           "name": "site",
-          "type": "not_extracted",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
+          "type": "not_allowed_in_search",
           "comment": "The virtual site which services the request, if applicable."
         }
       ],
@@ -293,10 +232,10 @@
           "fields_cluster": [],
           "fields": [],
           "child_dataset": [],
-          "search_constraints": "tag='proxy'"
+          "search_constraints": "tag=proxy"
         }
       ],
-      "search_constraints": "tag='web'"
+      "search_constraints": "tag=web"
     }
   ]
 }

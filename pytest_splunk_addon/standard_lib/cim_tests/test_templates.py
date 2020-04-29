@@ -23,6 +23,8 @@ class CIMTestTemplates(object):
 
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
 
+    @pytest.mark.splunk_searchtime_cim
+    @pytest.mark.splunk_searchtime_cim_fields
     def test_eventtype_mapped_datamodel(
         self, splunk_search_util, record_property, caplog
     ):
@@ -100,7 +102,7 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_app_cim
     @pytest.mark.splunk_app_cim_fields
     def test_cim_required_fields(
-        self, splunk_search_util, splunk_app_cim_fields, record_property
+        self, splunk_search_util, splunk_searchtime_cim_fields, record_property
     ):
         """
         Test the the required fields in the data models are extracted with valid values. 
@@ -113,14 +115,14 @@ class CIMTestTemplates(object):
 
         # Search Query
         base_search = "search "
-        for each_set in splunk_app_cim_fields["data_set"]:
+        for each_set in splunk_searchtime_cim_fields["data_set"]:
             base_search += " ({})".format(each_set.search_constraints)
 
-        base_search += " AND ({})".format(splunk_app_cim_fields["tag_stanza"])
+        base_search += " AND ({})".format(splunk_searchtime_cim_fields["tag_stanza"])
 
         test_helper = FieldTestHelper(
             splunk_search_util,
-            splunk_app_cim_fields["fields"],
+            splunk_searchtime_cim_fields["fields"],
             interval=INTERVAL,
             retries=RETRIES,
         )
@@ -136,8 +138,8 @@ class CIMTestTemplates(object):
             "0 Events found in at least one sourcetype mapped with the dataset."
             f"\n{test_helper.format_exc_message()}"
         )
-        if len(splunk_app_cim_fields["fields"]) == 1:
-            test_field = splunk_app_cim_fields["fields"][0].name
+        if len(splunk_searchtime_cim_fields["fields"]) == 1:
+            test_field = splunk_searchtime_cim_fields["fields"][0].name
             assert all([each_field["field_count"] > 0 for each_field in results]), (
                 f"Field {test_field} not extracted in any events."
                 f"\n{test_helper.format_exc_message()}"
@@ -151,7 +153,7 @@ class CIMTestTemplates(object):
                 f"Field {test_field} have invalid values."
                 f"\n{test_helper.format_exc_message()}"
             )
-        elif len(splunk_app_cim_fields["fields"]) > 1:
+        elif len(splunk_searchtime_cim_fields["fields"]) > 1:
             # Check that count for all the fields in cluster is same.
             # If all the fields are not extracted in an event, that's a passing scenario
             # The count of the field may or may not be same with the count of event.
@@ -165,6 +167,96 @@ class CIMTestTemplates(object):
                     "All fields from the field-cluster should be extracted with valid values if any one field is extracted."
                     f"\n{test_helper.format_exc_message()}"
                 )
+
+    @pytest.mark.splunk_searchtime_cim
+    @pytest.mark.splunk_searchtime_cim_fields_not_allowed_in_search
+    def test_cim_fields_not_allowed_in_search(
+        self,
+        splunk_search_util,
+        splunk_searchtime_cim_fields_not_allowed_in_search,
+        record_property,
+    ):
+        # Search Query
+
+        base_search = "search"
+        for each_set in splunk_searchtime_cim_fields_not_allowed_in_search["data_set"]:
+            base_search += " ({})".format(each_set.search_constraints)
+
+        base_search += " AND ({}) ".format(
+            splunk_searchtime_cim_fields_not_allowed_in_search["tag_stanza"]
+        )
+
+        base_search += " AND ("
+        for each_field in splunk_searchtime_cim_fields_not_allowed_in_search["fields"]:
+            base_search += " ({}=*) OR".format(each_field.name)
+
+        # To remove the extra OR at the end of search
+        base_search = base_search[:-2]
+        base_search += ")"
+
+        if not splunk_searchtime_cim_fields_not_allowed_in_search["tag_stanza"]:
+            base_search = base_search.replace("search OR", "search")
+
+        base_search += " | stats "
+
+        for each_field in splunk_searchtime_cim_fields_not_allowed_in_search["fields"]:
+            base_search += " count({fname}) AS {fname}".format(fname=each_field.name)
+
+        base_search += " by sourcetype"
+        record_property("search", base_search)
+        self.logger.info("base_search".format(base_search))
+        results = list(
+            splunk_search_util.getFieldValuesList(
+                base_search, interval=INTERVAL, retries=RETRIES
+            )
+        )
+
+        violations = []
+        if results:
+            violations = [
+                [each_elem["sourcetype"], field.name, each_elem.get(field.name)]
+                for each_elem in results
+                for field in splunk_searchtime_cim_fields_not_allowed_in_search[
+                    "fields"
+                ]
+                if not each_elem.get(field.name) == "0"
+                and not each_elem.get(field.name) == each_elem["sourcetype"]
+            ]
+
+            violation_str = (
+                "\nThese fields are automatically provided by asset and identity"
+                " correlation features of applications like Splunk Enterprise Security."
+                "\nDo not define extractions for these fields when writing add-ons."
+                "\nExpected eventcount: 0 \n\n"
+            )
+            violation_str += FieldTestHelper.get_table_output(
+                headers=["Sourcetype", "Fields", "Event Count"], value_list=violations
+            )
+
+        assert not violations, violation_str
+
+    @pytest.mark.splunk_searchtime_cim
+    @pytest.mark.splunk_searchtime_cim_fields_not_allowed_in_props
+    def test_cim_fields_not_allowed_in_props(
+        self, splunk_searchtime_cim_fields_not_allowed_in_props, record_property
+    ):
+        result_str = (
+            "\nThese fields are automatically provided by asset and identity"
+            " correlation features of applications like Splunk Enterprise Security."
+            "\nDo not define extractions for these fields when writing add-ons.\n\n"
+        )
+
+        result_str += FieldTestHelper.get_table_output(
+            headers=["Stanza", "Classname", "Fieldname"],
+            value_list=[
+                [data["stanza"], data["classname"], data["name"]]
+                for data in splunk_searchtime_cim_fields_not_allowed_in_props["fields"]
+            ],
+        )
+
+        assert not splunk_searchtime_cim_fields_not_allowed_in_props[
+            "fields"
+        ], result_str
 
     @pytest.mark.parametrize(
         "app_name",
