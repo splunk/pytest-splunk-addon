@@ -85,11 +85,13 @@ class DataModelHandler(object):
 
         tags_in_each_stanza = self._get_all_tags_per_stanza(addon_parser)
         for eventtype, tags in tags_in_each_stanza.items():
+            is_mapped_datasets = False
             for each_data_model in self.data_models:
                 mapped_datasets = list(each_data_model.get_mapped_datasets(tags))
                 if mapped_datasets:
+                    is_mapped_datasets = True
                     LOGGER.info("Data Model=%s mapped for %s", each_data_model, eventtype)
                     for each_mapped_dataset in mapped_datasets:
                         yield eventtype, each_mapped_dataset
-                else:
-                    LOGGER.info("No Data Model mapped for %s", eventtype)
+            if not is_mapped_datasets:
+                LOGGER.info("No Data Model mapped for %s", eventtype)

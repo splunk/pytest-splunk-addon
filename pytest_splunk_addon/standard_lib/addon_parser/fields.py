@@ -31,7 +31,7 @@ class Field(object):
         self.validity = field_json.get("validity") or self.name
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     @classmethod
     def parse_fields(cls, field_list, **kwargs):
