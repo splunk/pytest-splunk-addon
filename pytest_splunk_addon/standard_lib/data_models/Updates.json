@@ -1,6 +1,6 @@
 {
     "version":"1.0.0",
-    "modelName": "Updates",
+    "model_name": "Updates",
     "objects":[
     {
         "name": "Updates",
