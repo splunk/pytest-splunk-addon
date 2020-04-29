@@ -4,21 +4,52 @@ import sys
 import traceback
 from .standard_lib import AppTestGenerator
 
-LOG_FILE = 'pytest_splunk_addon.log'
+LOG_FILE = "pytest_splunk_addon.log"
+
 
 def pytest_configure(config):
     """
     Setup configuration after command-line options are parsed
     """
-    config.addinivalue_line("markers", "splunk_searchtime_internal_errors: Check Errors in logs")
-    config.addinivalue_line("markers", "splunk_searchtime_fields: Test search time fields only")
-    config.addinivalue_line("markers", "splunk_searchtime_fields_positive: Test search time fields positive scenarios only")
-    config.addinivalue_line("markers", "splunk_searchtime_fields_negative: Test search time fields negative scenarios only")
-    config.addinivalue_line("markers", "splunk_searchtime_fields_tags: Test search time tags only")
-    config.addinivalue_line("markers", "splunk_searchtime_fields_eventtypes: Test search time eventtypes only")
-    config.addinivalue_line("markers", "splunk_searchtime_cim: Test CIM compatibility only")
-    config.addinivalue_line("markers", "splunk_searchtime_cim_fields: Test CIM required fields only")
-    config.addinivalue_line("markers", "splunk_searchtime_cim_mapped_datamodel: Test an eventtype is mapped with only one data models")
+    config.addinivalue_line(
+        "markers", "splunk_searchtime_internal_errors: Check Errors in logs"
+    )
+    config.addinivalue_line(
+        "markers", "splunk_searchtime_fields: Test search time fields only"
+    )
+    config.addinivalue_line(
+        "markers",
+        "splunk_searchtime_fields_positive: Test search time fields positive scenarios only",
+    )
+    config.addinivalue_line(
+        "markers",
+        "splunk_searchtime_fields_negative: Test search time fields negative scenarios only",
+    )
+    config.addinivalue_line(
+        "markers", "splunk_searchtime_fields_tags: Test search time tags only"
+    )
+    config.addinivalue_line(
+        "markers",
+        "splunk_searchtime_fields_eventtypes: Test search time eventtypes only",
+    )
+    config.addinivalue_line(
+        "markers", "splunk_searchtime_cim: Test CIM compatibility only"
+    )
+    config.addinivalue_line(
+        "markers", "splunk_searchtime_cim_fields: Test CIM required fields only"
+    )
+    config.addinivalue_line(
+        "markers",
+        "splunk_searchtime_cim_fields_not_allowed_in_props: Test CIM fields for mapped datamodels whose extractions should not be defined in the addon.",
+    )
+    config.addinivalue_line(
+        "markers",
+        "splunk_searchtime_cim_fields_not_allowed_in_search:  Test CIM fields for mapped datamodels which should not be extracted in splunk. i.e expected event count for the fields: 0",
+    )
+    config.addinivalue_line(
+        "markers",
+        "splunk_searchtime_cim_mapped_datamodel: Test an eventtype is mapped with only one data models"
+    )
 
 
 def pytest_generate_tests(metafunc):
@@ -28,7 +59,9 @@ def pytest_generate_tests(metafunc):
     test_generator = None
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_searchtime"):
-            LOGGER.info("generating testcases for splunk_app_searchtime. fixture=%s", fixture)
+            LOGGER.info(
+                "generating testcases for splunk_app_searchtime. fixture=%s", fixture
+            )
 
             try:
                 # Load associated test data
@@ -43,9 +76,10 @@ def pytest_generate_tests(metafunc):
                 except Exception as log_err:
                     log_message = f"Could not capture the logs: {log_err}"
                 log_message = "\n".join(log_message.split("\n")[-50:])
-                raise type(e)(f"{e}.\nStacktrace:\n{traceback.format_exc()}"
-                              f"\nLogs:\n{log_message}"
-                            )
+                raise type(e)(
+                    f"{e}.\nStacktrace:\n{traceback.format_exc()}"
+                    f"\nLogs:\n{log_message}"
+                )
 
 
 def init_pytest_splunk_addon_logger():
@@ -54,14 +88,16 @@ def init_pytest_splunk_addon_logger():
     """
     fh = logging.FileHandler(LOG_FILE)
     fh.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s')
+    formatter = logging.Formatter(
+        "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s"
+    )
     fh.setFormatter(formatter)
-    logger = logging.getLogger('pytest-splunk-addon')
+    logger = logging.getLogger("pytest-splunk-addon")
     logger.addHandler(fh)
     logging.root.propagate = False
     logger.setLevel(logging.DEBUG)
     return logger
 
+
 init_pytest_splunk_addon_logger()
 LOGGER = logging.getLogger("pytest-splunk-addon")
-
