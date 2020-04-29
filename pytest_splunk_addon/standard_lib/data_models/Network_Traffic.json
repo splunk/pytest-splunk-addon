@@ -203,7 +203,7 @@
         },
         {
           "name": "src_zone",
-          "type": "conditional",
+          "type": "required",
           "comment": "The network zone of the source."
         },
         {

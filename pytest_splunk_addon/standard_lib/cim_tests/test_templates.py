@@ -37,19 +37,29 @@ class CIMTestTemplates(object):
             none of them should be extracted.
         """
 
+        cim_data_set = splunk_searchtime_cim_fields["data_set"]
+        cim_fields = splunk_searchtime_cim_fields["fields"]
+        cim_tag_stanza = splunk_searchtime_cim_fields["tag_stanza"]
         # Search Query
         base_search = ""
-        for each_set in splunk_searchtime_cim_fields["data_set"]:
+        for each_set in cim_data_set:
             base_search += " | search {}".format(each_set.search_constraints)
 
         base_search += " | search {}".format(
-            splunk_searchtime_cim_fields["tag_stanza"]
+            cim_tag_stanza
         )
 
         test_helper = FieldTestHelper(
             splunk_search_util, 
-            splunk_searchtime_cim_fields["fields"],
+            cim_fields,
             interval=INTERVAL, retries=RETRIES
+        )
+        # is_required = True if there are any fields in list which is required
+        is_required = any(
+            [
+                each_field.type=="required" 
+                for each_field in cim_fields
+            ]
         )
 
         # Execute the query and get the results
@@ -59,17 +69,18 @@ class CIMTestTemplates(object):
         # All assertion are made in the same tests to make the test report with
         # very clear order of scenarios. with this approach, a user will be able to identify
         # what went wrong very quickly.
-        assert results and all([each_result["event_count"] > 0 for each_result in results]), (
+        # 1: If the field is required, there should be at least 1 sourcetype in the results
+        assert (results or not is_required), (
             "0 Events found in at least one sourcetype mapped with the dataset."
             f"\n{test_helper.format_exc_message()}"
         )
-        if len(splunk_searchtime_cim_fields["fields"]) == 1:
-            test_field = splunk_searchtime_cim_fields["fields"][0].name
+        if len(cim_fields) == 1:
+            test_field = cim_fields[0].name
             assert all([
                     each_field["field_count"] == each_field["event_count"]
                     for each_field in results
                 ]), (
-                f"Field {test_field} not extracted in any events."
+                f"Field {test_field} is not extracted in all events."
                 f"\n{test_helper.format_exc_message()}"
             )
             assert all(
@@ -78,10 +89,10 @@ class CIMTestTemplates(object):
                     for each_field in results
                 ]
             ), (
-                f"Field {test_field} have invalid values."
+                f"Field {test_field} has invalid values."
                 f"\n{test_helper.format_exc_message()}"
             )
-        elif len(splunk_searchtime_cim_fields["fields"]) > 1:
+        elif len(cim_fields) > 1:
             # Check that count for all the fields in cluster is same.
             # If all the fields are not extracted in an event, that's a passing scenario
             # The count of the field may or may not be same with the count of event.
