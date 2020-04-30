@@ -54,14 +54,6 @@ class CIMTestTemplates(object):
             cim_fields,
             interval=INTERVAL, retries=RETRIES
         )
-        # fields_are_optional = True if there is no field in the list which is required
-        fields_are_optional = not any(
-            [
-                each_field.type=="required" 
-                for each_field in cim_fields
-            ]
-        )
-
         # Execute the query and get the results
         results = test_helper.test_field(base_search)
         record_property("search", test_helper.search)
@@ -69,13 +61,20 @@ class CIMTestTemplates(object):
         # All assertion are made in the same tests to make the test report with
         # very clear order of scenarios. with this approach, a user will be able to identify
         # what went wrong very quickly.
-        # 1: If the field is required, there should be at least 1 sourcetype in the results
-        assert (results or (cim_fields and fields_are_optional)), (
-            "0 Events mapped with the dataset."
-            f"\n{test_helper.format_exc_message()}"
-        )
+
+        # 1: If the field is required or there are no fields,
+        #    there should be at least 1 sourcetype in the results
+        if len(cim_fields) == 0:
+            assert results, (
+                "0 Events mapped with the dataset."
+                f"\n{test_helper.format_exc_message()}"
+            )
         if len(cim_fields) == 1:
-            test_field = cim_fields[0].name
+            test_field = cim_fields[0]
+            assert test_field.type == "required" and results, (
+                "0 Events mapped with the dataset."
+                f"\n{test_helper.format_exc_message()}"
+            )
             assert all([
                     each_field["field_count"] == each_field["event_count"]
                     for each_field in results
@@ -110,7 +109,7 @@ class CIMTestTemplates(object):
 
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_mapped_datamodel
-    def test_eventtype_mapped_datamodel(
+    def test_eventtype_mapped_multiple_cim_datamodel(
         self, splunk_search_util, record_property, caplog
     ):
         """
