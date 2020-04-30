@@ -58,6 +58,7 @@
         },
         {
           "name": "src_user",
+          "condition": "src_user=*",
           "type": "conditional",
           "comment": "In privilege escalation events, src_user represents the user who initiated the privilege escalation. This field is unnecessary when an escalation has not been performed. If present it must be a valid user."
         }
