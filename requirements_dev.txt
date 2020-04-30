@@ -1,5 +1,0 @@
--r requirements.txt
-tox
-black
-Sphinx
-lovely-pytest-docker
