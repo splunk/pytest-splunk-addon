@@ -71,7 +71,7 @@ class CIMTestTemplates(object):
         # what went wrong very quickly.
         # 1: If the field is required, there should be at least 1 sourcetype in the results
         assert (results or (cim_fields and fields_are_optional)), (
-            "0 Events found in at least one sourcetype mapped with the dataset."
+            "0 Events mapped with the dataset."
             f"\n{test_helper.format_exc_message()}"
         )
         if len(cim_fields) == 1:
