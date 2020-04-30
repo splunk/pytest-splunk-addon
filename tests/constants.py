@@ -183,15 +183,6 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::is_splunkd* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::for_tags_positive* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::is_splunkd-%host%* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_tags*eventtype="for_multiple_tags_positive"::tag::authentication* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::for_multiple_tags_positive* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication::action* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Authentication::app* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Failed_Authentication* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_positive"::Successful_Authentication* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_eventtype_mapped_datamodel* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*'
 ]
 
 
@@ -259,24 +250,7 @@ TA_BROKEN_SOURCETYPE_PASSED = [
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::context_test_4* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::hotWarmPath* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_props_fields_negative*splunkd::field::name* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::alert* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::change* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*eventtype="for_multiple_tags_negative"::tag::authentication* PASSED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*sourcetype="splunkd"::tag::tags_negative_testing* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::for_multiple_tags_negative* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::app* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::body* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::dest* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::id* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::severity* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Alerts::type* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication::action* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Authentication::app* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Failed_Authentication* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_cim_required_fields*eventtype="for_multiple_tags_negative"::Successful_Authentication* PASSED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*'
 ]
 
 """
@@ -326,5 +300,75 @@ TA_BROKEN_SOURCETYPE_FAILED = [
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_tags*source="/opt/splunk/var/log/splunk/splunkd.log"::tag::tags_negative_testing* FAILED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::is_splunkd* FAILED*',
     '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype*eventtype::is_splunkd-%host%* FAILED*',
-    '*test_splunk_app_broken_sourcetype.py::Test_App::test_eventtype_mapped_datamodel FAILED*'
+]
+
+"""
+Define the TA_CIM_Fiction add-on passed test case list.
+"""
+TA_CIM_FICTION_PASSED = [
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_one"::Fiction_One* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_one"::Fiction_One::component* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_one"::Fiction_One::date_hour* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_one"::Fiction_One::date_hour+date_minute+date_second* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_one"::Fiction_One::date_mday+date_wday* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_one"::Fiction_One::date_minute* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_one"::Fiction_One::date_second* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_one"::Fiction_One::log_level* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_one"::Info_Logs* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_one"::Warn_Logs* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_second"::Fiction_Two_Second* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_second"::Fiction_Two_Second::log_level* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_three"::Fiction_Three* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_three"::Fiction_Three::component* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_three"::Fiction_Three_Child* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_three"::Fiction_Three_Child::log_level* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_three"::Warn_Logs* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_three"::Info_Logs* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_three"::tag_splunkd_fiction_three_Error_Logs* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_two"::Fiction_Two* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_two"::Fiction_Two::component* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_eventtype_mapped_datamodel* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_fiction_one"::Fiction_One* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_fiction_second"::Fiction_Two_Second* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_fiction_three"::Fiction_Three* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_fiction_three"::Fiction_Three_Child* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_fiction_two"::Fiction_Two* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_cim_fields_not_allowed_in_props*searchtime_cim_fields* PASSED*',
+]
+
+"""
+Define the TA_CIM_Broken add-on passed test case list.
+"""
+TA_CIM_BROKEN_PASSED = [
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::broken_field_one+broken_field_two* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::date_minute* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::date_second* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::broken_field_one* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::broken_field_one+broken_field_two* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::broken_field_one+date_hour+date_minute+date_second* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::broken_field_two* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::date_hour* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::date_minute* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::date_second* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::log_level* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_eventtype_mapped_datamodel* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_broken"::Broken* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_broken_2"::Broken* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_not_allowed_in_props*searchtime_cim_fields* PASSED*',
+
+]
+
+"""
+Define the TA_CIM_Broken add-on failed test case list.
+"""
+TA_CIM_BROKEN_FAILED = [
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::broken_field_one* FAILED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::broken_field_one+date_hour+date_minute+date_second* FAILED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::broken_field_two* FAILED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::date_hour* FAILED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::log_level* FAILED*',
 ]

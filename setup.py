@@ -31,11 +31,12 @@ setup(
     install_requires=[
         "pytest~=5.3",
         "splunk-sdk~=1.6",
-        "future~=0.18",
+        "future~=0.17.1",
         "httplib2~=0.17",
         "logutils",
         "requests2~=2.16",
         "splunk_appinspect>=2.0.1",
+        "six",
         "jsonschema~=3.2.0",
     ],
     extras_require={"docker": ["lovely-pytest-docker>=0.1.0"]},

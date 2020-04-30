@@ -53,7 +53,9 @@ class AppTestGenerator(object):
                 self.fieldtest_generator.generate_tests(fixture)
             )
         elif fixture.startswith("splunk_searchtime_cim"):
-            yield from self.dedup_tests(self.cim_test_generator.generate_tests(fixture))
+            yield from self.dedup_tests(
+                self.cim_test_generator.generate_tests(fixture)
+            )
 
     def dedup_tests(self, test_list):
         """
