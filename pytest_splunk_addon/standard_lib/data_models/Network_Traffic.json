@@ -50,7 +50,7 @@
         {
           "name": "dest",
           "type": "required",
-          "validity": "case((protocol==ip OR protocol==icmp), if(match(dest,\"([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}\"), dest, null()), like(dest,\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\"), dest, true(), null())",
+          "validity": "case((protocol==ip OR protocol==icmp), if(match(dest,\"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\"), dest, null()), match(dest,\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\"), dest, true(), null())",
           "comment": "The destination of the network traffic (the remote host). You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
         },
         {
@@ -61,7 +61,7 @@
         {
           "name": "dest_ip",
           "type": "conditional",
-          "condition": "| rex dest=\"([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}\")",
+          "condition": "| rex dest=\"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\"",
           "validity": "if(dest_ip==dest,dest_ip,null())",
           "comment": "The IP address of the destination."
         },
@@ -188,7 +188,7 @@
         {
           "name": "src",
           "type": "required",
-          "validity": "case((protocol==ip OR protocol==icmp) AND like(src,\"([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}\"), src, like(src,\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\"), src, true(), null())",
+          "validity": "case((protocol==ip OR protocol==icmp), if(match(src,\"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\"), src, null()), match(src,\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\"), src, true(), null())",
           "comment": "The source of the network traffic (the client requesting the connection). You can alias this from more specific fields, such as src_host, src_ip, or src_name.'"
         },
         {
@@ -257,7 +257,8 @@
         {
           "name": "src_ip",
           "type": "conditional",
-          "validity": "if(match(src,\"([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(\\d{1,3}\\.){3}\\d{1,3}\"),src_ip,null())",
+          "condition": "| rex dest=\"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\"",
+          "validity": "if(src_ip==src,src_ip,null())",
           "comment": "The ip address of the source."
         },
         {
