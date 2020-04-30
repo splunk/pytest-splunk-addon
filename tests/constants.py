@@ -176,12 +176,12 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_negative*splunkd::field::fiction_context_test* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_negative*splunkd::field::test_name* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_negative*splunkd::field::status_test* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_tags*eventtype="for_tags_positive"::tag::tags_positive_event* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_tags*eventtype="for_tags_positive"::tag::tags_disabled_event* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_tags*eventtype="fiction_for_tags_positive"::tag::tags_positive_event* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_tags*eventtype="fiction_for_tags_positive"::tag::tags_disabled_event* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_tags*source="/opt/splunk/var/log/splunk/splunkd.log"::tag::tags_positive_event* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_tags*source="/opt/splunk/var/log/splunk/splunkd.log"::tag::tags_disabled_event* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_is_splunkd* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::for_tags_positive* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_for_tags_positive* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_is_splunkd-%host%* PASSED*',
 ]
 
