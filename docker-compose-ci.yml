@@ -11,6 +11,7 @@ services:
   test:
     build:
       context: .
+      dockerfile: Dockerfile.tests
     links:
       - splunk
     volumes:
@@ -18,17 +19,19 @@ services:
 
   splunk:
     build:
-      context: tests
+      context: .
+      dockerfile: Dockerfile.splunk
       args:
         SPLUNK_APP: TA_fiction
         SPLUNK_VERSION: ${SPLUNK_VERSION}
+        SOURCE_PACKAGE: ${SOURCE_PACKAGE}
     ports:
       - "8000"
       - "8088"
       - "8089"
       - "9997"
     environment:
-      - SPLUNK_PASSWORD=Changed@11
+      - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
       - SPLUNK_START_ARGS=--accept-license
 volumes:

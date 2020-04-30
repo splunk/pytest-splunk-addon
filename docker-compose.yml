@@ -11,8 +11,8 @@ services:
   splunk:
     build:
       context: .
+      dockerfile: Dockerfile.splunk
       args:
-        SPLUNK_APP: TA_fiction
         SPLUNK_VERSION: ${SPLUNK_VERSION}
     ports:
       - "8000"

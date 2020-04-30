@@ -26,14 +26,14 @@ orbs:
               command: |
                 ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
                 export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf "<<parameters.splunk_version>>" VERSION)
-                docker-compose -f docker-compose-ci.yml build
-                docker-compose -f docker-compose-ci.yml up -d splunk
+                SOURCE_PACKAGE=tests/addons/TA_fiction SPLUNK_ADDON=TA_fiction docker-compose -f docker-compose-ci.yml build
+                SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up -d splunk
                 sleep 90
           - run:
               name: Test
               when: always
               command: |
-                docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
+                SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
                 docker volume ls
               no_output_timeout: 1h
           - run:
