@@ -25,7 +25,6 @@ class DataModelHandler(object):
     def __init__(self, data_model_path):
         self.data_models = list(self.load_data_models(data_model_path))
 
-
     def _get_all_tags_per_stanza(self, addon_parser):
         """
         Get list of all tags mapped with single stanza in tags.conf
@@ -43,8 +42,8 @@ class DataModelHandler(object):
 
         tag_stanzas = {}
         for each_tag in addon_parser.get_tags():
-            stanza_name = each_tag['stanza']
-            tags = each_tag['tag']
+            stanza_name = each_tag["stanza"]
+            tags = each_tag["tag"]
 
             tag_stanzas.setdefault(stanza_name, []).append(tags)
 

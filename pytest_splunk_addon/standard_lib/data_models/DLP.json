@@ -11,145 +11,92 @@
         {
           "name": "action",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The action taken by the DLP device."
         },
         {
           "name": "app",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The application involved in the event."
         },
         {
           "name": "category",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The category of the DLP event."
         },
         {
           "name": "dest",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The target of the DLP event."
         },
         {
           "name": "dest_zone",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The zone of the DLP target."
         },
         {
           "name": "dlp_type",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The type of DLP system that generated the event."
         },
         {
           "name": "dvc",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The device that reported the DLP event."
         },
         {
           "name": "dvc_zone",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The zone of the DLP device."
         },
         {
           "name": "object",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The name of the affected object."
         },
         {
           "name": "object_category",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The category of the affected object."
         },
         {
           "name": "object_path",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The path of the affected object."
         },
         {
           "name": "severity",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The severity of the DLP event."
         },
         {
           "name": "signature",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The name of the DLP event."
         },
         {
           "name": "src",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The source of the DLP event."
         },
         {
           "name": "src_user",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The source user of the DLP event."
         },
         {
           "name": "src_zone",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The zone of the DLP source."
         },
         {
           "name": "user",
           "type": "conditional",
           "condition": "dlp_type=email OR dlp_type=im",
-          "validity": "",
-          "expected_values": [],
           "comment": "The target user of the DLP event."
         },
         {
           "name": "vendor_product",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The vendor and product name of the DLP system"
         }
       ],

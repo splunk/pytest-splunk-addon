@@ -67,8 +67,9 @@
           "enum": [
             "required",
             "conditional",
-            "not_allowed",
-            "not_extracted",
+            "not_allowed_in_search",
+            "not_allowed_in_props",
+            "not_allowed_in_search_and_props",
             "optional"
           ]
         },

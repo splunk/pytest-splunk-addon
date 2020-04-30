@@ -14,25 +14,25 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 class JSONSchema(BaseSchema):
     """
     JsonSchema + Parser of the Data model json files 
-
     Args:
         schema_path (str): Relative or absolute path of the schema file
     """
-    SCHEMA_FILE = 'DatamodelSchema.json'
+
+    SCHEMA_FILE = "DatamodelSchema.json"
+
     def __init__(
-        self,
-        schema_path=None,
+        self, schema_path=None,
     ):
-        self.schema_path = schema_path or op.join(op.dirname(op.abspath(__file__)), self.SCHEMA_FILE)
+        self.schema_path = schema_path or op.join(
+            op.dirname(op.abspath(__file__)), self.SCHEMA_FILE
+        )
 
     @classmethod
     def parse_data_model(cls, file_path):
         """
         Parse and validate the Json file
-
         Args:
             schema_path (str): Relative or absolute path of the data model json file
-
         """
         try:
             with open(cls().schema_path, "r",) as schema_f:
@@ -46,9 +46,7 @@ class JSONSchema(BaseSchema):
                     for error_index in error.path:
                         error_location = error_location + "[{}]".format(error_index)
                     if type(error.instance) == dict:
-                        exc = exc + "\n{} for {}".format(
-                            error.message, error_location
-                        )
+                        exc = exc + "\n{} for {}".format(error.message, error_location)
                     elif type(error.instance) in [str, list]:
                         exc = exc + "\nType mismatch: {} in property {}".format(
                             error.message, error_location

@@ -11,8 +11,6 @@
         {
           "name": "action",
           "type": "required",
-          "condition": "",
-          "validity": "",
           "expected_values": [
             "created",
             "deleted",
@@ -28,129 +26,86 @@
         {
           "name": "change_type",
           "type": "required",
-          "condition": "",
-          "validity": "",
           "expected_values": ["restart"],
           "comment": "The type of change, such as filesystem or AAA (authentication, authorization, and accounting)."
         },
         {
           "name": "command",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The command that initiated the change."
         },
         {
           "name": "dest",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The resource where change occurred. You can alias this from more specific fields not included in this data model, such as dest_host, dest_ip, or dest_name."
         },
         {
           "name": "dvc",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The device that reported the change, if applicable, such as a FIP or CIM server. You can alias this from more specific fields not included in this data model, such as dvc_host, dvc_ip, or dvc_name."
         },
         {
           "name": "object",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "Name of the affected object on the resource (such as a router interface, user account, or server volume)."
         },
         {
           "name": "object_attrs",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The attributes that were updated on the updated resource object, if applicable."
         },
         {
           "name": "object_category",
           "type": "required",
-          "condition": "",
-          "validity": "",
           "expected_values": ["registry", "directory", "file", "group", "user"],
           "comment": "Generic name for the class of the updated resource object. Expected values may be specific to an app."
         },
         {
           "name": "object_id",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The unique updated resource object ID as presented to the system, if applicable (for instance, a SID, UUID, or GUID value)."
         },
         {
           "name": "object_path",
           "type": "conditional",
           "condition": "object_path=if(IN(object_category ,'directory','file', 'registry'), 'request', 'false')",
-          "validity": "",
-          "expected_values": [],
           "comment": "The path of the modified resource object, if applicable (such as a file, directory, or volume)."
         },
         {
           "name": "result",
           "type": "optional",
-          "condition": "",
-          "validity": "",
           "expected_values": ["lockout"],
           "comment": "The vendor-specific result of a change, or clarification of an action status. For instance, status=failure may be accompanied by result=blocked by policy or result=disk full. result is a string. Please use a msg_severity_id field (not included in the data model) for severity ID fields that are integer data types."
         },
         {
           "name": "result_id",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "A result indicator for an action status."
         },
         {
           "name": "src",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The resource where the change was originated. You can alias this from more specific fields not included in the data model, such as src_host, src_ip, or src_name."
         },
         {
           "name": "status",
           "type": "required",
-          "condition": "",
-          "validity": "",
           "expected_values": ["success", "failure"],
           "comment": "Status of the update."
         },
         {
           "name": "tag",
           "type": "optional",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "This automatically generated field is used to access tags from within data models. Add-on builders do not need to populate it."
         },
         {
           "name": "user",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The user or entity performing the change. For account changes, this is the account that was changed (see src_user for user or entity performing the change)."
         },
         {
           "name": "vendor_product",
           "type": "required",
-          "condition": "",
-          "validity": "",
-          "expected_values": [],
           "comment": "The vendor and product or service that detected the change. This field can be automatically populated by vendor and product fields in your data."
         }
       ],
@@ -164,25 +119,17 @@
             {
               "name": "dest_nt_domain",
               "type": "required",
-              "condition": "",
-              "validity": "",
-              "expected_values": [],
               "comment": "The NT domain of the destination, if applicable."
             },
             {
               "name": "src_nt_domain",
               "type": "required",
-              "condition": "",
-              "validity": "",
-              "expected_values": [],
               "comment": "The NT domain of the source, if applicable."
             },
             {
               "name": "src_user",
               "type": "conditional",
               "condition": "object_category=user ",
-              "validity": "",
-              "expected_values": [],
               "comment": "For account changes, the user or entity performing the change."
             }
           ],

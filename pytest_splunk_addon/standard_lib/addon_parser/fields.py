@@ -26,7 +26,7 @@ class Field(object):
         self.name = field_json.get("name")
         self.type = field_json.get("type") or "required"
         self.expected_values = field_json.get("expected_values") or ["*"]
-        self.negative_values = field_json.get("negative_values") or ["-", ""]
+        self.negative_values = field_json.get("negative_values") or ["-", "", "null", "unknown", "(null)"]
         self.condition = field_json.get("condition") or ""
         self.validity = field_json.get("validity") or self.name
 
