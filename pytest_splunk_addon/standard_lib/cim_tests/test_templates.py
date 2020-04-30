@@ -62,26 +62,40 @@ class CIMTestTemplates(object):
         # very clear order of scenarios. with this approach, a user will be able to identify
         # what went wrong very quickly.
 
-        # 1: If the field is required or there are no fields,
-        #    there should be at least 1 sourcetype in the results
         if len(cim_fields) == 0:
+            # If no fields are there, check that the events are mapped 
+            # with the data model 
             assert results, (
                 "0 Events mapped with the dataset."
                 f"\n{test_helper.format_exc_message()}"
             )
         if len(cim_fields) == 1:
             test_field = cim_fields[0]
-            assert test_field.type == "required" and results, (
+            # If the field is required, 
+            #   there should be events mapped with the data model
+            # If the field is conditional,
+            #   It's fine if no events matched the condition
+            assert test_field.type == "conditional" or results, (
                 "0 Events mapped with the dataset."
                 f"\n{test_helper.format_exc_message()}"
             )
+            # The field should be extracted if event count > 0
+            assert all([
+                    each_field["field_count"] > 0
+                    for each_field in results
+                ]), (
+                f"Field {test_field} is not extracted in any events."
+                f"\n{test_helper.format_exc_message()}"
+            )
+            # The field should be extracted in all events mapped 
             assert all([
                     each_field["field_count"] == each_field["event_count"]
                     for each_field in results
                 ]), (
-                f"Field {test_field} is not extracted in all events."
+                f"Field {test_field} is not extracted in some events."
                 f"\n{test_helper.format_exc_message()}"
             )
+            # All events should have valid value of the field
             assert all(
                 [
                     each_field["field_count"] == each_field["valid_field_count"]
