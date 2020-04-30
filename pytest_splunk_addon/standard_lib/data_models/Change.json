@@ -67,8 +67,7 @@
         },
         {
           "name": "object_path",
-          "type": "conditional",
-          "condition": "object_category IN (\"directory\",\"file\", \"registry\")",
+          "type": "optional",
           "comment": "The path of the modified resource object, if applicable (such as a file, directory, or volume)."
         },
         {
