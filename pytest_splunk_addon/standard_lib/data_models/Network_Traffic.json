@@ -61,14 +61,14 @@
         {
           "name": "dest_ip",
           "type": "conditional",
-          "condition": "| rex dest=\"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\"",
+          "condition": "| regex dest=\"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\"",
           "validity": "if(dest_ip==dest,dest_ip,null())",
           "comment": "The IP address of the destination."
         },
         {
           "name": "dest_mac",
           "type": "conditional",
-          "condition": "| rex dest=\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\")",
+          "condition": "| regex dest=\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\")",
           "validity": "if(dest==dest_mac,dest_mac,null())",
           "comment": "The destination TCP/IP layer 2 Media Access Control (MAC) address of a packet's destination, such as 06:10:9f:eb:8f:14. Note: Always force lower case on this field and use colons instead of dashes, spaces, or no separator."
         },
@@ -257,14 +257,15 @@
         {
           "name": "src_ip",
           "type": "conditional",
-          "condition": "| rex dest=\"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\"",
+          "condition": "| regex dest=\"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\"",
           "validity": "if(src_ip==src,src_ip,null())",
           "comment": "The ip address of the source."
         },
         {
           "name": "src_mac",
           "type": "conditional",
-          "validity": "if(match(src,\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\"),src_mac,null())",
+          "condition": "| regex src=\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\")",
+          "validity": "if(src==src_mac,src_mac,null())",
           "comment": "The source TCP/IP layer 2 Media Access Control (MAC) address of a packet's destination, such as 06:10:9f:eb:8f:14. Note: Always force lower case on this field and use colons instead of dashes, spaces, or no separator."
         },
         {
