@@ -74,11 +74,6 @@ def test_splunk_connection_external(testdir):
     )
 
     # fnmatch_lines does an assertion internally
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
-    )
     result.assert_outcomes(passed=1, failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
@@ -106,11 +101,6 @@ def test_splunk_connection_docker(testdir):
     )
 
     # fnmatch_lines does an assertion internally
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
-    )
     result.assert_outcomes(passed=1, failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
@@ -142,12 +132,6 @@ def test_splunk_app_fiction(testdir):
         "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields",
     )
 
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
-    )
-
     result.stdout.fnmatch_lines_random(constants.TA_FICTION_PASSED)
     result.assert_outcomes(passed=len(constants.TA_FICTION_PASSED), failed=0)
 
@@ -156,7 +140,7 @@ def test_splunk_app_fiction(testdir):
 
 
 @pytest.mark.docker
-def test_splunk_app_broken_sourcetype(testdir):
+def test_splunk_app_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -170,7 +154,7 @@ def test_splunk_app_broken_sourcetype(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_broken_sourcetype"),
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_broken"),
         os.path.join(testdir.tmpdir, "package"),
     )
     setup_test_dir(testdir)
@@ -181,18 +165,12 @@ def test_splunk_app_broken_sourcetype(testdir):
     )
 
     # fnmatch_lines does an assertion internally
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
-    )
-
     result.stdout.fnmatch_lines_random(
-        constants.TA_BROKEN_SOURCETYPE_PASSED + constants.TA_BROKEN_SOURCETYPE_FAILED
+        constants.TA_BROKEN_PASSED + constants.TA_BROKEN_FAILED
     )
     result.assert_outcomes(
-        passed=len(constants.TA_BROKEN_SOURCETYPE_PASSED),
-        failed=len(constants.TA_BROKEN_SOURCETYPE_FAILED),
+        passed=len(constants.TA_BROKEN_PASSED),
+        failed=len(constants.TA_BROKEN_FAILED),
     )
 
     # The test suite should fail as this is a negative test
@@ -230,12 +208,6 @@ def test_splunk_app_cim_fiction(testdir):
         "--splunk-dm-path=tests/data_models",
         "-v",
         "-m splunk_searchtime_cim",
-    )
-
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
     )
 
     result.stdout.fnmatch_lines_random(constants.TA_CIM_FICTION_PASSED)
@@ -279,12 +251,6 @@ def test_splunk_app_cim_broken(testdir):
     )
 
     # fnmatch_lines does an assertion internally
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
-    )
-
     result.stdout.fnmatch_lines_random(
         constants.TA_CIM_BROKEN_PASSED + constants.TA_CIM_BROKEN_FAILED
     )
