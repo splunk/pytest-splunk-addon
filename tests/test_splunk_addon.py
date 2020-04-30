@@ -74,11 +74,6 @@ def test_splunk_connection_external(testdir):
     )
 
     # fnmatch_lines does an assertion internally
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
-    )
     result.assert_outcomes(passed=1, failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
@@ -106,11 +101,6 @@ def test_splunk_connection_docker(testdir):
     )
 
     # fnmatch_lines does an assertion internally
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
-    )
     result.assert_outcomes(passed=1, failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
@@ -140,12 +130,6 @@ def test_splunk_app_fiction(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields",
-    )
-
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
     )
 
     result.stdout.fnmatch_lines_random(constants.TA_FICTION_PASSED)
@@ -181,12 +165,6 @@ def test_splunk_app_broken(testdir):
     )
 
     # fnmatch_lines does an assertion internally
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
-    )
-
     result.stdout.fnmatch_lines_random(
         constants.TA_BROKEN_PASSED + constants.TA_BROKEN_FAILED
     )
@@ -232,12 +210,6 @@ def test_splunk_app_cim_fiction(testdir):
         "-m splunk_searchtime_cim",
     )
 
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
-    )
-
     result.stdout.fnmatch_lines_random(constants.TA_CIM_FICTION_PASSED)
     result.assert_outcomes(passed=len(constants.TA_CIM_FICTION_PASSED), failed=0)
 
@@ -279,12 +251,6 @@ def test_splunk_app_cim_broken(testdir):
     )
 
     # fnmatch_lines does an assertion internally
-    logger.info(
-        "Result from the test execution: \nstdout=%s\nstderr=%s",
-        "\n".join(result.stdout.lines),
-        "\n".join(result.stderr.lines),
-    )
-
     result.stdout.fnmatch_lines_random(
         constants.TA_CIM_BROKEN_PASSED + constants.TA_CIM_BROKEN_FAILED
     )
