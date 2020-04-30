@@ -10,17 +10,17 @@ jobs:
     steps:
     - name: Python Code Quality and Lint
       uses: ricardochaves/python-lint@v1.1.0
-        with:
-          python-root-list: "pytest_splunk_addon tests"
-          use-pylint: false
-          use-pycodestyle: false
-          use-flake8: false
-          use-black: true
-          use-mypy: false
-          use-isort: true
-          extra-pylint-options: ""
-          extra-pycodestyle-options: ""
-          extra-flake8-options: ""
-          extra-black-options: ""
-          extra-mypy-options: ""
-          extra-isort-options: ""
+      with:
+        python-root-list: "pytest_splunk_addon tests"
+        use-pylint: false
+        use-pycodestyle: false
+        use-flake8: false
+        use-black: true
+        use-mypy: false
+        use-isort: true
+        extra-pylint-options: ""
+        extra-pycodestyle-options: ""
+        extra-flake8-options: ""
+        extra-black-options: ""
+        extra-mypy-options: ""
+        extra-isort-options: ""
