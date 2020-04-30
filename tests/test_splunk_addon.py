@@ -101,9 +101,7 @@ def test_splunk_connection_docker(testdir):
 
     setup_test_dir(testdir)
     # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-type=docker", "-v",
-    )
+    result = testdir.runpytest("--splunk-type=docker", "-v",)
 
     # fnmatch_lines does an assertion internally
     logger.info(
@@ -138,9 +136,7 @@ def test_splunk_app_fiction(testdir):
 
     setup_test_dir(testdir)
     # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-type=docker",  "-v",
-    )
+    result = testdir.runpytest("--splunk-type=docker", "-v",)
 
     logger.info(
         "Result from the test execution: \nstdout=%s\nstderr=%s",
@@ -176,9 +172,7 @@ def test_splunk_app_broken_sourcetype(testdir):
     setup_test_dir(testdir)
 
     # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-type=docker",  "-v",
-    )
+    result = testdir.runpytest("--splunk-type=docker", "-v",)
 
     # fnmatch_lines does an assertion internally
     logger.info(
