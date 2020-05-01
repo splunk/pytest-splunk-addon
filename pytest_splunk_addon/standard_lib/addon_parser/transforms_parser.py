@@ -71,7 +71,10 @@ class TransformsParser(object):
                 LOGGER.info("Parsing REGEX of %s", transforms_stanza)
 
                 regex = r"\(\?P?(?:[<'])([^\>'\s]+)[\>']"
-                yield from re.findall(regex, transforms_section.options["REGEX"].value)
+                match_fields = re.findall(regex, transforms_section.options["REGEX"].value)
+                for each_field in match_fields:
+                    if not each_field.startswith(("_KEY_", "_VAL_")):
+                        yield each_field.strip()
 
             if "FIELDS" in transforms_section.options:
                 LOGGER.info("Parsing FIELDS of %s", transforms_stanza)
@@ -81,7 +84,10 @@ class TransformsParser(object):
             if "FORMAT" in transforms_section.options:
                 LOGGER.info("Parsing FORMAT of %s", transforms_stanza)
                 regex = r"(\S*)::"
-                yield from re.findall(regex, transforms_section.options["FORMAT"].value)
+                match_fields = re.findall(regex, transforms_section.options["FORMAT"].value)
+                for each_field in match_fields:
+                    if not "$" in each_field:
+                        yield each_field.strip()
 
         except KeyError:
             LOGGER.error(

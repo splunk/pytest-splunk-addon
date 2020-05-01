@@ -55,20 +55,24 @@ class PropsParser(object):
                     LOGGER.info("Trying to parse classname=%s", classname)
                     parsing_method = self.get_props_method(classname)
                     if parsing_method:
-                        yield {
-                            "stanza": stanza_name,
-                            "stanza_type": stanza_type,
-                            "classname": classname,
-                            "fields": list(parsing_method(props_property))
-                        }
+                        field_list = list(parsing_method(props_property))
+                        if field_list:
+                            yield {
+                                "stanza": stanza_name,
+                                "stanza_type": stanza_type,
+                                "classname": classname,
+                                "fields": field_list
+                            }
                 else:
                     for transform_stanza, fields in self.get_report_fields(props_property):
-                        yield {
-                            "stanza": stanza_name,
-                            "stanza_type": stanza_type,
-                            "classname": f"{classname}::{transform_stanza}",
-                            "fields": list(fields)
-                        }
+                        field_list = list(fields)
+                        if field_list:
+                            yield {
+                                "stanza": stanza_name,
+                                "stanza_type": stanza_type,
+                                "classname": f"{classname}::{transform_stanza}",
+                                "fields": field_list
+                            }
 
     def get_props_method(self, class_name):
         """
@@ -205,8 +209,9 @@ class PropsParser(object):
         regex = r"\(\?P?(?:[<'])([^\>'\s]+)[\>']"
         fields_group = []
         for field in re.findall(regex, props_property.value):
-            fields_group.append(field)
-            yield field
+            if not field.startswith(("_KEY_", "_VAL_")):
+                fields_group.append(field)
+                yield field
 
         # If SOURCE_KEY is used in EXTRACT, generate the test for the same.
         regex_for_source_key = r"(?:(?i)in\s+(\w+))\s*$"
