@@ -1,0 +1,5 @@
+tox
+black
+Sphinx
+lovely-pytest-docker
+flake8
