@@ -119,12 +119,13 @@ class FieldTestTemplates(object):
             f"{splunk_searchtime_fields_negative['stanza']}\""
         )
 
+        fields_search = []
         for field_dict in splunk_searchtime_fields_negative["fields"]:
             field = Field(field_dict)
             negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
 
-            search = search + f" AND ({field} IN ({negative_values}))"
-
+            fields_search.append(f"({field} IN ({negative_values}))")
+        search += " AND ({})".format(" OR ".join(fields_search))
         self.logger.info(f"Executing the search query: {search}")
 
         # run search

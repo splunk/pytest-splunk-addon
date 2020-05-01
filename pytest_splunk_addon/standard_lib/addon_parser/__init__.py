@@ -33,10 +33,34 @@ class AddonParser(object):
     def __init__(self, splunk_app_path):
         self.splunk_app_path = splunk_app_path
         LOGGER.info(f"Initializing the splunk_appinspect.App from path={splunk_app_path}")
-        self.app = App(splunk_app_path, python_analyzer_enable=False)
-        self.props_parser = PropsParser(self.splunk_app_path, self.app)
-        self.tags_parser = TagsParser(self.splunk_app_path, self.app)
-        self.eventtype_parser = EventTypeParser(self.splunk_app_path, self.app)
+        self._app = None
+        self._props_parser = None
+        self._tags_parser = None
+        self._eventtype_parser = None
+
+    @property
+    def app(self):
+        if not self._app:
+            self._app = App(self.splunk_app_path, python_analyzer_enable=False)
+        return self._app
+
+    @property
+    def props_parser(self):
+        if not self._props_parser:
+            self._props_parser = PropsParser(self.splunk_app_path, self.app)
+        return self._props_parser
+
+    @property
+    def tags_parser(self):
+        if not self._tags_parser:
+            self._tags_parser = TagsParser(self.splunk_app_path, self.app)
+        return self._tags_parser
+
+    @property
+    def eventtype_parser(self):
+        if not self._eventtype_parser:
+            self._eventtype_parser = EventTypeParser(self.splunk_app_path, self.app)
+        return self._eventtype_parser
 
     def get_props_fields(self):
         """
