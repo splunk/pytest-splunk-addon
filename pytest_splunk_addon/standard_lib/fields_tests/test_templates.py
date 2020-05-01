@@ -43,7 +43,7 @@ class FieldTestTemplates(object):
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_positive
-    def test_props_fields_positive(
+    def test_props_fields(
         self, splunk_search_util, splunk_searchtime_fields_positive, record_property
     ):
         """
@@ -91,7 +91,7 @@ class FieldTestTemplates(object):
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
-    def test_props_fields_negative(
+    def test_props_fields_no_dash_not_empty(
         self, splunk_search_util, splunk_searchtime_fields_negative, record_property
     ):
         """
