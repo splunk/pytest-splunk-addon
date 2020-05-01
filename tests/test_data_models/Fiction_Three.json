@@ -1,0 +1,71 @@
+{
+	"version":"1.0.0",
+	"model_name": "Fiction_Three",
+	"objects": [{
+		"name": "Fiction_Three",
+		"tags": [
+			[
+				"tag_splunkd_fiction_three"
+			]
+		],
+		"fields_cluster": [],
+		"fields": [
+			{
+				"name": "component",
+				"type": "required",
+				"comment": "Required field without condition, validity or expected values"
+			}
+		],
+		"child_dataset": [
+			{
+				"name": "Fiction_Three_Child",
+				"tags": [["tag_splunkd_fiction_three", "tag_splunkd_fiction_three_child"]],
+				"fields_cluster": [],
+				"fields": [
+					{
+						"name": "log_level",
+						"type": "required",
+						"expected_values": ["INFO","WARN","ERROR","FATAL"],
+						"comment": "Required field with expected_values"
+					}
+				],
+				"search_constraints": "tag=tag_splunkd_fiction_three_child AND log_level=*",
+				"child_dataset": [
+					{
+						"name":"tag_splunkd_fiction_three_Error_Logs",
+						"tags": [
+							["tag_splunkd_fiction_three", "tag_splunkd_fiction_three_child"]
+						  ],
+						"fields_cluster":[],
+						"fields":[],
+						"child_dataset": [],
+						"search_constraints":"log_level=ERROR"
+					},
+					{
+						"name":"Warn_Logs",
+						"tags": [
+							["tag_splunkd_fiction_three", "tag_splunkd_fiction_three_child"]
+						  ],
+						"fields_cluster":[],
+						"fields":[],
+						"child_dataset": [],
+						"search_constraints":"log_level=WARN"
+					},
+					{
+						"name":"Info_Logs",
+						"tags": [
+							["tag_splunkd_fiction_three", "tag_splunkd_fiction_three_child"]
+						  ],
+						"fields_cluster":[],
+						"fields":[],
+						"child_dataset": [],
+						"search_constraints":"log_level=INFO"
+					}
+				]
+			  }
+
+		],    
+		"search_constraints": "tag=tag_splunkd_fiction_three"
+	}]
+
+}

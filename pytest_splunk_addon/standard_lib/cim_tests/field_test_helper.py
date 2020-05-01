@@ -214,7 +214,6 @@ class FieldTestHelper(object):
     def get_table_output(headers, value_list):
         """
         Generate a table output of the following format 
-
             Header1 Header2
             ---------------
             One     Value1

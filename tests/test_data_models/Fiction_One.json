@@ -1,0 +1,89 @@
+{
+	"version":"1.0.0",
+	"model_name": "Fiction_One",
+	"objects": [{
+		"name": "Fiction_One",
+		"tags": [
+			[
+				"tag_splunkd_fiction_one"
+			]
+		],
+		"fields_cluster": [
+			["date_hour", "date_minute", "date_second"],
+			["date_mday","date_wday"]
+		],
+		"fields": [
+			{
+				"name": "component",
+				"type": "required",
+				"comment": "Required field without condition, validity or expected values"
+			},
+			{
+				"name": "date_hour",
+				"type": "required",
+				"validity": "if(isnum(date_hour),1,null())",
+				"comment": "Required field with validity only"
+			},
+			{
+				"name": "date_minute",
+				"type": "conditional",
+				"condition": "date_hour=*",
+				"comment": "Conditional field with condition only"
+			},
+			{
+				"name": "date_second",
+				"type": "conditional",
+				"condition": "date_hour=*",
+				"validity": "if(date_second>=0 AND date_second<=60,date_second,null())",
+				"comment": "Conditional field with condition and validity both"
+			},
+			{
+				"name": "log_level",
+				"type": "required",
+				"expected_values": ["INFO","WARN","ERROR","FATAL"],
+				"comment": "Required field with expected_values"
+			},
+			{
+				"name": "date_mday",
+				"type": "optional",
+				"validity": "if(isnum(date_mday),date_mday,null())",
+				"comment": "Optional field with validity"
+			},
+			{
+				"name": "date_wday",
+				"type": "optional",
+				"comment": "Optional field without any conditions"				
+			},
+			{
+				"name": "not_allowed_field",
+				"type": "not_allowed_in_search",
+				"comment": "Not allowed field check"		
+			}
+		],
+		"child_dataset": [
+            {
+                "name":"Warn_Logs",
+                "tags": [
+                    ["tag_splunkd_fiction_one"]
+                  ],
+                "fields_cluster":[],
+                "fields":[],
+                "child_dataset": [],
+                "search_constraints":"log_level=WARN"
+            },
+            {
+                "name":"Info_Logs",
+                "tags": [
+                    ["tag_splunkd_fiction_one"]
+                  ],
+                "fields_cluster":[],
+                "fields":[],
+                "child_dataset": [],
+				"search_constraints":"log_level=INFO"
+			}
+
+		],
+		"search_constraints": "tag=tag_splunkd_fiction_one"
+	}]
+
+}

@@ -2,3 +2,4 @@
 tox
 black
 Sphinx
+lovely-pytest-docker
