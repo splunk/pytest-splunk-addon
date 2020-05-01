@@ -26,7 +26,6 @@
         {
           "name": "change_type",
           "type": "required",
-          "expected_values": ["restart"],
           "comment": "The type of change, such as filesystem or AAA (authentication, authorization, and accounting)."
         },
         {
