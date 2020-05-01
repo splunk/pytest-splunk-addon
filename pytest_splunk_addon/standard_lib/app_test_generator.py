@@ -50,28 +50,31 @@ class AppTestGenerator(object):
         """
         if fixture.startswith("splunk_searchtime_fields"):
             yield from self.dedup_tests(
-                self.fieldtest_generator.generate_tests(fixture)
+                self.fieldtest_generator.generate_tests(fixture),
+                fixture
             )
         elif fixture.startswith("splunk_searchtime_cim"):
             yield from self.dedup_tests(
-                self.cim_test_generator.generate_tests(fixture)
+                self.cim_test_generator.generate_tests(fixture),
+                fixture
             )
 
-    def dedup_tests(self, test_list):
+    def dedup_tests(self, test_list, fixture):
         """
         Deduplicate the test case parameters based on param.id
 
         Args:
-            test_list(Generator): Generator of pytest.param
+            test_list (Generator): Generator of pytest.param
+            fixture (str): fixture name
 
         Yields:
             Generator: De-duplicated pytest.param
         """
         param_list = []
         for each_param in test_list:
-            if each_param.id not in self.seen_tests:
+            if (fixture, each_param.id) not in self.seen_tests:
                 param_list.append(each_param)
-                self.seen_tests.add(each_param.id)
+                self.seen_tests.add((fixture, each_param.id))
 
         # Sort the test generated.
         # ACD-4138: As pytest-xdist expects the tests to be ordered

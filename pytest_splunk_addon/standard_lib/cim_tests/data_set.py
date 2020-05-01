@@ -12,11 +12,14 @@ class DataSet(object):
         data_set_json(dict): Json of a single DataSet
     """
     def __init__(self, data_set_json):
-        # TODO: Assign all required attrs  
         self.name = data_set_json.get("name")
         self.tags = data_set_json.get("tags")
         self.child_dataset = list(self.load_dataset(data_set_json.get("child_dataset")))
-        self.fields = list(Field.parse_fields(data_set_json.get("fields")))
+        self.fields = list(Field.parse_fields(
+            data_set_json.get("fields"),
+            expected_values=[],
+            negative_values=["", "-", "unknown", "null", "(null)"]
+            ))
         self.fields_cluster = self._parse_fields_cluster(data_set_json.get("fields_cluster"))
         self.search_constraints = self._parse_constraint(data_set_json.get("search_constraints"))
 
@@ -63,7 +66,8 @@ class DataSet(object):
         Check if the tags are mapped with this data set
         """
         for each_tag_group in self.tags:
-            return set(each_tag_group).issubset(set(addon_tag_list))
+            if set(each_tag_group).issubset(set(addon_tag_list)):
+                return True
 
     def __str__(self):
-        return self.name
+        return str(self.name)

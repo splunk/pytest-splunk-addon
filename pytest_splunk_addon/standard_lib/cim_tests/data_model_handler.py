@@ -6,10 +6,13 @@ Provides Data Model handling functionalities. Such as
 * Get Mapped data model for an eventtype 
 """
 import os
+import logging
+
 import json
 from . import DataModel
 from . import JSONSchema
 
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class DataModelHandler(object):
     """
@@ -23,7 +26,15 @@ class DataModelHandler(object):
     """
 
     def __init__(self, data_model_path):
-        self.data_models = list(self.load_data_models(data_model_path))
+        self.data_model_path = data_model_path
+        self._data_models = None
+
+    @property
+    def data_models(self):
+        if not self._data_models:
+            self._data_models= list(self.load_data_models(self.data_model_path))
+        return self._data_models
+
 
     def _get_all_tags_per_stanza(self, addon_parser):
         """
@@ -82,6 +93,13 @@ class DataModelHandler(object):
 
         tags_in_each_stanza = self._get_all_tags_per_stanza(addon_parser)
         for eventtype, tags in tags_in_each_stanza.items():
+            is_mapped_datasets = False
             for each_data_model in self.data_models:
-                for each_mapped_dataset in each_data_model.get_mapped_datasets(tags):
-                    yield eventtype, each_mapped_dataset
+                mapped_datasets = list(each_data_model.get_mapped_datasets(tags))
+                if mapped_datasets:
+                    is_mapped_datasets = True
+                    LOGGER.info("Data Model=%s mapped for %s", each_data_model, eventtype)
+                    for each_mapped_dataset in mapped_datasets:
+                        yield eventtype, each_mapped_dataset
+            if not is_mapped_datasets:
+                LOGGER.info("No Data Model mapped for %s", eventtype)

@@ -22,9 +22,19 @@ class PropsParser(object):
     def __init__(self, splunk_app_path, app):
         self.app = app 
         self.splunk_app_path = splunk_app_path
-        LOGGER.debug("Parsing props.conf")
-        self.props = self.app.props_conf()
+        self._props = None
         self.transforms_parser = TransformsParser(self.splunk_app_path, self.app)
+
+    @property
+    def props(self):
+        try:
+            if not self._props:
+                LOGGER.info("Parsing props.conf")
+                self._props = self.app.props_conf()
+            return self._props
+        except OSError:
+            LOGGER.warning("props.conf not found.")
+            return None
 
     def get_props_fields(self):
         """
@@ -95,6 +105,8 @@ class PropsParser(object):
         Yields:
             generator of stanzas from the props
         """
+        if not self.props:
+            return
         for stanza_name in self.props.sects:
             stanza = self.props.sects[stanza_name]
             if stanza.name.startswith("host::"):

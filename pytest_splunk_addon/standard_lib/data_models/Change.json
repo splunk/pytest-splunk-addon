@@ -1,10 +1,10 @@
 {
-  "modelName": "Change",
+  "model_name": "Change",
   "version": "1.0.0",
   "objects": [
     {
       "name": "All_Changes",
-      "tags": [["All_Changes", "Account_Management"]],
+      "tags": [["change"]],
       "fields_cluster": [],
       "search_constraints": "tag=change NOT (object_category=file OR object_category=directory OR object_category=registry)",
       "fields": [
@@ -67,8 +67,7 @@
         },
         {
           "name": "object_path",
-          "type": "conditional",
-          "condition": "object_path=if(IN(object_category ,'directory','file', 'registry'), 'request', 'false')",
+          "type": "optional",
           "comment": "The path of the modified resource object, if applicable (such as a file, directory, or volume)."
         },
         {
@@ -112,24 +111,24 @@
       "child_dataset": [
         {
           "name": "Account_Management",
-          "tags": [["Account_Management"]],
+          "tags": [["change", "account"]],
           "fields_cluster": [],
           "search_constraints": "tag=account",
           "fields": [
             {
               "name": "dest_nt_domain",
-              "type": "required",
+              "type": "optional",
               "comment": "The NT domain of the destination, if applicable."
             },
             {
               "name": "src_nt_domain",
-              "type": "required",
+              "type": "optional",
               "comment": "The NT domain of the source, if applicable."
             },
             {
               "name": "src_user",
               "type": "conditional",
-              "condition": "object_category=user ",
+              "condition": "object_category=user",
               "comment": "For account changes, the user or entity performing the change."
             }
           ],

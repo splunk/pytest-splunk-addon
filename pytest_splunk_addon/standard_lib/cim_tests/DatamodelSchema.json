@@ -110,5 +110,10 @@
         "$ref": "#/definitions/dataset"
       }
     }
-  }
+  },
+  "required": [
+    "model_name",
+    "version",
+    "objects"
+  ]
 }

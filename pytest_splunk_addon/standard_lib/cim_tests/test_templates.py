@@ -37,21 +37,23 @@ class CIMTestTemplates(object):
             none of them should be extracted.
         """
 
+        cim_data_set = splunk_searchtime_cim_fields["data_set"]
+        cim_fields = splunk_searchtime_cim_fields["fields"]
+        cim_tag_stanza = splunk_searchtime_cim_fields["tag_stanza"]
         # Search Query
-        base_search = "search "
-        for each_set in splunk_searchtime_cim_fields["data_set"]:
-            base_search += " ({})".format(each_set.search_constraints)
+        base_search = ""
+        for each_set in cim_data_set:
+            base_search += " | search {}".format(each_set.search_constraints)
 
-        base_search += " AND ({})".format(
-            splunk_searchtime_cim_fields["tag_stanza"]
+        base_search += " | search {}".format(
+            cim_tag_stanza
         )
 
         test_helper = FieldTestHelper(
             splunk_search_util, 
-            splunk_searchtime_cim_fields["fields"],
+            cim_fields,
             interval=INTERVAL, retries=RETRIES
         )
-
         # Execute the query and get the results
         results = test_helper.test_field(base_search)
         record_property("search", test_helper.search)
@@ -59,26 +61,51 @@ class CIMTestTemplates(object):
         # All assertion are made in the same tests to make the test report with
         # very clear order of scenarios. with this approach, a user will be able to identify
         # what went wrong very quickly.
-        assert all([each_result["event_count"] > 0 for each_result in results]), (
-            "0 Events found in at least one sourcetype mapped with the dataset."
-            f"\n{test_helper.format_exc_message()}"
-        )
-        if len(splunk_searchtime_cim_fields["fields"]) == 1:
-            test_field = splunk_searchtime_cim_fields["fields"][0].name
-            assert all([each_field["field_count"] > 0 for each_field in results]), (
-                f"Field {test_field} not extracted in any events."
+
+        if len(cim_fields) == 0:
+            # If no fields are there, check that the events are mapped 
+            # with the data model 
+            assert results, (
+                "0 Events mapped with the dataset."
                 f"\n{test_helper.format_exc_message()}"
             )
+        if len(cim_fields) == 1:
+            test_field = cim_fields[0]
+            # If the field is required, 
+            #   there should be events mapped with the data model
+            # If the field is conditional,
+            #   It's fine if no events matched the condition
+            assert test_field.type == "conditional" or results, (
+                "0 Events mapped with the dataset."
+                f"\n{test_helper.format_exc_message()}"
+            )
+            # The field should be extracted if event count > 0
+            assert all([
+                    each_field["field_count"] > 0
+                    for each_field in results
+                ]), (
+                f"Field {test_field} is not extracted in any events."
+                f"\n{test_helper.format_exc_message()}"
+            )
+            # The field should be extracted in all events mapped 
+            assert all([
+                    each_field["field_count"] == each_field["event_count"]
+                    for each_field in results
+                ]), (
+                f"Field {test_field} is not extracted in some events."
+                f"\n{test_helper.format_exc_message()}"
+            )
+            # All events should have valid value of the field
             assert all(
                 [
                     each_field["field_count"] == each_field["valid_field_count"]
                     for each_field in results
                 ]
             ), (
-                f"Field {test_field} have invalid values."
+                f"Field {test_field} has invalid values."
                 f"\n{test_helper.format_exc_message()}"
             )
-        elif len(splunk_searchtime_cim_fields["fields"]) > 1:
+        elif len(cim_fields) > 1:
             # Check that count for all the fields in cluster is same.
             # If all the fields are not extracted in an event, that's a passing scenario
             # The count of the field may or may not be same with the count of event.
@@ -96,7 +123,7 @@ class CIMTestTemplates(object):
 
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_mapped_datamodel
-    def test_eventtype_mapped_datamodel(
+    def test_eventtype_mapped_multiple_cim_datamodel(
         self, splunk_search_util, record_property, caplog
     ):
         """
@@ -139,6 +166,9 @@ class CIMTestTemplates(object):
         for index, datamodel in enumerate(data_models):
             if index == 0:
                 search += f'| tstats count from datamodel={datamodel}  by eventtype | eval dm_type="{datamodel}"\n'
+            elif datamodel == "Splunk_Audit":
+                # Exclude the internal search logs in the results
+                search += f'| append [| tstats count from datamodel={datamodel} WHERE index!="_*"  by eventtype | eval dm_type="{datamodel}"]\n'
             else:
                 search += f'| append [| tstats count from datamodel={datamodel}  by eventtype | eval dm_type="{datamodel}"]\n'
 
@@ -163,7 +193,8 @@ class CIMTestTemplates(object):
             )
 
         assert not results, (
-            f"Query result greater than 0.\nsearch=\n{search} \n \n"
+            "Multiple data models are mapped with an eventtype"
+            f"\nQuery result greater than 0.\nsearch=\n{search} \n \n"
             f"Event type which associated with multiple data model \n{result_str}"
         )
 
@@ -224,6 +255,7 @@ class CIMTestTemplates(object):
             ]
 
             violation_str = (
+                "The fields should not be extracted in the dataset"
                 "\nThese fields are automatically provided by asset and identity"
                 " correlation features of applications like Splunk Enterprise Security."
                 "\nDo not define extractions for these fields when writing add-ons."
@@ -241,6 +273,7 @@ class CIMTestTemplates(object):
         self, splunk_searchtime_cim_fields_not_allowed_in_props, record_property
     ):
         result_str = (
+            "The field extractions are not allowed in the configuration files"
             "\nThese fields are automatically provided by asset and identity"
             " correlation features of applications like Splunk Enterprise Security."
             "\nDo not define extractions for these fields when writing add-ons.\n\n"
@@ -282,7 +315,7 @@ class CIMTestTemplates(object):
         )
 
         assert result, (
-            f"\nMessage: App {app_name} is not installed/enabled in this Splunk instance."
-            f"The plugin requires the {app_name} to be installed/enabled in the Splunk instance."
-            f"Please install the app and execute the tests again."
+            f"App {app_name} is not installed/enabled in this Splunk instance."
+            f"\nThe plugin requires the {app_name} to be installed/enabled in the Splunk instance."
+            f"\nPlease install the app and execute the tests again."
         )

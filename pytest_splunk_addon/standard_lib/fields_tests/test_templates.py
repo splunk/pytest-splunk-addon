@@ -43,9 +43,9 @@ class FieldTestTemplates(object):
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_positive
-    def test_props_fields_positive(
-            self, splunk_search_util, splunk_searchtime_fields_positive, record_property
-        ):
+    def test_props_fields(
+        self, splunk_search_util, splunk_searchtime_fields_positive, record_property
+    ):
         """
         This test case checks that a field value has the expected values.
 
@@ -91,9 +91,9 @@ class FieldTestTemplates(object):
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
-    def test_props_fields_negative(
-            self, splunk_search_util, splunk_searchtime_fields_negative, record_property
-        ):
+    def test_props_fields_no_dash_not_empty(
+        self, splunk_search_util, splunk_searchtime_fields_negative, record_property
+    ):
         """
         This test case checks negative scenario for the field value.
 

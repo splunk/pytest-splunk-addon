@@ -6,8 +6,9 @@ from .standard_lib import AppTestGenerator
 
 LOG_FILE = "pytest_splunk_addon.log"
 
-
+test_generator = None
 def pytest_configure(config):
+    global test_generator
     """
     Setup configuration after command-line options are parsed
     """
@@ -50,13 +51,15 @@ def pytest_configure(config):
         "markers",
         "splunk_searchtime_cim_mapped_datamodel: Test an eventtype is mapped with only one data models"
     )
+    if config.getoption("splunk_app", None):
+        test_generator = AppTestGenerator(config)
 
 
 def pytest_generate_tests(metafunc):
     """
     Parse the fixture dynamically.
     """
-    test_generator = None
+    global test_generator
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_searchtime"):
             LOGGER.info(
