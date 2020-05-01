@@ -38,13 +38,13 @@ class FieldTestHelper(object):
             | eval <invalid_fields>
             | stats count as event_count, count(field) as field_count,
                 count(valid_field) as valid_field_count,
-                values(invalid_field) by sourcetype 
+                values(invalid_field) by sourcetype, source
 
         Args:
             base_search (str): Base search. Must be a search command.
 
         Yields:
-            dict: with sourcetype, field, event_count, field_count,
+            dict: with source, sourcetype, field, event_count, field_count,
              valid_field_count, invalid_values keys
         """
         self._make_search_query(base_search)
@@ -67,7 +67,7 @@ class FieldTestHelper(object):
             | eval invalid_field = field if isnull(valid_field)
             | stats count as event_count, count(field) as field_count,
                 count(valid_field) as valid_field_count,
-                values(invalid_field) by sourcetype 
+                values(invalid_field) by sourcetype, source
 
         Args:
             base_search (str): The base search 
@@ -80,14 +80,15 @@ class FieldTestHelper(object):
         self.search += " \n| stats count as event_count"
         for each_field in self.fields:
             self.search += each_field.get_stats_query()
-        self.search += " by sourcetype"
+        self.search += " by sourcetype, source"
 
     def _parse_result(self, results):
         """
         Flatten the result into the following format
 
             [{
-                "sourcetype": str
+                "sourcetype": str,
+                "source:: str,
                 "event_count": int,
                 "field": Field,
                 "field_count": int,
@@ -96,35 +97,36 @@ class FieldTestHelper(object):
             }]
         """
         self.parsed_result = list()
-        for each_sourcetype_result in results:
-            sourcetype = each_sourcetype_result["sourcetype"]
-            event_count = int(each_sourcetype_result.get("event_count"))
+        for each_result in results:
+            sourcetype = each_result.get("sourcetype")
+            source = each_result.get("source")
+            event_count = int(each_result.get("event_count"))
             for each_field in self.fields:
                 field_dict = {
                     "field": each_field,
                     "field_count": int(
-                        each_sourcetype_result.get(
+                        each_result.get(
                             FieldTestAdapater.FIELD_COUNT.format(each_field.name)
                         )
                     ),
                 }
                 if each_field.gen_validity_query():
                     field_dict["valid_field_count"] = int(
-                        each_sourcetype_result.get(
+                        each_result.get(
                             FieldTestAdapater.VALID_FIELD_COUNT.format(each_field.name)
                         )
                     )
-                    field_dict["invalid_values"] = each_sourcetype_result.get(
+                    field_dict["invalid_values"] = each_result.get(
                         FieldTestAdapater.INVALID_FIELD_VALUES.format(each_field.name),
-                        "[]",
-                    ).replace("'", '"')
+                        "-",
+                    )
                 field_dict.update(
-                    {"sourcetype": sourcetype, "event_count": event_count}
+                    {"sourcetype": sourcetype, "event_count": event_count, "source": source}
                 )
                 self.parsed_result.append(field_dict)
             if not self.fields:
                 self.parsed_result.append(
-                    {"sourcetype": sourcetype, "event_count": event_count}
+                    {"sourcetype": sourcetype, "event_count": event_count, "source": source}
                 )
         return self.parsed_result
 
@@ -138,20 +140,20 @@ class FieldTestHelper(object):
         Format the exception message to display 
         1) There's no field in the result 
 
-            Sourcetype      Event Count
-            ---------------------------
-            splunkd         10
-            scheduler       0
-            ---------------------------
+            Source          Sourcetype      Event Count
+            -------------------------------------------
+            splunkd.log     splunkd         10
+            scheduler.log   scheduler       0
+            -------------------------------------------
             Search = <search query>
 
         2) There are multiple fields in the result
 
-            Sourcetype  Field  Event Count  Field Count  Invalid Field Count  Invalid Values
-            --------------------------------------------------------------------------------
-            splunkd     One    10           10           5                   'unknown'
-            scheduler   Two    20           20           7                   '-', 'invalid'
-            --------------------------------------------------------------------------------
+            Source          Sourcetype  Field  Event Count  Field Count  Invalid Field Count  Invalid Values
+            ------------------------------------------------------------------------------------------------
+            splunkd.log     splunkd     One    10           10           5                   'unknown'
+            scheduler.log   scheduler   Two    20           20           7                   '-', 'invalid'
+            ------------------------------------------------------------------------------------------------
             Event count = 20
             Search = <search_query>
 
@@ -160,15 +162,20 @@ class FieldTestHelper(object):
         """
         if not self.fields:
             exc_message = self.get_table_output(
-                headers=["Sourcetype", "Event Count"],
+                headers=["Source", "Sourcetype", "Event Count"],
                 value_list=[
-                    [each_result["sourcetype"], each_result["event_count"]]
+                    [
+                        each_result["source"], 
+                        each_result["sourcetype"], 
+                        each_result["event_count"]
+                    ]
                     for each_result in self.parsed_result
                 ],
             )
         elif len(self.fields) >= 1:
             exc_message = self.get_table_output(
                 headers=[
+                    "Source",
                     "Sourcetype",
                     "Field",
                     "Event Count",
@@ -178,6 +185,7 @@ class FieldTestHelper(object):
                 ],
                 value_list=[
                     [
+                        each_result["source"],
                         each_result["sourcetype"],
                         each_result["field"].name,
                         each_result["event_count"],
