@@ -265,7 +265,6 @@ class CIMTestTemplates(object):
     def test_app_installed(self, splunk_search_util, app_name, record_property):
         """
         This test case checks that addon is installed/enabled in the Splunk instance.
-
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
             app_name (string): Add-on name.

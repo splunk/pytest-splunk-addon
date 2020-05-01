@@ -1,0 +1,67 @@
+{
+	"version":"1.0.0",
+	"model_name": "Broken",
+	"objects": [{
+		"name": "Broken",
+		"tags": [
+			[
+				"tag_splunkd_broken"
+			]
+		],
+		"fields_cluster": [
+			["date_hour", "date_minute", "date_second", "broken_field_one"],
+			["broken_field_one","broken_field_two"]
+		],
+		"fields": [
+			{
+				"name": "broken_field_one",
+				"type": "required",
+				"comment": "Required field without condition, validity or expected values"
+			},
+			{
+				"name": "date_hour",
+				"type": "required",
+				"validity": "if(date_hour>=25 AND date_hour<=26,date_hour,null())",
+				"comment": "Required field with incorrect validity only"
+			},
+			{
+				"name": "date_minute",
+				"type": "required",
+				"comment": "Required field without condition, validity or expected values"
+			},
+			{
+				"name": "date_second",
+				"type": "conditional",
+				"condition": "date_hour=*",
+				"validity": "if(date_second>=0 AND date_second<=60,date_second,null())",
+				"comment": "Conditional field with condition and validity both"
+			},
+			{
+				"name": "broken_field_two",
+				"type": "conditional",
+				"condition": "date_hour=*",
+				"comment": "Conditional field with condition"
+			},
+			{
+				"name": "log_level",
+				"type": "required",
+				"expected_values": ["Incorrect_Value_1","Incorrect_Value_2"],
+				"comment": "Required field with incorrect expected_values"
+			},
+			{
+				"name": "date_mday",
+				"type": "optional",
+				"validity": "if(isbool(date_second),1,null())",
+				"comment": "Optional field with incorrect validity"
+			},
+			{
+				"name": "component",
+				"type": "not_allowed_in_props",
+				"comment": "Not allowed field check"		
+			}
+		],
+		"child_dataset": [],
+		"search_constraints": "tag=tag_splunkd_broken"
+	}]
+
+}
