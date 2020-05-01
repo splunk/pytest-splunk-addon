@@ -111,7 +111,10 @@ class CIMTestTemplates(object):
             # The count of the field may or may not be same with the count of event.
             sourcetype_fields = dict()
             for each_result in results:
-                sourcetype_fields.setdefault(each_result["sourcetype"], list()).extend(
+                sourcetype_fields.setdefault(
+                        (each_result["source"], each_result["sourcetype"]),
+                        list()
+                    ).extend(
                     [each_result["field_count"], each_result["valid_field_count"]]
                 )
             for sourcetype_fields in sourcetype_fields.values():
