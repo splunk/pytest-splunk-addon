@@ -1,5 +1,5 @@
 {
-  "modelName": "Network_Resolution",
+  "model_name": "Network_Resolution",
   "version":"1.0.0",
   "objects": [{
     "name": "DNS",

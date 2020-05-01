@@ -15,8 +15,18 @@ class EventTypeParser(object):
     def __init__(self, splunk_app_path, app):
         self.app = app 
         self.splunk_app_path = splunk_app_path
-        LOGGER.debug("Parsing eventtypes.conf")
-        self.eventtypes = self.app.eventtypes_conf()
+        self._eventtypes = None
+
+    @property
+    def eventtypes(self):
+        try:
+            if not self._eventtypes:
+                LOGGER.info("Parsing eventtypes.conf")
+                self._eventtypes = self.app.eventtypes_conf()
+            return self._eventtypes
+        except OSError:
+            LOGGER.warning("eventtypes.conf not found.")
+            return None
 
     def get_eventtypes(self):
         """
@@ -25,6 +35,8 @@ class EventTypeParser(object):
         Yields:
             generator of list of eventtypes
         """
+        if not self.eventtypes:
+            return None
         for eventtype_section in self.eventtypes.sects:
             LOGGER.info("Parsing eventtype stanza=%s",
                 eventtype_section

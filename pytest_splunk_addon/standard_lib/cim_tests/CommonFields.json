@@ -12,11 +12,6 @@
       "comment": "The category of the authentication target, such as email_server or SOX-compliant."
     },
     {
-      "name": "dest_nt_domain",
-      "type": "not_allowed_in_search_and_props",
-      "comment": "The name of the Active Directory used by the authentication target, if applicable."
-    },
-    {
       "name": "dest_priority",
       "type": "not_allowed_in_search_and_props",
       "comment": "The priority of the authentication target."
@@ -45,11 +40,6 @@
       "name": "src_category",
       "type": "not_allowed_in_search_and_props",
       "comment": "The category of the authentication source, such as email_server or SOX-compliant."
-    },
-    {
-      "name": "src_nt_domain",
-      "type": "not_allowed_in_search_and_props",
-      "comment": "The name of the Active Directory used by the authentication source, if applicable."
     },
     {
       "name": "src_priority",

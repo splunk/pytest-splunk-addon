@@ -22,9 +22,19 @@ class PropsParser(object):
     def __init__(self, splunk_app_path, app):
         self.app = app 
         self.splunk_app_path = splunk_app_path
-        LOGGER.debug("Parsing props.conf")
-        self.props = self.app.props_conf()
+        self._props = None
         self.transforms_parser = TransformsParser(self.splunk_app_path, self.app)
+
+    @property
+    def props(self):
+        try:
+            if not self._props:
+                LOGGER.info("Parsing props.conf")
+                self._props = self.app.props_conf()
+            return self._props
+        except OSError:
+            LOGGER.warning("props.conf not found.")
+            return None
 
     def get_props_fields(self):
         """
@@ -45,20 +55,24 @@ class PropsParser(object):
                     LOGGER.info("Trying to parse classname=%s", classname)
                     parsing_method = self.get_props_method(classname)
                     if parsing_method:
-                        yield {
-                            "stanza": stanza_name,
-                            "stanza_type": stanza_type,
-                            "classname": classname,
-                            "fields": list(parsing_method(props_property))
-                        }
+                        field_list = list(parsing_method(props_property))
+                        if field_list:
+                            yield {
+                                "stanza": stanza_name,
+                                "stanza_type": stanza_type,
+                                "classname": classname,
+                                "fields": field_list
+                            }
                 else:
                     for transform_stanza, fields in self.get_report_fields(props_property):
-                        yield {
-                            "stanza": stanza_name,
-                            "stanza_type": stanza_type,
-                            "classname": f"{classname}::{transform_stanza}",
-                            "fields": list(fields)
-                        }
+                        field_list = list(fields)
+                        if field_list:
+                            yield {
+                                "stanza": stanza_name,
+                                "stanza_type": stanza_type,
+                                "classname": f"{classname}::{transform_stanza}",
+                                "fields": field_list
+                            }
 
     def get_props_method(self, class_name):
         """
@@ -91,6 +105,8 @@ class PropsParser(object):
         Yields:
             generator of stanzas from the props
         """
+        if not self.props:
+            return
         for stanza_name in self.props.sects:
             stanza = self.props.sects[stanza_name]
             if stanza.name.startswith("host::"):
@@ -193,8 +209,9 @@ class PropsParser(object):
         regex = r"\(\?P?(?:[<'])([^\>'\s]+)[\>']"
         fields_group = []
         for field in re.findall(regex, props_property.value):
-            fields_group.append(field)
-            yield field
+            if not field.startswith(("_KEY_", "_VAL_")):
+                fields_group.append(field)
+                yield field
 
         # If SOURCE_KEY is used in EXTRACT, generate the test for the same.
         regex_for_source_key = r"(?:(?i)in\s+(\w+))\s*$"

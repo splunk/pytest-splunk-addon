@@ -1,5 +1,5 @@
 {
-    "modelName": "Alerts",
+    "model_name": "Alerts",
     "version": "1.0.0",
     "objects":[
     {
@@ -33,7 +33,6 @@
             {
                 "name": "severity",
                 "type": "required",
-                "condition":"",
                 "expected_values": [
                     "critical",
                     "high",

@@ -2,6 +2,7 @@
 """
 Generates test cases to verify the CIM compatibility . 
 """
+import logging
 import pytest
 import json
 import os.path as op
@@ -9,6 +10,7 @@ from . import DataModelHandler
 from ..addon_parser import AddonParser
 from ..addon_parser import Field
 
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class CIMTestGenerator(object):
     """
@@ -76,9 +78,13 @@ class CIMTestGenerator(object):
         3. Generate & Yield pytest.param for each test case
         4. Include the cluster test case as well. 
         """
+        LOGGER.info("Generating cim fields tests")
         for tag_stanza, dataset_list in self.get_mapped_datasets():
             test_dataset = dataset_list[-1]
-
+            LOGGER.info(
+                "Generating cim tests for tag_stanza=%s, dataset_list=%s",
+                tag_stanza, test_dataset
+                )
             # Test to check there is at least one event in the dataset
             yield pytest.param(
                 {"tag_stanza": tag_stanza, "data_set": dataset_list, "fields": []},
@@ -121,7 +127,7 @@ class CIMTestGenerator(object):
             test_type=["not_allowed_in_search_and_props", "not_allowed_in_props"]
         )
 
-        for tag_stanza, dataset_list in self.get_mapped_datasets():
+        for _, dataset_list in self.get_mapped_datasets():
             test_dataset = dataset_list[-1]
             common_fields_list.extend(
                 [

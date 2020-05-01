@@ -50,4 +50,4 @@ class DataModel(object):
         yield from self._get_mapped_datasets(addon_tags, self.root_data_set)
 
     def __str__(self):
-        return self.name
+        return str(self.name)

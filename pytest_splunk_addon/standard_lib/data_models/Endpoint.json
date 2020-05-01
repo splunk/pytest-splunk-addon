@@ -1,5 +1,5 @@
 {
-  "modelName": "Endpoint",
+  "model_name": "Endpoint",
   "version": "1.0.0",
   "objects": [
     {
@@ -20,8 +20,6 @@
         {
           "name": "dest_port",
           "type": "required",
-          "condition": "",
-          "expected_values": [],
           "validity": "if(isnum(dest_port),dest_port,null())",
           "comment": "Network port listening on the endpoint, such as 53."
         },
@@ -43,8 +41,6 @@
         {
           "name": "src_port",
           "type": "required",
-          "condition": "",
-          "expected_values": [],
           "validity": "if(isnum(src_port),src_port,null())",
           "comment": "The 'remote' port connected to the listening port (if applicable)."
         },
@@ -86,8 +82,6 @@
         {
           "name": "cpu_load_percent",
           "type": "optional",
-          "condition": "",
-          "expected_values": [],
           "validity": "if(isnum(cpu_load_percent),cpu_load_percent,null())",
           "comment": "CPU load consumed by the process (in percent)."
         },
@@ -99,8 +93,6 @@
         {
           "name": "mem_used",
           "type": "optional",
-          "condition": "",
-          "expected_values": [],
           "validity": "if(isnum(mem_used),mem_used,null())",
           "comment": "Memory used by the process (in bytes)."
         },
@@ -122,8 +114,6 @@
         {
           "name": "parent_process_id",
           "type": "required",
-          "condition": "",
-          "expected_values": [],
           "validity": "if(isnum(parent_process_id),parent_process_id,null())",
           "comment": "The numeric identifier of the parent process assigned by the operating system."
         },
@@ -170,8 +160,6 @@
         {
           "name": "process_id",
           "type": "required",
-          "condition": "",
-          "expected_values": [],
           "validity": "if(isnum(process_id),process_id,null())",
           "comment": "The numeric identifier of the process assigned by the operating system."
         },

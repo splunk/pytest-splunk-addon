@@ -1,5 +1,5 @@
 {
-  "modelName": "Web",
+  "model_name": "Web",
   "version": "1.0.0",
   "objects": [
     {
@@ -114,46 +114,41 @@
         {
           "name": "url_length",
           "type": "required",
-          "condition": "url_length=len(url)",
+          "validity": "if(url_length == len(url), url_length, null())",
           "comment": "The length of the URL."
         },
         {
           "name": "category",
-          "type": "conditional",
-          "condition": "category=*",
+          "type": "required",
           "comment": "The category of traffic, such as may be provided by a proxy server."
         },
         {
           "name": "bytes",
-          "type": "conditional",
-          "condition": "bytes=*",
-          "validity": "case(isnum(bytes),bytes,isnum(bytes_in) AND isnum(bytes_out),bytes_in+bytes_out,1=1,null())",
+          "type": "required",
+          "validity": "if(isnum(bytes) and bytes == (bytes_in+bytes_out),bytes,null())",
           "comment": "The total number of bytes transferred (bytes_in + bytes_out)."
         },
         {
           "name": "bytes_in",
-          "type": "conditional",
-          "condition": "bytes_in=*",
-          "validity": "case(isnum(bytes_in),bytes_in,isnum(bytes) AND isnum(bytes_out),bytes-bytes_out,1=1,null())",
+          "type": "required",
+          "validity": "if(isnum(bytes_in),bytes_in,null())",
           "comment": "The number of inbound bytes transferred."
         },
         {
           "name": "bytes_out",
-          "type": "conditional",
-          "condition": "bytes_out=*",
-          "validity": "case(isnum(bytes_out),bytes_out,isnum(bytes) AND isnum(bytes_in),bytes-bytes_in,1=1,null())",
+          "type": "required",
+          "validity": "if(isnum(bytes_out),bytes_out,null())",
           "comment": "The number of outbound bytes transferred."
         },
         {
           "name": "http_user_agent",
-          "type": "conditional",
-          "condition": "http_user_agent=*",
+          "type": "required",
           "comment": "The user agent used in the request."
         },
         {
           "name": "http_user_agent_length",
-          "type": "conditional",
-          "condition": "http_user_agent_length=len(http_user_agent)",
+          "type": "required",
+          "validity": "if(http_user_agent_length == len(http_user_agent), http_user_agent_length, null())",
           "comment": "The length of the user agent used in the request."
         },
         {
