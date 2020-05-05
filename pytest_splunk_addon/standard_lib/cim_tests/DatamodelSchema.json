@@ -73,6 +73,10 @@
             "optional"
           ]
         },
+        "multi_value": {
+          "type": "boolean",
+          "description": "Whether the field is multi-value or not. If true, validity and expected_values is not supported."
+        },
         "condition": {
           "type": "string",
           "description": "It holds the condition for the conditional fields mentioned in the doc."

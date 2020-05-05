@@ -45,12 +45,13 @@
             {
                 "name": "signature",
                 "type": "required",
+                "multi_value": true,
                 "comment":"The name of the patch requirement detected on the client (the dest), such as MS08-067 or RHBA-2013:0739." 
             },
             {
                 "name": "signature_id",
                 "type": "required",
-                "validity":"if(isnum(signature_id), signature_id, null())",
+                "multi_value": true,
                 "comment":"The ID of the patch requirement detected on the client (the src)." 
             },
             {

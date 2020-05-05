@@ -20,6 +20,7 @@
       {
         "name": "answer",
         "type": "required",
+        "multi_value": true,
         "comment": "Resolved address for the query."
       },
       {
@@ -51,6 +52,7 @@
       {
         "name": "query",
         "type": "required",
+        "multi_value": true,
         "comment": "The domain which needs to be resolved. Applies to messages of type 'Query'."
       },
       {

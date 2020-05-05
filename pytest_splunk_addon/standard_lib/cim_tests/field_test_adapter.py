@@ -51,7 +51,9 @@ class FieldTestAdapater(Field):
             return self.validity_query
         else:
             self.validity_query = ""
-            
+            if self.multi_value:
+                self.validity_query += ("\n"
+                    f"| nomv {self.name}")
             self.validity_query += ("\n"
                 f"| eval {self.valid_field}={self.validity}")
             if self.expected_values:

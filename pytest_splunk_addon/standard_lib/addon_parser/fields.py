@@ -25,6 +25,7 @@ class Field(object):
     def __init__(self, field_json=None):
         self.name = field_json.get("name")
         self.type = field_json.get("type") or "required"
+        self.multi_value = field_json.get("multi_value") or False
         self.expected_values = field_json.get("expected_values", ["*"])
         self.negative_values = field_json.get("negative_values", ["-", ""])
         self.condition = field_json.get("condition") or ""

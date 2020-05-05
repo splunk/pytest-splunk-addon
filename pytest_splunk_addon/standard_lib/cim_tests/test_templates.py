@@ -75,36 +75,32 @@ class CIMTestTemplates(object):
             #   there should be events mapped with the data model
             # If the field is conditional,
             #   It's fine if no events matched the condition
-            assert test_field.type == "conditional" or results, (
-                "0 Events mapped with the dataset."
-                f"\n{test_helper.format_exc_message()}"
-            )
+            if not test_field.type is "conditional":
+                assert results, (
+                    "0 Events mapped with the dataset."
+                    f"\n{test_helper.format_exc_message()}"
+                )
             # The field should be extracted if event count > 0
-            assert all([
-                    each_field["field_count"] > 0
-                    for each_field in results
-                ]), (
-                f"Field {test_field} is not extracted in any events."
-                f"\n{test_helper.format_exc_message()}"
-            )
-            # The field should be extracted in all events mapped 
-            assert all([
-                    each_field["field_count"] == each_field["event_count"]
-                    for each_field in results
-                ]), (
-                f"Field {test_field} is not extracted in some events."
-                f"\n{test_helper.format_exc_message()}"
-            )
-            # All events should have valid value of the field
-            assert all(
-                [
-                    each_field["field_count"] == each_field["valid_field_count"]
-                    for each_field in results
-                ]
-            ), (
-                f"Field {test_field} has invalid values."
-                f"\n{test_helper.format_exc_message()}"
-            )
+            for each_field in results:
+                assert not each_field["field_count"] == 0, (
+                        f"Field {test_field} is not extracted in any events."
+                        f"\n{test_helper.format_exc_message()}"
+                )
+                if each_field["field_count"] > each_field["event_count"]:
+                    raise AssertionError(
+                        f"Field {test_field} should not be multi-value."
+                        f"\n{test_helper.format_exc_message()}"
+                    )
+                elif each_field["field_count"] < each_field["event_count"]:
+                    # The field should be extracted in all events mapped
+                    raise AssertionError(
+                        f"Field {test_field} is not extracted in some events."
+                        f"\n{test_helper.format_exc_message()}"
+                    )
+                assert each_field["field_count"] == each_field["valid_field_count"], (
+                    f"Field {test_field} has invalid values."
+                    f"\n{test_helper.format_exc_message()}"
+                )
         elif len(cim_fields) > 1:
             # Check that count for all the fields in cluster is same.
             # If all the fields are not extracted in an event, that's a passing scenario
