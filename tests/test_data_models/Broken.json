@@ -58,6 +58,12 @@
 				"name": "component",
 				"type": "not_allowed_in_props",
 				"comment": "Not allowed field check"		
+			},
+			{
+				"name": "tag",
+				"type": "required",
+				"multi_value": false,
+				"comment": "The field should not be multi-value"
 			}
 		],
 		"child_dataset": [],
