@@ -71,6 +71,9 @@
 				],
 				"fields_cluster": [
 				],
+				"child_dataset": [
+				],
+				"search_constraints": "tag=tag_splunkd_eval",
 				"fields": [
 					{
 						"name": "fail_multi_value_field",
