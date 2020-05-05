@@ -49,6 +49,7 @@ class Field(object):
         return (
             f"{self.name}"
             f"\ntype={self.type}"
+            f"\nmulti_value={self.multi_value}"
             f"\ncondition={self.condition}"
             f"\nvalidity={self.validity}"
             f"\nexpected_values={self.expected_values}"
