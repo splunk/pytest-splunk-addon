@@ -75,7 +75,7 @@ class CIMTestTemplates(object):
             #   there should be events mapped with the data model
             # If the field is conditional,
             #   It's fine if no events matched the condition
-            if not test_field.type is "conditional":
+            if not test_field.type == "conditional":
                 assert results, (
                     "0 Events mapped with the dataset."
                     f"\n{test_helper.format_exc_message()}"
