@@ -58,12 +58,6 @@
 				"name": "not_allowed_field",
 				"type": "not_allowed_in_search",
 				"comment": "Not allowed field check"		
-			},
-			{
-				"name": "tag",
-				"type": "required",
-				"multi_value": true,
-				"comment": "Verify the multi-value fields are validated properly"
 			}
 		],
 		"child_dataset": [
