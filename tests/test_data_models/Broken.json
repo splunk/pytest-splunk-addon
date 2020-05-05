@@ -64,6 +64,36 @@
 				"type": "required",
 				"multi_value": false,
 				"comment": "The field should not be multi-value"
+			},
+			{
+				"name": "invalid_value_dash",
+				"type": "required",
+				"comment": "A field with dash value"
+			},
+			{
+				"name": "invalid_value_unknown",
+				"type": "required",
+				"comment": "A field with dash value"
+			},
+			{
+				"name": "invalid_value_empty",
+				"type": "required",
+				"comment": "A field with dash value"
+			},
+			{
+				"name": "invalid_value_null",
+				"type": "required",
+				"comment": "A field with dash value"
+			},
+			{
+				"name": "invalid_value_null_1",
+				"type": "required",
+				"comment": "A field with dash value"
+			},
+			{
+				"name": "invalid_value_null_2",
+				"type": "required",
+				"comment": "A field with dash value"
 			}
 		],
 		"child_dataset": [],
