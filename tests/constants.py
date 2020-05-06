@@ -405,13 +405,14 @@ TA_CIM_BROKEN_PASSED = [
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::broken_field_one+date_hour+date_minute+date_second* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::broken_field_two* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::date_second* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_broken_with_eval"::Broken_Eval* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_with_eval"::Broken_Eval* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_with_eval"::Broken_Eval::pass_multi_value_field* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_broken"::Broken* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_broken_2"::Broken* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_not_allowed_in_props*searchtime_cim_fields* PASSED*',
-
 ]
 
 """
