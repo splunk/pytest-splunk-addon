@@ -15,7 +15,7 @@
       "fields": [
         {
           "name": "action",
-          "type": "not_allowed_in_search",
+          "type": "required",
           "expected_values": ["allowed", "blocked", "teardown", "flow"],
           "comment": "The action taken by the network device."
         },
