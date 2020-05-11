@@ -160,7 +160,6 @@ class FieldTestTemplates(object):
         """
 
         is_tag_enabled = splunk_searchtime_fields_tags.get("enabled", True)
-        expected_value = "enabled" if is_tag_enabled else "disabled"
         tag_query = splunk_searchtime_fields_tags["stanza"]
         tag = splunk_searchtime_fields_tags["tag"]
         self.logger.info(f"Testing for tag {tag} with tag_query {tag_query}")
@@ -178,11 +177,18 @@ class FieldTestTemplates(object):
 
         record_property("search", search)
 
-        assert result is is_tag_enabled, (
-            f"Tag={tag} is not {expected_value}."
-            f"\nsearch={search}"
-            f"\ninterval={INTERVAL}, retries={RETRIES}"
-        )
+        if is_tag_enabled:
+            assert result, (
+                f"No events found for the enabled Tag={tag}."
+                f"\nsearch={search}"
+                f"\ninterval={INTERVAL}, retries={RETRIES}"
+            )
+        else:
+            assert not result, (
+                f"Events found for the disabled Tag={tag}."
+                f"\nsearch={search}"
+                f"\ninterval={INTERVAL}, retries={RETRIES}"
+            )
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_eventtypes

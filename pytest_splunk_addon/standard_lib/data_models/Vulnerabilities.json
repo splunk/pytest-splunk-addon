@@ -28,6 +28,7 @@
             {
                 "name": "cve",
                 "type": "required",
+                "multi_value": true,
                 "comment":"Corresponds to an identifier provided in the Common Vulnerabilities and Exposures index" 
             },
             {

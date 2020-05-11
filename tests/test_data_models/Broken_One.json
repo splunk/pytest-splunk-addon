@@ -1,6 +1,6 @@
 {
 	"version":"1.0.0",
-	"model_name": "Broken",
+	"model_name": "Broken_One",
 	"objects": [{
 		"name": "Broken",
 		"tags": [
@@ -60,7 +60,8 @@
 				"comment": "Not allowed field check"		
 			}
 		],
-		"child_dataset": [],
+		"child_dataset": [
+		],
 		"search_constraints": "tag=tag_splunkd_broken"
 	}]
 

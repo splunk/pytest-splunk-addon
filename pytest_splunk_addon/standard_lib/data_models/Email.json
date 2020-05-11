@@ -98,6 +98,7 @@
         {
           "name": "recipient",
           "type": "required",
+          "multi_value": true,
           "comment": "A field listing individual recipient email addresses, such as recipient='foo@splunk.com', recipient='bar@splunk.com'"
         },
         {

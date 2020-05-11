@@ -50,6 +50,7 @@
         },
         {
           "name": "object_attrs",
+          "multi_value": true,
           "type": "required",
           "comment": "The attributes that were updated on the updated resource object, if applicable."
         },

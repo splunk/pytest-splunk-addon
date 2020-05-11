@@ -1,0 +1,64 @@
+{
+	"version":"1.0.0",
+	"model_name": "Broken_Two",
+	"objects": [
+		{
+			"name": "Broken_Eval",
+			"tags": [
+				[
+					"tag_splunkd_eval"
+				]
+			],
+			"fields_cluster": [
+			],
+			"child_dataset": [
+			],
+			"search_constraints": "tag=tag_splunkd_eval",
+			"fields": [
+				{
+					"name": "fail_multi_value_field",
+					"type": "required",
+					"multi_value": false,
+					"comment": "The field should not be multi-value"
+				},
+				{
+					"name": "pass_multi_value_field",
+					"type": "required",
+					"multi_value": true,
+					"comment": "The field should not be multi-value"
+				},
+				{
+					"name": "invalid_value_dash",
+					"type": "required",
+					"comment": "A field with dash value"
+				},
+				{
+					"name": "invalid_value_unknown",
+					"type": "required",
+					"comment": "A field with dash value"
+				},
+				{
+					"name": "invalid_value_empty",
+					"type": "required",
+					"comment": "A field with dash value"
+				},
+				{
+					"name": "invalid_value_null",
+					"type": "required",
+					"comment": "A field with dash value"
+				},
+				{
+					"name": "invalid_value_null_1",
+					"type": "required",
+					"comment": "A field with dash value"
+				},
+				{
+					"name": "invalid_value_null_2",
+					"type": "required",
+					"comment": "A field with dash value"
+				}
+			]
+		}
+	]
+
+}
