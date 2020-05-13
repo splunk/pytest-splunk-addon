@@ -63,7 +63,7 @@ Testcase verifies if an eventtype is mapped with the dataset, events must follow
 Workflow:
 
 * Plugin parses tags.conf to get a list of tags for each eventtype.
-* Plugin parses all the :ref:`supported datamodels<supported_datamodels>`.
+* Plugin parses all the `supported datamodels <https://github.com/splunk/pytest-splunk-addon/tree/master/pytest_splunk_addon/standard_lib/data_models>`_.
 * Then it gets a list of the datasets mapped with an eventtype by intersection of tags.
 * Generates testcase for each eventtype.
 
@@ -75,7 +75,7 @@ Testcase:
 
     test_cim_required_fields[eventtype=<eventtype>::<dataset>::<field_name>]
 
-| Testcase verifies below conditions.
+| Testcase assertions.
 * There should be at least 1 event mapped with the dataset.
 * Each required field is extracted in all the events mapped with the datasets.
 * If there are inter dependent fields, either all fields should be extracted or none of them should be extracted *i.e ["bytes","bytes_in","bytes_out"].*
@@ -84,15 +84,16 @@ Testcase:
 
 Workflow:
 
-* For the mapped datasets it parses the datamodel json files to generate tests for each field.
-* For each field there are different properties defined in the json files.
-* By parsing the properties, plugin first collects the required information like
- * whether a field is required or conditional or optional
- * Are there any expected_valued for the field?
- * If the field is conditional what conditions need to be fulfilled.
- * what is the validity of the field
- * In case of clustered fields it follows either all or none.
-* While generating test for each field plugin takes all the above points into consideration generates the test accordingly.
+* For an eventtype, mapped dataset will be identified as mentioned in #2 scenario.
+* Test case will be generated for each required fields of an dataset.
+* To generate the test case the following properties of fields will be considered.
+ * An filtering condition to filter the events, only for which the field should be verified.
+ * Expected values 
+ * Validation to check the values follows a proper type.
+ * List of co-related fields.
+* Generate the query according to the properties of the field mentioned in #3.  
+* Search the query to the Splunk instance.
+* Assert the assertions mentioned above".
 
 
 **4. Testcase for all not_allowed_in_search fields**

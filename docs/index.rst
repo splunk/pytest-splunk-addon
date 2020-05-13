@@ -10,6 +10,7 @@ Welcome to test documentation!
    :caption: Table of Contents
    :maxdepth: 3
    
-   cim_testcase
+   cim_tests
+   field_tests
 
    
