@@ -1,6 +1,7 @@
 import pytest
 from splunklib import binding, client, results
 import time
+import os
 
 pytest_plugins = "pytester"
 
