@@ -274,7 +274,13 @@ def test_splunk_setup_fixture(testdir):
         """
     )
     setup_test_dir(testdir)
-    with open("enable_saved_search_conftest.py") as conf_test_file:
+    with open(
+        os.path.join(
+            testdir.request.fspath.dirname,
+            "tests",
+            "enable_saved_search_conftest.py"
+        )
+    ) as conf_test_file:
         testdir.makeconftest(conf_test_file.read())
 
     shutil.copytree(
