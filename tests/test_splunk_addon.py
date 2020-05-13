@@ -262,6 +262,34 @@ def test_splunk_app_cim_broken(testdir):
     # The test suite should fail as this is a negative test
     assert result.ret != 0
 
+@pytest.mark.docker
+def test_splunk_setup_fixture(testdir):
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+
+        """
+    )
+    setup_test_dir(testdir)
+    with open("enable_saved_search_conftest.py") as conf_test_file:
+        testdir.makeconftest(conf_test_file.read())
+
+    shutil.copytree(
+            os.path.join(testdir.request.fspath.dirname, "addons/TA_SavedSearch"),
+            os.path.join(testdir.tmpdir, "package"),
+        )
+
+    result = testdir.runpytest(
+        "--splunk-type=docker",  "-v", "-k saved_search_lookup",
+    )
+
+    result.assert_outcomes(
+        passed=2
+    )
+
 def test_help_message(testdir):
     result = testdir.runpytest("--help",)
     # fnmatch_lines does an assertion internally
