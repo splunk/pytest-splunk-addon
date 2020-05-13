@@ -1,8 +1,35 @@
 CIM Compatibility Tests
 =======================
-Mechanism to verify the CIM compatibility of an Add-on
+
+Overview
+-------------------
+
+The CIM tests are written with a purpose of testing the compatibility of the add-on with CIM Data Models.
+An add-on is said to CIM compatible, if it fulfils the two following criteria:
+
+1. The add-on extracts all the fields with valid values, which are marked as required by the CIM Data Model.
+2. Any event for the add-on is not mapped with more than one data model.
+
+The following is a list of CIM Data Models supported by the tool:
 
 .. _supported_datamodels:
+
+* Alerts
+* Authentication
+* Certificates
+* Change
+* DLP
+* Email
+* Endpoint
+* Intrusion_Detection
+* Malware
+* Network_Resolution
+* Network_Traffic
+* Network_Sessions
+* Updates
+* Vulnerabilities
+* Web
+
 
 To generate test cases only for CIM compatibility check appened following markers to pytest command:
 
