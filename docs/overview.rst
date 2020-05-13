@@ -29,9 +29,15 @@ Release notes
 * Codebase was reformatted to an object-oriented approach to increase the readability, scalability and the reusability of the tool. 
 * Pytest-splunk-addon now generates tests for checking CIM compatibility in your Splunk Technology Add-ons.
 
-**Fixed Issues:**
+**Bugfixes:**
+
+* Test cases for fields starting with $ and _KEY are now not generated.
+
+* The tool used to fail when test cases where executed parallely with multiple processes using pytest-xdist. The issue has been fixed.
 
 **Known Issues:**
+
+* Invalid search query generation for Malware Data Model, which results into a HTTP 400 Bad Request error. It will be fixed in the next release.
 
 
 
@@ -49,5 +55,5 @@ Or, in any case if pip is unavailable:
 .. code-block:: console
     
     1. Download the pytest-splunk-addon package from PyPI.
-    2. Navigate into the directory containing setup.py.
+    2. Navigate into the directory containing setup.py
     3. python setup.py install
