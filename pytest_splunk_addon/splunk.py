@@ -149,9 +149,34 @@ def pytest_addoption(parser):
         ),
     )
 
+@pytest.fixture(scope="session")
+def splunk_setup(splunk):
+    """
+    Override this fixture in conftest.py, if any setup is required before the test session.
+    splunk fixture can provide the details of the splunk instance in dict format.
+
+    **Possible setups required**:
+
+        1. Enable Saved-searches before running the tests
+        2. Restart Splunk
+        3. Configure inputs of an Add-on.
+
+    **Example**::
+
+        from splunklib import binding
+        @pytest.fixture(scope="session")
+        def splunk_setup(splunk):
+            splunk_binding = binding.connect(**splunk)
+            splunk_binding.post(
+                f"/servicesNS/nobody/{addon_name}/saved/searches/{savedsearch}/enable"
+                , data=''
+            )
+
+    """
+    pass
 
 @pytest.fixture(scope="session")
-def splunk_search_util(splunk):
+def splunk_search_util(splunk, splunk_setup):
     """
     This is a simple connection to Splunk via the SplunkSDK
 
@@ -193,8 +218,6 @@ def splunk(request):
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
         os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
         os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
-
-        
 
         request.fixturenames.append("splunk_docker")
         splunk_info = request.getfixturevalue("splunk_docker")
