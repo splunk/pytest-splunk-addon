@@ -11,6 +11,7 @@ Welcome to test documentation!
    :maxdepth: 3
    
    overview
+   how_to_use
    cim_tests
    field_tests
 
