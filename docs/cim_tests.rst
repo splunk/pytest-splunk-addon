@@ -50,6 +50,8 @@ Testcase:
 
 This test verifies if app Splunk_SA_CIM is installed or not in the given splunk instance.
 
+.. _mapped_datasets:
+
 **2. Testcase for each eventtype mapped with a dataset.**
 
 Testcase: 
@@ -64,7 +66,7 @@ Workflow:
 
 * Plugin parses tags.conf to get a list of tags for each eventtype.
 * Plugin parses all the `supported datamodels <https://github.com/splunk/pytest-splunk-addon/tree/master/pytest_splunk_addon/standard_lib/data_models>`_.
-* Then it gets a list of the datasets mapped with an eventtype by intersection of tags.
+* Then it gets a list of the datasets mapped with an eventtype.
 * Generates testcase for each eventtype.
 
 **3. Testcases for all required, conditional and cluster fields in dataset.**
@@ -79,21 +81,21 @@ Testcase:
 * There should be at least 1 event mapped with the dataset.
 * Each required field is extracted in all the events mapped with the datasets.
 * If there are inter dependent fields, either all fields should be extracted or none of them should be extracted *i.e ["bytes","bytes_in","bytes_out"].*
-* Fields should not have values other than the expected values defined in datamodel JSON files.
+* Fields should not have values other than the expected values defined in field properties.
 * Fields must not have invalid values [" ", "-", "null", "(null)", "unknown"].
 
 Workflow:
 
-* For an eventtype, mapped dataset will be identified as mentioned in #2 scenario.
+* For an eventtype, mapped dataset will be identified as mentioned in :ref:`#2 scenario<mapped_datasets>`.
 * Test case will be generated for each required fields of an dataset.
 * To generate the test case the following properties of fields will be considered.
  * An filtering condition to filter the events, only for which the field should be verified.
  * Expected values 
  * Validation to check the values follows a proper type.
  * List of co-related fields.
-* Generate the query according to the properties of the field mentioned in #3.  
+* Generate the query according to the properties of the field mentioned above.  
 * Search the query to the Splunk instance.
-* Assert the assertions mentioned above".
+* Assert the assertions mentioned in **Testcase assertions**.
 
 
 **4. Testcase for all not_allowed_in_search fields**
@@ -108,10 +110,10 @@ These fields are not allowed to be extracted for the eventtype
 
 Workflow:
 
-* Plugin collects the list of not_allowed_in_search fields from mapped datasets and CommonFields.json
+* Plugin collects the list of not_allowed_in_search fields from mapped datasets and `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_.
 * Using search query the testcase verifies if not_allowed_in_search fields are populated in search or not.
 
-**NOTE:** CommonFields.json contains fields which are are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
+**NOTE:** `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_ contains fields which are are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
 
 **5. Testcase for all not_allowed_in_props fields**
 
