@@ -14,5 +14,7 @@ Welcome to test documentation!
    how_to_use
    cim_tests
    field_tests
+   release_history
+
 
    
