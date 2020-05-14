@@ -37,7 +37,7 @@ Test Scenarios
 
     Testcase verifies if an eventtype is mapped with the dataset, events must follow the search constrainsts of the dataset.
 
-    Workflow:
+    **Workflow:**
 
     * Plugin parses tags.conf to get a list of tags for each eventtype.
     * Plugin parses all the `supported datamodels <https://github.com/splunk/pytest-splunk-addon/tree/master/pytest_splunk_addon/standard_lib/data_models>`_.
@@ -58,7 +58,7 @@ Test Scenarios
     * Fields should not have values other than the expected values defined in field properties.
     * Fields must not have invalid values [" ", "-", "null", "(null)", "unknown"].
 
-    Workflow:
+    **Workflow:**
 
     * For an eventtype, mapped dataset will be identified as mentioned in :ref:`#2 scenario<mapped_datasets>`.
     * Test case will be generated for each required fields of an dataset.
@@ -81,7 +81,7 @@ Test Scenarios
 
     These fields are not allowed to be extracted for the eventtype
 
-    Workflow:
+    **Workflow:**
 
     * Plugin collects the list of not_allowed_in_search fields from mapped datasets and `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_.
     * Using search query the testcase verifies if not_allowed_in_search fields are populated in search or not.
@@ -96,7 +96,7 @@ Test Scenarios
 
     Defining extractions in the configuration files is not allowed for these fields. But if these fields are automatically extracted by Splunk thats fine *i.e tag*
     
-    Workflow:
+    **Workflow:**
 
     * Plugin gets a list of fields of type not_allowed_in_props from CommonFields.json and mapped datasets.
     * Plugin gets a list of fields whose extractions are defined in props using addon_parser.
@@ -108,7 +108,7 @@ Test Scenarios
 
         test_eventtype_mapped_multiple_cim_datamodel
 
-    Workflow:
+    **Workflow:**
 
     * Parsing tags.conf it already has a list of eventtype mapped with the datasets.
     * Using SPL we check that each eventtype is not be mapped with multiple datamodels.
