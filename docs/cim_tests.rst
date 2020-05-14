@@ -12,9 +12,9 @@ An add-on is said to be CIM compatible, if it fulfils the two following criteria
 
 To generate test cases only for CIM compatibility, append the following marker to pytest command:
 
-.. code-block:: console
+    .. code-block:: console
 
-    -m  splunk_searchtime_cim
+        -m  splunk_searchtime_cim
 
 Test Scenarios
 --------------
@@ -27,7 +27,7 @@ Test Scenarios
 
     This test verifies if app Splunk_SA_CIM is installed or not in the given splunk instance.
 
-.. _mapped_datasets:
+    .. _mapped_datasets:
 
 **2. Testcase for each eventtype mapped with a dataset.**
 
@@ -37,7 +37,7 @@ Test Scenarios
 
     Testcase verifies if an eventtype is mapped with the dataset, events must follow the search constrainsts of the dataset.
 
-    Workflow:
+    **Workflow:**
 
     * Plugin parses tags.conf to get a list of tags for each eventtype.
     * Plugin parses all the `supported datamodels <https://github.com/splunk/pytest-splunk-addon/tree/master/pytest_splunk_addon/standard_lib/data_models>`_.
@@ -50,22 +50,24 @@ Test Scenarios
 
         test_cim_required_fields[eventtype=<eventtype>::<dataset>::<field_name>]
 
-    | Testcase assertions.
+    Testcase assertions:
+
     * There should be at least 1 event mapped with the dataset.
     * Each required field is extracted in all the events mapped with the datasets.
     * If there are inter dependent fields, either all fields should be extracted or none of them should be extracted *i.e ["bytes","bytes_in","bytes_out"].*
     * Fields should not have values other than the expected values defined in field properties.
     * Fields must not have invalid values [" ", "-", "null", "(null)", "unknown"].
 
-    Workflow:
+    **Workflow:**
 
     * For an eventtype, mapped dataset will be identified as mentioned in :ref:`#2 scenario<mapped_datasets>`.
     * Test case will be generated for each required fields of an dataset.
     * To generate the test case the following properties of fields will be considered.
-    * An filtering condition to filter the events, only for which the field should be verified.
-    * Expected values 
-    * Validation to check the values follows a proper type.
-    * List of co-related fields.
+
+        * An filtering condition to filter the events, only for which the field should be verified.
+        * Expected values 
+        * Validation to check the values follows a proper type.
+        * List of co-related fields.
     * Generate the query according to the properties of the field mentioned above.  
     * Search the query to the Splunk instance.
     * Assert the assertions mentioned in **Testcase assertions**.
@@ -79,12 +81,12 @@ Test Scenarios
 
     These fields are not allowed to be extracted for the eventtype
 
-    Workflow:
+    **Workflow:**
 
     * Plugin collects the list of not_allowed_in_search fields from mapped datasets and `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_.
     * Using search query the testcase verifies if not_allowed_in_search fields are populated in search or not.
 
-**NOTE:** `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_ contains fields which are are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
+    **NOTE:** `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_ contains fields which are are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
 
 **5. Testcase for all not_allowed_in_props fields**
 
@@ -94,7 +96,7 @@ Test Scenarios
 
     Defining extractions in the configuration files is not allowed for these fields. But if these fields are automatically extracted by Splunk thats fine *i.e tag*
     
-    Workflow:
+    **Workflow:**
 
     * Plugin gets a list of fields of type not_allowed_in_props from CommonFields.json and mapped datasets.
     * Plugin gets a list of fields whose extractions are defined in props using addon_parser.
@@ -106,8 +108,7 @@ Test Scenarios
 
         test_eventtype_mapped_multiple_cim_datamodel
 
-    Workflow:
+    **Workflow:**
 
     * Parsing tags.conf it already has a list of eventtype mapped with the datasets.
     * Using SPL we check that each eventtype is not be mapped with multiple datamodels.
-
