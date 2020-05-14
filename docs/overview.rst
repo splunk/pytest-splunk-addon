@@ -45,12 +45,12 @@ pytest-splunk-addon can be installed via pip from PyPI:
 
 .. code-block:: console
     
-    pip install pytest-splunk-addon
+    pip3 install pytest-splunk-addon
 
 Or, in any case if pip is unavailable:
 
 .. code-block:: console
     
-    1. Clone pytest-splunk-addon package using 'git clone https://github.com/splunk/pytest-splunk-addon.git'
-    2. Navigate into the directory containing setup.py
-    3. python setup.py install
+    1. git clone https://github.com/splunk/pytest-splunk-addon.git
+    2. cd pytest-splunk-addon
+    3. python3 setup.py install
