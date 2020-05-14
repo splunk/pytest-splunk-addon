@@ -39,9 +39,6 @@ Release notes
 
 * Invalid search query generation for Malware Data Model, which results into a HTTP 400 Bad Request error. It will be fixed in the next release.
 
-
-
-
 Installation
 ------------
 pytest-splunk-addon can be installed via pip from PyPI:
