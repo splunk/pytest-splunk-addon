@@ -54,6 +54,6 @@ Or, in any case if pip is unavailable:
 
 .. code-block:: console
     
-    1. Download the pytest-splunk-addon package from PyPI.
+    1. Clone pytest-splunk-addon package using 'git clone https://github.com/splunk/pytest-splunk-addon.git'
     2. Navigate into the directory containing setup.py
     3. python setup.py install
