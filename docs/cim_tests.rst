@@ -21,8 +21,6 @@ Test Scenarios
 
 **1. To check whether Splunk_SA_CIM is installed on the given splunk instance**
 
-Testcase: 
-
 .. code-block:: python
 
     test_app_installed[Splunk_SA_CIM]
@@ -32,8 +30,6 @@ This test verifies if app Splunk_SA_CIM is installed or not in the given splunk 
 .. _mapped_datasets:
 
 **2. Testcase for each eventtype mapped with a dataset.**
-
-Testcase: 
 
 .. code-block:: python
 
@@ -50,13 +46,12 @@ Workflow:
 
 **3. Testcases for all required, conditional and cluster fields in dataset.**
 
-Testcase: 
-
 .. code-block:: python
 
     test_cim_required_fields[eventtype=<eventtype>::<dataset>::<field_name>]
 
-| Testcase assertions.
+Testcase assertions:
+
 * There should be at least 1 event mapped with the dataset.
 * Each required field is extracted in all the events mapped with the datasets.
 * If there are inter dependent fields, either all fields should be extracted or none of them should be extracted *i.e ["bytes","bytes_in","bytes_out"].*
@@ -68,18 +63,17 @@ Workflow:
 * For an eventtype, mapped dataset will be identified as mentioned in :ref:`#2 scenario<mapped_datasets>`.
 * Test case will be generated for each required fields of an dataset.
 * To generate the test case the following properties of fields will be considered.
- * An filtering condition to filter the events, only for which the field should be verified.
- * Expected values 
- * Validation to check the values follows a proper type.
- * List of co-related fields.
+
+    * An filtering condition to filter the events, only for which the field should be verified.
+    * Expected values 
+    * Validation to check the values follows a proper type.
+    * List of co-related fields.
 * Generate the query according to the properties of the field mentioned above.  
 * Search the query to the Splunk instance.
 * Assert the assertions mentioned in **Testcase assertions**.
 
 
 **4. Testcase for all not_allowed_in_search fields**
-
-Testcase: 
 
 .. code-block:: python
 
@@ -96,8 +90,6 @@ Workflow:
 
 **5. Testcase for all not_allowed_in_props fields**
 
-Testcase: 
-
 .. code-block:: python
 
     test_cim_fields_not_allowed_in_props[searchtime_cim_fields]
@@ -111,8 +103,6 @@ Workflow:
 * By comparing we obtain a list of fields whose extractions are not allowed but defined.
 
 **6. Testcase to check that eventtype is not be mapped with multiple datamodels.**
-
-Testcase: 
 
 .. code-block:: python
 
