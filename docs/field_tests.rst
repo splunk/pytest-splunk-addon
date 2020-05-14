@@ -26,6 +26,7 @@ Test Scenarios
         test_props_fields[<stanza>]
 
     Here <stanza> is the source/sourcetype that is defined in the stanza.
+    
     | Testcase verifies if the defined source/sourcetype has events or not.
 
     **Workflow:**
