@@ -11,36 +11,38 @@ Create a test file in the tests folder
             def empty_method():
                 pass
 
-The tool assumes the Splunk Add-on is located in a folder "package" in the project root if not
+There are two ways one can execute the tests
 
-**Running tests with external splunk**
+**1. Running tests with external splunk**
 
-.. code:: python3
+    .. code:: python3
 
-    pip install pytest-splunk-addon
+        pip install pytest-splunk-addon
 
-Run pytest with the add-on and SA-eventgen installed and enabled in an external Splunk deployment
+    Run pytest with the add-on and SA-eventgen installed and enabled in an external Splunk deployment
 
-.. code:: bash
+    .. code:: bash
 
-    pytest -v --splunk-type=external --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password>
+        pytest -v --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password>
 
-**Running tests with docker splunk**
+The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 
-.. code:: bash
+**2. Running tests with docker splunk**
 
-    pip install pytest-splunk-addon[docker]
+    .. code:: bash
 
-Create a Dockerfile-splunk file 
+        pip install pytest-splunk-addon[docker]
 
-.. literalinclude:: ../Dockerfile.splunk
+    Create a Dockerfile-splunk file 
 
-Create a docker-compose.yml
+    .. literalinclude:: ../Dockerfile.splunk
 
-.. literalinclude:: ../docker-compose.yml
+    Create a docker-compose.yml
 
-Run pytest with the add-on and SA-eventgen installed and enabled in docker
+    .. literalinclude:: ../docker-compose.yml
 
-.. code:: bash
+    Run pytest with the add-on and SA-eventgen installed and enabled in docker
 
-    pytest --splunk-password=Changed@11 -v
+    .. code:: bash
+
+        pytest --splunk-password=Changed@11 -v
