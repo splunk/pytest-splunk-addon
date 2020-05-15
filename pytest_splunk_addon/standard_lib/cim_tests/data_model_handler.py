@@ -65,7 +65,7 @@ class DataModelHandler(object):
         Parse all the data model JSON files one by one
 
         Yields:
-            (data_model.DataModel): parsed data model object 
+            (cim_tests.data_model.DataModel): parsed data model object 
         """
         # Parse each fields and load data models
         json_list = [

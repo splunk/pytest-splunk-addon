@@ -201,6 +201,7 @@ class FieldTestTemplates(object):
     ):
         """
         Tests if all eventtypes in eventtypes.conf are generated in Splunk.
+
         Args:
             splunk_search_util (fixture): 
                 Fixture to create a simple connection to Splunk via SplunkSDK
@@ -210,6 +211,7 @@ class FieldTestTemplates(object):
                 Used to add user properties to test report
             caplog (fixture): 
                 Access and control log capturing
+
         Returns:
             Asserts whether test case passes or fails.
         """

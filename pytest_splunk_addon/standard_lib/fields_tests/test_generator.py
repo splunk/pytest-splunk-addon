@@ -36,10 +36,11 @@ class FieldTestGenerator(object):
         """
         Generate the test cases based on the fixture provided 
         supported fixtures:
-        * splunk_app_searchtime_fields
-        * splunk_app_searchtime_negative
-        * splunk_app_searchtime_eventtypes
-        * splunk_app_searchtime_tags
+
+            * splunk_app_searchtime_fields
+            * splunk_app_searchtime_negative
+            * splunk_app_searchtime_eventtypes
+            * splunk_app_searchtime_tags
 
         Args:
             fixture(str): fixture name
