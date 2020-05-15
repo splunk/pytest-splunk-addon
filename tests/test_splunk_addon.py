@@ -263,7 +263,7 @@ def test_splunk_app_cim_broken(testdir):
     # The test suite should fail as this is a negative test
     assert result.ret != 0
 
-@pytest.mark.docker
+@pytest.mark.doc
 def test_help_message(testdir):
     result = testdir.runpytest("--help",)
     # fnmatch_lines does an assertion internally
@@ -278,7 +278,7 @@ def test_help_message(testdir):
         ]
     )
 
-@pytest.mark.docker
+@pytest.mark.doc
 def test_docstrings(testdir):
     docs_dir = os.path.join(
         testdir.request.config.invocation_dir,
