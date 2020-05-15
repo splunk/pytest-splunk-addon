@@ -140,7 +140,6 @@ def test_splunk_app_fiction(testdir):
 
 
 @pytest.mark.docker
-@pytest.mark.skip
 def test_splunk_app_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -218,7 +217,6 @@ def test_splunk_app_cim_fiction(testdir):
     assert result.ret == 0
 
 @pytest.mark.docker
-@pytest.mark.skip
 def test_splunk_app_cim_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
