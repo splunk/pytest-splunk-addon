@@ -4,7 +4,6 @@ import shutil
 import logging
 import pytest
 from tests import constants
-from sphinx.application import Sphinx
 
 logger = logging.getLogger("test_pytest_splunk_addon")
 
@@ -280,6 +279,7 @@ def test_help_message(testdir):
 
 @pytest.mark.doc
 def test_docstrings(testdir):
+    from sphinx.application import Sphinx
     docs_dir = os.path.join(
         testdir.request.config.invocation_dir,
         "docs"
