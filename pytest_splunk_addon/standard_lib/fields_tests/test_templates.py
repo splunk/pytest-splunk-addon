@@ -7,8 +7,8 @@ import logging
 import pytest
 from ..addon_parser import Field
 
-INTERVAL = 3
-RETRIES = 3
+INTERVAL = 4
+RETRIES = 4
 
 
 class FieldTestTemplates(object):
@@ -81,7 +81,7 @@ class FieldTestTemplates(object):
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=5, retries=5
+            search, interval=INTERVAL, retries=RETRIES
         )
         record_property("search", search)
 
