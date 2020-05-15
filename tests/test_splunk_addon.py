@@ -4,6 +4,7 @@ import shutil
 import logging
 import pytest
 from tests import constants
+from sphinx.application import Sphinx
 
 logger = logging.getLogger("test_pytest_splunk_addon")
 
@@ -262,6 +263,7 @@ def test_splunk_app_cim_broken(testdir):
     # The test suite should fail as this is a negative test
     assert result.ret != 0
 
+@pytest.mark.docker
 def test_help_message(testdir):
     result = testdir.runpytest("--help",)
     # fnmatch_lines does an assertion internally
@@ -275,3 +277,21 @@ def test_help_message(testdir):
             "*--splunk-password=*",
         ]
     )
+
+@pytest.mark.docker
+def test_docstrings(testdir):
+    docs_dir = os.path.join(
+        testdir.request.config.invocation_dir,
+        "docs"
+    )
+    output_dir = os.path.join(docs_dir, "_build", "html")
+    doctree_dir =os.path.join(docs_dir, "_build", "doctrees")
+    all_files = 1
+    app = Sphinx(docs_dir,
+        docs_dir,
+        output_dir,
+        doctree_dir,
+        buildername='html',
+        warningiserror=True,
+    )
+    app.build(force_all=all_files)

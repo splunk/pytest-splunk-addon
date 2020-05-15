@@ -19,7 +19,7 @@ class FieldTestTemplates(object):
     logger = logging.getLogger("pytest-splunk-addon-tests")
 
     @pytest.mark.splunk_searchtime_fields
-    @pytest.mark.splunk_app_internal_errors
+    @pytest.mark.splunk_searchtime_internal_errors
     def test_splunk_internal_errors(self, splunk_search_util, record_property, caplog):
         search = """
             search index=_internal CASE(ERROR)
