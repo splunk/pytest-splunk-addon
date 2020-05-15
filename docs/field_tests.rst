@@ -108,11 +108,10 @@ In case of test case failure check if:
 If all the above conditions are satisfied, further analysis on the test is required.
 For every CIM validation test case there is a defined structure for the stacktrace [1]_.
 
-    .. code-block::
+    .. code-block:: text
 
-        <<failure_exception>> : <<failure_message>>
-
-        <<search_query>> // Actual search query executed on splunk.
+        AssertionError: <<error_message>>
+            Search =  <Query>
 
     Get the search query from the stacktrace and execute it on the splunk instance and verify which specific type of events are causing failure.
 

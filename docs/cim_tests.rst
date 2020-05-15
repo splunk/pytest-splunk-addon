@@ -131,16 +131,16 @@ For every CIM validation test case there is a defined structure for the stacktra
     .. code-block:: text
 
         AssertionError: <<error_message>>
-                 Source   | Sourcetype      | Field | Event Count | Field Count | Invalid Field Count | Invalid Values
-                 -------- | --------------- | ------| ----------- | ----------- | ------------------- | -------------- 
-                   str    |       str       |  str  |     int     |     int     |         int         |       int      
-                 Search =  <Query>
-                 Properties for the field :: <field_name>
-                 type= Required/Conditional
-                 condition= Condition for field
-                 validity= EVAL conditions
-                 expected_values=[list of expected values]
-                 negative_values=[list of negative values]
+            Source   | Sourcetype      | Field | Event Count | Field Count | Invalid Field Count | Invalid Values
+            -------- | --------------- | ------| ----------- | ----------- | ------------------- | -------------- 
+            str    |       str       |  str  |     int     |     int     |         int         |       int      
+            Search =  <Query>
+            Properties for the field :: <field_name>
+            type= Required/Conditional
+            condition= Condition for field
+            validity= EVAL conditions
+            expected_values=[list of expected values]
+            negative_values=[list of negative values]
 
     Get the search query from the stacktrace and execute it on the splunk instance and verify which specific type of events are causing failure.
 
