@@ -7,18 +7,17 @@ to convert a list to field list
 from functools import wraps
 class Field(object):
     """
-        Contains the field properties
+    Contains the field properties
 
-        Properties:
-            name (str): name of the field
-            type (str): Field type. Supported [required, conditional, optional]
-            expected_values (list): The field should have this expected values
-            negative_values (list): The field should not have negative values
-            condition (spl): The field should only be checked if the condition satisfies
-            validity (eval): eval statement to extract the valid fields only 
+    * name (str): name of the field
+    * type (str): Field type. Supported [required, conditional, optional]
+    * expected_values (list): The field should have this expected values
+    * negative_values (list): The field should not have negative values
+    * condition (spl): The field should only be checked if the condition satisfies
+    * validity (eval): eval statement to extract the valid fields only 
 
-        Args:
-            field_json (dict): dictionary containing field properties 
+    Args:
+        field_json (dict): dictionary containing field properties 
     """
     SUPPORTED_TYPES = ["required", "conditional", "optional"]
 

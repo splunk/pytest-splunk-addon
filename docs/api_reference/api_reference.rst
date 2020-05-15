@@ -5,6 +5,8 @@ Code Documentation
    :members:
    :show-inheritance:
 
+The API is divided into the following packages & modules.
+
 .. toctree::
    :maxdepth: 1
 

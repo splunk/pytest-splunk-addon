@@ -16,6 +16,7 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 class FieldTestGenerator(object):
     """
     Generates test cases to test the knowledge objects of an Add-on.
+
     * Provides the pytest parameters to the test templates.
     * Supports field_bank: List of fields with patterns and expected
         values which should be tested for the Add-on.
