@@ -74,3 +74,6 @@ target/
 venv
 .venv 
 !deps/build
+
+# Vs Code Settings
+.vscode
