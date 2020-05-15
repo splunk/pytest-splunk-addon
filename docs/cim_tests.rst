@@ -133,7 +133,7 @@ For every CIM validation test case there is a defined structure for the stacktra
         AssertionError: <<error_message>>
             Source   | Sourcetype      | Field | Event Count | Field Count | Invalid Field Count | Invalid Values
             -------- | --------------- | ------| ----------- | ----------- | ------------------- | -------------- 
-            str    |       str       |  str  |     int     |     int     |         int         |       int      
+              str    |       str       |  str  |     int     |     int     |         int         |       int      
             Search =  <Query>
             Properties for the field :: <field_name>
             type= Required/Conditional
@@ -144,7 +144,7 @@ For every CIM validation test case there is a defined structure for the stacktra
 
     Get the search query from the stacktrace and execute it on the splunk instance and verify which specific type of events are causing failure.
 
-    If a test case validating field is failing, check the field's properties from the table provided for the reason of failure. 
+    If a field validating test case is failing, check the field's properties from the table provided for the reason of failure. 
 
 
 .. [1] Stacktrace is the text displayed in the Exception block when the Test fails.
