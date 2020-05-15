@@ -16,6 +16,7 @@ Welcome to test documentation!
    field_tests
    release_history
    api_reference/api_reference
+   troubleshoot
 
 
    

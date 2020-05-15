@@ -62,7 +62,7 @@ Test Scenarios
 
     * For an eventtype, mapped dataset will be identified as mentioned in :ref:`#2 scenario<mapped_datasets>`.
     * Test case will be generated for each required fields of an dataset.
-    * To generate the test case the following properties of fields will be considered.
+    * To generate the test case the following properties of fields will be considered :
 
         * An filtering condition to filter the events, only for which the field should be verified.
         * Expected values 
@@ -107,8 +107,45 @@ Test Scenarios
     .. code-block:: python
 
         test_eventtype_mapped_multiple_cim_datamodel
-
+    
     **Workflow:**
 
     * Parsing tags.conf it already has a list of eventtype mapped with the datasets.
     * Using SPL we check that each eventtype is not be mapped with multiple datamodels.
+
+Testcase Troubleshooting
+------------------------
+
+In case of test case failure check if:
+
+    - addon to be tested is installed on the splunk instance.
+    - data is generated sufficiently for the addon being tested.
+    - Splunk_SA_CIM is installed on the Splunk instance.
+    - splunk licence has not expired.
+    - splunk instance is up and running.
+    - splunk instance's management port is accessible from test machine.
+
+If all the above conditions are satisfied, further analysis on the test is required.
+For every CIM validation test case there is a defined structure for the stacktrace [1]_.
+
+    .. code-block:: text
+
+        AssertionError: <<error_message>>
+            Source   | Sourcetype      | Field | Event Count | Field Count | Invalid Field Count | Invalid Values
+            -------- | --------------- | ------| ----------- | ----------- | ------------------- | -------------- 
+              str    |       str       |  str  |     int     |     int     |         int         |       int      
+            Search =  <Query>
+            Properties for the field :: <field_name>
+            type= Required/Conditional
+            condition= Condition for field
+            validity= EVAL conditions
+            expected_values=[list of expected values]
+            negative_values=[list of negative values]
+
+    Get the search query from the stacktrace and execute it on the splunk instance and verify which specific type of events are causing failure.
+
+    If a field validating test case is failing, check the field's properties from the table provided for the reason of failure. 
+
+
+.. [1] Stacktrace is the text displayed in the Exception block when the Test fails.
+
