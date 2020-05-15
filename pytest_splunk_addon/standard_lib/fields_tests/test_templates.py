@@ -81,7 +81,7 @@ class FieldTestTemplates(object):
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=INTERVAL, retries=RETRIES
+            search, interval=15, retries=10
         )
         record_property("search", search)
 
