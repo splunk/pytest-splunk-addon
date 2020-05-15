@@ -15,6 +15,7 @@ Welcome to test documentation!
    cim_tests
    field_tests
    release_history
+   api_reference/api_reference
    troubleshoot
 
 

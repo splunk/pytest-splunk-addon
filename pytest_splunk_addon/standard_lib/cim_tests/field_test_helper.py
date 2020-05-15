@@ -29,7 +29,8 @@ class FieldTestHelper(object):
     def test_field(self, base_search):
         """
         Generate a query for the list of fields and return the result 
-        Format of the query is
+
+        Format of the query is::
 
             <condition> 
             | eval <validity> 
@@ -58,7 +59,7 @@ class FieldTestHelper(object):
 
     def _make_search_query(self, base_search):
         """
-        Make the search query by using the list of fields 
+        Make the search query by using the list of fields::
 
             <base_search> <condition> 
             | eval valid_field=<validity> 
@@ -84,7 +85,7 @@ class FieldTestHelper(object):
 
     def _parse_result(self, results):
         """
-        Flatten the result into the following format
+        Flatten the result into the following format::
 
             [{
                 "sourcetype": str,
@@ -138,7 +139,8 @@ class FieldTestHelper(object):
     def format_exc_message(self):
         """
         Format the exception message to display 
-        1) There's no field in the result 
+
+        1) There's no field in the result::
 
             Source          Sourcetype      Event Count
             -------------------------------------------
@@ -147,7 +149,7 @@ class FieldTestHelper(object):
             -------------------------------------------
             Search = <search query>
 
-        2) There are multiple fields in the result
+        2) There are multiple fields in the result::
 
             Source          Sourcetype  Field  Event Count  Field Count  Invalid Field Count  Invalid Values
             ------------------------------------------------------------------------------------------------
@@ -159,6 +161,7 @@ class FieldTestHelper(object):
 
             Properties for the field :: One
             . . .
+
         """
         if not self.fields:
             exc_message = self.get_table_output(
@@ -213,12 +216,14 @@ class FieldTestHelper(object):
     @staticmethod
     def get_table_output(headers, value_list):
         """
-        Generate a table output of the following format 
-            Header1 Header2
+        Generate a table output of the following format::
+
+            Header1 | Header2
             ---------------
-            One     Value1
-            Two     Value2
+            One     | Value1
+            Two     | Value2
             --------------
+
         Args:
             headers (list): list of headers 
             value_list (list of list): list of rows for the table

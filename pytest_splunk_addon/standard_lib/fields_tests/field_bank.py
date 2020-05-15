@@ -14,7 +14,9 @@ class FieldBank(object):
 
     Steps to use:
 
-    1. Create a json file with the list of fields. Example, 
+    1. Create a json file with the list of fields. 
+    
+        Example::
 
             {
                 "stanza_name": [    # Key should be stanza_name
@@ -27,14 +29,20 @@ class FieldBank(object):
                     }
                 ]
             }
-        supported stanza_type: 1. source 2. sourcetype
 
-        Description:
 
-        * condition: A filtering SPL command.
-        * validity: An EVAL statement. Filter out invalid value of a field 
-        * expected_fields: List of expected_fields 
-        * negative_fields: The list of values the field should not have
+        .. csv-table::
+            :header: Parameter, Description
+
+            condition, A filtering SPL command.
+            validity, An EVAL statement. Filter out invalid value of a field 
+            expected_fields, List of expected_fields 
+            negative_fields, The list of values the field should not have
+
+        supported stanza_type:
+
+            1. source
+            2. sourcetype
 
     2. Provide path of the json file with --field-bank=path parameter 
     """

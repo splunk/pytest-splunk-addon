@@ -14,6 +14,7 @@ class CIMTestTemplates(object):
     """
     Test scenarios to check the CIM compatibility of an Add-on 
     Supported Test scenarios:
+
         - The eventtype should exctract all required fields of data model 
         - One eventtype should not be mapped with more than one data model 
         - Field Cluster should be verified (should be included with required field test)
@@ -30,6 +31,7 @@ class CIMTestTemplates(object):
     def test_app_installed(self, splunk_search_util, app_name, record_property):
         """
         This test case checks that addon is installed/enabled in the Splunk instance.
+
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
             app_name (string): Add-on name.
@@ -60,10 +62,11 @@ class CIMTestTemplates(object):
         """
         Test the the required fields in the data models are extracted with valid values. 
         Supports 3 scenarios. The test order is maintained for better test report.
-        1. Check that there is at least 1 event mapped with the data model 
-        2. Check that each required field is extracted in all of the events mapped with the data model.
-        3. Check that if there are inter dependent fields, either all fields should be extracted or 
-            none of them should be extracted.
+
+            - Check that there is at least 1 event mapped with the data model 
+            - Check that each required field is extracted in all of the events mapped with the data model.
+            - Check that if there are inter dependent fields, either all fields should be
+              extracted or none of them should be extracted.
         """
 
         cim_data_set = splunk_searchtime_cim_fields["data_set"]
