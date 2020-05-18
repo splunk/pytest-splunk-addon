@@ -25,9 +25,8 @@ Test Scenarios
 
         test_props_fields[<stanza>]
 
+    Testcase verifies that there are events mapped with source/sourcetype.
     Here <stanza> is the source/sourcetype that is defined in the stanza.
-    
-    | Testcase verifies if the defined source/sourcetype has events or not.
 
     **Workflow:**
 
@@ -40,7 +39,9 @@ Test Scenarios
 
         test_props_fields[<stanza>::field::<fieldname>]
 
-    Here <stanza> is the source/sourcetype that is defined in the stanza and <fieldname> is name of field which is extracted under source/sourcetype.
+    Testcase verifies that the field should be extracted in the source/sourcetype. 
+    Here <stanza> is the source/sourcetype that is defined in the stanza and
+    <fieldname> is name of field which is extracted under source/sourcetype.
 
     **Workflow:**
 
@@ -52,6 +53,11 @@ Test Scenarios
     .. code-block:: python
 
         test_props_fields_no_dash_not_empty[<stanza>::field::<fieldname>]
+
+    Testcase verifies that the field should not have "-" (dash) or "" (empty) as a value.
+    Here <stanza> is the source/sourcetype that is defined in the stanza and 
+    <fieldname> is name of field which is extracted under source/sourcetype.
+
 
     **Workflow:**
 
@@ -66,6 +72,13 @@ Test Scenarios
         test_props_fields[<stanza>::LOOKUP-<classname>]
         test_props_fields[<stanza>::REPORT-<classname>::<transforms_stanza>]
 
+    All the fields mentioned in EXTRACT, REPORT or LOOKUP can be interdependent. 
+    The test case verifies that the extractions is working fine and all the fields are 
+    being extracted in a single event. 
+    The reason of keeping the test is to identify the corner cases where the fields are being 
+    extracted in several events but the extractions mentioned in EXTRACT, REPORT or LOOKUP is not 
+    working due to invalid regex/lookup configuration.
+
     **Workflow:** 
 
     * While parsing the conf file when plugin finds one of these EXTRACT, REPORT, LOOKUP it gets the list of fields extracted in the knowledge object and generates a testcase.
@@ -79,6 +92,9 @@ Test Scenarios
 
         test_eventtype[eventtype=<eventtype>]
 
+    Test case verifies that the there are events mapped with the eventtype. 
+    Here <eventtype> is an eventtype mentioned in eventtypes.conf.
+
     **Workflow:** 
 
     * For each eventtype mentioned in eventtypes.conf plugin generates an SPL search query and asserts event_count > 0 for the eventtype.
@@ -89,10 +105,14 @@ Test Scenarios
 
         test_tags[<tag_stanza>::tag::<tag>]
 
+    Test case verifies that the there are events mapped with the tag. 
+    Here <tag_stanza> is a stanza mentioned in tags.conf and <tag> is an individual tag 
+    applied to that stanza.
+
     **Workflow:** 
 
-* In tags.conf for each tag defined in the stanza plugin generates a testcase.
-* For each tag plugin generates a search query including the stanza and the tag and asserts event_count > 0
+    * In tags.conf for each tag defined in the stanza plugin generates a testcase.
+    * For each tag plugin generates a search query including the stanza and the tag and asserts event_count > 0
 
 Testcase Troubleshooting
 ------------------------
