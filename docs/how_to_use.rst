@@ -48,6 +48,22 @@ There are two ways to execute the tests:
 
 The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 
+----------------------
+
+There are 2 types of tests included in pytest-splunk-addon.
+
+    1. To generate test cases only for field extractions, append the following marker to pytest command:
+
+        .. code-block:: console
+
+            -m  splunk_searchtime_fields
+
+    2. To generate test cases only for CIM compatibility, append the following marker to pytest command:
+
+        .. code-block:: console
+
+            -m  splunk_searchtime_cim
+
 
 Extending pytest-splunk-addon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
