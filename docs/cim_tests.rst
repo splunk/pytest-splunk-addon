@@ -19,15 +19,15 @@ To generate test cases only for CIM compatibility, append the following marker t
 Test Scenarios
 --------------
 
-**1. To check whether Splunk_SA_CIM is installed on the given splunk instance**
+**1. Add-on Splunk_SA_CIM should be installed on the given splunk instance**
 
     .. code-block:: python
 
         test_app_installed[Splunk_SA_CIM]
 
-    This test verifies if app Splunk_SA_CIM is installed or not in the given splunk instance.
+    Splunk_SA_CIM add-on should be installed on the Splunk instance to test the other scenarios. 
 
-    .. _mapped_datasets:
+.. _mapped_datasets:
 
 **2. Testcase for each eventtype mapped with a dataset.**
 
@@ -50,10 +50,13 @@ Test Scenarios
 
         test_cim_required_fields[eventtype=<eventtype>::<dataset>::<field_name>]
 
+    .. _test_assertions:
+
     Testcase assertions:
 
     * There should be at least 1 event mapped with the dataset.
-    * Each required field is extracted in all the events mapped with the datasets.
+    * Each required field should be extracted in all the events mapped with the datasets.
+    * Each conditional fields should be extracted in all the events filtered by the condition.
     * If there are inter dependent fields, either all fields should be extracted or none of them should be extracted *i.e ["bytes","bytes_in","bytes_out"].*
     * Fields should not have values other than the expected values defined in field properties.
     * Fields must not have invalid values [" ", "-", "null", "(null)", "unknown"].
@@ -70,7 +73,7 @@ Test Scenarios
         * List of co-related fields.
     * Generate the query according to the properties of the field mentioned above.  
     * Search the query to the Splunk instance.
-    * Assert the assertions mentioned in **Testcase assertions**.
+    * Assert the assertions mentioned in :ref:`Testcase assertions<test_assertions>`.
 
 
 **4. Testcase for all not_allowed_in_search fields**
@@ -86,7 +89,8 @@ Test Scenarios
     * Plugin collects the list of not_allowed_in_search fields from mapped datasets and `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_.
     * Using search query the testcase verifies if not_allowed_in_search fields are populated in search or not.
 
-    **NOTE:** `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_ contains fields which are are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
+    .. note::
+      `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_ contains fields which are are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
 
 **5. Testcase for all not_allowed_in_props fields**
 
@@ -118,12 +122,12 @@ Testcase Troubleshooting
 
 In case of test case failure check if:
 
-    - addon to be tested is installed on the splunk instance.
-    - data is generated sufficiently for the addon being tested.
+    - The add-on to be tested is installed on the splunk instance.
+    - Data is generated sufficiently for the addon being tested.
     - Splunk_SA_CIM is installed on the Splunk instance.
-    - splunk licence has not expired.
-    - splunk instance is up and running.
-    - splunk instance's management port is accessible from test machine.
+    - The splunk licence has not expired.
+    - The splunk instance is up and running.
+    - The splunk instance's management port is accessible from test machine.
 
 If all the above conditions are satisfied, further analysis on the test is required.
 For every CIM validation test case there is a defined structure for the stacktrace [1]_.
@@ -133,8 +137,10 @@ For every CIM validation test case there is a defined structure for the stacktra
         AssertionError: <<error_message>>
             Source   | Sourcetype      | Field | Event Count | Field Count | Invalid Field Count | Invalid Values
             -------- | --------------- | ------| ----------- | ----------- | ------------------- | -------------- 
-              str    |       str       |  str  |     int     |     int     |         int         |       int      
+              str    |       str       |  str  |     int     |     int     |         int         |       str      
+
             Search =  <Query>
+
             Properties for the field :: <field_name>
             type= Required/Conditional
             condition= Condition for field
@@ -146,6 +152,7 @@ For every CIM validation test case there is a defined structure for the stacktra
 
     If a field validating test case is failing, check the field's properties from the table provided for the reason of failure. 
 
+---------------
 
 .. [1] Stacktrace is the text displayed in the Exception block when the Test fails.
 
