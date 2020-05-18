@@ -61,8 +61,9 @@ Test Scenarios
 
     **Workflow:**
 
-    * A search query to check if the field has invalid values like [" ", "-", "null", "(null)", "unknown"].
-    * Plugin generates a SPL search query for each field collected in above scenario which checks for invalid values and asserts event_count == 0.
+    * Plugin generates a list of fields extracted under the source/sourcetype.
+    * For each field the plugin generates A search query to check if the field has invalid values like [" ", "-"].
+    * For each field the event count should be 0.
 
 **4. All the fields mentioned in an EXTRACT, REPORT, LOOKUP should be extracted in a single event.**
 
@@ -81,8 +82,8 @@ Test Scenarios
 
     **Workflow:** 
 
-    * While parsing the conf file when plugin finds one of these EXTRACT, REPORT, LOOKUP it gets the list of fields extracted in the knowledge object and generates a testcase.
-    * While parsing REPORT for each transforms stanza fields are collected for the stanza and a grouped testcase is generated.
+    * While parsing the conf file when the plugin finds one of EXTRACT, REPORT, LOOKUP 
+      the plugin gets the list of fields extracted and generates a testcase.
     * For all the fields in the testcase it generates a single SPL search query including the stanza and asserts event_count > 0.
     * This verifies that all the fields are extracted IN the same event
 
@@ -111,29 +112,30 @@ Test Scenarios
 
     **Workflow:** 
 
-    * In tags.conf for each tag defined in the stanza plugin generates a testcase.
-    * For each tag plugin generates a search query including the stanza and the tag and asserts event_count > 0
+    * In tags.conf for each tag defined in the stanza, the plugin generates a testcase.
+    * For each tag, the plugin generates a search query including the stanza and the tag and asserts event_count > 0
 
 Testcase Troubleshooting
 ------------------------
 
 In case of test case failure check if:
 
-    - addon to be tested is installed on the splunk instance.
-    - data is generated sufficiently for the addon being tested.
-    - splunk licence has not expired.
-    - splunk instance is up and running.
-    - splunk instance's management port is accessible from test machine.
+    - The add-on to be tested is installed on the splunk instance.
+    - Data is generated sufficiently for the add-on being tested.
+    - The splunk licence has not expired.
+    - The splunk instance is up and running.
+    - The splunk instance's management port is accessible from test machine.
 
 If all the above conditions are satisfied, further analysis on the test is required.
-For every CIM validation test case there is a defined structure for the stacktrace [1]_.
+For every test case failure, there is a defined structure for the stacktrace [1]_.
 
     .. code-block:: text
 
         AssertionError: <<error_message>>
             Search =  <Query>
 
-    Get the search query from the stacktrace and execute it on the splunk instance and verify which specific type of events are causing failure.
+Get the search query from the stacktrace and execute it on the splunk instance and verify which specific type of events are causing failure.
 
+------------
 
 .. [1] Stacktrace is the text displayed in the Exception block when the Test fails.
