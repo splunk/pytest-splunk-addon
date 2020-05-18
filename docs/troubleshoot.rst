@@ -3,9 +3,9 @@ Troubleshoot
 
 **1. Test Case takes forever to run when using splunk-type=external**
 
-- Check all the splunk instance information provided in arguments are present and correct.
+- Check all the Splunk instance information provided in arguments are present and correct.
 - ``--splunk-host``, ``--splunk-port``, ``--splunk-user`` and ``--splunk-password`` are required. If not provided, default values are considered which may not work for every setup.
-- Make sure the splunk instance is up and running, also the splunk server's management port should be accessible to the test machine.
+- Make sure the Splunk instance is up and running, also the Splunk server's management port should be accessible to the test machine.
 
 **2. Getting No such file or directory while test collection.**
 
@@ -13,7 +13,7 @@ Troubleshoot
 
 **3. No tests generated for any fields.**
 
-- Make sure the Directory mentioned in ``--splunk-app`` has a format of Splunk app and has files like all the required configuration files in the default directory.
+- Make sure the directory mentioned in ``--splunk-app`` has a format of Splunk app and has files like all the required configuration files in the default directory.
 
 **4. Getting Couldn't find a version that satisfies the requirement when installing pytest-splunk-addon using pip.**
 
@@ -21,24 +21,24 @@ Troubleshoot
 
 .. |Wall| replace:: ``Docker-compose.yml not found``
 
-**5. While executing test cases on Docker, All the test cases abort with the following setup failure:**
+**5. While executing test cases on Docker, all the test cases abort with the following setup failure:**
 
-    -  Docker-compose.yml not found .
+    -  Docker-compose.yml not found.
 
-        - Provide a docker-compose.yml in the root of Current working directory.
+        - Provide a docker-compose.yml in the root of the current working directory.
 
-    - Couldn't connect to Docker daemon .
+    - Couldn't connect to Docker daemon.
 
         - Need to restart docker daemon.
 
-    - Service 'splunk' failed to build .
+    - Service 'splunk' failed to build.
 
         - Check your internet connection
         - Try ``docker pull splunk/splunk`` once this is done test cases can be executed.
 
 **8. Only no-dash-no-empty test cases are passing**
 
-- If splunk-type is Docker, Make sure you have addon getting installed on the docker OR if external, install the addon on the Splunk Instance.
-- Make sure to configure inputs to collect required data to test, or use compatible Eventgen to generate data.
-- After checking both the points above, if still the same tests fail. Those are valid failures.
+- If splunk-type is docker, make sure you have add-on getting installed on the Docker OR if external, install the add-on on the Splunk instance.
+- Make sure to configure the inputs to collect data or use compatible Eventgen to generate data required for testing.
+- After checking both the points above, if still the same tests fail, those are valid failures.
 
