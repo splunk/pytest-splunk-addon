@@ -1,23 +1,23 @@
-fields_tests
+FieldsTests
 -------------
 .. automodule:: standard_lib.fields_tests
    :members:
    :show-inheritance:
 
-field_bank
-~~~~~~~~~~
-.. automodule:: standard_lib.fields_tests.field_bank
-   :members:
-   :show-inheritance:
-
-test_generator
+TestGenerator
 ~~~~~~~~~~~~~~
 .. automodule:: standard_lib.fields_tests.test_generator
    :members:
    :show-inheritance:
 
-test_templates
+TestTemplates
 ~~~~~~~~~~~~~~
 .. automodule:: standard_lib.fields_tests.test_templates
+   :members:
+   :show-inheritance:
+
+FieldBank
+~~~~~~~~~~
+.. automodule:: standard_lib.fields_tests.field_bank
    :members:
    :show-inheritance:
