@@ -7,8 +7,8 @@ import logging
 import pytest
 from ..addon_parser import Field
 
-INTERVAL = 3
-RETRIES = 3
+INTERVAL = 4
+RETRIES = 4
 
 
 class FieldTestTemplates(object):
@@ -75,6 +75,7 @@ class FieldTestTemplates(object):
                 search + f" AND ({field} IN ({expected_values})"
                 f" AND NOT {field} IN ({negative_values}))"
             )
+        search += " | stats count by sourcetype"
 
         self.logger.info(f"Executing the search query: {search}")
 
@@ -126,6 +127,8 @@ class FieldTestTemplates(object):
 
             fields_search.append(f"({field} IN ({negative_values}))")
         search += " AND ({})".format(" OR ".join(fields_search))
+        search += " | stats count by sourcetype"
+        
         self.logger.info(f"Executing the search query: {search}")
 
         # run search
@@ -169,6 +172,8 @@ class FieldTestTemplates(object):
         record_property("is_tag_enabled", is_tag_enabled)
 
         search = f"search (index=* OR index=_internal) {tag_query} AND tag={tag}"
+        search += " | stats count by sourcetype"
+
         self.logger.info(f"Search: {search}")
 
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
@@ -219,6 +224,7 @@ class FieldTestTemplates(object):
         search = (f"search (index=_internal OR index=*) AND "
                   f"eventtype="
                   f"\"{splunk_searchtime_fields_eventtypes['stanza']}\"")
+        search += " | stats count by sourcetype"
 
         self.logger.info(
             "Testing eventtype =%s", splunk_searchtime_fields_eventtypes["stanza"]
