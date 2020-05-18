@@ -3,21 +3,21 @@ Troubleshoot
 
 **1. Test Case takes forever to run when using splunk-type=external**
 
-- Check all the splunk instance information provided in arguments are present and correct.
-- ``--splunk-host``, ``--splunk-port``, ``--splunk-user`` and ``--splunk-password`` are required. If not provided, default values are considered which may not work for every setup.
-- Make sure the splunk instance is up and running, also the splunk server's management port should be accessible to the test machine.
+    - Check all the splunk instance information provided in arguments are present and correct.
+    - ``--splunk-host``, ``--splunk-port``, ``--splunk-user`` and ``--splunk-password`` are required. If not provided, default values are considered which may not work for every setup.
+    - Make sure the splunk instance is up and running, also the splunk server's management port should be accessible to the test machine.
 
 **2. Getting No such file or directory while test collection.**
 
-- Check if the path provided in ``--splunk-app`` exists.
+    - Check if the path provided in ``--splunk-app`` exists.
 
 **3. No tests generated for any fields.**
 
-- Make sure the Directory mentioned in ``--splunk-app`` has a format of Splunk app and has files like all the required configuration files in the default directory.
+    - Make sure the directory mentioned in ``--splunk-app`` has a format of Splunk app and has files like all the required configuration files in the default directory.
 
 **4. Getting Couldn't find a version that satisfies the requirement when installing pytest-splunk-addon using pip.**
 
-- Use ``pip3 install pytest-splunk-addon`` and make sure you are using python 3.7
+    - Use ``pip3 install pytest-splunk-addon`` and make sure you are using python 3.7
 
 .. |Wall| replace:: ``Docker-compose.yml not found``
 
@@ -36,9 +36,9 @@ Troubleshoot
         - Check your internet connection
         - Try ``docker pull splunk/splunk`` once this is done test cases can be executed.
 
-**8. Only no-dash-no-empty test cases are passing**
+**6. Only no-dash-no-empty test cases are passing**
 
-- If splunk-type is Docker, Make sure you have addon getting installed on the docker OR if external, install the addon on the Splunk Instance.
-- Make sure to configure inputs to collect required data to test, or use compatible Eventgen to generate data.
-- After checking both the points above, if still the same tests fail. Those are valid failures.
+    - If splunk-type is Docker, Make sure you have addon getting installed on the docker OR if external, install the addon on the Splunk Instance.
+    - Make sure to configure inputs to collect required data to test, or use compatible Eventgen to generate data.
+    - After checking both the points above, if still the same tests fail. Those are valid failures.
 
