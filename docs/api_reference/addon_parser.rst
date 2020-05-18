@@ -1,35 +1,35 @@
-addon_parser
+AddonParser
 -------------
 .. automodule:: standard_lib.addon_parser
    :members:
    :show-inheritance:
 
-props_parser
+PropsParser
 ~~~~~~~~~~~~
 .. automodule:: standard_lib.addon_parser.props_parser
    :members:
    :show-inheritance:
 
-eventtype_parser
+EventtypeParser
 ~~~~~~~~~~~~~~~~
 .. automodule:: standard_lib.addon_parser.eventtype_parser
    :members:
    :show-inheritance:
 
-fields
+Field
 ~~~~~~
 
 .. automodule:: standard_lib.addon_parser.fields
    :members:
    :show-inheritance:
 
-tags_parser
+TagsParser
 ~~~~~~~~~~~
 .. automodule:: standard_lib.addon_parser.tags_parser
    :members:
    :show-inheritance:
 
-transforms_parser
+TransformsParser
 ~~~~~~~~~~~~~~~~~
 .. automodule:: standard_lib.addon_parser.transforms_parser
    :members:

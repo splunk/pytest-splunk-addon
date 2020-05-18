@@ -9,7 +9,7 @@ Troubleshoot
 
 **2. Getting No such file or directory while test collection.**
 
-- Check if the path provided in ``--splunk-app`` exists.
+    - Check if the path provided in ``--splunk-app`` exists.
 
 **3. No tests generated for any fields.**
 
@@ -17,7 +17,7 @@ Troubleshoot
 
 **4. Getting Couldn't find a version that satisfies the requirement when installing pytest-splunk-addon using pip.**
 
-- Use ``pip3 install pytest-splunk-addon`` and make sure you are using python 3.7
+    - Use ``pip3 install pytest-splunk-addon`` and make sure you are using python 3.7
 
 .. |Wall| replace:: ``Docker-compose.yml not found``
 
@@ -36,7 +36,7 @@ Troubleshoot
         - Check your internet connection
         - Try ``docker pull splunk/splunk`` once this is done test cases can be executed.
 
-**8. Only no-dash-no-empty test cases are passing**
+**6. Only no-dash-no-empty test cases are passing**
 
 - If splunk-type is docker, make sure you have add-on getting installed on the Docker OR if external, install the add-on on the Splunk instance.
 - Make sure to configure the inputs to collect data or use compatible Eventgen to generate data required for testing.

@@ -1,4 +1,4 @@
-Code Documentation
+API Documentation
 ==================
 
 .. automodule:: standard_lib
