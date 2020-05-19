@@ -125,7 +125,8 @@ class PropsParser(object):
         """
         For source with | (OR), it will return all combinations.
         Uses itertools.product to list the combinations 
-        Example:
+
+        Example::
 
             input "(preA|preB)str(postX|postY)"
             output [
@@ -159,11 +160,11 @@ class PropsParser(object):
     def get_sourcetype_assignments(self, props_property):
         """
         Get the sourcetype assigned for the source
-        Example:
+
+        Example::
 
             [source::/splunk/var/log/splunkd.log]
             sourcetype = splunkd
-
 
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
@@ -185,7 +186,9 @@ class PropsParser(object):
     def get_extract_fields(self, props_property):
         """
         Returns the fields parsed from EXTRACT
-        Example:
+
+        Example::
+
             EXTRACT-one = regex with (?<capturing_group>.*)
 
         Args:
@@ -228,7 +231,9 @@ class PropsParser(object):
     def get_eval_fields(self, props_property):
         """
         Return the fields parsed from EVAL
-        Example:
+
+        Example::
+
             EVAL-action = if(isnull(action), "unknown", action)
 
         Args:
@@ -250,7 +255,9 @@ class PropsParser(object):
     def get_fieldalias_fields(self, props_property):
         """
         Return the fields parsed from FIELDALIAS
-        Example:
+
+        Example::
+
             FIELDALIAS-class = source AS dest, sc2 AS dest2
 
         Args:
@@ -289,10 +296,13 @@ class PropsParser(object):
     def get_report_fields(self, props_property):
         """
         Returns the fields parsed from REPORT
+
         In order to parse the fields REPORT, the method parses the 
-            transforms.conf and returns the list
+        transforms.conf and returns the list
+
         Args:
             props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
+
                 The configuration setting object of REPORT.
                 properties used:
 
@@ -345,7 +355,9 @@ class PropsParser(object):
         """
         Get list of lookup fields by parsing the lookup string.
         If a field is aliased to another field, take the aliased field into consideration
-        Example:
+
+        Example::
+
             LOOKUP-class = lookup_stanza input_field OUTPUT output_field
 
         Args:

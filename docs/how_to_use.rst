@@ -11,21 +11,20 @@ Create a test file in the tests folder
             def empty_method():
                 pass
 
-There are two ways one can execute the tests
+There are two ways to execute the tests:
 
-**1. Running tests with external splunk**
+**1. Running tests with an external Splunk instance**
 
     .. code:: python3
 
-        pip install pytest-splunk-addon
+        pip3 install pytest-splunk-addon
 
     Run pytest with the add-on and SA-eventgen installed and enabled in an external Splunk deployment
 
     .. code:: bash
 
-        pytest -v --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password>
+        pytest --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password>
 
-The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 
 **2. Running tests with docker splunk**
 
@@ -37,7 +36,7 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
 
     .. literalinclude:: ../Dockerfile.splunk
 
-    Create a docker-compose.yml
+    Create docker-compose.yml
 
     .. literalinclude:: ../docker-compose.yml
 
@@ -45,4 +44,71 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
 
     .. code:: bash
 
-        pytest --splunk-password=Changed@11 -v
+        pytest --splunk-type=docker --splunk-password=Changed@11
+
+The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
+
+----------------------
+
+There are 2 types of tests included in pytest-splunk-addon.
+
+    1. To generate test cases only for field extractions, append the following marker to pytest command:
+
+        .. code-block:: console
+
+            -m  splunk_searchtime_fields
+
+    2. To generate test cases only for CIM compatibility, append the following marker to pytest command:
+
+        .. code-block:: console
+
+            -m  splunk_searchtime_cim
+
+
+Extending pytest-splunk-addon
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**1. Test cases taking too long to execute**
+
+    Use `pytest-xdist <https://pypi.org/project/pytest-xdist/>`_ to execute test cases across multiple processes.
+
+    How to use pytest-xdist :
+
+        - pip install pytest-xdist
+        - add ``-n {number-of-processes}`` to the pytest command
+
+    This will create the mentioned amount of processes and divide the test cases amongst them.
+
+    .. Note ::
+        Make sure there is enough data on the Splunk instance before running tests with pytest-xdist because faster the execution, lesser the time to generate more data.
+
+**2. Want flaky/known failures to not fail the execution**
+
+    Use `pytest-expect <https://pypi.org/project/pytest-expect/>`_ to mark a list of test cases as flaky/known failures which will not affect the final result of testing.
+
+    How to use pytest-expect:
+
+        - pip install pytest-expect
+        - Add ``--update-xfail`` to the pytest command to generate a `.pytest.expect` file, which is a list of failures while execution.
+        - Make sure that the `.pytest.expect` file is in the root directory from where the test cases are executed.
+        - When the test cases are executed the next time, all the tests in the `.pytest.expect` file will be marked as `xfail` [#]_
+        - If there is a custom file containing the list of failed test cases, it can be used by adding ``--xfail-file custom_file`` to the pytest command.
+        
+        .. Note ::
+            Test cases should be added to .pytest.expect only after proper validation.
+
+**3. Check mapping of an add-on with custom data models**
+
+    pytest-splunk-addon is capable of testing mapping of an add-on with custom data models.
+
+    How can this be achieved :
+
+        - Make json representation of the data models, which satisfies this `DataModelSchema <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/DatamodelSchema.json>`_.
+        - Provide the path to directory having all the data models by adding ``--splunk_dm_path path_to_dir`` to the pytest command
+        - The test cases will now be generated for the data models provided to the plugin and not for the default data models.
+
+.. raw:: html
+
+   <hr width=100%>
+   
+.. [#] xfail indicates that you expect a test to fail for some reason. A common example is a test for a feature not yet implemented, or a bug not yet fixed. When a test passes despite being expected to fail, it's an xpass and will be reported in the test summary.

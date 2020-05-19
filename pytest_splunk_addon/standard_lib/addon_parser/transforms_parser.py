@@ -14,6 +14,7 @@ from . import convert_to_fields
 class TransformsParser(object):
     """
     Parses transforms.conf and extracts fields 
+
     Args:
         splunk_app_path (str): Path of the Splunk app
         app (splunk_appinspect.App): Object of Splunk app
@@ -38,9 +39,10 @@ class TransformsParser(object):
     def get_transform_fields(self, transforms_stanza):
         """
         Parse the tranforms.conf of the App & yield fields of 
-            a specific stanza
+        a specific stanza.
 
         Supported extractions from transforms.conf are 
+
         * SOURCE_KEY = _raw
         * REGEX = some regex with (capturing_group)
         * FIELDS = one, 
@@ -50,7 +52,8 @@ class TransformsParser(object):
                 The stanza of which the fields should be extracted
 
         Regex:
-            Parse the fields from a regex. Examples,
+            Parse the fields from a regex. Examples::
+
                 (?<name>regex)
                 (?'name'regex)
                 (?P<name>regex)

@@ -19,7 +19,7 @@ class FieldTestTemplates(object):
     logger = logging.getLogger("pytest-splunk-addon-tests")
 
     @pytest.mark.splunk_searchtime_fields
-    @pytest.mark.splunk_app_internal_errors
+    @pytest.mark.splunk_searchtime_internal_errors
     def test_splunk_internal_errors(self, splunk_search_util, record_property, caplog):
         search = """
             search index=_internal CASE(ERROR)
@@ -201,6 +201,7 @@ class FieldTestTemplates(object):
     ):
         """
         Tests if all eventtypes in eventtypes.conf are generated in Splunk.
+
         Args:
             splunk_search_util (fixture): 
                 Fixture to create a simple connection to Splunk via SplunkSDK
@@ -210,6 +211,7 @@ class FieldTestTemplates(object):
                 Used to add user properties to test report
             caplog (fixture): 
                 Access and control log capturing
+
         Returns:
             Asserts whether test case passes or fails.
         """

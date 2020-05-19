@@ -75,3 +75,6 @@ venv
 .history
 .venv 
 !deps/build
+
+# Vs Code Settings
+.vscode

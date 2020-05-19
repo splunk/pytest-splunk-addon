@@ -48,9 +48,10 @@ class CIMTestGenerator(object):
         """
         Generate the test cases based on the fixture provided 
         supported fixtures:
-        * splunk_searchtime_cim_fields
-        * splunk_searchtime_cim_fields_not_allowed
-        * splunk_searchtime_cim_fields_not_extracted
+
+            * splunk_searchtime_cim_fields
+            * splunk_searchtime_cim_fields_not_allowed
+            * splunk_searchtime_cim_fields_not_extracted
 
         Args:
             fixture(str): fixture name
