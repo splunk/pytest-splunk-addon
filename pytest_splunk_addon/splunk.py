@@ -148,6 +148,29 @@ def pytest_addoption(parser):
             "pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\DatamodelSchema.json"
         ),
     )
+    group.addoption(
+        "--search-index",
+        action="store",
+        dest="search_index",
+        default="*,_internal",
+        help="Splunk index of which the events will be searched while testing.",
+    )
+    group.addoption(
+        "--search-retry",
+        action="store",
+        dest="search_retry",
+        default=3,
+        type=int,
+        help="Number of retries to make if there are no events found while searching in the Splunk instance.",
+    )
+    group.addoption(
+        "--search-interval",
+        action="store",
+        dest="search_interval",
+        default=3,
+        type=int,
+        help="Time interval to wait before retrying the search query.",
+    )
 
 @pytest.fixture(scope="session")
 def splunk_setup(splunk):
@@ -176,7 +199,7 @@ def splunk_setup(splunk):
     pass
 
 @pytest.fixture(scope="session")
-def splunk_search_util(splunk, splunk_setup):
+def splunk_search_util(splunk, splunk_setup, request):
     """
     This is a simple connection to Splunk via the SplunkSDK
 
@@ -194,8 +217,12 @@ def splunk_search_util(splunk, splunk_setup):
     conn = cloud_splunk.create_logged_in_connector()
     jobs = Jobs(conn)
     LOGGER.info("initialized SearchUtil for the Splunk instace.")
+    search_util = SearchUtil(jobs, LOGGER)
+    search_util.search_index = request.config.getoption("search_index")
+    search_util.search_retry = request.config.getoption("search_retry")
+    search_util.search_interval = request.config.getoption("search_interval")
 
-    return SearchUtil(jobs, LOGGER)
+    return search_util
 
 
 @pytest.fixture(scope="session")
