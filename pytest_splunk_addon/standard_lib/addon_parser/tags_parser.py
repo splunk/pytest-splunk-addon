@@ -9,6 +9,7 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 class TagsParser(object):
     """
     Parses tags.conf and extracts tags 
+
     Args:
         splunk_app_path (str): Path of the Splunk app
         app (splunk_appinspect.App): Object of Splunk app

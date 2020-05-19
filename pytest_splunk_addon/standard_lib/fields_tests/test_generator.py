@@ -16,9 +16,10 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 class FieldTestGenerator(object):
     """
     Generates test cases to test the knowledge objects of an Add-on.
+
     * Provides the pytest parameters to the test templates.
     * Supports field_bank: List of fields with patterns and expected
-        values which should be tested for the Add-on.
+      values which should be tested for the Add-on.
     
     Args:
         app_path (str): Path of the app package
@@ -35,10 +36,11 @@ class FieldTestGenerator(object):
         """
         Generate the test cases based on the fixture provided 
         supported fixtures:
-        * splunk_app_searchtime_fields
-        * splunk_app_searchtime_negative
-        * splunk_app_searchtime_eventtypes
-        * splunk_app_searchtime_tags
+
+            * splunk_app_searchtime_fields
+            * splunk_app_searchtime_negative
+            * splunk_app_searchtime_eventtypes
+            * splunk_app_searchtime_tags
 
         Args:
             fixture(str): fixture name

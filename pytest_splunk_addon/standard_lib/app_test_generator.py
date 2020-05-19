@@ -10,11 +10,15 @@ from .cim_tests import CIMTestGenerator
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-
 class AppTestGenerator(object):
     """
     Test Generator for an App.
     Generates test cases of Fields and CIM.
+    The test generator is to include all the specific test generators. 
+
+    AppTestGenerator should not have any direct generation methods, it should call a specific 
+    test generator methods only. Make sure there is no heavy initialization in __init__, all the 
+    configurations and operations should only take place in generate_tests method.
 
     Args:
         pytest_config: To get the options given to pytest
@@ -42,8 +46,9 @@ class AppTestGenerator(object):
         """
         Generate the test cases based on the fixture provided 
         supported fixtures:
-        *  splunk_app_searchtime_*
-        *  splunk_app_cim_*
+
+        * splunk_app_searchtime_*
+        * splunk_app_cim_*
 
         Args:
             fixture(str): fixture name
