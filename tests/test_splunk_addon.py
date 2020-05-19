@@ -129,7 +129,7 @@ def test_splunk_app_fiction(testdir):
     setup_test_dir(testdir)
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields",
+        "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields","--search-interval=4","--search-retry=4",
     )
 
     result.stdout.fnmatch_lines_random(constants.TA_FICTION_PASSED)
@@ -161,7 +161,7 @@ def test_splunk_app_broken(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields",
+        "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields","--search-interval=4","--search-retry=4",
     )
 
     # fnmatch_lines does an assertion internally
@@ -208,6 +208,8 @@ def test_splunk_app_cim_fiction(testdir):
         "--splunk-dm-path=tests/data_models",
         "-v",
         "-m splunk_searchtime_cim",
+        "--search-interval=4",
+        "--search-retry=4",
     )
 
     result.stdout.fnmatch_lines_random(constants.TA_CIM_FICTION_PASSED)
@@ -247,7 +249,9 @@ def test_splunk_app_cim_broken(testdir):
         "--splunk-type=docker",
         "--splunk-dm-path=tests/data_models",
         "-v",
-        "-m splunk_searchtime_cim"
+        "-m splunk_searchtime_cim",
+        "--search-interval=4",
+        "--search-retry=4",
     )
 
     # fnmatch_lines does an assertion internally
@@ -288,7 +292,7 @@ def test_splunk_setup_fixture(testdir):
         )
 
     result = testdir.runpytest(
-        "--splunk-type=docker",  "-v", "-k saved_search_lookup",
+        "--splunk-type=docker",  "-v", "-k saved_search_lookup","--search-interval=4","--search-retry=4",
     )
 
     result.assert_outcomes(
