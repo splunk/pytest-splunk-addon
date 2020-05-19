@@ -152,7 +152,7 @@ For every CIM validation test case there is a defined structure for the stacktra
 
     If a field validating test case is failing, check the field's properties from the table provided for the reason of failure. 
 
----------------
+------------
 
 .. [1] Stacktrace is the text displayed in the Exception block when the Test fails.
 

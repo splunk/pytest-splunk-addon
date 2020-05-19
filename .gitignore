@@ -72,6 +72,7 @@ target/
 # pyenv
 .python-version
 venv
+.history
 .venv 
 !deps/build
 
