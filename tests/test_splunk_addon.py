@@ -295,6 +295,7 @@ def test_splunk_setup_fixture(testdir):
         passed=2
     )
 
+@pytest.mark.doc
 def test_help_message(testdir):
     result = testdir.runpytest("--help",)
     # fnmatch_lines does an assertion internally
@@ -308,3 +309,22 @@ def test_help_message(testdir):
             "*--splunk-password=*",
         ]
     )
+
+@pytest.mark.doc
+def test_docstrings(testdir):
+    from sphinx.application import Sphinx
+    docs_dir = os.path.join(
+        testdir.request.config.invocation_dir,
+        "docs"
+    )
+    output_dir = os.path.join(docs_dir, "_build", "html")
+    doctree_dir =os.path.join(docs_dir, "_build", "doctrees")
+    all_files = 1
+    app = Sphinx(docs_dir,
+        docs_dir,
+        output_dir,
+        doctree_dir,
+        buildername='html',
+        warningiserror=True,
+    )
+    app.build(force_all=all_files)

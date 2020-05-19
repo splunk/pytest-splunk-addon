@@ -5,9 +5,10 @@ class FieldTestAdapater(Field):
     Field adapter to include the testing related properties on top of Field
 
     Properties:
-        valid_field (str): New field generated which can only have the valid values
-        invalid_field (str): New field generated which can only have the invalid values
-        validity_query (str): The query which extracts the valid_field out of the field
+
+    * valid_field (str): New field generated which can only have the valid values
+    * invalid_field (str): New field generated which can only have the invalid values
+    * validity_query (str): The query which extracts the valid_field out of the field
 
     """
     VALID_FIELD = "{}_valid"
@@ -26,7 +27,9 @@ class FieldTestAdapater(Field):
     def get_query_from_values(values):
         """
         List of values into SPL list
-            Example: ["a", "b"] to '\"a\", \"b\"'
+
+        Example::
+            ["a", "b"] to '\"a\", \"b\"'
 
         Args:
             values (list): List of str values 
@@ -39,7 +42,7 @@ class FieldTestAdapater(Field):
 
     def gen_validity_query(self):
         """
-        Generate validation search query
+        Generate validation search query::
 
             | eval valid_field = <validity>
             | eval valid_field = if(searchmatch(valid_field in <expected_values>), valid_field, null())
@@ -76,9 +79,10 @@ class FieldTestAdapater(Field):
 
     def get_stats_query(self):
         """
-        Generate stats search query
+        Generate stats search query::
 
-            count(field) as field_count, count(valid_field) as valid_field_count, values(invalid_field) as invalid_values
+            count(field) as field_count, count(valid_field) as valid_field_count,
+                values(invalid_field) as invalid_values
         """
         query = f", count({self.name}) as {self.FIELD_COUNT.format(self.name)}"
         if self.gen_validity_query():
