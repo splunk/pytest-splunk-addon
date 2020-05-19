@@ -16,6 +16,8 @@ Overview
     6. Eventtypes
     7. Tags
 
+--------------------------------
+
 To generate test cases only for field extractions, append the following marker to pytest command:
 
     .. code-block:: console

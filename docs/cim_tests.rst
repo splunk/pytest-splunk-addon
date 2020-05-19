@@ -10,6 +10,8 @@ An add-on is said to be CIM compatible, if it fulfils the two following criteria
 1. The add-on extracts all the fields with valid values, which are marked as required by the CIM Data Model.
 2. Any event for the add-on is not mapped with more than one data model.
 
+---------------------
+
 To generate test cases only for CIM compatibility, append the following marker to pytest command:
 
     .. code-block:: console
