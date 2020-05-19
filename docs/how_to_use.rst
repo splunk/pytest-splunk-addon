@@ -2,6 +2,8 @@
 How To Use
 ----------
 
+.. _test_file:
+
 Create a test file in the tests folder
 
 .. code:: python3
@@ -43,6 +45,13 @@ There are two ways to execute the tests:
        :language: YAML
        :lines: 9-
 
+.. _conftest_file:
+
+    Create conftest.py in the test folder along with :ref:`the test file <test_file>`
+
+    .. literalinclude:: ../tests/conftest.py
+       :language: python
+       :lines: 2,12-
 
     Run pytest with the add-on, SA-Eventgen and Splunk Common Information Model installed and enabled in docker
 
@@ -104,7 +113,32 @@ Extending pytest-splunk-addon
         .. Note ::
             Test cases should be added to .pytest.expect only after proper validation.
 
-**3. Check mapping of an add-on with custom data models**
+**3. Setup test environment before executing the test cases**
+
+    If any setup is required in the Splunk/test environment before executing the test cases, implement a fixture in :ref:`conftest.py <conftest_file>`.
+
+    .. code-block:: python
+
+        @pytest.fixture(scope="session")
+        def splunk_setup(splunk):
+            # Will be executed before test execution starts
+            . . .
+
+    The setup fixture opens many possibilities to setup the testing environment / to configure Splunk. For example,
+
+        - Enable Saved-searches
+        - Configure the inputs of an Add-on.
+        - Wait for an lookup to be populated.
+        - Restart Splunk.
+
+    The following snippet shows an example in which the setup fixture is used to enable a saved search.
+
+    .. literalinclude:: ../tests/enable_saved_search_conftest.py
+       :language: python
+       :lines: 2,31-
+
+
+**4. Check mapping of an add-on with custom data models**
 
     pytest-splunk-addon is capable of testing mapping of an add-on with custom data models.
 
