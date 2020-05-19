@@ -112,7 +112,7 @@ Extending pytest-splunk-addon
 
         - Make json representation of the data models, which satisfies this `DataModelSchema <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/DatamodelSchema.json>`_.
         - Provide the path to the directory having all the data models by adding ``--splunk_dm_path path_to_dir`` to the pytest command
-        - The test cases will now be generated for the data models provided to the plugin and not for the default data models.
+        - The test cases will now be generated for the data models provided to the plugin and not for the `default data models <https://github.com/splunk/pytest-splunk-addon/tree/master/pytest_splunk_addon/standard_lib/data_models>`_.
 
 .. raw:: html
 
