@@ -19,7 +19,7 @@ There are two ways to execute the tests:
 
         pip3 install pytest-splunk-addon
 
-    Run pytest with the add-on and SA-Eventgen installed and enabled in an external Splunk deployment
+    Run pytest with the add-on, SA-Eventgen and Splunk Common Information Model installed and enabled in an external Splunk deployment
 
     .. code:: bash
 
@@ -40,7 +40,7 @@ There are two ways to execute the tests:
 
     .. literalinclude:: ../docker-compose.yml
 
-    Run pytest with the add-on and SA-Eventgen installed and enabled in docker
+    Run pytest with the add-on, SA-Eventgen and Splunk Common Information Model installed and enabled in docker
 
     .. code:: bash
 
@@ -48,11 +48,14 @@ There are two ways to execute the tests:
 
 The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 
+.. note::
+   If live events are available in external Splunk instance or docker splunk, then SA-Eventgen is not required.
+
 ----------------------
 
 There are 2 types of tests included in pytest-splunk-addon.
 
-    1. To generate test cases only for field extractions, append the following marker to pytest command:
+    1. To generate test cases only for knowledge objects, append the following marker to pytest command:
 
         .. code-block:: console
 
@@ -80,7 +83,7 @@ Extending pytest-splunk-addon
     This will create the mentioned amount of processes and divide the test cases amongst them.
 
     .. Note ::
-        Make sure there is enough data on the Splunk instance before running tests with pytest-xdist because faster the execution, lesser the time to generate more data.
+        Make sure there is enough data on the Splunk instance before running tests with pytest-xdist because faster the execution, lesser the time to generate enough data.
 
 **2. Want flaky/known failures to not fail the execution**
 

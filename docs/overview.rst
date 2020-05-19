@@ -1,7 +1,7 @@
 
 Overview
 =============
-Pytest splunk addon is an open-source dynamic test plugin for Splunk Apps and Add-ons which allows the user to test Splunk add-ons for knowledge objects and CIM compatibility. 
+pytest-splunk-addon is an open-source dynamic test plugin for Splunk Apps and Add-ons which allows the user to test knowledge objects and CIM compatibility. 
 
 Support
 -------
@@ -26,7 +26,7 @@ Release notes
     **New Features:**
 
     * The codebase was reformatted to an object-oriented approach to increase the readability, scalability and the reusability of the plugin. 
-    * Pytest-splunk-addon now generates tests for checking CIM compatibility in your Splunk Technology Add-ons.
+    * pytest-splunk-addon now generates tests for checking CIM compatibility in your Splunk Technology Add-ons.
 
     **Bugfixes:**
 
@@ -36,7 +36,7 @@ Release notes
 
     **Known Issues:**
 
-    * Invalid search query generation for Malware Data Model, which results in an HTTP 400 Bad Request error. It will be fixed in the next release.
+    * Invalid search query generation for Malware Data Model, which results in an HTTP 400 Bad Request error.
 
 Installation
 ------------
