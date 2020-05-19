@@ -5,7 +5,7 @@ Overview
 -------------------
 
 The CIM tests are written with a purpose of testing the compatibility of the add-on with CIM Data Models.
-An add-on is said to be CIM compatible, if it fulfils the two following criteria:
+An add-on is said to be CIM compatible if it fulfils the two following criteria:
 
 1. The add-on extracts all the fields with valid values, which are marked as required by the CIM Data Model.
 2. Any event for the add-on is not mapped with more than one data model.
@@ -21,7 +21,7 @@ To generate test cases only for CIM compatibility, append the following marker t
 Test Scenarios
 --------------
 
-**1. Add-on Splunk_SA_CIM should be installed on the given splunk instance**
+**1. Add-on Splunk_SA_CIM should be installed on the given Splunk instance**
 
     .. code-block:: python
 
@@ -37,14 +37,14 @@ Test Scenarios
 
         test_cim_required_fields[eventtype=<eventtype>::<dataset>]
 
-    Testcase verifies if an eventtype is mapped with the dataset, events must follow the search constrainsts of the dataset.
+    Testcase verifies if an eventtype is mapped with the dataset, events must follow the search constraints of the dataset.
 
     **Workflow:**
 
     * Plugin parses tags.conf to get a list of tags for each eventtype.
     * Plugin parses all the `supported datamodels <https://github.com/splunk/pytest-splunk-addon/tree/master/pytest_splunk_addon/standard_lib/data_models>`_.
     * Then it gets a list of the datasets mapped with an eventtype.
-    * Generates testcase for each eventtype.
+    * Generates test case for each eventtype.
 
 **3. Testcases for all required, conditional and cluster fields in dataset.**
 
@@ -59,14 +59,14 @@ Test Scenarios
     * There should be at least 1 event mapped with the dataset.
     * Each required field should be extracted in all the events mapped with the datasets.
     * Each conditional fields should be extracted in all the events filtered by the condition.
-    * If there are inter dependent fields, either all fields should be extracted or none of them should be extracted *i.e ["bytes","bytes_in","bytes_out"].*
+    * If there are interdependent fields, either all fields should be extracted or none of them should be extracted *i.e ["bytes","bytes_in","bytes_out"].*
     * Fields should not have values other than the expected values defined in field properties.
     * Fields must not have invalid values [" ", "-", "null", "(null)", "unknown"].
 
     **Workflow:**
 
     * For an eventtype, mapped dataset will be identified as mentioned in :ref:`#2 scenario<mapped_datasets>`.
-    * Test case will be generated for each required fields of an dataset.
+    * Test case will be generated for each required fields of a dataset.
     * To generate the test case the following properties of fields will be considered :
 
         * An filtering condition to filter the events, only for which the field should be verified.
@@ -89,10 +89,10 @@ Test Scenarios
     **Workflow:**
 
     * Plugin collects the list of not_allowed_in_search fields from mapped datasets and `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_.
-    * Using search query the testcase verifies if not_allowed_in_search fields are populated in search or not.
+    * Using search query the test case verifies if not_allowed_in_search fields are populated in search or not.
 
     .. note::
-      `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_ contains fields which are are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
+      `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_ contains fields which are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
 
 **5. Testcase for all not_allowed_in_props fields**
 
@@ -100,7 +100,7 @@ Test Scenarios
 
         test_cim_fields_not_allowed_in_props[searchtime_cim_fields]
 
-    Defining extractions in the configuration files is not allowed for these fields. But if these fields are automatically extracted by Splunk thats fine *i.e tag*
+    Defining extractions in the configuration files is not allowed for these fields. But if these fields are automatically extracted by Splunk, that's fine *i.e tag*
     
     **Workflow:**
 
@@ -124,15 +124,15 @@ Testcase Troubleshooting
 
 In case of test case failure check if:
 
-    - The add-on to be tested is installed on the splunk instance.
+    - The add-on to be tested is installed on the Splunk instance.
     - Data is generated sufficiently for the addon being tested.
     - Splunk_SA_CIM is installed on the Splunk instance.
-    - The splunk licence has not expired.
-    - The splunk instance is up and running.
-    - The splunk instance's management port is accessible from test machine.
+    - Splunk licence has not expired.
+    - Splunk instance is up and running.
+    - Splunk instance's management port is accessible from the test machine.
 
-If all the above conditions are satisfied, further analysis on the test is required.
-For every CIM validation test case there is a defined structure for the stacktrace [1]_.
+If all the above conditions are satisfied, further analysis of the test is required.
+For every CIM validation test case there is a defined structure for the stack trace [1]_.
 
     .. code-block:: text
 
@@ -150,7 +150,7 @@ For every CIM validation test case there is a defined structure for the stacktra
             expected_values=[list of expected values]
             negative_values=[list of negative values]
 
-    Get the search query from the stacktrace and execute it on the splunk instance and verify which specific type of events are causing failure.
+    Get the search query from the stack trace and execute it on the Splunk instance and verify which specific type of events are causing failure.
 
     If a field validating test case is failing, check the field's properties from the table provided for the reason of failure. 
 

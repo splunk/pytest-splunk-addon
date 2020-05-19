@@ -39,7 +39,7 @@ Test Scenarios
     **Workflow:**
 
     * Plugin get the list of defined sourcetypes by parsing props.conf
-    * For each sourcetype plugin generates a SPL search query and asserts event_count > 0.
+    * For each sourcetype plugin generates an SPL search query and asserts event_count > 0.
 
 **2. Fields mentioned under source/sourcetype should be extracted**
 
@@ -49,12 +49,12 @@ Test Scenarios
 
     Testcase verifies that the field should be extracted in the source/sourcetype. 
     Here <stanza> is the source/sourcetype that is defined in the stanza and
-    <fieldname> is name of field which is extracted under source/sourcetype.
+    <fieldname> is the name of a field which is extracted under source/sourcetype.
 
     **Workflow:**
 
     * Plugin generates a list of fields extracted under the source/sourcetype by parsing the knowledge objects like Extract, Eval, Fieldalias etc.
-    * For each field plugin generates a SPL search query and asserts event_count > 0.
+    * For each field plugin generates an SPL search query and asserts event_count > 0.
 
 **3. Negative scenarios for field values**
 
@@ -82,17 +82,17 @@ Test Scenarios
         test_props_fields[<stanza>::REPORT-<classname>::<transforms_stanza>]
 
     All the fields mentioned in EXTRACT, REPORT or LOOKUP can be interdependent. 
-    The test case verifies that the extractions is working fine and all the fields are 
+    The test case verifies that the extractions are working fine and all the fields are 
     being extracted in a single event. 
-    The reason of keeping the test is to identify the corner cases where the fields are being 
+    The reason for keeping the test is to identify the corner cases where the fields are being 
     extracted in several events but the extractions mentioned in EXTRACT, REPORT or LOOKUP is not 
     working due to invalid regex/lookup configuration.
 
     **Workflow:** 
 
     * While parsing the conf file when the plugin finds one of EXTRACT, REPORT, LOOKUP 
-      the plugin gets the list of fields extracted and generates a testcase.
-    * For all the fields in the testcase it generates a single SPL search query including the stanza and asserts event_count > 0.
+      the plugin gets the list of fields extracted and generates a test case.
+    * For all the fields in the test case it generates a single SPL search query including the stanza and asserts event_count > 0.
     * This verifies that all the fields are extracted IN the same event
 
 **5. Events should be present in each eventtype**
@@ -101,7 +101,7 @@ Test Scenarios
 
         test_eventtype[eventtype=<eventtype>]
 
-    Test case verifies that the there are events mapped with the eventtype. 
+    Test case verifies that there are events mapped with the eventtype. 
     Here <eventtype> is an eventtype mentioned in eventtypes.conf.
 
     **Workflow:** 
@@ -120,29 +120,29 @@ Test Scenarios
 
     **Workflow:** 
 
-    * In tags.conf for each tag defined in the stanza, the plugin generates a testcase.
+    * In tags.conf for each tag defined in the stanza, the plugin generates a test case.
     * For each tag, the plugin generates a search query including the stanza and the tag and asserts event_count > 0
 
 Testcase Troubleshooting
 ------------------------
 
-In case of test case failure check if:
+In the case of test-case failure check if:
 
-    - The add-on to be tested is installed on the splunk instance.
+    - The add-on to be tested is installed on the Splunk instance.
     - Data is generated sufficiently for the add-on being tested.
-    - The splunk licence has not expired.
-    - The splunk instance is up and running.
-    - The splunk instance's management port is accessible from test machine.
+    - Splunk licence has not expired.
+    - Splunk instance is up and running.
+    - Splunk instance's management port is accessible from the test machine.
 
-If all the above conditions are satisfied, further analysis on the test is required.
-For every test case failure, there is a defined structure for the stacktrace [1]_.
+If all the above conditions are satisfied, further analysis of the test is required.
+For every test case failure, there is a defined structure for the stack trace [1]_.
 
     .. code-block:: text
 
         AssertionError: <<error_message>>
             Search =  <Query>
 
-Get the search query from the stacktrace and execute it on the splunk instance and verify which specific type of events are causing failure.
+Get the search query from the stack trace and execute it on the Splunk instance and verify which specific type of events are causing failure.
 
 ------------
 

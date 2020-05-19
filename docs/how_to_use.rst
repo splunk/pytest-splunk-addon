@@ -19,7 +19,7 @@ There are two ways to execute the tests:
 
         pip3 install pytest-splunk-addon
 
-    Run pytest with the add-on and SA-eventgen installed and enabled in an external Splunk deployment
+    Run pytest with the add-on and SA-Eventgen installed and enabled in an external Splunk deployment
 
     .. code:: bash
 
@@ -40,7 +40,7 @@ There are two ways to execute the tests:
 
     .. literalinclude:: ../docker-compose.yml
 
-    Run pytest with the add-on and SA-eventgen installed and enabled in docker
+    Run pytest with the add-on and SA-Eventgen installed and enabled in docker
 
     .. code:: bash
 
@@ -104,7 +104,7 @@ Extending pytest-splunk-addon
     How can this be achieved :
 
         - Make json representation of the data models, which satisfies this `DataModelSchema <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/DatamodelSchema.json>`_.
-        - Provide the path to directory having all the data models by adding ``--splunk_dm_path path_to_dir`` to the pytest command
+        - Provide the path to the directory having all the data models by adding ``--splunk_dm_path path_to_dir`` to the pytest command
         - The test cases will now be generated for the data models provided to the plugin and not for the default data models.
 
 .. raw:: html
