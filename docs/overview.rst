@@ -20,23 +20,22 @@ Features
 Release notes
 -------------
 
-1.1.0 (2020-05-02)
+1.2.0
 """"""""""""""""""""""""""
 
     **New Features:**
 
-    * The codebase was reformatted to an object-oriented approach to increase the readability, scalability and the reusability of the plugin. 
-    * pytest-splunk-addon now generates tests for checking CIM compatibility in your Splunk Technology Add-ons.
+    * Provided support of setup fixtures which can be used for making necessary configurations in the testing environment required for test execution. 
+    * Optimisation of the SPL search query for faster execution of the test cases.
+    * Added ``--search-index``, ``--search-retry``, ``--search-interval`` pytest arguments to provide custom values of Splunk index, retries and time interval respectively.
 
     **Bugfixes:**
 
-    * Test cases for fields starting with $ and _KEY are now not generated.
-
-    * The plugin used to fail when test cases where executed parallelly with multiple processes using pytest-xdist. The issue has been fixed.
+    * Invalid search query generation for Malware Data Model is now fixed.
 
     **Known Issues:**
 
-    * Invalid search query generation for Malware Data Model, which results in an HTTP 400 Bad Request error.
+    * Fields for modular regular expressions are not extracted in the plugin.
 
 Installation
 ------------
