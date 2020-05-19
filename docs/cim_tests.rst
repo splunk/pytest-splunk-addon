@@ -5,7 +5,7 @@ Overview
 -------------------
 
 The CIM tests are written with a purpose of testing the compatibility of the add-on with CIM Data Models (Based on Splunk_SA_CIM 4.15.0).
-An add-on is said to be CIM compatible if it fulfils the two following criteria:
+An add-on is said to be CIM compatible if it fulfils the following two criteria:
 
 1. The add-on extracts all the fields with valid values, which are marked as required by the `Data Model Definitions <https://github.com/splunk/pytest-splunk-addon/tree/master/pytest_splunk_addon/standard_lib/data_models>`_.
 2. Any event for the add-on is not mapped with more than one data model.
@@ -35,7 +35,7 @@ Test Scenarios
 
     .. code-block:: python
 
-        test_cim_required_fields[eventtype=<eventtype>::<dataset>]
+        test_cim_required_fields[<tags_stanza>::<dataset>]
 
     Testcase verifies if an eventtype is mapped with the dataset, events must follow the search constraints of the dataset.
 
@@ -50,7 +50,7 @@ Test Scenarios
 
     .. code-block:: python
 
-        test_cim_required_fields[eventtype=<eventtype>::<dataset>::<field_name>]
+        test_cim_required_fields[<tags_stanza>::<dataset>::<field_name>]
 
     .. _test_assertions:
 
@@ -82,7 +82,7 @@ Test Scenarios
 
     .. code-block:: python
 
-        test_cim_fields_not_allowed_in_search[eventtype=<eventtype>::<dataset>]
+        test_cim_fields_not_allowed_in_search[<tags_stanza>::<dataset>]
 
     These fields are not allowed to be extracted for the eventtype
 

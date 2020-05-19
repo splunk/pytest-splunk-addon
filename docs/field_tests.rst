@@ -38,8 +38,8 @@ Test Scenarios
 
     **Workflow:**
 
-    * Plugin get the list of defined sourcetypes by parsing props.conf
-    * For each sourcetype plugin generates an SPL search query and asserts event_count > 0.
+    * Plugin gets the list of defined sourcetypes by parsing props.conf
+    * For each sourcetype, plugin generates an SPL search query and asserts event_count > 0.
 
 **2. Fields mentioned under source/sourcetype should be extracted**
 
@@ -54,7 +54,7 @@ Test Scenarios
     **Workflow:**
 
     * Plugin generates a list of fields extracted under the source/sourcetype by parsing the knowledge objects like Extract, Eval, Fieldalias etc.
-    * For each field plugin generates an SPL search query and asserts event_count > 0.
+    * For each field, plugin generates an SPL search query and asserts event_count > 0.
 
 **3. Negative scenarios for field values**
 
@@ -70,8 +70,8 @@ Test Scenarios
     **Workflow:**
 
     * Plugin generates a list of fields extracted under the source/sourcetype.
-    * For each field the plugin generates A search query to check if the field has invalid values like [" ", "-"].
-    * For each field the event count should be 0.
+    * For each field, plugin generates a search query to check if the field has invalid values like [" ", "-"].
+    * For each field, the event count should be 0.
 
 **4. All the fields mentioned in an EXTRACT, REPORT, LOOKUP should be extracted in a single event.**
 
@@ -93,7 +93,7 @@ Test Scenarios
     * While parsing the conf file when the plugin finds one of EXTRACT, REPORT, LOOKUP 
       the plugin gets the list of fields extracted and generates a test case.
     * For all the fields in the test case it generates a single SPL search query including the stanza and asserts event_count > 0.
-    * This verifies that all the fields are extracted IN the same event
+    * This verifies that all the fields are extracted in the same event.
 
 **5. Events should be present in each eventtype**
 
@@ -112,7 +112,7 @@ Test Scenarios
 
     .. code-block:: python
 
-        test_tags[<tag_stanza>::tag::<tag>]
+        test_tags[<tags_stanza>::tag::<tag>]
 
     Test case verifies that the there are events mapped with the tag. 
     Here <tag_stanza> is a stanza mentioned in tags.conf and <tag> is an individual tag 

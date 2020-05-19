@@ -40,5 +40,4 @@ Troubleshoot
 
     - If splunk-type is docker, make sure you have add-on getting installed on the Docker OR if external, install the add-on on the Splunk instance.
     - Make sure to configure the inputs to collect data or use compatible Eventgen to generate data required for testing.
-    - After checking both the points above, if still the same tests fail, those are valid failures.
 
