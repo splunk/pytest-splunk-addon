@@ -36,7 +36,7 @@ Troubleshoot
         - Check your internet connection
         - Try ``docker pull splunk/splunk`` once this is done test cases can be executed.
 
-**8. Only no-dash-no-empty test cases are passing**
+**6. Only no-dash-no-empty test cases are passing**
 
 - If splunk-type is Docker, Make sure you have addon getting installed on the docker OR if external, install the addon on the Splunk Instance.
 - Make sure to configure inputs to collect required data to test, or use compatible Eventgen to generate data.

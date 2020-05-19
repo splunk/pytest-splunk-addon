@@ -91,8 +91,8 @@ Test Scenarios
 
     **Workflow:** 
 
-* In tags.conf for each tag defined in the stanza plugin generates a testcase.
-* For each tag plugin generates a search query including the stanza and the tag and asserts event_count > 0
+    * In tags.conf for each tag defined in the stanza plugin generates a testcase.
+    * For each tag plugin generates a search query including the stanza and the tag and asserts event_count > 0
 
 Testcase Troubleshooting
 ------------------------
@@ -115,5 +115,8 @@ For every CIM validation test case there is a defined structure for the stacktra
 
     Get the search query from the stacktrace and execute it on the splunk instance and verify which specific type of events are causing failure.
 
+.. raw:: html
+
+   <hr width=100%>
 
 .. [1] Stacktrace is the text displayed in the Exception block when the Test fails.
