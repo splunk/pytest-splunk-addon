@@ -4,7 +4,7 @@ CIM Compatibility Tests
 Overview
 -------------------
 
-The CIM tests are written with a purpose of testing the compatibility of the add-on with CIM Data Models.
+The CIM tests are written with a purpose of testing the compatibility of the add-on with CIM Data Models (Based on Splunk_SA_CIM 4.15.0).
 An add-on is said to be CIM compatible if it fulfils the two following criteria:
 
 1. The add-on extracts all the fields with valid values, which are marked as required by the `Data Model Definitions <https://github.com/splunk/pytest-splunk-addon/tree/master/pytest_splunk_addon/standard_lib/data_models>`_.
