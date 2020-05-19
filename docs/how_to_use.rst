@@ -35,10 +35,14 @@ There are two ways to execute the tests:
     Create a Dockerfile-splunk file 
 
     .. literalinclude:: ../Dockerfile.splunk
+       :language: Dockerfile
 
     Create docker-compose.yml
 
     .. literalinclude:: ../docker-compose.yml
+       :language: YAML
+       :lines: 9-
+
 
     Run pytest with the add-on and SA-Eventgen installed and enabled in docker
 
