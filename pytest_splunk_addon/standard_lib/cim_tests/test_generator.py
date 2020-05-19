@@ -74,6 +74,8 @@ class CIMTestGenerator(object):
 
     def generate_cim_fields_tests(self):
         """
+        Generates the test cases for required/conditional/cluster fields.
+
         1. List CIM mapped models 
         2. Iterate through each field in CIM data model 
         3. Generate & Yield pytest.param for each test case
@@ -119,6 +121,8 @@ class CIMTestGenerator(object):
 
     def generate_field_extractions_test(self):
         """
+        Generate tests for the fields which the extractions are not allowed in props.conf
+
         1. Get a list of fields of type in ["not_extracted", "not_allowed"] from common fields json.
         2. Get a list of fields whose extractions are defined in props.
         3. Compare and get the list of fields whose extractions are not allowed but defined.
@@ -164,6 +168,8 @@ class CIMTestGenerator(object):
 
     def generate_fields_event_count_test(self):
         """
+        Generates the tests which should not be extracted in an add-on
+
         1. Get the list of type="not_extracted" fields from common fields json.
         2. Get the list of type="not_extracted" fields from mapped datasets.
         3. Combine list1 and list2

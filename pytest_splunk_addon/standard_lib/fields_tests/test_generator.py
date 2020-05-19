@@ -19,7 +19,7 @@ class FieldTestGenerator(object):
 
     * Provides the pytest parameters to the test templates.
     * Supports field_bank: List of fields with patterns and expected
-        values which should be tested for the Add-on.
+      values which should be tested for the Add-on.
     
     Args:
         app_path (str): Path of the app package
