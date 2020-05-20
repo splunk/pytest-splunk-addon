@@ -82,7 +82,7 @@ There are 2 types of tests included in pytest-splunk-addon.
 
 ----------------------
 
-There are some optional arguments for pytest-splunk-addon
+The following optional arguments are available to modify the default settings in the test cases.
 
     1. To search for events in a specific index, user can provide following additional arguments:
 
