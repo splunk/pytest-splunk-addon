@@ -80,6 +80,31 @@ There are 2 types of tests included in pytest-splunk-addon.
 
             -m  splunk_searchtime_cim
 
+----------------------
+
+There are some optional arguments for pytest-splunk-addon
+
+    1. To search for events in a specific index, user can provide following additional arguments:
+
+        .. code-block:: console
+
+            --search-index=<index>
+
+                Splunk index of which the events will be searched while testing. Default value: "*, _internal".
+
+
+    2. To increase/decrease time interval and retries for flaky tests, user can provide following additional arguments:
+
+        .. code-block:: console
+
+            --search-retry=<retry>
+
+                Number of retries to make if there are no events found while searching in the Splunk instance. Default value: 3.
+
+            --search-interval=<interval>
+
+                Time interval to wait before retrying the search query.Default value: 3.
+
 
 Extending pytest-splunk-addon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
