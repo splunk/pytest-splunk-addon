@@ -113,6 +113,7 @@ class CIMTestGenerator(object):
                         "tag_stanza": tag_stanza,
                         "data_set": dataset_list,
                         "fields": each_fields_cluster,
+                        "data_model": data_model,
                     },
                     id=(
                         f"{tag_stanza}::{test_dataset}::"
