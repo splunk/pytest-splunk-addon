@@ -100,6 +100,6 @@ class DataModelHandler(object):
                     is_mapped_datasets = True
                     LOGGER.info("Data Model=%s mapped for %s", each_data_model, eventtype)
                     for each_mapped_dataset in mapped_datasets:
-                        yield eventtype, each_mapped_dataset
+                        yield eventtype, each_mapped_dataset, each_data_model
             if not is_mapped_datasets:
                 LOGGER.info("No Data Model mapped for %s", eventtype)

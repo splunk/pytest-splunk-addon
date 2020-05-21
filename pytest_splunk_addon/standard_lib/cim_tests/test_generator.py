@@ -82,7 +82,7 @@ class CIMTestGenerator(object):
         4. Include the cluster test case as well. 
         """
         LOGGER.info("Generating cim fields tests")
-        for tag_stanza, dataset_list in self.get_mapped_datasets():
+        for tag_stanza, dataset_list, data_model in self.get_mapped_datasets():
             test_dataset = dataset_list[-1]
             LOGGER.info(
                 "Generating cim tests for tag_stanza=%s, dataset_list=%s",
@@ -90,7 +90,7 @@ class CIMTestGenerator(object):
                 )
             # Test to check there is at least one event in the dataset
             yield pytest.param(
-                {"tag_stanza": tag_stanza, "data_set": dataset_list, "fields": []},
+                {"tag_stanza": tag_stanza, "data_set": dataset_list, "fields": [], "data_model": data_model},
                 id=f"{tag_stanza}::{test_dataset}",
             )
             # Test for each required fields
@@ -101,6 +101,7 @@ class CIMTestGenerator(object):
                             "tag_stanza": tag_stanza,
                             "data_set": dataset_list,
                             "fields": [each_field],
+                            "data_model": data_model
                         },
                         id=f"{tag_stanza}::{test_dataset}::{each_field}",
                     )
@@ -132,7 +133,7 @@ class CIMTestGenerator(object):
             test_type=["not_allowed_in_search_and_props", "not_allowed_in_props"]
         )
 
-        for _, dataset_list in self.get_mapped_datasets():
+        for _, dataset_list, data_model in self.get_mapped_datasets():
             test_dataset = dataset_list[-1]
             common_fields_list.extend(
                 [
@@ -181,7 +182,7 @@ class CIMTestGenerator(object):
             test_type=["not_allowed_in_search_and_props", "not_allowed_in_search"]
         )
 
-        for tag_stanza, dataset_list in self.get_mapped_datasets():
+        for tag_stanza, dataset_list, data_model in self.get_mapped_datasets():
             test_dataset = dataset_list[-1]
             if not test_dataset.fields:
                 continue
@@ -200,6 +201,7 @@ class CIMTestGenerator(object):
                     "tag_stanza": tag_stanza,
                     "data_set": dataset_list,
                     "fields": test_fields,
+                    "data_model": data_model
                 },
                 id=f"{tag_stanza}::{test_dataset}",
             )

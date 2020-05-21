@@ -85,6 +85,9 @@ class CIMTestTemplates(object):
         # Execute the query and get the results
         results = test_helper.test_field(base_search)
         record_property("search", test_helper.search)
+        record_property("data_model", splunk_searchtime_cim_fields['data_model'])
+        record_property("data_set", cim_data_set[-1])
+        record_property("tag_stanza", cim_tag_stanza)
 
         # All assertion are made in the same tests to make the test report with
         # very clear order of scenarios. with this approach, a user will be able to identify
