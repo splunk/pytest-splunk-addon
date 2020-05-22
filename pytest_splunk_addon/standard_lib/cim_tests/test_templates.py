@@ -72,6 +72,7 @@ class CIMTestTemplates(object):
         cim_data_set = splunk_searchtime_cim_fields["data_set"]
         cim_fields = splunk_searchtime_cim_fields["fields"]
         cim_tag_stanza = splunk_searchtime_cim_fields["tag_stanza"]
+        cim_data_model = splunk_searchtime_cim_fields['data_model']
         # Search Query
         base_search = ""
         for each_set in cim_data_set:
@@ -84,9 +85,11 @@ class CIMTestTemplates(object):
         )
         # Execute the query and get the results
         results = test_helper.test_field(base_search)
+        
         record_property("search", test_helper.search)
-        record_property("data_model", splunk_searchtime_cim_fields['data_model'])
+        record_property("data_model", cim_data_model)
         record_property("data_set", cim_data_set[-1])
+        record_property("fields", cim_fields[-1])
         record_property("tag_stanza", cim_tag_stanza)
 
         # All assertion are made in the same tests to make the test report with
@@ -160,6 +163,7 @@ class CIMTestTemplates(object):
         cim_tag_stanza = splunk_searchtime_cim_fields_not_allowed_in_search[
             "tag_stanza"
         ]
+        cim_data_model = splunk_searchtime_cim_fields_not_allowed_in_search['data_model']
 
         # Search Query
 
@@ -186,7 +190,13 @@ class CIMTestTemplates(object):
             base_search += " count({fname}) AS {fname}".format(fname=each_field.name)
 
         base_search += " by source, sourcetype"
+        
         record_property("search", base_search)
+        record_property("data_model", cim_data_model)
+        record_property("data_set", cim_dataset[-1])
+        record_property("fields", cim_fields[-1])
+        record_property("tag_stanza", cim_tag_stanza)
+        
         self.logger.info("base_search: %s", base_search)
         results = list(
             splunk_search_util.getFieldValuesList(

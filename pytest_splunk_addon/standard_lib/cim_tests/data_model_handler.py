@@ -86,9 +86,9 @@ class DataModelHandler(object):
             addon_parser (addon_parser.AddonParser): Object of Addon_parser
 
         Yields:
-            tag stanza mapped with list of data sets
+            tag stanza mapped with list of data sets mapped with data model
 
-                "eventtype=sample", DataSet(performance)
+                "eventtype=sample", DataSet(alert), Alerts
         """
 
         tags_in_each_stanza = self._get_all_tags_per_stanza(addon_parser)
