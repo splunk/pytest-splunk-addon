@@ -11,10 +11,11 @@ class DataSet(object):
     Args:
         data_set_json(dict): Json of a single DataSet
     """
-    def __init__(self, data_set_json):
+    def __init__(self, data_set_json, data_model):
         self.name = data_set_json.get("name")
         self.tags = data_set_json.get("tags")
-        self.child_dataset = list(self.load_dataset(data_set_json.get("child_dataset")))
+        self.data_model = data_model
+        self.child_dataset = list(self.load_dataset(data_set_json.get("child_dataset"), self.data_model))
         self.fields = list(Field.parse_fields(
             data_set_json.get("fields"),
             expected_values=[],
@@ -24,7 +25,7 @@ class DataSet(object):
         self.search_constraints = self._parse_constraint(data_set_json.get("search_constraints"))
 
     @classmethod
-    def load_dataset(cls, dataset_list):
+    def load_dataset(cls, dataset_list, data_model):
         """
         Parse all the fields from the data_model_json
 
@@ -36,7 +37,7 @@ class DataSet(object):
         """
         if dataset_list is not None:
             for each_dataset in dataset_list:
-                yield cls(each_dataset)
+                yield cls(each_dataset, data_model)
 
 
     @classmethod
