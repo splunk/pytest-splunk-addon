@@ -26,14 +26,34 @@ class CIMReportGenerator(object):
     def add_data(self, data):
         self.data.append(data)
 
-    def get_count_by(self, keys):
-        for data_model, grouped_stats in groupby(self.data, lambda testcase: [testcase[key] for key in keys]):
-            print(data_model, Counter(each["status"] for each in grouped_stats))
+    def _group_by(self, keys, data=None):
+        if not data:
+            data = self.data
+        return groupby(self.data, lambda testcase: [testcase[key] for key in keys])
+
+    def _get_count_by(self, keys, data=None):
+        for grouped_by, grouped_stats in self._group_by(keys, data):
+            yield (grouped_by, Counter(each["status"] for each in grouped_stats))
+
+    @staticmethod
+    def fail_count(counter):
+        return "{}/{}".format(counter[True], (counter[False] + counter[True]))
 
     def generate_report(self, report_path):
         self.data.sort(key=lambda tc:(tc["data_model"], tc["data_set"], tc["eventtype"], tc["field"]))
-        self.get_count_by(["data_model"])
-        self.get_count_by(["data_set", "eventtype"])
+        print("data model\tFail/Total")
+        for data_model, stats in self._get_count_by(["data_model"]):
+            print("\t".join([ data_model[0], self.fail_count(stats)]))
 
-        # Save
+        print("\neventtype\tdata_set\tFail/Total")
+        for group, stats in self._get_count_by(["data_set", "eventtype"]):
+            data_set, eventtype = group
+            print("\t".join([ eventtype, data_set , self.fail_count(stats)]))
+
+        for group_name, grouped_data in self._group_by(["eventtype", "data_set"]):
+            print("\n\n")
+            print(" - ".join(group_name))
+            print("==========")
+            for each_data in grouped_data:
+                print(each_data["field"], each_data["status"])
 
