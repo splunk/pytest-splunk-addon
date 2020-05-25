@@ -31,6 +31,7 @@ class DataSet(object):
 
         Args:
             dataset_list(list): Contains list of datasets
+            data_model: Name of the data model
 
         Yields:
             data_set.DataSet: Dataset object for the given list
