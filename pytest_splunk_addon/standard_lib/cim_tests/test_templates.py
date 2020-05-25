@@ -6,9 +6,6 @@ import logging
 import pytest
 from .field_test_helper import FieldTestHelper
 
-INTERVAL = 3
-RETRIES = 3
-
 
 class CIMTestTemplates(object):
     """
@@ -45,7 +42,7 @@ class CIMTestTemplates(object):
         record_property("search", search)
 
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=INTERVAL, retries=RETRIES
+            search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
         )
 
         assert result, (
@@ -80,7 +77,7 @@ class CIMTestTemplates(object):
         base_search += " | search {}".format(cim_tag_stanza)
 
         test_helper = FieldTestHelper(
-            splunk_search_util, cim_fields, interval=INTERVAL, retries=RETRIES
+            splunk_search_util, cim_fields, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
         )
         # Execute the query and get the results
         results = test_helper.test_field(base_search)
@@ -187,7 +184,7 @@ class CIMTestTemplates(object):
         self.logger.info("base_search: %s", base_search)
         results = list(
             splunk_search_util.getFieldValuesList(
-                base_search, interval=INTERVAL, retries=RETRIES
+                base_search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
             )
         )
 
@@ -300,7 +297,7 @@ class CIMTestTemplates(object):
         """
         record_property("search", search)
 
-        results = list(splunk_search_util.getFieldValuesList(search, INTERVAL, RETRIES))
+        results = list(splunk_search_util.getFieldValuesList(search, splunk_search_util.search_interval, splunk_search_util.search_retry))
         if results:
             record_property("results", results)
             result_str = FieldTestHelper.get_table_output(
