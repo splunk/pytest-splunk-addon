@@ -5,7 +5,7 @@
     {
       "name": "IDS_Attacks",
       "tags": [["ids", "attack"]],
-      "fields_cluster": [["bytes", "bytes_in", "bytes_out"]],
+      "fields_cluster": [],
       "search_constraints": "tag=ids tag=attack",
       "fields": [
         {
