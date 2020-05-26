@@ -17,6 +17,8 @@ from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 
+# from .standard_lib.markdown_report import MarkdownReport
+
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -171,6 +173,13 @@ def pytest_addoption(parser):
         type=int,
         help="Time interval to wait before retrying the search query.",
     )
+    group.addoption(
+        "--cim-report",
+        action="store",
+        dest="cim_report",
+        help="create html report file at given path.",
+    )
+
 
 @pytest.fixture(scope="session")
 def splunk_setup(splunk):
@@ -197,6 +206,7 @@ def splunk_setup(splunk):
 
     """
     pass
+
 
 @pytest.fixture(scope="session")
 def splunk_search_util(splunk, splunk_setup, request):

@@ -1,7 +1,7 @@
 """
 Parse the Junit XML report and convert it to required format
 """
-from ca_report_generator import CIMReportGenerator
+from .ca_report_generator import CIMReportGenerator
 import argparse
 import errno
 import os
@@ -56,6 +56,7 @@ class JunitParser(object):
             yield prop
 
     def generate_report(self):
+        self.parse_junit()
         report_gen = CIMReportGenerator(self.data)
         report_gen.generate_report(self.report_path)
 

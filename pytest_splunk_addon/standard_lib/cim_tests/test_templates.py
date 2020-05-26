@@ -69,6 +69,10 @@ class CIMTestTemplates(object):
         cim_data_set = splunk_searchtime_cim_fields["data_set"]
         cim_fields = splunk_searchtime_cim_fields["fields"]
         cim_tag_stanza = splunk_searchtime_cim_fields["tag_stanza"]
+
+        cim_single_field = ', '.join(map(str,cim_fields))
+        cim_data_model = cim_data_set[-1].data_model
+        data_set = str(cim_data_set[-1])
         # Search Query
         base_search = ""
         for each_set in cim_data_set:
@@ -82,6 +86,10 @@ class CIMTestTemplates(object):
         # Execute the query and get the results
         results = test_helper.test_field(base_search)
         record_property("search", test_helper.search)
+        record_property("tag_stanza", cim_tag_stanza)
+        record_property("data_model", cim_data_model)
+        record_property("data_set", data_set)
+        record_property("fields", cim_single_field)
 
         # All assertion are made in the same tests to make the test report with
         # very clear order of scenarios. with this approach, a user will be able to identify
@@ -154,6 +162,8 @@ class CIMTestTemplates(object):
         cim_tag_stanza = splunk_searchtime_cim_fields_not_allowed_in_search[
             "tag_stanza"
         ]
+        cim_data_model = cim_dataset[-1].data_model
+        data_set = str(cim_dataset[-1])
 
         # Search Query
 
@@ -180,7 +190,13 @@ class CIMTestTemplates(object):
             base_search += " count({fname}) AS {fname}".format(fname=each_field.name)
 
         base_search += " by source, sourcetype"
+
         record_property("search", base_search)
+        record_property("tag_stanza", cim_tag_stanza)
+        record_property("data_model", cim_data_model)
+        record_property("data_set", data_set)
+        record_property("fields", ', '.join(map(str,cim_fields)))
+
         self.logger.info("base_search: %s", base_search)
         results = list(
             splunk_search_util.getFieldValuesList(

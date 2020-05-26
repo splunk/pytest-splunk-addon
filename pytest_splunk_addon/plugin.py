@@ -3,10 +3,13 @@ import pytest
 import sys
 import traceback
 from .standard_lib import AppTestGenerator
+from .standard_lib.markdown_report import MarkdownReport
 
 LOG_FILE = "pytest_splunk_addon.log"
 
 test_generator = None
+
+
 def pytest_configure(config):
     global test_generator
     """
@@ -49,10 +52,23 @@ def pytest_configure(config):
     )
     config.addinivalue_line(
         "markers",
-        "splunk_searchtime_cim_mapped_datamodel: Test an eventtype is mapped with only one data models"
+        "splunk_searchtime_cim_mapped_datamodel: Test an eventtype is mapped with only one data models",
     )
     if config.getoption("splunk_app", None):
         test_generator = AppTestGenerator(config)
+
+    cim_report = config.getoption("cim_report")
+    if cim_report and not hasattr(config, "slaveinput"):
+        # prevent opening markdown on slave nodes (xdist)
+        config._markdown = MarkdownReport(config)
+        config.pluginmanager.register(config._markdown)
+
+
+def pytest_unconfigure(config):
+    markdown = getattr(config, "_markdown", None)
+    if markdown:
+        del config._markdown
+        config.pluginmanager.unregister(markdown)
 
 
 def pytest_generate_tests(metafunc):
