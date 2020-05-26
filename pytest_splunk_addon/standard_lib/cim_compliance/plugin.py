@@ -10,28 +10,17 @@ class CIMReportPlugin(object):
     def __init__(self, config):
         self.config = config
         self.content = ""
-        # self.passed = []
-        # self.failed = []
-        # self.skipped = []
         self.data = []
         has_rerun = config.pluginmanager.hasplugin("rerunfailures")
         self.rerun = 0 if has_rerun else None
+        self.report_path = ""
 
     def _save_report(self, report):
         self.md_file.write(report)
         self.md_file.close()
 
     def _generate_report(self, session):
-        _template = "\n".join(
-            [
-                "# Report",
-                "=" * 30,
-                str([each.nodeid for each in self.passed]),
-                str([each.nodeid for each in self.failed]),
-                str([each.nodeid for each in self.skipped]),
-            ]
-        )
-        return _template
+        return self.data
 
     def append_failed(self, report):
         pass
@@ -60,17 +49,16 @@ class CIMReportPlugin(object):
     @pytest.hookimpl(tryfirst=True)
     def pytest_runtest_logreport(self, report):
         if report.when == "call":
-            if report.passed:
-                self.passed.append(report)
-            elif report.failed:
-                self.failed.append(report)
-            elif report.skipped:
-                self.skipped.append(report)
 
-            # print("OUTCOME::" + str(report.outcome))
-            # print("FAILED::" + str(report.failed))
-            # print("PROPERTY::" + str(report.user_properties))
-            # print("NODEID::" + str(report.nodeid))
+            self.data.append(
+                {
+                    report.user_properties[1][0]: report.user_properties[1][1],
+                    report.user_properties[2][0]: report.user_properties[2][1],
+                    report.user_properties[3][0]: report.user_properties[3][1],
+                    report.user_properties[4][0]: report.user_properties[4][1],
+                    "status": report.outcome,
+                }
+            )
 
     def pytest_terminal_summary(self, terminalreporter):
         terminalreporter.write_sep("-", "generated markdown file.!")
