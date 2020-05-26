@@ -5,7 +5,7 @@
     {
       "name": "IDS_Attacks",
       "tags": [["ids", "attack"]],
-      "fields_cluster": [],
+      "fields_cluster": [["bytes", "bytes_in", "bytes_out"]],
       "search_constraints": "tag=ids tag=attack",
       "fields": [
         {
@@ -13,6 +13,27 @@
           "type": "required",
           "expected_values": ["allowed", "blocked"],
           "comment": "The action performed on the resource."
+        },
+        {
+          "name": "bytes",
+          "type": "conditional",
+          "condition": "isnum(bytes_out) and isnum(bytes_in)",
+          "validity": "if(isnum(bytes))",
+          "comment": "Total count of bytes handled by this device/interface (bytes_in + bytes_out)."
+        },
+        {
+          "name": "bytes_in",
+          "type": "conditional",
+          "condition": "isnum(bytes_out)",
+          "validity": "if(isnum(bytes_in))",
+          "comment": "How many bytes this device/interface received."
+        },
+        {
+          "name": "bytes_out",
+          "type": "conditional",
+          "condition": "isnum(bytes_in)",
+          "validity": "if(isnum(bytes_out))",
+          "comment": "How many bytes this device/interface transmitted."
         },
         {
           "name": "category",
