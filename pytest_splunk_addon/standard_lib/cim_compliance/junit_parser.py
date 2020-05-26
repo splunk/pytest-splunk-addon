@@ -10,16 +10,16 @@ from junitparser import JUnitXml, Properties
 
 
 class JunitParser(object):
-    def __init__(self, junit_path, report_path):
-        if os.path.isfile(junit_path):
-            self._junitfile = junit_path
-        elif os.path.isdir(junit_path):
+    def __init__(self, junit_xml_path, report_path):
+        if os.path.isfile(junit_xml_path):
+            self._junitfile = junit_xml_path
+        elif os.path.isdir(junit_xml_path):
             raise Exception(
                 "Generating Report for multiple xml is not currently Supported."
             )
         else:
             raise FileNotFoundError(
-                errno.ENOENT, os.strerror(errno.ENOENT), junit_path
+                errno.ENOENT, os.strerror(errno.ENOENT), junit_xml_path
             )
 
         self.report_path = report_path
@@ -51,11 +51,11 @@ class JunitParser(object):
             Dictionary: dictionary with all the required properties of Testcase.
         """
         row_template = {
-            "data_model": "-",
-            "data_set": "-",
-            "field": None,
+            "data_model": None,
+            "data_set": None,
+            "fields": None,
             "status": "fail" if testcase.result else "pass",
-            "tag_stanza": "-",
+            "tag_stanza": None,
         }
         props = self.yield_properties(testcase)
         for prop in props:
@@ -89,7 +89,7 @@ def main():
     """
     ap = argparse.ArgumentParser()
     group = ap.add_mutually_exclusive_group()
-    ap.add_argument("--junit-path", help="Path to JUnit file", required=True)
+    ap.add_argument("--junit-xml-path", help="Path to JUnit file", required=True)
     ap.add_argument(
         "--report-path", help="Path to Save Report", required=True
     )
@@ -101,7 +101,7 @@ def main():
     )
     args = ap.parse_args()
 
-    junit_path = args.junit_path
+    junit_xml_path = args.junit_xml_path
     report_path = args.report_path
 
     if args.overwrite:
@@ -111,7 +111,7 @@ def main():
             "File already Exists. Provide --append or --overwrite to continue."
         )
 
-    ju_p = JunitParser(junit_path, report_path,)
+    ju_p = JunitParser(junit_xml_path, report_path,)
     ju_p.parse_junit()
     ju_p.generate_report()
 

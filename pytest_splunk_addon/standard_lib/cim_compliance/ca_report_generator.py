@@ -96,7 +96,7 @@ class CIMReportGenerator(object):
                 tc["data_model"],
                 tc["data_set"],
                 tc["tag_stanza"],
-                tc["field"],
+                tc["fields"],
             )
         )
 
@@ -133,10 +133,10 @@ class CIMReportGenerator(object):
             )
             for each_data in grouped_data:
                 fields = False
-                if each_data["field"]:
+                if each_data["fields"] and not "," in each_data["fields"]:
                     fields = True
                     field_summary_table.add_row(
-                        [each_data["field"], each_data["status"].title()]
+                        [each_data["fields"], each_data["status"].title()]
                     )
             if not fields:
                 field_summary_table.add_row(["No", "Fields"])
