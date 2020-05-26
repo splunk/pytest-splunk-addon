@@ -2,27 +2,23 @@ import abc
 
 
 @abc.ABC
-class CIMReport(object):
+class BaseTable(object):
     """
     Interface for CIM report.
     """
 
     @abc.abstractmethod
-    def set_title(self, string):
+    def set_description(self, string):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def add_section_title(self, string):
+    def add_row(self, string):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def add_section_note(self, string):
+    def set_note(self, string):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def add_table(self, string):
-        raise NotImplementedError()
-
-    @abc.abstractmethod
-    def write(self, path):
+    def return_table_str(self):
         raise NotImplementedError()
