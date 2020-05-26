@@ -2,7 +2,7 @@ import abc
 
 
 @abc.ABC
-class BaseTable(object):
+class BaseTable(abc.ABC):
     """
     Interface for CIM report.
     """

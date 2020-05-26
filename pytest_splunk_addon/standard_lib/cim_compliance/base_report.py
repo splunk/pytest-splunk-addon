@@ -1,8 +1,7 @@
 import abc
 
 
-@abc.ABC
-class CIMReport(object):
+class CIMReport(abc.ABC):
     """
     Interface for CIM report.
     """
