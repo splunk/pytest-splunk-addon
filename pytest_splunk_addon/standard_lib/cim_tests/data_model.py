@@ -15,7 +15,7 @@ class DataModel(object):
     def __init__(self, data_model_json):
 
         self.name = data_model_json.get("model_name")
-        self.root_data_set = list(DataSet.load_dataset(data_model_json.get("objects")))
+        self.root_data_set = list(DataSet.load_dataset(data_model_json.get("objects"), self.name))
 
     def _get_mapped_datasets(self, addon_tags, data_sets, mapped_datasets=[]):
         """
