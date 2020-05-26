@@ -4,52 +4,28 @@ Plugin to generate the report dynamically after executing the test cases
 import pytest
 import time
 import os
+from .ca_report_generator import CIMReportGenerator
+from .markdown_report import MarkDownReport
 
 
 class CIMReportPlugin(object):
     def __init__(self, config):
-        self.config = config
-        self.content = ""
         self.data = []
-        has_rerun = config.pluginmanager.hasplugin("rerunfailures")
-        self.rerun = 0 if has_rerun else None
-        self.report_path = ""
-
-    def _save_report(self, report):
-        self.md_file.write(report)
-        self.md_file.close()
-
-    def _generate_report(self, session):
-        return self.data
-
-    def append_failed(self, report):
-        pass
-
-    def pytest_sessionstart(self, session):
-        """
-        Init the markdown file
-        """
-        self.md_file = open(os.path.join(self.report_path, "temp.md"), "a")
-        self.suite_start_time = time.time()
+        self.report_path = config.getoption("cim_report")
 
     def pytest_sessionfinish(self, session):
         """
-        Save the report.
+        Generate the report.
         """
-        report_content = self._generate_report(session)
-        self._save_report(report_content)
-
-    def pytest_collectreport(self, report):
-        """
-        To catch the exception in collection
-        """
-        if report.failed:
-            self.append_failed(report)
+        report_generator = CIMReportGenerator(self.data, MarkDownReport)
+        report_generator.generate_report(self.report_path)
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_runtest_logreport(self, report):
-        if report.when == "call":
-
+        """
+        Collect the data to be added into the report.
+        """
+        if report.when == "call" and "test_cim_required_fields" in report.nodeid:
             self.data.append(
                 {
                     report.user_properties[1][0]: report.user_properties[1][1],
@@ -61,4 +37,4 @@ class CIMReportPlugin(object):
             )
 
     def pytest_terminal_summary(self, terminalreporter):
-        terminalreporter.write_sep("-", "generated markdown file.!")
+        terminalreporter.write_sep("-", "Generated markdown report!")
