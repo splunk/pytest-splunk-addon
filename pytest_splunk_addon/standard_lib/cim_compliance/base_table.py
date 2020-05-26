@@ -8,6 +8,10 @@ class BaseTable(abc.ABC):
     """
 
     @abc.abstractmethod
+    def __init__(self, table_title, header_list):
+        pass
+
+    @abc.abstractmethod
     def set_description(self, string):
         raise NotImplementedError()
 

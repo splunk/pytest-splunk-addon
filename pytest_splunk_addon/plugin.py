@@ -3,7 +3,7 @@ import pytest
 import sys
 import traceback
 from .standard_lib import AppTestGenerator
-from .standard_lib.markdown_report import MarkdownReport
+from .standard_lib.cim_compliance import CIMReportPlugin
 
 LOG_FILE = "pytest_splunk_addon.log"
 
@@ -60,7 +60,7 @@ def pytest_configure(config):
     cim_report = config.getoption("cim_report")
     if cim_report and not hasattr(config, "slaveinput"):
         # prevent opening markdown on slave nodes (xdist)
-        config._markdown = MarkdownReport(config)
+        config._markdown = CIMReportPlugin(config)
         config.pluginmanager.register(config._markdown)
 
 
