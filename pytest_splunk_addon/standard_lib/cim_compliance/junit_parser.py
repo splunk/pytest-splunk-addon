@@ -5,6 +5,7 @@ from .ca_report_generator import CIMReportGenerator
 import argparse
 import errno
 import os
+import sys
 from junitparser import JUnitXml, Properties
 
 
@@ -20,10 +21,15 @@ class JunitParser(object):
             raise FileNotFoundError(
                 errno.ENOENT, os.strerror(errno.ENOENT), junit_path
             )
+
         self.report_path = report_path
         self._xml = JUnitXml.fromfile(self._junitfile)
 
     def parse_junit(self):
+        """
+        Function to parse the provided JUnit XML.
+        It creates and adds a list of dictionaries `data` to object properties.
+        """
         xml = self._xml
         self.data = []
 
@@ -35,11 +41,20 @@ class JunitParser(object):
                     self.data.append(self.get_properties(tc))
 
     def get_properties(self, testcase):
+        """
+        Function to get all the properties of a testcase.
+
+        Args:
+            testcase(junitparser.TestCase): Contains all the data of a Testcase
+        
+        returns:
+            Dictionary: dictionary with all the required properties of Testcase.
+        """
         row_template = {
             "data_model": "-",
             "data_set": "-",
             "field": None,
-            "status": "Fail" if testcase.result else "Pass",
+            "status": "fail" if testcase.result else "pass",
             "tag_stanza": "-",
         }
         props = self.yield_properties(testcase)
@@ -49,9 +64,16 @@ class JunitParser(object):
         return row_template
 
     def yield_properties(self, testcase):
+        """
+        Function to yield properties of a Testcase
+
+        Args:
+            testcase(junitparser.TestCase): Contains all the data of a Testcase.
+        
+        Yields:
+            junitparser.Property: Property object of a Testcase.
+        """
         props = testcase.child(Properties)
-        if props is None:
-            return
         for prop in props:
             yield prop
 
@@ -62,15 +84,36 @@ class JunitParser(object):
 
 
 def main():
-    # Parse Args using arg parse
-    # Parse Junit path : input
-    # parse report path : output
-    junitparserobj = JunitParser(
-        "G:\\My Drive\\TA-Factory\\automation\\cim_report\\trial1.xml",
-        "demo.md",
+    """
+        Entrypoint to the script.
+    """
+    ap = argparse.ArgumentParser()
+    group = ap.add_mutually_exclusive_group()
+    ap.add_argument("--junit-path", help="Path to JUnit file", required=True)
+    ap.add_argument(
+        "--report-path", help="Path to Save Report", required=True
     )
-    junitparserobj.parse_junit()
-    junitparserobj.generate_report()
+    group.add_argument(
+        "--overwrite", action="store_true", help="Overwrites report if exists"
+    )
+    group.add_argument(
+        "--append", action="store_true", help="Append report if exists"
+    )
+    args = ap.parse_args()
+
+    junit_path = args.junit_path
+    report_path = args.report_path
+
+    if args.overwrite:
+        open(report_path, "w").close()
+    elif not args.append and os.path.isfile(report_path):
+        sys.exit(
+            "File already Exists. Provide --append or --overwrite to continue."
+        )
+
+    ju_p = JunitParser(junit_path, report_path,)
+    ju_p.parse_junit()
+    ju_p.generate_report()
 
 
 if __name__ == "__main__":

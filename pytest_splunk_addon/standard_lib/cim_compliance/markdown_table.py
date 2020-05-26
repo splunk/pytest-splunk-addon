@@ -69,7 +69,7 @@ class MarkdownTable(BaseTable):
         """
         Generates the final table str
         """
-        self.table_str += self.table_title
+        self.table_str = self.table_title
         self.table_str += self.table_description
         self.table_str += self.table_headers
         self.table_str += self.row_str
