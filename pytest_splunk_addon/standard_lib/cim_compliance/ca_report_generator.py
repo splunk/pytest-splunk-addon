@@ -80,7 +80,7 @@ class CIMReportGenerator(object):
             String: string with pass/total format.
         """
         return "{}/{}".format(
-            counter["pass"], (counter["fail"] + counter["pass"])
+            counter["passed"], (counter["failed"] + counter["passed"])
         )
 
     def generate_report(self, report_path):
@@ -111,23 +111,17 @@ class CIMReportGenerator(object):
 
         # Generating Tag Stanza Mapping table.
         self.report_generator.add_section_title("Tag Stanza Mapping Table")
-        tag_stanza_map = MarkdownTable(
-            "", ["Tag Stanza", "Data Model", "Pass/Total"]
-        )
+        tag_stanza_map = MarkdownTable("", ["Tag Stanza", "Data Model", "Pass/Total"])
         for group, stats in self._get_count_by(["data_set", "tag_stanza"]):
             data_set, tag_stanza = group
-            tag_stanza_map.add_row(
-                [tag_stanza, data_set, self.pass_count(stats)]
-            )
+            tag_stanza_map.add_row([tag_stanza, data_set, self.pass_count(stats)])
 
         self.report_generator.add_table(tag_stanza_map.return_table_str())
 
         # Generating Field Summary tables.
         self.report_generator.add_section_title("Field Summary Table")
 
-        for group_name, grouped_data in self._group_by(
-            ["tag_stanza", "data_set"]
-        ):
+        for group_name, grouped_data in self._group_by(["tag_stanza", "data_set"]):
             field_summary_table = MarkdownTable(
                 " - ".join(group_name), ["Field", "Status"]
             )
@@ -140,9 +134,7 @@ class CIMReportGenerator(object):
                     )
             if not fields:
                 field_summary_table.add_row(["No", "Fields"])
-            self.report_generator.add_table(
-                field_summary_table.return_table_str()
-            )
+            self.report_generator.add_table(field_summary_table.return_table_str())
             del field_summary_table
 
         self.report_generator.write(report_path)

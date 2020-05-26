@@ -54,7 +54,7 @@ class JunitParser(object):
             "data_model": None,
             "data_set": None,
             "fields": None,
-            "status": "fail" if testcase.result else "pass",
+            "status": "failed" if testcase.result else "passed",
             "tag_stanza": None,
         }
         props = self.yield_properties(testcase)
@@ -90,15 +90,11 @@ def main():
     ap = argparse.ArgumentParser()
     group = ap.add_mutually_exclusive_group()
     ap.add_argument("--junit-xml-path", help="Path to JUnit file", required=True)
-    ap.add_argument(
-        "--report-path", help="Path to Save Report", required=True
-    )
+    ap.add_argument("--report-path", help="Path to Save Report", required=True)
     group.add_argument(
         "--overwrite", action="store_true", help="Overwrites report if exists"
     )
-    group.add_argument(
-        "--append", action="store_true", help="Append report if exists"
-    )
+    group.add_argument("--append", action="store_true", help="Append report if exists")
     args = ap.parse_args()
 
     junit_xml_path = args.junit_xml_path
@@ -107,9 +103,7 @@ def main():
     if args.overwrite:
         open(report_path, "w").close()
     elif not args.append and os.path.isfile(report_path):
-        sys.exit(
-            "File already Exists. Provide --append or --overwrite to continue."
-        )
+        sys.exit("File already Exists. Provide --append or --overwrite to continue.")
 
     ju_p = JunitParser(junit_xml_path, report_path,)
     ju_p.parse_junit()
