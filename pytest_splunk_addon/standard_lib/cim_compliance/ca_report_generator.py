@@ -168,24 +168,27 @@ class CIMReportGenerator(object):
             del field_summary_table
 
         # Generating Skipped tests Table
-        self.report_generator.add_section_title("Skipped Tests Summary")
         skipped_tests_table = MarkdownTable(
-            "Skipped Tests", ["Tag Stanza", "Data Set", "Field", "Skip Type"]
+            "Skipped Tests",
+            ["Tag Stanza", "Data Set", "Field", "Skip Type", "status"],
         )
         skipped_tests = list(
             filter(lambda d: d["status"] == "skipped", self.data)
         )
-        for group, stats in self._get_count_by(
-            ["tag_stanza", "data_set", "fields", "skip_type"], skipped_tests
-        ):
-            tag_stanza, data_set, field, skip_type = group
-            if not field:
-                field = "-"
-            skipped_tests_table.add_row(
-                [tag_stanza, data_set, field, skip_type]
-            )
+        if skipped_tests:
+            self.report_generator.add_section_title("Skipped Tests Summary")
+            for group, stats in self._get_count_by(
+                ["tag_stanza", "data_set", "fields", "skip_type", "status"],
+                skipped_tests,
+            ):
+                tag_stanza, data_set, field, skip_type, status = group
+                if not field:
+                    field = "-"
+                skipped_tests_table.add_row(
+                    [tag_stanza, data_set, field, skip_type, status]
+                )
 
-        self.report_generator.add_table(
-            skipped_tests_table.return_table_str()
-        )
+            self.report_generator.add_table(
+                skipped_tests_table.return_table_str()
+            )
         self.report_generator.write(report_path)

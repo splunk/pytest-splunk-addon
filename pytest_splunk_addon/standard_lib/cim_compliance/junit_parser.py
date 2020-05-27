@@ -10,7 +10,7 @@ from junitparser import JUnitXml, Properties
 
 
 class JunitParser(object):
-    def __init__(self, junit_xml_path, report_path):
+    def __init__(self, junit_xml_path):
         if os.path.isfile(junit_xml_path):
             self._junitfile = junit_xml_path
         elif os.path.isdir(junit_xml_path):
@@ -22,7 +22,6 @@ class JunitParser(object):
                 errno.ENOENT, os.strerror(errno.ENOENT), junit_xml_path
             )
 
-        self.report_path = report_path
         self._xml = JUnitXml.fromfile(self._junitfile)
 
     def parse_junit(self):
@@ -78,12 +77,12 @@ class JunitParser(object):
                 if val == None
             ]:
                 raise Exception(
-                    testcase.name + "does not have all required properties"
+                    testcase.name + " does not have all required properties"
                 )
 
             return row_template
-        except Exception:
-            sys.exit(Exception)
+        except Exception as e:
+            sys.exit(e)
 
     def yield_properties(self, testcase):
         """
@@ -99,10 +98,12 @@ class JunitParser(object):
         for prop in props:
             yield prop
 
-    def generate_report(self):
+    def generate_report(
+        self, report_path,
+    ):
         self.parse_junit()
         report_gen = CIMReportGenerator(self.data)
-        report_gen.generate_report(self.report_path)
+        report_gen.generate_report(report_path)
 
 
 def main():
@@ -111,19 +112,26 @@ def main():
     """
     ap = argparse.ArgumentParser()
     ap.add_argument(
-        "junitXmlPath", help="Path to JUnit file"
+        "junit_xml", help="Path to JUnit XML file", metavar="junit-xml"
     )
     ap.add_argument(
-        "reportPath", help="Path to Save Report", default="cim_report.md"
+        "report_path",
+        help="Path to Save Report",
+        metavar="report-path",
+        nargs="?",
+        default="cim_report.md",
     )
     args = ap.parse_args()
 
-    junit_xml_path = args.junitXmlPath
-    report_path = args.reportPath
+    junit_xml_path = args.junit_xml
+    report_path = args.report_path
 
-    ju_p = JunitParser(junit_xml_path, report_path,)
+    ju_p = JunitParser(junit_xml_path)
     ju_p.parse_junit()
-    ju_p.generate_report()
+    if ju_p.data:
+        ju_p.generate_report(report_path)
+    else:
+        sys.exit("No CIM Compatibility tests found in JUnit XML")
 
 
 if __name__ == "__main__":
