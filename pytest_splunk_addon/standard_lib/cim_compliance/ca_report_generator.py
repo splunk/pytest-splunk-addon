@@ -80,7 +80,8 @@ class CIMReportGenerator(object):
             String: string with pass/total format.
         """
         return "{}/{}".format(
-            counter["passed"], (counter["failed"] + counter["passed"])
+            counter["passed"],
+            (counter["failed"] + counter["passed"] + counter["skipped"]),
         )
 
     @staticmethod
@@ -95,7 +96,8 @@ class CIMReportGenerator(object):
             String: string with fail/total format.
         """
         return "{}/{}".format(
-            counter["failed"], (counter["failed"] + counter["passed"])
+            counter["failed"],
+            (counter["failed"] + counter["passed"] + counter["skipped"]),
         )
 
     def generate_report(self, report_path):
@@ -108,9 +110,9 @@ class CIMReportGenerator(object):
         self.report_generator.set_title("CIM AUDIT REPORT")
         self.data.sort(
             key=lambda tc: (
+                tc["tag_stanza"],
                 tc["data_model"],
                 tc["data_set"],
-                tc["tag_stanza"],
                 tc["fields"],
                 tc["fields_type"],
             )

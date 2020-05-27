@@ -111,15 +111,15 @@ def main():
     """
     ap = argparse.ArgumentParser()
     ap.add_argument(
-        "--junit-xml-path", help="Path to JUnit file", required=True
+        "junitXmlPath", help="Path to JUnit file"
     )
     ap.add_argument(
-        "--report-path", help="Path to Save Report", required=True
+        "reportPath", help="Path to Save Report", default="cim_report.md"
     )
     args = ap.parse_args()
 
-    junit_xml_path = args.junit_xml_path
-    report_path = args.report_path
+    junit_xml_path = args.junitXmlPath
+    report_path = args.reportPath
 
     ju_p = JunitParser(junit_xml_path, report_path,)
     ju_p.parse_junit()
