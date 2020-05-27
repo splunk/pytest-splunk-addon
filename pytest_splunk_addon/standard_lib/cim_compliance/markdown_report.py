@@ -51,6 +51,6 @@ class MarkDownReport(CIMReport):
         Args:
             path(string) : path to store report file.
         """
-        with open(path, "a") as report:
+        with open(path, "w") as report:
             report.write(self.title_str)
             report.write(self.markdown_str)

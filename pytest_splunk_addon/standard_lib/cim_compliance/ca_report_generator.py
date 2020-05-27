@@ -83,6 +83,21 @@ class CIMReportGenerator(object):
             counter["passed"], (counter["failed"] + counter["passed"])
         )
 
+    @staticmethod
+    def fail_count(counter):
+        """
+        Function to Get count in Fail/Total format.
+
+        Args:
+            counter(collections.Counter): Contains counts of passing/failing Testcases.
+        
+        Yields:
+            String: string with fail/total format.
+        """
+        return "{}/{}".format(
+            counter["failed"], (counter["failed"] + counter["passed"])
+        )
+
     def generate_report(self, report_path):
         """
         Function to generate report from the stored data.
@@ -101,39 +116,39 @@ class CIMReportGenerator(object):
         )
 
         # Generating Summary table.
-        self.report_generator.add_section_title("Summary Table")
-        summary_table = MarkdownTable("", ["Data Model", "Pass/Total"])
+        self.report_generator.add_section_title("Summary")
+        summary_table = MarkdownTable("", ["Data Model", "Fail/Total"])
 
         for data_model, stats in self._get_count_by(["data_model"]):
-            summary_table.add_row([data_model[0], self.pass_count(stats)])
+            summary_table.add_row([data_model[0], self.fail_count(stats)])
 
         self.report_generator.add_table(summary_table.return_table_str())
 
         # Generating Tag Stanza Mapping table.
-        self.report_generator.add_section_title("Tag Stanza Mapping Table")
-        tag_stanza_map = MarkdownTable("", ["Tag Stanza", "Data Model", "Pass/Total"])
+        self.report_generator.add_section_title("Tag Stanza Mapping")
+        tag_stanza_map = MarkdownTable("", ["Tag Stanza", "Data Set", "Fail/Total"])
         for group, stats in self._get_count_by(["data_set", "tag_stanza"]):
             data_set, tag_stanza = group
-            tag_stanza_map.add_row([tag_stanza, data_set, self.pass_count(stats)])
+            tag_stanza_map.add_row([tag_stanza, data_set, self.fail_count(stats)])
 
         self.report_generator.add_table(tag_stanza_map.return_table_str())
 
         # Generating Field Summary tables.
-        self.report_generator.add_section_title("Field Summary Table")
+        self.report_generator.add_section_title("Field Summary")
 
         for group_name, grouped_data in self._group_by(["tag_stanza", "data_set"]):
             field_summary_table = MarkdownTable(
-                " - ".join(group_name), ["Field", "Status"]
+                " - ".join(group_name), ["Field", "Type", "Test Status"]
             )
             for each_data in grouped_data:
                 fields = False
                 if each_data["fields"] and not "," in each_data["fields"]:
                     fields = True
                     field_summary_table.add_row(
-                        [each_data["fields"], each_data["status"].title()]
+                        [each_data["fields"], each_data["fields_type"], each_data["status"].title()]
                     )
             if not fields:
-                field_summary_table.add_row(["No", "Fields"])
+                field_summary_table.add_row(["-", "-", "-"])
             self.report_generator.add_table(field_summary_table.return_table_str())
             del field_summary_table
 

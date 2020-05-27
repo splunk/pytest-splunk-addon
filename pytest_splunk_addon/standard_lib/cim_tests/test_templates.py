@@ -70,7 +70,8 @@ class CIMTestTemplates(object):
         cim_fields = splunk_searchtime_cim_fields["fields"]
         cim_tag_stanza = splunk_searchtime_cim_fields["tag_stanza"]
 
-        cim_single_field = ', '.join(map(str,cim_fields))
+        cim_fields_str = ', '.join(map(str,cim_fields))
+        cim_fields_type= ', '.join(map(lambda f:f.get_type(),cim_fields))
         cim_data_model = cim_data_set[-1].data_model
         data_set = str(cim_data_set[-1])
         # Search Query
@@ -89,7 +90,9 @@ class CIMTestTemplates(object):
         record_property("tag_stanza", cim_tag_stanza)
         record_property("data_model", cim_data_model)
         record_property("data_set", data_set)
-        record_property("fields", cim_single_field)
+        record_property("fields", cim_fields_str)
+        record_property("fields_type", cim_fields_type)
+
 
         # All assertion are made in the same tests to make the test report with
         # very clear order of scenarios. with this approach, a user will be able to identify

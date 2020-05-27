@@ -34,6 +34,7 @@ setup(
         "future~=0.17.1",
         "httplib2~=0.17",
         "logutils",
+        "junitparser==1.4.1",
         "requests2~=2.16",
         "splunk_appinspect>=2.0.1",
         "six",

@@ -5,7 +5,6 @@ import pytest
 import time
 import os
 from .ca_report_generator import CIMReportGenerator
-from .markdown_report import MarkDownReport
 
 
 class CIMReportPlugin(object):
@@ -17,7 +16,7 @@ class CIMReportPlugin(object):
         """
         Generate the report.
         """
-        report_generator = CIMReportGenerator(self.data, MarkDownReport)
+        report_generator = CIMReportGenerator(self.data)
         report_generator.generate_report(self.report_path)
 
     @pytest.hookimpl(tryfirst=True)
@@ -32,6 +31,7 @@ class CIMReportPlugin(object):
                     report.user_properties[2][0]: report.user_properties[2][1],
                     report.user_properties[3][0]: report.user_properties[3][1],
                     report.user_properties[4][0]: report.user_properties[4][1],
+                    report.user_properties[5][0]: report.user_properties[5][1],
                     "status": report.outcome,
                 }
             )
