@@ -36,7 +36,7 @@ class JunitParser(object):
         for suites in xml:
             for tc in suites:
                 if "test_cim_required_fields" in tc.name and (
-                    not tc.result or tc.result._tag == "failure"
+                    not tc.result or tc.result._tag in ["failure", "skipped"]
                 ):
                     self.data.append(self.get_properties(tc))
 
@@ -50,13 +50,22 @@ class JunitParser(object):
         returns:
             Dictionary: dictionary with all the required properties of Testcase.
         """
+        if testcase.result:
+            status = (
+                "failed" if testcase.result._tag == "failure" else "skipped"
+            )
+        else:
+            status = "passed"
+
+        skip_type = "-" if not status == "skipped" else testcase.result.type
         row_template = {
             "data_model": None,
             "data_set": None,
             "fields": None,
-            "status": "failed" if testcase.result else "passed",
+            "status": status,
             "tag_stanza": None,
             "fields_type": None,
+            "skip_type": skip_type,
         }
         props = self.yield_properties(testcase)
         try:

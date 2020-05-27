@@ -112,6 +112,7 @@ class CIMReportGenerator(object):
                 tc["data_set"],
                 tc["tag_stanza"],
                 tc["fields"],
+                tc["fields_type"],
             )
         )
 
@@ -126,17 +127,23 @@ class CIMReportGenerator(object):
 
         # Generating Tag Stanza Mapping table.
         self.report_generator.add_section_title("Tag Stanza Mapping")
-        tag_stanza_map = MarkdownTable("", ["Tag Stanza", "Data Set", "Fail/Total"])
+        tag_stanza_map = MarkdownTable(
+            "", ["Tag Stanza", "Data Set", "Fail/Total"]
+        )
         for group, stats in self._get_count_by(["data_set", "tag_stanza"]):
             data_set, tag_stanza = group
-            tag_stanza_map.add_row([tag_stanza, data_set, self.fail_count(stats)])
+            tag_stanza_map.add_row(
+                [tag_stanza, data_set, self.fail_count(stats)]
+            )
 
         self.report_generator.add_table(tag_stanza_map.return_table_str())
 
         # Generating Field Summary tables.
         self.report_generator.add_section_title("Field Summary")
 
-        for group_name, grouped_data in self._group_by(["tag_stanza", "data_set"]):
+        for group_name, grouped_data in self._group_by(
+            ["tag_stanza", "data_set"]
+        ):
             field_summary_table = MarkdownTable(
                 " - ".join(group_name), ["Field", "Type", "Test Status"]
             )
@@ -145,11 +152,38 @@ class CIMReportGenerator(object):
                 if each_data["fields"] and not "," in each_data["fields"]:
                     fields = True
                     field_summary_table.add_row(
-                        [each_data["fields"], each_data["fields_type"], each_data["status"].title()]
+                        [
+                            each_data["fields"],
+                            each_data["fields_type"],
+                            each_data["status"].title(),
+                        ]
                     )
             if not fields:
                 field_summary_table.add_row(["-", "-", "-"])
-            self.report_generator.add_table(field_summary_table.return_table_str())
+            self.report_generator.add_table(
+                field_summary_table.return_table_str()
+            )
             del field_summary_table
 
+        # Generating Skipped tests Table
+        self.report_generator.add_section_title("Skipped Tests Summary")
+        skipped_tests_table = MarkdownTable(
+            "Skipped Tests", ["Tag Stanza", "Data Set", "Field", "Skip Type"]
+        )
+        skipped_tests = list(
+            filter(lambda d: d["status"] == "skipped", self.data)
+        )
+        for group, stats in self._get_count_by(
+            ["tag_stanza", "data_set", "fields", "skip_type"], skipped_tests
+        ):
+            tag_stanza, data_set, field, skip_type = group
+            if not field:
+                field = "-"
+            skipped_tests_table.add_row(
+                [tag_stanza, data_set, field, skip_type]
+            )
+
+        self.report_generator.add_table(
+            skipped_tests_table.return_table_str()
+        )
         self.report_generator.write(report_path)
