@@ -271,8 +271,7 @@ class CIMTestTemplates(object):
                     ["authentication"],
                     ["authentication", "default"],
                     ["authentication", "insecure"],
-                    ["authentication", "privileged"],
-                    ["authentication", "privileged"],
+                    ["authentication", "privileged"]
                 ],
             },
             {"name": "Certificates", "tags": [["certificate"]]},
