@@ -56,12 +56,25 @@ class JunitParser(object):
             "fields": None,
             "status": "failed" if testcase.result else "passed",
             "tag_stanza": None,
+            "fields_type": None,
         }
         props = self.yield_properties(testcase)
-        for prop in props:
-            if prop.name in row_template:
+        try:
+            for prop in props:
                 row_template[prop.name] = prop.value
-        return row_template
+
+            if [
+                i
+                for i, val in enumerate(row_template.values())
+                if val == None
+            ]:
+                raise Exception(
+                    testcase.name + "does not have all required properties"
+                )
+
+            return row_template
+        except Exception:
+            sys.exit(Exception)
 
     def yield_properties(self, testcase):
         """
@@ -88,22 +101,16 @@ def main():
         Entrypoint to the script.
     """
     ap = argparse.ArgumentParser()
-    group = ap.add_mutually_exclusive_group()
-    ap.add_argument("--junit-xml-path", help="Path to JUnit file", required=True)
-    ap.add_argument("--report-path", help="Path to Save Report", required=True)
-    group.add_argument(
-        "--overwrite", action="store_true", help="Overwrites report if exists"
+    ap.add_argument(
+        "--junit-xml-path", help="Path to JUnit file", required=True
     )
-    group.add_argument("--append", action="store_true", help="Append report if exists")
+    ap.add_argument(
+        "--report-path", help="Path to Save Report", required=True
+    )
     args = ap.parse_args()
 
     junit_xml_path = args.junit_xml_path
     report_path = args.report_path
-
-    if args.overwrite:
-        open(report_path, "w").close()
-    elif not args.append and os.path.isfile(report_path):
-        sys.exit("File already Exists. Provide --append or --overwrite to continue.")
 
     ju_p = JunitParser(junit_xml_path, report_path,)
     ju_p.parse_junit()
