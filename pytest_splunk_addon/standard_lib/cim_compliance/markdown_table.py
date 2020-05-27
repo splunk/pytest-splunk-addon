@@ -33,7 +33,7 @@ class MarkdownTable(BaseTable):
         for each_column in header_list:
             header_str += "| {} ".format(each_column)
             helper_str += "|:{}".format("-" * len(each_column))
-        return header_str + "|\n" + helper_str + "|\n"
+        return header_str + "|\n {} |\n".format(helper_str)
 
     def set_description(self, description):
         """
@@ -42,7 +42,7 @@ class MarkdownTable(BaseTable):
         Args: 
             description(str): Description string.
         """
-        self.table_description += "\n**Description:** " + description + "\n"
+        self.table_description += "\n {} \n".format(description)
 
     def add_row(self, value_list):
         """
@@ -54,7 +54,7 @@ class MarkdownTable(BaseTable):
         row_element = ""
         for each_value in value_list:
             row_element += "| {} ".format(each_value)
-        self.row_str += row_element + "|\n"
+        self.row_str += "{} |\n".format(row_element)
 
     def set_note(self, note_str):
         """
@@ -63,7 +63,7 @@ class MarkdownTable(BaseTable):
         Args: 
             note_str(str): Note string to be added.
         """
-        self.table_note = "\n*NOTE: " + note_str + "*\n"
+        self.table_note = "\n*NOTE: {} *\n ".format(note_str)
 
     def return_table_str(self):
         """

@@ -33,6 +33,7 @@ class CIMReportPlugin(object):
                     report.user_properties[4][0]: report.user_properties[4][1],
                     report.user_properties[5][0]: report.user_properties[5][1],
                     "status": report.outcome,
+                    "skip_type": "pytest.xfail" if report.keywords.get("xfail") else "",
                 }
             )
 
