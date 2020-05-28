@@ -56,7 +56,11 @@ class JunitParser(object):
         else:
             status = "passed"
 
-        skip_type = "-" if not status == "skipped" else testcase.result.type
+        test_property = (
+            "-"
+            if not status == "failed"
+            else testcase.result.message.splitlines()[0][:100]
+        )
         row_template = {
             "data_model": None,
             "data_set": None,
@@ -64,7 +68,7 @@ class JunitParser(object):
             "status": status,
             "tag_stanza": None,
             "fields_type": None,
-            "skip_type": skip_type,
+            "test_property": test_property,
         }
         props = self.yield_properties(testcase)
         try:
