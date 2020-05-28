@@ -24,30 +24,23 @@ class CIMReportPlugin(object):
         """
         Collect the data to be added into the report.
         """
-        if (
-            report.when == "call"
-            and "test_cim_required_fields" in report.nodeid
-        ):
-            self.data.append(
-                {
-                    report.user_properties[1][0]: report.user_properties[1][
-                        1
-                    ],
-                    report.user_properties[2][0]: report.user_properties[2][
-                        1
-                    ],
-                    report.user_properties[3][0]: report.user_properties[3][
-                        1
-                    ],
-                    report.user_properties[4][0]: report.user_properties[4][
-                        1
-                    ],
-                    report.user_properties[5][0]: report.user_properties[5][
-                        1
-                    ],
-                    "status": report.outcome,
-                }
-            )
+        if report.when == "call" and "test_cim_required_fields" in report.nodeid:
+            data_dict = {}
+            data_dict["status"] = report.outcome
+            keys = ["tag_stanza", "data_model", "data_set", "fields", "fields_type"]
+            for each_property in report.user_properties:
+                if each_property[0] in keys:
+                    data_dict[each_property[0]] = each_property[1]
+            data_dict["test_property"] = "-"
+            try:
+                if report.outcome == "failed":
+                    data_dict[
+                        "test_property"
+                    ] = report.longrepr.reprcrash.message.splitlines()[0][:100]
+            except AttributeError as e:
+                pass
+
+            self.data.append(data_dict)
 
     def pytest_terminal_summary(self, terminalreporter):
         if self.data:

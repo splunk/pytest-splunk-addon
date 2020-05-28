@@ -25,7 +25,7 @@ class MarkDownReport(CIMReport):
         Args:
             section_title(string): String containing title for new Section.
         """
-        self.markdown_str += "\n## {} \n".format(section_title)
+        self.markdown_str += "\n## {}\n".format(section_title)
 
     def add_section_note(self, section_note):
         """
