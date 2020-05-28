@@ -6,6 +6,7 @@ import argparse
 import errno
 import os
 import sys
+from html import escape, unescape
 from junitparser import JUnitXml, Properties
 
 
@@ -59,7 +60,7 @@ class JunitParser(object):
         test_property = (
             "-"
             if not status == "failed"
-            else testcase.result.message.splitlines()[0][:100]
+            else escape(unescape(testcase.result.message.splitlines()[0])[:100])
         )
         row_template = {
             "data_model": None,
