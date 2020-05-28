@@ -182,7 +182,8 @@ class CIMReportGenerator(object):
 
         for group_name, grouped_data in self._group_by(["tag_stanza", "data_set"]):
             field_summary_table = MarkdownTable(
-                " - ".join(group_name), ["Field", "Type", "Test Status"]
+                " - ".join(group_name),
+                ["Field", "Type", "Test Status", "Failure Message"],
             )
             for each_data in grouped_data:
                 fields = False
@@ -193,10 +194,11 @@ class CIMReportGenerator(object):
                             each_data["fields"],
                             each_data["fields_type"],
                             each_data["status"].title(),
+                            each_data["test_property"],
                         ]
                     )
             if not fields:
-                field_summary_table.add_row(["-", "-", "-"])
+                field_summary_table.add_row(["-", "-", "-", "-"])
             self.report_generator.add_table(field_summary_table.return_table_str())
             del field_summary_table
 
