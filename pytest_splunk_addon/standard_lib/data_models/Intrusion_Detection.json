@@ -18,21 +18,21 @@
           "name": "bytes",
           "type": "conditional",
           "condition": "bytes_in=* OR bytes_out=*",
-          "validity": "if(isnum(bytes))",
+          "validity": "if(isnum(bytes), bytes, null())",
           "comment": "Total count of bytes handled by this device/interface (bytes_in + bytes_out)."
         },
         {
           "name": "bytes_in",
           "type": "conditional",
           "condition": "bytes_in=*",
-          "validity": "if(isnum(bytes_in))",
+          "validity": "if(isnum(bytes_in), bytes_in, null())",
           "comment": "How many bytes this device/interface received."
         },
         {
           "name": "bytes_out",
           "type": "conditional",
           "condition": "bytes_out=*",
-          "validity": "if(isnum(bytes_out))",
+          "validity": "if(isnum(bytes_out), bytes_out, null())",
           "comment": "How many bytes this device/interface transmitted."
         },
         {
