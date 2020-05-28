@@ -211,13 +211,9 @@ class CIMReportGenerator(object):
         # Generating Skipped tests Table
 
         skipped_tests = list(
-            filter(lambda d: d["status"] == "skipped", self.data)
+            filter(lambda d: d["status"] == "skipped", self.data))
 
         if skipped_tests:
-            skipped_tests_table = MarkdownTable(
-                "Skipped Tests", ["Tag Stanza", "Data Set", "Field", "status"],
-
-            )
             skipped_tests_table = MarkdownTable(
                 "Skipped Tests",
                 ["Tag Stanza", "Data Set", "Field", "Skip Type"],
