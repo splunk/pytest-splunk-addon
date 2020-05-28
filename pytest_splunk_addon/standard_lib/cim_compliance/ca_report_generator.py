@@ -152,16 +152,17 @@ class CIMReportGenerator(object):
         # Generating Summary table.
 
         self.report_generator.add_section_title(" Summary")
-        summary_table = MarkdownTable(
-            "", ["Data Model", "Status", "Fail/Total"]
-        )
+        summary_table = MarkdownTable("", ["Data Model", "Status", "Fail/Total"])
+        data_models = iter(SUPPORTED_DATAMODELS)
+
         for data_model, stats in self._get_count_by(["data_model"]):
-            for each_model in iter(SUPPORTED_DATAMODELS):
+            for each_model in data_models:
                 if each_model == data_model[0]:
                     status = "Passed" if stats["failed"] == 0 else "Failed"
                     summary_table.add_row(
                         [data_model[0], status, self.fail_count(stats)]
                     )
+                    break
                 else:
                     summary_table.add_row([each_model, "N/A", "-"])
 
@@ -208,8 +209,13 @@ class CIMReportGenerator(object):
             del field_summary_table
 
         # Generating Skipped tests Table
+
         skipped_tests = list(
             filter(lambda d: d["status"] == "skipped", self.data)
+
+        skipped_tests_table = MarkdownTable(
+            "Skipped Tests", ["Tag Stanza", "Data Set", "Field", "status"],
+
         )
         if skipped_tests:
             skipped_tests_table = MarkdownTable(
@@ -218,15 +224,14 @@ class CIMReportGenerator(object):
             )
             self.report_generator.add_section_title("Skipped Tests Summary")
             for group, stats in self._get_count_by(
-                ["tag_stanza", "data_set", "fields", "skip_type"],
-                skipped_tests,
+
+                ["tag_stanza", "data_set", "fields", "status"], skipped_tests,
             ):
-                tag_stanza, data_set, field, skip_type = group
+                tag_stanza, data_set, field, status = group
                 if not field:
                     field = "-"
-                skipped_tests_table.add_row(
-                    [tag_stanza, data_set, field, skip_type]
-                )
+                skipped_tests_table.add_row([tag_stanza, data_set, field, status])
+
 
             self.report_generator.add_table(
                 skipped_tests_table.return_table_str()
@@ -237,4 +242,5 @@ class CIMReportGenerator(object):
             nsd_table.add_row([each_model])
         self.report_generator.add_table(nsd_table.return_table_str())
 
-        self.report_generator.write(report_path)
+        if self.data:
+            self.report_generator.write(report_path)

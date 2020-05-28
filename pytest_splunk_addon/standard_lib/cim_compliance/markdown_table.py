@@ -19,7 +19,7 @@ class MarkdownTable(BaseTable):
         Args: 
             title(str): Title string.
         """
-        return "\n" + title + "\n" + "-" * len(title) + "\n" if title else ""
+        return "\n {} \n{} \n".format(title, "-" * len(title)) if title else ""
 
     def __set_headers(self, header_list):
         """
@@ -33,7 +33,7 @@ class MarkdownTable(BaseTable):
         for each_column in header_list:
             header_str += "| {} ".format(each_column)
             helper_str += "|:{}".format("-" * len(each_column))
-        return header_str + "|\n {} |\n".format(helper_str)
+        return "{} |\n {} |\n".format(header_str, helper_str)
 
     def set_description(self, description):
         """
@@ -42,7 +42,7 @@ class MarkdownTable(BaseTable):
         Args: 
             description(str): Description string.
         """
-        self.table_description += "\n {} \n".format(description)
+        self.table_description = "\n {} \n".format(description)
 
     def add_row(self, value_list):
         """

@@ -7,6 +7,7 @@ from .base_report import CIMReport
 class MarkDownReport(CIMReport):
     def __init__(self):
         self.markdown_str = ""
+        self.note_str = ""
 
     def set_title(self, title_string):
         """
@@ -15,7 +16,7 @@ class MarkDownReport(CIMReport):
         Args:
             title_string(string): String containing title for report.
         """
-        self.title_str = "# " + title_string + "\n"
+        self.title_str = "# {} \n".format(title_string)
 
     def add_section_title(self, section_title):
         """
@@ -24,7 +25,7 @@ class MarkDownReport(CIMReport):
         Args:
             section_title(string): String containing title for new Section.
         """
-        self.markdown_str += "\n## " + section_title + "\n"
+        self.markdown_str += "\n## {} \n".format(section_title)
 
     def add_section_note(self, section_note):
         """
@@ -33,7 +34,7 @@ class MarkDownReport(CIMReport):
         Args:
             section_note(string): String containing note for report.
         """
-        self.markdown_str += "## Note: " + section_note + "\n"
+        self.note_str = "## Note: {} \n".format(section_note)
 
     def add_table(self, table_string):
         """
@@ -54,3 +55,4 @@ class MarkDownReport(CIMReport):
         with open(path, "w") as report:
             report.write(self.title_str)
             report.write(self.markdown_str)
+            report.write(self.note_str)

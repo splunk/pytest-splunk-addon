@@ -33,9 +33,9 @@ class CIMReportPlugin(object):
                     report.user_properties[4][0]: report.user_properties[4][1],
                     report.user_properties[5][0]: report.user_properties[5][1],
                     "status": report.outcome,
-                    "skip_type": "pytest.xfail" if report.keywords.get("xfail") else "",
                 }
             )
 
     def pytest_terminal_summary(self, terminalreporter):
-        terminalreporter.write_sep("-", "Generated markdown report!")
+        if self.data:
+            terminalreporter.write_sep("-", "Generated markdown report!")
