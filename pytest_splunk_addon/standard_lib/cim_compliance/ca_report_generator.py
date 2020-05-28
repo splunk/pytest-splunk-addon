@@ -6,6 +6,37 @@ from .markdown_table import MarkdownTable
 from itertools import groupby
 from collections import Counter
 
+SUPPORTED_DATAMODELS = [
+    "Alerts",
+    "Authentication",
+    "Certificates",
+    "Change",
+    "DLP",
+    "Email",
+    "Endpoint",
+    "Intrusion_detection",
+    "Malware",
+    "Network_Resolution",
+    "Network_Sessions",
+    "Network_Traffic",
+    "Updates",
+    "Vulnerabilities",
+    "Web",
+]
+NOT_SUPPORTED_DATAMODELS = [
+    "Application_State",
+    "Change_Analysis",
+    "Compute_Inventory",
+    "Databases",
+    "Event_Signatures",
+    "Interprocess_Messaging",
+    "JVM",
+    "Performance",
+    "Splunk_Audit",
+    "Splunk_CIM_Validation",
+    "Ticket_Management",
+]
+
 
 class CIMReportGenerator(object):
     """
@@ -119,11 +150,20 @@ class CIMReportGenerator(object):
         )
 
         # Generating Summary table.
-        self.report_generator.add_section_title("Summary")
-        summary_table = MarkdownTable("", ["Data Model", "Fail/Total"])
 
+        self.report_generator.add_section_title(" Summary")
+        summary_table = MarkdownTable(
+            "", ["Data Model", "Status", "Fail/Total"]
+        )
         for data_model, stats in self._get_count_by(["data_model"]):
-            summary_table.add_row([data_model[0], self.fail_count(stats)])
+            for each_model in iter(SUPPORTED_DATAMODELS):
+                if each_model == data_model[0]:
+                    status = "Passed" if stats["failed"] == 0 else "Failed"
+                    summary_table.add_row(
+                        [data_model[0], status, self.fail_count(stats)]
+                    )
+                else:
+                    summary_table.add_row([each_model, "N/A", "-"])
 
         self.report_generator.add_table(summary_table.return_table_str())
 
@@ -191,4 +231,10 @@ class CIMReportGenerator(object):
             self.report_generator.add_table(
                 skipped_tests_table.return_table_str()
             )
+
+        nsd_table = MarkdownTable("Not Supported Datamodels", ["Name"])
+        for each_model in NOT_SUPPORTED_DATAMODELS:
+            nsd_table.add_row([each_model])
+        self.report_generator.add_table(nsd_table.return_table_str())
+
         self.report_generator.write(report_path)
