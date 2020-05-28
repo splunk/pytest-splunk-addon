@@ -19,7 +19,7 @@ class MarkdownTable(BaseTable):
         Args: 
             title(str): Title string.
         """
-        return "\n {} \n{} \n".format(title, "-" * len(title)) if title else ""
+        return "### {}".format(title) if title else ""
 
     def __set_headers(self, header_list):
         """
