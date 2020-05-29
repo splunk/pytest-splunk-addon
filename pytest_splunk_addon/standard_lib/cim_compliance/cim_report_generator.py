@@ -14,7 +14,7 @@ SUPPORTED_DATAMODELS = [
     "DLP",
     "Email",
     "Endpoint",
-    "Intrusion_detection",
+    "Intrusion_Detection",
     "Malware",
     "Network_Resolution",
     "Network_Sessions",
