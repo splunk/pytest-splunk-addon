@@ -1,4 +1,6 @@
 import pytest
+import os
+
 from pytest_splunk_addon.standard_lib.cim_compliance import CIMReportGenerator
 
 class TestCIMReport(object):
@@ -47,7 +49,7 @@ class TestCIMReport(object):
 
         with open("test_report.md","r") as inputfile:
             test_data = inputfile.read()
-        with open("test_data/sample_cim_report.md","r") as input_file:
+        with open(os.path.join(os.path.dirname(__file__), "test_data", "sample_cim_report.md"),"r") as input_file:
             actual_data = input_file.read() 
         assert test_data==actual_data    
 
