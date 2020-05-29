@@ -158,11 +158,17 @@ class CIMReportGenerator(object):
         Displays test case summary for the stanzas in tags.conf and the dataset mapped with it.
         """
         self.report_generator.add_section_title("Tag Stanza Mapping")
-        tag_stanza_map = MarkdownTable("", ["Tag Stanza", "Data Set", "Fail/Total"])
+        tag_stanza_map = MarkdownTable(
+            "", ["Tag Stanza", "Data Model", "Data Set", "Fail/Total"]
+        )
 
-        for group, stats in self._get_count_by(["data_set", "tag_stanza"]):
-            data_set, tag_stanza = group
-            tag_stanza_map.add_row([tag_stanza, data_set, self.fail_count(stats)])
+        for group, stats in self._get_count_by(
+            ["tag_stanza", "data_model", "data_set"]
+        ):
+            tag_stanza, data_model, data_set = group
+            tag_stanza_map.add_row(
+                [tag_stanza, data_model, data_set, self.fail_count(stats)]
+            )
 
         self.report_generator.add_table(tag_stanza_map.return_table_str())
 
