@@ -57,7 +57,7 @@
         {
           "name": "object_category",
           "type": "required",
-          "validity": "if(match(object_category,\"^\\S+$\"),object_category,null())",
+          "validity": "if(match(object_category,\"^[a-z_]+$\"),object_category,null())",
           "comment": "Generic name for the class of the updated resource object. Expected values may be specific to an app."
         },
         {
