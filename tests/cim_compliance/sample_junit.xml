@@ -1,0 +1,33 @@
+<testsuites>
+    <testsuite errors="0" failures="43" hostname="W185-SiddharthK" name="pytest" skipped="0" tests="43" time="53.962" timestamp="2020-05-28T17:32:25.157202">
+        <testcase classname="tests.test_debug.Test_App" file="pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\test_templates.py" line="53" name="test_cim_required_fields[testcase1]" time="10.304">
+            <properties>
+                <property name="tag_stanza" value="dataset_name=&quot;dataset_1&quot;" />
+                <property name="data_model" value="datamodel_1" />
+                <property name="data_set" value="dataset_1" />
+                <property name="fields" value="field_1" />
+                <property name="fields_type" value="required" />
+            </properties>
+            <failure message="splunklib.binding.HTTPError: HTTP 400 Bad Request"> Error Message </failure>
+        </testcase>
+        <testcase classname="tests.test_debug.Test_App" file="pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\test_templates.py" line="53" name="test_cim_required_fields[testcase2]" time="10.304">
+            <properties>
+                <property name="tag_stanza" value="dataset_name=&quot;dataset_2&quot;" />
+                <property name="data_model" value="datamodel_2" />
+                <property name="data_set" value="dataset_2" />
+                <property name="fields" value="field_2" />
+                <property name="fields_type" value="required" />
+            </properties>
+            <failure message="AssertionError"> Error Message </failure>
+        </testcase>
+        <testcase classname="tests.test_debug.Test_App" file="pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\test_templates.py" line="53" name="test_cim_required_fields[testcase3]" time="10.304">
+            <properties>
+                <property name="tag_stanza" value="dataset_name=&quot;dataset_3&quot;" />
+                <property name="data_model" value="datamodel_3" />
+                <property name="data_set" value="dataset_3" />
+                <property name="fields" value="field_3" />
+                <property name="fields_type" value="conditional" />
+            </properties>
+        </testcase>
+    </testsuite>
+</testsuites>

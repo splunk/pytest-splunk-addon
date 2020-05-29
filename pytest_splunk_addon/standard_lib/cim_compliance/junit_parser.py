@@ -1,7 +1,7 @@
 """
 Parse the Junit XML report and convert it to required format
 """
-from .ca_report_generator import CIMReportGenerator
+from . import CIMReportGenerator
 import argparse
 import errno
 import os
