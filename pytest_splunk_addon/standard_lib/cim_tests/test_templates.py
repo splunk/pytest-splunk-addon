@@ -274,8 +274,23 @@ class CIMTestTemplates(object):
                     ["authentication", "privileged"]
                 ],
             },
-            {"name": "Certificates", "tags": [["certificate"]]},
-            {"name": "Change", "tags": [["change"]]},
+            {
+                "name": "Certificates", 
+                "tags": [
+                    ["certificate"],
+                    ["certificate", "ssl"]
+                ]
+            },
+            {
+                "name": "Change", 
+                "tags": [
+                    ["change"],
+                    ["change","audit"],
+                    ["change","endpoint"],
+                    ["change","network"],
+                    ["change","account"]
+                ]
+            },
             {
                 "name": "Compute_Inventory",
                 "tags": [
@@ -305,7 +320,15 @@ class CIMTestTemplates(object):
                     ["database", "query", "stats"],
                 ],
             },
-            {"name": "Email", "tags": [["email"]]},
+            {
+                "name": "Email", 
+                "tags": [
+                    ["email"],
+                    ["email", "delivery"],
+                    ["email", "content"],
+                    ["email", "filter"]
+                ]
+            },
             {
                 "name": "Endpoint",
                 "tags": [
