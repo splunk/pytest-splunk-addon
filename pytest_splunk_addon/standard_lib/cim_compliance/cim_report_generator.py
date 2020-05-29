@@ -80,7 +80,10 @@ class CIMReportGenerator(object):
         """
         if not data:
             data = self.data
-        return groupby(data, lambda testcase: [testcase[key] for key in keys])
+        return groupby(
+            sorted(data, key=lambda data: data["data_model"]),
+            lambda testcase: [testcase[key] for key in keys],
+        )
 
     def _get_count_by(self, keys, data=None):
         """
@@ -150,6 +153,9 @@ class CIMReportGenerator(object):
                     break
                 else:
                     summary_table.add_row([each_model, "N/A", "-"])
+
+        for each in data_models:
+            summary_table.add_row([each, "N/A", "-"])
 
         self.report_generator.add_table(summary_table.return_table_str())
 
