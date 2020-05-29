@@ -131,6 +131,89 @@ class CIMReportGenerator(object):
             (counter["failed"] + counter["passed"] + counter["skipped"]),
         )
 
+    def generate_summary_table(self):
+        """
+        Displays test case summary of the add-on for all the supported data models.
+        """
+        self.report_generator.add_section_title(" Summary")
+        summary_table = MarkdownTable("", ["Data Model", "Status", "Fail/Total"])
+
+        data_models = iter(SUPPORTED_DATAMODELS)
+
+        for data_model, stats in self._get_count_by(["data_model"]):
+            for each_model in data_models:
+                if each_model == data_model[0]:
+                    status = "Passed" if stats["failed"] == 0 else "Failed"
+                    summary_table.add_row(
+                        [data_model[0], status, self.fail_count(stats)]
+                    )
+                    break
+                else:
+                    summary_table.add_row([each_model, "N/A", "-"])
+
+        self.report_generator.add_table(summary_table.return_table_str())
+
+    def generate_tag_stanza_mapping_table(self):
+        """
+        Displays test case summary for the stanzas in tags.conf and the dataset mapped with it.
+        """
+        self.report_generator.add_section_title("Tag Stanza Mapping")
+        tag_stanza_map = MarkdownTable("", ["Tag Stanza", "Data Set", "Fail/Total"])
+
+        for group, stats in self._get_count_by(["data_set", "tag_stanza"]):
+            data_set, tag_stanza = group
+            tag_stanza_map.add_row([tag_stanza, data_set, self.fail_count(stats)])
+
+        self.report_generator.add_table(tag_stanza_map.return_table_str())
+
+    def generate_field_summary_table(self):
+        """
+        Displays test case summary for all the fields in the dataset for the tag-stanza it is mapped with.
+        """
+        self.report_generator.add_section_title("Field Summary")
+
+        for group_name, grouped_data in self._group_by(["tag_stanza", "data_set"]):
+            field_summary_table = MarkdownTable(
+                " - ".join(group_name),
+                ["Field", "Type", "Test Status", "Failure Message"],
+            )
+
+            for each_data in grouped_data:
+                fields = False
+                if each_data["fields"] and not "," in each_data["fields"]:
+                    fields = True
+                    field_summary_table.add_row(
+                        [
+                            each_data["fields"],
+                            each_data["fields_type"],
+                            each_data["status"].title(),
+                            each_data["test_property"],
+                        ]
+                    )
+            if not fields:
+                field_summary_table.add_row(["-", "-", "-", "-"])
+            self.report_generator.add_table(field_summary_table.return_table_str())
+            del field_summary_table
+
+    def generate_skip_tests_table(self):
+        """
+        """
+        skipped_tests = list(filter(lambda d: d["status"] == "skipped", self.data))
+        if skipped_tests:
+            skipped_tests_table = MarkdownTable(
+                "", ["Tag Stanza", "Data Set", "Field"],
+            )
+            self.report_generator.add_section_title("Skipped Tests Summary")
+            for group, stats in self._get_count_by(
+                ["tag_stanza", "data_set", "fields"], skipped_tests,
+            ):
+                tag_stanza, data_set, field = group
+                if not field:
+                    field = "-"
+                skipped_tests_table.add_row([tag_stanza, data_set, field])
+
+            self.report_generator.add_table(skipped_tests_table.return_table_str())
+
     def generate_report(self, report_path):
         """
         Function to generate report from the stored data.
@@ -150,74 +233,16 @@ class CIMReportGenerator(object):
         )
 
         # Generating Summary table.
-
-        self.report_generator.add_section_title(" Summary")
-        summary_table = MarkdownTable("", ["Data Model", "Status", "Fail/Total"])
-        data_models = iter(SUPPORTED_DATAMODELS)
-
-        for data_model, stats in self._get_count_by(["data_model"]):
-            for each_model in data_models:
-                if each_model == data_model[0]:
-                    status = "Passed" if stats["failed"] == 0 else "Failed"
-                    summary_table.add_row(
-                        [data_model[0], status, self.fail_count(stats)]
-                    )
-                    break
-                else:
-                    summary_table.add_row([each_model, "N/A", "-"])
-
-        self.report_generator.add_table(summary_table.return_table_str())
+        self.generate_summary_table()
 
         # Generating Tag Stanza Mapping table.
-        self.report_generator.add_section_title("Tag Stanza Mapping")
-        tag_stanza_map = MarkdownTable("", ["Tag Stanza", "Data Set", "Fail/Total"])
-        for group, stats in self._get_count_by(["data_set", "tag_stanza"]):
-            data_set, tag_stanza = group
-            tag_stanza_map.add_row([tag_stanza, data_set, self.fail_count(stats)])
-
-        self.report_generator.add_table(tag_stanza_map.return_table_str())
+        self.generate_tag_stanza_mapping_table()
 
         # Generating Field Summary tables.
-        self.report_generator.add_section_title("Field Summary")
-
-        for group_name, grouped_data in self._group_by(["tag_stanza", "data_set"]):
-            field_summary_table = MarkdownTable(
-                " - ".join(group_name),
-                ["Field", "Type", "Test Status", "Failure Message"],
-            )
-            for each_data in grouped_data:
-                fields = False
-                if each_data["fields"] and not "," in each_data["fields"]:
-                    fields = True
-                    field_summary_table.add_row(
-                        [
-                            each_data["fields"],
-                            each_data["fields_type"],
-                            each_data["status"].title(),
-                            each_data["test_property"],
-                        ]
-                    )
-            if not fields:
-                field_summary_table.add_row(["-", "-", "-", "-"])
-            self.report_generator.add_table(field_summary_table.return_table_str())
-            del field_summary_table
+        self.generate_field_summary_table()
 
         # Generating Skipped tests Table
-        skipped_tests = list(filter(lambda d: d["status"] == "skipped", self.data))
-        if skipped_tests:
-            skipped_tests_table = MarkdownTable(
-                "", ["Tag Stanza", "Data Set", "Field"],
-            )
-            self.report_generator.add_section_title("Skipped Tests Summary")
-            for group, stats in self._get_count_by(
-                ["tag_stanza", "data_set", "fields"], skipped_tests,
-            ):
-                tag_stanza, data_set, field = group
-                if not field:
-                    field = "-"
-                skipped_tests_table.add_row([tag_stanza, data_set, field])
-
-            self.report_generator.add_table(skipped_tests_table.return_table_str())
+        self.generate_skip_tests_table()
 
         # Table for not supported datamodels
         nsd_table = MarkdownTable("Not Supported Datamodels", ["Name"])
