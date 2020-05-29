@@ -27,6 +27,15 @@ class MarkDownReport(CIMReport):
         """
         self.markdown_str += "\n## {}\n".format(section_title)
 
+    def add_section_description(self, description):
+        """
+        Adds description string to the section
+
+        Args:
+            description(str): Description string.
+        """
+        self.markdown_str += "\n**Description:** " + description + "\n"
+
     def add_section_note(self, section_note):
         """
         Function to set Note in a report
