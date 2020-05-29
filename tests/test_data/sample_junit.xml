@@ -18,7 +18,7 @@
                 <property name="fields" value="field_2" />
                 <property name="fields_type" value="required" />
             </properties>
-            <failure message="AssertionError"> Error Message </failure>
+            <failure message="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbb"> Error Message </failure>
         </testcase>
         <testcase classname="tests.test_debug.Test_App" file="pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\test_templates.py" line="53" name="test_cim_required_fields[testcase3]" time="10.304">
             <properties>
@@ -28,6 +28,16 @@
                 <property name="fields" value="field_3" />
                 <property name="fields_type" value="conditional" />
             </properties>
+        </testcase>
+        <testcase classname="tests.test_debug.Test_App" file="pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\test_templates.py" line="53" name="test_cim_required_fields[testcase4]" time="10.304">
+            <properties>
+                <property name="tag_stanza" value="dataset_name=&quot;dataset_4&quot;" />
+                <property name="data_model" value="datamodel_4" />
+                <property name="data_set" value="dataset_4" />
+                <property name="fields" value="field_4" />
+                <property name="fields_type" value="required" />
+            </properties>
+            <skipped message="unconditional skip" type="pytest.skip"> Unconditional skip</skipped>
         </testcase>
     </testsuite>
 </testsuites>

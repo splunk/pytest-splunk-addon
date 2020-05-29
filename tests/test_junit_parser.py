@@ -1,6 +1,7 @@
 import unittest
 import pytest
-from mock import patch
+import os
+
 
 from pytest_splunk_addon.standard_lib.cim_compliance import JunitParser
 
@@ -21,7 +22,7 @@ test_data = [
         "fields_type": "required",
         "tag_stanza": "dataset_name=&quot;dataset_2&quot;",
         "status": "failed",
-        "test_property": "AssertionError",
+        "test_property": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     },
     {
         "data_model": "datamodel_3",
@@ -32,12 +33,24 @@ test_data = [
         "status": "passed",
         "test_property": "-",
     },
+    {
+        "data_model": "datamodel_4",
+        "fields": "field_4",
+        "data_set": "dataset_4",
+        "fields_type": "required",
+        "tag_stanza": "dataset_name=&quot;dataset_4&quot;",
+        "status": "skipped",
+        "test_property": "-",
+    },
 ]
 
 
-@pytest.mark.cim_compliance
+@pytest.mark.docker
 def test_data_generation():
-    jp = JunitParser("sample_junit.xml")
+    jp = JunitParser(
+        os.path.join(
+            os.path.dirname(__file__), "test_data", "sample_junit.xml"
+        )
+    )
     jp.parse_junit()
     assert jp.data == test_data
-
