@@ -13,6 +13,9 @@ Create a test file in the tests folder
             def empty_method():
                 pass
 
+
+.. _test_execution:
+
 There are two ways to execute the tests:
 
 **1. Running tests with an external Splunk instance**

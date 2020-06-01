@@ -13,6 +13,7 @@ pytest-splunk-addon documentation
    overview
    how_to_use
    cim_tests
+   cim_compliance
    field_tests
    release_history
    api_reference/api_reference

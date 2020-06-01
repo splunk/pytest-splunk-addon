@@ -25,6 +25,7 @@ Release notes
 
     **New Features:**
 
+    * Plugin now generates CIM compliance report for the add-ons, which provides insights to the user about the compatibility of the add-ons with the supported CIM data models.
     * Provided support of setup fixtures which can be used for making necessary configurations in the testing environment required for test execution. 
     * Optimisation of the SPL search query for faster execution of the test cases.
     * Added ``--search-index``, ``--search-retry``, ``--search-interval`` pytest arguments to provide custom values of Splunk index, retries and time interval respectively.
