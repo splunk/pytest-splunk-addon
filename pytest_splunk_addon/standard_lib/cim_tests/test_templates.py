@@ -57,10 +57,10 @@ class CIMTestTemplates(object):
         self, splunk_search_util, splunk_searchtime_cim_fields, record_property
     ):
         """
-        Test the the required fields in the data models are extracted with valid values. 
+        Test the the required fields in the data models are extracted with valid values.
         Supports 3 scenarios. The test order is maintained for better test report.
 
-            - Check that there is at least 1 event mapped with the data model 
+            - Check that there is at least 1 event mapped with the data model
             - Check that each required field is extracted in all of the events mapped with the data model.
             - Check that if there are inter dependent fields, either all fields should be
               extracted or none of them should be extracted.
@@ -260,57 +260,179 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_mapped_datamodel
     def test_eventtype_mapped_multiple_cim_datamodel(
-        self, splunk_search_util, record_property, caplog
+        self,
+        splunk_search_util,
+        splunk_searchtime_cim_mapped_datamodel,
+        record_property,
+        caplog,
     ):
         """
         This test case check that event type is not be mapped with more than one data model 
 
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            splunk_searchtime_cim_mapped_datamodel: Object which contain eventtype list
             record_property (fixture): Document facts of test cases.
             caplog (fixture): fixture to capture logs.
         """
 
         data_models = [
-            "Alerts",
-            "Authentication",
-            "Certificates",
-            "Change",
-            "Compute_Inventory",
-            "DLP",
-            "Databases",
-            "Email",
-            "Endpoint",
-            "Event_Signatures",
-            "Interprocess_Messaging",
-            "Intrusion_Detection",
-            "JVM",
-            "Malware",
-            "Network_Resolution",
-            "Network_Sessions",
-            "Network_Traffic",
-            "Performance",
-            "Splunk_Audit",
-            "Ticket_Management",
-            "Updates",
-            "Vulnerabilities",
-            "Web",
+            {"name": "Alerts", "tags": [["alert"]]},
+            {
+                "name": "Authentication",
+                "tags": [
+                    ["authentication"],
+                    ["authentication", "default"],
+                    ["authentication", "insecure"],
+                    ["authentication", "privileged"]
+                ],
+            },
+            {
+                "name": "Certificates", 
+                "tags": [
+                    ["certificate"],
+                    ["certificate", "ssl"]
+                ]
+            },
+            {
+                "name": "Change", 
+                "tags": [
+                    ["change"],
+                    ["change","audit"],
+                    ["change","endpoint"],
+                    ["change","network"],
+                    ["change","account"]
+                ]
+            },
+            {
+                "name": "Compute_Inventory",
+                "tags": [
+                    ["inventory", "cpu"],
+                    ["inventory", "memory"],
+                    ["inventory", "network"],
+                    ["inventory", "storage"],
+                    ["inventory", "system", "version"],
+                    ["inventory", "user"],
+                    ["inventory", "user", "default"],
+                    ["inventory", "virtual"],
+                    ["inventory", "virtual", "snapshot"],
+                    ["inventory", "virtual", "tools"],
+                ],
+            },
+            {"name": "DLP", "tags": [["dlp", "incident"]]},
+            {
+                "name": "Databases",
+                "tags": [
+                    ["database"],
+                    ["database", "instance"],
+                    ["database", "instance", "stats"],
+                    ["database", "instance", "session"],
+                    ["database", "instance", "lock"],
+                    ["database", "query"],
+                    ["database", "query", "tablespace"],
+                    ["database", "query", "stats"],
+                ],
+            },
+            {
+                "name": "Email", 
+                "tags": [
+                    ["email"],
+                    ["email", "delivery"],
+                    ["email", "content"],
+                    ["email", "filter"]
+                ]
+            },
+            {
+                "name": "Endpoint",
+                "tags": [
+                    ["listening", "port"],
+                    ["process", "report"],
+                    ["service", "report"],
+                    ["endpoint", "filesystem"],
+                    ["endpoint", "registry"],
+                ],
+            },
+            {"name": "Event_Signatures", "tags": [["track_event_signatures"]]},
+            {"name": "Interprocess_Messaging", "tags": [["messaging"]]},
+            {"name": "Intrusion_Detection", "tags": [["ids", "attack"]]},
+            {
+                "name": "JVM",
+                "tags": [
+                    ["jvm"],
+                    ["jvm", "threading"],
+                    ["jvm", "runtime"],
+                    ["jvm", "os"],
+                    ["jvm", "compilation"],
+                    ["jvm", "classloading"],
+                    ["jvm", "memory"],
+                ],
+            },
+            {
+                "name": "Malware",
+                "tags": [["malware", "attack"], ["malware", "operations"]],
+            },
+            {"name": "Network_Resolution", "tags": [["network", "resolution", "dns"]]},
+            {
+                "name": "Network_Sessions",
+                "tags": [
+                    ["network", "session"],
+                    ["network", "session", "start"],
+                    ["network", "session", "end"],
+                    ["network", "session", "dhcp"],
+                    ["network", "session", "vpn"],
+                ],
+            },
+            {"name": "Network_Traffic", "tags": [["network", "communicate"]]},
+            {
+                "name": "Performance",
+                "tags": [
+                    ["performance", "cpu"],
+                    ["performance", "facilities"],
+                    ["performance", "memory"],
+                    ["performance", "storage"],
+                    ["performance", "network"],
+                    ["performance", "os"],
+                    ["performance", "os", "time", "synchronize"],
+                    ["performance", "os", "uptime"],
+                ],
+            },
+            {
+                "name": "Splunk_Audit",
+                "tags": [["modaction"], ["modaction", "invocation"]],
+            },
+            {
+                "name": "Ticket_Management",
+                "tags": [
+                    ["ticketing"],
+                    ["ticketing", "change"],
+                    ["ticketing", "incident"],
+                    ["ticketing", "problem"],
+                ],
+            },
+            {"name": "Updates", "tags": [["update", "status"], ["update", "error"]]},
+            {"name": "Vulnerabilities", "tags": [["report", "vulnerability"]]},
+            {"name": "Web", "tags": [["web"], ["web", "proxy"]]},
         ]
 
-        search = ""
-        # Iterate data models list to create a search query
-        for index, datamodel in enumerate(data_models):
-            if index == 0:
-                search += f'| tstats count from datamodel={datamodel}  by eventtype | eval dm_type="{datamodel}"\n'
-            elif datamodel == "Splunk_Audit":
-                # Exclude the internal search logs in the results
-                search += f'| append [| tstats count from datamodel={datamodel} WHERE index!="_*"  by eventtype | eval dm_type="{datamodel}"]\n'
-            else:
-                search += f'| append [| tstats count from datamodel={datamodel}  by eventtype | eval dm_type="{datamodel}"]\n'
+        search = "search "
+        search += " OR ".join(
+            "eventtype={} \n".format(eventtype)
+            for eventtype in splunk_searchtime_cim_mapped_datamodel["eventtypes"]
+        )
+        search += " | fields eventtype,tag \n"
+
+        for data_model in data_models:
+            search += "| appendpipe [ | search "
+            search += " OR ".join(
+                "({})".format((" ".join("tag={}".format(tag) for tag in tags_list)))
+                for tags_list in data_model.get("tags")
+            )
+            search += f" | eval dm_type=\"{data_model.get('name')}\"]\n"
 
         search += """| stats delim=", " dc(dm_type) as datamodel_count, values(dm_type) as datamodels by eventtype | nomv datamodels
-        | where datamodel_count > 1 and eventtype!="err0r"
+        | where datamodel_count > 1 and NOT eventtype IN ("err0r")
         """
+
         record_property("search", search)
 
         results = list(splunk_search_util.getFieldValuesList(search, splunk_search_util.search_interval, splunk_search_util.search_retry))

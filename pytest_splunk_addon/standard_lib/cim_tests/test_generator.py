@@ -12,6 +12,7 @@ from ..addon_parser import Field
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
+
 class CIMTestGenerator(object):
     """
     Generates test cases to verify the CIM compatibility.
@@ -62,6 +63,8 @@ class CIMTestGenerator(object):
             yield from self.generate_field_extractions_test()
         elif fixture.endswith("not_allowed_in_search"):
             yield from self.generate_fields_event_count_test()
+        elif fixture.endswith("mapped_datamodel"):
+            yield from self.generate_mapped_datamodel_tests()
 
     def get_mapped_datasets(self):
         """
@@ -86,8 +89,9 @@ class CIMTestGenerator(object):
             test_dataset = dataset_list[-1]
             LOGGER.info(
                 "Generating cim tests for tag_stanza=%s, dataset_list=%s",
-                tag_stanza, test_dataset
-                )
+                tag_stanza,
+                test_dataset,
+            )
             # Test to check there is at least one event in the dataset
             yield pytest.param(
                 {"tag_stanza": tag_stanza, "data_set": dataset_list, "fields": []},
@@ -216,3 +220,19 @@ class CIMTestGenerator(object):
             for each_field in common_fields_list
             if each_field.type in test_type
         ]
+
+    def generate_mapped_datamodel_tests(self):
+        """
+            Generates the tests to check event type is not be mapped with more than one data model
+
+            1. Get a list of eventtype which defined in eventtype configuration.
+            2. yield the eventtype list
+        """
+        eventtypes = []
+        for each_eventtype in self.addon_parser.get_eventtypes():
+            eventtypes.append(each_eventtype.get("stanza"))
+
+        yield pytest.param( 
+                {"eventtypes" : eventtypes},
+                id=f"mapped_datamodel_tests",
+            )
