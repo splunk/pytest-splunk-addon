@@ -15,6 +15,10 @@ class CIMReport(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
+    def add_section_description(self, string):
+        raise NotImplementedError()
+
+    @abc.abstractmethod
     def add_section_note(self, string):
         raise NotImplementedError()
 
