@@ -163,7 +163,7 @@
           "name": "protocol",
           "type": "conditional",
           "condition": "| where match(src, \"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\") or match(dest, \"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\")",
-          "expected_values": ["ip"],
+          "expected_values": ["ip", "icmp"],
           "comment": "The OSI layer 3 (network) protocol of the traffic observed, in lower case. For example, ip, appletalk, ipx."
         },
         {
