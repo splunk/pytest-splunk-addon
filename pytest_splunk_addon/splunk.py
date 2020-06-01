@@ -17,7 +17,6 @@ from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 
-# from .standard_lib.markdown_report import MarkdownReport
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
