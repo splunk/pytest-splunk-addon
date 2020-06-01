@@ -44,7 +44,9 @@ class CIMReportPlugin(object):
 
     def pytest_terminal_summary(self, terminalreporter):
         if self.data:
-            terminalreporter.write_sep("-", "Generated markdown report!")
+            terminalreporter.write_sep(
+                "-", "Generated markdown report: {}".format(self.report_path)
+            )
         else:
             terminalreporter.write_sep(
                 "-",

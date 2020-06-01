@@ -14,7 +14,7 @@ SUPPORTED_DATAMODELS = [
     "DLP",
     "Email",
     "Endpoint",
-    "Intrusion_detection",
+    "Intrusion_Detection",
     "Malware",
     "Network_Resolution",
     "Network_Sessions",
@@ -80,7 +80,10 @@ class CIMReportGenerator(object):
         """
         if not data:
             data = self.data
-        return groupby(data, lambda testcase: [testcase[key] for key in keys])
+        return groupby(
+            sorted(data, key=lambda data: data["data_model"]),
+            lambda testcase: [testcase[key] for key in keys],
+        )
 
     def _get_count_by(self, keys, data=None):
         """
@@ -152,6 +155,9 @@ class CIMReportGenerator(object):
                 else:
                     summary_table.add_row([each_model, "N/A", "-"])
 
+        for each in data_models:
+            summary_table.add_row([each, "N/A", "-"])
+
         self.report_generator.add_table(summary_table.return_table_str())
 
     def generate_tag_stanza_mapping_table(self):
@@ -159,7 +165,7 @@ class CIMReportGenerator(object):
         Displays test case summary for the stanzas in tags.conf and the dataset mapped with it.
         """
         self.report_generator.add_section_title("Tag Stanza Mapping")
-        self.report_generator.add_section_description("Displays test case summary for the stanzas in tags.conf and the dataset mapped with it.")
+        self.report_generator.add_section_description("Displays test case summary for the stanzas in tags.conf and the data model mapped with it.")
         tag_stanza_map = MarkdownTable(
             "", ["Tag Stanza", "Data Model", "Data Set", "Fail/Total"]
         )

@@ -1,7 +1,7 @@
 """
 Parse the Junit XML report and convert it to required format
 """
-from .ca_report_generator import CIMReportGenerator
+from . import CIMReportGenerator
 import argparse
 import errno
 import os
@@ -60,34 +60,29 @@ class JunitParser(object):
         test_property = (
             "-"
             if not status == "failed"
-            else escape(unescape(testcase.result.message.splitlines()[0])[:100])
+            else escape(
+                unescape(testcase.result.message.splitlines()[0])[:100]
+            )
         )
         row_template = {
-            "data_model": None,
-            "data_set": None,
-            "fields": None,
             "status": status,
-            "tag_stanza": None,
-            "fields_type": None,
             "test_property": test_property,
         }
-        props = self.yield_properties(testcase)
-        try:
-            for prop in props:
+        for prop in self.yield_properties(testcase):
+            if prop.name in [
+                "data_model",
+                "data_set",
+                "fields",
+                "tag_stanza",
+                "fields_type",
+            ]:
                 row_template[prop.name] = prop.value
 
-            if [
-                i
-                for i, val in enumerate(row_template.values())
-                if val == None
-            ]:
-                raise Exception(
-                    testcase.name + " does not have all required properties"
-                )
-
-            return row_template
-        except Exception as e:
-            sys.exit(e)
+        if len(row_template) != 7:
+            raise Exception(
+                testcase.name + " does not have all required properties"
+            )
+        return row_template
 
     def yield_properties(self, testcase):
         """
@@ -99,9 +94,7 @@ class JunitParser(object):
         Yields:
             junitparser.Property: Property object of a Testcase.
         """
-        props = testcase.child(Properties)
-        for prop in props:
-            yield prop
+        yield from testcase.child(Properties)
 
     def generate_report(
         self, report_path,
