@@ -1,10 +1,10 @@
-Fields Extraction Tests
+Knowledge Object Tests
 =======================
 
 Overview
 -------------------
 
-* The field tests are written with a purpose of testing the proper functioning of the search-time knowledge objects of the add-on.
+* The tests are written with a purpose of testing the proper functioning of the search-time knowledge objects of the add-on.
 * Search-time knowledge objects are extracted/generated when a search query is executed on a Splunk Instance.
 * The search-time knowledge objects include the following:
 
@@ -18,7 +18,7 @@ Overview
 
 --------------------------------
 
-To generate test cases only for field extractions, append the following marker to pytest command:
+To generate test cases only for knowledge objects, append the following marker to pytest command:
 
     .. code-block:: console
 
