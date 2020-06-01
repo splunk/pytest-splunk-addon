@@ -132,7 +132,7 @@ class FieldTestHelper(object):
         return self.parsed_result
 
     def _gen_condition(self):
-        return " AND ".join(
+        return " OR ".join(
             [each_field.condition for each_field in self.fields if each_field.condition]
         )
 
