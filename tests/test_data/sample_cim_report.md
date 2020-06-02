@@ -2,6 +2,8 @@
 
 ##  Summary
 
+**Description:** Displays test case summary of the add-on for all the supported data models.
+
 | Data Model | Status | Fail/Total  |
  |:----------|:------|:---------- |
 | Alerts | N/A | -  |
@@ -23,6 +25,8 @@
 
 ## Tag Stanza Mapping
 
+**Description:** Displays test case summary for the stanzas in tags.conf and the data model mapped with it.
+
 | Tag Stanza | Data Model | Data Set | Fail/Total  |
  |:----------|:----------|:--------|:---------- |
 | file_authentication | Authentication | Default_Authentication | 0/1  |
@@ -32,6 +36,8 @@
 
 
 ## Field Summary
+
+**Description:** Displays test case summary for all the fields in the dataset for the tag-stanza it is mapped with.
 ### file_authentication - Default_Authentication
 | Field | Type | Test Status | Failure Message  |
  |:-----|:----|:-----------|:--------------- |
