@@ -176,7 +176,7 @@ def pytest_addoption(parser):
         "--cim-report",
         action="store",
         dest="cim_report",
-        help="create html report file at given path.",
+        help="Create a markdown report summarizing CIM compliance. Provide a relative or absolute path where the report should be created",
     )
 
 
