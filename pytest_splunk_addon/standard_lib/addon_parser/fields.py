@@ -33,6 +33,9 @@ class Field(object):
     def __str__(self):
         return str(self.name)
 
+    def get_type(self):
+        return self.type
+
     @classmethod
     def parse_fields(cls, field_list, **kwargs):
         """
