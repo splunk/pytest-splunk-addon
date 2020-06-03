@@ -84,7 +84,7 @@ class CIMTestTemplates(object):
         test_helper = FieldTestHelper(
             splunk_search_util, cim_fields, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
         )
-        record_property("base_search", test_helper.base_search)
+        record_property("search", base_search)
         record_property("tag_stanza", cim_tag_stanza)
         record_property("data_model", cim_data_model)
         record_property("data_set", data_set)
