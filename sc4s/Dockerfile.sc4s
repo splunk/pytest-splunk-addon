@@ -1,0 +1,15 @@
+ARG SPLUNK_HEC_TOKEN
+RUN printf 'net.core.rmem_default = 1703936\nnet.core.rmem_max = 1703936' >> /etc/sysctl.conf
+RUN sudo sysctl -p
+RUN sudo sysctl net.ipv4.ip_forward=1
+COPY sc4s.service /lib/systemd/system/
+RUN sudo mkdir /opt/sc4s
+RUN sudo mkdir /opt/sc4s/local
+RUN sudo mkdir /opt/sc4s/archive
+RUN sudo mkdir /opt/sc4s/tls
+RUN sudo mkdir /opt/sc4s/local/context
+RUN echo 'SPLUNK_HEC_URL=https://localhost:8088' >> /etc/sysctl.conf
+RUN echo 'SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN' >> /etc/sysctl.conf
+RUN sudo systemctl daemon-reload
+RUN sudo systemctl enable sc4s
+RUN sudo systemctl start sc4s

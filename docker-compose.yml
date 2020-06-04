@@ -23,3 +23,18 @@ services:
       - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
       - SPLUNK_START_ARGS=--accept-license
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
+      - SPLUNK_APPS_URL=
+
+  sc4s: 
+    build:
+      context: ./sc4s
+      dockerfile: Dockerfile.sc4s
+      args:
+          SPLUNK_HEC_TOKEN: ${SPLUNK_HEC_TOKEN}
+    ports:
+      - "6514"
+      - "514"
+    enviroment:
+
+volumes:
+  splunk-sc4s-var:
