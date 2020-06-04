@@ -1,7 +1,7 @@
 from concurrent.futures import ProcessPoolExecutor
 from sample_parser import SampleParser
 from rule import Rule
-from re import compile, sub, search, match, MULTILINE
+from splunk_appinspect import App
 
 class EventgenParser:
 
