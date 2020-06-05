@@ -36,8 +36,11 @@ class EventgenParser:
             rules = []
             for each_token in eventgen_dict[sample_name]:
                 rules.append(Rule.parse_rule(each_token, eventgen_dict[sample_name][each_token]['token'], eventgen_dict[sample_name][each_token]['replacementType'], eventgen_dict[sample_name][each_token]['replacement']))
-            sample = SampleParser(sample_name, rules)
-            samples.append(sample)
+            # sample = SampleParser(sample_name, rules)
+            samples.append({
+                "sample_name": sample_name,
+                "rules": rules
+            })
 
         return samples
         
@@ -50,11 +53,5 @@ class EventgenParser:
         result = list(executor.map(self.tokenize, self.samples_from_conf))
 
     def tokenize(self, sample):
-        print(sample.sample_name)
-
-        for each_token in sample.sample_rules:
-            # sample.sample_raw_data = each_token.apply(sample.sample_raw_data)
-            sample.sample_raw_data = each_token.apply(sample)
-
-        print(sample.sample_raw_data)
-        print("======================================================")
+        sample = SampleParser(sample['sample_name'], sample['rules'])
+        sample.tokenize()
