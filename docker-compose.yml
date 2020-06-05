@@ -23,18 +23,32 @@ services:
       - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
       - SPLUNK_START_ARGS=--accept-license
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
-      - SPLUNK_APPS_URL=
-
   sc4s: 
     build:
       context: ./sc4s
       dockerfile: Dockerfile.sc4s
-      args:
-          SPLUNK_HEC_TOKEN: ${SPLUNK_HEC_TOKEN}
+    command: -det
+    links:
+      - splunk
     ports:
       - "6514"
       - "514"
-    enviroment:
+      - "601"
+      - "514/udp"
+      - "5000-5050"
+      - "5000-5050/udp"
+    stdin_open: true
+    tty: true
+    environment:
+      - SPLUNK_HEC_URL=https://splunk:8088
+      - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
+      - SC4S_SOURCE_TLS_ENABLE=no
+      - SC4S_DEST_SPLUNK_HEC_TLS_VERIFY=no
+      - SC4S_ARCHIVE_GLOBAL=no
+      - SC4S_SOURCE_STORE_RAWMSG=yes
+      - SC4S_LISTEN_CHECKPOINT_SPLUNK_NOISE_CONTROL=yes
+      - SC4S_SOURCE_LISTEN_UDP_SOCKETS=2
 
 volumes:
   splunk-sc4s-var:
+    external: false

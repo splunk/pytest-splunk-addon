@@ -1,0 +1,109 @@
+# VMware ESXi and NSX
+{{- /* The following provides a unique port source configuration if env var(s) are set */}}
+{{- $context := dict "port_id" "VMWARE_VSPHERE" "parser" "common" }}
+{{- tmpl.Exec "t/source_network.t" $context }}
+
+log {
+    junction {
+{{- if or (or (getenv  (print "SC4S_LISTEN_VMWARE_VSPHERE_TCP_PORT")) (getenv  (print "SC4S_LISTEN_VMWARE_VSPHERE_UDP_PORT"))) (getenv  (print "SC4S_LISTEN_VMWARE_VSPHERE_TLS_PORT")) }}
+        channel {
+        # Listen on the specified dedicated port(s) for VMWARE_VSPHERE traffic
+            source (s_VMWARE_VSPHERE);
+            flags (final);
+	    };
+{{- end}}
+        channel {
+        # Listen on the default port (typically 514) for VMWARE_VSPHERE traffic
+            source (s_DEFAULT);
+            filter(f_vmware_all);
+            flags(final);
+        };
+    };
+
+    #NSX first because its the cheapest check
+    if {
+        filter(f_is_rfc5424_strict);
+        filter(f_vmware_nsx);
+
+        rewrite {
+            set("vmware_nsx", value("fields.sc4s_vendor_product"));
+            r_set_splunk_dest_default(sourcetype("vmware:vsphere:nsx"), index("main"), source("program:${PROGRAM}"));
+        };
+        parser { p_add_context_splunk(key("vmware_nsx")); };
+        parser (compliance_meta_by_source);
+        rewrite { set("$(template ${.splunk.sc4s_template} $(template t_JSON_5424))" value("MSG")); };
+
+    } elif {
+
+        filter(f_vmware_nsx);
+
+        rewrite {
+            set("vmware_nsx", value("fields.sc4s_vendor_product"));
+            set("${PROGRAM}", value(".PROGRAM"));
+            subst('^\/(?:[^\/]+\/)+', "" , value(".PROGRAM"));
+            r_set_splunk_dest_default(sourcetype("vmware:vsphere:nsx"), index("main"), source("program:${.PROGRAM}"));
+        };
+        parser { p_add_context_splunk(key("vmware_nsx")); };
+        parser (compliance_meta_by_source);
+        rewrite { set("$(template ${.splunk.sc4s_template} $(template t_legacy_hdr_msg))" value("MSG")); };
+
+    #esx things
+    } elif {
+        filter(f_is_rfc5424_strict);
+        filter(f_vmware_vsphere);
+
+        rewrite {
+            set("vmware_vsphere_esx", value("fields.sc4s_vendor_product"));
+            r_set_splunk_dest_default(sourcetype("vmware:vsphere:esx"), index("main"), source("program:${PROGRAM}"));
+        };
+        parser { p_add_context_splunk(key("vmware_esx")); };
+        parser (compliance_meta_by_source);
+        rewrite { set("$(template ${.splunk.sc4s_template} $(template t_JSON_5424))" value("MSG")); };
+
+    } elif {
+
+        filter(f_vmware_vsphere);
+
+        rewrite {
+            set("vmware_vsphere_esx", value("fields.sc4s_vendor_product"));
+            set("${PROGRAM}", value(".PROGRAM"));
+            subst('^\/(?:[^\/]+\/)+', "" , value(".PROGRAM"));
+            r_set_splunk_dest_default(sourcetype("vmware:vsphere:esx"), index("main"), source("program:${.PROGRAM}"));
+        };
+        parser { p_add_context_splunk(key("vmware_esx")); };
+        parser (compliance_meta_by_source);
+        rewrite { set("$(template ${.splunk.sc4s_template} $(template t_legacy_hdr_msg))" value("MSG")); };
+
+    } else {
+
+        rewrite {
+            set("nix_syslog", value("fields.sc4s_vendor_product"));
+            subst("^[^\t]+\t", "", value("MESSAGE"), flags("global"));
+            set("${PROGRAM}", value(".PROGRAM"));
+            subst('^\/(?:[^\/]+\/)+', "" , value(".PROGRAM"));
+        };
+
+        rewrite { r_set_splunk_dest_default(sourcetype("nix:syslog"), index("osnix"), source("program:${.PROGRAM}")) };
+        parser { p_add_context_splunk(key("nix_syslog")); };
+        parser (compliance_meta_by_source);
+        rewrite { set("$(template ${.splunk.sc4s_template} $(template t_legacy_hdr_msg))" value("MSG")); };
+    };
+
+{{- if or (conv.ToBool (getenv "SC4S_DEST_SPLUNK_HEC_GLOBAL" "yes")) (conv.ToBool (getenv "SC4S_DEST_VMWARE_VSPHERE_HEC" "no")) }}
+    destination(d_hec);
+{{- end}}
+
+{{- if or (conv.ToBool (getenv "SC4S_ARCHIVE_GLOBAL" "no")) (conv.ToBool (getenv "SC4S_ARCHIVE_VMWARE_VSPHERE" "no")) }}
+    destination(d_archive);
+{{- end}}
+
+{{- if (print (getenv "SC4S_DEST_GLOBAL_ALTERNATES")) }}
+    {{ getenv "SC4S_DEST_GLOBAL_ALTERNATES" | regexp.ReplaceLiteral "^" "destination(" | regexp.ReplaceLiteral "[, ]+" ");\n    destination(" }});
+{{- end }}
+
+{{- if (print (getenv "SC4S_DEST_VMWARE_VSPHERE_ALTERNATES")) }}
+    {{ getenv "SC4S_DEST_VMWARE_VSPHERE_ALTERNATES" | regexp.ReplaceLiteral "^" "destination(" | regexp.ReplaceLiteral "[, ]+" ");\n    destination(" }});
+{{- end }}
+
+    flags(flow-control,final);
+};

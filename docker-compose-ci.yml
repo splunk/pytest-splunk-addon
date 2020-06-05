@@ -34,15 +34,6 @@ services:
       - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
       - SPLUNK_START_ARGS=--accept-license
-  sc4s:
-    buiuld:
-      context: ./sc4s
-      dockerfile: Dockerfile,sc4s
-      args:
-        SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
-      ports:
-        - "6514"
-        - "514"
 volumes:
   results:
     external: false
