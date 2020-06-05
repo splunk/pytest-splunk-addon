@@ -1,19 +1,15 @@
-FROM splunk/scs:latest
-
-COPY --from=hairyhenderson/gomplate:v3.5.0 /gomplate /usr/local/bin/gomplate
-
-COPY goss.yaml goss.yaml
-
-# COPY etc/syslog-ng.conf.tmpl /opt/syslog-ng/etc/syslog-ng.conf.tmpl
-COPY etc/conf.d /opt/syslog-ng/etc/conf.d
-COPY etc/go_templates /opt/syslog-ng/etc/go_templates
-# COPY etc/context_templates /opt/syslog-ng/etc/context_templates
-COPY etc/local_config /opt/syslog-ng/etc/local_config
-COPY reset_persist /opt/syslog-ng/etc/
-COPY sbin/entrypoint.sh /
-
-RUN mkdir -p /opt/syslog-ng/var/log/
-COPY snmp/snmptrapd.conf /opt/net-snmp/etc/snmp/
-COPY VERSION /
-
-RUN  /opt/syslog-ng/sbin/syslog-ng -V
+ARG SPLUNK_HEC_TOKEN
+RUN printf 'net.core.rmem_default = 1703936\nnet.core.rmem_max = 1703936' >> /etc/sysctl.conf
+RUN sudo sysctl -p
+RUN sudo sysctl net.ipv4.ip_forward=1
+COPY sc4s.service /lib/systemd/system/
+RUN sudo mkdir /opt/sc4s
+RUN sudo mkdir /opt/sc4s/local
+RUN sudo mkdir /opt/sc4s/archive
+RUN sudo mkdir /opt/sc4s/tls
+RUN sudo mkdir /opt/sc4s/local/context
+RUN echo 'SPLUNK_HEC_URL=https://splunk:8088' >> /etc/sysctl.conf
+RUN echo 'SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN' >> /etc/sysctl.conf
+RUN sudo systemctl daemon-reload
+RUN sudo systemctl enable sc4s
+RUN sudo systemctl start sc4s
