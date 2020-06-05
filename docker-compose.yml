@@ -25,8 +25,7 @@ services:
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
   sc4s: 
     build:
-      context: ./sc4s
-      dockerfile: Dockerfile.sc4s
+      context: ./splunk-connect-for-syslog
     command: -det
     hostname: sc4s
     links:
