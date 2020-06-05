@@ -18,7 +18,6 @@ class SampleParser(object):
             return sample_file.read()
     
     def tokenize(self):
-        print(self.sample_name)
 
         for each_token in self.sample_rules:
-            sample.sample_raw_data = each_token.apply(self.sample_raw_data)
+            self.sample_raw_data = each_token.apply(self.sample_raw_data)
