@@ -1,7 +1,7 @@
 """
 HEC Event Ingestor class
 """
-from .base_event_ingestor import EventIngestor
+from base_event_ingestor import EventIngestor
 import requests
 
 requests.urllib3.disable_warnings()
@@ -15,7 +15,6 @@ class HECEventIngestor(EventIngestor):
     def __init__(self, hec_uri, session_headers):
         """
         init method for the class
-
         Args:
             hec_uri(str): {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector/{port_type}
                 port_type can be "raw" or "event"
@@ -31,7 +30,6 @@ class HECEventIngestor(EventIngestor):
     def ingest(self, data):
         """
         Ingests data into splunk using HEC token.
-
         Args:
             data(dict): data dict with the info of the data to be ingested.
             data_format::
@@ -40,6 +38,15 @@ class HECEventIngestor(EventIngestor):
                         "source": "sample_source",
                         "host": "sample_host",
                         "event": "data to be ingested, can be raw or json"
+                    }
+
+            For batch ingestion provide a list of events to be ingested.
+            data_format::
+                    {
+                        "sourcetype": "sample_HEC",
+                        "source": "sample_source",
+                        "host": "sample_host",
+                        "event": ["event1", "event2", "event3"]
                     }
         """
         try:
