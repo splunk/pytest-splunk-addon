@@ -7,11 +7,12 @@ import uuid
 
 class Rule:
 
-    def __init__(self, number, name, replacement, replacement_type):
-        self.number = number
+    def __init__(self, name, replacement, replacement_type):
+        # self.number = number
         self.name = name
         self.replacement = replacement
         self.replacement_type = replacement_type
+        self.field = None
 
     @classmethod
     def init_variables(cls):
@@ -53,13 +54,13 @@ class Rule:
         }
 
     @classmethod
-    def parse_rule(cls, number, name, replacement_type, replacement):
+    def parse_rule(cls, name, replacement_type, replacement):
 
         if replacement_type in cls.rules:
             for each_rule in cls.rules[replacement_type]:
                 if re.search(each_rule, replacement):
                     # print("here", replacement)
-                    return cls.rule_book[(replacement_type, cls.rules[replacement_type][each_rule])](number, name, replacement, replacement_type)
+                    return cls.rule_book[(replacement_type, cls.rules[replacement_type][each_rule])](name, replacement, replacement_type)
 
 
 class IntRule(Rule):

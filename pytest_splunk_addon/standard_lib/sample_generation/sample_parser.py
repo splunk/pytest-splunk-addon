@@ -7,8 +7,12 @@ class SampleParser(object):
 
     path_to_samples = "path_to_samples"
 
-    def __init__(self, name, rules):
+    def __init__(self, name, rules, ingest_type):
         self.sample_name = name  # name of sample from stanza
+        self.earliest = str
+        self.latest = str
+        self.timezone = str
+        self.ingest_type = ingest_type
         self.sample_rules = rules  # tokens for each sample from eventgen.conf
         self.sample_raw_data = self._get_raw_sample(self.sample_name)
 
