@@ -18,16 +18,18 @@ class EventgenParser:
         Rule.init_variables()
         for stanza in self.eventgen.sects:
             eventgen_sections = self.eventgen.sects[stanza]
-            eventgen_dict[stanza] = {}
+            eventgen_dict[stanza] = {
+                'tokens': {}
+            }
 
             for stanza_param in eventgen_sections.options:
                 eventgen_property = eventgen_sections.options[stanza_param]
 
                 if eventgen_property.name.startswith('token'):
                     token_row = eventgen_property.name.split('.')
-                    if not token_row[1] in eventgen_dict[stanza].keys():
-                        eventgen_dict[stanza][token_row[1]] = {}
-                    eventgen_dict[stanza][token_row[1]][token_row[2]] = eventgen_property.value
+                    if not token_row[1] in eventgen_dict[stanza]['tokens'].keys():
+                        eventgen_dict[stanza]['tokens'][token_row[1]] = {}
+                    eventgen_dict[stanza]['tokens'][token_row[1]][token_row[2]] = eventgen_property.value
 
                 else:
                     eventgen_dict[stanza].update({eventgen_property.name: eventgen_property.value})
@@ -42,15 +44,14 @@ class EventgenParser:
         eventgen_dict = self.get_eventgen_stanzas()
         for stanza_name, stanza_params in eventgen_dict.items():
             rules = []
-            for each_token, token_value in stanza_params.items():
+            for each_token, token_value in stanza_params['tokens'].items():
 
-                if type(token_value) is dict:
-                    rule_data = Rule.parse_rule(token_value['token'], token_value['replacementType'], token_value['replacement'])
+                rule_data = Rule.parse_rule(token_value['token'], token_value['replacementType'], token_value['replacement'])
 
-                    if 'field' in token_value:
-                        rule_data.field = token_value['field']
+                if 'field' in token_value:
+                    rule_data.field = token_value['field']
 
-                    rules.append(rule_data)
+                rules.append(rule_data)
 
             yield SampleParser(
                 stanza_name,
