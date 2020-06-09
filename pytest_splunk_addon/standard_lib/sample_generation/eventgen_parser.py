@@ -7,8 +7,8 @@ class EventgenParser:
     """
     This class represents the entire eventgen.conf file.
     """
-    def __init__(self):
-        self._app = App('Splunk_TA_cisco-wsa', python_analyzer_enable=False)
+    def __init__(self, addon_path):
+        self._app = App(addon_path, python_analyzer_enable=False)
         self.samples_from_conf = None
         self.eventgen = self._app.get_config("eventgen.conf")
 
@@ -61,12 +61,3 @@ class EventgenParser:
                 stanza_params['ingest_type']
             )
 
-    def parse_samples(self):
-        """
-        Input: List of all samples
-        """
-        executor = ProcessPoolExecutor(max_workers=3)
-        result = list(executor.map(self.tokenize, self.samples_from_conf))
-
-    def tokenize(self, sample):
-        sample.tokenize()
