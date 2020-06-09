@@ -1,5 +1,5 @@
 from sample_event import SampleEvent
-from os import path
+import os 
 import re
 import rule
 
@@ -35,19 +35,22 @@ class SampleParser(object):
         If the input type is 'modinput', a new event will be generated for all the lines in the file.
         If the input type is 'file monitor' a single event will be generated for the entire file.
         '''
-        with open(path.join(self.path_to_samples, sample_name), 'r') as sample_file:
+        sample_files = [sample_file for sample_file in os.listdir(self.path_to_samples) if re.match(sample_name, sample_file)]
+        
+        for sample_file in sample_files:
+            with open(os.path.join(self.path_to_samples, sample_file), 'r') as sample_file:
 
-            if(self.ingest_type == 'modinput'):
-                for each_line in sample_file:
+                if(self.ingest_type == 'modinput'):
+                    for each_line in sample_file:
+                        yield SampleEvent(
+                            each_line
+                        )
+
+                if(self.ingest_type == 'file_monitor'):
                     yield SampleEvent(
-                        each_line
+                        sample_file.read()
                     )
-
-            if(self.ingest_type == 'file_monitor'):
-                yield SampleEvent(
-                    sample_file.read()
-                )
-            # More input types to be added here.
+                # More input types to be added here.
 
     def tokenize(self):
         '''
