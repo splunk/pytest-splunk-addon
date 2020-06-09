@@ -4,7 +4,9 @@ from rule import Rule
 from splunk_appinspect import App
 
 class EventgenParser:
-
+    """
+    This class represents the entire eventgen.conf file.
+    """
     def __init__(self):
         self._app = App('Splunk_TA_cisco-wsa', python_analyzer_enable=False)
         self.samples_from_conf = None
@@ -34,7 +36,7 @@ class EventgenParser:
                 else:
                     eventgen_dict[stanza].update({eventgen_property.name: eventgen_property.value})
 
-        print(eventgen_dict)
+
         return eventgen_dict
 
     def parse_eventgen(self):
