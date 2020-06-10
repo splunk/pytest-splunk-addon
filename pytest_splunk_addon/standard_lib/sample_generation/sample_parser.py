@@ -57,7 +57,8 @@ class SampleParser(object):
         Tokensised the raw events(self.sample_raw_data) and stores them into self.tokenized_events.
         '''
         for each_sample in self.sample_raw_data:
-            tokenized_events = Rule.apply([each_sample], self.sample_rules)
+            tokenized_events = Rule.apply([each_sample.event], self.sample_rules)
             for each_event in tokenized_events:
-                self.tokenized_events.append(SampleEvent(each_event))
-        return self.tokenized_events
+                yield SampleEvent(
+                    each_event
+                )

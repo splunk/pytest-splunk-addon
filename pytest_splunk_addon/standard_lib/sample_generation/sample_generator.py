@@ -20,14 +20,20 @@ class SampleGenerator(object):
         """
         Input: List of all samples
         """
-        executor = ProcessPoolExecutor(max_workers=3)
+        self.get_samples()
+        executor = ProcessPoolExecutor(max_workers=4)
         result = list(executor.map(self.tokenize, self.samples))
 
+        for val in result:
+            for sample in self.samples:
+                if sample.sample_name in val.keys():
+                    sample.tokenized_events = val[sample.sample_name]
+
     def tokenize(self, sample):
-        sample.tokenize()
+        tokenised_events = list(sample.tokenize())
+        return {sample.sample_name: tokenised_events}
 
 
 if __name__ == "__main__":
     sample_generator = SampleGenerator('C:\\Users\\zahra.sidhpuri\\Documents\\Mission Team Automation\\PSA-Eventgen\\pytest-splunk-addon\\package_zeek')
-    sample_generator.get_samples()
     sample_generator.parse_samples()
