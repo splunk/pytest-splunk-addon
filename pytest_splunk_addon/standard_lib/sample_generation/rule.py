@@ -27,7 +27,8 @@ class Rule:
             ('file', 'file_name'): FileRule,
             ('mvfile', 'file_name'): FileRule,
             ('static', 'value'): StaticRule,
-            ('timestamp', 'format'): TimeRule
+            ('timestamp', 'format'): TimeRule,
+            ('all', 'list'): ListRule
         }
 
         cls.rules = {
@@ -50,6 +51,9 @@ class Rule:
             },
             "timestamp": {
                 r".*": "format"
+            },
+            "all": {
+                r"^[Ll]ist.*": "list"
             }
         }
 
@@ -61,6 +65,16 @@ class Rule:
                 if re.search(each_rule, replacement):
                     # print("here", replacement)
                     return cls.rule_book[(replacement_type, cls.rules[replacement_type][each_rule])](name, replacement, replacement_type)
+
+    @classmethod
+    def apply(cls, events, sample_rules):
+        for each_rule in sample_rules:
+            if each_rule.replacement_type == 'all':
+                events = each_rule.apply(events)
+            else:
+                for index, event in enumerate(events):
+                    events[index] = each_rule.apply(event)
+        return events
 
 
 class IntRule(Rule):
@@ -90,12 +104,23 @@ class ListRule(Rule):
     def apply(self, sample_raw_data):
         value_list_str = re.match(r'[lL]ist(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
-        for each_value in value_list:
-            for each_char in each_value:
-                if not 32 <= ord(each_char) <= 126:
-                    raise Exception("Invalid character in List")
-        tokenised_sample = re.sub(self.name, str(choice(value_list)), sample_raw_data)
-        return tokenised_sample
+
+        if self.replacement_type == 'all':
+            tokenised_sample = []
+            for each_raw in sample_raw_data:
+                for each_value in value_list:
+                    for each_char in each_value:
+                        if not 32 <= ord(each_char) <= 126:
+                            raise Exception("Invalid character in List")
+                    tokenised_sample.append(re.sub(self.name, each_value, each_raw))
+            return tokenised_sample
+        else:
+            for each_value in value_list:
+                for each_char in each_value:
+                    if not 32 <= ord(each_char) <= 126:
+                        raise Exception("Invalid character in List")
+            tokenised_sample = re.sub(self.name, str(choice(value_list)), sample_raw_data)
+            return tokenised_sample
 
 
 class StaticRule(Rule):

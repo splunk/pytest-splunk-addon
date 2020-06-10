@@ -12,8 +12,9 @@ class EventgenParser:
     def __init__(self, addon_path):
         self._app = App(addon_path, python_analyzer_enable=False)
         self.samples_from_conf = None
-        self.eventgen = self._app.get_config("eventgen1.conf")
+        self.eventgen = self._app.get_config("eventgen.conf")
         self.path_to_samples = 'path_to_samples'
+
     def merge_eventgen_stanzas(self, eventgen_dict):
 
         sample_files = os.listdir(self.path_to_samples)
