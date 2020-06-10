@@ -2,6 +2,8 @@ from concurrent.futures import ProcessPoolExecutor
 from sample_parser import SampleParser
 from rule import Rule
 from splunk_appinspect import App
+import os
+import re
 
 class EventgenParser:
     """
@@ -10,7 +12,22 @@ class EventgenParser:
     def __init__(self, addon_path):
         self._app = App(addon_path, python_analyzer_enable=False)
         self.samples_from_conf = None
-        self.eventgen = self._app.get_config("eventgen.conf")
+        self.eventgen = self._app.get_config("eventgen1.conf")
+        self.path_to_samples = 'path_to_samples'
+    def merge_eventgen_stanzas(self, eventgen_dict):
+
+        sample_files = os.listdir(self.path_to_samples)
+
+        for sample_file in sample_files:
+            match_stanzas = [stanza for stanza in eventgen_dict if re.match(stanza, sample_file)]
+
+            for stanza in match_stanzas:
+                for index in range(len(match_stanzas)):    
+                    eventgen_dict[stanza]['tokens'] = {**eventgen_dict[stanza]['tokens'], **eventgen_dict[match_stanzas[index]]['tokens']}
+
+            # print(sample_file, match_stanzas)
+        return eventgen_dict
+
 
     def get_eventgen_stanzas(self):
         """
@@ -36,7 +53,7 @@ class EventgenParser:
                 else:
                     eventgen_dict[stanza].update({eventgen_property.name: eventgen_property.value})
 
-
+        eventgen_dict = self.merge_eventgen_stanzas(eventgen_dict)
         return eventgen_dict
 
     def parse_eventgen(self):
