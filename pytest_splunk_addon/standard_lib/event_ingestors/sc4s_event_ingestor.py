@@ -32,12 +32,12 @@ def ingest(message,
             if tried > 90:
                 raise e
             sleep(1)
-    #sendall sends all the data in buffer to the desired location
+    #sendall sends the entire buffer you pass or throws an exception.
     sock.sendall(str.encode(message))
 
 if __name__ == "__main__":
     with concurrent.futures.ThreadPoolExecutor(max_workers=THREAD_POOL) as executor:
-        #message = "SymantecServer: Site: Site xxxxx,Server Name: xxxxx,Domain Name: Default,The management server received the client log successfully,yyyyyyy,zzzzzzzz,host.domain.suffix\nNov 15 23:45:44 3.3.3.3 CEF:0|Imperva Inc.|SecureSphere|13.5.0.10_0|Correlation|sql-injection|High|act=block dst=1.1.1.1 dpt=80 duser=Marcelavms src=1.0.0.1 spt=46814 proto=TCP rt=Nov 15 2019 15:45:42 cat=Alert cs1=Web Correlation Policy cs1Label=Policy cs2=AAA Wildcard (Dept) (simulation cs2Label=ServerGroup cs3=AAA Wildcard (Dept) HTTP Service (simulation) cs3Label=ServiceName cs4=aaa.bbb.hk Application cs4Label=ApplicationName cs5=sql-injection cs5Label=Description cs6=GET cs6Label=HTTPHeaderRequest-URLMethod cs7=/cdblog/wp-trackback.php cs7Label=HTTPHeaderRequest-URLPath cs8=Accept-Language, Accept-Charset, Accept, User-Agent, Host, Connection en-us,en, utf-8,*, text/html,image/jpeg,image/gif,text/xml,text/plain,image/png, Opera/9.27, aaa.bbb.hk, close cs8Label=HttpHeaderRequest-Header cs9=555&&BeNChMaRK(2999999,MD5(NOW())) p cs9Label=HttpHeaderRequest-Parameters cs10=6704543119945954386 cs10Label=EventID cs11= cs11Label=SessionID"
+        #events(str) with "\n" as separator
         message = "Mar 25 13:53:24 xxxxxx-xxxx STP: VLAN 125 Port 1/1/24 STP State -> FORWARDING (DOT1wTransition)\nOct 8 15:00:25 DEVICENAME time=1570561225|hostname=devicename|severity=Informational|confidence_level=Unknown|product=IPS|action=Drop|ifdir=inbound|ifname=bond2|loguid={0x5d9cdcc9,0x8d159f,0x5f19f392,0x1897a828}|origin=1.1.1.1|time=1570561225|version=1|attack=Streaming Engine: TCP Segment Limit Enforcement|attack_info=TCP segment out of maximum allowed sequence. Packet dropped.|chassis_bladed_system=[ 1_3 ]|dst=10.10.10.10|origin_sic_name=CN=something_03_local,O=devicename.domain.com.p7fdbt|performance_impact=0|protection_id=tcp_segment_limit|protection_name=TCP Segment Limit Enforcement|protection_type=settings_tcp|proto=6|rule=393|rule_name=10.384_..|rule_uid={9F77F944-8DD5-4ADF-803A-785D03B3A2E8}|s_port=46455|service=443|smartdefense_profile=Recommended_Protection_ded9e8d8ee89d|src=1.1.1.2|\nRT_UTM: WEBFILTER_URL_PERMITTED: WebFilter: ACTION=\"URL Permitted\" 192.168.32.1(62054)->1.1.1.1(443) CATEGORY=\"Enhanced_Information_Technology\" REASON=\"BY_PRE_DEFINED\" PROFILE=\"UTM-Wireless-Profile\" URL=ent-shasta-rrs.symantec.com OBJ=/ username N/A roles N/A"
         for msg in message.split("\n"):
-            executor.submit(ingest,msg,"0.0.0.0",32825)
+            executor.submit(ingest, msg, "0.0.0.0", 32825)
