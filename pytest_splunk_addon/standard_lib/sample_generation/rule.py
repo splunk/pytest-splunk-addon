@@ -1,18 +1,28 @@
 import re
+from os.path import basename
+from os import path
 from decimal import Decimal
 from random import uniform, randint, choice
-from time import strftime, time
-import uuid
+from time import strftime, time,mktime
+import uuid 
+import abc
+import string
+from faker import Faker
+from datetime import datetime, timedelta
+import math
 
 
 class Rule:
 
     def __init__(self, name, replacement, replacement_type):
-        # self.number = number
         self.name = name
         self.replacement = replacement
         self.replacement_type = replacement_type
         self.field = None
+        # self.fake = Faker()
+
+    def replace_token(self, token_value, sample_raw):
+        return re.sub(self.name, str(token_value), sample_raw, flags=re.MULTILINE)
 
     @classmethod
     def init_variables(cls):
@@ -20,10 +30,10 @@ class Rule:
         cls.rule_book = {
             ('random', 'integer'): IntRule,
             ('random', 'list'): ListRule,
-            ('random', 'ipv4'): ipv4Rule,
+            ('random', 'ipv4'): Ipv4Rule,
             ('random', 'float'): FloatRule,
-            ('random', 'ipv6'): ipv6Rule,
-            ('random', 'mac'): macRule,
+            ('random', 'ipv6'): Ipv6Rule,
+            ('random', 'mac'): MacRule,
             ('file', 'file_name'): FileRule,
             ('mvfile', 'file_name'): FileRule,
             ('static', 'value'): StaticRule,
@@ -79,24 +89,20 @@ class Rule:
 
 class IntRule(Rule):
 
-    def apply(self, sample_raw_data):
-
-        replace_range = re.match(r"[Ii]nteger\[(\d+):(\d+)\]", self.replacement).groups()
-        tokenised_sample = re.sub(self.name, str(randint(int(replace_range[0]), int(replace_range[1]))), sample_raw_data)
-        return tokenised_sample
-
+    def apply(self, sample_raw):
+        lower_limit, upper_limit = re.match(r"[Ii]nteger\[(\d+):(\d+)\]", self.replacement).groups()
+        int_value = randint(int(lower_limit), int(upper_limit))
+        return self.replace_token(int_value, sample_raw)
 
 class FloatRule(Rule):
 
-    def apply(self, sample_raw_data):
-        replace_range = re.match(r'float\[([\d\.]+):([\d\.]+)\]', self.replacement).groups()
-        precision = re.search(r'\[\d+\.?(\d*):', self.replacement).group(1)
-        right_precision = re.search(r':\d+\.?(\d*)\]', self.replacement).group(1)
-        assert len(right_precision) == len(precision), "Float: Precision should be same in left and right end of the range. ex:float[0.001:10.000]"
-        replace_float = Decimal(uniform(float(replace_range[0]), float(replace_range[1])))
-        replace_float = round(replace_float, len(precision))
-        tokenised_sample = re.sub(self.name, str(replace_float), sample_raw_data)
-        return tokenised_sample
+    def apply(self, sample_raw):
+        lower_limit, upper_limit = re.match(r"[Ff]loat\[([\d\.]+):([\d\.]+)\]", self.replacement).groups()
+        precision =  re.search('\[\d+\.?(\d*):', self.replacement).group(1)
+        if not precision:
+            precision = str(1)
+        float_value = round(uniform(float(lower_limit), float(upper_limit)), len(precision))
+        return self.replace_token(float_value, sample_raw)
 
 
 class ListRule(Rule):
@@ -112,29 +118,29 @@ class ListRule(Rule):
                     for each_char in each_value:
                         if not 32 <= ord(each_char) <= 126:
                             raise Exception("Invalid character in List")
-                    tokenised_sample.append(re.sub(self.name, each_value, each_raw))
+                    tokenised_sample.append(self.replace_token(each_value, each_raw))
             return tokenised_sample
         else:
             for each_value in value_list:
                 for each_char in each_value:
                     if not 32 <= ord(each_char) <= 126:
                         raise Exception("Invalid character in List")
-            tokenised_sample = re.sub(self.name, str(choice(value_list)), sample_raw_data)
-            return tokenised_sample
+
+            return self.replace_token(str(choice(value_list)), sample_raw_data)
 
 
 class StaticRule(Rule):
-
-    def apply(self, sample_raw_data):
-        tokenised_sample = re.sub(self.name, self.replacement, sample_raw_data)
-        return tokenised_sample
+    
+    def apply(self, sample_raw):
+        return self.replace_token(self.replacement, sample_raw)
 
 
 class FileRule(Rule):
 
     def apply(self, sample_raw_data):
+
         is_csv = False
-        sample_file_path = "{}\\{}".format(sample.path_to_samples, *self.replacement.split('samples')[-1].strip('/').split('/'))
+        #sample_file_path = "{}\\{}".format(sample.path_to_samples, *self.replacement.split('samples')[-1].strip('/').split('/'))
         if re.search(':\d+', self.replacement):
             sample_file_path = re.sub(':\d+','', sample_file_path)
             is_csv = True
@@ -148,11 +154,10 @@ class FileRule(Rule):
                 lines = [each.split(',')[int(col_id)-1] for each in txt.split('\n') if each]
             else:
                 lines = [each for each in txt.split('\n') if each]
-            tokenised_sample = re.sub(self.name, choice(lines), sample_raw_data)
-            return tokenised_sample
-
+            return self.replace_token(choice(lines), sample_raw_data)
         except IOError as e:
-            raise Exception("File not found : {}".format(sample_file_path))
+            print("File not found : {}".format(self.replacement))
+            return sample_raw_data
 
 
 class TimeRule(Rule):  
@@ -168,14 +173,27 @@ class TimeRule(Rule):
         return tokenised_sample
 
 
-class ipv4Rule(Rule):
 
-    def apply(self, sample_raw_data):
-        tokenised_sample = re.sub(self.name, ".".join(map(str, (randint(0, 255) for _ in range(4)))), sample_raw_data)
-        return tokenised_sample
+class Ipv4Rule(Rule):
+
+    def apply(self, sample_raw):
+        ipv4 = self.fake.ipv4()
+        return self.replace_token(ipv4, sample_raw)
+
+class Ipv6Rule(Rule):
+
+    def apply(self, sample_raw):
+        ipv6 = self.fake.ipv6()
+        return self.replace_token(ipv6, sample_raw)
+
+class MacRule(Rule):
+    
+    def apply(self, sample_raw):
+        mac = self.fake.mac_address()
+        return self.replace_token(mac, sample_raw)
 
 
-class ipv6Rule(Rule):
+class GuidRule(Rule):
 
     def apply(self, sample_raw_data):
         M = 16**4

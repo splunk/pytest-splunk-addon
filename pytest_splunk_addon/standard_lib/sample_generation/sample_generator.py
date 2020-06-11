@@ -14,7 +14,7 @@ class SampleGenerator(object):
         """
         """
         eventgen_parser = EventgenParser(self.addon_path)
-        self.samples =  list(eventgen_parser.parse_eventgen())
+        self.samples = list(eventgen_parser.parse_eventgen())
 
     def parse_samples(self):
         """

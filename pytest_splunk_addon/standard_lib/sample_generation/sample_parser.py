@@ -1,7 +1,7 @@
 from sample_event import SampleEvent
-import os 
+import os
 import re
-import rule
+from rule import Rule
 
 
 class SampleParser(object):
