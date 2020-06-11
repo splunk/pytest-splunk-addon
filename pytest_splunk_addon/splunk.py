@@ -253,10 +253,11 @@ def splunk(request):
         os.environ["SPLUNK_APP_PACKAGE"] = request.config.getoption("splunk_app")        
         try:
             config = configparser.ConfigParser()
-            config.read(os.path.join(self.pytest_config.getoption("splunk_app"),"default","app.conf"))
-            os.environ["SPLUNK_APP_ID"] = config["Package"]["id"]   
+            config.read(os.path.join(request.config.getoption("splunk_app"),"default","app.conf"))
+            os.environ["SPLUNK_APP_ID"] = config["package"]["id"]   
         except Exception as e:
             pass
+            os.environ["SPLUNK_APP_ID"] = "TA_package"
         os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
         os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
