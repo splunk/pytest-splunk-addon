@@ -7,92 +7,73 @@ from time import strftime, time,mktime
 import uuid 
 import abc
 import string
-from faker import Faker
+# from faker import Faker
 from datetime import datetime, timedelta
 import math
 
+from . import SampleEvent
 
 class Rule:
-
-    def __init__(self, name, replacement, replacement_type):
-        self.name = name
-        self.replacement = replacement
-        self.replacement_type = replacement_type
-        self.field = None
+    def __init__(self, token):
+        self.token = token["token"]
+        self.replacement = token["replacement"]
+        self.replacement_type = token["replacementType"]
+        self.field = token.get("field", self.token.strip("#"))
         # self.fake = Faker()
 
-    def replace_token(self, token_value, sample_raw):
-        return re.sub(self.name, str(token_value), sample_raw, flags=re.MULTILINE)
-
     @classmethod
-    def init_variables(cls):
-
-        cls.rule_book = {
-            ('random', 'integer'): IntRule,
-            ('random', 'list'): ListRule,
-            ('random', 'ipv4'): Ipv4Rule,
-            ('random', 'float'): FloatRule,
-            ('random', 'ipv6'): Ipv6Rule,
-            ('random', 'mac'): MacRule,
-            ('file', 'file_name'): FileRule,
-            ('mvfile', 'file_name'): FileRule,
-            ('static', 'value'): StaticRule,
-            ('timestamp', 'format'): TimeRule,
-            ('all', 'list'): ListRule
+    def parse_rule(cls, token):
+        rule_book = {
+            'integer': IntRule,
+            'list': ListRule,
+            'ipv4': Ipv4Rule,
+            'float': FloatRule,
+            'ipv6': Ipv6Rule,
+            'mac': MacRule,
+            'file': FileRule,
         }
 
-        cls.rules = {
-            "random": {
-                r"integer": "integer",
-                r"^[Ll]ist.*": "list",
-                r"ipv4": "ipv4",
-                r"ipv6": "ipv6",
-                r"float": 'float',
-                r"mac": 'mac'
-            },
-            "file": {
-                r".*": "file_name"
-            },
-            "mvfile": {
-                r".*": "file_name"
-            },
-            "static": {
-                r".*": "value"
-            },
-            "timestamp": {
-                r".*": "format"
-            },
-            "all": {
-                r"^[Ll]ist.*": "list"
-            }
-        }
+        replacement_type = token['replacementType']
+        replacement = token['replacement']
+        if replacement_type == "static":
+            return StaticRule(token)
+        elif replacement_type == "timestamp":
+            return TimeRule(token)
+        elif replacement_type == "random" or replacement_type == "all":
+            for each_rule in rule_book:
+                replacement.startswith(each_rule)
+                return rule_book[each_rule](token)
+        elif replacement_type == "file":
+            return FileRule(token)
 
-    @classmethod
-    def parse_rule(cls, name, replacement_type, replacement):
+        print("No Rule Found.!")
+        # TODO: Test the behavior if no rule found
+        raise Exception("No Rule Found.!")
 
-        if replacement_type in cls.rules:
-            for each_rule in cls.rules[replacement_type]:
-                if re.search(each_rule, replacement):
-                    # print("here", replacement)
-                    return cls.rule_book[(replacement_type, cls.rules[replacement_type][each_rule])](name, replacement, replacement_type)
+    def apply(self, events):
+        new_events = []
+        for each_event in events:
+            token_values = self.replace(self.replacement_type == 'random')
+            for each_token_value in token_values:
+                new_event = SampleEvent.copy(each_event)
+                new_event.replace_token(self.token, each_token_value)
+                new_event.register_field_value(self.field, each_token_value)
+                new_events.append(new_event)
+        return new_events
 
-    @classmethod
-    def apply(cls, events, sample_rules):
-        for each_rule in sample_rules:
-            if each_rule.replacement_type == 'all':
-                events = each_rule.apply(events)
-            else:
-                for index, event in enumerate(events):
-                    events[index] = each_rule.apply(event)
-        return events
-
+    def replace(self, event):
+        replaced_values = ["A", "B", "C"]
+        event.update("new event")
+        return replaced_values
 
 class IntRule(Rule):
-
-    def apply(self, sample_raw):
+    def replace(self, random=True):
         lower_limit, upper_limit = re.match(r"[Ii]nteger\[(\d+):(\d+)\]", self.replacement).groups()
-        int_value = randint(int(lower_limit), int(upper_limit))
-        return self.replace_token(int_value, sample_raw)
+        if random:
+            yield randint(int(lower_limit), int(upper_limit))
+        else:
+            for each_int in range(int(lower_limit), int(upper_limit)):
+                yield each_int
 
 class FloatRule(Rule):
 
@@ -140,7 +121,6 @@ class FileRule(Rule):
     def apply(self, sample_raw_data):
 
         is_csv = False
-        #sample_file_path = "{}\\{}".format(sample.path_to_samples, *self.replacement.split('samples')[-1].strip('/').split('/'))
         if re.search(':\d+', self.replacement):
             sample_file_path = re.sub(':\d+','', sample_file_path)
             is_csv = True
@@ -164,12 +144,12 @@ class TimeRule(Rule):
 
     def apply(self, sample_raw_data):
         if r"%s" in self.replacement:
-            tokenised_sample = re.sub(self.name, self.replacement.replace(r'%s', str(int(time()))), sample_raw_data, flags=re.MULTILINE)
+            tokenised_sample = re.sub(self.token, self.replacement.replace(r'%s', str(int(time()))), sample_raw_data, flags=re.MULTILINE)
             return tokenised_sample
 
         if r"%e" in self.replacement:
             print(r"timestamp -> %e has compatibility issues (works in linux only). Please replace it with %d.")
-        tokenised_sample = re.sub(self.name, strftime(self.replacement.replace(r'%e', r'%d')), sample_raw_data, flags=re.MULTILINE)
+        tokenised_sample = re.sub(self.token, strftime(self.replacement.replace(r'%e', r'%d')), sample_raw_data, flags=re.MULTILINE)
         return tokenised_sample
 
 
@@ -197,14 +177,14 @@ class GuidRule(Rule):
 
     def apply(self, sample_raw_data):
         M = 16**4
-        tokenised_sample = re.sub(self.name, ":".join(("%x" % randint(0, M) for i in range(6))), sample_raw_data)
+        tokenised_sample = re.sub(self.token, ":".join(("%x" % randint(0, M) for i in range(6))), sample_raw_data)
         return tokenised_sample
 
 
 class macRule(Rule):
 
     def apply(self, sample_raw_data):
-        tokenised_sample = re.sub(self.name, "%02x:%02x:%02x:%02x:%02x:%02x" % (
+        tokenised_sample = re.sub(self.token, "%02x:%02x:%02x:%02x:%02x:%02x" % (
                 randint(0, 255),
                 randint(0, 255),
                 randint(0, 255),
@@ -216,8 +196,8 @@ class macRule(Rule):
         return tokenised_sample
 
 
-class GuidRule(Rule):
+# class GuidRule(Rule):
 
-    def apply(self, sample_raw_data):
-        tokenised_sample = re.sub(self.name, str(uuid.uuid4()), sample_raw_data)
-        return tokenised_sample
+#     def apply(self, sample_raw_data):
+#         tokenised_sample = re.sub(self.token, str(uuid.uuid4()), sample_raw_data)
+#         return tokenised_sample

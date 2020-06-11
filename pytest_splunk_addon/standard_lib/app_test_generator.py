@@ -7,7 +7,8 @@ import logging
 import os
 from .fields_tests import FieldTestGenerator
 from .cim_tests import CIMTestGenerator
-
+from .sample_generation import SampleGenerator
+import pytest
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class AppTestGenerator(object):
@@ -63,6 +64,12 @@ class AppTestGenerator(object):
                 self.cim_test_generator.generate_tests(fixture),
                 fixture
             )
+        elif fixture.startswith("splunk_generate_samples"):
+            # TODO: What should be the id of the test case?
+            # Sourcetype + Host + Key field + _count
+            sample_generator = SampleGenerator(r'C:\Jay\Work\Automation\pytest-splunk-addon\new_dev_environment\eventgen_package')
+            yield from [each.event for each in sample_generator.get_samples()]
+
 
     def dedup_tests(self, test_list, fixture):
         """

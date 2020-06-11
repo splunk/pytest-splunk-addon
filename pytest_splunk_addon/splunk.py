@@ -263,6 +263,13 @@ def splunk(request):
     yield splunk_info
 
 
+import time
+@pytest.fixture(scope="function")
+def ingest_splunk(splunk_generate_samples):
+    time.sleep(2)
+    return "one"
+
+
 @pytest.fixture(scope="session")
 def splunk_docker(request, docker_services, docker_compose_files):
     """

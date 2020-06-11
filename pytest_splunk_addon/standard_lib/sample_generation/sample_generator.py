@@ -1,39 +1,29 @@
-from concurrent.futures import ProcessPoolExecutor
-from eventgen_parser import EventgenParser
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
+from . import EventgenParser
+from . import SampleStanza
 class SampleGenerator(object):
     """
     Main Class
-    Parse the eventgen, Generate sample objects 
+    Generate sample objects 
     """
-    PROCESS_COUNT = 4
-    def __init__(self, addon_path):
+    def __init__(self, addon_path, process_count=4):
         self.addon_path = addon_path
+        self.process_count = process_count
 
     def get_samples(self):
         """
+        Generate SampleEvent object 
         """
         eventgen_parser = EventgenParser(self.addon_path)
-        self.samples = list(eventgen_parser.parse_eventgen())
+        sample_stanzas = list(eventgen_parser.get_sample_stanzas())
+        with ThreadPoolExecutor(min(20, len(sample_stanzas))) as t:
+            t.map(SampleStanza.get_raw_events, sample_stanzas)
+        # with ProcessPoolExecutor(self.process_count) as p:
+        _ = list(map(SampleStanza.tokenize, sample_stanzas))
 
-    def parse_samples(self):
-        """
-        Input: List of all samples
-        """
-        self.get_samples()
-        executor = ProcessPoolExecutor(max_workers=4)
-        result = list(executor.map(self.tokenize, self.samples))
-
-        for val in result:
-            for sample in self.samples:
-                if sample.sample_name in val.keys():
-                    sample.tokenized_events = val[sample.sample_name]
-
-    def tokenize(self, sample):
-        tokenised_events = list(sample.tokenize())
-        return {sample.sample_name: tokenised_events}
-
-
-if __name__ == "__main__":
-    sample_generator = SampleGenerator('C:\\Users\\zahra.sidhpuri\\Documents\\Mission Team Automation\\PSA-Eventgen\\pytest-splunk-addon\\package_zeek')
-    sample_generator.parse_samples()
+        for each_sample in sample_stanzas:
+            yield from each_sample.get_tokenized_events()
+def main():
+    sample_generator = SampleGenerator(r'C:\Jay\Work\Automation\pytest-splunk-addon\new_dev_environment\eventgen_package')
+    print(sample_generator.get_samples())
