@@ -13,6 +13,7 @@ services:
       context: .
       dockerfile: Dockerfile.splunk
       args:
+        SPLUNK_APP_ID: ${SPLUNK_APP_ID}
         SPLUNK_VERSION: ${SPLUNK_VERSION}
     ports:
       - "8000"
