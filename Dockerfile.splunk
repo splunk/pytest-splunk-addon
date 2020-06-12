@@ -4,5 +4,5 @@ ARG SPLUNK_VERSION=latest
 ARG SPLUNK_APP_ID=TA_UNKNOWN
 ARG SPLUNK_APP_PACKAGE=package
 RUN echo ${SPLUNK_VERSION} $SPLUNK_APP_PACKAGE
-COPY ${SPLUNK_APP_PACKAGE} /opt/splunk/etc/apps/${SPLUNK_APP}
+COPY ${SPLUNK_APP_PACKAGE} /opt/splunk/etc/apps/${SPLUNK_APP_ID}
 COPY deps/apps /opt/splunk/etc/apps/

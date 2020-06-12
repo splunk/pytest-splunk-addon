@@ -14,6 +14,7 @@ services:
       dockerfile: Dockerfile.splunk
       args:
         SPLUNK_APP_ID: ${SPLUNK_APP_ID}
+        SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
         SPLUNK_VERSION: ${SPLUNK_VERSION}
     ports:
       - "8000"
