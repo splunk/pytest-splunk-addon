@@ -5,7 +5,6 @@ from decimal import Decimal
 from random import uniform, randint, choice
 from time import strftime, time,mktime
 import uuid 
-import abc
 import string
 # from faker import Faker
 from datetime import datetime, timedelta
@@ -25,12 +24,23 @@ class Rule:
     def parse_rule(cls, token):
         rule_book = {
             'integer': IntRule,
-            'list': ListRule,
             'ipv4': Ipv4Rule,
             'float': FloatRule,
             'ipv6': Ipv6Rule,
             'mac': MacRule,
             'file': FileRule,
+            'random': {
+                'integer': IntRule,
+                'list': ListRule,
+                'emails': EmailRule,
+                'users': UserRule,
+                'url': UrlRule,
+            },
+            'all': {
+                'list': ListRule,
+                'integer': IntRule,
+                'file': FileRule,
+            }
         }
 
         replacement_type = token['replacementType']
@@ -40,9 +50,9 @@ class Rule:
         elif replacement_type == "timestamp":
             return TimeRule(token)
         elif replacement_type == "random" or replacement_type == "all":
-            for each_rule in rule_book:
-                replacement.startswith(each_rule)
-                return rule_book[each_rule](token)
+            for each_rule in rule_book[replacement_type]:
+                if replacement.startswith(each_rule):
+                    return rule_book[replacement_type][each_rule](token)
         elif replacement_type == "file":
             return FileRule(token)
 
@@ -60,11 +70,6 @@ class Rule:
                 new_event.register_field_value(self.field, each_token_value)
                 new_events.append(new_event)
         return new_events
-
-    def replace(self, event):
-        replaced_values = ["A", "B", "C"]
-        event.update("new event")
-        return replaced_values
 
 class IntRule(Rule):
     def replace(self, random=True):
@@ -85,13 +90,11 @@ class FloatRule(Rule):
         float_value = round(uniform(float(lower_limit), float(upper_limit)), len(precision))
         return self.replace_token(float_value, sample_raw)
 
-
 class ListRule(Rule):
 
     def apply(self, sample_raw_data):
         value_list_str = re.match(r'[lL]ist(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
-
         if self.replacement_type == 'all':
             tokenised_sample = []
             for each_raw in sample_raw_data:
@@ -174,30 +177,96 @@ class MacRule(Rule):
 
 
 class GuidRule(Rule):
-
+    
     def apply(self, sample_raw_data):
-        M = 16**4
-        tokenised_sample = re.sub(self.token, ":".join(("%x" % randint(0, M) for i in range(6))), sample_raw_data)
+        tokenised_sample = re.sub(self.token, str(uuid.uuid4()), sample_raw_data)
         return tokenised_sample
 
+class UserRule(Rule):
+     
+    def apply(self, sample):
+        if "email" in self.replacement_map and sample.__hash__ in self.replacement_map["email"]:
+            return self.replace_token(self.replacement_map["email"][sample.__hash__][0], sample.event)
+        else:
+            f = open("C:\\TA\\eventgenparsing\\Splunk_TA_cisco-wsa-old\\samples\\user_email.csv")
+            reader = csv.reader(f)
+            csv_row = choice(list(reader))
+            self.replacement_map["user"] = {sample.__hash__:csv_row}
+            return self.replace_token(csv_row[0], sample.event)
 
-class macRule(Rule):
+class EmailRule(Rule):
+    
+    def apply(self, sample):    
+        if "user" in self.replacement_map and sample.__hash__ in self.replacement_map["user"]:
+            return self.replace_token(self.replacement_map["user"][sample.__hash__][1], sample.event)
+        else:
+            f = open("C:\\TA\\eventgenparsing\\Splunk_TA_cisco-wsa-old\\samples\\user_email.csv")
+            reader = csv.reader(f)
+            csv_row = choice(list(reader))
+            self.replacement_map["email"] = {sample.__hash__:csv_row}
+            return self.replace_token(csv_row[1], sample.event)
 
-    def apply(self, sample_raw_data):
-        tokenised_sample = re.sub(self.token, "%02x:%02x:%02x:%02x:%02x:%02x" % (
-                randint(0, 255),
-                randint(0, 255),
-                randint(0, 255),
-                randint(0, 255),
-                randint(0, 255),
-                randint(0, 255)
-            ), sample_raw_data)
+class UrlRule(Rule):
+    
+    def apply(self, sample):
+        self.fake = Faker()
+        url = self.fake.uri()
+        if randint(0, 1):
+            url = url + "?"
+            for _ in range(randint(1, 4)):
+                field = ''.join(choice(string.ascii_lowercase) for _ in range(randint(2, 5)))
+                value = ''.join(choice(string.ascii_lowercase + string.digits) for _ in range(randint(2, 5)))
+                url = url + field + "=" + value + "&"
+            url = url[:-1]
+        return self.replace_token(url,  sample.event)
 
-        return tokenised_sample
+class DestRule(Rule):
 
+    def apply(self, sample):
+        return self.replace_token("10.100." + str(randint(0, 255)) + "." + str(randint(1,255)), sample)
 
-# class GuidRule(Rule):
+class SrcPortRule(Rule):
 
-#     def apply(self, sample_raw_data):
-#         tokenised_sample = re.sub(self.token, str(uuid.uuid4()), sample_raw_data)
-#         return tokenised_sample
+    def apply(self, sample):
+        return self.replace_token(randint(4000, 5000), sample)
+
+class DvcRule(Rule):
+
+    def apply(self, sample):
+        return self.replace_token("172.16." + str(randint(0, 255)) + "." + str(randint(1,255)), sample)
+
+class SrcRule(Rule):
+
+    def apply(self, sample):
+        return self.replace_token("10.1." + str(randint(0, 255)) + "." + str(randint(1,255)), sample)
+
+class DestPortRule(Rule):
+
+    def apply(self, sample):
+        DEST_PORT = [80, 443, 25, 22, 21]
+        return self.replace_token(choice(DEST_PORT), sample)
+
+class HostRule(Rule):
+
+    def apply(self, sample):    
+        if "fqdn" in self.replacement_map and sample.__hash__ in self.replacement_map["fqdn"]:
+            return self.replace_token(self.replacement_map["fqdn"][sample.__hash__][0], sample)
+        else:
+            f = open("host_domain.sample")
+            reader = csv.reader(f)
+            csv_row = choice(list(reader))
+            self.replacement_map["host"] = {sample.__hash__:csv_row}
+            return self.replace_token(csv_row[0], sample)
+            
+class FqdnRule(Rule):
+    
+    def apply(self, sample):
+
+        if "host" in self.replacement_map and sample.__hash__ in self.replacement_map["host"]:
+                return self.replace_token(self.replacement_map["host"][sample.__hash__][1], sample)
+        else:
+            f = open("host_domain.sample")
+            reader = csv.reader(f)
+            csv_row = choice(list(reader))
+            self.replacement_map["fqdn"] = {sample.__hash__:csv_row}
+            return self.replace_token(csv_row[1], sample)
