@@ -24,23 +24,12 @@ class Rule:
     def parse_rule(cls, token):
         rule_book = {
             'integer': IntRule,
+            'list': ListRule,
             'ipv4': Ipv4Rule,
             'float': FloatRule,
             'ipv6': Ipv6Rule,
             'mac': MacRule,
-            'file': FileRule,
-            'random': {
-                'integer': IntRule,
-                'list': ListRule,
-                'emails': EmailRule,
-                'users': UserRule,
-                'url': UrlRule,
-            },
-            'all': {
-                'list': ListRule,
-                'integer': IntRule,
-                'file': FileRule,
-            }
+            'file': FileRule
         }
 
         replacement_type = token['replacementType']
@@ -50,9 +39,9 @@ class Rule:
         elif replacement_type == "timestamp":
             return TimeRule(token)
         elif replacement_type == "random" or replacement_type == "all":
-            for each_rule in rule_book[replacement_type]:
+            for each_rule in rule_book:
                 if replacement.startswith(each_rule):
-                    return rule_book[replacement_type][each_rule](token)
+                    return rule_book[each_rule](token)
         elif replacement_type == "file":
             return FileRule(token)
 
@@ -92,25 +81,14 @@ class FloatRule(Rule):
 
 class ListRule(Rule):
 
-    def apply(self, sample_raw_data):
+    def replace(self, random=True):
         value_list_str = re.match(r'[lL]ist(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
-        if self.replacement_type == 'all':
-            tokenised_sample = []
-            for each_raw in sample_raw_data:
-                for each_value in value_list:
-                    for each_char in each_value:
-                        if not 32 <= ord(each_char) <= 126:
-                            raise Exception("Invalid character in List")
-                    tokenised_sample.append(self.replace_token(each_value, each_raw))
-            return tokenised_sample
+        if random:
+            yield str(choice(value_list))
         else:
             for each_value in value_list:
-                for each_char in each_value:
-                    if not 32 <= ord(each_char) <= 126:
-                        raise Exception("Invalid character in List")
-
-            return self.replace_token(str(choice(value_list)), sample_raw_data)
+                yield str(each_value)
 
 
 class StaticRule(Rule):
@@ -120,27 +98,28 @@ class StaticRule(Rule):
 
 
 class FileRule(Rule):
-
-    def apply(self, sample_raw_data):
-
-        is_csv = False
-        if re.search(':\d+', self.replacement):
-            sample_file_path = re.sub(':\d+','', sample_file_path)
-            is_csv = True
-
-        try:
-            f = open(sample_file_path)
-            txt = f.read()
-            f.close()
-            if is_csv:
-                col_id = re.search(':(\d+)', self.replacement).group(1)
-                lines = [each.split(',')[int(col_id)-1] for each in txt.split('\n') if each]
-            else:
+    
+    def replace(self, random=True):
+        if random:
+            try:
+                f = open(self.replacement)
+                txt = f.read()
+                f.close()
                 lines = [each for each in txt.split('\n') if each]
-            return self.replace_token(choice(lines), sample_raw_data)
-        except IOError as e:
-            print("File not found : {}".format(self.replacement))
-            return sample_raw_data
+                yield choice(lines)
+            except IOError as e:
+                print("File not found : {}".format(self.replacement))
+        else:
+            sample_file_path = re.match(r'[fF]ile\[(.*?)\]', self.replacement).group(1)
+            try:
+                f = open(sample_file_path)
+                txt = f.read()
+                f.close()
+                
+                for each_value in txt.split('\n'):
+                    yield each_value
+            except IOError as e:
+                print("File not found : {}".format(self.replacement))
 
 
 class TimeRule(Rule):  
