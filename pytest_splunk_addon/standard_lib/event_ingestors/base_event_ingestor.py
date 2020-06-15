@@ -7,9 +7,9 @@ class EventIngestor(abc.ABC):
     """
 
     @abc.abstractmethod
-    def __init__(self, uri, token):
+    def __init__(self, required_configs):
         pass
 
     @abc.abstractmethod
-    def ingest(self, data):
+    def ingest(self, event_object):
         raise NotImplementedError
