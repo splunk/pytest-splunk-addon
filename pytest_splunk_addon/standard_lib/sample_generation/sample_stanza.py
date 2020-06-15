@@ -56,7 +56,7 @@ class SampleStanza(object):
                 for each_line in sample_file:
                     yield SampleEvent(
                         each_line,
-                        **self.meta_info
+                        **self.metadata
                     )
 
             if self.ingest_type == 'file_monitor':
