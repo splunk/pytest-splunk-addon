@@ -7,7 +7,7 @@ import requests
 requests.urllib3.disable_warnings()
 
 
-class HECEventIngestor(EventIngestor):
+class HECRawEventIngestor(EventIngestor):
     """
     Class to ingest event via HEC
     """
@@ -28,47 +28,33 @@ class HECEventIngestor(EventIngestor):
         self.hec_uri = hec_uri
         self.session_headers = session_headers
 
-    def ingest(self, data):
+    def ingest(self, event_str, params):
         """
-        Ingests event and metric data into splunk using HEC token via event endpoint.
-        Args:
-            data(dict): data dict with the info of the data to be ingested.
+        Ingests data into splunk via raw endpoint.
 
+        Args:
+            event_str(str): Data string to be ingested
+
+            params(dict): dict with the info of the data to be ingested.
             format::
                 {
                     "sourcetype": "sample_HEC",
                     "source": "sample_source",
                     "host": "sample_host",
-                    "event": "event_str"
                 }
 
-            For batch ingestion of events in a single request at event endpoint provide a list of event dict to be ingested.
-            format::
-                [ 
-                    {
-                        "sourcetype": "sample_HEC",
-                        "source": "sample_source",
-                        "host": "sample_host",
-                        "event": "event_str1"
-                    },
-                    {
-                        "sourcetype": "sample_HEC",
-                        "source": "sample_source",
-                        "host": "sample_host",
-                        "event": "metric"
-                        "index": "metric_index"
-                        "fields":{
-                            "metric_name": "metric1",
-                            "_value": 1,
-                        }
-                    }
-                ]
+        For batch ingestion of events in a single request at raw endpoint provide a list of dict in data to be ingested.
+
+        format::
+
+            [{"event": "raw_event_str1"}, {"event": "raw_event_str2"}]
         """
         try:
             response = requests.post(
-                "{}/{}".format(self.hec_uri, "event"),
+                "{}/{}".format(self.hec_uri, "raw"),
                 auth=None,
-                json=data,
+                data=event_str,
+                params=params,
                 headers=self.session_headers,
                 verify=False,
             )
