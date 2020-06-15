@@ -9,6 +9,7 @@ import string
 # from faker import Faker
 from datetime import datetime, timedelta
 import math
+import csv
 
 from . import SampleEvent
 
@@ -29,7 +30,10 @@ class Rule:
             'float': FloatRule,
             'ipv6': Ipv6Rule,
             'mac': MacRule,
-            'file': FileRule
+            'file': FileRule,
+            'url': UrlRule,
+            'user': UserRule,
+            'email': EmailRule
         }
 
         replacement_type = token['replacementType']
@@ -52,7 +56,7 @@ class Rule:
     def apply(self, events):
         new_events = []
         for each_event in events:
-            token_values = self.replace(self.replacement_type == 'random')
+            token_values = self.replace(each_event, self.replacement_type == 'random')
             for each_token_value in token_values:
                 new_event = SampleEvent.copy(each_event)
                 new_event.replace_token(self.token, each_token_value)
@@ -60,8 +64,15 @@ class Rule:
                 new_events.append(new_event)
         return new_events
 
+    def get_lookup_value(self, sample, filename, key, index):
+        f = open(filename)
+        reader = csv.reader(f)
+        csv_row = choice(list(reader))
+        sample.__setattr__("replacement_map", { key:csv_row })
+        return csv_row[index]
+
 class IntRule(Rule):
-    def replace(self, random=True):
+    def replace(self, sample, random=True):
         lower_limit, upper_limit = re.match(r"[Ii]nteger\[(\d+):(\d+)\]", self.replacement).groups()
         if random:
             yield randint(int(lower_limit), int(upper_limit))
@@ -71,19 +82,20 @@ class IntRule(Rule):
 
 class FloatRule(Rule):
 
-    def apply(self, sample_raw):
+    def replace(self, sample, random=True):
         lower_limit, upper_limit = re.match(r"[Ff]loat\[([\d\.]+):([\d\.]+)\]", self.replacement).groups()
         precision =  re.search('\[\d+\.?(\d*):', self.replacement).group(1)
         if not precision:
             precision = str(1)
         float_value = round(uniform(float(lower_limit), float(upper_limit)), len(precision))
-        return self.replace_token(float_value, sample_raw)
+        yield float_value
 
 class ListRule(Rule):
 
-    def replace(self, random=True):
+    def replace(self, sample, random=True):
         value_list_str = re.match(r'[lL]ist(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
+
         if random:
             yield str(choice(value_list))
         else:
@@ -99,7 +111,7 @@ class StaticRule(Rule):
 
 class FileRule(Rule):
     
-    def replace(self, random=True):
+    def replace(self, sample, random=True):
         if random:
             try:
                 f = open(self.replacement)
@@ -124,71 +136,57 @@ class FileRule(Rule):
 
 class TimeRule(Rule):  
 
-    def apply(self, sample_raw_data):
+    def replace(self, sample, random=True):
         if r"%s" in self.replacement:
-            tokenised_sample = re.sub(self.token, self.replacement.replace(r'%s', str(int(time()))), sample_raw_data, flags=re.MULTILINE)
-            return tokenised_sample
+            yield self.replacement.replace(r'%s', str(int(time())))
 
         if r"%e" in self.replacement:
             print(r"timestamp -> %e has compatibility issues (works in linux only). Please replace it with %d.")
-        tokenised_sample = re.sub(self.token, strftime(self.replacement.replace(r'%e', r'%d')), sample_raw_data, flags=re.MULTILINE)
-        return tokenised_sample
-
+        yield strftime(self.replacement.replace(r'%e', r'%d'))
 
 
 class Ipv4Rule(Rule):
 
-    def apply(self, sample_raw):
+    def replace(self, sample, sample_raw):
         ipv4 = self.fake.ipv4()
-        return self.replace_token(ipv4, sample_raw)
+        yield ipv4
 
 class Ipv6Rule(Rule):
 
-    def apply(self, sample_raw):
+    def replace(self, sample, sample_raw):
         ipv6 = self.fake.ipv6()
-        return self.replace_token(ipv6, sample_raw)
+        yield ipv6
 
 class MacRule(Rule):
     
-    def apply(self, sample_raw):
+    def replace(self, sample, sample_raw):
         mac = self.fake.mac_address()
-        return self.replace_token(mac, sample_raw)
-
+        yield mac
 
 class GuidRule(Rule):
     
-    def apply(self, sample_raw_data):
-        tokenised_sample = re.sub(self.token, str(uuid.uuid4()), sample_raw_data)
-        return tokenised_sample
+    def replace(self, sample, sample_raw_data):
+        yield str(uuid.uuid4())
 
 class UserRule(Rule):
      
-    def apply(self, sample):
-        if "email" in self.replacement_map and sample.__hash__ in self.replacement_map["email"]:
-            return self.replace_token(self.replacement_map["email"][sample.__hash__][0], sample.event)
+    def replace(self, sample, random=True):
+        if hasattr(sample, 'replacement_map') and 'email' in sample.replacement_map:
+            yield sample.replacement_map["email"][0];
         else:
-            f = open("C:\\TA\\eventgenparsing\\Splunk_TA_cisco-wsa-old\\samples\\user_email.csv")
-            reader = csv.reader(f)
-            csv_row = choice(list(reader))
-            self.replacement_map["user"] = {sample.__hash__:csv_row}
-            return self.replace_token(csv_row[0], sample.event)
+            yield self.get_lookup_value(sample, "user_email.csv", 'user', 0)
 
 class EmailRule(Rule):
     
-    def apply(self, sample):    
-        if "user" in self.replacement_map and sample.__hash__ in self.replacement_map["user"]:
-            return self.replace_token(self.replacement_map["user"][sample.__hash__][1], sample.event)
+    def replace(self, sample, random=True): 
+        if hasattr(sample, 'replacement_map') and 'user' in sample.replacement_map:
+            yield sample.replacement_map["user"][1];
         else:
-            f = open("C:\\TA\\eventgenparsing\\Splunk_TA_cisco-wsa-old\\samples\\user_email.csv")
-            reader = csv.reader(f)
-            csv_row = choice(list(reader))
-            self.replacement_map["email"] = {sample.__hash__:csv_row}
-            return self.replace_token(csv_row[1], sample.event)
+            yield self.get_lookup_value(sample, "user_email.csv", 'email', 1)
 
 class UrlRule(Rule):
     
-    def apply(self, sample):
-        self.fake = Faker()
+    def replace(self, sample, random=True):
         url = self.fake.uri()
         if randint(0, 1):
             url = url + "?"
@@ -197,55 +195,46 @@ class UrlRule(Rule):
                 value = ''.join(choice(string.ascii_lowercase + string.digits) for _ in range(randint(2, 5)))
                 url = url + field + "=" + value + "&"
             url = url[:-1]
-        return self.replace_token(url,  sample.event)
+        yield url
 
 class DestRule(Rule):
-
-    def apply(self, sample):
-        return self.replace_token("10.100." + str(randint(0, 255)) + "." + str(randint(1,255)), sample)
+    
+    def replace(self, sample, random=True):
+        yield "10.100." + str(randint(0, 255)) + "." + str(randint(1,255))
 
 class SrcPortRule(Rule):
 
-    def apply(self, sample):
-        return self.replace_token(randint(4000, 5000), sample)
+    def replace(self, sample, random=True):
+        yield randint(4000, 5000)
 
 class DvcRule(Rule):
 
-    def apply(self, sample):
-        return self.replace_token("172.16." + str(randint(0, 255)) + "." + str(randint(1,255)), sample)
+    def replace(self, sample, random=True):
+        yield "172.16." + str(randint(0, 255)) + "." + str(randint(1,255))
 
 class SrcRule(Rule):
 
-    def apply(self, sample):
-        return self.replace_token("10.1." + str(randint(0, 255)) + "." + str(randint(1,255)), sample)
+    def replace(self, sample, random=True):
+        yield "10.1." + str(randint(0, 255)) + "." + str(randint(1,255))
 
 class DestPortRule(Rule):
 
-    def apply(self, sample):
+    def replace(self, sample, random=True):
         DEST_PORT = [80, 443, 25, 22, 21]
-        return self.replace_token(choice(DEST_PORT), sample)
+        yield self.replace_token(choice(DEST_PORT), sample)
 
 class HostRule(Rule):
 
-    def apply(self, sample):    
-        if "fqdn" in self.replacement_map and sample.__hash__ in self.replacement_map["fqdn"]:
-            return self.replace_token(self.replacement_map["fqdn"][sample.__hash__][0], sample)
+    def replace(self, sample, random=True):
+        if hasattr(sample, 'replacement_map') and 'fqdn' in sample.replacement_map:
+                yield sample.replacement_map["fqdn"][0];
         else:
-            f = open("host_domain.sample")
-            reader = csv.reader(f)
-            csv_row = choice(list(reader))
-            self.replacement_map["host"] = {sample.__hash__:csv_row}
-            return self.replace_token(csv_row[0], sample)
+            yield self.get_lookup_value(sample, "host_domain.sample", 'host', 0)
             
 class FqdnRule(Rule):
     
-    def apply(self, sample):
-
-        if "host" in self.replacement_map and sample.__hash__ in self.replacement_map["host"]:
-                return self.replace_token(self.replacement_map["host"][sample.__hash__][1], sample)
+    def replace(self, sample, random=True):
+        if hasattr(sample, 'replacement_map') and 'host' in sample.replacement_map:
+                yield sample.replacement_map["host"][1];
         else:
-            f = open("host_domain.sample")
-            reader = csv.reader(f)
-            csv_row = choice(list(reader))
-            self.replacement_map["fqdn"] = {sample.__hash__:csv_row}
-            return self.replace_token(csv_row[1], sample)
+            yield self.get_lookup_value(sample, "host_domain.sample", 'fqdn', 1)
