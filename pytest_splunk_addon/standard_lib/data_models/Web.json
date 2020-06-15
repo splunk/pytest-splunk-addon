@@ -112,12 +112,6 @@
           "comment": "The URL of the requested HTTP resource."
         },
         {
-          "name": "url_length",
-          "type": "required",
-          "validity": "if(url_length == len(url), url_length, null())",
-          "comment": "The length of the URL."
-        },
-        {
           "name": "category",
           "type": "required",
           "comment": "The category of traffic, such as may be provided by a proxy server."
