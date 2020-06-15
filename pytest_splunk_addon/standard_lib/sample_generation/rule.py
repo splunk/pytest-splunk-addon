@@ -44,6 +44,8 @@ class Rule:
             "url": UrlRule,
             "user": UserRule,
             "email": EmailRule,
+            'fqdn': FqdnRule,
+            'hex': HexRule
         }
 
         replacement_type = token["replacementType"]
@@ -277,25 +279,27 @@ class GuidRule(Rule):
 
 
 class UserRule(Rule):
+    csv_column = 0
     def replace(self, sample, random=True):
         if (
             hasattr(sample, "replacement_map")
             and "email" in sample.replacement_map
         ):
-            yield sample.replacement_map["email"][0]
+            yield sample.replacement_map["email"][self.csv_column]
         else:
-            yield self.get_lookup_value(sample, "user_email.csv", "user", 0)
+            yield self.get_lookup_value(sample, "lookups\\user_email.csv", "user", self.csv_column)
 
 
 class EmailRule(Rule):
+    csv_column = 1
     def replace(self, sample, random=True):
         if (
             hasattr(sample, "replacement_map")
             and "user" in sample.replacement_map
         ):
-            yield sample.replacement_map["user"][1]
+            yield sample.replacement_map["user"][self.csv_column]
         else:
-            yield self.get_lookup_value(sample, "user_email.csv", "email", 1)
+            yield self.get_lookup_value(sample, "lookups\\user_email.csv", "email", self.csv_column)
 
 
 class UrlRule(Rule):
@@ -344,27 +348,40 @@ class DestPortRule(Rule):
 
 
 class HostRule(Rule):
+    csv_column = 0
     def replace(self, sample, random=True):
         if (
             hasattr(sample, "replacement_map")
             and "fqdn" in sample.replacement_map
         ):
-            yield sample.replacement_map["fqdn"][0]
+            yield sample.replacement_map["fqdn"][self.csv_column]
         else:
             yield self.get_lookup_value(
-                sample, "host_domain.sample", "host", 0
+                sample, "lookups\\host_domain.sample", "host", self.csv_column
             )
 
 
 class FqdnRule(Rule):
+    csv_column = 1
     def replace(self, sample, random=True):
         if (
             hasattr(sample, "replacement_map")
             and "host" in sample.replacement_map
         ):
-            yield sample.replacement_map["host"][1]
+            yield sample.replacement_map["host"][self.csv_column]
         else:
             yield self.get_lookup_value(
-                sample, "host_domain.sample", "fqdn", 1
+                sample, "lookups\\host_domain.sample", "fqdn", self.csv_column
             )
 
+class HexRule(Rule):
+    
+    def replace(self, sample, random=True):
+        hex_range = re.match(r"[Hh]ex\((.*?)\)", self.replacement).group(1)
+        hex_digits = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f']
+        hex_array = []
+
+        for i in range(int(hex_range)):
+            hex_array.append(hex_digits[randint(0,15)])
+        hex_value = ''.join(hex_array)
+        yield hex_value
