@@ -103,7 +103,8 @@
         },
         {
           "name": "uri_path",
-          "type": "required",
+          "type": "optional",
+          "validity": "if(match(uri_path, \"(?i)^(?:[^/]*/){3}(?P<uri_path>[^(\\?|\\s)]+)\"),uri_path,null())",
           "comment": "The path of the resource served by the webserver or proxy."
         },
         {
