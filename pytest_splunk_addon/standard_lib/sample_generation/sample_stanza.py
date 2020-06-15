@@ -19,7 +19,7 @@ class SampleStanza(object):
         self.sample_rules = list(self._parse_rules(eventgen_params))
         # self.ingest_type = eventgen_params.get('ingest_type')
         self.metadata = self._parse_meta(eventgen_params)
-        self.ingest_type = self.metadata.pop('ingest_type', None)
+        self.ingest_type = self.metadata.get('ingest_type', None)
 
     def get_raw_events(self):
         # self.sample_raw_data = list(self._get_raw_sample()) 

@@ -68,7 +68,7 @@ class AppTestGenerator(object):
             # TODO: What should be the id of the test case?
             # Sourcetype + Host + Key field + _count
             sample_generator = SampleGenerator(r'C:\Jay\Work\Automation\pytest-splunk-addon\new_dev_environment\eventgen_package')
-            yield from [each.event for each in sample_generator.get_samples()]
+            yield from [each for each in sample_generator.get_samples()]
 
 
     def dedup_tests(self, test_list, fixture):
