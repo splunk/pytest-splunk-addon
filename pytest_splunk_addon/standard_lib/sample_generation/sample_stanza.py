@@ -42,6 +42,39 @@ class SampleStanza(object):
     def _parse_meta(self, eventgen_params):
         return {key:eventgen_params[key] for key in eventgen_params if key != "tokens"}
 
+    def update_metadata(self, data, metadata):
+        '''
+        This method is to process the syslog formated samples data
+        data: raw syslog data
+            data_format::
+                ***SPLUNK*** source=<source> sourcetype=<sourcetype>
+
+                fiels_1   field2   field3
+                value1    value2   value3
+            metadata: dictionary of metadata
+            params_format::
+                {
+                    "host": "sample_host",
+                    "source": "sample_source"
+                }
+        Returns:
+            syslog data and params that contains syslog_headers
+        '''
+        try:
+            header = data.split("\n", 1)[0]
+            event_string = data.split("\n", 1)[1]
+
+            meta_fields = re.findall(r"[\w]+=[^\s]+", header)
+            for meta_field in meta_fields:
+                field = meta_field.split("=")[0]
+                value = meta_field.split("=")[1]
+                metadata[field] = value
+
+            return event_string, metadata
+        except IndexError as error:
+            LOGGER.error(f"Unexpected data found. Error: {error}")
+            raise Exception(error)
+
     def _get_raw_sample(self):
         '''
         Converts a sample file into raw events based on the input type.
@@ -56,14 +89,23 @@ class SampleStanza(object):
                 for each_line in sample_file:
                     yield SampleEvent(
                         each_line,
-                        **self.meta_info
+                        self.metadata
                     )
 
             if self.ingest_type == 'file_monitor':
-                yield SampleEvent(
-                    sample_file.read(),
-                    self.metadata
-                )
+                data = sample_file.read()
+
+                if isinstance(data, str) and data.startswith("***SPLUNK***"):
+                    event_string, metadata = self.update_metadata(data, self.metadata)
+                    yield SampleEvent(
+                        event_string=event_string,
+                        metadata=metadata
+                    )
+                else:
+                    yield SampleEvent(
+                        sample_file.read(),
+                        self.metadata
+                    )
             
             if not self.ingest_type:
                 #TODO: ingest_type not found scenario
