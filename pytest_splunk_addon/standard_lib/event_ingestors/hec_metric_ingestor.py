@@ -7,7 +7,7 @@ import requests
 requests.urllib3.disable_warnings()
 
 
-class HECEventIngestor(EventIngestor):
+class HECMetricEventIngestor(EventIngestor):
     """
     Class to ingest event via HEC
     """
@@ -34,23 +34,22 @@ class HECEventIngestor(EventIngestor):
         Args:
             data(dict): data dict with the info of the data to be ingested.
 
-            format::
+            Metric Data format::
                 {
                     "sourcetype": "sample_HEC",
                     "source": "sample_source",
                     "host": "sample_host",
-                    "event": "event_str"
+                    "event": "metric"
+                    "index": "metric_index"
+                    "fields":{
+                        "metric_name": "metric1",
+                        "_value": 1,
+                    }
                 }
 
             For batch ingestion of events in a single request at event endpoint provide a list of event dict to be ingested.
             format::
                 [ 
-                    {
-                        "sourcetype": "sample_HEC",
-                        "source": "sample_source",
-                        "host": "sample_host",
-                        "event": "event_str1"
-                    },
                     {
                         "sourcetype": "sample_HEC",
                         "source": "sample_source",
@@ -61,12 +60,23 @@ class HECEventIngestor(EventIngestor):
                             "metric_name": "metric1",
                             "_value": 1,
                         }
+                    },
+                    {
+                        "sourcetype": "sample_HEC",
+                        "source": "sample_source",
+                        "host": "sample_host",
+                        "event": "metric"
+                        "index": "metric_index"
+                        "fields":{
+                            "metric_name": "metric1",
+                            "_value": 2,
+                        }
                     }
                 ]
         """
         try:
             response = requests.post(
-                "{}/{}".format(self.hec_uri, "event"),
+                self.hec_uri,
                 auth=None,
                 json=data,
                 headers=self.session_headers,
