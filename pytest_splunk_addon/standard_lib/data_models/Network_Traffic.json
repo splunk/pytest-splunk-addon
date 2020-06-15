@@ -32,14 +32,14 @@
         },
         {
           "name": "bytes_in",
-          "type": "required",
-          "validity": "if(isnum(bytes_in),bytes_in,null())",
+          "type": "optional",
+          "validity": "if(isnum(bytes_in) and bytes_in>0,bytes_in,null())",
           "comment": "How many bytes this device/interface received."
         },
         {
           "name": "bytes_out",
-          "type": "required",
-          "validity": "if(isnum(bytes_out),bytes_out,null())",
+          "type": "optional",
+          "validity": "if(isnum(bytes_out) and bytes_out>0,bytes_out,null())",
           "comment": "How many bytes this device/interface transmitted."
         },
         {
