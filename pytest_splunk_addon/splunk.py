@@ -349,7 +349,7 @@ def splunk_rest_uri(splunk):
 
 
 @pytest.fixture(scope="session")
-def hec_uri(request, splunk):
+def splunk_hec_uri(request, splunk):
     """
     Provides a uri to the Splunk hec port
     """
@@ -389,15 +389,15 @@ def splunk_web_uri(splunk):
 
 import time
 @pytest.fixture(scope="function")
-def ingest_splunk(hec_uri, splunk_indextime_fields):
+def splunk_ingest_data(splunk_hec_uri, splunk_indextime_fields):
     time.sleep(2)
 
     ingest_meta_data = {
-        'session_headers': hec_uri[0].headers,
-        'hec_uri': hec_uri[1],
-        'host': splunk_indextime_fields.metadata['host'],
-        'port': 514
-        
+        'session_headers': splunk_hec_uri[0].headers,
+        'splunk_hec_uri': splunk_hec_uri[1],
+        'host': splunk_indextime_fields.metadata['host'],  # for sc4s, TBD
+        'port': 514  # for sc4s, TBD
+
     }
     event_ingestor = get_event_ingestor(splunk_indextime_fields.metadata['ingest_type'], ingest_meta_data)
     event_ingestor.ingest(splunk_indextime_fields)
