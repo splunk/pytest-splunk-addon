@@ -67,12 +67,8 @@ class Rule:
         new_events = []
         for each_event in events:
             token_count = each_event.get_token_count(self.token)
-            if self.replacement_type == "all" and token_count > 1:
-                raise NotImplementedError(
-                    "replacement_type=all with multiple token not supported"
-                )
-            token_values = self.replace(token_count)
-            if self.replacement_type == "all":
+            token_values = list(self.replace(token_count))
+            if self.replacement_type == "all" and token_count > 0:
                 for each_token_value in token_values:
                     new_event = SampleEvent.copy(each_event)
                     new_event.replace_token(self.token, each_token_value)
@@ -82,6 +78,7 @@ class Rule:
                     new_events.append(new_event)
             else:
                 each_event.replace_token(self.token, token_values)
+                each_event.register_field_value(self.field, token_values )
                 new_events.append(each_event)
         return new_events
 
@@ -122,14 +119,15 @@ class FloatRule(Rule):
 
 
 class ListRule(Rule):
-    def replace(self, sample, random=True):
+    def replace(self, token_count):
         value_list_str = re.match(
             r"[lL]ist(\[.*?\])", self.replacement
         ).group(1)
         value_list = eval(value_list_str)
 
-        if random:
-            yield str(choice(value_list))
+        if self.replacement_type == 'random':
+            for _ in range(token_count):
+                yield str(choice(value_list))
         else:
             for each_value in value_list:
                 yield str(each_value)
