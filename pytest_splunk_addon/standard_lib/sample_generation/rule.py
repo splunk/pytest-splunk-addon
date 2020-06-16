@@ -20,7 +20,7 @@ from . import SampleEvent
 
 class Rule:
     user_header = ['name', 'email', 'domain_user', 'distinquised_name']
-    src_header = ['hosts', 'domain', 'ip', 'fqdn']
+    src_header = ['host', 'ip', 'fqdn']
 
     def __init__(self, token, eventgen_params=None):
         self.token = token["token"]
@@ -74,12 +74,11 @@ class Rule:
         new_events = []
         for each_event in events:
             token_count = each_event.get_token_count(self.token)
-            if self.replacement_type == "all" and token_count > 1:
-                raise NotImplementedError(
-                    "replacement_type=all with multiple token not supported"
-                )
-            token_values = self.replace(token_count, each_event)
-            if self.replacement_type == "all":
+            token_values = list(self.replace(each_event, token_count))
+            if self.replacement_type == "all"  and token_count > 0:
+            # NOTE: If replacement_type is all and same token is more than
+            #       one time in event then replace all tokens with same value
+            #       in that event
                 for each_token_value in token_values:
                     new_event = SampleEvent.copy(each_event)
                     new_event.replace_token(self.token, each_token_value)
@@ -103,11 +102,11 @@ class Rule:
 
 
 class IntRule(Rule):
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         lower_limit, upper_limit = re.match(
             r"[Ii]nteger\[(\d+):(\d+)\]", self.replacement
         ).groups()
-        if random:
+        if self.replacement_type == 'random':
             for _ in range(token_count):
                 yield randint(int(lower_limit), int(upper_limit))
         else:
@@ -116,7 +115,7 @@ class IntRule(Rule):
 
 
 class FloatRule(Rule):
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         lower_limit, upper_limit = re.match(
             r"[Ff]loat\[([\d\.]+):([\d\.]+)\]", self.replacement
         ).groups()
@@ -131,39 +130,42 @@ class FloatRule(Rule):
 
 
 class ListRule(Rule):
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         value_list_str = re.match(
             r"[lL]ist(\[.*?\])", self.replacement
         ).group(1)
         value_list = eval(value_list_str)
 
-        if random:
-            yield str(choice(value_list))
+        if self.replacement_type == 'random':
+            for _ in range(token_count):
+                yield str(choice(value_list))
         else:
             for each_value in value_list:
                 yield str(each_value)
 
 
 class StaticRule(Rule):
-    def replace(self):
-        yield self.replacement
+    def replace(self, sample, token_count):
+        for _ in range(token_count):
+            yield self.replacement
 
 
 class FileRule(Rule):
-    def replace(self, token_count, sample, random=True):
-        if random:
+    def replace(self, sample, token_count):
+        sample_file_path = re.match(
+                r"[fF]ile\[(.*?)\]", self.replacement
+            ).group(1)
+        if self.replacement_type == 'random':
             try:
-                f = open(self.replacement)
+                f = open(sample_file_path)
                 txt = f.read()
                 f.close()
                 lines = [each for each in txt.split("\n") if each]
-                yield choice(lines)
+                for _ in range(token_count):
+                    yield choice(lines)
             except IOError as e:
-                print("File not found : {}".format(self.replacement))
+                print("File not found : {}".format(sample_file_path))
         else:
-            sample_file_path = re.match(
-                r"[fF]ile\[(.*?)\]", self.replacement
-            ).group(1)
             try:
                 f = open(sample_file_path)
                 txt = f.read()
@@ -172,11 +174,11 @@ class FileRule(Rule):
                 for each_value in txt.split("\n"):
                     yield each_value
             except IOError as e:
-                print("File not found : {}".format(self.replacement))
+                print("File not found : {}".format(sample_file_path))
 
 
 class TimeRule(Rule):
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         '''
         input -> sample_raw - sample event to be updated as per replacement for token
               -> earliest - splunktime formated time 
@@ -225,30 +227,31 @@ class TimeRule(Rule):
 
 
 class Ipv4Rule(Rule):
-    def replace(self, token_count, sample, random=True):
-        ipv4 = self.fake.ipv4()
-        yield ipv4
+    def replace(self, sample, token_count):
+        for _ in range(token_count):
+            yield self.fake.ipv4()
 
 
 class Ipv6Rule(Rule):
-    def replace(self, token_count, sample, random=True):
-        ipv6 = self.fake.ipv6()
-        yield ipv6
+    def replace(self, sample, token_count):
+        for _ in range(token_count):
+            yield self.fake.ipv6()
 
 
 class MacRule(Rule):
-    def replace(self, token_count, sample, random=True):
-        mac = self.fake.mac_address()
-        yield mac
+    def replace(self, sample, token_count):
+        for _ in range(token_count):
+            yield self.fake.mac_address()
 
 
 class GuidRule(Rule):
-    def replace(self, token_count, sample, random=True):
-        yield str(uuid.uuid4())
+    def replace(self, sample, token_count):
+        for _ in range(token_count):
+            yield str(uuid.uuid4())
 
 
 class UserRule(Rule):
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         value_list_str = re.match(r'[uU]ser(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
 
@@ -262,7 +265,7 @@ class UserRule(Rule):
 
 
 class EmailRule(Rule):
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         if hasattr(sample, 'replacement_map') and 'user' in sample.replacement_map:
             index_list = [i for i, item in enumerate(self.user_header) if item in ['email']]
             csv_row = sample.replacement_map["user"]
@@ -273,7 +276,7 @@ class EmailRule(Rule):
 
 
 class UrlRule(Rule):
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         url = self.fake.uri()
         if randint(0, 1):
             url = url + "?"
@@ -292,7 +295,7 @@ class UrlRule(Rule):
 
 
 class DestRule(Rule):
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         value_list_str = re.match(r'[dD]est(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
         faker_ip =  "10.100." + str(randint(0, 255)) + "." + str(randint(1, 255))
@@ -304,12 +307,13 @@ class DestRule(Rule):
 
 
 class SrcPortRule(Rule):
-    def replace(self, token_count, sample, random=True):
-        yield randint(4000, 5000)
+    def replace(self, sample, token_count):
+        for _ in range(token_count):
+            yield randint(4000, 5000)
 
 
 class DvcRule(Rule):
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         value_list_str = re.match(r'[dD]vc(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
         faker_ip =  "172.16." + str(randint(0, 255)) + "." + str(randint(1, 255))
@@ -321,7 +325,7 @@ class DvcRule(Rule):
 
 class SrcRule(Rule):
     
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         value_list_str = re.match(r'[sS]rc(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
         faker_ip =  "10.1." + str(randint(0, 255)) + "." + str(randint(1, 255))
@@ -333,13 +337,14 @@ class SrcRule(Rule):
 
 
 class DestPortRule(Rule):
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         DEST_PORT = [80, 443, 25, 22, 21]
-        yield choice(DEST_PORT)
+        for _ in range(token_count):
+            yield choice(DEST_PORT)
 
 
 class HostRule(Rule):
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         value_list_str = re.match(r'[hH]ost(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
         faker_ip =  "10.1." + str(randint(0, 255)) + "." + str(randint(1, 255))
@@ -352,18 +357,18 @@ class HostRule(Rule):
 
 class FqdnRule(Rule):
     
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'fqdn', self.user_header, ['fqdn'])
         yield "{}.{}".format(csv_row[0], csv_row[1])
 
 class HexRule(Rule):
     
-    def replace(self, token_count, sample, random=True):
+    def replace(self, sample, token_count):
         hex_range = re.match(r"[Hh]ex\((.*?)\)", self.replacement).group(1)
         hex_digits = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f']
         hex_array = []
-
-        for i in range(int(hex_range)):
-            hex_array.append(hex_digits[randint(0,15)])
-        hex_value = ''.join(hex_array)
-        yield hex_value
+        for _ in range(token_count):
+            for i in range(int(hex_range)):
+                hex_array.append(hex_digits[randint(0,15)])
+            hex_value = ''.join(hex_array)
+            yield hex_value

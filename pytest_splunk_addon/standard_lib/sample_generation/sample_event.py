@@ -1,5 +1,4 @@
 import re
-import types
 
 class SampleEvent(object):
     """
@@ -22,11 +21,12 @@ class SampleEvent(object):
 
     def replace_token(self, token, token_values):
         # TODO: How to handle dependent Values with list of token_values 
-        if isinstance(token_values, types.GeneratorType):
+        if isinstance(token_values, list):
             for token_value in token_values:
                 self.event = re.sub(token, str(token_value), self.event, 1, flags=re.MULTILINE)
         else:
             self.event = re.sub(token, str(token_values), self.event, flags=re.MULTILINE)
+            
     def register_field_value(self, field, token_value):
         self.key_fields.setdefault(field, []).append(token_value)
 

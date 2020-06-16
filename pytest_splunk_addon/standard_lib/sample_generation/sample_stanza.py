@@ -14,7 +14,8 @@ class SampleStanza(object):
         ->Sample ingestion type
     '''
 
-    def __init__(self, sample_path, eventgen_params):
+    def __init__(self, sample_name, sample_path, eventgen_params):
+        self.sample_name = sample_name
         self.sample_path = sample_path
         self.sample_rules = list(self._parse_rules(eventgen_params))
         # self.ingest_type = eventgen_params.get('ingest_type')
@@ -40,7 +41,9 @@ class SampleStanza(object):
             yield Rule.parse_rule(token_value, eventgen_params)
 
     def _parse_meta(self, eventgen_params):
-        return {key:eventgen_params[key] for key in eventgen_params if key != "tokens"}
+        metadata = {key:eventgen_params[key] for key in eventgen_params if key != "tokens"}
+        metadata.update(host = self.sample_name)
+        return metadata
 
     def update_metadata(self, data, metadata):
         '''
