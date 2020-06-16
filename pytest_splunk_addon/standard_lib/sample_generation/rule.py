@@ -19,8 +19,9 @@ from . import SampleEvent
 
 
 class Rule:
+
     user_header = ["name", "email", "domain_user", "distinquised_name"]
-    src_header = ["host", "ip", "fqdn"]
+    src_header = ["host", "domain", "ip", "fqdn"]
 
     def __init__(self, token, eventgen_params=None):
         self.token = token["token"]
@@ -98,8 +99,11 @@ class Rule:
         )
         reader = csv.reader(f)
         next(reader)
+
         index_list = [
-            i for i, item in enumerate(headers) if item in value_list
+            i
+            for i, item in enumerate(headers)
+            if item in value_list and item != "domain"
         ]
         csv_row = choice(list(reader))
         sample.__setattr__("replacement_map", {key: csv_row})
