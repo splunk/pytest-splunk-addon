@@ -24,7 +24,7 @@ class HECRawEventIngestor(EventIngestor):
                 }
             }
         """
-        self.hec_uri = required_configs['hec_uri']
+        self.hec_uri = required_configs['splunk_hec_uri']
         self.session_headers = required_configs['session_headers']
 
     def ingest(self, event):
@@ -49,9 +49,9 @@ class HECRawEventIngestor(EventIngestor):
             [{"event": "raw_event_str1"}, {"event": "raw_event_str2"}]
         """
         params = {
-            "sourcetype": event.metadata['sourcetype'],
-            "source": event.metadata['source'],
-            "host": event.metadata['host'],
+            "sourcetype": event.metadata.get('sourcetype', 'pytest_splunk_addon'),
+            "source": event.metadata.get('source', 'pytest_splunk_addon:hec:raw'),
+            "host": event.metadata.get('host', 'default'),
         }
         try:
             response = requests.post(

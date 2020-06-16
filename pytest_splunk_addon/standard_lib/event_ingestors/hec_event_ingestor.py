@@ -24,7 +24,7 @@ class HECEventIngestor(EventIngestor):
                 }
             }
         """
-        self.hec_uri = required_configs['hec_uri']
+        self.hec_uri = required_configs['splunk_hec_uri']
         self.session_headers = required_configs['session_headers']
 
     def ingest(self, event):
@@ -64,9 +64,9 @@ class HECEventIngestor(EventIngestor):
                 ]
         """
         data = {
-            "sourcetype": event.metadata['sourcetype'],
-            "source": event.metadata['source'],
-            "host": event.metadata['host'],
+            "sourcetype": event.metadata.get('sourcetype', 'pytest_splunk_addon'), 
+            "source": event.metadata.get('source', 'pytest_splunk_addon:hec:event'),
+            "host": event.metadata.get('host', 'default'),
             "event": event.event
         }
         try:
