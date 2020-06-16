@@ -93,10 +93,10 @@ Create a Dockerfile-splunk file
     ARG SPLUNK_VERSION=latest
     FROM splunk/splunk:$SPLUNK_VERSION
     ARG SPLUNK_APP=TA_UNKNOWN
-    ARG SOURCE_PACKAGE=package
+    ARG SPLUNK_APP_PACKAGE=package
     COPY deps/apps /opt/splunk/etc/apps/
 
-    COPY $SOURCE_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP
+    COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP
 
 
 Create a docker-compose.yml update the value of SPLUNK_APP
