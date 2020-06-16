@@ -170,89 +170,51 @@ class FileRule(Rule):
 
 class TimeRule(Rule):
     def replace(self, random=True):
-        """
+        '''
         input -> sample_raw - sample event to be updated as per replacement for token
               -> earliest - splunktime formated time 
               -> latest - splunktime formated time
               -> timezone - time zone according to which time is to be generated
 
         output -> returns random time according to the parameters specified in the input         
-        """
-        earliest = self.eventgen_params.get("earlest")
-        latest = self.eventgen_params.get("latest")
-        timezone = self.eventgen_params.get("timezone")
+        '''
+        earliest = self.eventgen_params.get('earliest')
+        latest = self.eventgen_params.get('latest')
+        timezone = self.eventgen_params.get('timezone')
         random_time = datetime.now()
         time_parser = time_parse()
-        if earliest is not None and latest is not None:
 
-            if earliest != "now":
-                sign, num, unit = re.match(
-                    r"([+-])(\d{1,})(.*)", earliest
-                ).groups()
-                earliest = time_parser.convert_to_time(sign, num, unit)
-            else:
-                earliest = datetime.now()
+        if earliest != "now"and earliest is not None:
+            sign, num, unit = re.match(r"([+-])(\d{1,})(.*)", earliest).groups()
+            earliest = time_parser.convert_to_time(sign, num, unit)
+        else:
+            earliest = datetime.now()
 
-            if latest != "now":
-                sign, num, unit = re.match(
-                    r"([+-])(\d{1,})(.*)", latest
-                ).groups()
-                latest = time_parser.convert_to_time(sign, num, unit)
-            else:
-                latest = datetime.now()
+        if latest != "now" and latest is not None:
+            sign, num, unit = re.match(r"([+-])(\d{1,})(.*)", latest).groups()
+            latest = time_parser.convert_to_time(sign, num, unit)
+        else:
+            latest = datetime.now()
 
-            earliest_in_epoch = mktime(earliest.timetuple())
-            latest_in_epoch = mktime(latest.timetuple())
+        earliest_in_epoch = mktime(earliest.timetuple())
+        latest_in_epoch = mktime(latest.timetuple())
 
-            if earliest_in_epoch > latest_in_epoch:
-                print("Latest time is earlier than earliest time.")
-                return False
-
-            random_time = datetime.fromtimestamp(
-                randint(earliest_in_epoch, latest_in_epoch)
-            )
+        if earliest_in_epoch > latest_in_epoch:
+            print("Latest time is earlier than earliest time.")
+            yield self.token
+        
+        random_time = datetime.fromtimestamp(randint(earliest_in_epoch, latest_in_epoch))            
         if timezone != "'local'" and timezone is not None:
-            sign, hrs, mins = re.match(
-                r"([+-])(\d\d)(\d\d)", timezone
-            ).groups()
-            random_time = self.get_timezone_time(random_time, sign, hrs, mins)
-
+            sign, hrs, mins = re.match(r"([+-])(\d\d)(\d\d)", timezone).groups()    
+            random_time = time_parser.get_timezone_time(random_time, sign, hrs, mins)
+            
         if r"%s" in self.replacement:
-            yield str(
-                self.replacement.replace(
-                    r"%s", str(int(random_time.strftime("%Y%m%d%H%M%S")))
-                )
-            )
+            yield str(self.replacement.replace(r'%s', str(int(random_time.strftime("%Y%m%d%H%M%S")))))
 
         elif r"%e" in self.replacement:
-            yield strftime(self.replacement.replace(r"%e", r"%d"))
+            yield strftime(self.replacement.replace(r'%e', r'%d'))
         else:
             yield random_time.strftime(self.replacement)
-
-    def get_timezone_time(self, random_time, sign, hrs, mins):
-        """
-        converts timezone formated time into datetime object for earliest and latest 
-        input -> sign to increase or decrease time
-              -> hrs : hours in timezone
-              -> mins : minutes in timezone
-
-        output -> returns datetime formated time
-        """
-
-        if (hrs <= "00" or hrs >= "23") or (mins <= "00" or mins >= "59"):
-            print(
-                "hours should be in range 0-23 and mins should be in range 0-59"
-            )
-            return random_time
-        if sign == "-":
-            random_time = random_time - timedelta(
-                hours=int(hrs), minutes=int(mins)
-            )
-        else:
-            random_time = random_time + timedelta(
-                hours=int(hrs), minutes=int(mins)
-            )
-        return random_time
 
 
 class Ipv4Rule(Rule):
@@ -342,9 +304,9 @@ class SrcRule(Rule):
 
 
 class DestPortRule(Rule):
-    def replace(self, sample, random=True):
+    def replace(self, sample):
         DEST_PORT = [80, 443, 25, 22, 21]
-        yield self.replace_token(choice(DEST_PORT), sample)
+        yield choice(DEST_PORT)
 
 
 class HostRule(Rule):
