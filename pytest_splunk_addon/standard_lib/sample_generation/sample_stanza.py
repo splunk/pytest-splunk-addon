@@ -103,7 +103,7 @@ class SampleStanza(object):
                     )
                 else:
                     yield SampleEvent(
-                        sample_file.read(),
+                        data,
                         self.metadata
                     )
             

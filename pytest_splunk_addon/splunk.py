@@ -349,7 +349,7 @@ def splunk_rest_uri(splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_hec_uri(request, splunk):
+def hec_uri(request, splunk):
     """
     Provides a uri to the Splunk hec port
     """
@@ -389,20 +389,18 @@ def splunk_web_uri(splunk):
 
 import time
 @pytest.fixture(scope="function")
-def ingest_splunk(hec_uri, splunk_generate_samples):
+def ingest_splunk(hec_uri, splunk_indextime_fields):
     time.sleep(2)
 
-    data_to_be_ingested = {
-        "sourcetype": splunk_generate_samples.metadata['sourcetype'],
-        "source": splunk_generate_samples.metadata['source'],
-        "host": splunk_generate_samples.metadata['host'],
-        "event": splunk_generate_samples.event
+    ingest_meta_data = {
+        'session_headers': hec_uri[0].headers,
+        'hec_uri': hec_uri[1],
+        'host': splunk_indextime_fields.metadata['host'],
+        'port': 514
+        
     }
-
-    event_ingestor = get_event_ingestor(splunk_generate_samples.metadata['ingest_type'])
-    event_ingestor = event_ingestor(hec_uri[1], hec_uri[0].headers)
-    LOGGER.info("here")
-    # event_ingestor.ingest(data_to_be_ingested)
+    event_ingestor = get_event_ingestor(splunk_indextime_fields.metadata['ingest_type'], ingest_meta_data)
+    event_ingestor.ingest(splunk_indextime_fields)
 
 def is_responsive_splunk(splunk):
     """
@@ -456,7 +454,7 @@ def is_responsive(url):
         )
         return False
 
-def get_event_ingestor(ingest_type):
+def get_event_ingestor(ingest_type, ingest_meta_data):
     ingest_methods = {
         'modinput': HECEventIngestor,
         'file_monitor': HECRawEventIngestor,
@@ -464,5 +462,5 @@ def get_event_ingestor(ingest_type):
         'hec_metric': HECMetricEventIngestor
     }
 
-    ingestor = ingest_methods.get(ingest_type) #(hec_uri[1], hec_uri[0].headers)
+    ingestor = ingest_methods.get(ingest_type)(ingest_meta_data)
     return ingestor

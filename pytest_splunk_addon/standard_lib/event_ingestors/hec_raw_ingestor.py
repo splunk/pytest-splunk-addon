@@ -1,7 +1,7 @@
 """
 HEC Event Ingestor class
 """
-from base_event_ingestor import EventIngestor
+from .base_event_ingestor import EventIngestor
 import requests
 
 requests.urllib3.disable_warnings()
@@ -12,23 +12,22 @@ class HECRawEventIngestor(EventIngestor):
     Class to ingest event via HEC
     """
 
-    def __init__(self, hec_uri, session_headers):
+    def __init__(self, required_configs):
         """
         init method for the class
 
         Args:
-            hec_uri(str): {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector
-            session_headers(dict): requesr header info.
-
-            format::
-                {
+            required_configs(dict): {
+                hec_uri: {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector,
+                session_headers(dict): {
                     "Authorization": f"Splunk <hec-token>",
                 }
+            }
         """
-        self.hec_uri = hec_uri
-        self.session_headers = session_headers
+        self.hec_uri = required_configs['hec_uri']
+        self.session_headers = required_configs['session_headers']
 
-    def ingest(self, event_str, params):
+    def ingest(self, event):
         """
         Ingests data into splunk via raw endpoint.
 
@@ -49,11 +48,16 @@ class HECRawEventIngestor(EventIngestor):
 
             [{"event": "raw_event_str1"}, {"event": "raw_event_str2"}]
         """
+        params = {
+            "sourcetype": event.metadata['sourcetype'],
+            "source": event.metadata['source'],
+            "host": event.metadata['host'],
+        }
         try:
             response = requests.post(
                 "{}/{}".format(self.hec_uri, "raw"),
                 auth=None,
-                data=event_str,
+                data=event.event,
                 params=params,
                 headers=self.session_headers,
                 verify=False,

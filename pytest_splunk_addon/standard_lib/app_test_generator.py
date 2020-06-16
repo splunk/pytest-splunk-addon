@@ -64,7 +64,7 @@ class AppTestGenerator(object):
                 self.cim_test_generator.generate_tests(fixture),
                 fixture
             )
-        elif fixture.startswith("splunk_generate_samples"):
+        elif fixture.startswith("splunk_indextime_fields"):
             # TODO: What should be the id of the test case?
             # Sourcetype + Host + Key field + _count
             sample_generator = SampleGenerator(r'C:\Jay\Work\Automation\pytest-splunk-addon\new_dev_environment\eventgen_package')
