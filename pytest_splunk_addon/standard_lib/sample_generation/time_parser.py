@@ -68,3 +68,22 @@ class time_parse():
             random_time = random_time + unittime
 
         return random_time
+
+    def get_timezone_time(self, random_time, sign, hrs, mins):
+        '''
+        converts timezone formated time into datetime object for earliest and latest 
+        input -> sign to increase or decrease time
+              -> hrs : hours in timezone
+              -> mins : minutes in timezone
+
+        output -> returns datetime formated time
+        '''
+
+        if (hrs <= "00" or hrs >= "23") or (mins <= "00" or mins >= "59"):
+            print("hours should be in range 0-23 and mins should be in range 0-59")
+            return random_time
+        if sign == '-':
+            random_time = random_time - timedelta(hours=int(hrs), minutes=int(mins))
+        else:
+            random_time = random_time + timedelta(hours=int(hrs), minutes=int(mins))
+        return random_time

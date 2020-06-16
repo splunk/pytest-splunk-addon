@@ -16,6 +16,7 @@ import splunklib.client as client
 from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
+from .standard_lib.event_ingestors import HECEventIngestor, HECRawEventIngestor, HECMetricEventIngestor
 
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
@@ -263,13 +264,6 @@ def splunk(request):
     yield splunk_info
 
 
-import time
-@pytest.fixture(scope="function")
-def ingest_splunk(splunk_generate_samples):
-    time.sleep(2)
-    return "one"
-
-
 @pytest.fixture(scope="session")
 def splunk_docker(request, docker_services, docker_compose_files):
     """
@@ -355,15 +349,15 @@ def splunk_rest_uri(splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_hec_uri(request, splunk):
+def hec_uri(request, splunk):
     """
     Provides a uri to the Splunk hec port
     """
     splunk_session = requests.Session()
     splunk_session.headers = {
-        "Authorization": f'Splunk: {request.config.getoption("splunk_hec_token")}'
+        "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
     }
-    uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["host"]}:{splunk["splunk_hec"]}/services/collector'
+    uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["host"]}:{splunk["port_hec"]}/services/collector'
     LOGGER.info("Fetched splunk_hec_uri=%s", uri)
 
     return splunk_session, uri
@@ -393,6 +387,20 @@ def splunk_web_uri(splunk):
     LOGGER.info("Fetched splunk_web_uri=%s", uri)
     return uri
 
+import time
+@pytest.fixture(scope="function")
+def ingest_splunk(hec_uri, splunk_indextime_fields):
+    time.sleep(2)
+
+    ingest_meta_data = {
+        'session_headers': hec_uri[0].headers,
+        'hec_uri': hec_uri[1],
+        'host': splunk_indextime_fields.metadata['host'],
+        'port': 514
+        
+    }
+    event_ingestor = get_event_ingestor(splunk_indextime_fields.metadata['ingest_type'], ingest_meta_data)
+    event_ingestor.ingest(splunk_indextime_fields)
 
 def is_responsive_splunk(splunk):
     """
@@ -445,3 +453,14 @@ def is_responsive(url):
             "Could not connect to url yet. Will try again. exception=%s", str(e),
         )
         return False
+
+def get_event_ingestor(ingest_type, ingest_meta_data):
+    ingest_methods = {
+        'modinput': HECEventIngestor,
+        'file_monitor': HECRawEventIngestor,
+        'scripted_input': HECRawEventIngestor,
+        'hec_metric': HECMetricEventIngestor
+    }
+
+    ingestor = ingest_methods.get(ingest_type)(ingest_meta_data)
+    return ingestor
