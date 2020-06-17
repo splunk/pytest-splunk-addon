@@ -407,7 +407,7 @@ def splunk_ingest_data(splunk_hec_uri, splunk_indextime_fields):
         'port': 514  # for sc4s, TBD
 
     }
-    event_ingestor = get_event_ingestor(splunk_indextime_fields.metadata['ingest_type'], ingest_meta_data)
+    event_ingestor = get_event_ingestor(splunk_indextime_fields.metadata['input_type'], ingest_meta_data)
     event_ingestor.ingest(splunk_indextime_fields)
 
 def is_responsive_splunk(splunk):
@@ -462,9 +462,9 @@ def is_responsive(url):
         )
         return False
 
-def get_event_ingestor(ingest_type, ingest_meta_data):
+def get_event_ingestor(input_type, ingest_meta_data):
     """
-    Provides mapping for ingest_type of event with the ingestor class.
+    Provides mapping for input_type of event with the ingestor class.
     """
     ingest_methods = {
         'modinput': HECEventIngestor,
@@ -477,5 +477,5 @@ def get_event_ingestor(ingest_type, ingest_meta_data):
         'syslog_udp': 
     }
 
-    ingestor = ingest_methods.get(ingest_type)(ingest_meta_data)
+    ingestor = ingest_methods.get(input_type)(ingest_meta_data)
     return ingestor

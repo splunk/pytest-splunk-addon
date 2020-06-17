@@ -12,7 +12,7 @@ class SampleEvent(object):
         # self.host = str
         # self.sourcetype = str
         # self.source = str
-        # self.ingest_type = str
+        # self.input_type = str
         self.key_fields = dict()
         self.metadata = metadata
 
