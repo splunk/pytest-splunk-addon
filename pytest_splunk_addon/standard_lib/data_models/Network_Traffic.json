@@ -26,20 +26,20 @@
         },
         {
           "name": "bytes",
-          "type": "optional",
-          "validity": "if(isnum(bytes) and bytes>0 and bytes==(bytes_in+bytes_out),bytes,null())",
+          "type": "required",
+          "validity": "if(isnum(bytes) and bytes==(bytes_in+bytes_out),bytes,null())",
           "comment": "Total count of bytes handled by this device/interface (bytes_in + bytes_out)."
         },
         {
           "name": "bytes_in",
-          "type": "optional",
-          "validity": "if(isnum(bytes_in) and bytes_in>0,bytes_in,null())",
+          "type": "required",
+          "validity": "if(isnum(bytes_in),bytes_in,null())",
           "comment": "How many bytes this device/interface received."
         },
         {
           "name": "bytes_out",
-          "type": "optional",
-          "validity": "if(isnum(bytes_out) and bytes_out>0,bytes_out,null())",
+          "type": "required",
+          "validity": "if(isnum(bytes_out),bytes_out,null())",
           "comment": "How many bytes this device/interface transmitted."
         },
         {
