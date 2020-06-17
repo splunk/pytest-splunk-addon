@@ -455,11 +455,18 @@ def is_responsive(url):
         return False
 
 def get_event_ingestor(ingest_type, ingest_meta_data):
+    """
+    Provides mapping for ingest_type of event with the ingestor class.
+    """
     ingest_methods = {
         'modinput': HECEventIngestor,
+        'windows_input': HECEventIngestor,
         'file_monitor': HECRawEventIngestor,
         'scripted_input': HECRawEventIngestor,
-        'hec_metric': HECMetricEventIngestor
+        'hec_metric': HECMetricEventIngestor,
+        'syslog': 
+        'syslog_tcp': 
+        'syslog_udp': 
     }
 
     ingestor = ingest_methods.get(ingest_type)(ingest_meta_data)
