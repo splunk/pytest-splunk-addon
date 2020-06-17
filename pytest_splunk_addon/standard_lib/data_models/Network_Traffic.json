@@ -27,7 +27,7 @@
         {
           "name": "bytes",
           "type": "optional",
-          "validity": "if(isnum(bytes) and bytes==(bytes_in+bytes_out),bytes,null())",
+          "validity": "if(isnum(bytes) and bytes>0 and bytes==(bytes_in+bytes_out),bytes,null())",
           "comment": "Total count of bytes handled by this device/interface (bytes_in + bytes_out)."
         },
         {
