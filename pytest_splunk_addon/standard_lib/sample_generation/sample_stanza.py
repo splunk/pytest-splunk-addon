@@ -18,9 +18,9 @@ class SampleStanza(object):
         self.sample_name = sample_name
         self.sample_path = sample_path
         self.sample_rules = list(self._parse_rules(eventgen_params))
-        # self.ingest_type = eventgen_params.get('ingest_type')
+        # self.input_type = eventgen_params.get('input_type')
         self.metadata = self._parse_meta(eventgen_params)
-        self.ingest_type = self.metadata.get('ingest_type', None)
+        self.input_type = self.metadata.get('input_type', None)
 
     def get_raw_events(self):
         # self.sample_raw_data = list(self._get_raw_sample()) 
@@ -65,14 +65,14 @@ class SampleStanza(object):
             ]
         '''
         with open(self.sample_path, 'r') as sample_file:
-            if self.ingest_type in ["modinput", "windows_input"]:
+            if self.input_type in ["modinput", "windows_input"]:
                 for each_line in sample_file:
                     yield SampleEvent(
                         each_line,
                         self.metadata
                     )
 
-            if self.ingest_type in [
+            if self.input_type in [
                 "file_monitor",
                 "syslog",
                 "scripted_input",
@@ -82,7 +82,7 @@ class SampleStanza(object):
             ]:
                 yield SampleEvent(sample_file.read(), self.metadata)
 
-            if not self.ingest_type:
-                #TODO: ingest_type not found scenario
+            if not self.input_type:
+                #TODO: input_type not found scenario
                 pass
             # More input types to be added here.

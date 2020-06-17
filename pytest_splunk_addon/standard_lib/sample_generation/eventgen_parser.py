@@ -47,7 +47,7 @@ class EventgenParser:
 
             {
                 "sample_file_name": {    # Not Stanza name
-                    "ingest_type": "str",
+                    "input_type": "str",
                     "tokens": {
                         1: {
                             token: #One#
