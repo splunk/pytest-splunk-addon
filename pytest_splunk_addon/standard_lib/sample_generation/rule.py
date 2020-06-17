@@ -97,7 +97,10 @@ class Rule:
         next(reader)
         index_list = [i for i, item in enumerate(headers) if item in value_list and item!='domain']
         csv_row = choice(list(reader))
-        sample.__setattr__("replacement_map", { key:csv_row })
+        if hasattr(sample, 'replacement_map') and key in sample.replacement_map:
+            sample.replacement_map[key].append(csv_row)
+        else:
+            sample.__setattr__("replacement_map", { key:[csv_row] })
         return index_list, csv_row
 
 
@@ -254,25 +257,27 @@ class UserRule(Rule):
     def replace(self, sample, token_count):
         value_list_str = re.match(r'[uU]ser(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
-
-        if hasattr(sample, 'replacement_map') and 'email' in sample.replacement_map:
-            index_list = [i for i, item in enumerate(self.user_header) if item in value_list]
-            csv_row = sample.replacement_map["email"]
-            yield csv_row[choice(index_list)]
-        else:
-            index_list, csv_row = self.get_lookup_value(sample, "lookups\\user_email.csv", 'user', self.user_header, value_list)
-            yield csv_row[choice(index_list)]
+        for i in range(token_count):
+            if hasattr(sample, 'replacement_map') and 'email' in sample.replacement_map and i < len(sample.replacement_map['email']):
+                index_list = [i for i, item in enumerate(self.user_header) if item in value_list]
+                csv_rows = sample.replacement_map["email"]
+                yield csv_rows[i][choice(index_list)]
+            else:
+                index_list, csv_row = self.get_lookup_value(sample, "lookups\\user_email.csv", 'user', self.user_header, value_list)
+                yield csv_row[choice(index_list)]
 
 
 class EmailRule(Rule):
     def replace(self, sample, token_count):
-        if hasattr(sample, 'replacement_map') and 'user' in sample.replacement_map:
-            index_list = [i for i, item in enumerate(self.user_header) if item in ['email']]
-            csv_row = sample.replacement_map["user"]
-            yield csv_row[choice(index_list)]
-        else:
-            index_list, csv_row = self.get_lookup_value(sample, "lookups\\user_email.csv", 'email', self.user_header, ['email'])
-            yield csv_row[choice(index_list)]
+        for i in range(token_count):
+            if hasattr(sample, 'replacement_map') and 'user' in sample.replacement_map and i < len(sample.replacement_map['user']):
+                index_list = [i for i, item in enumerate(self.user_header) if item in ['email']]
+                csv_rows = sample.replacement_map["user"]
+                yield csv_rows[i][choice(index_list)]
+            else:
+                index_list, csv_row = self.get_lookup_value(sample, "lookups\\user_email.csv", 'email', self.user_header, ['email'])
+                yield csv_row[choice(index_list)]
+
 
 
 class UrlRule(Rule):
@@ -298,12 +303,12 @@ class DestRule(Rule):
     def replace(self, sample, token_count):
         value_list_str = re.match(r'[dD]est(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
-        faker_ip =  "10.100." + str(randint(0, 255)) + "." + str(randint(1, 255))
-
-        index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'dest', self.src_header, value_list)
-        csv_row.append(faker_ip)
-        csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
-        yield csv_row[choice(index_list)]
+        for _ in range(token_count):
+            faker_ip =  "10.100." + str(randint(0, 255)) + "." + str(randint(1, 255))
+            index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'dest', self.src_header, value_list)
+            csv_row.append(faker_ip)
+            csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+            yield csv_row[choice(index_list)]
 
 
 class SrcPortRule(Rule):
@@ -316,24 +321,24 @@ class DvcRule(Rule):
     def replace(self, sample, token_count):
         value_list_str = re.match(r'[dD]vc(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
-        faker_ip =  "172.16." + str(randint(0, 255)) + "." + str(randint(1, 255))
-
-        index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'dvc', self.src_header, value_list)
-        csv_row.append(faker_ip)
-        csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
-        yield csv_row[choice(index_list)]
+        for _ in range(token_count):
+            faker_ip =  "172.16." + str(randint(0, 255)) + "." + str(randint(1, 255))
+            index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'dvc', self.src_header, value_list)
+            csv_row.append(faker_ip)
+            csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+            yield csv_row[choice(index_list)]
 
 class SrcRule(Rule):
     
     def replace(self, sample, token_count):
         value_list_str = re.match(r'[sS]rc(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
-        faker_ip =  "10.1." + str(randint(0, 255)) + "." + str(randint(1, 255))
-
-        index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'src', self.src_header, value_list)
-        csv_row.append(faker_ip)
-        csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
-        yield csv_row[choice(index_list)]
+        for _ in range(token_count):
+            faker_ip =  "10.1." + str(randint(0, 255)) + "." + str(randint(1, 255))
+            index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'src', self.src_header, value_list)
+            csv_row.append(faker_ip)
+            csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+            yield csv_row[choice(index_list)]
 
 
 class DestPortRule(Rule):
@@ -345,21 +350,22 @@ class DestPortRule(Rule):
 
 class HostRule(Rule):
     def replace(self, sample, token_count):
-        value_list_str = re.match(r'[hH]ost(\[.*?\])', self.replacement).group(1)
-        value_list = eval(value_list_str)
-        faker_ip =  "10.1." + str(randint(0, 255)) + "." + str(randint(1, 255))
-
-        index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'host', self.src_header, value_list)
-        csv_row.append(faker_ip)
-        csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
-        yield csv_row[choice(index_list)]
+            value_list_str = re.match(r'[hH]ost(\[.*?\])', self.replacement).group(1)
+            value_list = eval(value_list_str)
+            for _ in range(token_count):
+                faker_ip =  "10.1." + str(randint(0, 255)) + "." + str(randint(1, 255))
+                index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'host', self.src_header, value_list)
+                csv_row.append(faker_ip)
+                csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+                yield csv_row[choice(index_list)]
 
 
 class FqdnRule(Rule):
     
     def replace(self, sample, token_count):
-        index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'fqdn', self.user_header, ['fqdn'])
-        yield "{}.{}".format(csv_row[0], csv_row[1])
+        for _ in range(token_count):
+            index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'fqdn', self.user_header, ['fqdn'])
+            yield "{}.{}".format(csv_row[0], csv_row[1])
 
 class HexRule(Rule):
     
