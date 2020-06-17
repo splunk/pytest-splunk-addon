@@ -53,23 +53,35 @@ class SampleStanza(object):
         Input: Name of the sample file for which events have to be generated.
         Output: Yields object of SampleEvent.
 
-        If the input type is 'modinput', a new event will be generated for all the lines in the file.
-        If the input type is 'file monitor' a single event will be generated for the entire file.
+        If the input type is in ["modinput", "windows_input"], a new event will be generated for each line in the file.
+        If the input type is in below categories, a single event will be generated for the entire file.
+            [
+                "file_monitor",
+                "syslog",
+                "scripted_input",
+                "syslog_tcp",
+                "syslog_udp",
+                "other",
+            ]
         '''
         with open(self.sample_path, 'r') as sample_file:
-            if self.ingest_type == 'modinput':
+            if self.ingest_type in ["modinput", "windows_input"]:
                 for each_line in sample_file:
                     yield SampleEvent(
                         each_line,
                         self.metadata
                     )
 
-            if self.ingest_type == 'file_monitor':
-                yield SampleEvent(
-                    sample_file.read(),
-                    self.metadata
-                )
-        
+            if self.ingest_type in [
+                "file_monitor",
+                "syslog",
+                "scripted_input",
+                "syslog_tcp",
+                "syslog_udp",
+                "other",
+            ]:
+                yield SampleEvent(sample_file.read(), self.metadata)
+
             if not self.ingest_type:
                 #TODO: ingest_type not found scenario
                 pass
