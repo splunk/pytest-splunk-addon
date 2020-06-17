@@ -17,6 +17,7 @@ from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import HECEventIngestor, HECRawEventIngestor, HECMetricEventIngestor
+import configparser
 
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
@@ -250,7 +251,14 @@ def splunk(request):
         request.fixturenames.append("splunk_external")
         splunk_info = request.getfixturevalue("splunk_external")
     elif splunk_type == "docker":
-
+        os.environ["SPLUNK_APP_PACKAGE"] = request.config.getoption("splunk_app")        
+        try:
+            config = configparser.ConfigParser()
+            config.read(os.path.join(request.config.getoption("splunk_app"),"default","app.conf"))
+            os.environ["SPLUNK_APP_ID"] = config["package"]["id"]   
+        except Exception as e:
+            pass
+            os.environ["SPLUNK_APP_ID"] = "TA_package"
         os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
         os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
