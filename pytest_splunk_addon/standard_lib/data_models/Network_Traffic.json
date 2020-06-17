@@ -145,7 +145,7 @@
         {
           "name": "packets",
           "type": "conditional",
-          "condition": "packets_in=* and packets_out=*",
+          "condition": "packets_in=* AND packets_out=*",
           "validity": "if(isnum(packets),packets,null())",
           "comment": "The total count of packets handled by this device/interface (packets_in + packets_out)."
         },
