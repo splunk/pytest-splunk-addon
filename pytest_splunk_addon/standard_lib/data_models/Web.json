@@ -17,7 +17,8 @@
         },
         {
           "name": "app",
-          "type": "required",
+          "type": "optional",
+          "validity": "if(isstr(app),app,null())",
           "comment": "The application detected or hosted by the server/site such as wordpress, splunk, or facebook."
         },
         {
