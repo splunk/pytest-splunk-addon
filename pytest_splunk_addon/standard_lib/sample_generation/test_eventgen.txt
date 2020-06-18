@@ -3,7 +3,7 @@ EventGen Template
 ============================
 
 [Sample_with_wildcard]
-ingest_type = mod_input, scripted_input, syslog, file_monitoring
+input_type = mod_input, scripted_input, syslog, file_monitoring
 
 
 
