@@ -357,6 +357,11 @@ class HostRule(Rule):
                 index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'host', self.src_header, value_list)
                 csv_row.append(faker_ip)
                 csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+                if sample.metadata.get('input_type') == 'modinput':
+                    host_value = sample.metadata.get('host')
+                elif sample.metadata.get('input_type') == 'file_monitor':
+                    host_value = sample.get_host()
+                csv_row[0] = host_value
                 yield csv_row[choice(index_list)]
 
 
