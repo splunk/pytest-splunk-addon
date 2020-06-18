@@ -144,19 +144,22 @@
         },
         {
           "name": "packets",
-          "type": "required",
-          "validity": "if(isnum(packets) and packets==packets_in+packets_out,packets,null())",
+          "type": "conditional",
+          "condition": "packets_in=* AND packets_out=*",
+          "validity": "if(isnum(packets),packets,null())",
           "comment": "The total count of packets handled by this device/interface (packets_in + packets_out)."
         },
         {
           "name": "packets_in",
-          "type": "required",
+          "type": "conditional",
+          "condition": "packets_out=*",
           "validity": "if(isnum(packets_in),packets_in,null())",
           "comment": "The total count of packets received by this device/interface."
         },
         {
           "name": "packets_out",
-          "type": "required",
+          "type": "conditional",
+          "condition": "packets_in=*",
           "validity": "if(isnum(packets_out),packets_out,null())",
           "comment": "The total count of packets transmitted by this device/interface."
         },
