@@ -7,7 +7,7 @@ class SampleEvent(object):
     """
     This class represents an event which will be ingested in Splunk.
     """
-    def __init__(self, event_string, metadata):
+    def __init__(self, event_string, metadata, sample_name):
         self.event = event_string
         # self.host = str
         # self.sourcetype = str
@@ -15,9 +15,15 @@ class SampleEvent(object):
         # self.input_type = str
         self.key_fields = dict()
         self.metadata = metadata
+        self.sample_name = sample_name
+        self.host_count = 0
 
     def update(self, new_event):
         self.event = new_event
+
+    def get_host(self):
+        self.host_count += 1
+        return self.sample_name + '_' + str(self.host_count)
 
     def get_token_count(self, token):
         return len(re.findall(token, self.event))

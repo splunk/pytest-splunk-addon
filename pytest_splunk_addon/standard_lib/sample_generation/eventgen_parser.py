@@ -36,7 +36,6 @@ class EventgenParser:
         for sample_name, stanza_params in eventgen_dict.items():
             sample_path = os.path.join(self.path_to_samples, sample_name)
             yield SampleStanza(
-                sample_name,
                 sample_path,
                 stanza_params,
             )
