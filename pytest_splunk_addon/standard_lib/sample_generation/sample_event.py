@@ -28,7 +28,7 @@ class SampleEvent(object):
 
     def get_host_ip(self):
         SampleEvent.host_ip += 1
-        return [int(SampleEvent.host_ip / 256) % 256, SampleEvent.host_ip % 2]
+        return [int(SampleEvent.host_ip / 256) % 256, SampleEvent.host_ip % 256]
 
     def get_token_count(self, token):
         return len(re.findall(token, self.event))
