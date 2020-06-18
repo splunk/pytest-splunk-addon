@@ -10,7 +10,7 @@
         ["dest_translated_ip", "src_translated_ip"],
         ["dest_zone", "src_zone"],
         ["icmp_type", "icmp_code"],
-        ["packets", "packets_in", "packets_out"]
+        ["packets_in", "packets_out"]
       ],
       "fields": [
         {
@@ -26,19 +26,22 @@
         },
         {
           "name": "bytes",
-          "type": "optional",
+          "type": "conditional",
+          "condition": "bytes=*",
           "validity": "if(isnum(bytes) and bytes>0 and bytes==(bytes_in+bytes_out),bytes,null())",
           "comment": "Total count of bytes handled by this device/interface (bytes_in + bytes_out)."
         },
         {
           "name": "bytes_in",
-          "type": "optional",
+          "type": "conditional",
+          "condition": "bytes_in=*",
           "validity": "if(isnum(bytes_in) and bytes_in>0,bytes_in,null())",
           "comment": "How many bytes this device/interface received."
         },
         {
           "name": "bytes_out",
-          "type": "optional",
+          "type": "conditional",
+          "condition": "bytes_out=*",
           "validity": "if(isnum(bytes_out) and bytes_out>0,bytes_out,null())",
           "comment": "How many bytes this device/interface transmitted."
         },
@@ -145,21 +148,19 @@
         {
           "name": "packets",
           "type": "conditional",
-          "condition": "packets_in=* AND packets_out=*",
+          "condition": "packets_in=* OR packets_out=*",
           "validity": "if(isnum(packets),packets,null())",
           "comment": "The total count of packets handled by this device/interface (packets_in + packets_out)."
         },
         {
           "name": "packets_in",
-          "type": "conditional",
-          "condition": "packets_out=*",
+          "type": "optional",
           "validity": "if(isnum(packets_in),packets_in,null())",
           "comment": "The total count of packets received by this device/interface."
         },
         {
           "name": "packets_out",
-          "type": "conditional",
-          "condition": "packets_in=*",
+          "type": "optional",
           "validity": "if(isnum(packets_out),packets_out,null())",
           "comment": "The total count of packets transmitted by this device/interface."
         },
