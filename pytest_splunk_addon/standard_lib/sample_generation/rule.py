@@ -350,19 +350,27 @@ class DestPortRule(Rule):
 
 class HostRule(Rule):
     def replace(self, sample, token_count):
-            value_list_str = re.match(r'[hH]ost(\[.*?\])', self.replacement).group(1)
-            value_list = eval(value_list_str)
-            for _ in range(token_count):
-                faker_ip =  "10.1." + str(randint(0, 255)) + "." + str(randint(1, 255))
-                index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'host', self.src_header, value_list)
-                csv_row.append(faker_ip)
-                csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
-                if sample.metadata.get('input_type') == 'modinput':
-                    host_value = sample.metadata.get('host')
-                elif sample.metadata.get('input_type') == 'file_monitor':
-                    host_value = sample.get_host()
-                csv_row[0] = host_value
-                yield csv_row[choice(index_list)]
+        value_list_str = re.match(r'[hH]ost(\[.*?\])', self.replacement).group(1)
+        value_list = eval(value_list_str)
+        for _ in range(token_count):
+            host_ip_list = sample.get_host_ip()
+            host_ip = "".join(["10.1.", str(host_ip_list[0]), ".", str(host_ip_list[1])])
+            index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'host', self.src_header, value_list)
+            csv_row.append(host_ip)
+            csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+            if sample.metadata.get('input_type') in ['modinput', 'windows_input']:
+                host_value = sample.metadata.get('host')
+            elif sample.metadata.get('input_type') in [
+                "file_monitor",
+                "syslog",
+                "scripted_input",
+                "syslog_tcp",
+                "syslog_udp",
+                "other",
+            ]:
+                host_value = sample.get_host()
+            csv_row[0] = host_value
+            yield csv_row[choice(index_list)]
 
 
 class FqdnRule(Rule):
