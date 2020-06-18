@@ -37,8 +37,16 @@ class SampleStanza(object):
         '''
         Tokenize the raw events(self.sample_raw_data) and stores them into self.tokenized_events.
         '''
+        required_event_count = self.metadata['count']
+        event = list(self.tokenized_events)
         for each_rule in self.sample_rules:
-            self.tokenized_events = each_rule.apply(self.tokenized_events)
+            event = each_rule.apply(event)
+        while((int(required_event_count)) > len((event))):    
+            for each_rule in self.sample_rules:
+                event = each_rule.apply(event)
+            event.extend(event)    
+        self.tokenized_events = event
+        
 
     def _parse_rules(self, eventgen_params):
         for each_token, token_value in eventgen_params['tokens'].items():
