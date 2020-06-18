@@ -114,7 +114,7 @@
         },
         {
           "name": "url_length",
-          "type": "required",
+          "type": "optional",
           "validity": "if(url_length == len(url), url_length, null())",
           "comment": "The length of the URL."
         },
