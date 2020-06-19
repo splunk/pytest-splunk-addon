@@ -3,11 +3,14 @@ import logging
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
+host_ipv4 = 0
+host_ipv6 = 0
+
 class SampleEvent(object):
     """
     This class represents an event which will be ingested in Splunk.
     """
-    host_ip = 0
+    
     def __init__(self, event_string, metadata, sample_name):
         self.event = event_string
         # self.host = str
@@ -26,10 +29,20 @@ class SampleEvent(object):
         self.host_count += 1
         return self.sample_name + '_' + str(self.host_count)
 
-    def get_host_ip(self):
-        SampleEvent.host_ip += 1
-        return [int(SampleEvent.host_ip / 256) % 256, SampleEvent.host_ip % 256]
+    def get_host_ipv4(self):
+        global host_ipv4
+        host_ipv4 += 1
+        return [int(host_ipv4 / 256) % 256, host_ipv4 % 256]
 
+    def get_host_ipv6(self):
+        global host_ipv6
+        host_ipv6 = host_ipv6 % (int('ffffffffffffffff', 16))
+        host_ipv6 += 1
+        hex_count = hex(host_ipv6)
+        non_zero_cnt = len(hex_count[2:])
+        addr = "{}{}".format("0"*(16-non_zero_cnt), hex_count[2:])
+        return ':'.join(addr[i:i+4] for i in range(0, len(addr), 4))
+    
     def get_token_count(self, token):
         return len(re.findall(token, self.event))
 
@@ -49,7 +62,7 @@ class SampleEvent(object):
 
     @classmethod
     def copy(cls, event):
-        new_event = cls("",{})
+        new_event = cls("", {}, "")
         new_event.__dict__ = event.__dict__.copy()
         new_event.key_fields = event.key_fields.copy()
         return new_event

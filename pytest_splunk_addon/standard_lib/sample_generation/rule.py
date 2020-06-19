@@ -20,7 +20,7 @@ from . import SampleEvent
 
 class Rule:
     user_header = ['name', 'email', 'domain_user', 'distinquised_name']
-    src_header = ['host', 'domain', 'ip', 'fqdn']
+    src_header = ['host', 'domain', 'ipv4', 'ipv6', 'fqdn']
 
     def __init__(self, token, eventgen_params=None):
         self.token = token["token"]
@@ -102,7 +102,16 @@ class Rule:
         else:
             sample.__setattr__("replacement_map", { key:[csv_row] })
         return index_list, csv_row
-
+    
+    def get_rule_replacement_values(self, sample, value_list, rule):
+        host_ip_list = sample.get_host_ipv4()
+        host_ipv4 = "".join(["10.1.", str(host_ip_list[0]), ".", str(host_ip_list[1])])
+        host_ipv6 = "{}:{}".format("fdee:1fe4:2b8c:3264",sample.get_host_ipv6())
+        index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", rule, self.src_header, value_list)
+        csv_row.append(host_ipv4)
+        csv_row.append(host_ipv6)
+        csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+        return index_list, csv_row
 
 class IntRule(Rule):
     def replace(self, sample, token_count):
@@ -332,9 +341,11 @@ class DestRule(Rule):
         value_list_str = re.match(r'[dD]est(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            faker_ip =  "10.100." + str(randint(0, 255)) + "." + str(randint(1, 255))
+            ipv4_addr =  "10.100." + str(randint(0, 255)) + "." + str(randint(1, 255))
+            ipv6_addr = "{}:{}".format("fdee:1fe4:2b8c:3262",self.fake.ipv6()[20:])
             index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'dest', self.src_header, value_list)
-            csv_row.append(faker_ip)
+            csv_row.append(ipv4_addr)
+            csv_row.append(ipv6_addr)
             csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
             yield csv_row[choice(index_list)]
 
@@ -350,9 +361,11 @@ class DvcRule(Rule):
         value_list_str = re.match(r'[dD]vc(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            faker_ip =  "172.16." + str(randint(0, 255)) + "." + str(randint(1, 255))
+            ipv4_addr =  "172.16." + str(randint(0, 255)) + "." + str(randint(1, 255))
+            ipv6_addr = "{}:{}".format("fdee:1fe4:2b8c:3263",self.fake.ipv6()[20:])
             index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'dvc', self.src_header, value_list)
-            csv_row.append(faker_ip)
+            csv_row.append(ipv4_addr)
+            csv_row.append(ipv6_addr)
             csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
             yield csv_row[choice(index_list)]
 
@@ -362,9 +375,11 @@ class SrcRule(Rule):
         value_list_str = re.match(r'[sS]rc(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            faker_ip =  "10.1." + str(randint(0, 255)) + "." + str(randint(1, 255))
+            ipv4_addr =  "10.1." + str(randint(0, 255)) + "." + str(randint(1, 255))
+            ipv6_addr = "{}:{}".format("fdee:1fe4:2b8c:3261",self.fake.ipv6()[20:])
             index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'src', self.src_header, value_list)
-            csv_row.append(faker_ip)
+            csv_row.append(ipv4_addr)
+            csv_row.append(ipv6_addr)
             csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
             yield csv_row[choice(index_list)]
 
@@ -381,11 +396,7 @@ class HostRule(Rule):
         value_list_str = re.match(r'[hH]ost(\[.*?\])', self.replacement).group(1)
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            host_ip_list = sample.get_host_ip()
-            host_ip = "".join(["10.1.", str(host_ip_list[0]), ".", str(host_ip_list[1])])
-            index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'host', self.src_header, value_list)
-            csv_row.append(host_ip)
-            csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+            index_list, csv_row = self.get_rule_replacement_values(sample, value_list, rule="host")
             if sample.metadata.get('input_type') in ['modinput', 'windows_input']:
                 host_value = sample.metadata.get('host')
             elif sample.metadata.get('input_type') in [
