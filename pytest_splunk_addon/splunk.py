@@ -17,6 +17,7 @@ from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import HECEventIngestor, HECRawEventIngestor, HECMetricEventIngestor, SC4SEventIngestor
+from .standard_lib.sample_generation.sample_generator import SampleGenerator
 import configparser
 
 
@@ -425,19 +426,28 @@ def splunk_web_uri(splunk):
     return uri
 
 import time
-@pytest.fixture(scope="function")
-def splunk_ingest_data(splunk_hec_uri, splunk_indextime_fields):
-    time.sleep(2)
+@pytest.fixture(scope="session")
+def splunk_ingest_data(splunk_hec_uri):
+    sample_generator = SampleGenerator(r'C:\Automation\Event generation\test_package')
+    events = list(sample_generator.get_samples())
+    ingestor_dict = dict()
+    for event in events:
+        input_type = event.metadata['input_type']
+        if input_type in ingestor_dict:
+            ingestor_dict[input_type].append(event)
+        else:
+            ingestor_dict[input_type] = [event]
 
-    ingest_meta_data = {
-        'session_headers': splunk_hec_uri[0].headers,
-        'splunk_hec_uri': splunk_hec_uri[1],
-        'host': splunk_indextime_fields.metadata['host'],  # for sc4s, TBD
-        'port': 514  # for sc4s, TBD
+    for input_type, events in ingestor_dict.items():
+        ingest_meta_data = {
+                'session_headers': splunk_hec_uri[0].headers,
+                'splunk_hec_uri': splunk_hec_uri[1],
+                'host': event.metadata['host'],  # for sc4s, TBD
+                'port': 514  # for sc4s, TBD
+        }
+        event_ingestor = get_event_ingestor(input_type, ingest_meta_data)
+        event_ingestor.ingest(events)
 
-    }
-    event_ingestor = get_event_ingestor(splunk_indextime_fields.metadata['input_type'], ingest_meta_data)
-    event_ingestor.ingest(splunk_indextime_fields)
 
 def is_responsive_splunk(splunk):
     """
@@ -501,9 +511,9 @@ def get_event_ingestor(input_type, ingest_meta_data):
         'file_monitor': HECRawEventIngestor,
         'scripted_input': HECRawEventIngestor,
         'hec_metric': HECMetricEventIngestor,
-        'syslog': 
-        'syslog_tcp': 
-        'syslog_udp': 
+        'syslog': None,
+        'syslog_tcp': None,
+        'syslog_udp': None,
     }
 
     ingestor = ingest_methods.get(input_type)(ingest_meta_data)

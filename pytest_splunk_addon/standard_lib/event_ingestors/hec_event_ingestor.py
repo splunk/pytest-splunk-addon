@@ -27,7 +27,7 @@ class HECEventIngestor(EventIngestor):
         self.hec_uri = required_configs.get('splunk_hec_uri')
         self.session_headers = required_configs.get('session_headers')
 
-    def ingest(self, event):
+    def ingest(self, events):
         """
         Ingests event and metric data into splunk using HEC token via event endpoint.
         Args:
@@ -63,12 +63,16 @@ class HECEventIngestor(EventIngestor):
                     }
                 ]
         """
-        data = {
-            "sourcetype": event.metadata.get('sourcetype', 'pytest_splunk_addon'), 
-            "source": event.metadata.get('source', 'pytest_splunk_addon:hec:event'),
-            "host": event.metadata.get('host', 'default'),
-            "event": event.event
-        }
+        data = list()
+        for event in events:
+            event_dict = {
+                "sourcetype": event.metadata.get('sourcetype', 'pytest_splunk_addon'), 
+                "source": event.metadata.get('source', 'pytest_splunk_addon:hec:event'),
+                "host": event.metadata.get('host', 'default'),
+                "event": event.event
+            }
+            data.append(event_dict)
+
         try:
             response = requests.post(
                 "{}/{}".format(self.hec_uri, "event"),
