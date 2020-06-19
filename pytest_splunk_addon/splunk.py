@@ -207,6 +207,10 @@ def splunk_setup(splunk):
     """
     pass
 
+@pytest.fixture(scope="session")
+def setup_sc4s(sc4s):
+    return sc4s
+
 
 @pytest.fixture(scope="session")
 def splunk_search_util(splunk, splunk_setup, request):
@@ -262,6 +266,20 @@ def splunk(request):
         raise Exception
 
     yield splunk_info
+
+
+@pytest.fixture(scope="session")
+def sc4s(request):
+    if request.config.getoption('splunk_type') == 'external':
+        request.fixturenames.append('sc4s_external')
+        sc4s = request.getfixturevalue("sc4s_external")
+    elif request.config.getoption('splunk_type') == 'docker':
+        request.fixturenames.append('sc4s_docker')
+        sc4s = request.getfixturevalue("sc4s_docker")
+    else:
+        raise Exception
+
+    yield sc4s
 
 
 @pytest.fixture(scope="session")
@@ -333,6 +351,17 @@ def splunk_external(request):
         )
 
     return splunk_info
+
+
+@pytest.fixture(scope="session")
+def sc4s_docker(docker_services):
+    docker_services.start('sc4s')
+
+    ports = {514:  docker_services.port_for("sc4s", 514)}
+    for x in range(5000, 5007):
+        ports.update({x: docker_services.port_for("sc4s", x)})
+
+    return docker_services.docker_ip, ports
 
 
 @pytest.fixture(scope="session")
