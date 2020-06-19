@@ -7,7 +7,7 @@ class SampleGenerator(object):
     Main Class
     Generate sample objects 
     """
-    sample_stanza = []
+    sample_stanzas = []
     
     def __init__(self, addon_path, process_count=4):
         self.addon_path = addon_path
