@@ -282,21 +282,47 @@ class EmailRule(Rule):
 
 class UrlRule(Rule):
     def replace(self, sample, token_count):
-        url = self.fake.uri()
-        if randint(0, 1):
-            url = url + "?"
-            for _ in range(randint(1, 4)):
-                field = "".join(
-                    choice(string.ascii_lowercase)
-                    for _ in range(randint(2, 5))
-                )
-                value = "".join(
-                    choice(string.ascii_lowercase + string.digits)
-                    for _ in range(randint(2, 5))
-                )
-                url = url + field + "=" + value + "&"
-            url = url[:-1]
-        yield url
+        value_list_str = re.match(r'[uU]rl(\[.*?\])', self.replacement).group(1)
+        value_list = eval(value_list_str)
+
+        for _ in range(token_count):
+            if 'ip' in value_list or 'fqdn' in value_list:
+                domain_name = []
+                url = choice(['http://', 'https://'])
+                if 'ip' in value_list:
+                    domain_name.append(self.fake.ipv4())
+                if 'fqdn' in value_list:
+                    domain_name.append(self.fake.hostname())
+                url = "{}{}".format(url, choice(domain_name))
+            else:
+                url = self.fake.url()
+
+            if 'path' in value_list:
+                url_path = self.fake.uri_path()
+                file_name = self.fake.uri_page() + self.fake.uri_extension()
+                url = "{}/{}".format(url, choice([url_path, file_name]))
+            if 'query' in value_list:
+                url = url + self.generate_url_query_params()
+            yield str(url)
+
+    '''
+    This method is generate the random query params for url
+    Returns:
+        Return the query param string
+    '''
+    def generate_url_query_params(self):
+        url_params = "?"
+        for _ in range(randint(1, 4)):
+            field = "".join(
+                choice(string.ascii_lowercase)
+                for _ in range(randint(2, 5))
+            )
+            value = "".join(
+                choice(string.ascii_lowercase + string.digits)
+                for _ in range(randint(2, 5))
+            )
+            url_params = url_params + field + "=" + value + "&"
+        return url_params[:-1]
 
 
 class DestRule(Rule):
