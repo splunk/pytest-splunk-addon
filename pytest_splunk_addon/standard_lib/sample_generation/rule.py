@@ -286,22 +286,24 @@ class UrlRule(Rule):
         value_list = eval(value_list_str)
 
         for _ in range(token_count):
-            if 'ip' in value_list or 'fqdn' in value_list:
+            if bool(set(['ip_host','fqdn_host','full']).intersection(value_list)):
+                url = ''
                 domain_name = []
-                url = choice(['http://', 'https://'])
-                if 'ip' in value_list:
+                if bool(set(['full','protocol']).intersection(value_list)):
+                    url = url + choice(['http://', 'https://'])
+                if bool(set(['full','ip_host']).intersection(value_list)):
                     domain_name.append(self.fake.ipv4())
-                if 'fqdn' in value_list:
+                if bool(set(['full','fqdn_host']).intersection(value_list)):
                     domain_name.append(self.fake.hostname())
-                url = "{}{}".format(url, choice(domain_name))
+                url = url + choice(domain_name)
             else:
                 url = self.fake.url()
 
-            if 'path' in value_list:
-                url_path = self.fake.uri_path()
-                file_name = self.fake.uri_page() + self.fake.uri_extension()
-                url = "{}/{}".format(url, choice([url_path, file_name]))
-            if 'query' in value_list:
+            if bool(set(['full','path']).intersection(value_list)):
+                url = url + "/" + choice([self.fake.uri_path(), self.fake.uri_page() + self.fake.uri_extension()])
+
+
+            if bool(set(['full','query']).intersection(value_list)):
                 url = url + self.generate_url_query_params()
             yield str(url)
 
