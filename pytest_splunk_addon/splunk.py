@@ -16,7 +16,7 @@ import splunklib.client as client
 from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
-from .standard_lib.event_ingestors import HECEventIngestor, HECRawEventIngestor, HECMetricEventIngestor
+from .standard_lib.event_ingestors import HECEventIngestor, HECRawEventIngestor, HECMetricEventIngestor, SC4SEventIngestor
 import configparser
 
 
