@@ -11,22 +11,26 @@ from .time_parser import time_parse
 import os
 
 from . import SampleEvent
+import logging
+
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class Rule:
     user_header = ["name", "email", "domain_user", "distinquised_name"]
     src_header = ["host", "domain", "ipv4", "ipv6", "fqdn"]
 
-    def __init__(self, token, eventgen_params=None):
+    def __init__(self, token, eventgen_params=None, sample_path=None):
         self.token = token["token"]
         self.replacement = token["replacement"]
         self.replacement_type = token["replacementType"]
         self.field = token.get("field", self.token.strip("#"))
         self.eventgen_params = eventgen_params
+        self.sample_path = sample_path
         self.fake = Faker()
 
     @classmethod
-    def parse_rule(cls, token, eventgen_params):
+    def parse_rule(cls, token, eventgen_params, sample_path):
         rule_book = {
             "integer": IntRule,
             "list": ListRule,
@@ -57,9 +61,9 @@ class Rule:
         elif replacement_type == "random" or replacement_type == "all":
             for each_rule in rule_book:
                 if replacement.startswith(each_rule):
-                    return rule_book[each_rule](token)
+                    return rule_book[each_rule](token, sample_path=sample_path)
         elif replacement_type == "file":
-            return FileRule(token)
+            return FileRule(token, sample_path=sample_path)
 
         print("No Rule Found.!")
         # TODO: Test the behavior if no rule found
@@ -112,20 +116,11 @@ class Rule:
         return index_list, csv_row
 
     def get_rule_replacement_values(self, sample, value_list, rule):
-        host_ip_list = sample.get_host_ipv4()
-        host_ipv4 = "".join(
-            ["10.1.", str(host_ip_list[0]), ".", str(host_ip_list[1])]
-        )
-        host_ipv6 = "{}:{}".format(
-            "fdee:1fe4:2b8c:3264", sample.get_host_ipv6()
-        )
-        index_list, csv_row = self.get_lookup_value(
-            sample,
-            "lookups\\host_domain.csv",
-            rule,
-            self.src_header,
-            value_list,
-        )
+
+        host_ipv4 = sample.get_host_ipv4()
+        host_ipv6 = sample.get_host_ipv6()
+        index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", rule, self.src_header, value_list)
+
         csv_row.append(host_ipv4)
         csv_row.append(host_ipv6)
         csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
@@ -142,7 +137,7 @@ class IntRule(Rule):
                 yield randint(int(lower_limit), int(upper_limit))
         else:
             for each_int in range(int(lower_limit), int(upper_limit)):
-                yield each_int
+                yield str(each_int)
 
 
 class FloatRule(Rule):
@@ -183,29 +178,87 @@ class StaticRule(Rule):
 
 class FileRule(Rule):
     def replace(self, sample, token_count):
-        sample_file_path = re.match(
-            r"[fF]ile\[(.*?)\]", self.replacement
-        ).group(1)
-        if self.replacement_type == "random":
+        if self.replacement.startswith("file" or "File"):
+            sample_file_path = re.match(
+                    r"[fF]ile\[(.*?)\]", self.replacement
+                ).group(1)
+        else:
+            sample_file_path = self.replacement
+        
+        sample_file_path = sample_file_path.replace("/", os.sep)
+
+        relative_file_path = self.sample_path.split(f"{os.sep}samples")[0]
+        match = re.search(r"\\?\/?apps\\?\/?[a-zA-Z-_0-9]+\\?\/?", sample_file_path)[0]
+        file_path = sample_file_path.split(match)[1].split(":")[0]
+        
+        file_name = os.path.basename(file_path)
+        file_name_index = sample_file_path.split(match)[1].split(":")
+        index = (file_name_index[1] if len(file_name_index)>1 else None)
+        relative_file_path = os.path.join(relative_file_path, file_path)
+
+        if self.replacement_type == 'random':
             try:
-                f = open(sample_file_path)
-                txt = f.read()
-                f.close()
-                lines = [each for each in txt.split("\n") if each]
-                for _ in range(token_count):
-                    yield choice(lines)
+                if index:
+                    try:
+                        index = int(index)
+                        yield from self.indexed_sample_file(relative_file_path, index, token_count)
+                    except ValueError:
+                        yield from self.lookupfile(relative_file_path, index, token_count)
+                else:
+                    with open(relative_file_path) as f:
+                        txt = f.read()
+                        lines = [each for each in txt.split("\n") if each]
+                        for _ in range(token_count):
+                            yield choice(lines)
             except IOError:
-                print("File not found : {}".format(sample_file_path))
+                print("File not found : {}".format(relative_file_path))
         else:
             try:
-                f = open(sample_file_path)
-                txt = f.read()
-                f.close()
-
-                for each_value in txt.split("\n"):
-                    yield each_value
+                if index:
+                    try:
+                        index = int(index)
+                        yield from self.indexed_sample_file(relative_file_path, index, token_count)
+                    except ValueError:
+                        yield from self.lookupfile(relative_file_path, index, token_count)
+                else:
+                    with open(relative_file_path) as f:
+                        txt = f.read()
+                        for each_value in txt.split("\n"):
+                            yield each_value
             except IOError:
-                print("File not found : {}".format(sample_file_path))
+                print("File not found : {}".format(relative_file_path))
+
+    def indexed_sample_file(self, file_path, index, token_count):
+        try:
+            with open(file_path, 'r') as f:
+                output = []
+                for line in f:
+                    cells = line.split(",")
+                    output.append((cells[index-1].strip("\n")))
+                for _ in range(token_count):
+                    yield choice(output)
+        except IndexError:
+            LOGGER.error("Index for column '%s' in replacement file '%s' is out of bounds" % (index, file_path))
+            print("Index for column '%s' in replacement file '%s' is out of bounds" % (index, file_path))
+        except IOError:
+            raise IOError
+
+    def lookupfile(self, file_path, index, token_count):
+        try:
+            with open(file_path, 'r') as f:
+                output = []
+                data = csv.DictReader(f)
+                try:
+                    for row in data:
+                        for col in [index]:
+                            output.append(row[col])
+                    for _ in range(token_count):
+                        yield choice(output)
+                except KeyError as e:
+                    LOGGER.error("Column '%s' is not present replacement file '%s'" % (index, file_path))
+                    print("Column '%s' is not present replacement file '%s'" % (index, file_path))
+        except IOError:
+            raise IOError
 
 
 class TimeRule(Rule):
@@ -452,19 +505,10 @@ class DvcRule(Rule):
         )
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            ipv4_addr = (
-                "172.16." + str(randint(0, 255)) + "." + str(randint(1, 255))
-            )
-            ipv6_addr = "{}:{}".format(
-                "fdee:1fe4:2b8c:3263", self.fake.ipv6()[20:]
-            )
-            index_list, csv_row = self.get_lookup_value(
-                sample,
-                "lookups\\host_domain.csv",
-                "dvc",
-                self.src_header,
-                value_list,
-            )
+            ipv4_addr =  "172.16." + str(randint(1, 50)) + ".0"
+            ipv6_addr = "{}:{}".format("fdee:1fe4:2b8c:3263",self.fake.ipv6()[20:])
+            index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'dvc', self.src_header, value_list)
+
             csv_row.append(ipv4_addr)
             csv_row.append(ipv6_addr)
             csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
@@ -478,21 +522,11 @@ class SrcRule(Rule):
         )
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            ipv4_addr = (
-                "10.1." + str(randint(0, 255)) + "." + str(randint(1, 255))
-            )
-            ipv6_addr = "{}:{}".format(
-                "fdee:1fe4:2b8c:3261", self.fake.ipv6()[20:]
-            )
-            index_list, csv_row = self.get_lookup_value(
-                sample,
-                "lookups\\host_domain.csv",
-                "src",
-                self.src_header,
-                value_list,
-            )
-            csv_row.append(ipv4_addr)
-            csv_row.append(ipv6_addr)
+            src_ipv4 = sample.get_src_ipv4()
+            src_ipv6 = sample.get_src_ipv6()
+            index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'src', self.src_header, value_list)
+            csv_row.append(src_ipv4)
+            csv_row.append(src_ipv6)
             csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
             yield csv_row[choice(index_list)]
 
