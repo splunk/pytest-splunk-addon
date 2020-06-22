@@ -43,7 +43,6 @@ class Rule:
             "user": UserRule,
             "email": EmailRule,
             "host": HostRule,
-            "fqdn": FqdnRule,
             "hex": HexRule,
             "src_port": SrcPortRule,
             "dest_port": DestPortRule,
@@ -564,20 +563,6 @@ class HostRule(Rule):
                 host_value = sample.get_host()
             csv_row[0] = host_value
             yield csv_row[choice(index_list)]
-
-
-class FqdnRule(Rule):
-    def replace(self, sample, token_count):
-        for _ in range(token_count):
-            index_list, csv_row = self.get_lookup_value(
-                sample,
-                "lookups\\host_domain.csv",
-                "fqdn",
-                self.user_header,
-                ["fqdn"],
-            )
-            yield "{}.{}".format(csv_row[0], csv_row[1])
-
 
 class HexRule(Rule):
     def replace(self, sample, token_count):
