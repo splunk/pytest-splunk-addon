@@ -75,7 +75,7 @@
         {
           "name": "dest_port",
           "type": "conditional",
-          "condition": "protocol=ip",
+          "condition": "transport=tcp OR transport=udp",
           "validity": "if(isnum(dest_port),dest_port,null())",
           "comment": "The destination port of the network traffic. Note: Do not translate the value of this field to a string (tcp/80 is 80, not http). You can set up the corresponding string value in the dest_svc field."
         },
@@ -88,7 +88,7 @@
         {
           "name": "dest_translated_port",
           "type": "conditional",
-          "condition": "protocol=ip AND dest_translated_ip=*",
+          "condition": "(transport=tcp OR transport=udp) AND dest_translated_ip=*",
           "comment": "The NATed port to which a packet has been sent. Note: Do not translate the values of this field to strings (tcp/80 is 80, not http)."
         },
         {
@@ -132,6 +132,7 @@
           "name": "icmp_code",
           "type": "conditional",
           "condition": "protocol=icmp",
+          "validity": "if(isnum(icmp_code),icmp_code,null())",
           "comment": "The RFC 2780 or RFC 4443 human-readable code value of the traffic, such as Destination Unreachable or Parameter Problem . See the ICMP Type Numbers and the ICMPv6 Type Numbers."
         },
         {
@@ -275,14 +276,14 @@
         {
           "name": "src_port",
           "type": "conditional",
-          "condition": "protocol=ip",
+          "condition": "transport=tcp OR transport=udp",
           "validity": "if(isnum(src_port),src_port,null())",
           "comment": "The source port of the network traffic. Note: Do not translate the value of this field to a string (tcp/80 is 80, not http). You can set up the corresponding string value in the src_svc field."
         },
         {
           "name": "src_translated_port",
           "type": "conditional",
-          "condition": "protocol=ip AND src_translated_ip=*",
+          "condition": "(transport=tcp OR transport=udp) AND src_translated_ip=*",
           "validity": "if(isnum(src_translated_port),src_translated_port,null())",
           "comment": "The NATed port from which a packet has been sent. Note: Do not translate the values of this field to strings (tcp/80 is 80, not http."
         }

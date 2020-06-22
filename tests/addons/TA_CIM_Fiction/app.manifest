@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "2.0.0",
+  "info": {
+    "title": "TA_CIM_Fiction",
+    "id": {
+      "group": null,
+      "name": "TA_CIM_Fiction",
+      "version": "0.0.0-dev"
+    },
+    "author": [
+      {
+        "name": "Splunk Inc.",
+        "email": "support@splunk.com",
+        "company": "Splunk, Inc."
+      }
+    ],
+    "releaseDate": null,
+    "description": "TA IN DEV UNKNOWN",
+    "classification": {
+      "intendedAudience": null,
+      "categories": [],
+      "developmentStatus": null
+    },
+    "commonInformationModels": null,
+    "license": {
+      "name": "Splunk EULA",
+      "text": null,
+      "uri": "LICENSE"
+    },
+    "privacyPolicy": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "releaseNotes": {
+      "name": null,
+      "text": null,
+      "uri": null
+    }
+  },
+  "dependencies": {
+  },
+  "tasks": [],
+  "inputGroups": {
+  },
+  "incompatibleApps": {
+  },
+  "platformRequirements": {
+    "splunk": {
+      "Enterprise": "*"
+    }
+  }
+}

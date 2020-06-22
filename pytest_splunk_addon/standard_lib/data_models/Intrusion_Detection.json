@@ -83,6 +83,20 @@
           "comment": "The OSI layer 4 (transport) protocol of the intrusion, in lower case."
         },
         {
+          "name": "src_port",
+          "type": "conditional",
+          "condition": "ids_type=\"network\"",
+          "validity": "if(isnum(src_port),src_port,null())",
+          "comment": "The source port of the intrusion detection. Note: Do not translate the value of this field to a string (tcp/80 is 80, not http). You can set up the corresponding string value in the src_svc field."
+        },
+        {
+          "name": "dest_port",
+          "type": "conditional",
+          "condition": "ids_type=\"network\"",
+          "validity": "if(isnum(dest_port),dest_port,null())",
+          "comment": "The destination port of the intrusion detection. Note: Do not translate the value of this field to a string (tcp/80 is 80, not http). You can set up the corresponding string value in the dest_svc field."
+        },
+        {
           "name": "user",
           "type": "conditional",
           "condition": "ids_type!=\"host\"",
