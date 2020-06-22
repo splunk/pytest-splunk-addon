@@ -18,7 +18,7 @@ class SampleStanza(object):
     def __init__(self, sample_path, eventgen_params):
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
-        self.sample_rules = list(self._parse_rules(eventgen_params))
+        self.sample_rules = list(self._parse_rules(eventgen_params, self.sample_path))
         # self.input_type = eventgen_params.get('input_type')
         self.metadata = self._parse_meta(eventgen_params)
         self.input_type = self.metadata.get('input_type', None)
@@ -48,9 +48,9 @@ class SampleStanza(object):
         self.tokenized_events = event
         
 
-    def _parse_rules(self, eventgen_params):
+    def _parse_rules(self, eventgen_params, sample_path):
         for each_token, token_value in eventgen_params['tokens'].items():
-            yield Rule.parse_rule(token_value, eventgen_params)
+            yield Rule.parse_rule(token_value, eventgen_params, sample_path)
 
     def _parse_meta(self, eventgen_params):
         metadata = {key:eventgen_params[key] for key in eventgen_params if key != "tokens"}

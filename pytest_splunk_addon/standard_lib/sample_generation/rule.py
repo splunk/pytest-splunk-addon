@@ -16,22 +16,25 @@ from .time_parser import time_parse
 import os
 
 from . import SampleEvent
+import logging
 
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class Rule:
     user_header = ['name', 'email', 'domain_user', 'distinquised_name']
     src_header = ['host', 'domain', 'ipv4', 'ipv6', 'fqdn']
 
-    def __init__(self, token, eventgen_params=None):
+    def __init__(self, token, eventgen_params=None, sample_path=None):
         self.token = token["token"]
         self.replacement = token["replacement"]
         self.replacement_type = token["replacementType"]
         self.field = token.get("field", self.token.strip("#"))
         self.eventgen_params = eventgen_params
+        self.sample_path = sample_path
         self.fake = Faker()
 
     @classmethod
-    def parse_rule(cls, token, eventgen_params):
+    def parse_rule(cls, token, eventgen_params, sample_path):
         rule_book = {
             "integer": IntRule,
             "list": ListRule,
@@ -62,9 +65,9 @@ class Rule:
         elif replacement_type == "random" or replacement_type == "all":
             for each_rule in rule_book:
                 if replacement.startswith(each_rule):
-                    return rule_book[each_rule](token)
+                    return rule_book[each_rule](token, sample_path=sample_path)
         elif replacement_type == "file":
-            return FileRule(token)
+            return FileRule(token, sample_path=sample_path)
 
         print("No Rule Found.!")
         # TODO: Test the behavior if no rule found
@@ -163,29 +166,87 @@ class StaticRule(Rule):
 
 class FileRule(Rule):
     def replace(self, sample, token_count):
-        sample_file_path = re.match(
-                r"[fF]ile\[(.*?)\]", self.replacement
-            ).group(1)
+        if self.replacement.startswith("file" or "File"):
+            sample_file_path = re.match(
+                    r"[fF]ile\[(.*?)\]", self.replacement
+                ).group(1)
+        else:
+            sample_file_path = self.replacement
+        
+        sample_file_path = sample_file_path.replace("/", os.sep)
+
+        relative_file_path = self.sample_path.split(f"{os.sep}samples")[0]
+        match = re.search(r"\\?\/?apps\\?\/?[a-zA-Z-_0-9]+\\?\/?", sample_file_path)[0]
+        file_path = sample_file_path.split(match)[1].split(":")[0]
+        
+        file_name = os.path.basename(file_path)
+        file_name_index = sample_file_path.split(match)[1].split(":")
+        index = (file_name_index[1] if len(file_name_index)>1 else None)
+        relative_file_path = os.path.join(relative_file_path, file_path)
+
         if self.replacement_type == 'random':
             try:
-                f = open(sample_file_path)
-                txt = f.read()
-                f.close()
-                lines = [each for each in txt.split("\n") if each]
-                for _ in range(token_count):
-                    yield choice(lines)
+                if index:
+                    try:
+                        index = int(index)
+                        yield from self.indexed_sample_file(relative_file_path, index, token_count)
+                    except ValueError:
+                        yield from self.lookupfile(relative_file_path, index, token_count)
+                else:
+                    with open(relative_file_path) as f:
+                        txt = f.read()
+                        lines = [each for each in txt.split("\n") if each]
+                        for _ in range(token_count):
+                            yield choice(lines)
             except IOError as e:
-                print("File not found : {}".format(sample_file_path))
+                print("File not found : {}".format(relative_file_path))
         else:
             try:
-                f = open(sample_file_path)
-                txt = f.read()
-                f.close()
-
-                for each_value in txt.split("\n"):
-                    yield each_value
+                if index:
+                    try:
+                        index = int(index)
+                        yield from self.indexed_sample_file(relative_file_path, index, token_count)
+                    except ValueError:
+                        yield from self.lookupfile(relative_file_path, index, token_count)
+                else:
+                    with open(relative_file_path) as f:
+                        txt = f.read()
+                        for each_value in txt.split("\n"):
+                            yield each_value
             except IOError as e:
-                print("File not found : {}".format(sample_file_path))
+                print("File not found : {}".format(relative_file_path))
+
+    def indexed_sample_file(self, file_path, index, token_count):
+        try:
+            with open(file_path, 'r') as f:
+                output = []
+                for line in f:
+                    cells = line.split(",")
+                    output.append((cells[index-1].strip("\n")))
+                for _ in range(token_count):
+                    yield choice(output)
+        except IndexError:
+            LOGGER.error("Index for column '%s' in replacement file '%s' is out of bounds" % (index, file_path))
+            print("Index for column '%s' in replacement file '%s' is out of bounds" % (index, file_path))
+        except IOError as e:
+            raise IOError
+
+    def lookupfile(self, file_path, index, token_count):
+        try:
+            with open(file_path, 'r') as f:
+                output = []
+                data = csv.DictReader(f)
+                try:
+                    for row in data:
+                        for col in [index]:
+                            output.append(row[col])
+                    for _ in range(token_count):
+                        yield choice(output)
+                except KeyError as e:
+                    LOGGER.error("Column '%s' is not present replacement file '%s'" % (index, file_path))
+                    print("Column '%s' is not present replacement file '%s'" % (index, file_path))
+        except IOError as e:
+            raise IOError
 
 
 class TimeRule(Rule):
