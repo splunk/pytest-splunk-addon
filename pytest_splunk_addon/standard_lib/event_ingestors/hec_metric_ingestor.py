@@ -1,8 +1,9 @@
 """
 HEC Event Ingestor class
 """
-from base_event_ingestor import EventIngestor
+from .base_event_ingestor import EventIngestor
 import requests
+import time
 
 requests.urllib3.disable_warnings()
 

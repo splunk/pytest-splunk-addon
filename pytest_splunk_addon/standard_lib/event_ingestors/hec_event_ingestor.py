@@ -1,8 +1,9 @@
 """
 HEC Event Ingestor class
 """
-from base_event_ingestor import EventIngestor
+from .base_event_ingestor import EventIngestor
 import requests
+import time
 
 requests.urllib3.disable_warnings()
 
@@ -24,8 +25,9 @@ class HECEventIngestor(EventIngestor):
                 }
             }
         """
-        self.hec_uri = required_configs['splunk_hec_uri']
-        self.session_headers = required_configs['session_headers']
+        self.hec_uri = required_configs["splunk_hec_uri"]
+        self.session_headers = required_configs["session_headers"]
+        self.time = required_configs.get("time", int(time.time()))
 
     def ingest(self, event):
         """
@@ -64,10 +66,15 @@ class HECEventIngestor(EventIngestor):
                 ]
         """
         data = {
-            "sourcetype": event.metadata.get('sourcetype', 'pytest_splunk_addon'), 
-            "source": event.metadata.get('source', 'pytest_splunk_addon:hec:event'),
-            "host": event.metadata.get('host', 'default'),
-            "event": event.event
+            "sourcetype": event.metadata.get(
+                "sourcetype", "pytest_splunk_addon"
+            ),
+            "source": event.metadata.get(
+                "source", "pytest_splunk_addon:hec:event"
+            ),
+            "host": event.metadata.get("host", "default"),
+            "event": event.event,
+            "time": self.time,
         }
         try:
             response = requests.post(

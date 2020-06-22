@@ -3,6 +3,7 @@ import logging
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
+
 class SampleEvent(object):
     """
     This class represents an event which will be ingested in Splunk.
@@ -48,9 +49,9 @@ class SampleEvent(object):
     def register_field_value(self, field, token_values):
         if isinstance(token_values, list):
             for token_value in token_values:
-                self.key_fields.setdefault(field, []).append(token_value)
+                self.key_fields.setdefault(field, []).append(str(token_value))
         else:
-            self.key_fields.setdefault(field, []).append(token_values)
+            self.key_fields.setdefault(field, []).append(str(token_values))
 
     def get_key_fields(self):
         return self.key_fields

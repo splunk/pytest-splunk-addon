@@ -16,7 +16,11 @@ import splunklib.client as client
 from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
-from .standard_lib.event_ingestors import HECEventIngestor, HECRawEventIngestor, HECMetricEventIngestor
+from .standard_lib.event_ingestors import (
+    HECEventIngestor,
+    HECRawEventIngestor,
+    HECMetricEventIngestor,
+)
 
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
@@ -251,10 +255,16 @@ def splunk(request):
         splunk_info = request.getfixturevalue("splunk_external")
     elif splunk_type == "docker":
 
-        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
+        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption(
+            "splunk_hec_token"
+        )
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
-        os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
-        os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
+        os.environ["SPLUNK_PASSWORD"] = request.config.getoption(
+            "splunk_password"
+        )
+        os.environ["SPLUNK_VERSION"] = request.config.getoption(
+            "splunk_version"
+        )
 
         request.fixturenames.append("splunk_docker")
         splunk_info = request.getfixturevalue("splunk_docker")
@@ -298,7 +308,9 @@ def splunk_docker(request, docker_services, docker_compose_files):
     )
 
     docker_services.wait_until_responsive(
-        timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk_info),
+        timeout=180.0,
+        pause=0.5,
+        check=lambda: is_responsive_splunk(splunk_info),
     )
 
     return splunk_info
@@ -387,20 +399,42 @@ def splunk_web_uri(splunk):
     LOGGER.info("Fetched splunk_web_uri=%s", uri)
     return uri
 
+
 import time
+
+
 @pytest.fixture(scope="function")
 def splunk_ingest_data(splunk_hec_uri, splunk_indextime_fields):
     time.sleep(2)
 
-    ingest_meta_data = {
-        'session_headers': splunk_hec_uri[0].headers,
-        'splunk_hec_uri': splunk_hec_uri[1],
-        'host': splunk_indextime_fields.metadata['host'],  # for sc4s, TBD
-        'port': 514  # for sc4s, TBD
+    if splunk_indextime_fields["sample"].metadata.get("host_type") in ("plugin", None):
+        host = splunk_indextime_fields["sample"].metadata["host"]
+    else:
+        host = splunk_indextime_fields["sample"].key_fields["host"]
 
+    ingest_meta_data = {
+        "session_headers": splunk_hec_uri[0].headers,
+        "splunk_hec_uri": splunk_hec_uri[1],
+        "host": host,  # for sc4s, TBD
+        "port": 514,  # for sc4s, TBD
     }
-    event_ingestor = get_event_ingestor(splunk_indextime_fields.metadata['input_type'], ingest_meta_data)
-    event_ingestor.ingest(splunk_indextime_fields)
+    if (
+        splunk_indextime_fields["sample"].metadata.get("timestamp_type")
+        == "plugin"
+        ):
+        time_to_ingest = int(time.time())
+        splunk_indextime_fields["sample"].key_fields["_time"] = [
+            str(time_to_ingest)
+        ]
+        ingest_meta_data["time"] = time_to_ingest
+
+    event_ingestor = get_event_ingestor(
+        splunk_indextime_fields["sample"].metadata["input_type"],
+        ingest_meta_data,
+    )
+    event_ingestor.ingest(splunk_indextime_fields["sample"])
+    return splunk_indextime_fields
+
 
 def is_responsive_splunk(splunk):
     """
@@ -414,7 +448,8 @@ def is_responsive_splunk(splunk):
     """
     try:
         LOGGER.info(
-            "Trying to connect Splunk instance...  splunk=%s", json.dumps(splunk),
+            "Trying to connect Splunk instance...  splunk=%s",
+            json.dumps(splunk),
         )
         client.connect(
             username=splunk["username"],
@@ -426,7 +461,8 @@ def is_responsive_splunk(splunk):
         return True
     except Exception as e:
         LOGGER.warning(
-            "Could not connect to Splunk yet. Will try again. exception=%s", str(e),
+            "Could not connect to Splunk yet. Will try again. exception=%s",
+            str(e),
         )
         return False
 
@@ -450,23 +486,25 @@ def is_responsive(url):
             return True
     except ConnectionError as e:
         LOGGER.warning(
-            "Could not connect to url yet. Will try again. exception=%s", str(e),
+            "Could not connect to url yet. Will try again. exception=%s",
+            str(e),
         )
         return False
+
 
 def get_event_ingestor(input_type, ingest_meta_data):
     """
     Provides mapping for input_type of event with the ingestor class.
     """
     ingest_methods = {
-        'modinput': HECEventIngestor,
-        'windows_input': HECEventIngestor,
-        'file_monitor': HECRawEventIngestor,
-        'scripted_input': HECRawEventIngestor,
-        'hec_metric': HECMetricEventIngestor,
-        'syslog': 
-        'syslog_tcp': 
-        'syslog_udp': 
+        "modinput": HECEventIngestor,
+        "windows_input": HECEventIngestor,
+        "file_monitor": HECRawEventIngestor,
+        "scripted_input": HECRawEventIngestor,
+        "hec_metric": HECMetricEventIngestor,
+        "syslog": None,
+        "syslog_tcp": None,
+        "syslog_udp": None,
     }
 
     ingestor = ingest_methods.get(input_type)(ingest_meta_data)

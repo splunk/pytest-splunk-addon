@@ -142,6 +142,8 @@ class FloatRule(Rule):
                 len(precision),
             )
 
+
+class ListRule(Rule):
     def replace(self, sample, token_count):
         value_list_str = re.match(
             r"[lL]ist(\[.*?\])", self.replacement

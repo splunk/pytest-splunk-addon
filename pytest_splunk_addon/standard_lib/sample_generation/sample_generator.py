@@ -25,5 +25,5 @@ class SampleGenerator(object):
         for each_sample in sample_stanzas:
             yield from each_sample.get_tokenized_events()
 def main():
-    sample_generator = SampleGenerator(r'C:\Jay\Work\Automation\pytest-splunk-addon\new_dev_environment\eventgen_package')
+    sample_generator = SampleGenerator(r'G:\My Drive\TA-Factory\automation\testing\package')
     print(sample_generator.get_samples())

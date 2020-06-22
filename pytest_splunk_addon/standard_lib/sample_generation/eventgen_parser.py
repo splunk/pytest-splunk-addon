@@ -26,6 +26,7 @@ class EventgenParser:
             return self._eventgen
         except OSError:
             LOGGER.warning("eventgen.conf not found.")
+            raise Exception("Eventgen.conf not found")
             return None
 
     def get_sample_stanzas(self):
