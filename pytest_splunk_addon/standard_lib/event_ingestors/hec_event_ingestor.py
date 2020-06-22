@@ -4,6 +4,7 @@ HEC Event Ingestor class
 from .base_event_ingestor import EventIngestor
 import requests
 import time
+import concurrent.futures
 
 requests.urllib3.disable_warnings()
 
@@ -56,13 +57,8 @@ class HECEventIngestor(EventIngestor):
                         "sourcetype": "sample_HEC",
                         "source": "sample_source",
                         "host": "sample_host",
-                        "event": "metric"
-                        "index": "metric_index"
-                        "fields":{
-                            "metric_name": "metric1",
-                            "_value": 1,
-                        }
-                    }
+                        "event": "event_str2"
+                    },
                 ]
         """
         data = list()
@@ -74,13 +70,9 @@ class HECEventIngestor(EventIngestor):
                 host = event.key_fields["host"]
 
             event_dict = {
-                "sourcetype": event.metadata.get(
-                    "sourcetype", "pytest_splunk_addon"
-                ),
-                "source": event.metadata.get(
-                    "source", "pytest_splunk_addon:hec:event"
-                ),
-                "host": host,
+                "sourcetype": event.metadata.get("sourcetype", "pytest_splunk_addon"),
+                "source": event.metadata.get("source", "pytest_splunk_addon:hec:event"),
+                "host": event.metadata.get("host", "default"),
                 "event": event.event,
             }
 
@@ -91,21 +83,30 @@ class HECEventIngestor(EventIngestor):
                 event_dict['time'] = event.key_fields.get("_time")[0]
 
             data.append(event_dict)
-        try:
-            response = requests.post(
-                "{}/{}".format(self.hec_uri, "event"),
-                auth=None,
-                json=data,
-                headers=self.session_headers,
-                verify=False,
-            )
-            if response.status_code not in (200, 201):
-                print(
-                    "Status code: {} \nReason: {} \ntext:{}".format(
-                        response.status_code, response.reason, response.text
-                    )
-                )
-                raise Exception
+        
+        batch_event_list = []
+        for i in range(0, len(data), 100):
+            batch_event_list.append(data[i : i + 100])
 
+        try:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+                executor.map(self.__ingest, batch_event_list)
         except Exception as e:
             print(e)
+
+    def __ingest(self, data):
+        response = requests.post(
+            "{}/{}".format(self.hec_uri, "event"),
+            auth=None,
+            json=data,
+            headers=self.session_headers,
+            verify=False,
+        )
+        if response.status_code not in (200, 201):
+            print(
+                "Status code: {} \nReason: {} \ntext:{}".format(
+                    response.status_code, response.reason, response.text
+                )
+            )
+            raise Exception
+

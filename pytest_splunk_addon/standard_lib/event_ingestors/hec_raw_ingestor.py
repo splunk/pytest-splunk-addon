@@ -1,9 +1,9 @@
 """
-HEC Event Ingestor class
+HEC Raw Ingestor class
 """
 from .base_event_ingestor import EventIngestor
 import requests
-import time
+import concurrent.futures
 
 requests.urllib3.disable_warnings()
 
@@ -27,14 +27,16 @@ class HECRawEventIngestor(EventIngestor):
         """
         self.hec_uri = required_configs['splunk_hec_uri']
         self.session_headers = required_configs['session_headers']
-        self.time = required_configs.get('time',int(time.time()))
 
-    def ingest(self, event):
+    def ingest(self, events):
         """
         Ingests data into splunk via raw endpoint.
 
         Args:
             event_str(str): Data string to be ingested
+            format::
+                '127.0.0.1 - admin [28/Sep/2016:09:05:26.875 -0700] "GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0" 200 126721 - - - 6ms'
+
 
             params(dict): dict with the info of the data to be ingested.
             format::
@@ -44,23 +46,33 @@ class HECRawEventIngestor(EventIngestor):
                     "host": "sample_host",
                 }
 
-        For batch ingestion of events in a single request at raw endpoint provide a list of dict in data to be ingested.
+        For batch ingestion of events in a single request at raw endpoint provide a string of events in data to be ingested.
 
         format::
-
-            [{"event": "raw_event_str1"}, {"event": "raw_event_str2"}]
+            '''
+                127.0.0.1 - admin [28/Sep/2016:09:05:26.875 -0700] "GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0" 200 126721 - - - 6ms
+                127.0.0.1 - admin [28/Sep/2016:09:05:26.917 -0700] "GET /servicesNS/admin/launcher/data/ui/nav/default HTTP/1.0" 200 4367 - - - 6ms
+                127.0.0.1 - admin [28/Sep/2016:09:05:26.941 -0700] "GET /services/apps/local?search=disabled%3Dfalse&count=-1 HTTP/1.0" 200 31930 - - - 4ms
+            '''
         """
-        params = {
-            "sourcetype": event.metadata.get('sourcetype', 'pytest_splunk_addon'),
-            "source": event.metadata.get('source', 'pytest_splunk_addon:hec:raw'),
-            "host": event.metadata.get('host', 'default'),
-            "time": self.time
-        }
+        main_event = []
+        param_list = []
+        for event in events:
+            param_list.append({
+                "sourcetype": event.metadata.get('sourcetype', 'pytest_splunk_addon'),
+                "source": event.metadata.get('source', 'pytest_splunk_addon:hec:raw'),
+                "host": event.metadata.get('host', 'default'),
+            })
+            main_event.append(event.event)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+            executor.map(self.__ingest, main_event, param_list)
+
+    def __ingest(self, event, params):
         try:
             response = requests.post(
                 "{}/{}".format(self.hec_uri, "raw"),
                 auth=None,
-                data=event.event,
+                data=event,
                 params=params,
                 headers=self.session_headers,
                 verify=False,
