@@ -59,7 +59,7 @@ class Rule:
             return TimeRule(token, eventgen_params)
         elif replacement_type == "random" or replacement_type == "all":
             for each_rule in rule_book:
-                if replacement.startswith(each_rule):
+                 if replacement.lower().startswith(each_rule):
                     return rule_book[each_rule](token, sample_path=sample_path)
         elif replacement_type == "file":
             return FileRule(token, sample_path=sample_path)
