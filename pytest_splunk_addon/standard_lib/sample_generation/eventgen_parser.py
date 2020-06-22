@@ -8,6 +8,7 @@ from . import SampleStanza
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
+
 class EventgenParser:
     """
     This class represents the entire eventgen.conf file and handles parsing mechanism of eventgen and the rules
@@ -16,7 +17,7 @@ class EventgenParser:
 
         self._app = App(addon_path, python_analyzer_enable=False)
         self._eventgen = None
-        self.path_to_samples =  os.path.join(addon_path, "samples")
+        self.path_to_samples = os.path.join(addon_path, "samples")
 
     @property
     def eventgen(self):
@@ -35,7 +36,8 @@ class EventgenParser:
         """
         eventgen_dict = self.get_eventgen_stanzas()
         for sample_name, stanza_params in eventgen_dict.items():
-            sample_path = os.path.join(self.path_to_samples, sample_name)
+            a = self.path_to_samples
+            sample_path = os.path.join(a, sample_name)
             yield SampleStanza(
                 sample_path,
                 stanza_params,
@@ -62,7 +64,8 @@ class EventgenParser:
             Eventgen stanzas dictionary
         """
         eventgen_dict = {}
-        for sample_file in os.listdir(self.path_to_samples):
+        a = self.path_to_samples
+        for sample_file in os.listdir(a):
             for stanza in self.eventgen.sects:
                 if re.search(stanza, sample_file):
                     eventgen_sections = self.eventgen.sects[stanza]

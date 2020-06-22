@@ -8,33 +8,36 @@ class IndexTimeTestTemplate(object):
 
     @pytest.mark.splunk_indextime
     def test_index_time_extractions(
-        self, splunk_search_util, splunk_ingest_data, record_property, caplog
+        self, splunk_search_util, splunk_ingest_data, splunk_indextime_fields, record_property, caplog
     ):
-        record_property("what_we_ingestd", splunk_ingest_data["sample"].event)
-
+        record_property("what_we_ingestd", splunk_indextime_fields["sample"].event)
+        record_property(
+            "Key_fields_we_are_looking_for",
+            str(splunk_indextime_fields["sample"].key_fields),
+        )
         index_list = (
             "(index="
             + " OR index=".join(splunk_search_util.search_index.split(","))
             + ")"
         )
 
-        if splunk_ingest_data.get("identifier"):
-            extra_filter = splunk_ingest_data.get("identifier")
+        if splunk_indextime_fields.get("identifier"):
+            extra_filter = splunk_indextime_fields.get("identifier")
         else:
-            extra_filter = splunk_ingest_data.get("host")
+            extra_filter = "host=" + splunk_indextime_fields.get("host")
 
-        if splunk_ingest_data["sample"].key_fields.get("_time"):
-            # splunk_ingest_data["query"] += ",_time"
+        if splunk_indextime_fields["sample"].key_fields.get("_time"):
+            # splunk_indextime_fields["query"] += ",_time"
             extra_filter += " | eval e_time=_time"
-            splunk_ingest_data["sample"].key_fields[
+            splunk_indextime_fields["sample"].key_fields[
                 "e_time"
-            ] = splunk_ingest_data["sample"].key_fields.pop("_time")
+            ] = splunk_indextime_fields["sample"].key_fields.pop("_time")
 
         query = "sourcetype={} source={} {} | table {}".format(
-            splunk_ingest_data.get("sourcetype"),
-            splunk_ingest_data.get("source"),
+            splunk_indextime_fields.get("sourcetype"),
+            splunk_indextime_fields.get("source"),
             extra_filter,
-            ",".join(splunk_ingest_data["sample"].key_fields),
+            ",".join(splunk_indextime_fields["sample"].key_fields),
         )
 
         search = "search {} {}".format(index_list, query)
@@ -46,10 +49,6 @@ class IndexTimeTestTemplate(object):
 
         record_property("we_got_this_many_results", str(len(results)))
 
-        # n = splunk_ingest_data['sample'].metadata.get('expected_event_count', 1)
-
-        # assert len(results) == n, "We should get exactly "+str(n)+" result"
-
         for result in results:
             for key in result:
 
@@ -57,16 +56,28 @@ class IndexTimeTestTemplate(object):
 
                 msg = "looking for {}={} Found {}={}".format(
                     key,
-                    splunk_ingest_data["sample"].key_fields[key],
+                    splunk_indextime_fields["sample"].key_fields[key],
                     key,
                     result[key],
                 )
 
                 assert (
-                    result[key] in splunk_ingest_data["sample"].key_fields[key]
+                    result[key]
+                    in splunk_indextime_fields["sample"].key_fields[key]
                 ), msg
-                
-        # Testing line breaker
 
-        # implementation here
-        assert True
+        # # Testing line breaker
+        # expected_events_count = splunk_indextime_fields["sample"].metadata.get(
+        #     "expected_event_count", 1
+        # )
+
+        # query1 = "search sourcetype={} source={} host={}".format(
+        #     splunk_indextime_fields.get("sourcetype"),
+        #     splunk_indextime_fields.get("source"),
+        #     splunk_indextime_fields["sample"].sample_name + "_*",
+        # )
+        # assert splunk_search_util.checkQueryCount(
+        #     query1, expected_events_count
+        # ), ("We should get exactly " + str(expected_events_count) + " result")
+        # # implementation here
+        # assert True

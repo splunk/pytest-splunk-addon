@@ -27,7 +27,7 @@ class HECEventIngestor(EventIngestor):
         """
         self.hec_uri = required_configs.get("splunk_hec_uri")
         self.session_headers = required_configs.get("session_headers")
-        self.time = required_configs.get("time", int(time.time()))
+        # self.time = required_configs.get("time", int(time.time()))
 
     def ingest(self, events):
         """
@@ -67,6 +67,12 @@ class HECEventIngestor(EventIngestor):
         """
         data = list()
         for event in events:
+
+            if event.metadata.get("host_type") in ("plugin", None):
+                host = event.metadata["host"]
+            else:
+                host = event.key_fields["host"]
+
             event_dict = {
                 "sourcetype": event.metadata.get(
                     "sourcetype", "pytest_splunk_addon"
@@ -74,10 +80,16 @@ class HECEventIngestor(EventIngestor):
                 "source": event.metadata.get(
                     "source", "pytest_splunk_addon:hec:event"
                 ),
-                "host": event.metadata.get("host", "default"),
+                "host": host,
                 "event": event.event,
-                "time": self.time,
             }
+
+            if event.metadata.get("timestamp_type") in ('plugin', None) :
+                if not event.key_fields.get("_time"):
+                    event.key_fields['_time'] = int(time.time)
+
+                event_dict['time'] = event.key_fields.get("_time")[0]
+
             data.append(event_dict)
         try:
             response = requests.post(

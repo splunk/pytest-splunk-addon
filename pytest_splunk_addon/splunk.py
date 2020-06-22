@@ -454,10 +454,10 @@ import time
 # def splunk_ingest_data(splunk_hec_uri, splunk_indextime_fields):
 #     time.sleep(2)
 
-#     if splunk_indextime_fields["sample"].metadata.get("host_type") in ("plugin", None):
-#         host = splunk_indextime_fields["sample"].metadata["host"]
-#     else:
-#         host = splunk_indextime_fields["sample"].key_fields["host"]
+# if splunk_indextime_fields["sample"].metadata.get("host_type") in ("plugin", None):
+#     host = splunk_indextime_fields["sample"].metadata["host"]
+# else:
+#     host = splunk_indextime_fields["sample"].key_fields["host"]
 
 #     ingest_meta_data = {
 #         "session_headers": splunk_hec_uri[0].headers,
@@ -465,15 +465,15 @@ import time
 #         "host": host,  # for sc4s, TBD
 #         "port": 514,  # for sc4s, TBD
 #     }
-#     if (
-#         splunk_indextime_fields["sample"].metadata.get("timestamp_type")
-#         == "plugin"
-#         ):
-#         time_to_ingest = int(time.time())
-#         splunk_indextime_fields["sample"].key_fields["_time"] = [
-#             str(time_to_ingest)
-#         ]
-#         ingest_meta_data["time"] = time_to_ingest
+# if (
+#     splunk_indextime_fields["sample"].metadata.get("timestamp_type")
+#     == "plugin"
+#     ):
+#     time_to_ingest = int(time.time())
+#     splunk_indextime_fields["sample"].key_fields["_time"] = [
+#         str(time_to_ingest)
+#     ]
+#     ingest_meta_data["time"] = time_to_ingest
 
 #     event_ingestor = get_event_ingestor(
 #         splunk_indextime_fields["sample"].metadata["input_type"],
@@ -486,11 +486,11 @@ import time
 @pytest.fixture(scope="session")
 def splunk_ingest_data(splunk_hec_uri):
     sample_generator = SampleGenerator(
-        r"C:\Automation\Event generation\test_package"
+        r"G:\My Drive\TA-Factory\automation\testing\package"
     )
-    events = list(sample_generator.get_samples())
+    # events = list(sample_generator.get_samples())
     ingestor_dict = dict()
-    for event in events:
+    for event in sample_generator.get_samples():
         input_type = event.metadata["input_type"]
         if input_type in ingestor_dict:
             ingestor_dict[input_type].append(event)
@@ -501,9 +501,10 @@ def splunk_ingest_data(splunk_hec_uri):
         ingest_meta_data = {
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
-            "host": event.metadata["host"],  # for sc4s, TBD
+            # "host": event.metadata["host"],  # for sc4s, TBD
             "port": 514,  # for sc4s, TBD
         }
+
         event_ingestor = get_event_ingestor(input_type, ingest_meta_data)
         event_ingestor.ingest(events)
 

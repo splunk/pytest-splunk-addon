@@ -1,3 +1,4 @@
+import time
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 from . import EventgenParser
@@ -15,7 +16,7 @@ class SampleGenerator(object):
 
     def get_samples(self):
         """
-        Generate SampleEvent object 
+        Generate SampleEvent object
         """
         if not self.sample_stanzas:
             eventgen_parser = EventgenParser(self.addon_path)
@@ -24,8 +25,15 @@ class SampleGenerator(object):
                 t.map(SampleStanza.get_raw_events, self.sample_stanzas)
             # with ProcessPoolExecutor(self.process_count) as p:
             _ = list(map(SampleStanza.tokenize, self.sample_stanzas))
+            map(add_time, self.sample_stanzas)
         for each_sample in self.sample_stanzas:
             yield from each_sample.get_tokenized_events()
+
+def add_time(sample_stanza):
+    for event in sample_stanza.get_tokenized_events():
+        if (event.metadata.get("timestamp_type") == "plugin"):
+            time_to_ingest = int(time.time())
+            event.key_fields["_time"] = [str(time_to_ingest)]
 
 def main():
     sample_generator = SampleGenerator(r'G:\My Drive\TA-Factory\automation\testing\package')

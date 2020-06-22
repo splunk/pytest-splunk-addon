@@ -2,7 +2,7 @@ import socket
 from time import sleep
 import os
 #import concurrent.futures
-from base_event_ingestor import EventIngestor
+from .base_event_ingestor import EventIngestor
 
 #THREAD_POOL = 3
 class SC4SEventIngestor(EventIngestor):
