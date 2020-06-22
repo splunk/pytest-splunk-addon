@@ -28,7 +28,6 @@ class HECEventIngestor(EventIngestor):
         """
         self.hec_uri = required_configs.get("splunk_hec_uri")
         self.session_headers = required_configs.get("session_headers")
-        # self.time = required_configs.get("time", int(time.time()))
 
     def ingest(self, events):
         """
@@ -72,7 +71,7 @@ class HECEventIngestor(EventIngestor):
             event_dict = {
                 "sourcetype": event.metadata.get("sourcetype", "pytest_splunk_addon"),
                 "source": event.metadata.get("source", "pytest_splunk_addon:hec:event"),
-                "host": event.metadata.get("host", "default"),
+                "host": host,
                 "event": event.event,
             }
 
