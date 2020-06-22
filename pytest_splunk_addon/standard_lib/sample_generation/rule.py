@@ -123,7 +123,7 @@ class IntRule(Rule):
                 yield randint(int(lower_limit), int(upper_limit))
         else:
             for each_int in range(int(lower_limit), int(upper_limit)):
-                yield each_int
+                yield str(each_int)
 
 
 class FloatRule(Rule):
