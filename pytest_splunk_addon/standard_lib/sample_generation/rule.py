@@ -319,7 +319,7 @@ class TimeRule(Rule):
             )
 
         elif r"%e" in self.replacement:
-            yield strftime(self.replacement.replace(r"%e", r"%d"))
+            yield random_time.strftime(self.replacement.replace(r'%e', r'%d'))
         else:
             yield random_time.strftime(self.replacement)
 
