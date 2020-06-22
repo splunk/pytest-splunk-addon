@@ -39,7 +39,8 @@ class SampleEvent(object):
     def get_src_ipv4(self):
         global src_ipv4
         src_ipv4 += 1
-        return [int(src_ipv4 / 256) % 256, src_ipv4 % 256]
+        addr = [int(src_ipv4 / 256) % 256, src_ipv4 % 256]
+        return "".join(["10.1.", str(addr[0]), str(addr[1])])
 
     def get_host_ipv6(self):
         global host_ipv6
