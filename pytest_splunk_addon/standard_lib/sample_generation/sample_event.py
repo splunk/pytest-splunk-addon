@@ -1,5 +1,6 @@
 import re
 import logging
+from ..index_tests import key_fields
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -73,11 +74,12 @@ class SampleEvent(object):
             )
 
     def register_field_value(self, field, token_values):
-        if isinstance(token_values, list):
-            for token_value in token_values:
-                self.key_fields.setdefault(field, []).append(str(token_value))
-        else:
-            self.key_fields.setdefault(field, []).append(str(token_values))
+        if field in key_fields.KEY_FIELDS:
+            if isinstance(token_values, list):
+                for token_value in token_values:
+                    self.key_fields.setdefault(field, []).append(str(token_value))
+            else:
+                self.key_fields.setdefault(field, []).append(str(token_values))
 
     def get_key_fields(self):
         return self.key_fields
