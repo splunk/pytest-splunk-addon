@@ -111,18 +111,14 @@ class Rule:
             sample.replacement_map[key].append(csv_row)
         else:
             sample.__setattr__("replacement_map", {key: [csv_row]})
-
         return index_list, csv_row
 
     def get_rule_replacement_values(self, sample, value_list, rule):
-
-        host_ipv4 = sample.get_host_ipv4()
-        host_ipv6 = sample.get_host_ipv6()
         index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", rule, self.src_header, value_list)
-
-        csv_row.append(host_ipv4)
-        csv_row.append(host_ipv6)
-        csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+        ipv4 = sample.get_ipv4(rule)
+        ipv6 = sample.get_ipv6(rule)
+        fqdn = "{}.{}".format(csv_row[0], csv_row[1])
+        csv_row.extend([ipv4, ipv6, fqdn])
         return index_list, csv_row
 
 
@@ -472,22 +468,7 @@ class DestRule(Rule):
         ).group(1)
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            ipv4_addr = (
-                "10.100." + str(randint(0, 255)) + "." + str(randint(1, 255))
-            )
-            ipv6_addr = "{}:{}".format(
-                "fdee:1fe4:2b8c:3262", self.fake.ipv6()[20:]
-            )
-            index_list, csv_row = self.get_lookup_value(
-                sample,
-                "lookups\\host_domain.csv",
-                "dest",
-                self.src_header,
-                value_list,
-            )
-            csv_row.append(ipv4_addr)
-            csv_row.append(ipv6_addr)
-            csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+            index_list, csv_row = self.get_rule_replacement_values(sample, value_list, rule="dest")
             yield csv_row[choice(index_list)]
 
 
@@ -504,13 +485,7 @@ class DvcRule(Rule):
         )
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            ipv4_addr =  "172.16." + str(randint(1, 50)) + ".0"
-            ipv6_addr = "{}:{}".format("fdee:1fe4:2b8c:3263",self.fake.ipv6()[20:])
-            index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'dvc', self.src_header, value_list)
-
-            csv_row.append(ipv4_addr)
-            csv_row.append(ipv6_addr)
-            csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+            index_list, csv_row = self.get_rule_replacement_values(sample, value_list, rule="dvc")
             yield csv_row[choice(index_list)]
 
 
@@ -521,12 +496,7 @@ class SrcRule(Rule):
         )
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            src_ipv4 = sample.get_src_ipv4()
-            src_ipv6 = sample.get_src_ipv6()
-            index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", 'src', self.src_header, value_list)
-            csv_row.append(src_ipv4)
-            csv_row.append(src_ipv6)
-            csv_row.append("{}.{}".format(csv_row[0], csv_row[1]))
+            index_list, csv_row = self.get_rule_replacement_values(sample, value_list, rule="src")
             yield csv_row[choice(index_list)]
 
 
@@ -563,6 +533,7 @@ class HostRule(Rule):
                 host_value = sample.get_host()
             csv_row[0] = host_value
             yield csv_row[choice(index_list)]
+
 
 class HexRule(Rule):
     def replace(self, sample, token_count):

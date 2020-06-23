@@ -4,10 +4,29 @@ from ..index_tests import key_fields
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-host_ipv4 = 50
-src_ipv4 = 0
-host_ipv6 = 0
-src_ipv6 = 0
+host_ipv4, dvc_ipv4 = 50, 0
+src_ipv4, dest_ipv4 = 0, 0
+host_ipv6, dvc_ipv6 = 0, 0
+src_ipv6, dest_ipv6 = 0, 0
+
+ip_rules = {
+        "src":{
+            "ipv4": "10.1.",
+            "ipv6": "fdee:1fe4:2b8c:3261",
+        },
+        "dest":{
+            "ipv4": "10.100.",
+            "ipv6": "fdee:1fe4:2b8c:3262",
+        },
+        "dvc":{
+            "ipv4": "172.16.",
+            "ipv6": "fdee:1fe4:2b8c:3263",
+        },
+        "host":{
+            "ipv4": "172.16.",
+            "ipv6": "fdee:1fe4:2b8c:3264",
+        },
+    }
 
 
 class SampleEvent(object):
@@ -29,34 +48,49 @@ class SampleEvent(object):
         self.host_count += 1
         return self.sample_name + "_" + str(self.host_count)
 
-    def get_host_ipv4(self):
-        global host_ipv4
-        host_ipv4 += 1
-        return "".join(["172.16.", str(host_ipv4 % 101), ".0"])
+    def get_ipv4(self, rule):
+        if rule == "src":
+            global src_ipv4
+            src_ipv4 += 1
+            addr = [int(src_ipv4 / 256) % 256, src_ipv4 % 256]
+            return "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])
+        if rule == "host":
+            global host_ipv4
+            host_ipv4 += 1
+            return "".join([ip_rules.get(rule)["ipv4"], str(host_ipv4 % 101), ".0"])
+        if rule == "dvc":
+            global dvc_ipv4
+            dvc_ipv4 += 1
+            return "".join([ip_rules.get(rule)["ipv4"], str(dvc_ipv4 % 51), ".0"])
+        if rule == "dest":
+            global dest_ipv4
+            dest_ipv4 += 1
+            addr = [int(dest_ipv4 / 256) % 256, dest_ipv4 % 256]
+            return "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])
 
-    def get_src_ipv4(self):
-        global src_ipv4
-        src_ipv4 += 1
-        addr = [int(src_ipv4 / 256) % 256, src_ipv4 % 256]
-        return "".join(["10.1.", str(addr[0]), ".", str(addr[1])])
+    def get_ipv6(self, rule):
+        
+        if rule == "src":
+            global src_ipv6
+            ipv6 = src_ipv6 % (int("ffffffffffffffff", 16))
+            src_ipv6 += 1
+        if rule == "host":
+            global host_ipv6
+            ipv6 = host_ipv6 % (int("ffffffffffffffff", 16))
+            host_ipv6 += 1
+        if rule == "dvc":
+            global dvc_ipv6
+            ipv6 = dvc_ipv6 % (int("ffffffffffffffff", 16))
+            dvc_ipv6 += 1
+        if rule == "dest":
+            global dest_ipv6
+            ipv6 = dest_ipv6 % (int("ffffffffffffffff", 16))
+            dest_ipv6 += 1
 
-    def get_host_ipv6(self):
-        global host_ipv6
-        host_ipv6 = host_ipv6 % (int("ffffffffffffffff", 16))
-        host_ipv6 += 1
-        hex_count = hex(host_ipv6)
+        hex_count = hex(ipv6)
         non_zero_cnt = len(hex_count[2:])
         addr = "{}{}".format("0"*(16-non_zero_cnt), hex_count[2:])
-        return "{}:{}".format("fdee:1fe4:2b8c:3264",':'.join(addr[i:i+4] for i in range(0, len(addr), 4)))
-
-    def get_src_ipv6(self):
-        global src_ipv6
-        src_ipv6 = src_ipv6 % (int('ffffffffffffffff', 16))
-        src_ipv6 += 1
-        hex_count = hex(src_ipv6)
-        non_zero_cnt = len(hex_count[2:])
-        addr = "{}{}".format("0"*(16-non_zero_cnt), hex_count[2:])
-        return "{}:{}".format("fdee:1fe4:2b8c:3261",':'.join(addr[i:i+4] for i in range(0, len(addr), 4)))
+        return "{}:{}".format(ip_rules.get(rule)["ipv6"],':'.join(addr[i:i+4] for i in range(0, len(addr), 4)))
 
     def get_token_count(self, token):
         return len(re.findall(token, self.event))
