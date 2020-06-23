@@ -61,7 +61,7 @@ class Rule:
             for each_rule in rule_book:
                 if replacement.lower().startswith(each_rule):
                     return rule_book[each_rule](token, sample_path=sample_path)
-        elif replacement_type == "file":
+        elif replacement_type == "file" or replacement_type == "mvfile":
             return FileRule(token, sample_path=sample_path)
 
         print("No Rule Found.!")
