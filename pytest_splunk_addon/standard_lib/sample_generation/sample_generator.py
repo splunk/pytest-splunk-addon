@@ -3,6 +3,7 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 from . import EventgenParser
 from . import SampleStanza
+
 class SampleGenerator(object):
     """
     Main Class
@@ -18,16 +19,17 @@ class SampleGenerator(object):
         """
         Generate SampleEvent object
         """
-        if not self.sample_stanzas:
+        if not SampleGenerator.sample_stanzas:
             eventgen_parser = EventgenParser(self.addon_path)
-            self.sample_stanzas = list(eventgen_parser.get_sample_stanzas())
-            with ThreadPoolExecutor(min(20, len(self.sample_stanzas))) as t:
-                t.map(SampleStanza.get_raw_events, self.sample_stanzas)
+            SampleGenerator.sample_stanzas = list(eventgen_parser.get_sample_stanzas())
+            with ThreadPoolExecutor(min(20, len(SampleGenerator.sample_stanzas))) as t:
+                t.map(SampleStanza.get_raw_events, SampleGenerator.sample_stanzas)
             # with ProcessPoolExecutor(self.process_count) as p:
-            _ = list(map(SampleStanza.tokenize, self.sample_stanzas))
-            map(add_time, self.sample_stanzas)
-        for each_sample in self.sample_stanzas:
+            _ = list(map(SampleStanza.tokenize, SampleGenerator.sample_stanzas))
+            map(add_time, SampleGenerator.sample_stanzas)
+        for each_sample in SampleGenerator.sample_stanzas:
             yield from each_sample.get_tokenized_events()
+
 
 def add_time(sample_stanza):
     for event in sample_stanza.get_tokenized_events():

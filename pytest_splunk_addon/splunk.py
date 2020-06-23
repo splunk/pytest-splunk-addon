@@ -22,7 +22,7 @@ from .standard_lib.event_ingestors import (
     HECMetricEventIngestor,
     SC4SEventIngestor,
 )
-from .standard_lib.sample_generation.sample_generator import SampleGenerator
+from .standard_lib.sample_generation import SampleGenerator
 import configparser
 
 
