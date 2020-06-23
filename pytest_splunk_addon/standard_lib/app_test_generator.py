@@ -73,9 +73,9 @@ class AppTestGenerator(object):
         elif fixture.startswith("splunk_indextime_fields"):
             # TODO: What should be the id of the test case?
             # Sourcetype + Host + Key field + _count
-            sample_generator = SampleGenerator(
-                r"G:\My Drive\TA-Factory\automation\testing\package"
-            )
+            addon_path = self.pytest_config.getoption("splunk_app")
+            sample_generator = SampleGenerator(addon_path)
+
             a = [each for each in sample_generator.get_samples()]
             t = list(self.indextime_test_generator.generate_tests(a))
             # d = self.dedup_tests(t, fixture,)

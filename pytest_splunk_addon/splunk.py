@@ -484,10 +484,10 @@ import time
 
 
 @pytest.fixture(scope="session")
-def splunk_ingest_data(splunk_hec_uri):
-    sample_generator = SampleGenerator(
-        r"G:\My Drive\TA-Factory\automation\testing\package"
-    )
+def splunk_ingest_data(request, splunk_hec_uri):
+    addon_path = request.config.getoption("splunk_app")
+    sample_generator = SampleGenerator(addon_path)
+
     # events = list(sample_generator.get_samples())
     ingestor_dict = dict()
     for event in sample_generator.get_samples():
