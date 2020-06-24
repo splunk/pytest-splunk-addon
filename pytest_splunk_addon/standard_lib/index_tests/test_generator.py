@@ -5,25 +5,25 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class IndexTimeTestGenerator(object):
-    def generate_tests(self, sample_events):
-        for sample in sample_events:
-            sourcetype = sample.metadata.get(
+    def generate_tests(self, tokenized_events):
+        for tokenized_event in tokenized_events:
+            sourcetype = tokenized_event.metadata.get(
                 "sourcetype_after_transforms",
-                sample.metadata.get("sourcetype", "*"),
+                tokenized_event.metadata.get("sourcetype", "*"),
             )
-            source = sample.metadata.get(
-                "source_after_transforms", sample.metadata.get("source", "*")
+            source = tokenized_event.metadata.get(
+                "source_after_transforms", tokenized_event.metadata.get("source", "*")
             )
 
-            identifier_key = sample.metadata.get("identifier")
+            identifier_key = tokenized_event.metadata.get("identifier")
             if identifier_key:
-                identifier_val = sample.key_fields.get(identifier_key)
+                identifier_val = tokenized_event.key_fields.get(identifier_key)
                 for identifier in identifier_val:
                     t = {
                         "identifier": identifier_key+"="+identifier,
                         "sourcetype": sourcetype,
                         "source": source,
-                        "sample": sample,
+                        "tokenized_event": tokenized_event,
                     }
                     yield pytest.param(
                         t,
@@ -32,8 +32,8 @@ class IndexTimeTestGenerator(object):
                         ),
                     )
             else:
-                hosts = sample.metadata.get(
-                    "host", sample.key_fields.get("host")
+                hosts = tokenized_event.metadata.get(
+                    "host", tokenized_event.key_fields.get("host")
                 )
                 if isinstance(hosts, str):
                     hosts = [hosts]
@@ -43,7 +43,7 @@ class IndexTimeTestGenerator(object):
                         "host": host,
                         "sourcetype": sourcetype,
                         "source": source,
-                        "sample": sample,
+                        "tokenized_event": tokenized_event,
                     }
                     yield pytest.param(
                         t, id="{}_{}_{}".format(sourcetype, source, host),
@@ -55,9 +55,9 @@ class IndexTimeTestGenerator(object):
                 #                 sourcetype,
                 #                 source,
                 #                 hosts,
-                #                 ",".join(sample.key_fields),
+                #                 ",".join(tokenized_event.key_fields),
                 #             ),
-                #             "sample": sample,
+                #             "tokenized_event": tokenized_event,
                 #         },
                 #         id="{}_{}_{}".format(sourcetype, source, hosts),
                 #     )
