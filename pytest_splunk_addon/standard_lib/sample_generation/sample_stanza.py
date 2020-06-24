@@ -80,7 +80,6 @@ class SampleStanza(object):
         If the input type is in below categories, a single event will be generated for the entire file.
             [
                 "file_monitor",
-                "syslog",
                 "scripted_input",
                 "syslog_tcp",
                 "syslog_udp",
@@ -97,7 +96,6 @@ class SampleStanza(object):
 
             if self.input_type in [
                 "file_monitor",
-                "syslog",
                 "scripted_input",
                 "syslog_tcp",
                 "syslog_udp",

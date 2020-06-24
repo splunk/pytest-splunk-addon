@@ -575,7 +575,6 @@ def get_event_ingestor(input_type, ingest_meta_data):
         "file_monitor": HECRawEventIngestor,
         "scripted_input": HECRawEventIngestor,
         "hec_metric": HECMetricEventIngestor,
-        "syslog": None,
         "syslog_tcp": None,
         "syslog_udp": None,
     }

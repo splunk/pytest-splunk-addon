@@ -5,7 +5,7 @@ import re
 import concurrent.futures
 from .base_event_ingestor import EventIngestor
 
-THREAD_POOL = 3
+THREAD_POOL = 20
 class SC4SEventIngestor(EventIngestor):
     """
     Class to Ingest Events via sc4s
@@ -18,7 +18,7 @@ class SC4SEventIngestor(EventIngestor):
         Args:
 
             required_configs(dict): {
-                splunk_host(str): Host address where events are to be ingested
+                splunk_host(str): Address of the Splunk Server. Do not provide http scheme in the host.
                 sc4s_port(int): Port number of the above host address
             }
         """
@@ -29,7 +29,7 @@ class SC4SEventIngestor(EventIngestor):
 
     def ingest(self, events):
         """
-        Ingests events in the splunk via sc4s (Single/Multiple Events)
+        Ingests events in the splunk via sc4s (Single/Batch of Events)
 
         Args:
             events(List of events): Events with "\n" or LineBreaker as separator

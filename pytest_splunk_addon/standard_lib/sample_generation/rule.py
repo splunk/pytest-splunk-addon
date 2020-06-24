@@ -524,7 +524,6 @@ class HostRule(Rule):
                 host_value = sample.metadata.get("host")
             elif sample.metadata.get("input_type") in [
                 "file_monitor",
-                "syslog",
                 "scripted_input",
                 "syslog_tcp",
                 "syslog_udp",
