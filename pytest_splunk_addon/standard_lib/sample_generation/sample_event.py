@@ -153,13 +153,13 @@ class SampleEvent(object):
                 field_1       field2        field3
                 ##value1##    ##value2##   ##value3##
             metadata: dictionary of metadata
-            params_format::
+            metadata_format::
                 {
                     "host": "sample_host",
                     "source": "sample_source"
                 }
         Returns:
-            syslog data and params that contains syslog_headers
+            syslog event and the dictionary of updated metadata
         """
         try:
             if isinstance(event, str) and event.startswith("***SPLUNK***"):
