@@ -347,31 +347,31 @@ class TimeRule(Rule):
         latest_in_epoch = mktime(latest.timetuple())
 
         if earliest_in_epoch > latest_in_epoch:
-            print("Latest time is earlier than earliest time.")
+            LOGGER.info("Latest time is earlier than earliest time.")
             yield self.token
-
-        random_time = datetime.fromtimestamp(
-            randint(earliest_in_epoch, latest_in_epoch)
-        )
-        if timezone != "'local'" and timezone is not None:
-            sign, hrs, mins = re.match(
-                r"([+-])(\d\d)(\d\d)", timezone
-            ).groups()
-            random_time = time_parser.get_timezone_time(
-                random_time, sign, hrs, mins
+        for _ in range(token_count):
+            random_time = datetime.fromtimestamp(
+                randint(earliest_in_epoch, latest_in_epoch)
             )
-
-        if r"%s" in self.replacement:
-            yield str(
-                self.replacement.replace(
-                    r"%s", str(int(random_time.strftime("%Y%m%d%H%M%S")))
+            if timezone != "'local'" and timezone is not None:
+                sign, hrs, mins = re.match(
+                    r"([+-])(\d\d)(\d\d)", timezone
+                ).groups()
+                random_time = time_parser.get_timezone_time(
+                    random_time, sign, hrs, mins
                 )
-            )
 
-        elif r"%e" in self.replacement:
-            yield random_time.strftime(self.replacement.replace(r'%e', r'%d'))
-        else:
-            yield random_time.strftime(self.replacement)
+            if r"%s" in self.replacement:
+                yield str(
+                    self.replacement.replace(
+                        r"%s", str(int(random_time.strftime("%Y%m%d%H%M%S")))
+                    )
+                )
+
+            elif r"%e" in self.replacement:
+                yield random_time.strftime(self.replacement.replace(r'%e', r'%d'))
+            else:
+                yield random_time.strftime(self.replacement)
 
 
 class Ipv4Rule(Rule):
