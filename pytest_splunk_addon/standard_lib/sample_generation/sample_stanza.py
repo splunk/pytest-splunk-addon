@@ -22,7 +22,7 @@ class SampleStanza(object):
         self.sample_rules = list(self._parse_rules(eventgen_params, self.sample_path))
         # self.input_type = eventgen_params.get('input_type')
         self.metadata = self._parse_meta(eventgen_params)
-        self.input_type = self.metadata.get("input_type", None)
+        self.input_type = self.metadata.get("input_type", "default")
         self.host_count = 0
 
     def get_raw_events(self):
@@ -84,6 +84,7 @@ class SampleStanza(object):
                 "syslog_tcp",
                 "syslog_udp",
                 "other",
+                "default"
             ]
         """
         with open(self.sample_path, "r") as sample_file:
@@ -100,6 +101,7 @@ class SampleStanza(object):
                 "syslog_tcp",
                 "syslog_udp",
                 "other",
+                "default"
             ]:
                 yield SampleEvent(
                     sample_file.read(), self.metadata, self.sample_name

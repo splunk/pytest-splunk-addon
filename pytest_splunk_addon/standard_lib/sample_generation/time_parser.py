@@ -1,7 +1,8 @@
 from datetime import timedelta, datetime
 import math
+import logging
 
-
+LOGGER = logging.getLogger("pytest-splunk-addon")
 class time_parse():
     
     def __init__(self):
@@ -80,7 +81,7 @@ class time_parse():
         '''
 
         if (hrs <= "00" or hrs >= "23") or (mins <= "00" or mins >= "59"):
-            print("hours should be in range 0-23 and mins should be in range 0-59")
+            LOGGER.info("Hours should be in range 0-23 and minutes should be in range 0-59")
             return random_time
         if sign == '-':
             random_time = random_time - timedelta(hours=int(hrs), minutes=int(mins))
