@@ -158,6 +158,13 @@ def pytest_addoption(parser):
         ),
     )
     group.addoption(
+        '--sc4s-host',
+        action='store',
+        dest='sc4s_host',
+        default='127.0.0.1',
+        help='Address of the sc4s Server'
+    )
+    group.addoption(
         "--search-index",
         action="store",
         dest="search_index",
@@ -394,6 +401,14 @@ def sc4s_docker(docker_services):
 
     return docker_services.docker_ip, ports
 
+@pytest.fixture(scope="session")
+def sc4s_external(request):
+    ports = {514: 514}
+    for x in range(5000, 5050):
+        ports.update({x: x})
+
+    return request.config.getoption('sc4s_host'), ports
+
 
 @pytest.fixture(scope="session")
 def splunk_rest_uri(splunk):
@@ -446,41 +461,6 @@ def splunk_web_uri(splunk):
     uri = f'http://{splunk["host"]}:{splunk["port_web"]}/'
     LOGGER.info("Fetched splunk_web_uri=%s", uri)
     return uri
-
-
-import time
-
-# @pytest.fixture(scope="function")
-# def splunk_ingest_data(splunk_hec_uri, splunk_indextime_fields):
-#     time.sleep(2)
-
-# if splunk_indextime_fields["sample"].metadata.get("host_type") in ("plugin", None):
-#     host = splunk_indextime_fields["sample"].metadata["host"]
-# else:
-#     host = splunk_indextime_fields["sample"].key_fields["host"]
-
-#     ingest_meta_data = {
-#         "session_headers": splunk_hec_uri[0].headers,
-#         "splunk_hec_uri": splunk_hec_uri[1],
-#         "host": host,  # for sc4s, TBD
-#         "port": 514,  # for sc4s, TBD
-#     }
-# if (
-#     splunk_indextime_fields["sample"].metadata.get("timestamp_type")
-#     == "plugin"
-#     ):
-#     time_to_ingest = int(time.time())
-#     splunk_indextime_fields["sample"].key_fields["_time"] = [
-#         str(time_to_ingest)
-#     ]
-#     ingest_meta_data["time"] = time_to_ingest
-
-#     event_ingestor = get_event_ingestor(
-#         splunk_indextime_fields["sample"].metadata["input_type"],
-#         ingest_meta_data,
-#     )
-#     event_ingestor.ingest(splunk_indextime_fields["sample"])
-#     return splunk_indextime_fields
 
 
 @pytest.fixture(scope="session")
