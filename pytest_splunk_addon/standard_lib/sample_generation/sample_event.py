@@ -41,11 +41,21 @@ class SampleEvent(object):
         self.metadata = metadata
         self.sample_name = sample_name
         self.host_count = 0
+        self.fake = Faker()
 
     def update(self, new_event):
+        """
+        This method update the event string
+
+        Args:
+            new_event(str): Event string 
+        """
         self.event = new_event
 
     def get_host(self):
+        """
+        Return the unique host value
+        """
         self.host_count += 1
         return self.sample_name + "_" + str(self.host_count)
 
@@ -76,7 +86,7 @@ class SampleEvent(object):
             addr = [int(dest_ipv4 / 256) % 256, dest_ipv4 % 256]
             return "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])
         else:
-            return Faker().ipv4()
+            return self.fake.ipv4()
 
     def get_ipv6(self, rule):
         """
@@ -103,7 +113,7 @@ class SampleEvent(object):
             ipv6 = dest_ipv6 % (int("ffffffffffffffff", 16))
             dest_ipv6 += 1
         else:
-            return Faker().ipv6()
+            return self.fake.ipv6()
 
         hex_count = hex(ipv6)
         non_zero_cnt = len(hex_count[2:])
@@ -111,9 +121,22 @@ class SampleEvent(object):
         return "{}:{}".format(ip_rules.get(rule)["ipv6"],':'.join(addr[i:i+4] for i in range(0, len(addr), 4)))
 
     def get_token_count(self, token):
+        """
+        This method find the token count in event
+
+        Args:
+            token(str): Token name 
+        """
         return len(re.findall(token, self.event))
 
     def replace_token(self, token, token_values):
+        """
+        This method replace the token value in event string
+
+        Args:
+            token(str): Token name 
+            token_values(list/str): Value to be replace in token 
+        """
         # TODO: How to handle dependent Values with list of token_values
         if isinstance(token_values, list):
             for token_value in token_values:
@@ -126,6 +149,13 @@ class SampleEvent(object):
             )
 
     def register_field_value(self, field, token_values):
+        """
+        This method register the key value in event instance
+
+        Args:
+            field(str): Token field name 
+            token_values(list/str): Value to be replace in token 
+        """
         if field in key_fields.KEY_FIELDS:
             if isinstance(token_values, list):
                 for token_value in token_values:
@@ -134,10 +164,19 @@ class SampleEvent(object):
                 self.key_fields.setdefault(field, []).append(str(token_values))
 
     def get_key_fields(self):
+        """
+        Return the key field value from event
+        """
         return self.key_fields
 
     @classmethod
     def copy(cls, event):
+        """
+        This method is copy the sample event
+
+        Args:
+            event(SampleEvent): event class instance
+        """
         new_event = cls("", {}, "")
         new_event.__dict__ = event.__dict__.copy()
         new_event.key_fields = event.key_fields.copy()
@@ -158,6 +197,9 @@ class SampleEvent(object):
                     "host": "sample_host",
                     "source": "sample_source"
                 }
+        Args:
+            event(str): event string
+            metadata(dict): dictionary of metadata
         Returns:
             syslog event and the dictionary of updated metadata
         """

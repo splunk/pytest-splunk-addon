@@ -26,10 +26,16 @@ class SampleStanza(object):
         self.host_count = 0
 
     def get_raw_events(self):
+        """
+        This method initialize the tokenize event with raw sample
+        """
         # self.sample_raw_data = list(self._get_raw_sample())
         self.tokenized_events = self._get_raw_sample()
 
     def get_tokenized_events(self):
+        """
+        Yield the tokenize event
+        """
         for event in self.tokenized_events:
             event.event, event.metadata = SampleEvent.update_metadata(
                 self, event.event, event.metadata
@@ -51,10 +57,23 @@ class SampleStanza(object):
         self.tokenized_events = event
 
     def _parse_rules(self, eventgen_params, sample_path):
+        """
+        Yield the rule instance based token replacement type.
+
+        Args:
+            eventgen_params(dict): Eventgen stanzas dictionary
+            sample_path(str): Path to the sample file 
+        """
         for each_token, token_value in eventgen_params['tokens'].items():
             yield Rule.parse_rule(token_value, eventgen_params, sample_path)
 
     def _parse_meta(self, eventgen_params):
+        """
+        Return the metadata from eventgen stanzas.
+
+        Args:
+            eventgen_params(dict): Eventgen stanzas dictionary
+        """
         metadata = {
             key: eventgen_params[key]
             for key in eventgen_params
@@ -66,6 +85,9 @@ class SampleStanza(object):
         return metadata
 
     def get_eventmetadata(self):
+        """
+        Return the unique host metadata for event.
+        """
         self.host_count += 1
         event_host = self.metadata.get("host") + "_" + str(self.host_count)
         event_metadata = copy.deepcopy(self.metadata)

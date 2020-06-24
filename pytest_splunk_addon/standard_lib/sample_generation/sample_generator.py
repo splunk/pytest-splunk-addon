@@ -32,6 +32,12 @@ class SampleGenerator(object):
 
 
 def add_time(sample_stanza):
+    """
+    Update _time field in event
+
+    Args:
+        sample_stanza(SampleStanza): Sample stanza instance 
+    """
     for event in sample_stanza.get_tokenized_events():
         if (event.metadata.get("timestamp_type") == "plugin"):
             time_to_ingest = int(time.time())
