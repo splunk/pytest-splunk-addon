@@ -61,6 +61,8 @@ class SampleStanza(object):
             if key != "tokens"
         }
         metadata.update(host=self.sample_name)
+        if metadata.get("input_type") is None:
+            metadata.update(input_type="default")        
         return metadata
 
     def get_eventmetadata(self):
