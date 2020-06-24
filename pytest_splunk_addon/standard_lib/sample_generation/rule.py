@@ -172,7 +172,17 @@ class StaticRule(Rule):
 
 
 class FileRule(Rule):
+    """
+    FileRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields the values of token by reading files.
+        
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         if self.replacement.startswith("file" or "File"):
             sample_file_path = re.match(
                     r"[fF]ile\[(.*?)\]", self.replacement
@@ -183,15 +193,30 @@ class FileRule(Rule):
         sample_file_path = sample_file_path.replace("/", os.sep)
 
         relative_file_path = self.sample_path.split(f"{os.sep}samples")[0]
-        match = re.search(r"\\?\/?apps\\?\/?[a-zA-Z-_0-9]+\\?\/?", sample_file_path)[0]
-        file_path = sample_file_path.split(match)[1].split(":")[0]
-        
-        file_name = os.path.basename(file_path)
-        file_name_index = sample_file_path.split(match)[1].split(":")
-        index = (file_name_index[1] if len(file_name_index)>1 else None)
-        relative_file_path = os.path.join(relative_file_path, file_path)
+        try:
+            # get the relative_file_path and index value from filepath mentioned in the token if the filepath matches the pattern
+            # pattern like: <directory_path>/apps/<addon_name>/<file_path>  or
+            # pattern like: <directory_path>/apps/<addon_name>/<file_path>:<index>
+            _, splitter, file_path = re.search(r"(.*)(\\?\/?apps\\?\/?[a-zA-Z-_0-9.*]+\\?\/?)(.*)", sample_file_path).groups()
+            relative_file_path = os.path.join(relative_file_path, file_path.split(":")[0])
+            file_index = file_path.split(":")
+            index = (file_index[1] if len(file_index)>1 else None)
+            if not os.path.isfile(relative_file_path):
+                raise AttributeError
+        except AttributeError:
+            # get the relative_file_path and index value from filepath mentioned in the token if the filepath matches the pattern
+            # pattern like: <directory_path>/<file_path>  or
+            # pattern like: <directory_path>/<file_path>:<index>
+            file_path = sample_file_path
+            index = None
+            if file_path.count(":") > 0:
+                file_index = file_path.rsplit(":", 1)
+                index = (file_index[1] if len(file_index)>1 else None)
+                file_path = file_path.rsplit(":", 1)[0]
+            relative_file_path = file_path
 
         if self.replacement_type == 'random':
+            # yield random value for the token by reading sample file
             try:
                 if index:
                     try:
@@ -205,9 +230,22 @@ class FileRule(Rule):
                         lines = [each for each in txt.split("\n") if each]
                         for _ in range(token_count):
                             yield choice(lines)
-            except IOError:
-                print("File not found : {}".format(relative_file_path))
-        else:
+            except IOError as e:
+                LOGGER.warn("File not found : {}".format(relative_file_path))
+        elif self.replacement_type == 'all':
+            # yield all values present in sample file for the token by reading sample file
+            # it will not generate the value for indexed files
+            if index:
+                LOGGER.error(f"replacement_type 'all' is not supported for indexd file '{os.path.basename(file_path)}'")
+                yield self.token
+            else:
+                with open(relative_file_path) as f: 
+                    txt = f.read()
+                    for each_value in txt.split("\n"):
+                        yield each_value
+        elif self.replacement_type == 'file':
+            # yield random value for the token with indexed sample file by reading sample file
+            # yield all values present in sample file for the token by reading sample file
             try:
                 if index:
                     try:
@@ -221,9 +259,17 @@ class FileRule(Rule):
                         for each_value in txt.split("\n"):
                             yield each_value
             except IOError:
-                print("File not found : {}".format(relative_file_path))
+                LOGGER.warn("File not found : {}".format(relative_file_path))
 
     def indexed_sample_file(self, file_path, index, token_count):
+        """
+        Yields the column value of token by reading files.
+        
+        Args:
+            file_path: path of the file mentioned in token.
+            index: index value mentioned in file_path i.e. <file_path>:<index>
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         try:
             with open(file_path, 'r') as f:
                 output = []
@@ -234,11 +280,18 @@ class FileRule(Rule):
                     yield choice(output)
         except IndexError:
             LOGGER.error("Index for column '%s' in replacement file '%s' is out of bounds" % (index, file_path))
-            print("Index for column '%s' in replacement file '%s' is out of bounds" % (index, file_path))
         except IOError:
             raise IOError
 
     def lookupfile(self, file_path, index, token_count):
+        """
+        Yields the column value of token by reading files.
+        
+        Args:
+            file_path: path of the file mentioned in token.
+            index: index value mentioned in file_path i.e. <file_path>:<index>
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         try:
             with open(file_path, 'r') as f:
                 output = []
@@ -251,7 +304,6 @@ class FileRule(Rule):
                         yield choice(output)
                 except KeyError as e:
                     LOGGER.error("Column '%s' is not present replacement file '%s'" % (index, file_path))
-                    print("Column '%s' is not present replacement file '%s'" % (index, file_path))
         except IOError:
             raise IOError
 
