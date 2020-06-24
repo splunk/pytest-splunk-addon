@@ -1,6 +1,7 @@
 import re
 import logging
 from ..index_tests import key_fields
+from faker import Faker
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -49,43 +50,60 @@ class SampleEvent(object):
         return self.sample_name + "_" + str(self.host_count)
 
     def get_ipv4(self, rule):
+        """
+        Returns Ipv4 Address as per the rule.
+
+        Args:
+            rule(str): Type of rule either src, host, dest, dvc
+            If the value is not one of the key field it will return a randomly generated Ipv4 address.
+        """
         if rule == "src":
             global src_ipv4
             src_ipv4 += 1
             addr = [int(src_ipv4 / 256) % 256, src_ipv4 % 256]
             return "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])
-        if rule == "host":
+        elif rule == "host":
             global host_ipv4
             host_ipv4 += 1
             return "".join([ip_rules.get(rule)["ipv4"], str(host_ipv4 % 101), ".0"])
-        if rule == "dvc":
+        elif rule == "dvc":
             global dvc_ipv4
             dvc_ipv4 += 1
             return "".join([ip_rules.get(rule)["ipv4"], str(dvc_ipv4 % 51), ".0"])
-        if rule == "dest":
+        elif rule == "dest":
             global dest_ipv4
             dest_ipv4 += 1
             addr = [int(dest_ipv4 / 256) % 256, dest_ipv4 % 256]
             return "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])
+        else:
+            return Faker().ipv4()
 
     def get_ipv6(self, rule):
-        
+        """
+        Returns Ipv6 Address as per the rule.
+
+        Args:
+            rule(str): Type of rule either src, host, dest, dvc
+            If the value is not one of the key field it will return a randomly generated Ipv6 address.
+        """
         if rule == "src":
             global src_ipv6
             ipv6 = src_ipv6 % (int("ffffffffffffffff", 16))
             src_ipv6 += 1
-        if rule == "host":
+        elif rule == "host":
             global host_ipv6
             ipv6 = host_ipv6 % (int("ffffffffffffffff", 16))
             host_ipv6 += 1
-        if rule == "dvc":
+        elif rule == "dvc":
             global dvc_ipv6
             ipv6 = dvc_ipv6 % (int("ffffffffffffffff", 16))
             dvc_ipv6 += 1
-        if rule == "dest":
+        elif rule == "dest":
             global dest_ipv6
             ipv6 = dest_ipv6 % (int("ffffffffffffffff", 16))
             dest_ipv6 += 1
+        else:
+            return Faker().ipv6()
 
         hex_count = hex(ipv6)
         non_zero_cnt = len(hex_count[2:])
