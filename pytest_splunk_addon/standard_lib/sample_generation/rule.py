@@ -281,7 +281,7 @@ class FileRule(Rule):
 
         relative_file_path = self.sample_path.split(f"{os.sep}samples")[0]
         try:
-            # get the relative_file_path and index value from filepath mentioned in the token if the filepath matches the pattern 
+            # get the relative_file_path and index value from filepath mentioned in the token if the filepath matches the pattern
             # pattern like: <directory_path>/apps/<addon_name>/<file_path>  or
             # pattern like: <directory_path>/apps/<addon_name>/<file_path>:<index>
             _, splitter, file_path = re.search(r"(.*)(\\?\/?apps\\?\/?[a-zA-Z-_0-9.*]+\\?\/?)(.*)", sample_file_path).groups()
