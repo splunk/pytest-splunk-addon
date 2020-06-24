@@ -484,7 +484,7 @@ import time
 
 
 @pytest.fixture(scope="session")
-def splunk_ingest_data(request, splunk_hec_uri):
+def splunk_ingest_data(request, splunk_hec_uri, setup_sc4s):
     addon_path = request.config.getoption("splunk_app")
     sample_generator = SampleGenerator(addon_path)
 
@@ -501,8 +501,8 @@ def splunk_ingest_data(request, splunk_hec_uri):
         ingest_meta_data = {
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
-            # "host": event.metadata["host"],  # for sc4s, TBD
-            "port": 514,  # for sc4s, TBD
+            'splunk_host': setup_sc4s[0],  # for sc4s
+            'sc4s_port': setup_sc4s[1][514] # for sc4s
         }
 
         event_ingestor = get_event_ingestor(input_type, ingest_meta_data)
@@ -575,8 +575,8 @@ def get_event_ingestor(input_type, ingest_meta_data):
         "file_monitor": HECRawEventIngestor,
         "scripted_input": HECRawEventIngestor,
         "hec_metric": HECMetricEventIngestor,
-        "syslog_tcp": None,
-        "syslog_udp": None,
+        "syslog_tcp": SC4SEventIngestor,
+        "syslog_udp": None, #TBD
         "default":HECRawEventIngestor
     }
 
