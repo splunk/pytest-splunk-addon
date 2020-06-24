@@ -17,6 +17,9 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class Rule:
+    """
+    Base class for all the rules.
+    """
     user_header = ["name", "email", "domain_user", "distinquised_name"]
     src_header = ["host", "domain", "ipv4", "ipv6", "fqdn"]
 
@@ -31,6 +34,14 @@ class Rule:
 
     @classmethod
     def parse_rule(cls, token, eventgen_params, sample_path):
+        """
+        Returns appropriate Rule class object as per replacement type of token.
+
+        Args:
+            token(dict): represents a single token object.
+            eventgen_params(dict): Dict object of the common params for each stanza.
+            sample_path(str): Path to the samples directory.
+        """
         rule_book = {
             "integer": IntRule,
             "list": ListRule,
@@ -64,11 +75,19 @@ class Rule:
         elif replacement_type == "file" or replacement_type == "mvfile":
             return FileRule(token, sample_path=sample_path)
 
-        print("No Rule Found.!")
+        LOGGER.error("No Rule Found.!")
         # TODO: Test the behavior if no rule found
         raise Exception("No Rule Found.!")
 
     def apply(self, events):
+        """
+        Replaces the token with appropriate values as per rules mapped with the token for the event.
+        For replacement_type = all it will generate an event for each replacement value.
+        i.e. integer[1:50] => will generate 50 events
+
+        Args:
+            events(list): List of event(SampleEvent)
+        """
         new_events = []
         for each_event in events:
             token_count = each_event.get_token_count(self.token)
@@ -91,6 +110,21 @@ class Rule:
         return new_events
 
     def get_lookup_value(self, sample, filename, key, headers, value_list):
+        """
+        Common method to read csv and get a random row.
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            filename(str): Path to Lookup file.
+            key(str): fieldname i.e. host, src, user, dvc etc
+            headers(list): Headers of csv file in list format.
+            value_list(list): list of replacement values mentioned in configuration file.
+
+
+        Returns:
+            index_list(list): list of mapped columns(int) as per value_list
+            csv_row(list): list of replacement values for the rule.
+        """
         f = open(
             os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
         )
@@ -114,6 +148,18 @@ class Rule:
         return index_list, csv_row
 
     def get_rule_replacement_values(self, sample, value_list, rule):
+        """
+        Common method for replacement values of SrcRule, Destrule, DvcRule, HostRule.
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            value_list(list): list of replacement values mentioned in configuration file.
+            rule(str): fieldname i.e. host, src, user, dvc etc
+
+        Returns:
+            index_list(list): list of mapped columns(int) as per value_list
+            csv_row(list): list of replacement values for the rule.
+        """
         index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", rule, self.src_header, value_list)
         ipv4 = sample.get_ipv4(rule)
         ipv6 = sample.get_ipv6(rule)
@@ -123,7 +169,17 @@ class Rule:
 
 
 class IntRule(Rule):
+    """
+    IntRule 
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random int between the range mentioned in token.
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         lower_limit, upper_limit = re.match(
             r"[Ii]nteger\[(\d+):(\d+)\]", self.replacement
         ).groups()
@@ -136,7 +192,17 @@ class IntRule(Rule):
 
 
 class FloatRule(Rule):
+    """
+    FloatRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random float no. between the range mentioned in token.
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         lower_limit, upper_limit = re.match(
             r"[Ff]loat\[([\d\.]+):([\d\.]+)\]", self.replacement
         ).groups()
@@ -151,7 +217,17 @@ class FloatRule(Rule):
 
 
 class ListRule(Rule):
+    """
+    ListRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random value from the list mentioned in token.
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         value_list_str = re.match(
             r"[lL]ist(\[.*?\])", self.replacement
         ).group(1)
@@ -166,7 +242,17 @@ class ListRule(Rule):
 
 
 class StaticRule(Rule):
+    """
+    StaticRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields the static value mentioned in token.
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         for _ in range(token_count):
             yield self.replacement
 
@@ -280,7 +366,6 @@ class FileRule(Rule):
                     yield choice(output)
         except IndexError:
             LOGGER.error("Index for column '%s' in replacement file '%s' is out of bounds" % (index, file_path))
-            print("Index for column '%s' in replacement file '%s' is out of bounds" % (index, file_path))
         except IOError:
             raise IOError
 
@@ -305,7 +390,6 @@ class FileRule(Rule):
                         yield choice(output)
                 except KeyError as e:
                     LOGGER.error("Column '%s' is not present replacement file '%s'" % (index, file_path))
-                    print("Column '%s' is not present replacement file '%s'" % (index, file_path))
         except IOError:
             raise IOError
 
@@ -375,31 +459,82 @@ class TimeRule(Rule):
 
 
 class Ipv4Rule(Rule):
+    """
+    Ipv4Rule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random ipv4 address.
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         for _ in range(token_count):
             yield self.fake.ipv4()
 
 
 class Ipv6Rule(Rule):
+    """
+    Ipv6Rule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random ipv6 address
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         for _ in range(token_count):
             yield self.fake.ipv6()
 
 
 class MacRule(Rule):
+    """
+    MacRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random mac address
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         for _ in range(token_count):
             yield self.fake.mac_address()
 
 
 class GuidRule(Rule):
+    """
+    GuidRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random guid.
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         for _ in range(token_count):
             yield str(uuid.uuid4())
 
 
 class UserRule(Rule):
+    """
+    UserRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random user replacement value from the list of values mentioned in token.
+        Possible values: ["name","email","domain_user","distinquised_name"]
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         value_list_str = re.match(
             r"[uU]ser(\[.*?\])", self.replacement
         ).group(1)
@@ -430,7 +565,17 @@ class UserRule(Rule):
 
 
 class EmailRule(Rule):
+    """
+    EmailRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random email from the lookups\\user_email.csv.
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
 
         for i in range(token_count):
             if (
@@ -457,7 +602,18 @@ class EmailRule(Rule):
 
 
 class UrlRule(Rule):
+    """
+    UrlRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random url replacement value from the list of values mentioned in token.
+        Possible values: ["ip_host", "fqdn_host", "path", "query", "protocol"]
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         value_list_str = re.match(r"[uU]rl(\[.*?\])", self.replacement).group(
             1
         )
@@ -495,13 +651,14 @@ class UrlRule(Rule):
                 url = url + self.generate_url_query_params()
             yield str(url)
 
-    """
-    This method is generate the random query params for url
-    Returns:
-        Return the query param string
-    """
+    
 
     def generate_url_query_params(self):
+        """
+        This method is generate the random query params for url
+        Returns:
+            Return the query param string
+        """
         url_params = "?"
         for _ in range(randint(1, 4)):
             field = "".join(
@@ -516,7 +673,18 @@ class UrlRule(Rule):
 
 
 class DestRule(Rule):
+    """
+    DestRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random dest replacement value from the list of values mentioned in token.
+        Possible values: ["host", "domain", "ipv4", "ipv6", "fqdn"]
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         value_list_str = re.match(
             r"[dD]est(\[.*?\])", self.replacement
         ).group(1)
@@ -527,13 +695,34 @@ class DestRule(Rule):
 
 
 class SrcPortRule(Rule):
+    """
+    SrcPortRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random port value from the range 4000-5000
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         for _ in range(token_count):
             yield randint(4000, 5000)
 
 
 class DvcRule(Rule):
+    """
+    DvcRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random dvc replacement value from the list of values mentioned in token.
+        Possible values: ["host", "domain", "ipv4", "ipv6", "fqdn"]
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         value_list_str = re.match(r"[dD]vc(\[.*?\])", self.replacement).group(
             1
         )
@@ -544,7 +733,18 @@ class DvcRule(Rule):
 
 
 class SrcRule(Rule):
+    """
+    SrcRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random src replacement value from the list of values mentioned in token.
+        Possible values: ["host", "domain", "ipv4", "ipv6", "fqdn"]
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         value_list_str = re.match(r"[sS]rc(\[.*?\])", self.replacement).group(
             1
         )
@@ -555,14 +755,35 @@ class SrcRule(Rule):
 
 
 class DestPortRule(Rule):
+    """
+    DestPortRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random port value from [80, 443, 25, 22, 21]
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         DEST_PORT = [80, 443, 25, 22, 21]
         for _ in range(token_count):
             yield choice(DEST_PORT)
 
 
 class HostRule(Rule):
+    """
+    HostRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random host replacement value from the list of values mentioned in token.
+        Possible values: ["host", "domain", "ipv4", "ipv6", "fqdn"]
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         value_list_str = re.match(
             r"[hH]ost(\[.*?\])", self.replacement
         ).group(1)
@@ -589,7 +810,17 @@ class HostRule(Rule):
 
 
 class HexRule(Rule):
+    """
+    HexRule
+    """
     def replace(self, sample, token_count):
+        """
+        Yields a random hex value.
+
+        Args:
+            sample(object): Instance of SampleEvent class.
+            token_count(int): No. of token in sample event where rule is to be applicable.
+        """
         hex_range = re.match(r"[Hh]ex\((.*?)\)", self.replacement).group(1)
         hex_digits = [
             "0",

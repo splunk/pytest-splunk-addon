@@ -21,10 +21,14 @@ class EventgenParser:
 
     @property
     def eventgen(self):
+        """
+        Returns a dict representation object of eventgen.conf file.
+        """
         try:
             if not self._eventgen:
                 self._eventgen = self._app.get_config("eventgen.conf")
             return self._eventgen
+        # TODO: Update conf file from eventgen.conf to pytest-splunk-addon-data-generator.conf
         except OSError:
             LOGGER.warning("eventgen.conf not found.")
             raise Exception("Eventgen.conf not found")

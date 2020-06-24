@@ -5,9 +5,11 @@ from .base_event_ingestor import EventIngestor
 import requests
 import time
 import concurrent.futures
+import logging
 
 requests.urllib3.disable_warnings()
 
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class HECEventIngestor(EventIngestor):
     """
@@ -91,7 +93,7 @@ class HECEventIngestor(EventIngestor):
             with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
                 executor.map(self.__ingest, batch_event_list)
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     def __ingest(self, data):
         response = requests.post(
@@ -102,7 +104,7 @@ class HECEventIngestor(EventIngestor):
             verify=False,
         )
         if response.status_code not in (200, 201):
-            print(
+            LOGGER.debug(
                 "Status code: {} \nReason: {} \ntext:{}".format(
                     response.status_code, response.reason, response.text
                 )
