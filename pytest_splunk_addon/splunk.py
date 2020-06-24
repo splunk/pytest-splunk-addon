@@ -491,7 +491,7 @@ def splunk_ingest_data(request, splunk_hec_uri):
     # events = list(sample_generator.get_samples())
     ingestor_dict = dict()
     for event in sample_generator.get_samples():
-        input_type = event.metadata["input_type"]
+        input_type = event.metadata.get("input_type", "default")
         if input_type in ingestor_dict:
             ingestor_dict[input_type].append(event)
         else:
@@ -577,6 +577,7 @@ def get_event_ingestor(input_type, ingest_meta_data):
         "hec_metric": HECMetricEventIngestor,
         "syslog_tcp": None,
         "syslog_udp": None,
+        "default":HECRawEventIngestor
     }
 
     ingestor = ingest_methods.get(input_type)(ingest_meta_data)

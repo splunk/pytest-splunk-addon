@@ -293,7 +293,7 @@ class TimeRule(Rule):
         latest_in_epoch = mktime(latest.timetuple())
 
         if earliest_in_epoch > latest_in_epoch:
-            print("Latest time is earlier than earliest time.")
+            LOGGER.info("Latest time is earlier than earliest time.")
             yield self.token
         for _ in range(token_count):
             random_time = datetime.fromtimestamp(
