@@ -60,6 +60,7 @@ class Rule:
             "src": SrcRule,
             "dest": DestRule,
             "dvc": DvcRule,
+            "guid": GuidRule
         }
 
         replacement_type = token["replacementType"]

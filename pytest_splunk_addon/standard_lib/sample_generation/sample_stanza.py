@@ -45,16 +45,19 @@ class SampleStanza(object):
     def tokenize(self):
         """
         Tokenize the raw events(self.sample_raw_data) and stores them into self.tokenized_events.
+        For backward compatibility added required count support.
         """
-        required_event_count = self.metadata.get("count", 1)
+        required_event_count =self.metadata.get("count") if self.metadata.get("count") is not None else self.metadata.get("expected_event_count")
+        if required_event_count == '0' or required_event_count is None:
+            required_event_count = 100
         event = list(self.tokenized_events)
         for each_rule in self.sample_rules:
             event = each_rule.apply(event)
         while event and (int(required_event_count)) > len((event)):
             for each_rule in self.sample_rules:
-                event = each_rule.apply(event)
+                event = each_rule.apply(event)    
             event.extend(event)
-        self.tokenized_events = event
+        self.tokenized_events = event[:int(required_event_count)]
 
     def _parse_rules(self, eventgen_params, sample_path):
         """
