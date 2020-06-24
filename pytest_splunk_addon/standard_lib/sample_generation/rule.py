@@ -398,15 +398,14 @@ class FileRule(Rule):
 class TimeRule(Rule):
     def replace(self, sample, token_count):
         """
-        input -> sample_raw - sample event to be updated as per replacement
-                              for token.
-              -> earliest - splunktime formated time.
-              -> latest - splunktime formated time.
-              -> timezone - time zone according to which time is to be
-                            generated
+        Args :
+            sample_raw - sample event to be updated as per replacement for token.
+            earliest - splunktime formated time.
+            latest - splunktime formated time.
+            timezone - time zone according to which time is to be generated
 
-        output -> returns random time according to the parameters specified in
-                  the input.
+        returns :
+            random time according to the parameters specified in the input.
         """
         earliest = self.eventgen_params.get("earliest")
         latest = self.eventgen_params.get("latest")

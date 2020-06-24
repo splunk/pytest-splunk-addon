@@ -12,6 +12,13 @@ class SampleGenerator(object):
     sample_stanzas = []
     
     def __init__(self, addon_path, process_count=4):
+        """
+        init method for the class
+        
+        Args:
+            addon_path(str): path to the addon 
+            process_count(no): generate {no} process for execution
+        """
         self.addon_path = addon_path
         self.process_count = process_count
 

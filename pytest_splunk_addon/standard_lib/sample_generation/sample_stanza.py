@@ -9,14 +9,22 @@ class SampleStanza(object):
     """
     This class represents a stanza of the eventgen.conf.
     It contains all the parameters for the stanza such as:
-        ->Sample Name
-        ->Tokens
-        ->Sample file's raw data
-        ->Tokenised events
-        ->Sample ingestion type
+        
+        * Sample Name
+        * Tokens
+        * Sample file's raw data
+        * Tokenised events
+        * Sample ingestion type
     """
 
     def __init__(self, sample_path, eventgen_params):
+        """
+        init method for the class
+        
+        Args:
+            sample_path(str): Path to the sample file 
+            eventgen_params(dict): Eventgen stanzas dictionary
+        """
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
         self.sample_rules = list(self._parse_rules(eventgen_params, self.sample_path))
