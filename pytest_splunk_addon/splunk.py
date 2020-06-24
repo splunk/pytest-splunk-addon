@@ -223,11 +223,6 @@ def splunk_setup(splunk):
 
 
 @pytest.fixture(scope="session")
-def setup_sc4s(sc4s):
-    return sc4s
-
-
-@pytest.fixture(scope="session")
 def splunk_search_util(splunk, splunk_setup, request):
     """
     This is a simple connection to Splunk via the SplunkSDK
@@ -306,6 +301,13 @@ def splunk(request):
 
 @pytest.fixture(scope="session")
 def sc4s(request):
+    """
+    This fixture based on the passed option will provide a real fixture
+    for external or docker sc4s configuration
+
+    Returns:
+        tuple: Details of SC4S which includes sc4s server IP and its related ports.
+    """
     if request.config.getoption("splunk_type") == "external":
         request.fixturenames.append("sc4s_external")
         sc4s = request.getfixturevalue("sc4s_external")
@@ -393,6 +395,9 @@ def splunk_external(request):
 
 @pytest.fixture(scope="session")
 def sc4s_docker(docker_services):
+    """
+    Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
+    """
     docker_services.start("sc4s")
 
     ports = {514: docker_services.port_for("sc4s", 514)}
@@ -403,6 +408,11 @@ def sc4s_docker(docker_services):
 
 @pytest.fixture(scope="session")
 def sc4s_external(request):
+    """
+    Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
+    TODO: For splunk_type=external, data will not be ingested as 
+    manual configurations are required.
+    """
     ports = {514: 514}
     for x in range(5000, 5050):
         ports.update({x: x})
@@ -439,21 +449,6 @@ def splunk_hec_uri(request, splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_hec_uri_raw(request, splunk):
-    """
-    Provides a raw uri to the Splunk hec port
-    """
-    splunk_session = requests.Session()
-    splunk_session.headers = {
-        "Authorization": f'Splunk: {request.config.getoption("splunk_hec_token")}'
-    }
-    uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["host"]}:{splunk["splunk_hec"]}/services/collector/raw'
-    LOGGER.info("Fetched splunk_hec_uri=%s", uri)
-
-    return splunk_session, uri
-
-
-@pytest.fixture(scope="session")
 def splunk_web_uri(splunk):
     """
     Provides a uri to the Splunk web port
@@ -464,11 +459,25 @@ def splunk_web_uri(splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_ingest_data(request, splunk_hec_uri, setup_sc4s):
+def splunk_ingest_data(request, splunk_hec_uri, sc4s):
+    """
+    Generates events for the add-on and ingests into Splunk.
+    The ingestion can be done using the following methods:
+        1. HEC Event
+        2. HEC Raw
+        3. SC4S:TCP or SC4S:UDP
+        4. HEC Metrics
+
+    Args:
+    splunk_hec_uri(tuple): Details for hec uri and session headers
+    sc4s(tuple): Details for sc4s server and TCP port
+
+    TODO: For splunk_type=external, data will not be ingested as 
+    manual configurations are required.
+    """
     addon_path = request.config.getoption("splunk_app")
     sample_generator = SampleGenerator(addon_path)
 
-    # events = list(sample_generator.get_samples())
     ingestor_dict = dict()
     for event in sample_generator.get_samples():
         input_type = event.metadata.get("input_type")
@@ -481,8 +490,8 @@ def splunk_ingest_data(request, splunk_hec_uri, setup_sc4s):
         ingest_meta_data = {
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
-            'splunk_host': setup_sc4s[0],  # for sc4s
-            'sc4s_port': setup_sc4s[1][514] # for sc4s
+            'splunk_host': sc4s[0],  # for sc4s
+            'sc4s_port': sc4s[1][514]  # for sc4s
         }
 
         event_ingestor = get_event_ingestor(input_type, ingest_meta_data)
@@ -547,7 +556,7 @@ def is_responsive(url):
 
 def get_event_ingestor(input_type, ingest_meta_data):
     """
-    Provides mapping for input_type of event with the ingestor class.
+    Based on the input_type of the event, it returns an appropriate ingestor.
     """
     ingest_methods = {
         "modinput": HECEventIngestor,
@@ -556,8 +565,8 @@ def get_event_ingestor(input_type, ingest_meta_data):
         "scripted_input": HECRawEventIngestor,
         "hec_metric": HECMetricEventIngestor,
         "syslog_tcp": SC4SEventIngestor,
-        "syslog_udp": None, #TBD
-        "default":HECRawEventIngestor
+        "syslog_udp": None,  # TBD
+        "default": HECRawEventIngestor
     }
 
     ingestor = ingest_methods.get(input_type)(ingest_meta_data)
