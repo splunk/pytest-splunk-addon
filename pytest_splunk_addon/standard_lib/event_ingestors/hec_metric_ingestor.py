@@ -4,9 +4,10 @@ HEC Event Ingestor class
 from .base_event_ingestor import EventIngestor
 import requests
 import time
-
+import logging
 requests.urllib3.disable_warnings()
 
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class HECMetricEventIngestor(EventIngestor):
     """
@@ -83,7 +84,7 @@ class HECMetricEventIngestor(EventIngestor):
                 verify=False,
             )
             if response.status_code not in (200, 201):
-                print(
+                LOGGER.debug(
                     "Status code: {} \nReason: {} \ntext:{}".format(
                         response.status_code, response.reason, response.text
                     )
@@ -91,4 +92,4 @@ class HECMetricEventIngestor(EventIngestor):
                 raise Exception
 
         except Exception as e:
-            print(e)
+            LOGGER.error(e)

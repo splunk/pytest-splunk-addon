@@ -32,11 +32,13 @@ class SampleGenerator(object):
 
 
 def add_time(sample_stanza):
+    """
+    Update _time field in event
+
+    Args:
+        sample_stanza(SampleStanza): Sample stanza instance 
+    """
     for event in sample_stanza.get_tokenized_events():
         if (event.metadata.get("timestamp_type") == "plugin"):
             time_to_ingest = int(time.time())
             event.key_fields["_time"] = [str(time_to_ingest)]
-
-def main():
-    sample_generator = SampleGenerator(r'G:\My Drive\TA-Factory\automation\testing\package')
-    print(sample_generator.get_samples())
