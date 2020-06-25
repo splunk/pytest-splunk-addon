@@ -77,9 +77,9 @@ class HECEventIngestor(EventIngestor):
                 "event": event.event,
             }
 
-            if event.metadata.get("timestamp_type") in ('plugin', None) :
+            if event.metadata.get("timestamp_type") in ('plugin', None):
                 if not event.key_fields.get("_time"):
-                    event.key_fields['_time'] = int(time.time)
+                    event.key_fields['_time'] = [int(time.time())]
 
                 event_dict['time'] = event.key_fields.get("_time")[0]
 

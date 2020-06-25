@@ -7,4 +7,5 @@ KEY_FIELDS = [
     "host",
     "user",
     "url",
+    "_time"
 ]

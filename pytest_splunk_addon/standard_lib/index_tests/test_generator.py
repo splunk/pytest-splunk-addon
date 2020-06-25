@@ -8,7 +8,7 @@ class IndexTimeTestGenerator(object):
     def generate_tests(self, tokenized_events):
         for tokenized_event in tokenized_events:
             sourcetype = tokenized_event.metadata.get(
-                "sourcetype_after_transforms",
+                "sourcetype_to_search",
                 tokenized_event.metadata.get("sourcetype", "*"),
             )
             source = tokenized_event.metadata.get(
