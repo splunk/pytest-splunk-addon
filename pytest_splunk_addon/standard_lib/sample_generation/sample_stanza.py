@@ -9,14 +9,22 @@ class SampleStanza(object):
     """
     This class represents a stanza of the eventgen.conf.
     It contains all the parameters for the stanza such as:
-        ->Sample Name
-        ->Tokens
-        ->Sample file's raw data
-        ->Tokenised events
-        ->Sample ingestion type
+        
+        * Sample Name
+        * Tokens
+        * Sample file's raw data
+        * Tokenised events
+        * Sample ingestion type
     """
 
     def __init__(self, sample_path, eventgen_params):
+        """
+        init method for the class
+        
+        Args:
+            sample_path(str): Path to the sample file 
+            eventgen_params(dict): Eventgen stanzas dictionary
+        """
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
         self.sample_rules = list(self._parse_rules(eventgen_params, self.sample_path))
@@ -47,7 +55,7 @@ class SampleStanza(object):
         Tokenize the raw events(self.sample_raw_data) and stores them into self.tokenized_events.
         For backward compatibility added required count support.
         """
-        required_event_count =self.metadata.get("count") if self.metadata.get("count") is not None else self.metadata.get("expected_event_count")
+        required_event_count =self.metadata.get("count", self.metadata.get("expected_event_count"))
         if required_event_count == '0' or required_event_count is None:
             required_event_count = 100
         event = list(self.tokenized_events)

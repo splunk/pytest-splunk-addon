@@ -6,6 +6,7 @@ import requests
 import time
 import logging
 requests.urllib3.disable_warnings()
+import os
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -93,3 +94,4 @@ class HECMetricEventIngestor(EventIngestor):
 
         except Exception as e:
             LOGGER.error(e)
+            os._exit(0)

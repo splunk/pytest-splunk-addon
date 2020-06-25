@@ -6,7 +6,7 @@ import requests
 import time
 import concurrent.futures
 import logging
-
+import os
 requests.urllib3.disable_warnings()
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -89,25 +89,26 @@ class HECEventIngestor(EventIngestor):
         for i in range(0, len(data), 100):
             batch_event_list.append(data[i : i + 100])
 
+        with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+            executor.map(self.__ingest, batch_event_list)
+        
+    def __ingest(self, data):
         try:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
-                executor.map(self.__ingest, batch_event_list)
+            response = requests.post(
+                "{}/{}".format(self.hec_uri, "event"),
+                auth=None,
+                json=data,
+                headers=self.session_headers,
+                verify=False,
+            )
+            if response.status_code not in (200, 201):
+                LOGGER.debug(
+                    "Status code: {} \nReason: {} \ntext:{}".format(
+                        response.status_code, response.reason, response.text
+                    )
+                )
+                raise Exception
+        
         except Exception as e:
             LOGGER.error(e)
-
-    def __ingest(self, data):
-        response = requests.post(
-            "{}/{}".format(self.hec_uri, "event"),
-            auth=None,
-            json=data,
-            headers=self.session_headers,
-            verify=False,
-        )
-        if response.status_code not in (200, 201):
-            LOGGER.debug(
-                "Status code: {} \nReason: {} \ntext:{}".format(
-                    response.status_code, response.reason, response.text
-                )
-            )
-            raise Exception
-
+            os._exit(0)

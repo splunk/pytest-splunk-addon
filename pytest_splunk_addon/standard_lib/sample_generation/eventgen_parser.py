@@ -14,7 +14,12 @@ class EventgenParser:
     This class represents the entire eventgen.conf file and handles parsing mechanism of eventgen and the rules
     """
     def __init__(self, addon_path):
-
+        """
+        init method for the class
+        
+        Args:
+            addon_path(str): Path to the addon 
+        """
         self._app = App(addon_path, python_analyzer_enable=False)
         self._eventgen = None
         self.path_to_samples = os.path.join(addon_path, "samples")

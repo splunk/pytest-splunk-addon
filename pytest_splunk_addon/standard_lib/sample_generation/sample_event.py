@@ -36,6 +36,14 @@ class SampleEvent(object):
     """
 
     def __init__(self, event_string, metadata, sample_name):
+        """
+        init method for the class
+        
+        Args:
+            event_string(str): Sample event string 
+            metadata(dict): Dictionary of metadata
+            sample_name(str): sample name
+        """
         self.event = event_string
         self.key_fields = dict()
         self.metadata = metadata

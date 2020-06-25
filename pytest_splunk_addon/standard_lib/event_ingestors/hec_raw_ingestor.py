@@ -5,6 +5,7 @@ from .base_event_ingestor import EventIngestor
 import requests
 import concurrent.futures
 import logging
+import os
 
 requests.urllib3.disable_warnings()
 
@@ -89,3 +90,4 @@ class HECRawEventIngestor(EventIngestor):
 
         except Exception as e:
             LOGGER.error(e)
+            os._exit(0)
