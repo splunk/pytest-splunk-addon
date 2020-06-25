@@ -149,11 +149,11 @@ class SampleEvent(object):
         if isinstance(token_values, list):
             for token_value in token_values:
                 self.event = re.sub(
-                    token, str(token_value), self.event, 1, flags=re.MULTILINE
+                    token, lambda x: str(token_value), self.event, 1, flags=re.MULTILINE
                 )
         else:
             self.event = re.sub(
-                token, str(token_values), self.event, flags=re.MULTILINE
+                token, lambda x: str(token_values), self.event, flags=re.MULTILINE
             )
 
     def register_field_value(self, field, token_values):

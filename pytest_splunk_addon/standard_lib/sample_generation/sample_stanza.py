@@ -73,7 +73,7 @@ class SampleStanza(object):
             eventgen_params(dict): Eventgen stanzas dictionary
             sample_path(str): Path to the sample file 
         """
-        for each_token, token_value in eventgen_params['tokens'].items():
+        for each_token, token_value in eventgen_params['tokens']:
             yield Rule.parse_rule(token_value, eventgen_params, sample_path)
 
     def _parse_meta(self, eventgen_params):
