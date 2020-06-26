@@ -73,7 +73,8 @@ class SampleStanza(object):
             eventgen_params(dict): Eventgen stanzas dictionary
             sample_path(str): Path to the sample file 
         """
-        for each_token, token_value in eventgen_params['tokens']:
+        token_list = self._sort_tokens_by_replacement_type_all(eventgen_params['tokens'])
+        for each_token, token_value in token_list:
             yield Rule.parse_rule(token_value, eventgen_params, sample_path)
 
     def _parse_meta(self, eventgen_params):
@@ -144,3 +145,18 @@ class SampleStanza(object):
                 # TODO: input_type not found scenario
                 pass
             # More input types to be added here.
+
+    def _sort_tokens_by_replacement_type_all(self, tokens_dict):
+        """
+        Return the sorted token list by replacementType=all first in list.
+
+        Args:
+            tokens_dict(dict): tokens dictionary
+        """
+        token_list = []
+        for token in tokens_dict.items():
+            if token[1]['replacementType'] == 'all':
+                token_list.insert(0, token) 
+            else:
+                token_list.append(token)
+        return token_list
