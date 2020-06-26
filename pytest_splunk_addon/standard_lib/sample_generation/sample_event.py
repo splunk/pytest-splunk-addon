@@ -9,6 +9,7 @@ host_ipv4, dvc_ipv4 = 50, 0
 src_ipv4, dest_ipv4 = 0, 0
 host_ipv6, dvc_ipv6 = 0, 0
 src_ipv6, dest_ipv6 = 0, 0
+host_count, fqdn_count = 0,0
 
 ip_rules = {
         "src":{
@@ -65,7 +66,29 @@ class SampleEvent(object):
         Return the unique host value
         """
         self.host_count += 1
-        return self.sample_name + "_" + str(self.host_count)
+        return "{}_{}_{}".format("host", self.sample_name, str(self.host_count))
+
+    def get_field_host(self, rule):
+        """
+        Returns unique host value for the key fields src, dest, host, dvc
+
+        Args:
+            rule(str): Type of rule either src, host, dest, dvc
+        """
+        global host_count
+        host_count += 1
+        return "{}_{}{}".format(rule, "sample_host", host_count)
+    
+    def get_field_fqdn(self, rule):
+        """
+        Returns unique fqdn value for the key fields src, dest, host, dvc
+
+        Args:
+            rule(str): Type of rule either src, host, dest, dvc
+        """
+        global fqdn_count
+        fqdn_count += 1
+        return "{}_{}.{}{}.com".format(rule, "sample_host", "sample_domain", fqdn_count)
 
     def get_ipv4(self, rule):
         """

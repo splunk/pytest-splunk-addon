@@ -14,14 +14,14 @@ from . import SampleEvent
 import logging
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
-
+user_email_count = 0
 
 class Rule:
     """
     Base class for all the rules.
     """
     user_header = ["name", "email", "domain_user", "distinquised_name"]
-    src_header = ["host", "domain", "ipv4", "ipv6", "fqdn"]
+    src_header = ["host", "ipv4", "ipv6", "fqdn"]
 
     def __init__(self, token, eventgen_params=None, sample_path=None):
         self.token = token["token"]
@@ -110,35 +110,33 @@ class Rule:
                 new_events.append(each_event)
         return new_events
 
-    def get_lookup_value(self, sample, filename, key, headers, value_list):
+    def get_lookup_value(self, sample, key, headers, value_list):
         """
         Common method to read csv and get a random row.
 
         Args:
             sample(object): Instance of SampleEvent class.
-            filename(str): Path to Lookup file.
             key(str): fieldname i.e. host, src, user, dvc etc
             headers(list): Headers of csv file in list format.
             value_list(list): list of replacement values mentioned in configuration file.
-
 
         Returns:
             index_list(list): list of mapped columns(int) as per value_list
             csv_row(list): list of replacement values for the rule.
         """
-        f = open(
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
-        )
-        reader = csv.reader(f)
-        next(reader)
-
+        csv_row = []
+        global user_email_count
+        user_email_count += 1
+        name = "user{}".format(user_email_count)
+        email = "user{}@email.com".format(user_email_count)
+        domain_user = r"sample_domain.com\user{}".format(user_email_count)
+        distinguished_name = "CN=user{}".format(user_email_count)
+        csv_row.extend([name, email, domain_user, distinguished_name])
         index_list = [
             i
             for i, item in enumerate(headers)
-            if item in value_list and item != "domain"
+            if item in value_list
         ]
-        csv_row = choice(list(reader))
-
         if (
             hasattr(sample, "replacement_map")
             and key in sample.replacement_map
@@ -161,12 +159,17 @@ class Rule:
             index_list(list): list of mapped columns(int) as per value_list
             csv_row(list): list of replacement values for the rule.
         """
-        index_list, csv_row = self.get_lookup_value(sample, "lookups\\host_domain.csv", rule, self.src_header, value_list)
-        ipv4 = sample.get_ipv4(rule)
-        ipv6 = sample.get_ipv6(rule)
-        fqdn = "{}.{}".format(csv_row[0], csv_row[1])
-        csv_row.extend([ipv4, ipv6, fqdn])
-        return index_list, csv_row
+        csv_row = []
+        for each in value_list:
+            if each == "host":
+                csv_row.append(sample.get_field_host(rule))
+            elif each == "ipv4":
+                csv_row.append(sample.get_ipv4(rule))
+            elif each == "ipv6":
+                csv_row.append(sample.get_ipv6(rule))
+            elif each == "fqdn":
+                csv_row.append(sample.get_field_fqdn(rule))
+        return csv_row
 
 
 class IntRule(Rule):
@@ -556,7 +559,6 @@ class UserRule(Rule):
             else:
                 index_list, csv_row = self.get_lookup_value(
                     sample,
-                    "lookups\\user_email.csv",
                     "user",
                     self.user_header,
                     value_list,
@@ -583,17 +585,11 @@ class EmailRule(Rule):
                 and "user" in sample.replacement_map
                 and i < len(sample.replacement_map["user"])
             ):
-                index_list = [
-                    i
-                    for i, item in enumerate(self.user_header)
-                    if item in ["email"]
-                ]
                 csv_rows = sample.replacement_map["user"]
-                yield csv_rows[i][choice(index_list)]
+                yield csv_rows[i][self.user_header.index("email")]
             else:
                 index_list, csv_row = self.get_lookup_value(
                     sample,
-                    "lookups\\user_email.csv",
                     "email",
                     self.user_header,
                     ["email"],
@@ -679,7 +675,7 @@ class DestRule(Rule):
     def replace(self, sample, token_count):
         """
         Yields a random dest replacement value from the list of values mentioned in token.
-        Possible values: ["host", "domain", "ipv4", "ipv6", "fqdn"]
+        Possible values: ["host", "ipv4", "ipv6", "fqdn"]
 
         Args:
             sample(object): Instance of SampleEvent class.
@@ -690,8 +686,8 @@ class DestRule(Rule):
         ).group(1)
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            index_list, csv_row = self.get_rule_replacement_values(sample, value_list, rule="dest")
-            yield csv_row[choice(index_list)]
+            csv_row = self.get_rule_replacement_values(sample, value_list, rule="dest")
+            yield choice(csv_row)
 
 
 class SrcPortRule(Rule):
@@ -717,7 +713,7 @@ class DvcRule(Rule):
     def replace(self, sample, token_count):
         """
         Yields a random dvc replacement value from the list of values mentioned in token.
-        Possible values: ["host", "domain", "ipv4", "ipv6", "fqdn"]
+        Possible values: ["host", "ipv4", "ipv6", "fqdn"]
 
         Args:
             sample(object): Instance of SampleEvent class.
@@ -728,8 +724,8 @@ class DvcRule(Rule):
         )
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            index_list, csv_row = self.get_rule_replacement_values(sample, value_list, rule="dvc")
-            yield csv_row[choice(index_list)]
+            csv_row = self.get_rule_replacement_values(sample, value_list, rule="dvc")
+            yield choice(csv_row)
 
 
 class SrcRule(Rule):
@@ -739,7 +735,7 @@ class SrcRule(Rule):
     def replace(self, sample, token_count):
         """
         Yields a random src replacement value from the list of values mentioned in token.
-        Possible values: ["host", "domain", "ipv4", "ipv6", "fqdn"]
+        Possible values: ["host", "ipv4", "ipv6", "fqdn"]
 
         Args:
             sample(object): Instance of SampleEvent class.
@@ -750,8 +746,8 @@ class SrcRule(Rule):
         )
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            index_list, csv_row = self.get_rule_replacement_values(sample, value_list, rule="src")
-            yield csv_row[choice(index_list)]
+            csv_row = self.get_rule_replacement_values(sample, value_list, rule="src")
+            yield choice(csv_row)
 
 
 class DestPortRule(Rule):
@@ -778,7 +774,7 @@ class HostRule(Rule):
     def replace(self, sample, token_count):
         """
         Yields a random host replacement value from the list of values mentioned in token.
-        Possible values: ["host", "domain", "ipv4", "ipv6", "fqdn"]
+        Possible values: ["host", "ipv4", "ipv6", "fqdn"]
 
         Args:
             sample(object): Instance of SampleEvent class.
@@ -789,24 +785,25 @@ class HostRule(Rule):
         ).group(1)
         value_list = eval(value_list_str)
         for _ in range(token_count):
-            index_list, csv_row = self.get_rule_replacement_values(
+            csv_row = self.get_rule_replacement_values(
                 sample, value_list, rule="host"
             )
-            if sample.metadata.get("input_type") in [
-                "modinput",
-                "windows_input",
-            ]:
-                host_value = sample.metadata.get("host")
-            elif sample.metadata.get("input_type") in [
-                "file_monitor",
-                "scripted_input",
-                "syslog_tcp",
-                "syslog_udp",
-                "other",
-            ]:
-                host_value = sample.get_host()
-            csv_row[0] = host_value
-            yield csv_row[choice(index_list)]
+            if "host" in value_list:
+                if sample.metadata.get("input_type") in [
+                    "modinput",
+                    "windows_input",
+                ]:
+                    host_value = sample.metadata.get("host")
+                elif sample.metadata.get("input_type") in [
+                    "file_monitor",
+                    "scripted_input",
+                    "syslog_tcp",
+                    "syslog_udp",
+                    "other",
+                ]:
+                    host_value = sample.get_host()
+                csv_row[0] = host_value
+            yield choice(csv_row)
 
 
 class HexRule(Rule):
