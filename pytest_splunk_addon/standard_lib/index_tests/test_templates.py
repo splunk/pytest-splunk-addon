@@ -34,10 +34,11 @@ class IndexTimeTestTemplate(object):
             extra_filter = "host=" + splunk_indextime_fields.get("host", "*")
 
         if splunk_indextime_fields["tokenized_event"].key_fields.get("_time"):
-            extra_filter += " | eval e_time=_time"
-            splunk_indextime_fields["tokenized_event"].key_fields[
-                "e_time"
-            ] = splunk_indextime_fields["tokenized_event"].key_fields.pop("_time")
+            if splunk_indextime_fields["tokenized_event"].metadata.get("timestamp_type") in ('plugin', None):
+                extra_filter += " | eval e_time=_time"
+                splunk_indextime_fields["tokenized_event"].key_fields[
+                    "e_time"
+                ] = splunk_indextime_fields["tokenized_event"].key_fields.pop("_time")
 
         query = "sourcetype={} source={} {} | table {}".format(
             splunk_indextime_fields.get("sourcetype"),

@@ -33,19 +33,20 @@ class SampleGenerator(object):
                 t.map(SampleStanza.get_raw_events, SampleGenerator.sample_stanzas)
             # with ProcessPoolExecutor(self.process_count) as p:
             _ = list(map(SampleStanza.tokenize, SampleGenerator.sample_stanzas))
-            map(add_time, SampleGenerator.sample_stanzas)
         for each_sample in SampleGenerator.sample_stanzas:
-            yield from each_sample.get_tokenized_events()
+            each_sample = map(add_time, each_sample.get_tokenized_events())
+            yield from each_sample
 
 
-def add_time(sample_stanza):
+def add_time(tokenized_event):
     """
     Update _time field in event
 
     Args:
         sample_stanza(SampleStanza): Sample stanza instance 
     """
-    for event in sample_stanza.get_tokenized_events():
-        if (event.metadata.get("timestamp_type") == "plugin"):
-            time_to_ingest = int(time.time())
-            event.key_fields["_time"] = [str(time_to_ingest)]
+    if (tokenized_event.metadata.get("timestamp_type") == "plugin"):
+        time_to_ingest = int(time.time())
+        tokenized_event.key_fields["_time"] = [str(time_to_ingest)]
+
+    return tokenized_event

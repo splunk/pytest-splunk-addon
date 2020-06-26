@@ -45,8 +45,7 @@ class EventgenParser:
         """
         eventgen_dict = self.get_eventgen_stanzas()
         for sample_name, stanza_params in eventgen_dict.items():
-            a = self.path_to_samples
-            sample_path = os.path.join(a, sample_name)
+            sample_path = os.path.join(self.path_to_samples, sample_name)
             yield SampleStanza(
                 sample_path,
                 stanza_params,
@@ -73,8 +72,7 @@ class EventgenParser:
             Eventgen stanzas dictionary
         """
         eventgen_dict = {}
-        a = self.path_to_samples
-        for sample_file in os.listdir(a):
+        for sample_file in os.listdir(self.path_to_samples):
             for stanza in self.eventgen.sects:
                 if re.search(stanza, sample_file):
                     eventgen_sections = self.eventgen.sects[stanza]

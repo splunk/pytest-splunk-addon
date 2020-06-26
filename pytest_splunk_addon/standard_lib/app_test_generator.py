@@ -76,10 +76,13 @@ class AppTestGenerator(object):
             addon_path = self.pytest_config.getoption("splunk_app")
             sample_generator = SampleGenerator(addon_path)
 
-            a = [each for each in sample_generator.get_samples()]
-            t = list(self.indextime_test_generator.generate_tests(a))
-            # d = self.dedup_tests(t, fixture,)
-            yield from sorted(t, key=lambda param: param.id)
+            tokenised_events = [
+                each for each in sample_generator.get_samples()
+            ]
+            pytest_params = list(
+                self.indextime_test_generator.generate_tests(tokenised_events)
+            )
+            yield from sorted(pytest_params, key=lambda param: param.id)
 
     def dedup_tests(self, test_list, fixture):
         """
