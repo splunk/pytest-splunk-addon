@@ -90,7 +90,14 @@ class EventgenParser:
                             eventgen_dict[sample_file]['tokens'][token_id][token_param] = eventgen_property.value
                         else:
                             eventgen_dict[sample_file][eventgen_property.name] = eventgen_property.value
+
                     if 'tokens' in eventgen_dict[sample_file]:
-                        eventgen_dict[sample_file]['tokens'] = sorted(eventgen_dict[sample_file]['tokens'].items(), key = lambda x: x[1]['replacementType']) 
+                        tokenList = []
+                        for token in eventgen_dict[sample_file]['tokens'].items() :
+                            if token[1]['replacementType'] == 'all':
+                                tokenList.insert(0, token) 
+                            else:
+                                tokenList.append(token)
+                        eventgen_dict[sample_file]['tokens'] = tokenList
         return eventgen_dict
 
