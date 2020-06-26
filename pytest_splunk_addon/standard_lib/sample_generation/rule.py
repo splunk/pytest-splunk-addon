@@ -321,7 +321,7 @@ class FileRule(Rule):
                         for _ in range(token_count):
                             yield choice(lines)
             except IOError as e:
-                LOGGER.warn("File not found : {}".format(relative_file_path))
+                LOGGER.warning("File not found : {}".format(relative_file_path))
         elif self.replacement_type == 'all':
             # yield all values present in sample file for the token by reading sample file
             # it will not generate the value for indexed files

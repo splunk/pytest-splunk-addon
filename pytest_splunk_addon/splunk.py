@@ -16,12 +16,7 @@ import splunklib.client as client
 from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
-from .standard_lib.event_ingestors import (
-    HECEventIngestor,
-    HECRawEventIngestor,
-    HECMetricEventIngestor,
-    SC4SEventIngestor,
-)
+from .standard_lib.event_ingestors import IngestorHelper
 from .standard_lib.sample_generation import SampleGenerator
 import configparser
 
@@ -478,6 +473,13 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
     addon_path = request.config.getoption("splunk_app")
     sample_generator = SampleGenerator(addon_path)
 
+    ingest_meta_data = {
+        "session_headers": splunk_hec_uri[0].headers,
+        "splunk_hec_uri": splunk_hec_uri[1],
+        'splunk_host': sc4s[0],  # for sc4s
+        'sc4s_port': sc4s[1][514]  # for sc4s
+    }
+
     ingestor_dict = dict()
     for event in sample_generator.get_samples():
         input_type = event.metadata.get("input_type")
@@ -487,14 +489,8 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
             ingestor_dict[input_type] = [event]
 
     for input_type, events in ingestor_dict.items():
-        ingest_meta_data = {
-            "session_headers": splunk_hec_uri[0].headers,
-            "splunk_hec_uri": splunk_hec_uri[1],
-            'splunk_host': sc4s[0],  # for sc4s
-            'sc4s_port': sc4s[1][514]  # for sc4s
-        }
 
-        event_ingestor = get_event_ingestor(input_type, ingest_meta_data)
+        event_ingestor = IngestorHelper.get_event_ingestor(input_type, ingest_meta_data)
         event_ingestor.ingest(events)
 
 
@@ -554,20 +550,3 @@ def is_responsive(url):
         return False
 
 
-def get_event_ingestor(input_type, ingest_meta_data):
-    """
-    Based on the input_type of the event, it returns an appropriate ingestor.
-    """
-    ingest_methods = {
-        "modinput": HECEventIngestor,
-        "windows_input": HECEventIngestor,
-        "file_monitor": HECRawEventIngestor,
-        "scripted_input": HECRawEventIngestor,
-        "hec_metric": HECMetricEventIngestor,
-        "syslog_tcp": SC4SEventIngestor,
-        "syslog_udp": None,  # TBD
-        "default": HECRawEventIngestor
-    }
-
-    ingestor = ingest_methods.get(input_type)(ingest_meta_data)
-    return ingestor

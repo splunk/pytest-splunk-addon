@@ -12,21 +12,20 @@ class IndexTimeTestGenerator(object):
                 tokenized_event.metadata.get("sourcetype", "*"),
             )
             source = tokenized_event.metadata.get(
-                "source_after_transforms", tokenized_event.metadata.get("source", "*")
+                "source_to_search", tokenized_event.metadata.get("source", "*")
             )
 
             identifier_key = tokenized_event.metadata.get("identifier")
             if identifier_key:
                 identifier_val = tokenized_event.key_fields.get(identifier_key)
                 for identifier in identifier_val:
-                    t = {
-                        "identifier": identifier_key+"="+identifier,
-                        "sourcetype": sourcetype,
-                        "source": source,
-                        "tokenized_event": tokenized_event,
-                    }
                     yield pytest.param(
-                        t,
+                        {
+                            "identifier": identifier_key+"="+identifier,
+                            "sourcetype": sourcetype,
+                            "source": source,
+                            "tokenized_event": tokenized_event,
+                        },
                         id="{}_{}_{}:{}".format(
                             sourcetype, source, identifier_key, identifier
                         ),
@@ -39,14 +38,14 @@ class IndexTimeTestGenerator(object):
                     hosts = [hosts]
 
                 for host in hosts:
-                    t = {
-                        "host": host,
-                        "sourcetype": sourcetype,
-                        "source": source,
-                        "tokenized_event": tokenized_event,
-                    }
                     yield pytest.param(
-                        t, id="{}_{}_{}".format(sourcetype, source, host),
+                        {
+                            "host": host,
+                            "sourcetype": sourcetype,
+                            "source": source,
+                            "tokenized_event": tokenized_event,
+                        },
+                        id="{}_{}_{}".format(sourcetype, source, host),
                     )
                 # else:
                 #     yield pytest.param(
