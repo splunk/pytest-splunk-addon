@@ -437,3 +437,28 @@ TA_CIM_BROKEN_FAILED = [
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_with_eval"::Broken_Eval::invalid_value_null_2* FAILED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_with_eval"::Broken_Eval::fail_multi_value_field* FAILED*',
 ]
+
+"""
+Define the TA_fiction_indextime add-on failed test case list.
+"""
+TA_FICTION_INDEXTIME_PASSED = [
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype:file_all_dependent_pytest-splunk-addon:file_monitor_sample_file_three.samples* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype:user_email_relation_time_plugin_pytest-splunk-addon:file_monitor_sample_file_two.samples* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples1* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples2* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples3* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples4* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples5* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples6* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples7* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples8* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples9* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples10* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples11* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples12* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples13* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples14* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples15* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples16* PASSED*',
+    '*test_splunk_fiction_indextime::Test_App::test_index_time_extractions*sourcetype_basic_pytest-splunk-addon:file_monitor_sample_file.samples17* PASSED*',
+]
