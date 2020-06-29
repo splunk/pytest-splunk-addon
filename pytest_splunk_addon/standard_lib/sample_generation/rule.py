@@ -2,7 +2,6 @@ import csv
 import re
 import string
 import uuid
-
 from datetime import datetime
 from faker import Faker
 from random import uniform, randint, choice
@@ -15,7 +14,13 @@ import logging
 import warnings
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
+
 user_email_count = 0
+# user_email_count to generate unique values for ["name", "email", "domain_user", "distinquised_name"] in each token 
+
+event_host_count = 0
+# event_host_count is used to generate unique host for each event in 
+# case of replacementType = all 
 
 class Rule:
     """
@@ -99,6 +104,9 @@ class Rule:
                 #       value in that event
                 for each_token_value in token_values:
                     new_event = SampleEvent.copy(each_event)
+                    global event_host_count
+                    event_host_count += 1
+                    new_event.metadata["host"]  = "{}_{}".format(each_event.sample_name, event_host_count)
                     new_event.replace_token(self.token, each_token_value)
                     new_event.register_field_value(
                         self.field, each_token_value
