@@ -12,6 +12,7 @@ import os
 
 from . import SampleEvent
 import logging
+import warnings
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 user_email_count = 0
@@ -76,9 +77,8 @@ class Rule:
         elif replacement_type == "file" or replacement_type == "mvfile":
             return FileRule(token, sample_path=sample_path)
 
-        LOGGER.error("No Rule Found.!")
-        # TODO: Test the behavior if no rule found
-        raise Exception("No Rule Found.!")
+        LOGGER.error("No Rule Found for token = {}, with replacement = {} and replacement_type = {}!".format(token["token"], replacement, replacement_type))
+        warnings.warn(UserWarning("No Rule Found for token = {}, with replacement = {} and replacement_type = {}!".format(token["token"], replacement, replacement_type)))
 
     def apply(self, events):
         """

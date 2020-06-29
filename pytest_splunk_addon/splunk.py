@@ -153,12 +153,19 @@ def pytest_addoption(parser):
         ),
     )
     group.addoption(
-        '--sc4s-host',
-        action='store',
-        dest='sc4s_host',
-        default='127.0.0.1',
-        help='Address of the sc4s Server'
+        "--sc4s-host",
+        action="store",
+        dest="sc4s_host",
+        default="127.0.0.1",
+        help="Address of the sc4s Server"
     )
+    group.addoption(
+        "--sc4s-port",
+        action="store",
+        dest="sc4s_port",
+        default="514",
+        help="SC4S Port. default is 514"
+    )    
     group.addoption(
         "--search-index",
         action="store",
@@ -408,7 +415,7 @@ def sc4s_external(request):
     TODO: For splunk_type=external, data will not be ingested as 
     manual configurations are required.
     """
-    ports = {514: 514}
+    ports = {514: int(request.config.getoption('sc4s_port'))}
     for x in range(5000, 5050):
         ports.update({x: x})
 
@@ -476,8 +483,8 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
     ingest_meta_data = {
         "session_headers": splunk_hec_uri[0].headers,
         "splunk_hec_uri": splunk_hec_uri[1],
-        'splunk_host': sc4s[0],  # for sc4s
-        'sc4s_port': sc4s[1][514]  # for sc4s
+        "splunk_host": sc4s[0],  # for sc4s
+        "sc4s_port": sc4s[1][514]  # for sc4s
     }
 
     ingestor_dict = dict()
