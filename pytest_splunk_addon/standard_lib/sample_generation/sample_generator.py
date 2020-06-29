@@ -10,6 +10,7 @@ class SampleGenerator(object):
     Generate sample objects 
     """
     sample_stanzas = []
+    splunk_test_type = " "
     
     def __init__(self, addon_path, process_count=4):
         """
@@ -29,6 +30,7 @@ class SampleGenerator(object):
         if not SampleGenerator.sample_stanzas:
             eventgen_parser = EventgenParser(self.addon_path)
             SampleGenerator.sample_stanzas = list(eventgen_parser.get_sample_stanzas())
+            self.splunk_test_type = eventgen_parser.splunk_test_type
             with ThreadPoolExecutor(min(20, len(SampleGenerator.sample_stanzas))) as t:
                 t.map(SampleStanza.get_raw_events, SampleGenerator.sample_stanzas)
             # with ProcessPoolExecutor(self.process_count) as p:

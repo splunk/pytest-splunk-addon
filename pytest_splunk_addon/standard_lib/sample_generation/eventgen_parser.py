@@ -13,6 +13,8 @@ class EventgenParser:
     """
     This class represents the entire eventgen.conf file and handles parsing mechanism of eventgen and the rules
     """
+    splunk_test_type = " "
+
     def __init__(self, addon_path):
         """
         init method for the class
@@ -22,18 +24,19 @@ class EventgenParser:
         """
         self._app = App(addon_path, python_analyzer_enable=False)
         self._eventgen = None
-        self.path_to_samples = os.path.join(addon_path, "samples")
+        self.addon_path = addon_path
+        self.path_to_samples = os.path.join(addon_path, "package", "samples")
 
     @property
     def eventgen(self):
-        """
-        Returns a dict representation object of eventgen.conf file.
-        """
-        try:
-            if not self._eventgen:
-                self._eventgen = self._app.get_config("eventgen.conf")
+        try:            
+            if os.path.exists(os.path.join(self.addon_path, "tests", "plugin_event_generator", "pytest-splunk-addon-sample-generator.conf")):
+                self._eventgen = self._app.get_config("pytest-splunk-addon-sample-generator.conf", dir = os.path.join("..", "tests", "plugin_event_generator"))
+                self.splunk_test_type = "splunk_indextime"
+            else:
+                self._eventgen = self._app.get_config("eventgen.conf", dir = "default")    
+                self.splunk_test_type = "splunk_searchtime"
             return self._eventgen
-        # TODO: Update conf file from eventgen.conf to pytest-splunk-addon-data-generator.conf
         except OSError:
             LOGGER.warning("eventgen.conf not found.")
             raise Exception("Eventgen.conf not found")
