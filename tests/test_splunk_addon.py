@@ -305,8 +305,8 @@ def test_splunk_fiction_indextime(testdir):
     result.stdout.fnmatch_lines_random(constants.TA_FICTION_INDEXTIME_PASSED)
     result.assert_outcomes(passed=len(constants.TA_FICTION_INDEXTIME_PASSED), failed=0)
 
-    # The test suite should fail as this is a negative test
-    assert result.ret != 0
+    # make sure that that we get a '0' exit code for the testsuite
+    assert result.ret == 0
 
 @pytest.mark.docker
 def test_splunk_setup_fixture(testdir):
