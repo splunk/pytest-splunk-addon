@@ -2,6 +2,7 @@ import re
 import logging
 from ..index_tests import key_fields
 from faker import Faker
+from copy import deepcopy
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -212,6 +213,7 @@ class SampleEvent(object):
         new_event = cls("", {}, "")
         new_event.__dict__ = event.__dict__.copy()
         new_event.key_fields = event.key_fields.copy()
+        new_event.metadata = deepcopy(event.metadata)
         return new_event
 
     def update_metadata(self, event, metadata):
