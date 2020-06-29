@@ -58,10 +58,12 @@ class SampleStanza(object):
         required_event_count =self.metadata.get("count", 1)
         event = list(self.tokenized_events)
         for each_rule in self.sample_rules:
-            event = each_rule.apply(event)
+            if each_rule:
+                event = each_rule.apply(event)
         while event and (int(required_event_count)) > len((event)):
             for each_rule in self.sample_rules:
-                event = each_rule.apply(event)    
+                if each_rule:
+                    event = each_rule.apply(event)    
             event.extend(event)
         self.tokenized_events = event
 
