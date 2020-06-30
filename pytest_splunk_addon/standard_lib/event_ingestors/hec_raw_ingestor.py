@@ -61,10 +61,20 @@ class HECRawEventIngestor(EventIngestor):
         main_event = []
         param_list = []
         for event in events:
+            if event.metadata.get("host_type") in ("plugin", None):
+                host = event.metadata["host"]
+            else:
+                host = event.key_fields["host"]
+​
+            if event.metadata.get("timestamp_type") in ('plugin', None):
+                if not event.key_fields.get("_time"):
+                    event.key_fields['_time'] = [int(time.time())]
+            
             param_list.append({
                 "sourcetype": event.metadata.get('sourcetype', 'pytest_splunk_addon'),
                 "source": event.metadata.get('source', 'pytest_splunk_addon:hec:raw'),
-                "host": event.metadata.get('host', 'default'),
+                "host": host,
+                "time": event.key_fields.get("_time")[0]
             })
             main_event.append(event.event)
         with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
