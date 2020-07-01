@@ -74,7 +74,8 @@ class Rule:
             "dvc": DvcRule,
             "guid": GuidRule
         }
-
+        rule_all_support = ["integer", "list", "file"]
+        
         replacement_type = token["replacementType"]
         replacement = token["replacement"]
         if replacement_type == "static":
@@ -84,6 +85,10 @@ class Rule:
         elif replacement_type == "random" or replacement_type == "all":
             for each_rule in rule_book:
                 if replacement.lower().startswith(each_rule):
+                    if replacement_type == "all" and each_rule not in rule_all_support:
+                        token["replacementType"] = "random"
+                        LOGGER.warning("replacement_type=all is not supported for {} rule applied to {} token.".format(each_rule, token.get("token")))
+                        warnings.warn(UserWarning("replacement_type=all is not supported for {} rule applied to {} token.".format(each_rule, token.get("token"))))
                     return rule_book[each_rule](token, sample_path=sample_path)
         elif replacement_type == "file" or replacement_type == "mvfile":
             return FileRule(token, sample_path=sample_path)
