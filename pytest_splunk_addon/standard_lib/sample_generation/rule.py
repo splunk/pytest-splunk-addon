@@ -32,7 +32,7 @@ class Rule:
     """
     user_header = ["name", "email", "domain_user", "distinquised_name"]
     src_header = ["host", "ipv4", "ipv6", "fqdn"]
-    nt_template = namedtuple("nt_template", ['key', 'value'])
+    token_value = namedtuple("token_value", ['key', 'value'])
 
     def __init__(self, token, eventgen_params=None, sample_path=None):
         self.token = token["token"]
@@ -222,13 +222,13 @@ class IntRule(Rule):
         ).groups()
         if self.replacement_type == "random":
             for _ in range(token_count):
-                yield self.nt_template(
-                    *[randint(int(lower_limit), int(upper_limit))]*2
+                yield self.token_value(
+                    *([randint(int(lower_limit), int(upper_limit))]*2)
                     )
         else:
             for each_int in range(int(lower_limit), int(upper_limit)):
-                yield self.nt_template(
-                    *[str(each_int)]*2
+                yield self.token_value(
+                    *([str(each_int)]*2)
                     )
 
 
@@ -252,15 +252,15 @@ class FloatRule(Rule):
         if not precision:
             precision = str(1)
         for _ in range(token_count):
-            yield self.nt_template(
-                    *[round(
+            yield self.token_value(
+                    *([round(
                         uniform(
                             float(lower_limit),
                             float(upper_limit)
                             ),
                         len(precision),
                         )
-                      ]*2
+                      ]*2)
                     ) 
 
 
@@ -284,10 +284,10 @@ class ListRule(Rule):
 
         if self.replacement_type == "random":
             for _ in range(token_count):
-                yield self.nt_template(*[str(choice(value_list))]*2)
+                yield self.token_value(*([str(choice(value_list))]*2))
         else:
             for each_value in value_list:
-                yield self.nt_template(*[str(each_value)]*2)
+                yield self.token_value(*([str(each_value)]*2))
 
 
 class StaticRule(Rule):
@@ -304,7 +304,7 @@ class StaticRule(Rule):
             is to be applicable.
         """
         for _ in range(token_count):
-            yield self.nt_template(*([self.replacement]*2))
+            yield self.token_value(*([self.replacement]*2))
 
 
 class FileRule(Rule):
@@ -363,40 +363,31 @@ class FileRule(Rule):
                 file_path = file_path.rsplit(":", 1)[0]
             relative_file_path = file_path
 
-        if self.replacement_type == 'random'   or self.replacement_type == 'file':
+        if self.replacement_type in ['random', 'file']:
             # yield random value for the token by reading sample file
             try:
                 if index:
                     try:
                         index = int(index)
-                        # yield from self.nt_template(
-                        #     *[self.indexed_sample_file(
-                        #         relative_file_path,
-                        #         index,
-                        #         token_count
-                        #         )]*2
-                        #     )
-                        for i in self.indexed_sample_file(relative_file_path, index, token_count):
-                            yield self.nt_template(i, i)
+                        for i in self.indexed_sample_file(
+                                relative_file_path,
+                                index,
+                                token_count):
+                            yield self.token_value(i, i)
 
                     except ValueError:
-                        # yield from self.nt_template(
-                        #     *[self.lookupfile(
-                        #         relative_file_path,
-                        #         index,
-                        #         token_count
-                        #         )
-                        #       ]*2
-                        #     )
-                        for i in self.lookupfile(relative_file_path, index, token_count):
-                            yield self.nt_template(i,i)
+                        for i in self.lookupfile(
+                                relative_file_path,
+                                index,
+                                token_count):
+                            yield self.token_value(i,i)
                 else:
                     with open(relative_file_path) as f:
                         txt = f.read()
                         lines = [each for each in txt.split("\n") if each]
                         for _ in range(token_count):
-                            yield self.nt_template(
-                                *[choice(lines)]*2
+                            yield self.token_value(
+                                *([choice(lines)]*2)
                                 )
             except IOError:
                 LOGGER.warning(
@@ -414,12 +405,12 @@ class FileRule(Rule):
                         os.path.basename(file_path)
                         )
                     ))
-                yield self.nt_template(*[self.token]*2)
+                yield self.token_value(*([self.token]*2))
             else:
                 with open(relative_file_path) as f:
                     txt = f.read()
                     for each_value in txt.split("\n"):
-                        yield self.nt_template(*[each_value]*2)
+                        yield self.token_value(*([each_value]*2))
 
     def indexed_sample_file(self, file_path, index, token_count):
         """
@@ -529,21 +520,13 @@ class TimeRule(Rule):
                 )
 
             if r"%s" == self.replacement.strip("'").strip('"'):
-                yield self.nt_template(
+                yield self.token_value(
                     *([self.replacement.replace(
                         r"%s", str(int(mktime(random_time.timetuple())))
                         )]*2)
                     )
 
-            # elif r"%e" in self.replacement:
-            #     yield self.time_namedtuple(
-            #         random_time,
-            #         random_time.strftime(
-            #             self.replacement.replace(r'%e', r'%d')
-            #             )
-            #         )
-            # else:
-            yield self.nt_template(
+            yield self.token_value(
                 int(mktime(random_time.timetuple())),
                 random_time.strftime(
                     random_time.strftime(
@@ -567,7 +550,7 @@ class Ipv4Rule(Rule):
             where rule is to be applicable.
         """
         for _ in range(token_count):
-            yield self.nt_template(*[self.fake.ipv4()]*2)
+            yield self.token_value(*([self.fake.ipv4()]*2))
 
 
 class Ipv6Rule(Rule):
@@ -584,7 +567,7 @@ class Ipv6Rule(Rule):
             where rule is to be applicable.
         """
         for _ in range(token_count):
-            yield self.nt_template(*[self.fake.ipv6()]*2)
+            yield self.token_value(*([self.fake.ipv6()]*2))
 
 
 class MacRule(Rule):
@@ -601,7 +584,7 @@ class MacRule(Rule):
             where rule is to be applicable.
         """
         for _ in range(token_count):
-            yield self.nt_template(*[self.fake.mac_address()]*2)
+            yield self.token_value(*([self.fake.mac_address()]*2))
 
 
 class GuidRule(Rule):
@@ -618,7 +601,7 @@ class GuidRule(Rule):
             where rule is to be applicable.
         """
         for _ in range(token_count):
-            yield self.nt_template(*[str(uuid.uuid4())]*2)
+            yield self.token_value(*([str(uuid.uuid4())]*2))
 
 
 class UserRule(Rule):
@@ -653,8 +636,8 @@ class UserRule(Rule):
                     if item in value_list
                 ]
                 csv_rows = sample.replacement_map["email"]
-                yield self.nt_template(
-                    *[csv_rows[i][choice(index_list)]]*2
+                yield self.token_value(
+                    *([csv_rows[i][choice(index_list)]]*2)
                     )
             else:
                 index_list, csv_row = self.get_lookup_value(
@@ -663,7 +646,7 @@ class UserRule(Rule):
                     self.user_header,
                     value_list,
                 )
-                yield self.nt_template(*[csv_row[choice(index_list)]]*2)
+                yield self.token_value(*([csv_row[choice(index_list)]]*2))
 
 
 class EmailRule(Rule):
@@ -687,8 +670,8 @@ class EmailRule(Rule):
                 and i < len(sample.replacement_map["user"])
             ):
                 csv_rows = sample.replacement_map["user"]
-                yield self.nt_template(
-                    *[csv_rows[i][self.user_header.index("email")]]*2
+                yield self.token_value(
+                    *([csv_rows[i][self.user_header.index("email")]]*2)
                     )
             else:
                 index_list, csv_row = self.get_lookup_value(
@@ -697,8 +680,8 @@ class EmailRule(Rule):
                     self.user_header,
                     ["email"],
                 )
-                yield self.nt_template(
-                    *[csv_row[choice(index_list)]]*2
+                yield self.token_value(
+                    *([csv_row[choice(index_list)]]*2)
                     )
 
 
@@ -752,7 +735,7 @@ class UrlRule(Rule):
 
             if bool(set(["full", "query"]).intersection(value_list)):
                 url = url + self.generate_url_query_params()
-            yield self.nt_template(*[str(url)]*2)
+            yield self.token_value(*([str(url)]*2))
 
     def generate_url_query_params(self):
         """
@@ -800,8 +783,8 @@ class DestRule(Rule):
                 value_list,
                 rule="dest"
             )
-            yield self.nt_template(
-                *[choice(csv_row)]*2
+            yield self.token_value(
+                *([choice(csv_row)]*2)
                 )
 
 
@@ -819,8 +802,8 @@ class SrcPortRule(Rule):
             where rule is to be applicable.
         """
         for _ in range(token_count):
-            yield self.nt_template(
-                *[randint(4000, 5000)]*2
+            yield self.token_value(
+                *([randint(4000, 5000)]*2)
                 )
 
 
@@ -849,7 +832,7 @@ class DvcRule(Rule):
                 value_list,
                 rule="dvc"
                 )
-            yield self.nt_template(*[choice(csv_row)]*2)
+            yield self.token_value(*([choice(csv_row)]*2))
 
 
 class SrcRule(Rule):
@@ -877,7 +860,7 @@ class SrcRule(Rule):
                 value_list,
                 rule="src"
                 )
-            yield self.nt_template(*[choice(csv_row)]*2)
+            yield self.token_value(*([choice(csv_row)]*2))
 
 
 class DestPortRule(Rule):
@@ -895,7 +878,7 @@ class DestPortRule(Rule):
         """
         DEST_PORT = [80, 443, 25, 22, 21]
         for _ in range(token_count):
-            yield self.nt_template(*[choice(DEST_PORT)]*2)
+            yield self.token_value(*([choice(DEST_PORT)]*2))
 
 
 class HostRule(Rule):
@@ -936,7 +919,7 @@ class HostRule(Rule):
                 ]:
                     host_value = sample.get_host()
                 csv_row[0] = host_value
-            yield self.nt_template(*[choice(csv_row)]*2)
+            yield self.token_value(*([choice(csv_row)]*2))
 
 
 class HexRule(Rule):
@@ -976,4 +959,4 @@ class HexRule(Rule):
             for i in range(int(hex_range)):
                 hex_array.append(hex_digits[randint(0, 15)])
             hex_value = "".join(hex_array)
-            yield self.nt_template(*[hex_value]*2)
+            yield self.token_value(*([hex_value]*2))
