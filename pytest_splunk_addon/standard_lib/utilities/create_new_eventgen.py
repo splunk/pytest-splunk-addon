@@ -66,7 +66,7 @@ class UpdateEventgen():
                         events_in_file = len(open(os.path.join(self.path_to_samples, stanza)).readlines())
                         eventgen_dict[stanza]["expected_event_count"] = events_in_file
 
-                    except FileNotFoundError:
+                    except:
                         pass
                 else:
                     eventgen_dict[stanza][eventgen_property.name] = eventgen_property.value
