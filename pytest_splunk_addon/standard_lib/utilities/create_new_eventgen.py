@@ -47,7 +47,6 @@ class UpdateEventgen():
         """
         eventgen_dict = {}
         for stanza in self.eventgen.sects:
-            # events_in_file = 0
             eventgen_sections = self.eventgen.sects[stanza]
             eventgen_dict.setdefault((stanza), {
                 'tokens': {},
@@ -150,15 +149,15 @@ class UpdateEventgen():
                         if file_name in mapped_files:
                             if 'SA-Eventgen' in token_data["replacement"]:
                                 token_data["replacementType"] = (f"{replacement_type} "
-                                                                    f"{review_comments['mapping']%key_fields}")
+                                                                 f"{review_comments['mapping']%key_fields}")
 
                                 token_data["replacement"] = (f"{replacement} "
-                                                                f"{review_comments['mapping']%key_fields}")
+                                                             f"{review_comments['mapping']%key_fields}")
 
                             if replacement_type_values:
                                 token_data["replacement"] = (f"{token_data['replacement']} "
-                                                                f"{review_comments['replacement']} "
-                                                                f"{replacement_type_values}")
+                                                             f"{review_comments['replacement']} "
+                                                             f"{replacement_type_values}")
 
                             if field_value:
                                 token_data["field"] = (f"{field_value} "
@@ -183,8 +182,6 @@ class UpdateEventgen():
         params:
             updated_eventgen_dict (dict) : Containing all the new values for eventgen.conf
             new_conf_path : file path for creating new conf file
-        Returns:
-            None
         """
         with open(new_conf_path, 'w') as new_eventgen:
 
