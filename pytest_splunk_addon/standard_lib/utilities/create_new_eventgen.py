@@ -32,15 +32,17 @@ class UpdateEventgen():
         Return: 
             eventgen_dict (dict):
                 {
-                    "stanza_name": {    
+                    "stanza_name": 
+                    {    
                         "other metadata": "source, sourcetype, etc."
                         "expected_event_count" : int
-                        "tokens": {
+                        "tokens": 
+                        {
                             0: {
                                 token: #One#
                                 replacementType: random
                                 replacement: static 
-                            }
+                               }
                         }
                     }
                 }
@@ -52,6 +54,13 @@ class UpdateEventgen():
                 'tokens': {},
             })
 
+            try:
+                events_in_file = len(open(os.path.join(self.path_to_samples, stanza)).readlines())
+                eventgen_dict[stanza]["expected_event_count"] = events_in_file
+
+            except:
+                pass
+
             for stanza_param in eventgen_sections.options:
                 eventgen_property = eventgen_sections.options[stanza_param]
                 if eventgen_property.name.startswith('token'):
@@ -61,21 +70,15 @@ class UpdateEventgen():
                         eventgen_dict[stanza]['tokens'][token_id] = {
                         }
                     eventgen_dict[stanza]['tokens'][token_id][token_param] = eventgen_property.value
-                    try:
-                        events_in_file = len(open(os.path.join(self.path_to_samples, stanza)).readlines())
-                        eventgen_dict[stanza]["expected_event_count"] = events_in_file
 
-                    except:
-                        pass
                 else:
                     eventgen_dict[stanza][eventgen_property.name] = eventgen_property.value
 
             for sample_file in os.listdir(self.path_to_samples):
-                events_in_file = len(open(os.path.join(self.path_to_samples, sample_file)).readlines())
 
                 if re.search(stanza, sample_file):
-                    eventgen_sections = self.eventgen.sects[stanza]
 
+                    events_in_file = len(open(os.path.join(self.path_to_samples, sample_file)).readlines())
                     if sample_file not in eventgen_dict.keys():
                         eventgen_dict.setdefault((sample_file), {})
                         eventgen_dict[sample_file]["expected_event_count"] = events_in_file
