@@ -28,7 +28,6 @@ class SampleStanza(object):
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
         self.sample_rules = list(self._parse_rules(eventgen_params, self.sample_path))
-        # self.input_type = eventgen_params.get('input_type')
         self.metadata = self._parse_meta(eventgen_params)
         self.input_type = self.metadata.get("input_type", "default")
         self.host_count = 0
@@ -50,21 +49,28 @@ class SampleStanza(object):
             )
             yield event
 
-    def tokenize(self):
+    def tokenize(self, bulk_event_ingestion):
         """
         Tokenize the raw events(self.sample_raw_data) and stores them into self.tokenized_events.
         For backward compatibility added required count support.
         """
-        required_event_count =self.metadata.get("count", 1)
         event = list(self.tokenized_events)
-        for each_rule in self.sample_rules:
-            if each_rule:
-                event = each_rule.apply(event)
-        while event and (int(required_event_count)) > len((event)):
+
+        if bulk_event_ingestion :
+            required_event_count = self.metadata.get("count")
+            if required_event_count == '0' or required_event_count is None:
+                required_event_count = 100
             for each_rule in self.sample_rules:
-                if each_rule:
+                event = each_rule.apply(event)
+            while event and (int(required_event_count)) > len((event)):
+                for each_rule in self.sample_rules:
                     event = each_rule.apply(event)    
-            event.extend(event)
+                event.extend(event)
+                event = event[:int(required_event_count)]
+
+        else:    
+            for each_rule in self.sample_rules:
+                event = each_rule.apply(event)        
         self.tokenized_events = event
 
     def _parse_rules(self, eventgen_params, sample_path):

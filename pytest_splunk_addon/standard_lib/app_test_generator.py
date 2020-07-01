@@ -71,16 +71,14 @@ class AppTestGenerator(object):
                 self.cim_test_generator.generate_tests(fixture), fixture
             )
         elif fixture.startswith("splunk_indextime_fields"):
-            # TODO: What should be the id of the test case?
-            # Sourcetype + Host + Key field + _count
             addon_path = self.pytest_config.getoption("splunk_app")
-            sample_generator = SampleGenerator(addon_path)
-            assert sample_generator.splunk_test_type == "splunk_indextime"," For indextime testing pytest-splunk-addon-sample-generator.conf is required."
-            pytest_params = list(
-                self.indextime_test_generator.generate_tests(sample_generator.get_samples())
-            )
-
-            yield from sorted(pytest_params, key=lambda param: param.id)
+            config_path = self.pytest_config.getoption("splunk_data_generator")
+            sample_generator = SampleGenerator(addon_path, config_path, bulk_event_ingestion = False)
+            if sample_generator.splunk_test_type == "splunk_indextime":
+                pytest_params = list(
+                    self.indextime_test_generator.generate_tests(sample_generator.get_samples())
+                )
+                yield from sorted(pytest_params, key=lambda param: param.id)
 
     def dedup_tests(self, test_list, fixture):
         """

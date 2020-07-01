@@ -15,31 +15,32 @@ class EventgenParser:
     """
     splunk_test_type = " "
 
-    def __init__(self, addon_path):
+    def __init__(self, addon_path, config_path=None):
         """
         init method for the class
-        
+    
         Args:
             addon_path(str): Path to the addon 
         """
         self._app = App(addon_path, python_analyzer_enable=False)
+        self.config_path = config_path 
         self._eventgen = None
         self.addon_path = addon_path
-        self.path_to_samples = os.path.join(addon_path, "package", "samples")
+        self.path_to_samples = os.path.join(addon_path, "samples")
 
     @property
     def eventgen(self):
-        try:            
-            if os.path.exists(os.path.join(self.addon_path, "tests", "plugin_event_generator", "pytest-splunk-addon-sample-generator.conf")):
-                self._eventgen = self._app.get_config("pytest-splunk-addon-sample-generator.conf", dir = os.path.join("..", "tests", "plugin_event_generator"))
+        try:
+            relative_path = os.path.relpath(self.config_path, self.addon_path)
+            if os.path.exists(os.path.join(self.config_path, "pytest-splunk-addon-sample-generator.conf")):
+                self._eventgen = self._app.get_config("pytest-splunk-addon-sample-generator.conf", dir=relative_path)
                 self.splunk_test_type = "splunk_indextime"
             else:
-                self._eventgen = self._app.get_config("eventgen.conf", dir = "default")    
+                self._eventgen = self._app.get_config("eventgen.conf")    
                 self.splunk_test_type = "splunk_searchtime"
             return self._eventgen
         except OSError:
             LOGGER.warning("eventgen.conf not found.")
-            raise Exception("Eventgen.conf not found")
             return None
 
     def get_sample_stanzas(self):
@@ -75,21 +76,22 @@ class EventgenParser:
             Eventgen stanzas dictionary
         """
         eventgen_dict = {}
-        for sample_file in os.listdir(self.path_to_samples):
-            for stanza in self.eventgen.sects:
-                if re.search(stanza, sample_file):
-                    eventgen_sections = self.eventgen.sects[stanza]
-                    eventgen_dict.setdefault((sample_file), {
-                        'tokens': {}
-                    })
-                    for stanza_param in eventgen_sections.options:
-                        eventgen_property = eventgen_sections.options[stanza_param]
-                        if eventgen_property.name.startswith('token'):
-                            _, token_id, token_param = eventgen_property.name.split('.')
-                            if not token_id in eventgen_dict[sample_file]['tokens'].keys():
-                                eventgen_dict[sample_file]['tokens'][token_id] = {}
-                            eventgen_dict[sample_file]['tokens'][token_id][token_param] = eventgen_property.value
-                        else:
-                            eventgen_dict[sample_file][eventgen_property.name] = eventgen_property.value
+        if os.path.exists(self.path_to_samples):
+            for sample_file in os.listdir(self.path_to_samples):
+                for stanza in self.eventgen.sects:
+                    if re.search(stanza, sample_file):
+                        eventgen_sections = self.eventgen.sects[stanza]
+                        eventgen_dict.setdefault((sample_file), {
+                            'tokens': {}
+                        })
+                        for stanza_param in eventgen_sections.options:
+                            eventgen_property = eventgen_sections.options[stanza_param]
+                            if eventgen_property.name.startswith('token'):
+                                _, token_id, token_param = eventgen_property.name.split('.')
+                                if not token_id in eventgen_dict[sample_file]['tokens'].keys():
+                                    eventgen_dict[sample_file]['tokens'][token_id] = {}
+                                eventgen_dict[sample_file]['tokens'][token_id][token_param] = eventgen_property.value
+                            else:
+                                eventgen_dict[sample_file][eventgen_property.name] = eventgen_property.value
         return eventgen_dict
 
