@@ -7,6 +7,7 @@ from .rule import Rule
 from . import SampleStanza
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
+import warnings
 
 
 class EventgenParser:
@@ -23,6 +24,7 @@ class EventgenParser:
         self._app = App(addon_path, python_analyzer_enable=False)
         self._eventgen = None
         self.path_to_samples = os.path.join(addon_path, "samples")
+        self.match_stanzas = set()
 
     @property
     def eventgen(self):
@@ -44,6 +46,7 @@ class EventgenParser:
         Yields: SampleStanza Object
         """
         eventgen_dict = self.get_eventgen_stanzas()
+        self.check_samples()
         for sample_name, stanza_params in eventgen_dict.items():
             sample_path = os.path.join(self.path_to_samples, sample_name)
             yield SampleStanza(
@@ -75,6 +78,7 @@ class EventgenParser:
         for sample_file in os.listdir(self.path_to_samples):
             for stanza in self.eventgen.sects:
                 if re.search(stanza, sample_file):
+                    self.match_stanzas.add(stanza)
                     eventgen_sections = self.eventgen.sects[stanza]
                     eventgen_dict.setdefault((sample_file), {
                         'tokens': {}
@@ -89,4 +93,9 @@ class EventgenParser:
                         else:
                             eventgen_dict[sample_file][eventgen_property.name] = eventgen_property.value
         return eventgen_dict
-
+    
+    def check_samples(self):
+        for stanza in self.eventgen.sects:
+            if stanza not in self.match_stanzas:
+                LOGGER.warning("No sample file found for stanza : {}".format(stanza))
+                warnings.warn(UserWarning("No sample file found for stanza : {}".format(stanza)))

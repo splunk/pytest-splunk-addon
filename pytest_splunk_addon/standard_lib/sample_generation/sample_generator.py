@@ -29,7 +29,7 @@ class SampleGenerator(object):
         if not SampleGenerator.sample_stanzas:
             eventgen_parser = EventgenParser(self.addon_path)
             SampleGenerator.sample_stanzas = list(eventgen_parser.get_sample_stanzas())
-            with ThreadPoolExecutor(min(20, len(SampleGenerator.sample_stanzas))) as t:
+            with ThreadPoolExecutor(min(20, max(len(SampleGenerator.sample_stanzas), 1))) as t:
                 t.map(SampleStanza.get_raw_events, SampleGenerator.sample_stanzas)
             # with ProcessPoolExecutor(self.process_count) as p:
             _ = list(map(SampleStanza.tokenize, SampleGenerator.sample_stanzas))
