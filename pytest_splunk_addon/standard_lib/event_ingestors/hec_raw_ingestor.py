@@ -65,7 +65,6 @@ class HECRawEventIngestor(EventIngestor):
                 host = event.metadata["host"]
             else:
                 host = event.key_fields["host"]
-​
             if event.metadata.get("timestamp_type") in ('plugin', None):
                 if not event.key_fields.get("_time"):
                     event.key_fields['_time'] = [int(time.time())]
