@@ -10,8 +10,8 @@ class IngestorHelper(object):
     """
     Module for helper methods for ingestors.
     """
-
-    def get_event_ingestor(self, input_type, ingest_meta_data):
+    @classmethod
+    def get_event_ingestor(cls, input_type, ingest_meta_data):
         """
         Based on the input_type of the event, it returns an appropriate ingestor.
         """
