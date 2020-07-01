@@ -47,6 +47,6 @@ def add_time(tokenized_event):
     """
     if (tokenized_event.metadata.get("timestamp_type") == "plugin"):
         time_to_ingest = int(time.time())
-        tokenized_event.key_fields["_time"] = [str(time_to_ingest)]
+        tokenized_event.time_values = [str(time_to_ingest)]
 
     return tokenized_event

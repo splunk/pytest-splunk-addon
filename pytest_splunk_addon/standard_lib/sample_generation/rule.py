@@ -380,7 +380,7 @@ class FileRule(Rule):
                                 relative_file_path,
                                 index,
                                 token_count):
-                            yield self.token_value(i,i)
+                            yield self.token_value(i, i)
                 else:
                     with open(relative_file_path) as f:
                         txt = f.read()

@@ -82,11 +82,11 @@ class HECEventIngestor(EventIngestor):
 
             if event.metadata.get("timestamp_type") in ('plugin', None):
                 if not event.key_fields.get("_time"):
-                    event.key_fields['_time'] = [int(time())]
+                    event.time_values = [int(time())]
 
-                event_dict['time'] = event.key_fields.get("_time")[0]
+                event_dict['time'] = event.time_values[0]
             else:
-                event_dict['time'] = event.key_fields.get("_time")[0]
+                event_dict['time'] = event.time_values[0]
             data.append(event_dict)
 
         batch_event_list = []

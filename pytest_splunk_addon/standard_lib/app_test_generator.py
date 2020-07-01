@@ -70,17 +70,39 @@ class AppTestGenerator(object):
             yield from self.dedup_tests(
                 self.cim_test_generator.generate_tests(fixture), fixture
             )
-        elif fixture.startswith("splunk_indextime_fields"):
+        elif fixture.startswith("splunk_indextime"):
             # TODO: What should be the id of the test case?
             # Sourcetype + Host + Key field + _count
             addon_path = self.pytest_config.getoption("splunk_app")
             sample_generator = SampleGenerator(addon_path)
+            samples = sample_generator.get_samples()
+            pytest_params = None
 
-            pytest_params = list(
-                self.indextime_test_generator.generate_tests(sample_generator.get_samples())
-            )
+            if "key_fields" in fixture:
+                pytest_params = list(
+                    self.indextime_test_generator.generate_tests(
+                        samples,
+                        test_type="key_fields"
+                        )
+                )
 
-            yield from sorted(pytest_params, key=lambda param: param.id)
+            elif "_time" in fixture:
+                pytest_params = list(
+                    self.indextime_test_generator.generate_tests(
+                        samples,
+                        test_type="_time"
+                        )
+                )
+
+            elif "line_breaker" in fixture:
+                pytest_params = list(
+                    self.indextime_test_generator.generate_tests(
+                        samples,
+                        test_type="line_breaker"
+                        )
+                )
+            if pytest_params:
+                yield from sorted(pytest_params, key=lambda param: param.id)
 
     def dedup_tests(self, test_list, fixture):
         """

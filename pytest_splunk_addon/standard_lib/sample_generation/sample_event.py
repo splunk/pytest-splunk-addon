@@ -48,6 +48,7 @@ class SampleEvent(object):
         """
         self.event = event_string
         self.key_fields = dict()
+        self.time_values = list()
         self.metadata = metadata
         self.sample_name = sample_name
         self.host_count = 0
@@ -200,6 +201,9 @@ class SampleEvent(object):
             field(str): Token field name 
             token_values(list/str): Value to be replace in token 
         """
+        if field == "_time":
+            time_list = token_values if isinstance(token_values, list) else [token_values]
+            self.time_values.extend([i.key for i in time_list])
         if field in key_fields.KEY_FIELDS:
             if isinstance(token_values, list):
                 for token_value in token_values:
@@ -207,7 +211,7 @@ class SampleEvent(object):
                         str(token_value.key)
                         )
             else:
-                self.key_fields.setdefault(field, []).append(str(token_values))
+                self.key_fields.setdefault(field, []).append(str(token_values.key))
 
     def get_key_fields(self):
         """
