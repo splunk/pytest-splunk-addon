@@ -204,10 +204,10 @@ class SampleEvent(object):
             if isinstance(token_values, list):
                 for token_value in token_values:
                     self.key_fields.setdefault(field, []).append(
-                        token_value.key
+                        str(token_value.key)
                         )
             else:
-                self.key_fields.setdefault(field, []).append(token_values)
+                self.key_fields.setdefault(field, []).append(str(token_values))
 
     def get_key_fields(self):
         """

@@ -304,7 +304,7 @@ class StaticRule(Rule):
             is to be applicable.
         """
         for _ in range(token_count):
-            yield self.nt_template(*[self.replacement]*2)
+            yield self.nt_template(*([self.replacement]*2))
 
 
 class FileRule(Rule):
@@ -528,12 +528,12 @@ class TimeRule(Rule):
                     random_time, sign, hrs, mins
                 )
 
-            if r"%s" in self.replacement:
-                yield str(
-                    self.replacement.replace(
-                        r"%s", str(int(random_time.strftime("%Y%m%d%H%M%S")))
+            if r"%s" == self.replacement.strip("'").strip('"'):
+                yield self.nt_template(
+                    *([self.replacement.replace(
+                        r"%s", str(int(mktime(random_time.timetuple())))
+                        )]*2)
                     )
-                )
 
             # elif r"%e" in self.replacement:
             #     yield self.time_namedtuple(
@@ -544,7 +544,7 @@ class TimeRule(Rule):
             #         )
             # else:
             yield self.nt_template(
-                random_time,
+                int(mktime(random_time.timetuple())),
                 random_time.strftime(
                     random_time.strftime(
                         self.replacement.replace(r'%e', r'%d')

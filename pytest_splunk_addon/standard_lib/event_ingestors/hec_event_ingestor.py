@@ -65,19 +65,20 @@ class HECEventIngestor(EventIngestor):
         data = list()
         for event in events:
 
-            if event.metadata.get("host_type") in ("plugin", None):
-                host = event.metadata["host"]
-            else:
-                host = event.key_fields["host"]
-
             event_dict = {
                 "sourcetype": event.metadata.get("sourcetype",
                                                  "pytest_splunk_addon"),
                 "source": event.metadata.get("source",
                                              "pytest_splunk_addon:hec:event"),
-                "host": host,
                 "event": event.event,
             }
+
+            if event.metadata.get("host_type") in ("plugin", None):
+                host = event.metadata.get("host")
+            else:
+                host = event.key_fields.get("host")
+            if host:
+                event_dict['host'] = host
 
             if event.metadata.get("timestamp_type") in ('plugin', None):
                 if not event.key_fields.get("_time"):
@@ -85,10 +86,7 @@ class HECEventIngestor(EventIngestor):
 
                 event_dict['time'] = event.key_fields.get("_time")[0]
             else:
-                event_dict['time'] = int(
-                   mktime(event.key_fields.get("_time")[0].time_obj.timetuple())
-                   )
-
+                event_dict['time'] = event.key_fields.get("_time")[0]
             data.append(event_dict)
 
         batch_event_list = []
