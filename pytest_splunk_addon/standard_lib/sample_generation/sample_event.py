@@ -175,12 +175,21 @@ class SampleEvent(object):
             for each_obj in re.finditer(token, self.event):
                 match_tokens.append(each_obj.group(0))
             for token_index, token_value in enumerate(token_values):
+                token_value = token_value.value
+
                 self.event = re.sub(
-                    match_tokens[token_index], lambda x: str(token_value), self.event, 1, flags=re.MULTILINE
+                    match_tokens[token_index],
+                    lambda x: str(token_value),
+                    self.event,
+                    1,
+                    flags=re.MULTILINE
                 )
         else:
             self.event = re.sub(
-                token, lambda x: str(token_values), self.event, flags=re.MULTILINE
+                token,
+                lambda x: str(token_values),
+                self.event,
+                flags=re.MULTILINE
             )
 
     def register_field_value(self, field, token_values):
@@ -194,9 +203,11 @@ class SampleEvent(object):
         if field in key_fields.KEY_FIELDS:
             if isinstance(token_values, list):
                 for token_value in token_values:
-                    self.key_fields.setdefault(field, []).append(str(token_value))
+                    self.key_fields.setdefault(field, []).append(
+                        token_value.key
+                        )
             else:
-                self.key_fields.setdefault(field, []).append(str(token_values))
+                self.key_fields.setdefault(field, []).append(token_values)
 
     def get_key_fields(self):
         """

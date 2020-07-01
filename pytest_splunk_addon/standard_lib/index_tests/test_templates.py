@@ -33,12 +33,12 @@ class IndexTimeTestTemplate(object):
         else:
             extra_filter = "host=" + splunk_indextime_fields.get("host", "*")
 
-        if splunk_indextime_fields["tokenized_event"].key_fields.get("_time"):
-            if splunk_indextime_fields["tokenized_event"].metadata.get("timestamp_type") in ('plugin', None):
-                extra_filter += " | eval e_time=_time"
-                splunk_indextime_fields["tokenized_event"].key_fields[
-                    "e_time"
-                ] = splunk_indextime_fields["tokenized_event"].key_fields.pop("_time")
+        # if splunk_indextime_fields["tokenized_event"].key_fields.get("_time"):
+        #     if splunk_indextime_fields["tokenized_event"].metadata.get("timestamp_type") in ('plugin', None):
+        #         extra_filter += " | eval e_time=_time"
+        #         splunk_indextime_fields["tokenized_event"].key_fields[
+        #             "e_time"
+        #         ] = splunk_indextime_fields["tokenized_event"].key_fields.pop("_time")
 
         query = "sourcetype={} source={} {} | table {}".format(
             splunk_indextime_fields.get("sourcetype"),
@@ -61,20 +61,20 @@ class IndexTimeTestTemplate(object):
 
         for result in results:
             for key in result:
+                if not key == '_time':
+                    record_property("what_we_got_for_" + key, result[key])
 
-                record_property("what_we_got_for_" + key, result[key])
+                    msg = "looking for {}={} Found {}={}".format(
+                        key,
+                        splunk_indextime_fields["tokenized_event"].key_fields[key],
+                        key,
+                        result[key],
+                    )
 
-                msg = "looking for {}={} Found {}={}".format(
-                    key,
-                    splunk_indextime_fields["tokenized_event"].key_fields[key],
-                    key,
-                    result[key],
-                )
-
-                assert (
-                    result[key]
-                    in splunk_indextime_fields["tokenized_event"].key_fields[key]
-                ), msg
+                    assert (
+                        result[key]
+                        in splunk_indextime_fields["tokenized_event"].key_fields[key]
+                    ), msg
 
         # Testing line breaker
 

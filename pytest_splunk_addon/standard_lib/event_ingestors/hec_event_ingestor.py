@@ -3,7 +3,7 @@ HEC Event Ingestor class
 """
 from .base_event_ingestor import EventIngestor
 import requests
-import time
+from time import time, mktime
 import concurrent.futures
 import logging
 import os
@@ -71,27 +71,33 @@ class HECEventIngestor(EventIngestor):
                 host = event.key_fields["host"]
 
             event_dict = {
-                "sourcetype": event.metadata.get("sourcetype", "pytest_splunk_addon"),
-                "source": event.metadata.get("source", "pytest_splunk_addon:hec:event"),
+                "sourcetype": event.metadata.get("sourcetype",
+                                                 "pytest_splunk_addon"),
+                "source": event.metadata.get("source",
+                                             "pytest_splunk_addon:hec:event"),
                 "host": host,
                 "event": event.event,
             }
 
             if event.metadata.get("timestamp_type") in ('plugin', None):
                 if not event.key_fields.get("_time"):
-                    event.key_fields['_time'] = [int(time.time())]
+                    event.key_fields['_time'] = [int(time())]
 
                 event_dict['time'] = event.key_fields.get("_time")[0]
+            else:
+                event_dict['time'] = int(
+                   mktime(event.key_fields.get("_time")[0].time_obj.timetuple())
+                   )
 
             data.append(event_dict)
-        
+
         batch_event_list = []
         for i in range(0, len(data), 100):
-            batch_event_list.append(data[i : i + 100])
+            batch_event_list.append(data[i: i + 100])
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
             executor.map(self.__ingest, batch_event_list)
-        
+
     def __ingest(self, data):
         try:
             response = requests.post(
@@ -108,7 +114,7 @@ class HECEventIngestor(EventIngestor):
                     )
                 )
                 raise Exception
-        
+
         except Exception as e:
             LOGGER.error(e)
             os._exit(0)
