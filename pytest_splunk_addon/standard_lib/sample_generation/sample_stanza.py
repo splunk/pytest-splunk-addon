@@ -4,7 +4,7 @@ import copy
 from . import Rule
 from . import SampleEvent
 
-
+BULK_EVENT_COUNT = 100
 class SampleStanza(object):
     """
     This class represents a stanza of the eventgen.conf.
@@ -59,14 +59,14 @@ class SampleStanza(object):
         if bulk_event_ingestion :
             required_event_count = self.metadata.get("count")
             if required_event_count == '0' or required_event_count is None:
-                required_event_count = 100
+                required_event_count = BULK_EVENT_COUNT
             for each_rule in self.sample_rules:
                 event = each_rule.apply(event)
             while event and (int(required_event_count)) > len((event)):
                 for each_rule in self.sample_rules:
                     event = each_rule.apply(event)    
                 event.extend(event)
-                event = event[:int(required_event_count)]
+            event = event[:int(required_event_count)]
 
         else:    
             for each_rule in self.sample_rules:

@@ -494,7 +494,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
         "splunk_host": sc4s[0],  # for sc4s
         "sc4s_port": sc4s[1][514]  # for sc4s
     }
-    IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, False)
+    IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, bulk_event_ingestion=False)
 
 
 @pytest.fixture(scope="class")
@@ -524,7 +524,7 @@ def splunk_ingest_bulk_data(request, splunk_hec_uri, sc4s):
         "sc4s_port": sc4s[1][514]  # for sc4s
     }
 
-    IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, True)
+    IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, bulk_event_ingestion=True)
 
 def is_responsive_splunk(splunk):
     """
