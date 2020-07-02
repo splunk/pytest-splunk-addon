@@ -7,7 +7,7 @@ import requests
 import concurrent.futures
 import logging
 import os
-
+import time
 requests.urllib3.disable_warnings()
 
 LOGGER = logging.getLogger("pytest-splunk-addon")

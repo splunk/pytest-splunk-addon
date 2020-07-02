@@ -919,17 +919,16 @@ class HostRule(Rule):
                     "modinput",
                     "windows_input",
                 ]:
-                    host_value = sample.metadata.get("host")
+                    csv_row[0] = sample.metadata.get("host")
                 elif sample.metadata.get("input_type") in [
                     "file_monitor",
                     "scripted_input",
                     "syslog_tcp",
                     "syslog_udp",
-                    "other",
+                    "default",
                 ]:
-                    host_value = sample.get_host()
-                csv_row[0] = host_value
-            yield self.token_value(*([choice(csv_row)]*2))
+                    csv_row[0] = sample.get_host()
+            yield choice(csv_row)
 
 
 class HexRule(Rule):

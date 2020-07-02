@@ -4,14 +4,14 @@ from . import (
     HECMetricEventIngestor,
     SC4SEventIngestor,
 )
-
+from ..sample_generation import SampleGenerator
 
 class IngestorHelper(object):
     """
     Module for helper methods for ingestors.
     """
     @classmethod
-    def get_event_ingestor(self, input_type, ingest_meta_data):
+    def get_event_ingestor(cls, input_type, ingest_meta_data):
         """
         Based on the input_type of the event, it returns an appropriate ingestor.
         """
@@ -28,3 +28,27 @@ class IngestorHelper(object):
 
         ingestor = ingest_methods.get(input_type)(ingest_meta_data)
         return ingestor
+
+    @classmethod
+    def ingest_events(cls, ingest_meta_data, addon_path, config_path, bulk_event_ingestion):
+        """
+        Events are ingested in the splunk.
+        Args:
+            ingest_meta_data(dict): Dictionary of required meta_data.
+            addon_path: Path to Splunk app package.
+            config_path: Path to pytest-splunk-addon-sample-generator.conf.
+            bulk_event_ingestion(bool): Boolean param for bulk event ingestion.
+
+        """
+        sample_generator = SampleGenerator(addon_path, config_path, bulk_event_ingestion=bulk_event_ingestion)
+        ingestor_dict = dict()
+        for event in sample_generator.get_samples():
+            input_type = event.metadata.get("input_type")
+            if input_type in ingestor_dict:
+                ingestor_dict[input_type].append(event)
+            else:
+                ingestor_dict[input_type] = [event]
+        for input_type, events in ingestor_dict.items():
+
+            event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
+            event_ingestor.ingest(events)
