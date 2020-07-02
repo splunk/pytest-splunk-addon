@@ -8,6 +8,7 @@ from random import uniform, randint, choice
 from time import strftime, mktime
 from .time_parser import time_parse
 import os
+import random
 
 from . import SampleEvent
 import logging
@@ -37,6 +38,7 @@ class Rule:
         self.eventgen_params = eventgen_params
         self.sample_path = sample_path
         self.fake = Faker()
+        self.file_count = 0
 
     @classmethod
     def parse_rule(cls, token, eventgen_params, sample_path):
@@ -278,6 +280,7 @@ class FileRule(Rule):
     """
     FileRule
     """
+    every_replacement_types = []
     def replace(self, sample, token_count):
         """
         Yields the values of token by reading files.
@@ -285,6 +288,32 @@ class FileRule(Rule):
         Args:
             sample(object): Instance of SampleEvent class.
             token_count(int): No. of token in sample event where rule is to be applicable.
+        """
+        relative_file_path, index = self.get_file_path()
+
+        if index:
+            try:
+                index = int(index)
+                yield from self.indexed_sample_file(sample, relative_file_path, index, token_count)
+            except ValueError:
+                yield from self.lookupfile(sample, relative_file_path, index, token_count)
+        else:
+            try:
+                with open(relative_file_path) as f:
+                    txt = f.read()
+                    lines = [each.strip() for each in txt.split("\n") if each]
+                    for _ in range(token_count):
+                        if self.replacement_type == 'random' or self.replacement_type == 'file':
+                            yield choice(lines)
+                        elif self.replacement_type == 'all':
+                            for each_value in lines:
+                                yield each_value
+            except IOError:
+                LOGGER.warning("File not found : {}".format(relative_file_path))
+
+    def get_file_path(self):
+        """
+        Returns the relative sample file path and index value
         """
         if self.replacement.startswith("file" or "File"):
             sample_file_path = re.match(
@@ -294,7 +323,6 @@ class FileRule(Rule):
             sample_file_path = self.replacement
         
         sample_file_path = sample_file_path.replace("/", os.sep)
-
         relative_file_path = self.sample_path.split(f"{os.sep}samples")[0]
         try:
             # get the relative_file_path and index value from filepath mentioned in the token if the filepath matches the pattern
@@ -317,76 +345,69 @@ class FileRule(Rule):
                 index = (file_index[1] if len(file_index)>1 else None)
                 file_path = file_path.rsplit(":", 1)[0]
             relative_file_path = file_path
+        
+        return relative_file_path, index
 
-        if self.replacement_type == 'random':
-            # yield random value for the token by reading sample file
-            try:
-                if index:
-                    try:
-                        index = int(index)
-                        yield from self.indexed_sample_file(relative_file_path, index, token_count)
-                    except ValueError:
-                        yield from self.lookupfile(relative_file_path, index, token_count)
-                else:
-                    with open(relative_file_path) as f:
-                        txt = f.read()
-                        lines = [each for each in txt.split("\n") if each]
-                        for _ in range(token_count):
-                            yield choice(lines)
-            except IOError as e:
-                LOGGER.warning("File not found : {}".format(relative_file_path))
-        elif self.replacement_type == 'all':
-            # yield all values present in sample file for the token by reading sample file
-            # it will not generate the value for indexed files
-            if index:
-                LOGGER.error(f"replacement_type 'all' is not supported for indexd file '{os.path.basename(file_path)}'")
-                yield self.token
-            else:
-                with open(relative_file_path) as f: 
-                    txt = f.read()
-                    for each_value in txt.split("\n"):
-                        yield each_value
-        elif self.replacement_type == 'file':
-            # yield random value for the token with indexed sample file by reading sample file
-            # yield all values present in sample file for the token by reading sample file
-            try:
-                if index:
-                    try:
-                        index = int(index)
-                        yield from self.indexed_sample_file(relative_file_path, index, token_count)
-                    except ValueError:
-                        yield from self.lookupfile(relative_file_path, index, token_count)
-                else:
-                    with open(relative_file_path) as f:
-                        txt = f.read()
-                        for each_value in txt.split("\n"):
-                            yield each_value
-            except IOError:
-                LOGGER.warn("File not found : {}".format(relative_file_path))
-
-    def indexed_sample_file(self, file_path, index, token_count):
+    def indexed_sample_file(self, sample, file_path, index, token_count):
         """
         Yields the column value of token by reading files.
         
         Args:
             file_path: path of the file mentioned in token.
             index: index value mentioned in file_path i.e. <file_path>:<index>
-            token_count(int): No. of token in sample event where rule is to be applicable.
         """
+        all_data = []
         try:
-            with open(file_path, 'r') as f:
-                output = []
-                for line in f:
-                    cells = line.split(",")
-                    output.append((cells[index-1].strip("\n")))
-                for _ in range(token_count):
-                    yield choice(output)
+            with open(file_path, 'r') as _file:
+                selected_sample_lines = _file.readlines()
+                for i in selected_sample_lines:
+                    if i.strip() != '':
+                        all_data.append(i.strip())
+            
+                if (
+                    hasattr(sample, "replacement_map")
+                    and file_path in sample.replacement_map
+                ):
+                    index = int(index)
+                    file_values = sample.replacement_map[file_path][self.file_count].split(',')
+                    if 'file_all' in self.every_replacement_types:
+                        # if condition to increase the line no. of sample data
+                        # when the replacement_type = all provided in token for indexed file
+                        if self.file_count == len(all_data)-1:
+                            # reset the file count when count reaches to pick value corresponding to 
+                            # length of the sample data
+                            self.file_count = 0
+                        else:
+                            self.file_count += 1
+                    for _ in range(token_count):
+                        yield file_values[index-1]
+                else:
+                    index = int(index)
+                    if (
+                        hasattr(sample, "replacement_map")
+                        and file_path in sample.replacement_map
+                    ):
+                        sample.replacement_map[file_path].append(all_data)
+                    else:
+                        if self.replacement_type == 'all':
+                            self.every_replacement_types.append("file_all")
+                            sample.__setattr__("replacement_map", {file_path: all_data})
+                            for i in all_data:
+                                file_values = i.split(',')
+                                for _ in range(token_count):
+                                    yield file_values[index-1]
+                        else:
+                            random_line = random.randint(0, len(all_data)-1)
+                            sample.__setattr__("replacement_map", {file_path: [all_data[random_line]]})
+                            file_values = all_data[random_line].split(',')
+                            for _ in range(token_count):
+                                yield file_values[index-1]
         except IndexError:
             LOGGER.error("Index for column '%s' in replacement file '%s' is out of bounds" % (index, file_path))
         except IOError:
-            raise IOError
+            LOGGER.warning("File not found : {}".format(file_path))
 
-    def lookupfile(self, file_path, index, token_count):
+    def lookupfile(self, sample, file_path, index, token_count):
         """
         Yields the column value of token by reading files.
         
@@ -395,20 +416,43 @@ class FileRule(Rule):
             index: index value mentioned in file_path i.e. <file_path>:<index>
             token_count(int): No. of token in sample event where rule is to be applicable.
         """
+        all_data = []
+        header = ''
         try:
-            with open(file_path, 'r') as f:
-                output = []
-                data = csv.DictReader(f)
-                try:
-                    for row in data:
-                        for col in [index]:
-                            output.append(row[col])
-                    for _ in range(token_count):
-                        yield choice(output)
-                except KeyError as e:
-                    LOGGER.error("Column '%s' is not present replacement file '%s'" % (index, file_path))
+            with open(file_path, 'r') as _file:
+                header = next(_file)
+                for line in _file:
+                    if line.strip() != '':
+                        all_data.append(line.strip())
+            for _ in range(token_count):
+                if (
+                    hasattr(sample, "replacement_map")
+                    and file_path in sample.replacement_map
+                ):
+                    index = sample.replacement_map[file_path][0].strip().split(',').index(index)
+                    file_values = sample.replacement_map[file_path][1].split(',')
+
+                    yield file_values[index]
+                else:
+                    if (
+                        hasattr(sample, "replacement_map")
+                        and file_path in sample.replacement_map
+                    ):
+                        sample.replacement_map[file_path].append(all_data)
+                    else:
+                        if self.replacement_type == 'random' or self.replacement_type == 'file':
+                            self.file_count = random.randint(0, len(all_data)-1)
+                            sample.__setattr__("replacement_map", {file_path: [header, all_data[self.file_count]]})
+                            index = header.strip().split(',').index(index)
+                            file_values = all_data[self.file_count].split(',')
+                            yield file_values[index]
+                        else:
+                            LOGGER.warning(f"'replacement_type = {self.replacement_type}' is not supported for the lookup files. Please use 'random' or 'file'")
+                            yield self.token
+        except ValueError:
+            LOGGER.error("Column '%s' is not present replacement file '%s'" % (index, file_path))
         except IOError:
-            raise IOError
+            LOGGER.warning("File not found : {}".format(file_path))
 
 
 class TimeRule(Rule):
