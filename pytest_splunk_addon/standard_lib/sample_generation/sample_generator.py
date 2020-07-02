@@ -35,7 +35,7 @@ class SampleGenerator(object):
             sample_stanzas = list(
                 eventgen_parser.get_sample_stanzas()
             )
-            self.splunk_test_type = eventgen_parser.splunk_test_type
+            SampleGenerator.splunk_test_type = eventgen_parser.splunk_test_type
             with ThreadPoolExecutor(min(20, len(sample_stanzas))) as t:
                 t.map(SampleStanza.get_raw_events, sample_stanzas)
             # with ProcessPoolExecutor(self.process_count) as p:

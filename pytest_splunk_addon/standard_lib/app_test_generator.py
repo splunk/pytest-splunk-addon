@@ -74,10 +74,10 @@ class AppTestGenerator(object):
             addon_path = self.pytest_config.getoption("splunk_app")
             config_path = self.pytest_config.getoption("splunk_data_generator")
             sample_generator = SampleGenerator(addon_path, config_path, bulk_event_ingestion = False)
-            if sample_generator.splunk_test_type == "splunk_indextime":
-                pytest_params = list(
-                    self.indextime_test_generator.generate_tests(sample_generator.get_samples())
-                )
+            pytest_params = list(
+                self.indextime_test_generator.generate_tests(sample_generator.get_samples())
+            )
+            if SampleGenerator.splunk_test_type == "splunk_indextime":
                 yield from sorted(pytest_params, key=lambda param: param.id)
 
     def dedup_tests(self, test_list, fixture):
