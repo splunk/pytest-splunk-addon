@@ -7,7 +7,6 @@ import logging
 import os
 from .fields_tests import FieldTestGenerator
 from .cim_tests import CIMTestGenerator
-from .sample_generation import SampleGenerator
 from .index_tests import IndexTimeTestGenerator
 import pytest
 
@@ -73,15 +72,13 @@ class AppTestGenerator(object):
         elif fixture.startswith("splunk_indextime"):
             # TODO: What should be the id of the test case?
             # Sourcetype + Host + Key field + _count
-            addon_path = self.pytest_config.getoption("splunk_app")
-            sample_generator = SampleGenerator(addon_path)
-            samples = sample_generator.get_samples()
+
             pytest_params = None
 
             if "key_fields" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
-                        samples,
+                        app_path=self.pytest_config.getoption("splunk_app"),
                         test_type="key_fields"
                         )
                 )
@@ -89,7 +86,7 @@ class AppTestGenerator(object):
             elif "_time" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
-                        samples,
+                        app_path=self.pytest_config.getoption("splunk_app"),
                         test_type="_time"
                         )
                 )
@@ -97,7 +94,7 @@ class AppTestGenerator(object):
             elif "line_breaker" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
-                        samples,
+                        app_path=self.pytest_config.getoption("splunk_app"),
                         test_type="line_breaker"
                         )
                 )

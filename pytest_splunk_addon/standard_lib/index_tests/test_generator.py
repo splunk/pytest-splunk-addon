@@ -1,11 +1,15 @@
 import logging
 import pytest
 
+from ..sample_generation import SampleGenerator
+
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class IndexTimeTestGenerator(object):
-    def generate_tests(self, tokenized_events, test_type):
+    def generate_tests(self, app_path, test_type):
+        sample_generator = SampleGenerator(app_path)
+        tokenized_events = sample_generator.get_samples()
         for tokenized_event in tokenized_events:
             self.sourcetype = tokenized_event.metadata.get(
                 "sourcetype_to_search",

@@ -10,6 +10,7 @@ class IndexTimeTestTemplate(object):
     logger = logging.getLogger("pytest-splunk-addon-tests")
     
 
+    @pytest.mark.first
     @pytest.mark.splunk_indextime
     def test_indextime_key_fields(
         self,
@@ -41,12 +42,10 @@ class IndexTimeTestTemplate(object):
         )
 
         search = "search {} {}".format(index_list, query)
-        record_property("search", search)
+        record_property("Query", search)
 
         results = splunk_search_util.getFieldValuesList(search)
         results = list(results)
-
-        record_property("we_got_this_many_results", str(len(results)))
 
         if not results:
             assert False, "No Events found for query "+search
@@ -70,10 +69,12 @@ class IndexTimeTestTemplate(object):
                     set(fields_to_check)) for i in fields_to_check}
         )
 
+    @pytest.mark.first
     @pytest.mark.splunk_indextime
     def test_indextime_time(
         self,
         splunk_search_util,
+        splunk_ingest_data,
         splunk_indextime_time,
         record_property,
         caplog,
@@ -100,25 +101,34 @@ class IndexTimeTestTemplate(object):
 
         search = "search {} {}".format(index_list, query)
 
+        record_property("Query", search)
+
         results = splunk_search_util.getFieldValuesList(search)
         results = list(results)
         result_fields = {key: [item[key] for item in results] for key in results[0].keys()}
 
         key_time = splunk_indextime_time["tokenized_event"].time_values
+        record_property("time_values", key_time)
         for index, event_time in enumerate(result_fields["e_time"]):
             if splunk_indextime_time["tokenized_event"].metadata.get("timestamp_type") in ('event'):
-                time_diff = int(key_time[index]) - int(event_time)
+                index_to_check = index
             else:
-                time_diff = int(key_time[0]) - int(event_time)
+                index_to_check = 0
             assert (
-                time_diff < MAX_TIME_DIFFERENCE
-            )
+                (
+                    float(event_time) - float(key_time[index_to_check])
+                    ) < MAX_TIME_DIFFERENCE
+            ), "Actual time {} :: Time in result {}".format(
+                key_time[index_to_check], event_time
+                )
 
     # Testing line breaker
+    @pytest.mark.first
     @pytest.mark.splunk_indextime
     def test_indextime_line_breaker(
         self,
         splunk_search_util,
+        splunk_ingest_data,
         splunk_indextime_line_breaker,
         record_property,
         caplog,
@@ -127,12 +137,13 @@ class IndexTimeTestTemplate(object):
             "tokenized_event"
         ].metadata.get("expected_event_count", 1))
 
-        event_count_query = "search sourcetype={} (host=host_{}* OR host={}*)".format(
+        query = "search sourcetype={} (host=host_{}* OR host={}*)".format(
             splunk_indextime_line_breaker.get("sourcetype"),
             splunk_indextime_line_breaker.get('host'),
             splunk_indextime_line_breaker.get('host'),
         )
+        record_property("Query", query)
 
         assert splunk_search_util.checkQueryCount(
-            event_count_query, expected_events_count, retries=0, interval=0
+            query, expected_events_count, retries=0, interval=0
         ), ("We should get exactly " + str(expected_events_count) + " result")

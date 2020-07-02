@@ -4,7 +4,7 @@ import string
 import uuid
 
 from collections import namedtuple
-from datetime import datetime
+from datetime import datetime, timezone
 from faker import Faker
 from random import uniform, randint, choice
 from time import mktime
@@ -75,7 +75,7 @@ class Rule:
             "guid": GuidRule
         }
         rule_all_support = ["integer", "list", "file"]
-        
+
         replacement_type = token["replacementType"]
         replacement = token["replacement"]
         if replacement_type == "static":
@@ -488,9 +488,10 @@ class TimeRule(Rule):
         """
         earliest = self.eventgen_params.get("earliest")
         latest = self.eventgen_params.get("latest")
-        timezone = self.eventgen_params.get("timezone")
-        random_time = datetime.now()
+        timezone_time = self.eventgen_params.get("timezone")
+        random_time = datetime.utcnow()
         time_parser = time_parse()
+        time_delta = datetime.now().timestamp() - datetime.utcnow().timestamp()
 
         if earliest != "now" and earliest is not None:
             sign, num, unit = re.match(
@@ -498,13 +499,13 @@ class TimeRule(Rule):
             ).groups()
             earliest = time_parser.convert_to_time(sign, num, unit)
         else:
-            earliest = datetime.now()
+            earliest = datetime.utcnow()
 
         if latest != "now" and latest is not None:
             sign, num, unit = re.match(r"([+-])(\d{1,})(.*)", latest).groups()
             latest = time_parser.convert_to_time(sign, num, unit)
         else:
-            latest = datetime.now()
+            latest = datetime.utcnow()
 
         earliest_in_epoch = mktime(earliest.timetuple())
         latest_in_epoch = mktime(latest.timetuple())
@@ -516,7 +517,11 @@ class TimeRule(Rule):
             random_time = datetime.fromtimestamp(
                 randint(earliest_in_epoch, latest_in_epoch)
             )
-            if timezone != "'local'" and timezone is not None:
+            if timezone_time in ['local', '"local"', "'local'"]:
+                random_time = random_time.replace(
+                    tzinfo=timezone.utc).astimezone(tz=None)
+
+            elif timezone_time and timezone_time.strip("'").strip('"') != r"0000":
                 sign, hrs, mins = re.match(
                     r"([+-])(\d\d)(\d\d)", timezone
                 ).groups()
@@ -532,7 +537,7 @@ class TimeRule(Rule):
                     )
 
             yield self.token_value(
-                int(mktime(random_time.timetuple())),
+                float(mktime(random_time.timetuple())) + time_delta,
                 random_time.strftime(
                     random_time.strftime(
                         self.replacement.replace(r'%e', r'%d')
