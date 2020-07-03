@@ -1,0 +1,13 @@
+/home
+/root
+/opt
+/etc
+/home/xyz
+/home/abc/123
+/home/new/directory
+/myfolder
+/home/mount/path
+/nfs
+/nfs/mount
+/nfs/mount/path
+/nfs/mount/home
