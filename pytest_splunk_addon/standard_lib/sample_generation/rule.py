@@ -813,7 +813,7 @@ class HostRule(Rule):
                     "modinput",
                     "windows_input",
                 ]:
-                    host_value = sample.metadata.get("host")
+                    csv_row[0] = sample.metadata.get("host")
                 elif sample.metadata.get("input_type") in [
                     "file_monitor",
                     "scripted_input",
