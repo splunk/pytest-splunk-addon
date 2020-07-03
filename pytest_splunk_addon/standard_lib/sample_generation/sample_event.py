@@ -45,6 +45,7 @@ class SampleEvent(object):
     def __init__(self, event_string, metadata, sample_name):
         self.event = event_string
         self.key_fields = dict()
+        self.time_values = list()
         self.metadata = metadata
         self.sample_name = sample_name
         self.host_count = 0
@@ -169,7 +170,9 @@ class SampleEvent(object):
         # TODO: How to handle dependent Values with list of token_values
         if isinstance(token_values, list):
             sample_tokens = re.finditer(token, self.event)
+
             for _, token_value in enumerate(token_values):
+                token_value = token_value.value
                 match_object = next(sample_tokens)
                 match_str = match_object.group(0) if len(match_object.groups()) == 0 else match_object.group(1)
                 self.event = re.sub(
@@ -177,7 +180,10 @@ class SampleEvent(object):
                 )
         else:
             self.event = re.sub(
-                token, lambda x: str(token_values), self.event, flags=re.MULTILINE
+                token,
+                lambda x: str(token_values),
+                self.event,
+                flags=re.MULTILINE
             )
 
     def register_field_value(self, field, token_values):
@@ -188,12 +194,17 @@ class SampleEvent(object):
             field (str): Token field name 
             token_values (list/str): Token value(s) which are replaced in the key fields
         """
-        if field in key_fields.KEY_FIELDS:
+        if field == "_time":
+            time_list = token_values if isinstance(token_values, list) else [token_values]
+            self.time_values.extend([i.key for i in time_list])
+        elif field in key_fields.KEY_FIELDS:
             if isinstance(token_values, list):
                 for token_value in token_values:
-                    self.key_fields.setdefault(field, []).append(str(token_value))
+                    self.key_fields.setdefault(field, []).append(
+                        str(token_value.key)
+                        )
             else:
-                self.key_fields.setdefault(field, []).append(str(token_values))
+                self.key_fields.setdefault(field, []).append(str(token_values.key))
 
     def get_key_fields(self):
         """

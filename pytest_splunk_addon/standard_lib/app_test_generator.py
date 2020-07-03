@@ -7,7 +7,6 @@ import logging
 import os
 from .fields_tests import FieldTestGenerator
 from .cim_tests import CIMTestGenerator
-from .sample_generation import SampleGenerator
 from .index_tests import IndexTimeTestGenerator
 import pytest
 
@@ -70,14 +69,45 @@ class AppTestGenerator(object):
             yield from self.dedup_tests(
                 self.cim_test_generator.generate_tests(fixture), fixture
             )
-        elif fixture.startswith("splunk_indextime_fields"):
-            addon_path = self.pytest_config.getoption("splunk_app")
-            config_path = self.pytest_config.getoption("splunk_data_generator")
-            sample_generator = SampleGenerator(addon_path, config_path, bulk_event_ingestion = False)
-            if sample_generator.splunk_test_type == "splunk_indextime":
+        elif fixture.startswith("splunk_indextime"):
+            # TODO: What should be the id of the test case?
+            # Sourcetype + Host + Key field + _count
+
+            pytest_params = None
+
+            app_path = self.pytest_config.getoption("splunk_app")
+            config_path = config_path = self.pytest_config.getoption("splunk_data_generator")
+
+            if "key_fields" in fixture:
                 pytest_params = list(
-                    self.indextime_test_generator.generate_tests(sample_generator.get_samples())
+                    self.indextime_test_generator.generate_tests(
+                        app_path=app_path,
+                        config_path=config_path,
+                        test_type="key_fields"
+                        )
                 )
+
+            elif "_time" in fixture:
+                pytest_params = list(
+                    self.indextime_test_generator.generate_tests(
+                        app_path=app_path,
+                        config_path=config_path,
+                        test_type="_time"
+                        )
+                )
+
+            elif "line_breaker" in fixture:
+                pytest_params = list(
+                    self.indextime_test_generator.generate_tests(
+                        app_path=app_path,
+                        config_path=config_path,
+                        test_type="line_breaker"
+                        )
+                )
+            if isinstance(pytest_params, str):
+                LOGGER.warning(pytest_params)
+
+            elif pytest_params:
                 yield from sorted(pytest_params, key=lambda param: param.id)
 
     def dedup_tests(self, test_list, fixture):

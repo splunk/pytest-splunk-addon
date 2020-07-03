@@ -62,21 +62,27 @@ class SampleStanza(object):
         """
         event = list(self.tokenized_events)
 
-        if bulk_event_ingestion :
+        if bulk_event_ingestion:
             required_event_count = self.metadata.get("count")
             if required_event_count == '0' or required_event_count is None:
                 required_event_count = BULK_EVENT_COUNT
             for each_rule in self.sample_rules:
                 event = each_rule.apply(event)
-            while event and (int(required_event_count)) > len((event)):
-                for each_rule in self.sample_rules:
-                    event = each_rule.apply(event)    
-                event.extend(event)
-            event = event[:int(required_event_count)]
 
-        else:    
+            bulk_event = event
+            raw_event = []
+            event_counter = 0
+            while (int(required_event_count)) > len((bulk_event)):
+                raw_event.insert(event_counter, list(self._get_raw_sample()))
+                for each_rule in self.sample_rules:
+                    raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
+                bulk_event.extend(raw_event[event_counter])
+                event_counter = event_counter+1
+            event = bulk_event[:int(required_event_count)]
+        
+        else:
             for each_rule in self.sample_rules:
-                event = each_rule.apply(event)        
+                event = each_rule.apply(event)     
         self.tokenized_events = event
 
     def _parse_rules(self, eventgen_params, sample_path):

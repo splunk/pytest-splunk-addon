@@ -31,8 +31,8 @@ class EventgenParser:
     def eventgen(self):
         try:
             relative_path = os.path.relpath(self.config_path, self.addon_path)
-            if os.path.exists(os.path.join(self.config_path, "pytest-splunk-addon-sample-generator.conf")):
-                self._eventgen = self._app.get_config("pytest-splunk-addon-sample-generator.conf", dir=relative_path)
+            if os.path.exists(os.path.join(self.config_path, "pytest-splunk-addon-data-generator.conf")):
+                self._eventgen = self._app.get_config("pytest-splunk-addon-data-generator.conf", dir=relative_path)
                 self.splunk_test_type = "splunk_indextime"
             else:
                 self._eventgen = self._app.get_config("eventgen.conf")    
@@ -88,6 +88,7 @@ class EventgenParser:
             for sample_file in os.listdir(self.path_to_samples):
                 for stanza in self.eventgen.sects:
                     if re.search(stanza, sample_file):
+                        self.match_stanzas.add(stanza)
                         eventgen_sections = self.eventgen.sects[stanza]
                         eventgen_dict.setdefault((sample_file), {
                             'tokens': {}
@@ -104,11 +105,8 @@ class EventgenParser:
         return eventgen_dict
 
     def check_samples(self):
-        """
-        Raises a warning if no sample file is found for a stanza written in eventgen.conf.
-
-        """
-        for stanza in self.eventgen.sects:
-            if stanza not in self.match_stanzas:
-                LOGGER.warning("No sample file found for stanza : {}".format(stanza))
-                warnings.warn(UserWarning("No sample file found for stanza : {}".format(stanza)))
+        if os.path.exists(self.path_to_samples):
+            for stanza in self.eventgen.sects:
+                if stanza not in self.match_stanzas:
+                    LOGGER.warning("No sample file found for stanza : {}".format(stanza))
+                    warnings.warn(UserWarning("No sample file found for stanza : {}".format(stanza)))
