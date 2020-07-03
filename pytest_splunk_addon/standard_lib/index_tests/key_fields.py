@@ -6,5 +6,6 @@ KEY_FIELDS = [
     "dvc",
     "host",
     "user",
-    "url"
+    "url",
+    "_time"
 ]
