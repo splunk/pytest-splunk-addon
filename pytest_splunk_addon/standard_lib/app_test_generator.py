@@ -69,6 +69,7 @@ class AppTestGenerator(object):
             yield from self.dedup_tests(
                 self.cim_test_generator.generate_tests(fixture), fixture
             )
+<<<<<<< HEAD
 
         elif fixture.startswith("splunk_indextime"):
             # TODO: What should be the id of the test case?
@@ -76,10 +77,14 @@ class AppTestGenerator(object):
 
             pytest_params = None
 
+            app_path = self.pytest_config.getoption("splunk_app")
+            config_path = config_path = self.pytest_config.getoption("splunk_data_generator")
+
             if "key_fields" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
-                        app_path=self.pytest_config.getoption("splunk_app"),
+                        app_path=app_path,
+                        config_path=config_path,
                         test_type="key_fields"
                         )
                 )
@@ -87,7 +92,8 @@ class AppTestGenerator(object):
             elif "_time" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
-                        app_path=self.pytest_config.getoption("splunk_app"),
+                        app_path=app_path,
+                        config_path=config_path,
                         test_type="_time"
                         )
                 )
@@ -95,11 +101,15 @@ class AppTestGenerator(object):
             elif "line_breaker" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
-                        app_path=self.pytest_config.getoption("splunk_app"),
+                        app_path=app_path,
+                        config_path=config_path,
                         test_type="line_breaker"
                         )
                 )
-            if pytest_params:
+            if isinstance(pytest_params, str):
+                LOGGER.warning(pytest_params)
+
+            else if pytest_params:
                 yield from sorted(pytest_params, key=lambda param: param.id)
 
     def dedup_tests(self, test_list, fixture):

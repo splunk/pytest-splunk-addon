@@ -7,9 +7,15 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class IndexTimeTestGenerator(object):
-    def generate_tests(self, app_path, test_type):
-        sample_generator = SampleGenerator(app_path)
+    def generate_tests(self, app_path, config_path, test_type):
+        sample_generator = SampleGenerator(
+            app_path, config_path, bulk_event_ingestion=False)
         tokenized_events = sample_generator.get_samples()
+
+        if not SampleGenerator.splunk_test_type == "splunk_indextime":
+            return " Index Time tests cannot be executed using eventgen.conf,\
+                 pytest-splunk-addon-sample-generator.conf is required."
+
         for tokenized_event in tokenized_events:
             self.sourcetype = tokenized_event.metadata.get(
                 "sourcetype_to_search",
