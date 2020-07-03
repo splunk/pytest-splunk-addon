@@ -83,6 +83,7 @@ class EventgenParser:
             for sample_file in os.listdir(self.path_to_samples):
                 for stanza in self.eventgen.sects:
                     if re.search(stanza, sample_file):
+                        self.match_stanzas.add(stanza)
                         eventgen_sections = self.eventgen.sects[stanza]
                         eventgen_dict.setdefault((sample_file), {
                             'tokens': {}
