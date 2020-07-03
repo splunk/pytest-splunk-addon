@@ -93,7 +93,7 @@ class SampleEvent(object):
         Returns Ipv4 Address as per the rule.
 
         Args:
-            rule (str): Type of rule either src, host, dest, dvc \
+            rule (str): Type of rule either src, host, dest, dvc.
             If the value is not one of the key field it will return a randomly generated Ipv4 address.
         """
         if rule == "src":
@@ -122,7 +122,7 @@ class SampleEvent(object):
         Returns Ipv6 Address as per the rule.
 
         Args:
-            rule (str): Type of rule either src, host, dest, dvc \
+            rule (str): Type of rule either src, host, dest, dvc.
             If the value is not one of the key field it will return a randomly generated Ipv6 address.
         """
         if rule == "src":

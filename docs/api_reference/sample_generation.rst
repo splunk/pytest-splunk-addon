@@ -18,3 +18,9 @@ SampleEvent
 .. automodule:: standard_lib.sample_generation.sample_event
    :members:
    :show-inheritance:
+
+Rule
+~~~~~~~~~~~~~~~~~~
+.. automodule:: standard_lib.sample_generation.rule
+   :members:
+   :show-inheritance:

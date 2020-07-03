@@ -1,3 +1,6 @@
+"""
+Provides Rules for all possible replacements for tokens.
+"""
 import csv
 import re
 import string
@@ -25,7 +28,13 @@ event_host_count = 0
 class Rule:
     """
     Base class for all the rules.
+
+    Args:
+        token (dict): Dictionary containing token and its data
+        eventgen_params (dict): Eventgen stanzas dictionary
+        sample_path (str): Path to the samples directory
     """
+
     user_header = ["name", "email", "domain_user", "distinquised_name"]
     src_header = ["host", "ipv4", "ipv6", "fqdn"]
 
@@ -41,12 +50,12 @@ class Rule:
     @classmethod
     def parse_rule(cls, token, eventgen_params, sample_path):
         """
-        Returns appropriate Rule class object as per replacement type of token.
+        Returns appropriate Rule object as per replacement type of token.
 
         Args:
-            token(dict): represents a single token object.
-            eventgen_params(dict): Dict object of the common params for each stanza.
-            sample_path(str): Path to the samples directory.
+            token (dict): Dictionary containing token and its data
+            eventgen_params (dict): Eventgen stanzas dictionary
+            sample_path (str): Path to the samples directory
         """
         rule_book = {
             "integer": IntRule,
@@ -69,7 +78,7 @@ class Rule:
             "guid": GuidRule
         }
         rule_all_support = ["integer", "list", "file"]
-        
+
         replacement_type = token["replacementType"]
         replacement = token["replacement"]
         if replacement_type == "static":
@@ -92,12 +101,12 @@ class Rule:
 
     def apply(self, events):
         """
-        Replaces the token with appropriate values as per rules mapped with the token for the event.
+        Replaces the token with appropriate values as per rules mapped with the tokens in the event.
         For replacement_type = all it will generate an event for each replacement value.
         i.e. integer[1:50] => will generate 50 events
 
         Args:
-            events(list): List of event(SampleEvent)
+            events (list): List of events(SampleEvent)
         """
         new_events = []
         for each_event in events:
@@ -128,14 +137,14 @@ class Rule:
         Common method to read csv and get a random row.
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            key(str): fieldname i.e. host, src, user, dvc etc
-            headers(list): Headers of csv file in list format.
-            value_list(list): list of replacement values mentioned in configuration file.
+            sample (SampleEvent): Instance containing event info
+            key (str): fieldname i.e. host, src, user, dvc etc
+            headers (list): Headers of csv file in list format
+            value_list (list): list of replacement values mentioned in configuration file.
 
         Returns:
-            index_list(list): list of mapped columns(int) as per value_list
-            csv_row(list): list of replacement values for the rule.
+            index_list (list): list of mapped columns(int) as per value_list
+            csv_row (list): list of replacement values for the rule.
         """
         csv_row = []
         global user_email_count
@@ -164,13 +173,13 @@ class Rule:
         Common method for replacement values of SrcRule, Destrule, DvcRule, HostRule.
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            value_list(list): list of replacement values mentioned in configuration file.
-            rule(str): fieldname i.e. host, src, user, dvc etc
+            sample (SampleEvent): Instance containing event info
+            value_list (list): list of replacement values mentioned in configuration file.
+            rule (str): fieldname i.e. host, src, user, dvc etc
 
         Returns:
-            index_list(list): list of mapped columns(int) as per value_list
-            csv_row(list): list of replacement values for the rule.
+            index_list (list): list of mapped columns(int) as per value_list
+            csv_row (list): list of replacement values for the rule.
         """
         csv_row = []
         for each in value_list:
@@ -194,8 +203,8 @@ class IntRule(Rule):
         Yields a random int between the range mentioned in token.
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         lower_limit, upper_limit = re.match(
             r"[Ii]nteger\[(\d+):(\d+)\]", self.replacement
@@ -217,8 +226,8 @@ class FloatRule(Rule):
         Yields a random float no. between the range mentioned in token.
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         lower_limit, upper_limit = re.match(
             r"[Ff]loat\[([\d\.]+):([\d\.]+)\]", self.replacement
@@ -242,8 +251,8 @@ class ListRule(Rule):
         Yields a random value from the list mentioned in token.
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         value_list_str = re.match(
             r"[lL]ist(\[.*?\])", self.replacement
@@ -267,8 +276,8 @@ class StaticRule(Rule):
         Yields the static value mentioned in token.
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
             yield self.replacement
@@ -283,8 +292,8 @@ class FileRule(Rule):
         Yields the values of token by reading files.
         
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         if self.replacement.startswith("file" or "File"):
             sample_file_path = re.match(
@@ -369,9 +378,9 @@ class FileRule(Rule):
         Yields the column value of token by reading files.
         
         Args:
-            file_path: path of the file mentioned in token.
-            index: index value mentioned in file_path i.e. <file_path>:<index>
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            file_path (str): path of the file mentioned in token.
+            index (int): index value mentioned in file_path i.e. <file_path>:<index>
+            token_count (int): No. of token in sample event where rule is applicable
         """
         try:
             with open(file_path, 'r') as f:
@@ -391,9 +400,9 @@ class FileRule(Rule):
         Yields the column value of token by reading files.
         
         Args:
-            file_path: path of the file mentioned in token.
-            index: index value mentioned in file_path i.e. <file_path>:<index>
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            file_path (str): path of the file mentioned in token.
+            index (int): index value mentioned in file_path i.e. <file_path>:<index>
+            token_count (int): No. of token in sample event where rule is applicable
         """
         try:
             with open(file_path, 'r') as f:
@@ -414,14 +423,11 @@ class FileRule(Rule):
 class TimeRule(Rule):
     def replace(self, sample, token_count):
         """
-        Args :
-            sample_raw - sample event to be updated as per replacement for token.
-            earliest - splunktime formated time.
-            latest - splunktime formated time.
-            timezone - time zone according to which time is to be generated
+        Returns time according to the parameters specified in the input.
 
-        returns :
-            random time according to the parameters specified in the input.
+        Args:
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         earliest = self.eventgen_params.get("earliest")
         latest = self.eventgen_params.get("latest")
@@ -483,8 +489,8 @@ class Ipv4Rule(Rule):
         Yields a random ipv4 address.
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
             yield self.fake.ipv4()
@@ -499,8 +505,8 @@ class Ipv6Rule(Rule):
         Yields a random ipv6 address
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
             yield self.fake.ipv6()
@@ -515,8 +521,8 @@ class MacRule(Rule):
         Yields a random mac address
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
             yield self.fake.mac_address()
@@ -531,8 +537,8 @@ class GuidRule(Rule):
         Yields a random guid.
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
             yield str(uuid.uuid4())
@@ -545,11 +551,11 @@ class UserRule(Rule):
     def replace(self, sample, token_count):
         """
         Yields a random user replacement value from the list of values mentioned in token.
-        Possible values: ["name","email","domain_user","distinquised_name"]
+        Possible values: ["name", "email", "domain_user", "distinquised_name"]
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         value_list_str = re.match(
             r"[uU]ser(\[.*?\])", self.replacement
@@ -585,11 +591,11 @@ class EmailRule(Rule):
     """
     def replace(self, sample, token_count):
         """
-        Yields a random email from the lookups\\user_email.csv.
+        Yields a random email from lookups\\user_email.csv file.
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
 
         for i in range(token_count):
@@ -620,8 +626,8 @@ class UrlRule(Rule):
         Possible values: ["ip_host", "fqdn_host", "path", "query", "protocol"]
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         value_list_str = re.match(r"[uU]rl(\[.*?\])", self.replacement).group(
             1
@@ -664,7 +670,8 @@ class UrlRule(Rule):
 
     def generate_url_query_params(self):
         """
-        This method is generate the random query params for url
+        Generates random query params for url
+    
         Returns:
             Return the query param string
         """
@@ -691,8 +698,8 @@ class DestRule(Rule):
         Possible values: ["host", "ipv4", "ipv6", "fqdn"]
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         value_list_str = re.match(
             r"[dD]est(\[.*?\])", self.replacement
@@ -712,8 +719,8 @@ class SrcPortRule(Rule):
         Yields a random port value from the range 4000-5000
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
             yield randint(4000, 5000)
@@ -729,8 +736,8 @@ class DvcRule(Rule):
         Possible values: ["host", "ipv4", "ipv6", "fqdn"]
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         value_list_str = re.match(r"[dD]vc(\[.*?\])", self.replacement).group(
             1
@@ -751,8 +758,8 @@ class SrcRule(Rule):
         Possible values: ["host", "ipv4", "ipv6", "fqdn"]
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         value_list_str = re.match(r"[sS]rc(\[.*?\])", self.replacement).group(
             1
@@ -772,8 +779,8 @@ class DestPortRule(Rule):
         Yields a random port value from [80, 443, 25, 22, 21]
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         DEST_PORT = [80, 443, 25, 22, 21]
         for _ in range(token_count):
@@ -790,8 +797,8 @@ class HostRule(Rule):
         Possible values: ["host", "ipv4", "ipv6", "fqdn"]
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         value_list_str = re.match(
             r"[hH]ost(\[.*?\])", self.replacement
@@ -806,7 +813,7 @@ class HostRule(Rule):
                     "modinput",
                     "windows_input",
                 ]:
-                    csv_row[0] = sample.metadata.get("host")
+                    host_value = sample.metadata.get("host")
                 elif sample.metadata.get("input_type") in [
                     "file_monitor",
                     "scripted_input",
@@ -827,8 +834,8 @@ class HexRule(Rule):
         Yields a random hex value.
 
         Args:
-            sample(object): Instance of SampleEvent class.
-            token_count(int): No. of token in sample event where rule is to be applicable.
+            sample (SampleEvent): Instance containing event info
+            token_count (int): No. of token in sample event where rule is applicable
         """
         hex_range = re.match(r"[Hh]ex\((.*?)\)", self.replacement).group(1)
         hex_digits = [
