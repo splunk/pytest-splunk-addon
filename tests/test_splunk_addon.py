@@ -267,6 +267,49 @@ def test_splunk_app_cim_broken(testdir):
     assert result.ret != 0
 
 @pytest.mark.docker
+def test_splunk_fiction_indextime(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction_indextime"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+        os.path.join(testdir.tmpdir, "tests/data_models"),
+    )
+
+    setup_test_dir(testdir)
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        "--splunk-type=docker",
+        "-v",
+        "-m splunk_indextime",
+        "--search-interval=4",
+        "--search-retry=4",
+        "--splunk-data-generator=addons/TA_fiction_indextime/default"
+    )
+
+    # fnmatch_lines does an assertion internally
+    result.stdout.fnmatch_lines_random(constants.TA_FICTION_INDEXTIME_PASSED)
+    result.assert_outcomes(passed=len(constants.TA_FICTION_INDEXTIME_PASSED), failed=0)
+
+    # make sure that that we get a '0' exit code for the testsuite
+    assert result.ret == 0
+
+@pytest.mark.docker
 def test_splunk_setup_fixture(testdir):
     testdir.makepyfile(
         """
