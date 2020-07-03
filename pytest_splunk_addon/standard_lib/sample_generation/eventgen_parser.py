@@ -114,7 +114,7 @@ class EventgenParser:
 
         Args:
             sample_file(str): sample file name.
-            eventgen_dict(dict): Dict representating a stanza in cofiguration file.
+            eventgen_dict(dict): Dict representation of a cofiguration file stanza
             child_dict(dict): dict containing token properties with intersecting token-id.
         """
         dict_len = len(eventgen_dict[sample_file]['tokens'].keys())
