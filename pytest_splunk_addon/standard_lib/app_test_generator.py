@@ -69,8 +69,6 @@ class AppTestGenerator(object):
             yield from self.dedup_tests(
                 self.cim_test_generator.generate_tests(fixture), fixture
             )
-<<<<<<< HEAD
-
         elif fixture.startswith("splunk_indextime"):
             # TODO: What should be the id of the test case?
             # Sourcetype + Host + Key field + _count
