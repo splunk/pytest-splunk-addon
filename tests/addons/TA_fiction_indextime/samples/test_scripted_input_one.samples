@@ -1,0 +1,6 @@
+***SPLUNK*** source=test_scripted_input_source sourcetype=test_scripted_input_sourcetype host=##host##
+
+Mount          Path      r_op/s        w_op/s        r_KB/s  w_KB/s rpc_backlog   r_avg_RTT   w_avg_RTT   r_avg_exe   w_avg_exe
+##IP##:##Mount##     ##Path##     ##r_op/s##     ##w_op/s##     ##r_KB/s##     ##w_KB/s##     ##rpc_backlog##     ##r_avg_RTT##     ##w_avg_RTT##    ##r_avg_exe##    ##w_avg_exe##
+##IP##:##Mount##     ##Path##     ##r_op/s##     ##w_op/s##     ##r_KB/s##     ##w_KB/s##     ##rpc_backlog##     ##r_avg_RTT##     ##w_avg_RTT##    ##r_avg_exe##    ##w_avg_exe##
+##IP##:##Mount##     ##Path##     ##r_op/s##     ##w_op/s##     ##r_KB/s##     ##w_KB/s##     ##rpc_backlog##     ##r_avg_RTT##     ##w_avg_RTT##    ##r_avg_exe##    ##w_avg_exe##
