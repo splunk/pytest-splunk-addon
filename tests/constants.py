@@ -486,7 +486,7 @@ TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_props*searchtime_cim_fields* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel*mapped_datamodel_tests* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_splunk_internal_errors PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_splunk_internal_errors PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_props_fields*test_scripted_input_sourcetype* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_props_fields*test_scripted_input_sourcetype::field::Mount* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_props_fields*test_scripted_input_sourcetype::field::mount* PASSED*',
