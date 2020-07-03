@@ -200,7 +200,7 @@ class SampleEvent(object):
         if field == "_time":
             time_list = token_values if isinstance(token_values, list) else [token_values]
             self.time_values.extend([i.key for i in time_list])
-        if field in key_fields.KEY_FIELDS:
+        elif field in key_fields.KEY_FIELDS:
             if isinstance(token_values, list):
                 for token_value in token_values:
                     self.key_fields.setdefault(field, []).append(
