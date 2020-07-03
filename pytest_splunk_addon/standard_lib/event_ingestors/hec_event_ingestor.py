@@ -1,6 +1,3 @@
-"""
-HEC Event Ingestor class
-"""
 from .base_event_ingestor import EventIngestor
 import requests
 import time
@@ -11,56 +8,65 @@ requests.urllib3.disable_warnings()
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
+
 class HECEventIngestor(EventIngestor):
     """
-    Class to ingest event via HEC
+    Class to ingest event via HEC Event
+
+    The format for required_configs is::
+
+        {
+            hec_uri: {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector,
+            session_headers(dict):
+            {
+                "Authorization": f"Splunk <hec-token>",
+            }
+        }
+
+    Args:
+        required_configs (dict): Dictionary containing hec_uri and session headers
+
     """
 
     def __init__(self, required_configs):
-        """
-        init method for the class
-
-        Args:
-            required_configs(dict): {
-                hec_uri: {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector,
-                session_headers(dict): {
-                    "Authorization": f"Splunk <hec-token>",
-                }
-            }
-        """
         self.hec_uri = required_configs.get("splunk_hec_uri")
         self.session_headers = required_configs.get("session_headers")
 
     def ingest(self, events):
         """
         Ingests event and metric data into splunk using HEC token via event endpoint.
-        Args:
-            data(dict): data dict with the info of the data to be ingested.
 
-            format::
+        For batch ingestion of events in a single request at event endpoint provide a list of event dict to be ingested.
+
+        The format of dictionary for ingesting a single event::
+
+            {
+                "sourcetype": "sample_HEC",
+                "source": "sample_source",
+                "host": "sample_host",
+                "event": "event_str"
+            }
+
+        The format of dictionary for ingesting a batch of events::
+
+            [
                 {
                     "sourcetype": "sample_HEC",
                     "source": "sample_source",
                     "host": "sample_host",
-                    "event": "event_str"
-                }
+                    "event": "event_str1"
+                },
+                {
+                    "sourcetype": "sample_HEC",
+                    "source": "sample_source",
+                    "host": "sample_host",
+                    "event": "event_str2"
+                },
+            ]
 
-            For batch ingestion of events in a single request at event endpoint provide a list of event dict to be ingested.
-            format::
-                [ 
-                    {
-                        "sourcetype": "sample_HEC",
-                        "source": "sample_source",
-                        "host": "sample_host",
-                        "event": "event_str1"
-                    },
-                    {
-                        "sourcetype": "sample_HEC",
-                        "source": "sample_source",
-                        "host": "sample_host",
-                        "event": "event_str2"
-                    },
-                ]
+        Args:
+            events (list): List of events (SampleEvent) to be ingested
+
         """
         data = list()
         for event in events:
@@ -84,14 +90,14 @@ class HECEventIngestor(EventIngestor):
                 event_dict['time'] = event.key_fields.get("_time")[0]
 
             data.append(event_dict)
-        
+
         batch_event_list = []
         for i in range(0, len(data), 100):
             batch_event_list.append(data[i : i + 100])
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
             executor.map(self.__ingest, batch_event_list)
-        
+
     def __ingest(self, data):
         try:
             response = requests.post(
@@ -108,7 +114,7 @@ class HECEventIngestor(EventIngestor):
                     )
                 )
                 raise Exception
-        
+
         except Exception as e:
             LOGGER.error(e)
             os._exit(0)

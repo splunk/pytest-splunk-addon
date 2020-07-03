@@ -16,3 +16,4 @@ The API is divided into the following packages & modules.
    addon_basic
    app_test_generator
    sample_generation
+   event_ingestion
