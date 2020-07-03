@@ -38,7 +38,7 @@ class time_parse():
             elif unit in ('y', 'yr', 'yrs', 'year', 'years'):
                 num = num * 12
                 
-            unittime = datetime.now()
+            unittime = datetime.utcnow()
             monthnum = int(num) * -1 if sign == '-' else int(num)
     
             if int(abs(monthnum) / 12) > 0:
@@ -64,7 +64,7 @@ class time_parse():
                     unittime = datetime(unittime.year, unittime.month + monthnum, unittime.day, unittime.hour, unittime.minute, unittime.second,
                                             unittime.microsecond)
             return unittime                          
-        random_time = datetime.now()
+        random_time = datetime.utcnow()
         if sign == '-':
             random_time = random_time - unittime
         else:

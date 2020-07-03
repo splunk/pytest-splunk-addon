@@ -107,7 +107,7 @@ class AppTestGenerator(object):
             if isinstance(pytest_params, str):
                 LOGGER.warning(pytest_params)
 
-            else if pytest_params:
+            elif pytest_params:
                 yield from sorted(pytest_params, key=lambda param: param.id)
 
     def dedup_tests(self, test_list, fixture):
