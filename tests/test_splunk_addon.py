@@ -299,6 +299,7 @@ def test_splunk_fiction_indextime(testdir):
         "-m splunk_indextime",
         "--search-interval=4",
         "--search-retry=4",
+        "--splunk-data-generator=addons/TA_fiction_indextime/default"
     )
 
     # fnmatch_lines does an assertion internally
