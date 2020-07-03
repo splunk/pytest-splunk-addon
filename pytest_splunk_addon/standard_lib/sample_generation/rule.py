@@ -928,7 +928,7 @@ class HostRule(Rule):
                     "default",
                 ]:
                     csv_row[0] = sample.get_host()
-            yield choice(csv_row)
+            yield self.token_value(*([choice(csv_row)]*2))
 
 
 class HexRule(Rule):
