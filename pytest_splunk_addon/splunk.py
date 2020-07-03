@@ -17,7 +17,6 @@ from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
-from .standard_lib.sample_generation import SampleGenerator
 import configparser
 
 
@@ -152,6 +151,15 @@ def pytest_addoption(parser):
             "pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\DatamodelSchema.json"
         ),
     )
+    group.addoption(
+        "--splunk-data-generator",
+        action="store",
+        dest="splunk_data_generator",
+        default="pytest-splunk-addon-sample-generator.conf",
+        help=(
+            "Path to pytest-splunk-addon-sample-generator.conf."
+        ),
+    ) 
     group.addoption(
         "--sc4s-host",
         action="store",
@@ -460,7 +468,7 @@ def splunk_web_uri(splunk):
     return uri
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="class")
 def splunk_ingest_data(request, splunk_hec_uri, sc4s):
     """
     Generates events for the add-on and ingests into Splunk.
@@ -478,7 +486,36 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
     manual configurations are required.
     """
     addon_path = request.config.getoption("splunk_app")
-    sample_generator = SampleGenerator(addon_path)
+    config_path = request.config.getoption("splunk_data_generator")
+
+    ingest_meta_data = {
+        "session_headers": splunk_hec_uri[0].headers,
+        "splunk_hec_uri": splunk_hec_uri[1],
+        "splunk_host": sc4s[0],  # for sc4s
+        "sc4s_port": sc4s[1][514]  # for sc4s
+    }
+    IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, bulk_event_ingestion=False)
+
+
+@pytest.fixture(scope="class")
+def splunk_ingest_bulk_data(request, splunk_hec_uri, sc4s):
+    """
+    Generates events in bulk for the add-on and ingests into Splunk.
+    The ingestion can be done using the following methods:
+        1. HEC Event
+        2. HEC Raw
+        3. SC4S:TCP or SC4S:UDP
+        4. HEC Metrics
+
+    Args:
+    splunk_hec_uri(tuple): Details for hec uri and session headers
+    sc4s(tuple): Details for sc4s server and TCP port
+
+    TODO: For splunk_type=external, data will not be ingested as 
+    manual configurations are required.
+    """
+    addon_path = request.config.getoption("splunk_app")
+    config_path = request.config.getoption("splunk_data_generator")
 
     ingest_meta_data = {
         "session_headers": splunk_hec_uri[0].headers,
@@ -487,19 +524,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
         "sc4s_port": sc4s[1][514]  # for sc4s
     }
 
-    ingestor_dict = dict()
-    for event in sample_generator.get_samples():
-        input_type = event.metadata.get("input_type")
-        if input_type in ingestor_dict:
-            ingestor_dict[input_type].append(event)
-        else:
-            ingestor_dict[input_type] = [event]
-
-    for input_type, events in ingestor_dict.items():
-
-        event_ingestor = IngestorHelper.get_event_ingestor(input_type, ingest_meta_data)
-        event_ingestor.ingest(events)
-
+    IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, bulk_event_ingestion=True)
 
 def is_responsive_splunk(splunk):
     """

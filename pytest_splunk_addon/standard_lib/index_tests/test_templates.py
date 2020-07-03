@@ -6,6 +6,7 @@ class IndexTimeTestTemplate(object):
 
     logger = logging.getLogger("pytest-splunk-addon-tests")
 
+    @pytest.mark.first
     @pytest.mark.splunk_indextime
     def test_index_time_extractions(
         self,

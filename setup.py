@@ -39,7 +39,8 @@ setup(
         "splunk_appinspect>=2.0.1",
         "six",
         "jsonschema~=3.2.0",
-        "faker"
+        "faker",
+        "pytest-ordering~=0.6"
     ],
     extras_require={"docker": ["lovely-pytest-docker>=0.1.0"]},
     setup_requires=["pytest-runner"],
@@ -61,7 +62,9 @@ setup(
             "plugin = pytest_splunk_addon.plugin",
             "splunk = pytest_splunk_addon.splunk",
         ],
-        "console_scripts": ["cim-report=pytest_splunk_addon.standard_lib.cim_compliance.junit_parser:main"]
+        "console_scripts": ["cim-report=pytest_splunk_addon.standard_lib.cim_compliance.junit_parser:main",
+                            "generate-conf=pytest_splunk_addon.standard_lib.utilities.create_new_eventgen:main"
+                        ]
     },
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
