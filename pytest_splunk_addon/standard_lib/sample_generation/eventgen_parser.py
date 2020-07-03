@@ -100,7 +100,8 @@ class EventgenParser:
         return eventgen_dict
     
     def check_samples(self):
-        for stanza in self.eventgen.sects:
-            if stanza not in self.match_stanzas:
-                LOGGER.warning("No sample file found for stanza : {}".format(stanza))
-                warnings.warn(UserWarning("No sample file found for stanza : {}".format(stanza)))
+        if os.path.exists(self.path_to_samples):
+            for stanza in self.eventgen.sects:
+                if stanza not in self.match_stanzas:
+                    LOGGER.warning("No sample file found for stanza : {}".format(stanza))
+                    warnings.warn(UserWarning("No sample file found for stanza : {}".format(stanza)))
