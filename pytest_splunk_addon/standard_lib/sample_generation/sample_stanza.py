@@ -3,6 +3,10 @@ import re
 import copy
 from . import Rule
 from . import SampleEvent
+import warnings
+import logging
+
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 BULK_EVENT_COUNT = 100
 class SampleStanza(object):
@@ -127,7 +131,6 @@ class SampleStanza(object):
                 "scripted_input",
                 "syslog_tcp",
                 "syslog_udp",
-                "other",
                 "default"
             ]
         """
@@ -138,15 +141,20 @@ class SampleStanza(object):
                     yield SampleEvent(
                         each_line, event_metadata, self.sample_name
                     )
-
-            if self.input_type in [
+            elif self.input_type in [
                 "file_monitor",
                 "scripted_input",
                 "syslog_tcp",
                 "syslog_udp",
-                "other",
                 "default"
             ]:
+                yield SampleEvent(
+                    sample_file.read(), self.metadata, self.sample_name
+                )
+            else:
+                LOGGER.warning("Unsupported input_type found: '{}' using default input_type".format(self.input_type))
+                warnings.warn(UserWarning("Unsupported input_type found: '{}' using default input_type".format(self.input_type)))
+                self.metadata["input_type"] = "default"
                 yield SampleEvent(
                     sample_file.read(), self.metadata, self.sample_name
                 )

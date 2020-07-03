@@ -169,10 +169,11 @@ class SampleEvent(object):
         # TODO: How to handle dependent Values with list of token_values
         if isinstance(token_values, list):
             sample_tokens = re.finditer(token, self.event)
-            
-            for token_index, token_value in enumerate(token_values):
+            for _, token_value in enumerate(token_values):
+                match_object = next(sample_tokens)
+                match_str = match_object.group(0) if len(match_object.groups()) == 0 else match_object.group(1)
                 self.event = re.sub(
-                    next(sample_tokens).group(0), lambda x: str(token_value), self.event, 1, flags=re.MULTILINE
+                    match_str, lambda x: str(token_value), self.event, 1, flags=re.MULTILINE
                 )
         else:
             self.event = re.sub(
