@@ -577,14 +577,15 @@ class TimeRule(Rule):
                         )]*2)
                     )
 
-            yield self.token_value(
-                float(mktime(random_time.timetuple())) + time_delta,
-                random_time.strftime(
+            else:
+                yield self.token_value(
+                    float(mktime(random_time.timetuple())) + time_delta,
                     random_time.strftime(
-                        self.replacement.replace(r'%e', r'%d')
+                        random_time.strftime(
+                            self.replacement.replace(r'%e', r'%d')
+                            )
                         )
                     )
-                )
 
 
 class Ipv4Rule(Rule):
