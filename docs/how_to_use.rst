@@ -89,7 +89,7 @@ There are 3 types of tests included in pytest-splunk-addon.
 
             -m  splunk_indextime --splunk-data-generator=<Path to the conf file>
 
-        For detailed information on index time test execution, please refer :ref:`here. <index_time_tests>`
+        For detailed information on index time test execution, please refer :ref:`here <index_time_tests>`.
 
 ----------------------
 
