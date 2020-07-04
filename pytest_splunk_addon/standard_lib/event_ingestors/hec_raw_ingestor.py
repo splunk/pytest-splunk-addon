@@ -2,6 +2,7 @@
 HEC Raw Ingestor class
 """
 from .base_event_ingestor import EventIngestor
+from time import time
 import requests
 import concurrent.futures
 import logging
@@ -61,20 +62,19 @@ class HECRawEventIngestor(EventIngestor):
         main_event = []
         param_list = []
         for event in events:
-            if event.metadata.get("host_type") in ("plugin", None):
-                host = event.metadata["host"]
-            else:
-                host = event.key_fields["host"]
-            if event.metadata.get("timestamp_type") in ('plugin', None):
-                if not event.key_fields.get("_time"):
-                    event.key_fields['_time'] = [int(time.time())]
-            
-            param_list.append({
+            event_dict = {
                 "sourcetype": event.metadata.get('sourcetype', 'pytest_splunk_addon'),
                 "source": event.metadata.get('source', 'pytest_splunk_addon:hec:raw'),
-                "host": host,
-                "time": event.key_fields.get("_time")[0]
-            })
+            }
+
+            if event.metadata.get("host"):
+                event_dict['host'] = event.metadata.get("host")
+
+            if event.metadata.get("timestamp_type") in ('plugin', None):
+                event_dict['time'] = event.time_values[0]
+
+            param_list.append(event_dict)
+
             main_event.append(event.event)
         with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
             executor.map(self.__ingest, main_event, param_list)

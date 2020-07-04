@@ -35,8 +35,8 @@ class SampleGenerator(object):
             sample_stanzas = list(
                 eventgen_parser.get_sample_stanzas()
             )
-            self.splunk_test_type = eventgen_parser.splunk_test_type
-            with ThreadPoolExecutor(min(20, len(sample_stanzas))) as t:
+            SampleGenerator.splunk_test_type = eventgen_parser.splunk_test_type
+            with ThreadPoolExecutor(min(20, max(len(sample_stanzas), 1))) as t:
                 t.map(SampleStanza.get_raw_events, sample_stanzas)
             # with ProcessPoolExecutor(self.process_count) as p:
             _ = list(map(SampleStanza.tokenize, sample_stanzas, cycle([self.bulk_event_ingestion])))
@@ -53,8 +53,8 @@ def add_time(tokenized_event):
     Args:
         sample_stanza(SampleStanza): Sample stanza instance 
     """
-    if (tokenized_event.metadata.get("timestamp_type") == "plugin"):
-        time_to_ingest = int(time.time())
-        tokenized_event.key_fields["_time"] = [str(time_to_ingest)]
+    if tokenized_event.metadata.get("timestamp_type") in ("plugin", None):
+        time_to_ingest = time.time()
+        tokenized_event.time_values = [str(time_to_ingest)]
 
     return tokenized_event

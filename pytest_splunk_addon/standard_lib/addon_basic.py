@@ -16,6 +16,5 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
     specific test case should be implemented in a TestTemplate class and Basic 
     should inherit it.
     """
-    def test_one(self, splunk_ingest_data):
-        pass
+    pass
 
