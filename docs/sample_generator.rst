@@ -151,34 +151,34 @@ token.<n>.replacement = <string> | <strptime> | ["list","of","values"] | guid | 
         * Column numbers in mvfile references are indexed at 1, meaning the first column is column 1, not 0.
     * For host["host", "ipv4", "ipv6", "fqdn"], 4 types of host replacement are supported. Either one or multiple from the list can be provided to randomly replace the token. 
 
-        * For host["host"], the token will be replaced with a sequencial host value with pattern <TODO>.
+        * For host["host"], the token will be replaced with a sequencial host value with pattern "host_sample_host_<number>".
         * For host["ipv4"], the token will be replaced with a random valid IPv4 Address.
         * For host["ipv6"], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3264:0:0:0:0 range.
-        * For host["fqdn"], the token will be replaced with a sequencial fqdn value with pattern <TODO>.
+        * For host["fqdn"], the token will be replaced with a sequencial fqdn value with pattern "host_sample_host.sample_domain<number>.com".
     * For src["host", "ipv4", "ipv6", "fqdn"], 4 types of src replacement are supported. Either one or multiple from the list can be provided to randomly replace the token. 
 
-        * For src["host"], the token will be replaced with a sequencial host value with pattern <TODO>.
+        * For src["host"], the token will be replaced with a sequencial host value with pattern "src_sample_host_<number>".
         * For src["ipv4"], the token will be replaced with a random valid IPv4 Address from 10.1.0.0 range.
         * For src["ipv6"], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3261:0:0:0:0 range.
-        * For src["fqdn"], the token will be replaced with a sequencial fqdn value with pattern <TODO>.
+        * For src["fqdn"], the token will be replaced with a sequencial fqdn value with pattern "src_sample_host.sample_domain<number>.com".
     * For dest["host", "ipv4", "ipv6", "fqdn"], 4 types of dest replacement are supported. Either one or multiple from the list can be provided to randomly replace the token. 
 
-        * For dest["host"], the token will be replaced with a sequencial host value with pattern <TODO>.
+        * For dest["host"], the token will be replaced with a sequencial host value with pattern "dest_sample_host_<number>".
         * For dest["ipv4"], the token will be replaced with a random valid IPv4 Address from 10.100.0.0 range.
         * For dest["ipv6"], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3262:0:0:0:0 range.
-        * For dest["fqdn"], the token will be replaced with a sequencial fqdn value with pattern <TODO>.
+        * For dest["fqdn"], the token will be replaced with a sequencial fqdn value with pattern "dest_sample_host.sample_domain<number>.com".
     * For dvc["host", "ipv4", "ipv6", "fqdn"], 4 types of dvc replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.
 
-        * For dvc["host"], the token will be replaced with a sequencial host value with pattern <TODO>.
+        * For dvc["host"], the token will be replaced with a sequencial host value with pattern "dvc_sample_host_<number>".
         * For dvc["ipv4"], the token will be replaced with a random valid IPv4 Address from 172.16.0-50.0 range.
         * For dvc["ipv6"], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3263:0:0:0:0 range.
-        * For dvc["fqdn"], the token will be replaced with a sequencial fqdn value with pattern <TODO>.
+        * For dvc["fqdn"], the token will be replaced with a sequencial fqdn value with pattern "dvc_sample_host.sample_domain<number>.com".
     * For user["name", "email", "domain_user", "distinquised_name"], 4 types of user replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.
 
-        * For user["name"], the token will be replaced with a random name.
-        * For user["email"], the token will be replaced with a random email with pattern <TODO>.
-        * For user["domain_user"], the token will be replaced with a random domain user pattern <TODO>.
-        * For user["distinquised_name"], the token will be replaced with a distinquised user with pattern <TODO>.
+        * For user["name"], the token will be replaced with a random name with pattern "user<number>".
+        * For user["email"], the token will be replaced with a random email with pattern "user<number>@email.com".
+        * For user["domain_user"], the token will be replaced with a random domain user pattern sample_domain.com\user<number>.
+        * For user["distinquised_name"], the token will be replaced with a distinquised user with pattern CN=user<number>.
     * For url["full", "ip_host", "fqdn_host", "path", "query", "protocol"], 6 types of url replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.
 
         * For url["ip_host"], the url to be replaced will contain ip based address.
@@ -186,9 +186,11 @@ token.<n>.replacement = <string> | <strptime> | ["list","of","values"] | guid | 
         * For path["path"], the url to be replaced will contain path with pattern "/<path>".
         * For url["query"], the url to be replaced will contain query with pattern "?<query>=<value>".
         * For url["protocol"], the url to be replaced will contain protocol with pattern "<https or http>://".
-        * Example 1: url["ip_host", "path", "query"], will be replaced with pattern <ip_address>/<path><query>=<value>
-        * Example 2: url["ip_host", "path", "query"], will be replaced with pattern <https or http>://<TODO> 
-        * Example 2: url["ip_host", "fqdn_host", "path", "query", "protocol"], will be replaced with pattern <https or http>://<ip_address or fqdn_address>/<path><query>=<value>
+        * For url["full"], the url contain all the parts mentioned above i.e. ip_host, fqdn_host, path, query, protocol.
+        * Example 1: url["ip_host", "path", "query"], will be replaced with pattern <ip_address>/<path>?<query>=<value>
+        * Example 2: url["fqdn_host", "path", "protocol"], will be replaced with pattern <https or http>://<fqdn_address>/<path>
+        * Example 3: url["ip_host", "fqdn_host", "path", "query", "protocol"], will be replaced with pattern <https or http>://<ip_address or fqdn_address>/<path>?<query>=<value>
+        * Example 4: url["full"], will be replaced same as example 3.
     * For email, the token will be replaced with a random email. If the same sample has a user token as well, the email and user tokens will be replaced with co-related values. 
     * For src_port, the token will be replaced with a random source port value between 4000 and 5000 
     * For dest_port, the token will be replaced with a random dest port value from (80,443,25,22,21)
