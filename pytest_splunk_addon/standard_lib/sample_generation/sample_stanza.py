@@ -9,6 +9,7 @@ import logging
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 BULK_EVENT_COUNT = 100
+MAXIMUM_EVENT_COUNT = 250
 class SampleStanza(object):
     """
     This class represents a stanza of the eventgen.conf.
@@ -62,8 +63,10 @@ class SampleStanza(object):
 
         if bulk_event_ingestion:
             required_event_count = self.metadata.get("count")
-            if required_event_count == '0' or required_event_count is None:
+            if required_event_count is None or int(required_event_count) == 0:
                 required_event_count = BULK_EVENT_COUNT
+                if int(required_event_count) > 250:
+                    required_event_count = MAXIMUM_EVENT_COUNT     
             for each_rule in self.sample_rules:
                 event = each_rule.apply(event)
 
