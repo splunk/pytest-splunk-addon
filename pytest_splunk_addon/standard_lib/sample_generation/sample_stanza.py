@@ -68,7 +68,8 @@ class SampleStanza(object):
                 if int(required_event_count) > 250:
                     required_event_count = MAXIMUM_EVENT_COUNT     
             for each_rule in self.sample_rules:
-                event = each_rule.apply(event)
+                if each_rule:
+                    event = each_rule.apply(event)
 
             bulk_event = event
             raw_event = []
@@ -76,7 +77,8 @@ class SampleStanza(object):
             while (int(required_event_count)) > len((bulk_event)):
                 raw_event.insert(event_counter, list(self._get_raw_sample()))
                 for each_rule in self.sample_rules:
-                    raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
+                    if each_rule:
+                        raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
                 bulk_event.extend(raw_event[event_counter])
                 event_counter = event_counter+1
             event = bulk_event[:int(required_event_count)]
