@@ -53,7 +53,7 @@ def add_time(tokenized_event):
     Args:
         sample_stanza(SampleStanza): Sample stanza instance 
     """
-    if (tokenized_event.metadata.get("timestamp_type") == "plugin"):
+    if tokenized_event.metadata.get("timestamp_type") in ("plugin", None):
         time_to_ingest = time.time()
         tokenized_event.time_values = [str(time_to_ingest)]
 
