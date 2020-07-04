@@ -98,42 +98,13 @@ class EventgenParser:
                             eventgen_property = eventgen_sections.options[stanza_param]
                             if eventgen_property.name.startswith('token'):
                                 _, token_id, token_param = eventgen_property.name.split('.')
-                                if not token_id in eventgen_dict[sample_file]['tokens'].keys():
-                                    eventgen_dict[sample_file]['tokens'][token_id] = {}
-                                if not eventgen_dict[sample_file]['tokens'][token_id].get(token_param) and sample_file != stanza:
-                                    eventgen_dict[sample_file]['tokens'][token_id][token_param] = eventgen_property.value
-                                else:
-                                    if not token_id in child_dict['tokens'].keys():
-                                        child_dict['tokens'][token_id] = {}    
-                                    child_dict['tokens'][token_id][token_param] = eventgen_property.value
+                                token_key = "{}_{}".format(stanza, token_id)
+                                if not token_key in eventgen_dict[sample_file]['tokens'].keys():
+                                    eventgen_dict[sample_file]['tokens'][token_key] = {}
+                                eventgen_dict[sample_file]['tokens'][token_key][token_param] = eventgen_property.value
                             else:
                                 eventgen_dict[sample_file][eventgen_property.name] = eventgen_property.value
-                    if child_dict['tokens'].keys():
-                        eventgen_dict[sample_file]['tokens'] = self.append_child_tokens(sample_file, eventgen_dict, child_dict)
-                        child_dict['tokens'] = {}
         return eventgen_dict
-
-    def append_child_tokens(self, sample_file, eventgen_dict, child_dict):
-        """
-        To combine all the pokens present in regex stanza and original stanza.
-
-        Args:
-            sample_file(str): sample file name.
-            eventgen_dict(dict): Dict representation of a cofiguration file stanza
-            child_dict(dict): dict containing token properties with intersecting token-id.
-        """
-        dict_len = len(eventgen_dict[sample_file]['tokens'].keys())
-        random_dict = {'tokens': {}}
-        cnt = 0
-        for i in range(dict_len):
-            if eventgen_dict[sample_file]['tokens'][str(i)] == {}:
-                cnt = i
-                break
-            else:
-                random_dict['tokens'][str(i)] = eventgen_dict[sample_file]['tokens'][str(i)]
-        for i in range(0, dict_len):
-            random_dict['tokens'][str(cnt + i)] = child_dict["tokens"][str(i)]
-        return random_dict['tokens']
 
     def check_samples(self):
         """
