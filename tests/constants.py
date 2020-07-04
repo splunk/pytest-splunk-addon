@@ -439,17 +439,13 @@ TA_CIM_BROKEN_FAILED = [
 ]
 
 """
-Define the TA_fiction_indextime add-on failed test case list.
+Define the TA_fiction_indextime add-on passed test case list.
 """
 TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:file_all_dependent::host_sample_file_three.samples_1* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:file_all_dependent::host_sample_file_three.samples_2* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:file_all_dependent::host_sample_file_three.samples_3* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:file_all_dependent::host_sample_file_three.samples_4* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:updated::test_regex_one.samples_1* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:updated::test_regex_one.samples_2* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:updated::test_regex_two.samples_1* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:updated::test_regex_two.samples_2* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:user_email_relation_time_plugin::sample_file_two.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_4* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_5* PASSED*',
@@ -488,11 +484,9 @@ TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype_basic::sample_file.samples5* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test_scripted_input_sourcetype::test_scripted_input_one.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_cim_required_fields*splunk_searchtime_cim_fields0* SKIPPED*',                  
-    '*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_search*splunk_searchtime_cim_fields_not_allowed_in_search0* SKIPPED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_props*searchtime_cim_fields* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel*mapped_datamodel_tests* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_splunk_internal_errors PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_splunk_internal_errors PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_props_fields*test_scripted_input_sourcetype* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_props_fields*test_scripted_input_sourcetype::field::Mount* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_props_fields*test_scripted_input_sourcetype::field::mount* PASSED*',
@@ -518,6 +512,13 @@ TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_props_fields_no_dash_not_empty*test_scripted_input_sourcetype::field::w_op_s* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_props_fields_no_dash_not_empty*test_scripted_input_sourcetype::field::write_latency* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_props_fields_no_dash_not_empty*test_scripted_input_sourcetype::field::write_ops* PASSED*',
+]
+"""
+Define the TA_fiction_indextime add-on skipped test case list.
+"""
+TA_FICTION_INDEXTIME_SKIPPED = [
+    '*test_splunk_fiction_indextime.py::Test_App::test_cim_required_fields*splunk_searchtime_cim_fields0* SKIPPED*',                  
+    '*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_search*splunk_searchtime_cim_fields_not_allowed_in_search0* SKIPPED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_tags*splunk_searchtime_fields_tags0* SKIPPED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*',    
 ]
