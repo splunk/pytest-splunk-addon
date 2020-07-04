@@ -3,6 +3,7 @@ Data Generator
 
 To ingest samples into Splunk, plugin takes pytest-splunk-addon-data-generator.conf or eventgen.conf as input. The sample generation & ingestion takes place before executing the testcases. For index-time test cases, there are multiple metadata required about the sample file for which pytest-splunk-addon-data-generator.conf must be created and provided to the pytest command.
 
+.. _conf_spec:
 
 pytest-splunk-addon-data-generator.conf.spec
 ------------------------------------------------
@@ -97,7 +98,7 @@ The following replacementType -> replacement values are supported
 +-----------------+-------------------------------------------------------------------------------+
 | random          | dvc["host", "ipv4", "ipv6", "fqdn"]                                           |
 +-----------------+-------------------------------------------------------------------------------+ 
-| random          |           user["name", "email", "domain_user", "distinquised_name"]           |
+| random          | user["name", "email", "domain_user", "distinquised_name"]                     |
 +-----------------+-------------------------------------------------------------------------------+
 | random          | url["ip_host", "fqdn_host", "path", "query", "protocol"]                      |
 +-----------------+-------------------------------------------------------------------------------+
