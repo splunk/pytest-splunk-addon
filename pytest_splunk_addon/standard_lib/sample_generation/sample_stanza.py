@@ -141,10 +141,11 @@ class SampleStanza(object):
         with open(self.sample_path, "r") as sample_file:
             if self.input_type in ["modinput", "windows_input"]:
                 for each_line in sample_file:
-                    event_metadata = self.get_eventmetadata()
-                    yield SampleEvent(
-                        each_line, event_metadata, self.sample_name
-                    )
+                    if not each_line == '\n':
+                        event_metadata = self.get_eventmetadata()
+                        yield SampleEvent(
+                            each_line, event_metadata, self.sample_name
+                        )
             elif self.input_type in [
                 "file_monitor",
                 "scripted_input",
@@ -152,8 +153,10 @@ class SampleStanza(object):
                 "syslog_udp",
                 "default"
             ]:
+                event = sample_file.read()
+                while event[-1] == '\n': event = event[:-1]
                 yield SampleEvent(
-                    sample_file.read(), self.metadata, self.sample_name
+                    event, self.metadata, self.sample_name
                 )
             else:
                 LOGGER.warning("Unsupported input_type found: '{}' using default input_type".format(self.input_type))
