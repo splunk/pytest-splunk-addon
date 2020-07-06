@@ -753,7 +753,7 @@ class UrlRule(Rule):
                 if bool(set(["full", "protocol"]).intersection(value_list)):
                     url = url + choice(["http://", "https://"])
                 if bool(set(["full", "ip_host"]).intersection(value_list)):
-                    domain_name.append(self.fake.ipv4())
+                    domain_name.append(sample.get_ipv4("url"))
                 if bool(set(["full", "fqdn_host"]).intersection(value_list)):
                     domain_name.append(self.fake.hostname())
                 url = url + choice(domain_name)

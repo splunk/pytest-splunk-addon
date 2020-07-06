@@ -11,6 +11,7 @@ src_ipv4, dest_ipv4 = 0, 0
 host_ipv6, dvc_ipv6 = 0, 0
 src_ipv6, dest_ipv6 = 0, 0
 host_count, fqdn_count = 0,0
+url_ip_count = 0
 
 ip_rules = {
         "src":{
@@ -29,6 +30,9 @@ ip_rules = {
             "ipv4": "172.16.",
             "ipv6": "fdee:1fe4:2b8c:3264",
         },
+        "url":{
+            "ip_host": "192.168.",
+        }
     }
 
 
@@ -115,6 +119,11 @@ class SampleEvent(object):
             dest_ipv4 += 1
             addr = [int(dest_ipv4 / 256) % 256, dest_ipv4 % 256]
             return "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])
+        elif rule == "url":
+            global url_ip_count
+            url_ip_count += 1
+            addr = [int(url_ip_count / 256) % 256, url_ip_count % 256]
+            return "".join([ip_rules.get(rule)["ip_host"], str(addr[0]), ".", str(addr[1])])
         else:
             return self.fake.ipv4()
 
