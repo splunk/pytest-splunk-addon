@@ -56,7 +56,7 @@ There are two ways to execute the tests:
        :language: python
        :lines: 2,12-
 
-    Run pytest with the add-on, SA-Eventgen and Splunk Common Information Model installed and enabled in docker
+    Run pytest with the add-on, using the following command:
 
     .. code:: bash
 
