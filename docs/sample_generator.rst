@@ -1,7 +1,12 @@
 Data Generator
 ===============
 
-To ingest samples into Splunk, plugin takes pytest-splunk-addon-data-generator.conf or eventgen.conf as input. The sample generation & ingestion takes place before executing the testcases. For index-time test cases, there are multiple metadata required about the sample file for which pytest-splunk-addon-data-generator.conf must be created and provided to the pytest command.
+To ingest samples into Splunk, plugin takes `pytest-splunk-addon-data-generator.conf` or `eventgen.conf` as input. 
+The sample generation & ingestion takes place before executing the testcases. 
+For index-time test cases, there are multiple metadata required about the sample file for which `pytest-splunk-addon-data-generator.conf` must be created and provided to the pytest command.
+
+To create the `pytest-splunk-addon-data-generator.conf` file, a utility can be used.
+Detailed steps on how to create the utility can be found :ref:`here <generate_conf>`.
 
 .. _conf_spec:
 
@@ -18,7 +23,7 @@ pytest-splunk-addon-data-generator.conf.spec
     expected_event_count = 1
     timestamp_type = event
     count = 0
-    earilest = now
+    earliest = now
     latest = now
     timezone = 0000
 
@@ -41,7 +46,7 @@ sourcetype_to_search = <sourcetype>
 
 host_type = plugin | event
     * This key determines if host is assigned from event or default host should be assigned by plugin.
-    * If the value is plugin, the plugin will generate host with format of "stanza_{count}" to uniqly identify the events.
+    * If the value is plugin, the plugin will generate host with format of "stanza_{count}" to uniquely identify the events.
     * If the value is event, the host field should be provided for a token using "token.<n>.field = host". 
 
 input_type = modinput | scripted_input | syslog | syslog_tcp | syslog_udp | file_monitor | windows_input | default
@@ -152,28 +157,28 @@ token.<n>.replacement = <string> | <strptime> | ["list","of","values"] | guid | 
         * Column numbers in mvfile references are indexed at 1, meaning the first column is column 1, not 0.
     * For host["host", "ipv4", "ipv6", "fqdn"], 4 types of host replacement are supported. Either one or multiple from the list can be provided to randomly replace the token. 
 
-        * For host["host"], the token will be replaced with a sequencial host value with pattern "host_sample_host_<number>".
+        * For host["host"], the token will be replaced with a sequential host value with pattern "host_sample_host_<number>".
         * For host["ipv4"], the token will be replaced with a random valid IPv4 Address.
         * For host["ipv6"], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3264:0:0:0:0 range.
-        * For host["fqdn"], the token will be replaced with a sequencial fqdn value with pattern "host_sample_host.sample_domain<number>.com".
+        * For host["fqdn"], the token will be replaced with a sequential fqdn value with pattern "host_sample_host.sample_domain<number>.com".
     * For src["host", "ipv4", "ipv6", "fqdn"], 4 types of src replacement are supported. Either one or multiple from the list can be provided to randomly replace the token. 
 
-        * For src["host"], the token will be replaced with a sequencial host value with pattern "src_sample_host_<number>".
+        * For src["host"], the token will be replaced with a sequential host value with pattern "src_sample_host_<number>".
         * For src["ipv4"], the token will be replaced with a random valid IPv4 Address from 10.1.0.0 range.
         * For src["ipv6"], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3261:0:0:0:0 range.
-        * For src["fqdn"], the token will be replaced with a sequencial fqdn value with pattern "src_sample_host.sample_domain<number>.com".
+        * For src["fqdn"], the token will be replaced with a sequential fqdn value with pattern "src_sample_host.sample_domain<number>.com".
     * For dest["host", "ipv4", "ipv6", "fqdn"], 4 types of dest replacement are supported. Either one or multiple from the list can be provided to randomly replace the token. 
 
-        * For dest["host"], the token will be replaced with a sequencial host value with pattern "dest_sample_host_<number>".
+        * For dest["host"], the token will be replaced with a sequential host value with pattern "dest_sample_host_<number>".
         * For dest["ipv4"], the token will be replaced with a random valid IPv4 Address from 10.100.0.0 range.
         * For dest["ipv6"], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3262:0:0:0:0 range.
-        * For dest["fqdn"], the token will be replaced with a sequencial fqdn value with pattern "dest_sample_host.sample_domain<number>.com".
+        * For dest["fqdn"], the token will be replaced with a sequential fqdn value with pattern "dest_sample_host.sample_domain<number>.com".
     * For dvc["host", "ipv4", "ipv6", "fqdn"], 4 types of dvc replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.
 
-        * For dvc["host"], the token will be replaced with a sequencial host value with pattern "dvc_sample_host_<number>".
+        * For dvc["host"], the token will be replaced with a sequential host value with pattern "dvc_sample_host_<number>".
         * For dvc["ipv4"], the token will be replaced with a random valid IPv4 Address from 172.16.0-50.0 range.
         * For dvc["ipv6"], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3263:0:0:0:0 range.
-        * For dvc["fqdn"], the token will be replaced with a sequencial fqdn value with pattern "dvc_sample_host.sample_domain<number>.com".
+        * For dvc["fqdn"], the token will be replaced with a sequential fqdn value with pattern "dvc_sample_host.sample_domain<number>.com".
     * For user["name", "email", "domain_user", "distinquised_name"], 4 types of user replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.
 
         * For user["name"], the token will be replaced with a random name with pattern "user<number>".
