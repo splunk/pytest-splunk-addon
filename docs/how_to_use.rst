@@ -69,7 +69,7 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
 
 ----------------------
 
-There are 3 types of tests included in pytest-splunk-addon.
+There are 3 types of tests included in pytest-splunk-addon are:
 
     1. To generate test cases only for knowledge objects, append the following marker to pytest command:
 
@@ -91,9 +91,16 @@ There are 3 types of tests included in pytest-splunk-addon.
 
         For detailed information on index time test execution, please refer :ref:`here <index_time_tests>`.
 
+    * To execute all the searchtime tests together, i.e both Knowledge objects and CIM compatibility tests, 
+      append the following marker to the pytest command:
+
+        .. code-block:: console
+
+            -m  "splunk_searchtime_fields or splunk_searchtime_cim"     
+
 ----------------------
 
-The following optional arguments are available to modify the default settings in the test cases.
+The following optional arguments are available to modify the default settings in the test cases:
 
     1. To search for events in a specific index, user can provide following additional arguments:
 
