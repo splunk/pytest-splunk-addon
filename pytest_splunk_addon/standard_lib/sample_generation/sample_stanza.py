@@ -19,16 +19,13 @@ class SampleStanza(object):
         * Sample file's raw data
         * Tokenised events
         * Sample ingestion type
+
+    Args:
+        sample_path (str): Path to the sample file 
+        eventgen_params (dict): Dictionary representing eventgen.conf
     """
 
     def __init__(self, sample_path, eventgen_params):
-        """
-        init method for the class
-        
-        Args:
-            sample_path(str): Path to the sample file 
-            eventgen_params(dict): Eventgen stanzas dictionary
-        """
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
         self.sample_rules = list(self._parse_rules(eventgen_params, self.sample_path))
@@ -38,14 +35,14 @@ class SampleStanza(object):
 
     def get_raw_events(self):
         """
-        This method initialize the tokenize event with raw sample
+        Gets the raw events from the sample file.
         """
         # self.sample_raw_data = list(self._get_raw_sample())
         self.tokenized_events = self._get_raw_sample()
 
     def get_tokenized_events(self):
         """
-        Yield the tokenize event
+        Yields the tokenized events
         """
         for event in self.tokenized_events:
             event.event, event.metadata = SampleEvent.update_metadata(
@@ -55,8 +52,13 @@ class SampleStanza(object):
 
     def tokenize(self, bulk_event_ingestion):
         """
-        Tokenize the raw events(self.sample_raw_data) and stores them into self.tokenized_events.
-        For backward compatibility added required count support.
+        Tokenizes the raw events by replacing all the tokens in it.
+
+        Args:
+            bulk_event_ingestion (bool): 
+                
+                * True: For search time testing
+                * False: For index time testing
         """
         event = list(self.tokenized_events)
 
@@ -88,8 +90,8 @@ class SampleStanza(object):
         Yield the rule instance based token replacement type.
 
         Args:
-            eventgen_params(dict): Eventgen stanzas dictionary
-            sample_path(str): Path to the sample file 
+            eventgen_params (dict): Eventgen stanzas dictionary
+            sample_path (str): Path to the sample file
         """
         token_list = self._sort_tokens_by_replacement_type_all(eventgen_params['tokens'])
         for each_token, token_value in token_list:
@@ -100,7 +102,7 @@ class SampleStanza(object):
         Return the metadata from eventgen stanzas.
 
         Args:
-            eventgen_params(dict): Eventgen stanzas dictionary
+            eventgen_params (dict): Eventgen stanzas dictionary
         """
         metadata = {
             key: eventgen_params[key]
@@ -173,7 +175,7 @@ class SampleStanza(object):
         Return the sorted token list by replacementType=all first in list.
 
         Args:
-            tokens_dict(dict): tokens dictionary
+            tokens_dict (dict): tokens dictionary
         """
         token_list = []
         for token in tokens_dict.items():
