@@ -345,12 +345,11 @@ class FileRule(Rule):
                 with open(relative_file_path) as f:
                     txt = f.read()
                     lines = [each.strip() for each in txt.split("\n") if each]
-                    for _ in range(token_count):
-                        if self.replacement_type == 'random' or self.replacement_type == 'file':
-                            yield self.token_value(*([choice(lines)]*2))
-                        elif self.replacement_type == 'all':
-                            for each_value in lines:
-                                yield self.token_value(*([each_value]*2))
+                    if self.replacement_type == 'random' or self.replacement_type == 'file':
+                        yield self.token_value(*([choice(lines)]*2))
+                    elif self.replacement_type == 'all':
+                        for each_value in lines:
+                            yield self.token_value(*([each_value]*2))
             except IOError:
                 LOGGER.warning("File not found : {}".format(relative_file_path))
 
@@ -423,8 +422,8 @@ class FileRule(Rule):
                     and file_path in sample.replacement_map
                 ):
                     index = int(index)
-                    file_values = sample.replacement_map[file_path][self.file_count].split(',')
-                    if 'file_all' in self.every_replacement_types:
+                    file_values = sample.replacement_map[file_path]["data"][self.file_count].split(',')
+                    if sample.replacement_map[file_path].get("find_all"):
                         # if condition to increase the line no. of sample data
                         # when the replacement_type = all provided in token for indexed file
                         if self.file_count == len(all_data)-1:
@@ -436,26 +435,20 @@ class FileRule(Rule):
                     for _ in range(token_count):
                         yield file_values[index-1]
                 else:
-                    index = int(index)
-                    if (
-                        hasattr(sample, "replacement_map")
-                        and file_path in sample.replacement_map
-                    ):
-                        sample.replacement_map[file_path].append(all_data)
+                    if self.replacement_type == 'all':
+                        sample.__setattr__("replacement_map", {file_path: {"data":all_data, "find_all":True}})
+                        for i in all_data:
+                            file_values = i.split(',')
+                            yield file_values[index-1]
                     else:
-                        if self.replacement_type == 'all':
-                            self.every_replacement_types.append("file_all")
-                            sample.__setattr__("replacement_map", {file_path: all_data})
-                            for i in all_data:
-                                file_values = i.split(',')
-                                for _ in range(token_count):
-                                    yield file_values[index-1]
+                        random_line = random.randint(0, len(all_data)-1)
+                        if sample.replacement_map:
+                            sample.replacement_map.update({file_path: {"data":[all_data[random_line]]}})
                         else:
-                            random_line = random.randint(0, len(all_data)-1)
-                            sample.__setattr__("replacement_map", {file_path: [all_data[random_line]]})
-                            file_values = all_data[random_line].split(',')
-                            for _ in range(token_count):
-                                yield file_values[index-1]
+                            sample.__setattr__("replacement_map", {file_path: {"data":[all_data[random_line]]}})
+                        file_values = all_data[random_line].split(',')
+                        for _ in range(token_count):
+                            yield file_values[index-1]
         except IndexError:
             LOGGER.error(
                 f"Index for column {index} in replacement"

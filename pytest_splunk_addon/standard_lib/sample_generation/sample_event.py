@@ -253,15 +253,18 @@ class SampleEvent(object):
         try:
             if isinstance(event, str) and event.startswith("***SPLUNK***"):
                 header = event.split("\n", 1)[0]
-                self.event = event.split("\n", 1)[1]
+                event = event.split("\n", 1)[1]
 
                 meta_fields = re.findall(r"[\w]+=[^\s]+", header)
                 for meta_field in meta_fields:
                     field = meta_field.split("=")[0]
                     value = meta_field.split("=")[1]
-                    self.metadata[field] = value
+                    if field == "host":
+                        metadata[field] = f"host_{metadata[field]}"
+                    else:
+                        metadata[field] = value
 
-                return self.event, self.metadata
+                return event, metadata
             else:
                 return event, metadata
         except IndexError as error:
