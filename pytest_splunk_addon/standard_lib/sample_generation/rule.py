@@ -442,7 +442,7 @@ class FileRule(Rule):
                             yield file_values[index-1]
                     else:
                         random_line = random.randint(0, len(all_data)-1)
-                        if sample.replacement_map:
+                        if hasattr(sample, "replacement_map"):
                             sample.replacement_map.update({file_path: {"data":[all_data[random_line]]}})
                         else:
                             sample.__setattr__("replacement_map", {file_path: {"data":[all_data[random_line]]}})
