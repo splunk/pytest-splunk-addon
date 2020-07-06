@@ -406,8 +406,11 @@ class FileRule(Rule):
         Yields the column value of token by reading files.
 
         Args:
+            sample(object): Instance of SampleEvent class.
             file_path: path of the file mentioned in token.
             index: index value mentioned in file_path i.e. <file_path>:<index>
+            token_count(int): No. of token in sample event where rule
+            is to be applicable.
         """
         all_data = []
         try:
@@ -462,6 +465,7 @@ class FileRule(Rule):
         Yields the column value of token by reading files.
 
         Args:
+            sample(object): Instance of SampleEvent class.
             file_path: path of the file mentioned in token.
             index: index value mentioned in file_path i.e. <file_path>:<index>
             token_count(int): No. of token in sample event
