@@ -447,12 +447,24 @@ TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:file_all_dependent::host_sample_file_three.samples_3* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:file_all_dependent::host_sample_file_three.samples_4* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype:user_email_relation_time_plugin::sample_file_two.samples* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_4* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_5* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_6* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_7* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_8* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_9* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_13* PASSED*'
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_14* PASSED*'
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_15* PASSED*'
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_16* PASSED*'
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_17* PASSED*'
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_18* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_19* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_20* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_21* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_22* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_23* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_24* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_25* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_26* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_27* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_28* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_29* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file.samples_30* PASSED*'
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test_scripted_input_sourcetype::host_test_scripted_input_one.samples_1* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype:file_all_dependent::host_sample_file_three.samples_1* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype:file_all_dependent::host_sample_file_three.samples_2* PASSED*',
@@ -463,12 +475,24 @@ TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype:updated::test_regex_two.samples_1* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype:updated::test_regex_two.samples_2* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype:user_email_relation_time_plugin::sample_file_two.samples* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_4* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_5* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_6* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_7* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_8* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_9* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_13* PASSED*'
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_14* PASSED*'
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_15* PASSED*'
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_16* PASSED*'
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_17* PASSED*'
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_18* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_19* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_20* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_21* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_22* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_23* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_24* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_25* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_26* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_27* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_28* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_29* PASSED*' 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:sourcetype_basic::sample_file.samples_30* PASSED*'
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test_scripted_input_sourcetype::host_test_scripted_input_one.samples_1* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype:file_all_dependent::sample_file_three.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype:updated::test_regex_one.samples0* PASSED*',
