@@ -244,10 +244,8 @@ class SampleEvent(object):
         Format::
 
             '***SPLUNK*** source=<source> sourcetype=<sourcetype> \
-
             field_1       field2        field3 \
             ##value1##    ##value2##   ##value3##'
-
         Args:
             event (str): event string containing raw syslog data
             metadata (dict): Contains metadata for the event
