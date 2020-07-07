@@ -11,6 +11,7 @@ src_ipv4, dest_ipv4 = 0, 0
 host_ipv6, dvc_ipv6 = 0, 0
 src_ipv6, dest_ipv6 = 0, 0
 host_count, fqdn_count = 0,0
+url_ip_count = 0
 
 ip_rules = {
         "src":{
@@ -29,23 +30,23 @@ ip_rules = {
             "ipv4": "172.16.",
             "ipv6": "fdee:1fe4:2b8c:3264",
         },
+        "url":{
+            "ip_host": "192.168.",
+        }
     }
 
 
 class SampleEvent(object):
     """
     This class represents an event which will be ingested in Splunk.
+
+    Args:
+        event_string (str): Event content
+        metadata (dict): Contains metadata for the event
+        sample_name (str): Name of the file containing this event
     """
 
     def __init__(self, event_string, metadata, sample_name):
-        """
-        init method for the class
-        
-        Args:
-            event_string(str): Sample event string 
-            metadata(dict): Dictionary of metadata
-            sample_name(str): sample name
-        """
         self.event = event_string
         self.key_fields = dict()
         self.time_values = list()
@@ -56,16 +57,16 @@ class SampleEvent(object):
 
     def update(self, new_event):
         """
-        This method update the event string
+        This method updates the event content
 
         Args:
-            new_event(str): Event string 
+            new_event (str): Event content 
         """
         self.event = new_event
 
     def get_host(self):
         """
-        Return the unique host value
+        Returns a unique host value
         """
         self.host_count += 1
         return "{}_{}_{}".format("host", self.sample_name, str(self.host_count))
@@ -75,18 +76,18 @@ class SampleEvent(object):
         Returns unique host value for the key fields src, dest, host, dvc
 
         Args:
-            rule(str): Type of rule either src, host, dest, dvc
+            rule (str): Type of rule either src, host, dest, dvc
         """
         global host_count
         host_count += 1
         return "{}_{}{}".format(rule, "sample_host", host_count)
-    
+
     def get_field_fqdn(self, rule):
         """
         Returns unique fqdn value for the key fields src, dest, host, dvc
 
         Args:
-            rule(str): Type of rule either src, host, dest, dvc
+            rule (str): Type of rule either src, host, dest, dvc
         """
         global fqdn_count
         fqdn_count += 1
@@ -97,7 +98,7 @@ class SampleEvent(object):
         Returns Ipv4 Address as per the rule.
 
         Args:
-            rule(str): Type of rule either src, host, dest, dvc
+            rule (str): Type of rule either src, host, dest, dvc.
             If the value is not one of the key field it will return a randomly generated Ipv4 address.
         """
         if rule == "src":
@@ -118,6 +119,11 @@ class SampleEvent(object):
             dest_ipv4 += 1
             addr = [int(dest_ipv4 / 256) % 256, dest_ipv4 % 256]
             return "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])
+        elif rule == "url":
+            global url_ip_count
+            url_ip_count += 1
+            addr = [int(url_ip_count / 256) % 256, url_ip_count % 256]
+            return "".join([ip_rules.get(rule)["ip_host"], str(addr[0]), ".", str(addr[1])])
         else:
             return self.fake.ipv4()
 
@@ -126,7 +132,7 @@ class SampleEvent(object):
         Returns Ipv6 Address as per the rule.
 
         Args:
-            rule(str): Type of rule either src, host, dest, dvc
+            rule (str): Type of rule either src, host, dest, dvc.
             If the value is not one of the key field it will return a randomly generated Ipv6 address.
         """
         if rule == "src":
@@ -155,20 +161,20 @@ class SampleEvent(object):
 
     def get_token_count(self, token):
         """
-        This method find the token count in event
+        Returns the token count in event
 
         Args:
-            token(str): Token name 
+            token (str): Token name
         """
         return len(re.findall(token, self.event))
 
     def replace_token(self, token, token_values):
         """
-        This method replace the token value in event string
+        Replaces the token value in event
 
         Args:
-            token(str): Token name 
-            token_values(list/str): Value to be replace in token 
+            token (str): Token name 
+            token_values (list/str): Value(s) to be replaced in the token 
         """
         # TODO: How to handle dependent Values with list of token_values
         if isinstance(token_values, list):
@@ -191,11 +197,11 @@ class SampleEvent(object):
 
     def register_field_value(self, field, token_values):
         """
-        This method register the key value in event instance
+        Registers the value for the key fields in its SampleEvent object
 
         Args:
-            field(str): Token field name 
-            token_values(list/str): Value to be replace in token 
+            field (str): Token field name 
+            token_values (list/str): Token value(s) which are replaced in the key fields
         """
         if field == "_time":
             time_list = token_values if isinstance(token_values, list) else [token_values]
@@ -211,17 +217,20 @@ class SampleEvent(object):
 
     def get_key_fields(self):
         """
-        Return the key field value from event
+        Returns the key field value from event
         """
         return self.key_fields
 
     @classmethod
     def copy(cls, event):
         """
-        This method is copy the sample event
+        Copies the SampleEvent object into a new one.
 
         Args:
-            event(SampleEvent): event class instance
+            event (SampleEvent): Event object which has to be copied
+
+        Returns:
+            Copy of the SampleEvent object
         """
         new_event = cls("", {}, "")
         new_event.__dict__ = event.__dict__.copy()
@@ -231,37 +240,31 @@ class SampleEvent(object):
 
     def update_metadata(self, event, metadata):
         """
-        This method is to process the syslog formated samples data
-        data: raw syslog data
-            data_format::
-                ***SPLUNK*** source=<source> sourcetype=<sourcetype>
+        Processes the syslog formated samples
+        Format::
 
-                field_1       field2        field3
-                ##value1##    ##value2##   ##value3##
-            metadata: dictionary of metadata
-            metadata_format::
-                {
-                    "host": "sample_host",
-                    "source": "sample_source"
-                }
+            '***SPLUNK*** source=<source> sourcetype=<sourcetype> \
+            field_1       field2        field3 \
+            ##value1##    ##value2##   ##value3##'
         Args:
-            event(str): event string
-            metadata(dict): dictionary of metadata
+            event (str): event string containing raw syslog data
+            metadata (dict): Contains metadata for the event
+
         Returns:
-            syslog event and the dictionary of updated metadata
+            Syslog event and the updated metadata
         """
         try:
             if isinstance(event, str) and event.startswith("***SPLUNK***"):
                 header = event.split("\n", 1)[0]
-                event = event.split("\n", 1)[1]
+                self.event = event.split("\n", 1)[1]
 
                 meta_fields = re.findall(r"[\w]+=[^\s]+", header)
                 for meta_field in meta_fields:
                     field = meta_field.split("=")[0]
                     value = meta_field.split("=")[1]
-                    metadata[field] = value
+                    self.metadata[field] = value
 
-                return event, metadata
+                return self.event, self.metadata
             else:
                 return event, metadata
         except IndexError as error:
