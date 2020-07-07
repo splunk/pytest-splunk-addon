@@ -345,7 +345,8 @@ class FileRule(Rule):
                     txt = f.read()
                     lines = [each.strip() for each in txt.split("\n") if each]
                     if self.replacement_type == 'random' or self.replacement_type == 'file':
-                        yield self.token_value(*([choice(lines)]*2))
+                        for _ in range(token_count):
+                            yield self.token_value(*([choice(lines)]*2))
                     elif self.replacement_type == 'all':
                         for each_value in lines:
                             yield self.token_value(*([each_value]*2))
