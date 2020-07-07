@@ -108,14 +108,13 @@ class HECEventIngestor(EventIngestor):
                 headers=self.session_headers,
                 verify=False,
             )
+            LOGGER.debug("Status code: {}".format(response.status_code))
             if response.status_code not in (200, 201):
-                LOGGER.debug(
-                    "Status code: {} \nReason: {} \ntext:{}".format(
+                raise Exception("\nStatus code: {} \nReason: {} \ntext:{}".format(
                         response.status_code, response.reason, response.text
-                    )
-                )
-                raise Exception
+                    ))
 
         except Exception as e:
-            LOGGER.error(e)
+            LOGGER.error("\n\nAn error occured while data ingestion.{}".format(e))
+            print("\n\nAn error occured while data ingestion.{}".format(e))
             os._exit(0)
