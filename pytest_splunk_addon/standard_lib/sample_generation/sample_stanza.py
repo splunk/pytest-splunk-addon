@@ -100,7 +100,11 @@ class SampleStanza(object):
         """
         token_list = self._sort_tokens_by_replacement_type_all(eventgen_params['tokens'])
         for each_token, token_value in token_list:
-            yield Rule.parse_rule(token_value, eventgen_params, sample_path)
+            applied_rule = Rule.parse_rule(token_value, eventgen_params, sample_path)
+            if not applied_rule:
+                Rule.raise_warning("Unidentified Rule: '{}' for token '{}'".format(token_value["replacement"], token_value["token"]))
+            else:
+                yield applied_rule
 
     def _parse_meta(self, eventgen_params):
         """
@@ -115,8 +119,35 @@ class SampleStanza(object):
             if key != "tokens"
         }
         metadata.update(host=self.sample_name)
-        if metadata.get("input_type") is None:
-            metadata.update(input_type="default")        
+        if metadata.get("input_type") not in [
+                "modinput", 
+                "windows_input",
+                "file_monitor",
+                "scripted_input",
+                "syslog_tcp",
+                "syslog_udp",
+                "default"
+            ] and not None:
+            Rule.raise_warning("Invalid value for input_type found: '{}' using default input_type".format(metadata.get("input_type")))
+            metadata.update(input_type="default")
+        if metadata.get("host_type") not in ["event", "plugin", None]:
+            Rule.raise_warning("Invalid value for host_type: '{}' using host_type = plugin.".format(metadata.get("host_type")))
+            metadata.update(host_type="plugin")
+        if metadata.get("timestamp_type") not in ["event", "plugin", None]:
+            Rule.raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
+            metadata.update(timestamp_type="plugin")
+        if metadata.get("timezone") not in ["local", "0000", "+-hhmm", None]:
+            Rule.raise_warning("Invalid value for timezone: '{}' using timezone = 0000.".format(metadata.get("timezone")))
+            metadata.update(timezone="0000")
+        if metadata.get("timestamp_type") not in ["event", "plugin", None]:
+            Rule.raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
+            metadata.update(timestamp_type="plugin")
+        if metadata.get("expected_event_count") and not metadata.get("expected_event_count").isnumeric():
+            Rule.raise_warning("Invalid value for expected_event_count: '{}' using expected_event_count = 1.".format(metadata.get("expected_event_count")))
+            metadata.update(expected_event_count="1")
+        if metadata.get("count") and not metadata.get("count").isnumeric():
+            Rule.raise_warning("Invalid value for count: '{}' using count = 1.".format(metadata.get("count")))
+            metadata.update(count="100")
         return metadata
 
     def get_eventmetadata(self):
@@ -147,8 +178,8 @@ class SampleStanza(object):
         """
         with open(self.sample_path, "r") as sample_file:
             if self.input_type in ["modinput", "windows_input"]:
-                for each_line in sample_file:
-                    if not each_line == '\n':
+                for each_line in sample_file.read().split('\n'):
+                    if not each_line == '':
                         event_metadata = self.get_eventmetadata()
                         yield SampleEvent(
                             each_line, event_metadata, self.sample_name
@@ -161,17 +192,13 @@ class SampleStanza(object):
                 "default"
             ]:
                 event = sample_file.read()
-                while event[-1] == '\n': event = event[:-1]
-                yield SampleEvent(
-                    event, self.metadata, self.sample_name
-                )
-            else:
-                LOGGER.warning("Unsupported input_type found: '{}' using default input_type".format(self.input_type))
-                warnings.warn(UserWarning("Unsupported input_type found: '{}' using default input_type".format(self.input_type)))
-                self.metadata["input_type"] = "default"
-                yield SampleEvent(
-                    sample_file.read(), self.metadata, self.sample_name
-                )
+                if event == '':
+                    Rule.raise_warnning("sample file: '{}' is empty".format(self.sample_path))
+                else:
+                    while event[-1] == '\n': event = event[:-1]
+                    yield SampleEvent(
+                        event, self.metadata, self.sample_name
+                    )
 
             if not self.input_type:
                 # TODO: input_type not found scenario
