@@ -1,14 +1,16 @@
 import logging
 import pytest
 import copy
+from ..cim_tests import FieldTestHelper
 
 MAX_TIME_DIFFERENCE = 45
 
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class IndexTimeTestTemplate(object):
 
     logger = logging.getLogger("pytest-splunk-addon-tests")
-    
+
 
     @pytest.mark.first
     @pytest.mark.splunk_indextime
@@ -62,12 +64,31 @@ class IndexTimeTestTemplate(object):
         # Example syslog: all the headers are only tokenized once hence
         #   key_fields = {'host': ['dummy_host']}
         #   result_dict = {'host': ['dummy_host']*n}
+        value_list = []
+        for each in fields_to_check.keys():
+            List = []
+            if not (all(x in fields_to_check.get(each) for x in list(set(result_fields.get(each))))):
+                List.append(each)
+                List.append(fields_to_check[each])
+                List.append(list(set(result_fields.get(each))))
+                value_list.append(List)        
+        result_str = FieldTestHelper.get_table_output(
+            headers=["Key_field", "Expected_values", "Actual_values"],
+            value_list=[
+                [
+                    each_result[0],
+                    str(each_result[1]),
+                    str(each_result[2]),
+                ]
+                for each_result in value_list
+            ],     
+        )       
+        LOGGER.info(result_str)
+        assert int(len(value_list)) == 0, (
+            f"For this search query: '{search}'\n"
+            f"some key fields have values which are not expected\n{result_str}"
+        )        
 
-        assert (
-            {i: list(
-                set(result_fields)) for i in result_fields} == {i: list(
-                    set(fields_to_check)) for i in fields_to_check}
-        )
 
     @pytest.mark.first
     @pytest.mark.splunk_indextime
@@ -84,7 +105,6 @@ class IndexTimeTestTemplate(object):
             + " OR index=".join(splunk_search_util.search_index.split(","))
             + ")"
         )
-
         if splunk_indextime_time.get("identifier"):
             extra_filter = splunk_indextime_time.get("identifier")
         else:
@@ -122,7 +142,7 @@ class IndexTimeTestTemplate(object):
                 key_time[index_to_check], event_time
                 )
 
-    # Testing line breaker
+    # # Testing line breaker
     @pytest.mark.first
     @pytest.mark.splunk_indextime
     def test_indextime_line_breaker(
@@ -144,6 +164,13 @@ class IndexTimeTestTemplate(object):
         )
         record_property("Query", query)
 
-        assert splunk_search_util.checkQueryCount(
-            query, expected_events_count, retries=0, interval=0
-        ), ("We should get exactly " + str(expected_events_count) + " result")
+        result = splunk_search_util.getFieldValuesList(
+            query
+        )
+        actual_count = len(list(result))
+        LOGGER.info(actual_count)
+        assert actual_count == expected_events_count, (
+            f"For the query: '{query}' \n"
+            f" Expected event count :  {expected_events_count} \n"
+            f" Actual event count :  {actual_count} "
+        )
