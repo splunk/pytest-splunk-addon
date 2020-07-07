@@ -115,6 +115,6 @@ class HECEventIngestor(EventIngestor):
                     ))
 
         except Exception as e:
-            LOGGER.error("\n\nAn error occured while data ingestion.{}".format(e))
-            print("\n\nAn error occured while data ingestion.{}".format(e))
+            LOGGER.error("\n\nAn error occurred while data ingestion.{}".format(e))
+            print("\n\nAn error occurred while data ingestion.{}".format(e))
             os._exit(0)
