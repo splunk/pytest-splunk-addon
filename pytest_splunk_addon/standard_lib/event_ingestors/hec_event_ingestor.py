@@ -84,7 +84,7 @@ class HECEventIngestor(EventIngestor):
             else:
                 host = event.key_fields.get("host")
             if host:
-                event_dict['host'] = host
+                event_dict['host'] = host[0]
 
             if event.metadata.get("timestamp_type") in ('plugin', None):
                 event_dict['time'] = event.time_values[0]
