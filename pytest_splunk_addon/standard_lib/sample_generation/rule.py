@@ -768,7 +768,7 @@ class UrlRule(Rule):
         """
         Yields a random url replacement value from the list
         of values mentioned in token.
-        Possible values: ["ip_host", "fqdn_host", "path", "query", "protocol"]
+        Possible values: ["ip_host", "fqdn_host", "path", "query", "protocol", "full"]
 
         Args:
             sample (SampleEvent): Instance containing event info
@@ -780,7 +780,7 @@ class UrlRule(Rule):
             value_list_str = value_match.group(1)
             value_list = eval(value_list_str)
             for each in value_list:
-                if each not in ["ip_host", "fqdn_host", "path", "query", "protocol"]:
+                if each not in ["ip_host", "fqdn_host", "path", "query", "protocol", "full"]:
                     self.raise_warning('Invalid Value for url: "{}" for replacement {} in stanza "{}".\n Accepted values: ["ip_host", "fqdn_host", "path", "query", "protocol"]'.format(each, self.replacement, sample.sample_name))
                     replace_token = False
             if replace_token:
@@ -804,7 +804,7 @@ class UrlRule(Rule):
                         url = url + self.generate_url_query_params()
                     yield self.token_value(*([str(url)]*2))
         else:
-            self.raise_warning('Unidentified format: "{}" in stanza "{}".\n Try  url["ip_host", "fqdn_host", "path", "query", "protocol"]'.format(self.replacement, sample.sample_name))
+            self.raise_warning('Unidentified format: "{}" in stanza "{}".\n Expected values: ["ip_host", "fqdn_host", "path", "query", "protocol", "full"]'.format(self.replacement, sample.sample_name))
 
     def generate_url_query_params(self):
         """
