@@ -1,5 +1,6 @@
 """
-HEC Event Ingestor class
+HEC Event Ingestor class for Metric data.
+Indextime tests of Metric data will be covered in upcoming versions of the plugin. It is not supported in current version.
 """
 from .base_event_ingestor import EventIngestor
 import requests
