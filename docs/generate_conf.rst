@@ -45,7 +45,7 @@ How to generate the new conf file?
 
         .. code-block:: console
 
-            generate-conf <path-to-addon> [<path-to-the-new-conf-file>]
+            generate-indextime-conf <path-to-addon> [<path-to-the-new-conf-file>]
 
 
     .. note::
