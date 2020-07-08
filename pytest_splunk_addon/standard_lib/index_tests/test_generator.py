@@ -1,7 +1,7 @@
 import logging
 import pytest
-
 from ..sample_generation import SampleGenerator
+from ..sample_generation.rule import raise_warning
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

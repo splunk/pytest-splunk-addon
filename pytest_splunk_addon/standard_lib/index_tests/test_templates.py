@@ -2,9 +2,11 @@ import logging
 import pytest
 import copy
 import pprint
+from ..cim_tests import FieldTestHelper
 
 MAX_TIME_DIFFERENCE = 45
 
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class IndexTimeTestTemplate(object):
 
@@ -67,12 +69,31 @@ class IndexTimeTestTemplate(object):
         # Example syslog: all the headers are only tokenized once hence
         #   key_fields = {'host': ['dummy_host']}
         #   result_dict = {'host': ['dummy_host']*n}
+        value_list = []
+        for each in fields_to_check.keys():
+            List = []
+            if not (all(x in fields_to_check.get(each) for x in list(set(result_fields.get(each))))):
+                List.append(each)
+                List.append(fields_to_check[each])
+                List.append(list(set(result_fields.get(each))))
+                value_list.append(List)
+        result_str = FieldTestHelper.get_table_output(
+            headers=["Key_field", "Expected_values", "Actual_values"],
+            value_list=[
+                [
+                    each_result[0],
+                    str(each_result[1]),
+                    str(each_result[2]),
+                ]
+                for each_result in value_list
+            ],     
+        )       
+        LOGGER.info(result_str)
+        assert int(len(value_list)) == 0, (
+            f"For this search query: '{search}'\n"
+            f"some key fields have values which are not expected\n{result_str}"
+        )        
 
-        assert (
-            {i: list(
-                set(result_fields)) for i in result_fields} == {i: list(
-                    set(fields_to_check)) for i in fields_to_check}
-        )
 
     @pytest.mark.first
     @pytest.mark.splunk_indextime
@@ -132,7 +153,7 @@ class IndexTimeTestTemplate(object):
                 key_time[index], event_time
                 )
 
-    # Testing line breaker
+    # # Testing line breaker
     @pytest.mark.first
     @pytest.mark.splunk_indextime
     def test_indextime_line_breaker(
@@ -164,7 +185,7 @@ class IndexTimeTestTemplate(object):
 
         assert count_of_results == expected_events_count,  (
             f"Query result not as per expected event count.\n"
-            f"Expected: {str(expected_events_count)} Found: {count_of_results}"
+            f"Expected: {str(expected_events_count)} Found: {count_of_results}.\n"
             f"search={query}\n"
             f"found result={result_str}"
         )

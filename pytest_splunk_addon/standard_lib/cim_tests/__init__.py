@@ -9,3 +9,4 @@ from .data_model import DataModel
 from .data_model_handler import DataModelHandler
 from .test_generator import CIMTestGenerator
 from .test_templates import CIMTestTemplates
+from .field_test_helper import FieldTestHelper
