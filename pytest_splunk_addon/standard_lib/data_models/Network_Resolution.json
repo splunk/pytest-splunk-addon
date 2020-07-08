@@ -38,6 +38,7 @@
       {
         "name": "dest",
         "type": "required",
+        "validity": "case(in(upper(transport), \"TCP\", \"UDP\"), if(match(dest,\"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\"), dest, null()), match(dest,\"^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$\"), dest, true(), null())",
         "comment": "The destination of the network resolution event. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
       },
       {
@@ -150,6 +151,7 @@
       {
         "name": "src",
         "type": "required",
+        "validity": "case(in(upper(transport), \"TCP\", \"UDP\"), if(match(src,\"(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\\.|$)){4}\"), src, null()), match(src,\"^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$\"), src, true(), null())",
         "comment": "The source of the network resolution event. You can alias this from more specific fields, such as src_host, src_ip, or src_name."
       },
       {

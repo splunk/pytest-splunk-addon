@@ -244,7 +244,6 @@ class SampleEvent(object):
         Format::
 
             '***SPLUNK*** source=<source> sourcetype=<sourcetype> \
-
             field_1       field2        field3 \
             ##value1##    ##value2##   ##value3##'
 

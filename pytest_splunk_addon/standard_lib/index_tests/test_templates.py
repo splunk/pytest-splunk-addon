@@ -4,13 +4,12 @@ import copy
 from ..cim_tests import FieldTestHelper
 
 MAX_TIME_DIFFERENCE = 45
-
 LOGGER = logging.getLogger("pytest-splunk-addon")
+
 
 class IndexTimeTestTemplate(object):
 
     logger = logging.getLogger("pytest-splunk-addon-tests")
-
 
     @pytest.mark.first
     @pytest.mark.splunk_indextime
@@ -87,7 +86,7 @@ class IndexTimeTestTemplate(object):
         assert int(len(value_list)) == 0, (
             f"For this search query: '{search}'\n"
             f"some key fields have values which are not expected\n{result_str}"
-        )        
+        )
 
 
     @pytest.mark.first
@@ -105,6 +104,7 @@ class IndexTimeTestTemplate(object):
             + " OR index=".join(splunk_search_util.search_index.split(","))
             + ")"
         )
+
         if splunk_indextime_time.get("identifier"):
             extra_filter = splunk_indextime_time.get("identifier")
         else:
@@ -142,7 +142,7 @@ class IndexTimeTestTemplate(object):
                 key_time[index_to_check], event_time
                 )
 
-    # # Testing line breaker
+
     @pytest.mark.first
     @pytest.mark.splunk_indextime
     def test_indextime_line_breaker(
@@ -174,3 +174,4 @@ class IndexTimeTestTemplate(object):
             f" Expected event count :  {expected_events_count} \n"
             f" Actual event count :  {actual_count} "
         )
+

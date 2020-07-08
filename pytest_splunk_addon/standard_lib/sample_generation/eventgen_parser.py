@@ -2,7 +2,6 @@ import os
 import re
 import logging
 from splunk_appinspect import App
-
 from .rule import Rule, raise_warning
 from . import SampleStanza
 
@@ -114,3 +113,4 @@ class EventgenParser:
             for stanza in self.eventgen.sects:
                 if stanza not in self.match_stanzas:
                     raise_warning("No sample file found for stanza : {}".format(stanza))
+

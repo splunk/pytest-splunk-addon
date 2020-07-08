@@ -40,6 +40,7 @@ def raise_warning(warning_string):
     LOGGER.warning(warning_string)
     warnings.warn(UserWarning(warning_string))
 
+
 class Rule:
     """
     Base class for all the rules.
@@ -95,13 +96,11 @@ class Rule:
             "guid": GuidRule
         }
         rule_all_support = ["integer", "list", "file"]
-
         if token.get("replacementType") not in ["static", "all", "random", "timestamp", "mvfile", "file"]:
             raise_warning("Invalid replacementType: '{}' for token:'{}' using 'random' as replacementType".format(token.get("replacementType"), token.get("token")))
             token["replacement"] = "random"
         replacement_type = token["replacementType"]
         replacement = token["replacement"]
-
         if replacement_type == "static":
             return StaticRule(token)
         elif replacement_type == "timestamp":
@@ -116,7 +115,7 @@ class Rule:
                     return rule_book[each_rule](token, sample_path=sample_path)
         elif replacement_type == "file" or replacement_type == "mvfile":
             return FileRule(token, sample_path=sample_path)
-        
+
 
     def apply(self, events):
         """
@@ -248,7 +247,7 @@ class IntRule(Rule):
                         )
         else:
             raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try integer[0:10]".format(self.replacement, sample.sample_name))
-            
+
 
 class FloatRule(Rule):
     """
@@ -360,12 +359,12 @@ class FileRule(Rule):
                 with open(relative_file_path) as f:
                     txt = f.read()
                     lines = [each.strip() for each in txt.split("\n") if each]
-                    for _ in range(token_count):
-                        if self.replacement_type == 'random' or self.replacement_type == 'file':
+                    if self.replacement_type == 'random' or self.replacement_type == 'file':
+                        for _ in range(token_count):
                             yield self.token_value(*([choice(lines)]*2))
-                        elif self.replacement_type == 'all':
-                            for each_value in lines:
-                                yield self.token_value(*([each_value]*2))
+                    elif self.replacement_type == 'all':
+                        for each_value in lines:
+                            yield self.token_value(*([each_value]*2))
             except IOError:
                 LOGGER.warning("File not found : {}".format(relative_file_path))
 
@@ -422,6 +421,7 @@ class FileRule(Rule):
         Yields the column value of token by reading files.
 
         Args:
+            sample (SampleEvent): Instance containing event info
             file_path (str): path of the file mentioned in token.
             index (int): index value mentioned in file_path i.e. <file_path>:<index>
             token_count (int): No. of token in sample event where rule is applicable
@@ -439,8 +439,9 @@ class FileRule(Rule):
                     and file_path in sample.replacement_map
                 ):
                     index = int(index)
-                    file_values = sample.replacement_map[file_path][self.file_count].split(',')
-                    if 'file_all' in self.every_replacement_types:
+
+                    file_values = sample.replacement_map[file_path]["data"][self.file_count].split(',')
+                    if sample.replacement_map[file_path].get("find_all"):
                         # if condition to increase the line no. of sample data
                         # when the replacement_type = all provided in token for indexed file
                         if self.file_count == len(all_data)-1:
@@ -452,26 +453,22 @@ class FileRule(Rule):
                     for _ in range(token_count):
                         yield file_values[index-1]
                 else:
-                    index = int(index)
-                    if (
-                        hasattr(sample, "replacement_map")
-                        and file_path in sample.replacement_map
-                    ):
-                        sample.replacement_map[file_path].append(all_data)
+
+                    if self.replacement_type == 'all':
+                        sample.__setattr__("replacement_map", {file_path: {"data":all_data, "find_all":True}})
+                        for i in all_data:
+                            file_values = i.split(',')
+                            yield file_values[index-1]
                     else:
-                        if self.replacement_type == 'all':
-                            self.every_replacement_types.append("file_all")
-                            sample.__setattr__("replacement_map", {file_path: all_data})
-                            for i in all_data:
-                                file_values = i.split(',')
-                                for _ in range(token_count):
-                                    yield file_values[index-1]
+                        random_line = random.randint(0, len(all_data)-1)
+                        if hasattr(sample, "replacement_map"):
+                            sample.replacement_map.update({file_path: {"data":[all_data[random_line]]}})
                         else:
-                            random_line = random.randint(0, len(all_data)-1)
-                            sample.__setattr__("replacement_map", {file_path: [all_data[random_line]]})
-                            file_values = all_data[random_line].split(',')
-                            for _ in range(token_count):
-                                yield file_values[index-1]
+                            sample.__setattr__("replacement_map", {file_path: {"data":[all_data[random_line]]}})
+                        file_values = all_data[random_line].split(',')
+                        for _ in range(token_count):
+                            yield file_values[index-1]
+
         except IndexError:
             LOGGER.error(
                 f"Index for column {index} in replacement"
@@ -485,6 +482,7 @@ class FileRule(Rule):
         Yields the column value of token by reading files.
 
         Args:
+            sample (SampleEvent): Instance containing event info
             file_path (str): path of the file mentioned in token.
             index (int): index value mentioned in file_path i.e. <file_path>:<index>
             token_count (int): No. of token in sample event where rule is applicable
@@ -546,6 +544,7 @@ class TimeRule(Rule):
         time_delta = datetime.now().timestamp() - datetime.utcnow().timestamp()
 
         if earliest != "now" and earliest is not None:
+
             earliest_match = re.match(
                 r"([+-])(\d{1,})(.*)", earliest
             )
@@ -559,6 +558,7 @@ class TimeRule(Rule):
             earliest = datetime.utcnow()
 
         if latest != "now" and latest is not None:
+
             latest_match = re.match(r"([+-])(\d{1,})(.*)", latest)
             if latest_match:
                 sign, num, unit = latest_match.groups()
@@ -585,6 +585,7 @@ class TimeRule(Rule):
 
             elif timezone_time and timezone_time.strip("'").strip('"') != r"0000":
                 sign, hrs, mins = re.match(
+
                     r"([+-])(\d\d)(\d\d)", timezone_time
                 ).groups()
                 random_time = time_parser.get_timezone_time(
@@ -754,8 +755,8 @@ class EmailRule(Rule):
                     ["email"],
                 )
                 yield self.token_value(
+
                     *([csv_row[self.user_header.index("email")]]*2)
-                    )
 
 
 class UrlRule(Rule):
@@ -766,6 +767,7 @@ class UrlRule(Rule):
         """
         Yields a random url replacement value from the list
         of values mentioned in token.
+
         Possible values: ["ip_host", "fqdn_host", "path", "query", "protocol", "full"]
 
         Args:
@@ -824,7 +826,6 @@ class UrlRule(Rule):
         return url_params[:-1]
 
 
-
 class DestRule(Rule):
     """
     DestRule
@@ -858,6 +859,7 @@ class DestRule(Rule):
                     raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
         else:    
             raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  dest['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+
 
 class SrcPortRule(Rule):
     """
@@ -939,7 +941,6 @@ class SrcRule(Rule):
                     raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
         else:
             raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  src['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
-                
 
 
 class DestPortRule(Rule):
@@ -1003,8 +1004,6 @@ class HostRule(Rule):
                     raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
         else:
             raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  host['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
-                
-            
 
 
 class HexRule(Rule):
