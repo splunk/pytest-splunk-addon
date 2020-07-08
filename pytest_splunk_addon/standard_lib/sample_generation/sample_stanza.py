@@ -29,8 +29,8 @@ class SampleStanza(object):
     def __init__(self, sample_path, eventgen_params):
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
-        self.sample_rules = list(self._parse_rules(eventgen_params, self.sample_path))
         self.metadata = self._parse_meta(eventgen_params)
+        self.sample_rules = list(self._parse_rules(eventgen_params, self.sample_path))
         self.input_type = self.metadata.get("input_type", "default")
         self.host_count = 0
 
@@ -139,6 +139,7 @@ class SampleStanza(object):
         if metadata.get("timezone") not in ["local", "0000", "+-hhmm", None]:
             raise_warning("Invalid value for timezone: '{}' using timezone = 0000.".format(metadata.get("timezone")))
             metadata.update(timezone="0000")
+            eventgen_params.update(timezone="0000")
         if metadata.get("timestamp_type") not in ["event", "plugin", None]:
             raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
             metadata.update(timestamp_type="plugin")

@@ -96,8 +96,12 @@ class Rule:
         }
         rule_all_support = ["integer", "list", "file"]
 
+        if token.get("replacementType") not in ["static", "all", "random", "timestamp", "mvfile", "file"]:
+            raise_warning("Invalid replacementType: '{}' for token:'{}' using 'random' as replacementType".format(token.get("replacementType"), token.get("token")))
+            token["replacement"] = "random"
         replacement_type = token["replacementType"]
         replacement = token["replacement"]
+
         if replacement_type == "static":
             return StaticRule(token)
         elif replacement_type == "timestamp":
@@ -112,6 +116,7 @@ class Rule:
                     return rule_book[each_rule](token, sample_path=sample_path)
         elif replacement_type == "file" or replacement_type == "mvfile":
             return FileRule(token, sample_path=sample_path)
+        
 
     def apply(self, events):
         """
