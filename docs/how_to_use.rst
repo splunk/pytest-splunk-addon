@@ -24,11 +24,11 @@ There are two ways to execute the tests:
 
         pip3 install pytest-splunk-addon
 
-    Run pytest with the add-on, SA-Eventgen and Splunk Common Information Model installed and enabled in an external Splunk deployment
+    Run pytest with the add-on, in an external Splunk deployment
 
     .. code:: bash
 
-        pytest --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password>
+        pytest --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password> --splunk-hec-token=<splunk_hec_token>
 
 
 **2. Running tests with docker splunk**
@@ -56,7 +56,7 @@ There are two ways to execute the tests:
        :language: python
        :lines: 2,12-
 
-    Run pytest with the add-on, SA-Eventgen and Splunk Common Information Model installed and enabled in docker
+    Run pytest with the add-on, using the following command:
 
     .. code:: bash
 
@@ -69,7 +69,7 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
 
 ----------------------
 
-There are 2 types of tests included in pytest-splunk-addon.
+There are 3 types of tests included in pytest-splunk-addon are:
 
     1. To generate test cases only for knowledge objects, append the following marker to pytest command:
 
@@ -83,9 +83,24 @@ There are 2 types of tests included in pytest-splunk-addon.
 
             -m  splunk_searchtime_cim
 
+    3. To generate test cases only for index time properties, append the following marker to pytest command:
+
+        .. code-block:: console
+
+            -m  splunk_indextime --splunk-data-generator=<Path to the conf file>
+
+        For detailed information on index time test execution, please refer :ref:`here <index_time_tests>`.
+
+    * To execute all the searchtime tests together, i.e both Knowledge objects and CIM compatibility tests, 
+      append the following marker to the pytest command:
+
+        .. code-block:: console
+
+            -m  "splunk_searchtime_fields or splunk_searchtime_cim"     
+
 ----------------------
 
-The following optional arguments are available to modify the default settings in the test cases.
+The following optional arguments are available to modify the default settings in the test cases:
 
     1. To search for events in a specific index, user can provide following additional arguments:
 

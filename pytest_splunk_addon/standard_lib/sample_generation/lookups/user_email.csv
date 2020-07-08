@@ -1,0 +1,11 @@
+name,email,domain_user,distinquised_name
+user_a,user_a@mail.com,sample_domain1.com\user_a,CN=user_a
+user_b,user_b@mail.com,sample_domain2.com\user_b,CN=user_b
+user_c,user_c@mail.com,sample_domain3.com\user_c,CN=user_c
+user_d,user_d@mail.com,sample_domain4.com\user_d,CN=user_d
+user_e,user_e@mail.com,sample_domain5.com\user_e,CN=user_e
+user_f,user_f@mail.com,sample_domain6.com\user_f,CN=user_f
+user_g,user_g@mail.com,sample_domain7.com\user_g,CN=user_g
+user_h,user_h@mail.com,sample_domain8.com\user_h,CN=user_h
+user_i,user_i@mail.com,sample_domain9.com\user_i,CN=user_i
+user_j,user_j@mail.com,sample_domain10.com\user_j,CN=user_j

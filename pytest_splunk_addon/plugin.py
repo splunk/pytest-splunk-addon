@@ -77,7 +77,7 @@ def pytest_generate_tests(metafunc):
     """
     global test_generator
     for fixture in metafunc.fixturenames:
-        if fixture.startswith("splunk_searchtime"):
+        if fixture.startswith("splunk_searchtime") or fixture.startswith("splunk_indextime"):
             LOGGER.info(
                 "generating testcases for splunk_app_searchtime. fixture=%s", fixture
             )
