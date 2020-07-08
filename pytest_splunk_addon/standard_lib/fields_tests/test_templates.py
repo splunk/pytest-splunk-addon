@@ -245,3 +245,42 @@ class FieldTestTemplates(object):
             f"No result found for the search.\nsearch={search}\n"
             f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
         )
+
+
+    @pytest.mark.splunk_searchtime_fields
+    def test_searchtime_hash_checker(
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        record_property
+    ):
+        index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
+        query =f"search {index_list} ##*##"
+        record_property("Query", query)
+        results = list(
+            splunk_search_util.getFieldValuesList(
+            query
+        )
+        )
+        if not results:
+            assert False, f"No Events found for query: '{query}''"
+        result_fields = dict()
+        for result in results:
+            if ("source") in result.keys():
+                try:
+                    if result.get("sourcetype") not in result_fields[result.get("source")]:
+                        result_fields[result.get("source")].append(result.get("sourcetype"))
+                except KeyError:
+                    result_fields[result.get("source")] = [result.get("sourcetype")]
+            LOGGER.info(result_fields)
+            record_property("results", results)
+            result_str = FieldTestHelper.get_table_output(
+                headers=["Source","Sourcetype"],
+                value_list=[
+                    [
+                        key,
+                        str(value),
+                    ]
+                    for key, value in result_fields.items()
+                ],
+            )
