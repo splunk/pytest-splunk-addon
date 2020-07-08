@@ -238,7 +238,7 @@ class SampleEvent(object):
         new_event.metadata = deepcopy(event.metadata)
         return new_event
 
-    def update_metadata(self, event, metadata):
+    def update_metadata(self, event, metadata, key_fields):
         """
         Processes the syslog formated samples
         Format::
@@ -256,17 +256,21 @@ class SampleEvent(object):
         try:
             if isinstance(event, str) and event.startswith("***SPLUNK***"):
                 header = event.split("\n", 1)[0]
-                self.event = event.split("\n", 1)[1]
+                event = event.split("\n", 1)[1]
 
                 meta_fields = re.findall(r"[\w]+=[^\s]+", header)
                 for meta_field in meta_fields:
                     field = meta_field.split("=")[0]
                     value = meta_field.split("=")[1]
-                    self.metadata[field] = value
+                    if field == "host":
+                        metadata[field] = f"host_{metadata[field]}"
+                        key_fields["host"] = metadata["host"]
+                    else:
+                        metadata[field] = value
 
-                return self.event, self.metadata
+                return event, metadata, key_fields
             else:
-                return event, metadata
+                return event, metadata, key_fields
         except IndexError as error:
             LOGGER.error(f"Unexpected data found. Error: {error}")
             raise Exception(error)

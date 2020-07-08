@@ -46,8 +46,8 @@ class SampleStanza(object):
         Yields the tokenized events
         """
         for event in self.tokenized_events:
-            event.event, event.metadata = SampleEvent.update_metadata(
-                self, event.event, event.metadata
+            event.event, event.metadata, event.key_fields = SampleEvent.update_metadata(
+                self, event.event, event.metadata, event.key_fields
             )
             yield event
 
