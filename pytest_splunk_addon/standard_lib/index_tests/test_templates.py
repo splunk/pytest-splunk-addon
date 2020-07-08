@@ -1,6 +1,7 @@
 import logging
 import pytest
 import copy
+import pprint
 
 MAX_TIME_DIFFERENCE = 45
 
@@ -8,7 +9,6 @@ MAX_TIME_DIFFERENCE = 45
 class IndexTimeTestTemplate(object):
 
     logger = logging.getLogger("pytest-splunk-addon-tests")
-    
 
     @pytest.mark.first
     @pytest.mark.splunk_indextime
@@ -27,11 +27,16 @@ class IndexTimeTestTemplate(object):
             + ")"
         )
 
+        assert splunk_indextime_key_fields.get(
+            "identifier") or splunk_indextime_key_fields.get("host"), (
+                "Host or identifier fields cannot be determined from the config file.."
+            )
+
         if splunk_indextime_key_fields.get("identifier"):
             extra_filter = splunk_indextime_key_fields.get("identifier")
         else:
             extra_filter = "host=" + splunk_indextime_key_fields.get(
-                "host", "*")
+                "host")
         fields_to_check = copy.deepcopy(
             splunk_indextime_key_fields["tokenized_event"].key_fields)
 
@@ -85,6 +90,14 @@ class IndexTimeTestTemplate(object):
             + ")"
         )
 
+        assert splunk_indextime_time.get(
+            "identifier") or splunk_indextime_time.get("host"), (
+                "Host or identifier fields cannot be determined from the config file.."
+            )
+        assert splunk_indextime_time["tokenized_event"].time_values, (
+            "_time field cannot be determined from the config file."
+        )
+
         if splunk_indextime_time.get("identifier"):
             extra_filter = splunk_indextime_time.get("identifier")
         else:
@@ -110,10 +123,11 @@ class IndexTimeTestTemplate(object):
         key_time = splunk_indextime_time["tokenized_event"].time_values
         record_property("time_values", key_time)
         for index, event_time in enumerate(result_fields["e_time"]):
-            if splunk_indextime_time["tokenized_event"].metadata.get("timestamp_type") in ('event'):
+            if splunk_indextime_time["tokenized_event"].metadata.get("timestamp_type").lower() == 'event':
                 index_to_check = index
-            else:
+            elif splunk_indextime_time["tokenized_event"].metadata.get("timestamp_type").lower() == 'plugin':
                 index_to_check = 0
+
             assert (
                 (
                     float(event_time) - float(key_time[index_to_check])
@@ -133,9 +147,9 @@ class IndexTimeTestTemplate(object):
         record_property,
         caplog,
     ):
-        expected_events_count = int(splunk_indextime_line_breaker[
-            "tokenized_event"
-        ].metadata.get("expected_event_count", 1))
+        expected_events_count = int(
+            splunk_indextime_line_breaker["expected_event_count"]
+            )
 
         query = "search sourcetype={} (host=host_{}* OR host={}*)".format(
             splunk_indextime_line_breaker.get("sourcetype"),
@@ -144,6 +158,17 @@ class IndexTimeTestTemplate(object):
         )
         record_property("Query", query)
 
-        assert splunk_search_util.checkQueryCount(
-            query, expected_events_count, retries=0, interval=0
-        ), ("We should get exactly " + str(expected_events_count) + " result")
+        results = list(splunk_search_util.getFieldValuesList(query))
+        count_of_results = len(results)
+
+        if not count_of_results == expected_events_count:
+            record_property("results", results)
+            pp = pprint.PrettyPrinter(indent=4)
+            result_str = pp.pformat(results)
+
+        assert count_of_results == expected_events_count,  (
+            f"Query result not as per expected event count.\n"
+            f"Expected: {str(expected_events_count)} Found: {count_of_results}"
+            f"search={query}\n"
+            f"found result={result_str}"
+        )

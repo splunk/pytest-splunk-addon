@@ -70,7 +70,7 @@ class HECRawEventIngestor(EventIngestor):
             if event.metadata.get("host"):
                 event_dict['host'] = event.metadata.get("host")
 
-            if event.metadata.get("timestamp_type") in ('plugin', None):
+            if event.metadata.get("timestamp_type").lower() == 'plugin':
                 event_dict['time'] = event.time_values[0]
 
             param_list.append(event_dict)

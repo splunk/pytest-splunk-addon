@@ -134,7 +134,7 @@ class Rule:
                         )
                     new_event.replace_token(self.token, each_token_value.value)
                     new_event.register_field_value(
-                        self.field, each_token_value.key
+                        self.field, each_token_value
                     )
                     new_events.append(new_event)
             else:
@@ -142,7 +142,8 @@ class Rule:
                     self.token,
                     token_values
                 )
-                each_event.register_field_value(self.field, token_values)
+                if not (each_event.metadata.get('timestamp_type') == 'current' and self.field == "_time"):
+                    each_event.register_field_value(self.field, token_values)
                 new_events.append(each_event)
         return new_events
 
