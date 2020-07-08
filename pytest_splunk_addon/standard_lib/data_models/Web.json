@@ -17,7 +17,9 @@
         },
         {
           "name": "app",
-          "type": "required",
+          "type": "conditional",
+          "condition": "app=*",
+          "validity": "if(isstr(app),app,null())",
           "comment": "The application detected or hosted by the server/site such as wordpress, splunk, or facebook."
         },
         {
@@ -103,7 +105,9 @@
         },
         {
           "name": "uri_path",
-          "type": "required",
+          "type": "conditional",
+          "condition": "uri_path=*",
+          "validity": "if(match(uri_path, \"^\/[/.a-zA-Z0-9- _%]*\"),uri_path,null())",
           "comment": "The path of the resource served by the webserver or proxy."
         },
         {
@@ -113,7 +117,7 @@
         },
         {
           "name": "url_length",
-          "type": "required",
+          "type": "optional",
           "validity": "if(url_length == len(url), url_length, null())",
           "comment": "The length of the URL."
         },
