@@ -3,7 +3,7 @@ import re
 import logging
 from splunk_appinspect import App
 
-from .rule import Rule
+from .rule import Rule, raise_warning
 from . import SampleStanza
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -113,4 +113,4 @@ class EventgenParser:
         if os.path.exists(self.path_to_samples):
             for stanza in self.eventgen.sects:
                 if stanza not in self.match_stanzas:
-                    Rule.raise_warning("No sample file found for stanza : {}".format(stanza))
+                    raise_warning("No sample file found for stanza : {}".format(stanza))

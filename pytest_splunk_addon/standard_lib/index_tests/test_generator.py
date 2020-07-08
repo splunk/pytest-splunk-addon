@@ -1,7 +1,7 @@
 import logging
 import pytest
-import warnings
 from ..sample_generation import SampleGenerator
+from ..sample_generation.rule import raise_warning
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -32,8 +32,7 @@ class IndexTimeTestGenerator(object):
             elif tokenized_event.metadata.get("host_type") == "event":
                 hosts = tokenized_event.key_fields.get("host")
                 if not hosts:
-                    LOGGER.warning("For stanza '{}' host_type is 'event' and 'host' not found in key fields. So no tests are generated for the stanza.".format(tokenized_event.sample_name))
-                    warnings.warn(UserWarning("For stanza '{}' host_type is 'event' and 'host' not found in key fields. So no tests are generated for the stanza.".format(tokenized_event.sample_name)))
+                    raise_warning("For stanza '{}' host_type is 'event' and 'host' not found in key fields. So no tests are generated for the stanza.".format(tokenized_event.sample_name))
                     continue
             else:
                 LOGGER.error("Invalid 'host_type' for stanza {}".format(

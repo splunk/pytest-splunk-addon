@@ -2,8 +2,8 @@ import os
 import re
 import copy
 from . import Rule
+from .rule import raise_warning
 from . import SampleEvent
-import warnings
 import logging
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -102,7 +102,7 @@ class SampleStanza(object):
         for each_token, token_value in token_list:
             applied_rule = Rule.parse_rule(token_value, eventgen_params, sample_path)
             if not applied_rule:
-                Rule.raise_warning("Unidentified Rule: '{}' for token '{}'".format(token_value["replacement"], token_value["token"]))
+                raise_warning("Unidentified Rule: '{}' for token '{}'".format(token_value["replacement"], token_value["token"]))
             else:
                 yield applied_rule
 
@@ -128,25 +128,25 @@ class SampleStanza(object):
                 "syslog_udp",
                 "default"
             ] and not None:
-            Rule.raise_warning("Invalid value for input_type found: '{}' using default input_type".format(metadata.get("input_type")))
+            raise_warning("Invalid value for input_type found: '{}' using default input_type".format(metadata.get("input_type")))
             metadata.update(input_type="default")
         if metadata.get("host_type") not in ["event", "plugin", None]:
-            Rule.raise_warning("Invalid value for host_type: '{}' using host_type = plugin.".format(metadata.get("host_type")))
+            raise_warning("Invalid value for host_type: '{}' using host_type = plugin.".format(metadata.get("host_type")))
             metadata.update(host_type="plugin")
         if metadata.get("timestamp_type") not in ["event", "plugin", None]:
-            Rule.raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
+            raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
             metadata.update(timestamp_type="plugin")
         if metadata.get("timezone") not in ["local", "0000", "+-hhmm", None]:
-            Rule.raise_warning("Invalid value for timezone: '{}' using timezone = 0000.".format(metadata.get("timezone")))
+            raise_warning("Invalid value for timezone: '{}' using timezone = 0000.".format(metadata.get("timezone")))
             metadata.update(timezone="0000")
         if metadata.get("timestamp_type") not in ["event", "plugin", None]:
-            Rule.raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
+            raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
             metadata.update(timestamp_type="plugin")
         if metadata.get("expected_event_count") and not metadata.get("expected_event_count").isnumeric():
-            Rule.raise_warning("Invalid value for expected_event_count: '{}' using expected_event_count = 1.".format(metadata.get("expected_event_count")))
+            raise_warning("Invalid value for expected_event_count: '{}' using expected_event_count = 1.".format(metadata.get("expected_event_count")))
             metadata.update(expected_event_count="1")
         if metadata.get("count") and not metadata.get("count").isnumeric():
-            Rule.raise_warning("Invalid value for count: '{}' using count = 1.".format(metadata.get("count")))
+            raise_warning("Invalid value for count: '{}' using count = 1.".format(metadata.get("count")))
             metadata.update(count="100")
         return metadata
 
@@ -193,7 +193,7 @@ class SampleStanza(object):
             ]:
                 event = sample_file.read()
                 if event == '':
-                    Rule.raise_warnning("sample file: '{}' is empty".format(self.sample_path))
+                    raise_warning("sample file: '{}' is empty".format(self.sample_path))
                 else:
                     while event[-1] == '\n': event = event[:-1]
                     yield SampleEvent(

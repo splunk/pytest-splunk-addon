@@ -30,6 +30,16 @@ event_host_count = 0
 # case of replacementType = all
 
 
+def raise_warning(warning_string):
+    """
+    To raise a pytest user warning along with a log.
+
+    Args:
+        warning_string(str): warning string
+    """
+    LOGGER.warning(warning_string)
+    warnings.warn(UserWarning(warning_string))
+
 class Rule:
     """
     Base class for all the rules.
@@ -102,12 +112,6 @@ class Rule:
                     return rule_book[each_rule](token, sample_path=sample_path)
         elif replacement_type == "file" or replacement_type == "mvfile":
             return FileRule(token, sample_path=sample_path)
-
-        self.raise_warning(
-            f"No Rule Found for token = {token.get('token')},"
-            f"with replacement = {replacement}"
-            f"and replacement_type = {replacement_type}!"
-        )
 
     def apply(self, events):
         """
@@ -209,17 +213,6 @@ class Rule:
                 csv_row.append(sample.get_field_fqdn(rule))
         return csv_row
 
-    @classmethod
-    def raise_warning(self, warning_string):
-        """
-        To raise a pytest user warning along with a log.
-
-        Args:
-            warning_string(str): warning string
-        """
-        LOGGER.warning(warning_string)
-        warnings.warn(UserWarning(warning_string))
-
 
 class IntRule(Rule):
     """
@@ -249,7 +242,7 @@ class IntRule(Rule):
                         *([str(each_int)]*2)
                         )
         else:
-            self.raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try integer[0:10]".format(self.replacement, sample.sample_name))
+            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try integer[0:10]".format(self.replacement, sample.sample_name))
             
 
 class FloatRule(Rule):
@@ -284,7 +277,7 @@ class FloatRule(Rule):
                         ]*2)
                         )
         else:
-            self.raise_warning("Non-supported format: '{}' in stanza '{}'.\n i.e float[0.00:70.00]".format(self.replacement, sample.sample_name))
+            raise_warning("Non-supported format: '{}' in stanza '{}'.\n i.e float[0.00:70.00]".format(self.replacement, sample.sample_name))
 
 
 class ListRule(Rule):
@@ -313,7 +306,7 @@ class ListRule(Rule):
                 for each_value in value_list:
                     yield self.token_value(*([str(each_value)]*2))
         else:
-            self.raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  list['value1','value2']".format(self.replacement, sample.sample_name))
+            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  list['value1','value2']".format(self.replacement, sample.sample_name))
 
 
 class StaticRule(Rule):
@@ -555,7 +548,7 @@ class TimeRule(Rule):
                 sign, num, unit = earliest_match.groups()
                 earliest = time_parser.convert_to_time(sign, num, unit)
             else:
-                self.raise_warning("Invalid value found in earliest: '{}' for stanza '{}'. using earliest = now".format(earliest, sample.sample_name))
+                raise_warning("Invalid value found in earliest: '{}' for stanza '{}'. using earliest = now".format(earliest, sample.sample_name))
                 earliest = datetime.utcnow()
         else:
             earliest = datetime.utcnow()
@@ -566,7 +559,7 @@ class TimeRule(Rule):
                 sign, num, unit = latest_match.groups()
                 latest = time_parser.convert_to_time(sign, num, unit)
             else:
-                self.raise_warning("Invalid value found in latest: '{}' for stanza '{}'. using latest = now".format(latest, sample.sample_name))
+                raise_warning("Invalid value found in latest: '{}' for stanza '{}'. using latest = now".format(latest, sample.sample_name))
                 latest = datetime.utcnow()
         else:
             latest = datetime.utcnow()
@@ -587,7 +580,7 @@ class TimeRule(Rule):
 
             elif timezone_time and timezone_time.strip("'").strip('"') != r"0000":
                 sign, hrs, mins = re.match(
-                    r"([+-])(\d\d)(\d\d)", timezone
+                    r"([+-])(\d\d)(\d\d)", timezone_time
                 ).groups()
                 random_time = time_parser.get_timezone_time(
                     random_time, sign, hrs, mins
@@ -720,9 +713,9 @@ class UserRule(Rule):
                     if index_list:
                         yield self.token_value(*([csv_row[choice(index_list)]]*2))
                     else:
-                        self.raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['name','email','domain_name','distinquised_name']".format(self.replacement, sample.sample_name))
+                        raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['name','email','domain_name','distinquised_name']".format(self.replacement, sample.sample_name))
         else:
-            self.raise_warning("Unidentified format: '{}' in stanza '{}'.\n Try  user['name','email','domain_name','distinquised_name']".format(self.replacement, sample.sample_name))
+            raise_warning("Unidentified format: '{}' in stanza '{}'.\n Try  user['name','email','domain_name','distinquised_name']".format(self.replacement, sample.sample_name))
 
 
 class EmailRule(Rule):
@@ -781,7 +774,7 @@ class UrlRule(Rule):
             value_list = eval(value_list_str)
             for each in value_list:
                 if each not in ["ip_host", "fqdn_host", "path", "query", "protocol", "full"]:
-                    self.raise_warning('Invalid Value for url: "{}" for replacement {} in stanza "{}".\n Accepted values: ["ip_host", "fqdn_host", "path", "query", "protocol"]'.format(each, self.replacement, sample.sample_name))
+                    raise_warning('Invalid Value for url: "{}" for replacement {} in stanza "{}".\n Accepted values: ["ip_host", "fqdn_host", "path", "query", "protocol"]'.format(each, self.replacement, sample.sample_name))
                     replace_token = False
             if replace_token:
                 for _ in range(token_count):
@@ -804,7 +797,7 @@ class UrlRule(Rule):
                         url = url + self.generate_url_query_params()
                     yield self.token_value(*([str(url)]*2))
         else:
-            self.raise_warning('Unidentified format: "{}" in stanza "{}".\n Expected values: ["ip_host", "fqdn_host", "path", "query", "protocol", "full"]'.format(self.replacement, sample.sample_name))
+            raise_warning('Unidentified format: "{}" in stanza "{}".\n Expected values: ["ip_host", "fqdn_host", "path", "query", "protocol", "full"]'.format(self.replacement, sample.sample_name))
 
     def generate_url_query_params(self):
         """
@@ -857,9 +850,9 @@ class DestRule(Rule):
                 if csv_row:
                     yield self.token_value(*([choice(csv_row)]*2))
                 else:
-                    self.raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+                    raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
         else:    
-            self.raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  dest['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  dest['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
 
 class SrcPortRule(Rule):
     """
@@ -906,9 +899,9 @@ class DvcRule(Rule):
                 if csv_row:
                     yield self.token_value(*([choice(csv_row)]*2))
                 else:
-                    self.raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+                    raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
         else:
-            self.raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  dvc['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  dvc['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
 
 
 class SrcRule(Rule):
@@ -938,9 +931,9 @@ class SrcRule(Rule):
                 if csv_row:
                     yield self.token_value(*([choice(csv_row)]*2))
                 else:
-                    self.raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+                    raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
         else:
-            self.raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  src['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  src['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
                 
 
 
@@ -1002,9 +995,9 @@ class HostRule(Rule):
                             csv_row[0] = sample.get_host()
                         yield self.token_value(*([choice(csv_row)]*2))
                 else:
-                    self.raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+                    raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
         else:
-            self.raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  host['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  host['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
                 
             
 
@@ -1050,6 +1043,6 @@ class HexRule(Rule):
                     hex_value = "".join(hex_array)
                     yield self.token_value(*([hex_value]*2))
             else:
-                self.raise_warning("Invalid Value: '{}' in stanza '{}'.\n '{}' is not an integer value".format(self.replacement, sample.sample_name, hex_range))
+                raise_warning("Invalid Value: '{}' in stanza '{}'.\n '{}' is not an integer value".format(self.replacement, sample.sample_name, hex_range))
         else:
-            self.raise_warning("Invalid Hex value: '{}' in stanza '{}'. Try hex(<i>) where i is an integer".format(self.replacement, sample.sample_name))
+            raise_warning("Invalid Hex value: '{}' in stanza '{}'. Try hex(<i>) where i is an integer".format(self.replacement, sample.sample_name))
