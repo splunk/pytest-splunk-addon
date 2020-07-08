@@ -98,8 +98,7 @@
         },
         {
           "name": "user",
-          "type": "conditional",
-          "condition": "ids_type!=\"host\"",
+          "type": "optional",
           "comment": "The user involved with the intrusion detection event."
         },
         {
