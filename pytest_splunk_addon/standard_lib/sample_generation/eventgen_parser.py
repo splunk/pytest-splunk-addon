@@ -31,13 +31,16 @@ class EventgenParser:
     def path_to_samples(self):
         if os.path.exists(os.path.join(self.config_path, "samples")):
             return os.path.join(self.config_path, "samples")
-        elif os.path.exists(os.path.join(os.path.abspath(os.path.join(self.config_path, os.pardir)), "samples")):
-            return os.path.join(os.path.abspath(os.path.join(self.config_path, os.pardir)), "samples")
-        elif os.path.exists(os.path.join(self.addon_path, "samples")):
-            return os.path.join(self.addon_path, "samples")
+        elif os.path.exists(
+            os.path.join(
+                os.path.abspath(os.path.join(self.config_path, os.pardir)), "samples"
+            )
+        ):
+            return os.path.join(
+                os.path.abspath(os.path.join(self.config_path, os.pardir)), "samples"
+            )
         else:
-            LOGGER.warning("eventgen.conf not found.")
-            return None
+            return os.path.join(self.addon_path, "samples")
 
     @property
     def eventgen(self):
