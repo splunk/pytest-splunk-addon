@@ -15,7 +15,7 @@ class IndexTimeTestGenerator(object):
 
         if not SampleGenerator.splunk_test_type == "splunk_indextime":
             return " Index Time tests cannot be executed using eventgen.conf,\
-                 pytest-splunk-addon-sample-generator.conf is required."
+                 pytest-splunk-addon-data-generator.conf is required."
 
         if test_type == "line_breaker":
             yield from self.generate_line_breaker_tests(tokenized_events)

@@ -12,17 +12,14 @@ import warnings
 
 class EventgenParser:
     """
-    This class represents the entire eventgen.conf file and handles parsing mechanism of eventgen and the rules
+    This class represents the entire eventgen.conf file and handles parsing mechanism of eventgen and the rules.
+
+    Args:
+        addon_path (str): Path to the Splunk App 
     """
     splunk_test_type = " "
 
     def __init__(self, addon_path, config_path=None):
-        """
-        init method for the class
-    
-        Args:
-            addon_path(str): Path to the addon 
-        """
         self._app = App(addon_path, python_analyzer_enable=False)
         self.config_path = config_path 
         self._eventgen = None
@@ -47,7 +44,10 @@ class EventgenParser:
 
     def get_sample_stanzas(self):
         """
-        Yields: SampleStanza Object
+        Converts a stanza in eventgen.conf to an object of SampleStanza.
+
+        Yields:
+            SampleStanza Object
         """
         eventgen_dict = self.get_eventgen_stanzas()
         self.check_samples()
@@ -60,25 +60,31 @@ class EventgenParser:
 
     def get_eventgen_stanzas(self):
         """
+        Parses the eventgen.conf file and converts it into a dictionary.
+        
         Format::
 
             {
-                "sample_file_name": {    # Not Stanza name
+                "sample_file_name": # Not Stanza name
+                {
                     "input_type": "str",
-                    "tokens": {
-                        1: {
+                    "tokens":
+                    {
+                        1:
+                        {
                             token: #One#
                             replacementType: random
-                            replacement: static 
+                            replacement: static
                         }
                     }
                 }
             }
 
-        Return: 
-            Eventgen stanzas dictionary
+        Return:
+            Dictionary representing eventgen.conf in the above format.
         """
         eventgen_dict = {}
+        child_dict = {'tokens': {}}
         if os.path.exists(self.path_to_samples):
             for sample_file in os.listdir(self.path_to_samples):
                 for stanza in self.eventgen.sects:
@@ -92,14 +98,18 @@ class EventgenParser:
                             eventgen_property = eventgen_sections.options[stanza_param]
                             if eventgen_property.name.startswith('token'):
                                 _, token_id, token_param = eventgen_property.name.split('.')
-                                if not token_id in eventgen_dict[sample_file]['tokens'].keys():
-                                    eventgen_dict[sample_file]['tokens'][token_id] = {}
-                                eventgen_dict[sample_file]['tokens'][token_id][token_param] = eventgen_property.value
+                                token_key = "{}_{}".format(stanza, token_id)
+                                if not token_key in eventgen_dict[sample_file]['tokens'].keys():
+                                    eventgen_dict[sample_file]['tokens'][token_key] = {}
+                                eventgen_dict[sample_file]['tokens'][token_key][token_param] = eventgen_property.value
                             else:
                                 eventgen_dict[sample_file][eventgen_property.name] = eventgen_property.value
         return eventgen_dict
-    
+
     def check_samples(self):
+        """
+        Gives a user warning when sample file is not found for the stanza peresent in the configuration file.
+        """
         if os.path.exists(self.path_to_samples):
             for stanza in self.eventgen.sects:
                 if stanza not in self.match_stanzas:

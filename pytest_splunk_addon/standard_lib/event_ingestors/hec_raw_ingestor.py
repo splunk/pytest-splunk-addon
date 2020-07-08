@@ -1,6 +1,3 @@
-"""
-HEC Raw Ingestor class
-"""
 from .base_event_ingestor import EventIngestor
 from time import time
 import requests
@@ -14,21 +11,24 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class HECRawEventIngestor(EventIngestor):
     """
-    Class to ingest event via HEC
+    Class to ingest event via HEC Raw
+
+    The format for required_configs is::
+
+        {
+            hec_uri: {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector,
+            session_headers(dict):
+            {
+                "Authorization": f"Splunk <hec-token>",
+            }
+        }
+
+
+    Args:
+        required_configs(dict): Dictionary containing hec_uri and session headers
     """
 
     def __init__(self, required_configs):
-        """
-        init method for the class
-
-        Args:
-            required_configs(dict): {
-                hec_uri: {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector,
-                session_headers(dict): {
-                    "Authorization": f"Splunk <hec-token>",
-                }
-            }
-        """
         self.hec_uri = required_configs['splunk_hec_uri']
         self.session_headers = required_configs['session_headers']
 
@@ -36,28 +36,34 @@ class HECRawEventIngestor(EventIngestor):
         """
         Ingests data into splunk via raw endpoint.
 
-        Args:
-            event_str(str): Data string to be ingested
-            format::
-                '127.0.0.1 - admin [28/Sep/2016:09:05:26.875 -0700] "GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0" 200 126721 - - - 6ms'
-
-
-            params(dict): dict with the info of the data to be ingested.
-            format::
-                {
-                    "sourcetype": "sample_HEC",
-                    "source": "sample_source",
-                    "host": "sample_host",
-                }
-
         For batch ingestion of events in a single request at raw endpoint provide a string of events in data to be ingested.
 
-        format::
-            '''
-                127.0.0.1 - admin [28/Sep/2016:09:05:26.875 -0700] "GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0" 200 126721 - - - 6ms
+        The format of event and params for ingesting a single event::
+
+            '127.0.0.1 - admin [28/Sep/2016:09:05:26.875 -0700] "GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0" 200 126721 - - - 6ms'
+
+            {
+                "sourcetype": "sample_HEC",
+                "source": "sample_source",
+                "host": "sample_host",
+            }
+
+        The format of event and params for ingesting a batch of events::
+
+                '''127.0.0.1 - admin [28/Sep/2016:09:05:26.875 -0700] "GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0" 200 126721 - - - 6ms
                 127.0.0.1 - admin [28/Sep/2016:09:05:26.917 -0700] "GET /servicesNS/admin/launcher/data/ui/nav/default HTTP/1.0" 200 4367 - - - 6ms
-                127.0.0.1 - admin [28/Sep/2016:09:05:26.941 -0700] "GET /services/apps/local?search=disabled%3Dfalse&count=-1 HTTP/1.0" 200 31930 - - - 4ms
-            '''
+                127.0.0.1 - admin [28/Sep/2016:09:05:26.941 -0700] "GET /services/apps/local?search=disabled%3Dfalse&count=-1 HTTP/1.0" 200 31930 - - - 4ms'''
+
+            {
+                "sourcetype": "sample_HEC",
+                "source": "sample_source",
+                "host": "sample_host",
+            }
+
+        Args:
+            events (list): List of events (SampleEvent) to be ingested
+            params (dict): dict with the info of the data to be ingested.
+
         """
         main_event = []
         param_list = []

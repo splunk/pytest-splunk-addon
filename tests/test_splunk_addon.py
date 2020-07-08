@@ -303,7 +303,7 @@ def test_splunk_fiction_indextime(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines_random(constants.TA_FICTION_INDEXTIME_PASSED)
-    result.assert_outcomes(passed=len(constants.TA_FICTION_INDEXTIME_PASSED), failed=0)
+    result.assert_outcomes(passed=len(constants.TA_FICTION_INDEXTIME_PASSED), skipped=len(constants.TA_FICTION_INDEXTIME_SKIPPED), failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
