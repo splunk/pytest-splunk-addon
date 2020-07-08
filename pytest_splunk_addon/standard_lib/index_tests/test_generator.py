@@ -36,7 +36,7 @@ class IndexTimeTestGenerator(object):
                     )
 
                 # Generate test only if time_values
-                elif test_type == "_time":
+                elif test_type == "_time" and tokenized_event.metadata.get('timestamp_type') == 'event':
                     yield from self.generate_params(
                         tokenized_event, identifier_key, hosts
                     )

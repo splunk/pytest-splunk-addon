@@ -80,11 +80,10 @@ class HECEventIngestor(EventIngestor):
             if host:
                 event_dict['host'] = host
 
-            if event.metadata.get("timestamp_type").lower() == 'plugin':
-                event_dict['time'] = event.time_values[0]
-            elif event.metadata.get("timestamp_type").lower() == 'event':
+            if event.metadata.get('timestamp_type').lower() == 'event':
                 if event.time_values:
                     event_dict['time'] = event.time_values[0]
+
             data.append(event_dict)
 
         batch_event_list = []

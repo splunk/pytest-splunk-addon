@@ -123,17 +123,13 @@ class IndexTimeTestTemplate(object):
         key_time = splunk_indextime_time["tokenized_event"].time_values
         record_property("time_values", key_time)
         for index, event_time in enumerate(result_fields["e_time"]):
-            if splunk_indextime_time["tokenized_event"].metadata.get("timestamp_type").lower() == 'event':
-                index_to_check = index
-            elif splunk_indextime_time["tokenized_event"].metadata.get("timestamp_type").lower() == 'plugin':
-                index_to_check = 0
 
             assert (
                 (
-                    float(event_time) - float(key_time[index_to_check])
+                    float(event_time) - float(key_time[index])
                     ) < MAX_TIME_DIFFERENCE
             ), "Actual time {} :: Time in result {}".format(
-                key_time[index_to_check], event_time
+                key_time[index], event_time
                 )
 
     # Testing line breaker

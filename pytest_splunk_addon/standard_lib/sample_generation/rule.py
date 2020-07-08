@@ -142,7 +142,11 @@ class Rule:
                     self.token,
                     token_values
                 )
-                if not (each_event.metadata.get('timestamp_type') == 'current' and self.field == "_time"):
+
+                if not (
+                    each_event.metadata.get(
+                            'timestamp_type') != 'event'
+                        and self.field == "_time"):
                     each_event.register_field_value(self.field, token_values)
                 new_events.append(each_event)
         return new_events
