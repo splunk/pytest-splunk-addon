@@ -69,30 +69,33 @@ class IndexTimeTestTemplate(object):
         # Example syslog: all the headers are only tokenized once hence
         #   key_fields = {'host': ['dummy_host']}
         #   result_dict = {'host': ['dummy_host']*n}
-        value_list = []
-        for each in fields_to_check.keys():
-            List = []
-            if not (all(x in fields_to_check.get(each) for x in list(set(result_fields.get(each))))):
-                List.append(each)
-                List.append(fields_to_check[each])
-                List.append(list(set(result_fields.get(each))))
-                value_list.append(List)
-        result_str = FieldTestHelper.get_table_output(
-            headers=["Key_field", "Expected_values", "Actual_values"],
-            value_list=[
-                [
-                    each_result[0],
-                    str(each_result[1]),
-                    str(each_result[2]),
-                ]
-                for each_result in value_list
-            ],     
-        )       
-        LOGGER.info(result_str)
-        assert int(len(value_list)) == 0, (
-            f"For this search query: '{search}'\n"
-            f"some key fields have values which are not expected\n{result_str}"
-        )        
+        result_dict = {key: list(set(value)) for key, value in result_fields.items()}
+        dict_to_check = {key: list(set(value)) for key, value in fields_to_check.items()}
+        assert (result_dict == dict_to_check)
+        # value_list = []
+        # for each in fields_to_check.keys():
+        #     List = []
+        #     if not (all(x in fields_to_check.get(each) for x in list(set(result_fields.get(each))))):
+        #         List.append(each)
+        #         List.append(fields_to_check[each])
+        #         List.append(list(set(result_fields.get(each))))
+        #         value_list.append(List)
+        # result_str = FieldTestHelper.get_table_output(
+        #     headers=["Key_field", "Expected_values", "Actual_values"],
+        #     value_list=[
+        #         [
+        #             each_result[0],
+        #             str(each_result[1]),
+        #             str(each_result[2]),
+        #         ]
+        #         for each_result in value_list
+        #     ],     
+        # )       
+        # LOGGER.info(result_str)
+        # assert int(len(value_list)) == 0, (
+        #     f"For this search query: '{search}'\n"
+        #     f"some key fields have values which are not expected\n{result_str}"
+        # )        
 
 
     @pytest.mark.first
@@ -168,7 +171,7 @@ class IndexTimeTestTemplate(object):
             splunk_indextime_line_breaker["expected_event_count"]
             )
 
-        query = "search sourcetype={} (host=host_{}* OR host={}*)".format(
+        query = "search sourcetype={} (host=host_{}* OR host={}*) | stats count".format(
             splunk_indextime_line_breaker.get("sourcetype"),
             splunk_indextime_line_breaker.get('host'),
             splunk_indextime_line_breaker.get('host'),
@@ -176,16 +179,8 @@ class IndexTimeTestTemplate(object):
         record_property("Query", query)
 
         results = list(splunk_search_util.getFieldValuesList(query))
-        count_of_results = len(results)
+        count_from_results = int(results[0].get('count'))
 
-        if not count_of_results == expected_events_count:
-            record_property("results", results)
-            pp = pprint.PrettyPrinter(indent=4)
-            result_str = pp.pformat(results)
-
-        assert count_of_results == expected_events_count,  (
-            f"Query result not as per expected event count.\n"
-            f"Expected: {str(expected_events_count)} Found: {count_of_results}.\n"
-            f"search={query}\n"
-            f"found result={result_str}"
+        assert count_from_results == expected_events_count, (
+            f"Expected count: {expected_events_count} Count obtained: {count_from_results}"
         )
