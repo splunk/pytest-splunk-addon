@@ -754,10 +754,7 @@ class EmailRule(Rule):
                     self.user_header,
                     ["email"],
                 )
-                yield self.token_value(
-
-                    *([csv_row[self.user_header.index("email")]]*2)
-
+                yield self.token_value(*([csv_row[self.user_header.index("email")]]*2))
 
 class UrlRule(Rule):
     """
