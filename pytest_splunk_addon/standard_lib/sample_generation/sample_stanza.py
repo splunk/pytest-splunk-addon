@@ -70,6 +70,8 @@ class SampleStanza(object):
         event_counter = 0
         while (int(required_event_count)) > len((bulk_event)):
             raw_event.insert(event_counter, list(self._get_raw_sample()))
+            if not raw_event[-1]:
+                break
             for each_rule in self.sample_rules:
                 if each_rule:
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
@@ -179,11 +181,10 @@ class SampleStanza(object):
                 "syslog_udp",
                 "default"
             ]:
-                event = sample_file.read()
-                if event == '':
+                event = sample_file.read().strip()
+                if not event:
                     raise_warning("sample file: '{}' is empty".format(self.sample_path))
                 else:
-                    while event[-1] == '\n': event = event[:-1]
                     yield SampleEvent(
                         event, self.metadata, self.sample_name
                     )
