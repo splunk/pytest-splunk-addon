@@ -156,24 +156,22 @@ def pytest_addoption(parser):
         action="store",
         dest="splunk_data_generator",
         default="pytest-splunk-addon-data-generator.conf",
-        help=(
-            "Path to pytest-splunk-addon-data-generator.conf."
-        ),
-    ) 
+        help=("Path to pytest-splunk-addon-data-generator.conf."),
+    )
     group.addoption(
         "--sc4s-host",
         action="store",
         dest="sc4s_host",
         default="127.0.0.1",
-        help="Address of the sc4s Server"
+        help="Address of the sc4s Server",
     )
     group.addoption(
         "--sc4s-port",
         action="store",
         dest="sc4s_port",
         default="514",
-        help="SC4S Port. default is 514"
-    )    
+        help="SC4S Port. default is 514",
+    )
     group.addoption(
         "--search-index",
         action="store",
@@ -274,32 +272,22 @@ def splunk(request):
         request.fixturenames.append("splunk_external")
         splunk_info = request.getfixturevalue("splunk_external")
     elif splunk_type == "docker":
-        os.environ["SPLUNK_APP_PACKAGE"] = request.config.getoption(
-            "splunk_app"
-        )
+        os.environ["SPLUNK_APP_PACKAGE"] = request.config.getoption("splunk_app")
         try:
             config = configparser.ConfigParser()
             config.read(
                 os.path.join(
-                    request.config.getoption("splunk_app"),
-                    "default",
-                    "app.conf",
+                    request.config.getoption("splunk_app"), "default", "app.conf",
                 )
             )
             os.environ["SPLUNK_APP_ID"] = config["package"]["id"]
         except Exception as e:
             pass
             os.environ["SPLUNK_APP_ID"] = "TA_package"
-        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption(
-            "splunk_hec_token"
-        )
+        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
-        os.environ["SPLUNK_PASSWORD"] = request.config.getoption(
-            "splunk_password"
-        )
-        os.environ["SPLUNK_VERSION"] = request.config.getoption(
-            "splunk_version"
-        )
+        os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
+        os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
 
         request.fixturenames.append("splunk_docker")
         splunk_info = request.getfixturevalue("splunk_docker")
@@ -364,9 +352,7 @@ def splunk_docker(request, docker_services, docker_compose_files):
     )
 
     docker_services.wait_until_responsive(
-        timeout=180.0,
-        pause=0.5,
-        check=lambda: is_responsive_splunk(splunk_info),
+        timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk_info),
     )
 
     return splunk_info
@@ -394,7 +380,8 @@ def splunk_external(request):
         if is_responsive_splunk(splunk_info):
             break
         sleep(1)
-    else:
+
+    if not is_responsive_splunk(splunk_info):
         raise Exception(
             "Could not connect to the external Splunk. "
             "Please check the log file for possible errors."
@@ -416,6 +403,7 @@ def sc4s_docker(docker_services):
 
     return docker_services.docker_ip, ports
 
+
 @pytest.fixture(scope="session")
 def sc4s_external(request):
     """
@@ -423,11 +411,11 @@ def sc4s_external(request):
     TODO: For splunk_type=external, data will not be ingested as 
     manual configurations are required.
     """
-    ports = {514: int(request.config.getoption('sc4s_port'))}
+    ports = {514: int(request.config.getoption("sc4s_port"))}
     for x in range(5000, 5050):
         ports.update({x: x})
 
-    return request.config.getoption('sc4s_host'), ports
+    return request.config.getoption("sc4s_host"), ports
 
 
 @pytest.fixture(scope="session")
@@ -492,39 +480,10 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
         "session_headers": splunk_hec_uri[0].headers,
         "splunk_hec_uri": splunk_hec_uri[1],
         "splunk_host": sc4s[0],  # for sc4s
-        "sc4s_port": sc4s[1][514]  # for sc4s
+        "sc4s_port": sc4s[1][514],  # for sc4s
     }
-    IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, bulk_event_ingestion=False)
+    IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
 
-
-@pytest.fixture(scope="class")
-def splunk_ingest_bulk_data(request, splunk_hec_uri, sc4s):
-    """
-    Generates events in bulk for the add-on and ingests into Splunk.
-    The ingestion can be done using the following methods:
-        1. HEC Event
-        2. HEC Raw
-        3. SC4S:TCP or SC4S:UDP
-        4. HEC Metrics
-
-    Args:
-    splunk_hec_uri(tuple): Details for hec uri and session headers
-    sc4s(tuple): Details for sc4s server and TCP port
-
-    TODO: For splunk_type=external, data will not be ingested as 
-    manual configurations are required.
-    """
-    addon_path = request.config.getoption("splunk_app")
-    config_path = request.config.getoption("splunk_data_generator")
-
-    ingest_meta_data = {
-        "session_headers": splunk_hec_uri[0].headers,
-        "splunk_hec_uri": splunk_hec_uri[1],
-        "splunk_host": sc4s[0],  # for sc4s
-        "sc4s_port": sc4s[1][514]  # for sc4s
-    }
-
-    IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, bulk_event_ingestion=True)
 
 def is_responsive_splunk(splunk):
     """
@@ -538,8 +497,7 @@ def is_responsive_splunk(splunk):
     """
     try:
         LOGGER.info(
-            "Trying to connect Splunk instance...  splunk=%s",
-            json.dumps(splunk),
+            "Trying to connect Splunk instance...  splunk=%s", json.dumps(splunk),
         )
         client.connect(
             username=splunk["username"],
@@ -551,8 +509,7 @@ def is_responsive_splunk(splunk):
         return True
     except Exception as e:
         LOGGER.warning(
-            "Could not connect to Splunk yet. Will try again. exception=%s",
-            str(e),
+            "Could not connect to Splunk yet. Will try again. exception=%s", str(e),
         )
         return False
 
@@ -576,9 +533,7 @@ def is_responsive(url):
             return True
     except ConnectionError as e:
         LOGGER.warning(
-            "Could not connect to url yet. Will try again. exception=%s",
-            str(e),
+            "Could not connect to url yet. Will try again. exception=%s", str(e),
         )
         return False
-
 

@@ -8,8 +8,7 @@ import logging
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-BULK_EVENT_COUNT = 100
-MAXIMUM_EVENT_COUNT = 250
+BULK_EVENT_COUNT = 250
 class SampleStanza(object):
     """
     This class represents a stanza of the eventgen.conf.
@@ -51,7 +50,7 @@ class SampleStanza(object):
             )
             yield event
 
-    def tokenize(self, bulk_event_ingestion):
+    def tokenize(self, conf_name):
         """
         Tokenizes the raw events by replacing all the tokens in it.
 
@@ -63,12 +62,10 @@ class SampleStanza(object):
         """
         event = list(self.tokenized_events)
 
-        if bulk_event_ingestion:
+        if conf_name == "eventgen":
             required_event_count = self.metadata.get("count")
-            if required_event_count is None or int(required_event_count) == 0:
+            if required_event_count is None or int(required_event_count) == 0 or int(required_event_count) > 250:
                 required_event_count = BULK_EVENT_COUNT
-                if int(required_event_count) > 250:
-                    required_event_count = MAXIMUM_EVENT_COUNT     
             for each_rule in self.sample_rules:
                 if each_rule:
                     event = each_rule.apply(event)
@@ -84,10 +81,11 @@ class SampleStanza(object):
                 bulk_event.extend(raw_event[event_counter])
                 event_counter = event_counter+1
             event = bulk_event[:int(required_event_count)]
-        
+
         else:
             for each_rule in self.sample_rules:
-                event = each_rule.apply(event)     
+                if each_rule:
+                    event = each_rule.apply(event)     
         self.tokenized_events = event
 
     def _parse_rules(self, eventgen_params, sample_path):
