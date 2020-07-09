@@ -6,7 +6,7 @@ import pprint
 import logging
 import pytest
 from ..addon_parser import Field
-
+from ..cim_tests import FieldTestHelper
 
 class FieldTestTemplates(object):
     """
