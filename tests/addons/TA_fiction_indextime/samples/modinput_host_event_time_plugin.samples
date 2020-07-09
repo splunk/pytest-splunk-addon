@@ -1,0 +1,2 @@
+test_modinput_1 host=##host_value## static_value_2=##static_value_2## static_value_3=##static_value_3##
+test_modinput_2 host=##host_value## static_value_2=##static_value_2## static_value_3=##static_value_3##
