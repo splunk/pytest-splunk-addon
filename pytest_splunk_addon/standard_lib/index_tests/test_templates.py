@@ -81,16 +81,10 @@ class IndexTimeTestTemplate(object):
         if not result_fields == fields_to_check:
             value_list, missing_keys = [], []
             for each_field in fields_to_check.keys():
-                if key_field in result_fields.keys():
-                    if not fields_to_check.get(key_field) == result_fields.get(key_field):
-                        # List.append(each)
-                        # List.append(fields_to_check[each])
-                        # List.append(list(set(result_fields.get(each))))
-                        # value_list.append(List)
-                        value_list.append([key_field, fields_to_check[key_field], result_fields.get(key_field)])
+                if each_field in result_fields.keys():
+                    if not fields_to_check.get(each_field) == result_fields.get(each_field):
+                        value_list.append([each_field, fields_to_check[each_field], result_fields.get(each_field)])
                 else:
-                        # List.append(each)
-                        # List.append(fields_to_check[each])
                         missing_keys.append([each_field, fields_to_check[each_field]])
             final_str = ''
             if value_list:
@@ -212,8 +206,13 @@ class IndexTimeTestTemplate(object):
         expected_events_count = int(
             splunk_indextime_line_breaker["expected_event_count"]
         )
-
-        query = "search sourcetype={} (host=host_{}* OR host={}*) | stats count".format(
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
+        query = "search {} sourcetype={} (host=host_{}* OR host={}*) | stats count".format(
+            index_list,
             splunk_indextime_line_breaker.get("sourcetype"),
             splunk_indextime_line_breaker.get("host"),
             splunk_indextime_line_breaker.get("host"),
