@@ -227,7 +227,6 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_is_splunkd* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_for_tags_positive* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_is_splunkd-%host%* PASSED*',
-    '*test_splunk_app_fiction.py::Test_App::test_searchtime_hash_checker* PASSED*',
 ]
 
 
@@ -302,7 +301,6 @@ TA_BROKEN_PASSED = [
     '*test_splunk_app_broken.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-PASS_test_empty_csv* PASSED*',
     '*test_splunk_app_broken.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-PASS_test_lookup_not_found* PASSED*',
     '*test_splunk_app_broken.py::Test_App::test_tags*sourcetype="splunkd"::tag::tags_negative_testing* PASSED*',
-    '*test_splunk_app_broken.py::Test_App::test_searchtime_hash_checker* PASSED*',
 ]
 
 """
@@ -556,7 +554,7 @@ TA_FICTION_INDEXTIME_PASSED = [
 Define the TA_fiction_indextime add-on failed test case list.
 """
 TA_FICTION_INDEXTIME_FAILED = [
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_hash_checker* FAILED*',
+    
 ]
 """
 Define the TA_fiction_indextime add-on skipped test case list.

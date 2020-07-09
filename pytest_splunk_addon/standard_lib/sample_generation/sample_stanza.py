@@ -2,7 +2,7 @@ import os
 import re
 import copy
 from . import Rule
-from .rule import raise_warning
+from . import raise_warning
 from . import SampleEvent
 import logging
 
@@ -178,7 +178,7 @@ class SampleStanza(object):
         with open(self.sample_path, "r") as sample_file:
             if self.input_type in ["modinput", "windows_input"]:
                 for each_line in sample_file.read().split('\n'):
-                    if not each_line == '':
+                    if each_line:
                         event_metadata = self.get_eventmetadata()
                         yield SampleEvent(
                             each_line, event_metadata, self.sample_name

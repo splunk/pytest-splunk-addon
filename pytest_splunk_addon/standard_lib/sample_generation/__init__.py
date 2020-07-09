@@ -1,5 +1,5 @@
 from .sample_event import SampleEvent
-from .rule import Rule
+from .rule import Rule, raise_warning
 from .sample_stanza import SampleStanza
 from .eventgen_parser import EventgenParser
 from .sample_event import SampleEvent

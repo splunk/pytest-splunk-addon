@@ -72,31 +72,30 @@ class IndexTimeTestTemplate(object):
         result_fields = {key: list(set(value)) for key, value in result_fields.items()}
         fields_to_check = {key: list(set(value)) for key, value in fields_to_check.items()}
         
-        value_list = []
-        missing_keys = []
-        for each in fields_to_check.keys():
-            List = []
-            if each in result_fields.keys():
-                if not fields_to_check.get(each) == result_fields.get(each):
-                    List.append(each)
-                    List.append(fields_to_check[each])
-                    List.append(list(set(result_fields.get(each))))
-                    value_list.append(List)    
+        value_list, missing_keys = [], []
+        for each_field in fields_to_check.keys():
+            if key_field in result_fields.keys():
+                if not fields_to_check.get(key_field) == result_fields.get(key_field):
+                    # List.append(each)
+                    # List.append(fields_to_check[each])
+                    # List.append(list(set(result_fields.get(each))))
+                    # value_list.append(List)
+                    value_list.append([key_field, fields_to_check[key_field], result_fields.get(key_field)])
             else:
-                    List.append(each)
-                    List.append(fields_to_check[each])
-                    missing_keys.append(List)
+                    # List.append(each)
+                    # List.append(fields_to_check[each])
+                    missing_keys.append([each_field, fields_to_check[each_field]])
         final_str = ''
         if value_list:
             result_str = FieldTestHelper.get_table_output(
                 headers=["Key_field", "Expected_values", "Actual_values"],
                 value_list=[
                     [
-                        each_result[0],
-                        str(each_result[1]),
-                        str(each_result[2]),
+                        each_value[0],
+                        str(each_value[1]),
+                        str(each_value[2]),
                     ]
-                    for each_result in value_list
+                    for each_value in value_list
                 ],     
             )
             final_str += f"Some values for the following key fields are missing\n\n{result_str}"
@@ -106,10 +105,10 @@ class IndexTimeTestTemplate(object):
                 headers=["Key_field", "Expected_values"],
                 value_list=[
                     [
-                        each_result[0],
-                        str(each_result[1]),
+                        each_key[0],
+                        str(each_key[1]),
                     ]
-                    for each_result in missing_keys
+                    for each_key in missing_keys
                 ],     
             )
             final_str += f"\n\nSome key fields are not found in search results\n\n{missing_keys_result_str}"
@@ -214,47 +213,3 @@ class IndexTimeTestTemplate(object):
             f"search={query}\n"
             f"found result={result_str}"
         )
-
-    @pytest.mark.first
-    @pytest.mark.splunk_indextime
-    def test_indextime_hash_checker(
-        self,
-        splunk_search_util,
-        splunk_ingest_data,
-        record_property
-    ):
-        index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
-        query =f'search {index_list} ##*##'
-        record_property("Query", query)
-        results = list(
-            splunk_search_util.getFieldValuesList(
-            query
-        )
-        )
-        if results:
-            result_fields = dict()
-            for result in results:
-                if ("source") in result.keys():
-                    try:
-                        if result.get("sourcetype") not in result_fields[result.get("source")]:
-                            result_fields[result.get("source")].append(result.get("sourcetype"))
-                    except KeyError:
-                        result_fields[result.get("source")] = [result.get("sourcetype")]
-                # logger.info(result_fields)
-                record_property("results", results)
-                result_str = FieldTestHelper.get_table_output(
-                    headers=["Source","Sourcetype"],
-                    value_list=[
-                        [
-                            key,
-                            str(value),
-                        ]
-                        for key, value in result_fields.items()
-                    ],
-                )
-                assert False, (
-            f"For the query {query}\n"
-            f"Some fields are not tokenized in the events of following source and sourcetype \n{result_str}"
-        )
-        else:
-            assert True
