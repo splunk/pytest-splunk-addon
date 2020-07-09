@@ -38,7 +38,7 @@ class SampleGenerator(object):
             with ThreadPoolExecutor(min(20, max(len(sample_stanzas), 1))) as t:
                 t.map(SampleStanza.get_raw_events, sample_stanzas)
             # with ProcessPoolExecutor(self.process_count) as p:
-            _ = list(map(SampleStanza.tokenize, sample_stanzas, cycle([self.bulk_event_ingestion])))
-            SampleGenerator.sample_stanzas[self.bulk_event_ingestion] = sample_stanzas
-        for each_sample in SampleGenerator.sample_stanzas[self.bulk_event_ingestion]:
+            _ = list(map(SampleStanza.tokenize, sample_stanzas, cycle([SampleGenerator.conf_name])))
+            SampleGenerator.sample_stanzas = sample_stanzas
+        for each_sample in SampleGenerator.sample_stanzas:
             yield from each_sample.get_tokenized_events()
