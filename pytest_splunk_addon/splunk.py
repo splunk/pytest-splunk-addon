@@ -185,7 +185,7 @@ def pytest_addoption(parser):
         "--search-retry",
         action="store",
         dest="search_retry",
-        default=3,
+        default=0,
         type=int,
         help="Number of retries to make if there are no events found while searching in the Splunk instance.",
     )
@@ -193,7 +193,7 @@ def pytest_addoption(parser):
         "--search-interval",
         action="store",
         dest="search_interval",
-        default=3,
+        default=0,
         type=int,
         help="Time interval to wait before retrying the search query.",
     )
