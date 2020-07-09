@@ -143,7 +143,7 @@ class Rule:
                         )
                     new_event.replace_token(self.token, each_token_value.value)
                     new_event.register_field_value(
-                        self.field, each_token_value.key
+                        self.field, each_token_value
                     )
                     new_events.append(new_event)
             else:
@@ -151,7 +151,12 @@ class Rule:
                     self.token,
                     token_values
                 )
-                each_event.register_field_value(self.field, token_values)
+
+                if not (
+                    each_event.metadata.get(
+                            'timestamp_type') != 'event'
+                        and self.field == "_time"):
+                    each_event.register_field_value(self.field, token_values)
                 new_events.append(each_event)
         return new_events
 
@@ -439,7 +444,6 @@ class FileRule(Rule):
                     and file_path in sample.replacement_map
                 ):
                     index = int(index)
-
                     file_values = sample.replacement_map[file_path]["data"][self.file_count].split(',')
                     if sample.replacement_map[file_path].get("find_all"):
                         # if condition to increase the line no. of sample data
@@ -453,7 +457,6 @@ class FileRule(Rule):
                     for _ in range(token_count):
                         yield file_values[index-1]
                 else:
-
                     if self.replacement_type == 'all':
                         sample.__setattr__("replacement_map", {file_path: {"data":all_data, "find_all":True}})
                         for i in all_data:
@@ -468,7 +471,6 @@ class FileRule(Rule):
                         file_values = all_data[random_line].split(',')
                         for _ in range(token_count):
                             yield file_values[index-1]
-
         except IndexError:
             LOGGER.error(
                 f"Index for column {index} in replacement"
@@ -538,7 +540,7 @@ class TimeRule(Rule):
         """
         earliest = self.eventgen_params.get("earliest")
         latest = self.eventgen_params.get("latest")
-        timezone_time = self.eventgen_params.get("timezone")
+        timezone_time = self.eventgen_params.get("timezone",'0000')
         random_time = datetime.utcnow()
         time_parser = time_parse()
         time_delta = datetime.now().timestamp() - datetime.utcnow().timestamp()
@@ -584,12 +586,8 @@ class TimeRule(Rule):
                     tzinfo=timezone.utc).astimezone(tz=None)
 
             elif timezone_time and timezone_time.strip("'").strip('"') != r"0000":
-                sign, hrs, mins = re.match(
-
-                    r"([+-])(\d\d)(\d\d)", timezone_time
-                ).groups()
                 random_time = time_parser.get_timezone_time(
-                    random_time, sign, hrs, mins
+                    random_time, timezone_time
                 )
 
             if r"%s" == self.replacement.strip("'").strip('"'):
@@ -600,14 +598,29 @@ class TimeRule(Rule):
                     )
 
             else:
-                yield self.token_value(
-                    float(mktime(random_time.timetuple())) + time_delta,
-                    random_time.strftime(
-                        random_time.strftime(
-                            self.replacement.replace(r'%e', r'%d')
-                            )
-                        )
+                if timezone_time not in (None, '0000'):
+                    modified_random_time = time_parser.get_timezone_time(
+                        random_time, self.invert_timezone(timezone_time)
                     )
+                else:
+                    modified_random_time = random_time
+                yield self.token_value(
+                    float(mktime(modified_random_time.timetuple()))
+                    + time_delta,
+                    random_time.strftime(
+                        self.replacement.replace(r"%e", r"%d")
+                    ),
+                )
+
+    def invert_timezone(self, timezone_time):
+        if timezone_time == '0000':
+            return '0000'
+        elif timezone_time[0] == '-':
+            return '+'+timezone_time[-4:]
+        elif timezone_time[0] == '+':
+            return '-'+timezone_time[-4:]
+        else:
+            raise Exception("Invalid timezone value found.")
 
 
 class Ipv4Rule(Rule):

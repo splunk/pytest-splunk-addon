@@ -42,19 +42,4 @@ class SampleGenerator(object):
             _ = list(map(SampleStanza.tokenize, sample_stanzas, cycle([self.bulk_event_ingestion])))
             SampleGenerator.sample_stanzas[self.bulk_event_ingestion] = sample_stanzas
         for each_sample in SampleGenerator.sample_stanzas[self.bulk_event_ingestion]:
-            each_sample = map(add_time, each_sample.get_tokenized_events())
-            yield from each_sample
-
-
-def add_time(tokenized_event):
-    """
-    Update _time field in event
-
-    Args:
-        sample_stanza(SampleStanza): Sample stanza instance 
-    """
-    if tokenized_event.metadata.get("timestamp_type") in ("plugin", None):
-        time_to_ingest = time.time()
-        tokenized_event.time_values = [str(time_to_ingest)]
-
-    return tokenized_event
+            yield from each_sample.get_tokenized_events()

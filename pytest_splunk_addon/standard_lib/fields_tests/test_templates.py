@@ -262,25 +262,30 @@ class FieldTestTemplates(object):
             query
         )
         )
-        if not results:
-            assert False, f"No Events found for query: '{query}''"
-        result_fields = dict()
-        for result in results:
-            if ("source") in result.keys():
-                try:
-                    if result.get("sourcetype") not in result_fields[result.get("source")]:
-                        result_fields[result.get("source")].append(result.get("sourcetype"))
-                except KeyError:
-                    result_fields[result.get("source")] = [result.get("sourcetype")]
-            LOGGER.info(result_fields)
-            record_property("results", results)
-            result_str = FieldTestHelper.get_table_output(
-                headers=["Source","Sourcetype"],
-                value_list=[
-                    [
-                        key,
-                        str(value),
-                    ]
-                    for key, value in result_fields.items()
-                ],
-            )
+        if results:
+            result_fields = dict()
+            for result in results:
+                if ("source") in result.keys():
+                    try:
+                        if result.get("sourcetype") not in result_fields[result.get("source")]:
+                            result_fields[result.get("source")].append(result.get("sourcetype"))
+                    except KeyError:
+                        result_fields[result.get("source")] = [result.get("sourcetype")]
+                # logger.info(result_fields)
+                record_property("results", results)
+                result_str = FieldTestHelper.get_table_output(
+                    headers=["Source","Sourcetype"],
+                    value_list=[
+                        [
+                            key,
+                            str(value),
+                        ]
+                        for key, value in result_fields.items()
+                    ],
+                )
+                assert False, (
+            f"For the query {query}\n"
+            f"Some fields are not tokenized in the events of following source and sourcetype \n{result_str}"
+        )
+        else:
+            assert True
