@@ -55,38 +55,27 @@ class SampleStanza(object):
         Tokenizes the raw events by replacing all the tokens in it.
 
         Args:
-            bulk_event_ingestion (bool): 
-                
-                * True: For search time testing
-                * False: For index time testing
+            conf_name (str): Name of the conf file, "eventgen" or "psa-data-gen"
         """
-        event = list(self.tokenized_events)
-
         if conf_name == "eventgen":
             required_event_count = self.metadata.get("count")
-            if required_event_count is None or int(required_event_count) == 0 or int(required_event_count) > 250:
-                required_event_count = BULK_EVENT_COUNT
-            for each_rule in self.sample_rules:
-                if each_rule:
-                    event = each_rule.apply(event)
-
-            bulk_event = event
-            raw_event = []
-            event_counter = 0
-            while (int(required_event_count)) > len((bulk_event)):
-                raw_event.insert(event_counter, list(self._get_raw_sample()))
-                for each_rule in self.sample_rules:
-                    if each_rule:
-                        raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
-                bulk_event.extend(raw_event[event_counter])
-                event_counter = event_counter+1
-            event = bulk_event[:int(required_event_count)]
-
         else:
+            required_event_count = 1
+
+        if required_event_count is None or int(required_event_count) == 0 or int(required_event_count) > BULK_EVENT_COUNT:
+            required_event_count = BULK_EVENT_COUNT
+
+        bulk_event = []
+        raw_event = []
+        event_counter = 0
+        while (int(required_event_count)) > len((bulk_event)):
+            raw_event.insert(event_counter, list(self._get_raw_sample()))
             for each_rule in self.sample_rules:
                 if each_rule:
-                    event = each_rule.apply(event)     
-        self.tokenized_events = event
+                    raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
+            bulk_event.extend(raw_event[event_counter])
+            event_counter = event_counter+1
+        self.tokenized_events = bulk_event
 
     def _parse_rules(self, eventgen_params, sample_path):
         """
