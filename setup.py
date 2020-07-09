@@ -63,7 +63,7 @@ setup(
             "splunk = pytest_splunk_addon.splunk",
         ],
         "console_scripts": ["cim-report=pytest_splunk_addon.standard_lib.cim_compliance.junit_parser:main",
-                            "generate-conf=pytest_splunk_addon.standard_lib.utilities.create_new_eventgen:main"
+                            "generate-indextime-conf=pytest_splunk_addon.standard_lib.utilities.create_new_eventgen:main"
                         ]
     },
     version=versioneer.get_version(),
