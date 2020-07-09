@@ -1,14 +1,16 @@
 import logging
 import pytest
 import copy
+import pprint
+from ..cim_tests import FieldTestHelper
 
 MAX_TIME_DIFFERENCE = 45
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class IndexTimeTestTemplate(object):
 
     logger = logging.getLogger("pytest-splunk-addon-tests")
-    
 
     @pytest.mark.first
     @pytest.mark.splunk_indextime
@@ -27,13 +29,21 @@ class IndexTimeTestTemplate(object):
             + ")"
         )
 
+        assert splunk_indextime_key_fields.get(
+            "identifier"
+        ) or splunk_indextime_key_fields.get(
+            "hosts"
+        ), "Host or identifier fields cannot be determined from the config file.."
+
         if splunk_indextime_key_fields.get("identifier"):
             extra_filter = splunk_indextime_key_fields.get("identifier")
         else:
-            extra_filter = "host=" + splunk_indextime_key_fields.get(
-                "host", "*")
+            extra_filter = "host=" + " OR host=".join(
+                splunk_indextime_key_fields.get("hosts")
+            )
         fields_to_check = copy.deepcopy(
-            splunk_indextime_key_fields["tokenized_event"].key_fields)
+            splunk_indextime_key_fields["tokenized_event"].key_fields
+        )
 
         query = "sourcetype={} {} | table {}".format(
             splunk_indextime_key_fields.get("sourcetype"),
@@ -44,11 +54,15 @@ class IndexTimeTestTemplate(object):
         search = "search {} {}".format(index_list, query)
         record_property("Query", search)
 
-        results = splunk_search_util.getFieldValuesList(search)
+        results = splunk_search_util.getFieldValuesList(
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
+        )
         results = list(results)
 
         if not results:
-            assert False, "No Events found for query "+search
+            assert False, "No Events found for query " + search
         result_fields = dict()
         for result in results:
             for key, val in result.items():
@@ -62,12 +76,49 @@ class IndexTimeTestTemplate(object):
         # Example syslog: all the headers are only tokenized once hence
         #   key_fields = {'host': ['dummy_host']}
         #   result_dict = {'host': ['dummy_host']*n}
+        result_fields = {key: list(set(value)) for key, value in result_fields.items()}
+        fields_to_check = {key: list(set(value)) for key, value in fields_to_check.items()}
+        if not result_fields == fields_to_check:
+            value_list, missing_keys = [], []
+            for each_field in fields_to_check.keys():
+                if each_field in result_fields.keys():
+                    if not fields_to_check.get(each_field) == result_fields.get(each_field):
+                        value_list.append([each_field, fields_to_check[each_field], result_fields.get(each_field)])
+                else:
+                        missing_keys.append([each_field, fields_to_check[each_field]])
+            final_str = ''
+            if value_list:
+                result_str = FieldTestHelper.get_table_output(
+                    headers=["Key_field", "Expected_values", "Actual_values"],
+                    value_list=[
+                        [
+                            each_value[0],
+                            str(each_value[1]),
+                            str(each_value[2]),
+                        ]
+                        for each_value in value_list
+                    ],     
+                )
+                final_str += f"Some values for the following key fields are missing\n\n{result_str}"
 
-        assert (
-            {i: list(
-                set(result_fields)) for i in result_fields} == {i: list(
-                    set(fields_to_check)) for i in fields_to_check}
-        )
+            if missing_keys:    
+                missing_keys_result_str = FieldTestHelper.get_table_output(
+                    headers=["Key_field", "Expected_values"],
+                    value_list=[
+                        [
+                            each_key[0],
+                            str(each_key[1]),
+                        ]
+                        for each_key in missing_keys
+                    ],     
+                )
+                final_str += f"\n\nSome key fields are not found in search results\n\n{missing_keys_result_str}"
+            LOGGER.info(final_str)
+                
+            assert int(len(value_list)) == 0 and int(len(missing_keys)) == 0, (
+                f"For this search query: '{search}'\n{final_str}"
+            )
+
 
     @pytest.mark.first
     @pytest.mark.splunk_indextime
@@ -85,44 +136,63 @@ class IndexTimeTestTemplate(object):
             + ")"
         )
 
+        assert splunk_indextime_time.get(
+            "identifier"
+        ) or splunk_indextime_time.get(
+            "hosts"
+        ), "Host or identifier fields cannot be determined from the config file.."
+        assert splunk_indextime_time[
+            "tokenized_event"
+        ].time_values, (
+            "_time field cannot be determined from the config file."
+        )
+
         if splunk_indextime_time.get("identifier"):
             extra_filter = splunk_indextime_time.get("identifier")
         else:
-            extra_filter = "host=" + splunk_indextime_time.get("host", "*")
+            extra_filter = (
+                "(host="
+                + " OR host=".join(splunk_indextime_time.get("hosts"))
+                + ")"
+            )
 
         if splunk_indextime_time["tokenized_event"].time_values:
             extra_filter += " | eval e_time=_time"
 
         query = "sourcetype={} {} | table {}".format(
-            splunk_indextime_time.get("sourcetype"),
-            extra_filter,
-            "e_time",
+            splunk_indextime_time.get("sourcetype"), extra_filter, "e_time",
         )
 
         search = "search {} {}".format(index_list, query)
 
         record_property("Query", search)
 
-        results = splunk_search_util.getFieldValuesList(search)
+        results = splunk_search_util.getFieldValuesList(
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
+        )
         results = list(results)
-        result_fields = {key: [item[key] for item in results] for key in results[0].keys()}
+
+        result_fields = {
+            key: [float(item[key]) for item in results]
+            for key in results[0].keys()
+        }
 
         key_time = splunk_indextime_time["tokenized_event"].time_values
-        record_property("time_values", key_time)
-        for index, event_time in enumerate(result_fields["e_time"]):
-            if splunk_indextime_time["tokenized_event"].metadata.get("timestamp_type") in ('event'):
-                index_to_check = index
-            else:
-                index_to_check = 0
-            assert (
-                (
-                    float(event_time) - float(key_time[index_to_check])
-                    ) < MAX_TIME_DIFFERENCE
-            ), "Actual time {} :: Time in result {}".format(
-                key_time[index_to_check], event_time
-                )
+        result_fields["e_time"].sort()
+        key_time.sort()
 
-    # Testing line breaker
+        record_property("time_values", key_time)
+        record_property("result_time", result_fields)
+
+        assert (
+            result_fields["e_time"] == key_time
+        ), "Actual time {} :: Time in result {}".format(
+            key_time, result_fields["e_time"]
+        )
+
+
     @pytest.mark.first
     @pytest.mark.splunk_indextime
     def test_indextime_line_breaker(
@@ -133,17 +203,31 @@ class IndexTimeTestTemplate(object):
         record_property,
         caplog,
     ):
-        expected_events_count = int(splunk_indextime_line_breaker[
-            "tokenized_event"
-        ].metadata.get("expected_event_count", 1))
-
-        query = "search sourcetype={} (host=host_{}* OR host={}*)".format(
+        expected_events_count = int(
+            splunk_indextime_line_breaker["expected_event_count"]
+        )
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
+        query = "search {} sourcetype={} (host=host_{}* OR host={}*) | stats count".format(
+            index_list,
             splunk_indextime_line_breaker.get("sourcetype"),
-            splunk_indextime_line_breaker.get('host'),
-            splunk_indextime_line_breaker.get('host'),
+            splunk_indextime_line_breaker.get("host"),
+            splunk_indextime_line_breaker.get("host"),
         )
         record_property("Query", query)
 
-        assert splunk_search_util.checkQueryCount(
-            query, expected_events_count, retries=0, interval=0
-        ), ("We should get exactly " + str(expected_events_count) + " result")
+        results = list(
+            splunk_search_util.getFieldValuesList(
+                query,
+                interval=splunk_search_util.search_interval,
+                retries=splunk_search_util.search_retry,
+            )
+        )
+        count_from_results = int(results[0].get("count"))
+
+        assert (
+            count_from_results == expected_events_count
+        ), f"Expected count: {expected_events_count} Actual Count: {count_from_results}"

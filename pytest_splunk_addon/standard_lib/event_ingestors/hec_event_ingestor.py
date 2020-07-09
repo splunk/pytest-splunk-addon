@@ -82,14 +82,14 @@ class HECEventIngestor(EventIngestor):
             if event.metadata.get("host_type") in ("plugin", None):
                 host = event.metadata.get("host")
             else:
-                host = event.key_fields.get("host")
+                host = event.key_fields.get("host")[0]
             if host:
                 event_dict['host'] = host
 
-            if event.metadata.get("timestamp_type") in ('plugin', None):
-                event_dict['time'] = event.time_values[0]
-            else:
-                event_dict['time'] = event.time_values[0]
+            if event.metadata.get('timestamp_type').lower() == 'event':
+                if event.time_values:
+                    event_dict['time'] = event.time_values[0]
+
             data.append(event_dict)
 
         batch_event_list = []
@@ -108,14 +108,13 @@ class HECEventIngestor(EventIngestor):
                 headers=self.session_headers,
                 verify=False,
             )
+            LOGGER.debug("Status code: {}".format(response.status_code))
             if response.status_code not in (200, 201):
-                LOGGER.debug(
-                    "Status code: {} \nReason: {} \ntext:{}".format(
+                raise Exception("\nStatus code: {} \nReason: {} \ntext:{}".format(
                         response.status_code, response.reason, response.text
-                    )
-                )
-                raise Exception
+                    ))
 
         except Exception as e:
-            LOGGER.error(e)
+            LOGGER.error("\n\nAn error occurred while data ingestion.{}".format(e))
+            print("\n\nAn error occurred while data ingestion.{}".format(e))
             os._exit(0)

@@ -76,9 +76,6 @@ class HECRawEventIngestor(EventIngestor):
             if event.metadata.get("host"):
                 event_dict['host'] = event.metadata.get("host")
 
-            if event.metadata.get("timestamp_type") in ('plugin', None):
-                event_dict['time'] = event.time_values[0]
-
             param_list.append(event_dict)
 
             main_event.append(event.event)
@@ -95,14 +92,13 @@ class HECRawEventIngestor(EventIngestor):
                 headers=self.session_headers,
                 verify=False,
             )
+            LOGGER.debug("Status code: {}".format(response.status_code))
             if response.status_code not in (200, 201):
-                LOGGER.debug(
-                    "Status code: {} \nReason: {} \ntext:{}".format(
+                raise Exception("\nStatus code: {} \nReason: {} \ntext:{}".format(
                         response.status_code, response.reason, response.text
-                    )
-                )
-                raise Exception
+                    ))
 
         except Exception as e:
-            LOGGER.error(e)
+            LOGGER.error("\n\nAn error occurred while data ingestion.{}".format(e))
+            print("\n\nAn error occurred while data ingestion.{}".format(e))
             os._exit(0)

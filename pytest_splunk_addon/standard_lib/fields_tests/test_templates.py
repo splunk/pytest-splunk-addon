@@ -7,7 +7,6 @@ import logging
 import pytest
 from ..addon_parser import Field
 
-
 class FieldTestTemplates(object):
     """
     Test templates to test the knowledge objects of an App

@@ -225,7 +225,6 @@ class SampleEvent(object):
     def copy(cls, event):
         """
         Copies the SampleEvent object into a new one.
-
         Args:
             event (SampleEvent): Event object which has to be copied
 
@@ -235,6 +234,7 @@ class SampleEvent(object):
         new_event = cls("", {}, "")
         new_event.__dict__ = event.__dict__.copy()
         new_event.key_fields = event.key_fields.copy()
+        new_event.time_values = event.time_values[:]
         new_event.metadata = deepcopy(event.metadata)
         return new_event
 

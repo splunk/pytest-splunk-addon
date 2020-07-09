@@ -549,6 +549,13 @@ TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_props_fields_no_dash_not_empty*test_scripted_input_sourcetype::field::write_latency* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_props_fields_no_dash_not_empty*test_scripted_input_sourcetype::field::write_ops* PASSED*',
 ]
+
+"""
+Define the TA_fiction_indextime add-on failed test case list.
+"""
+TA_FICTION_INDEXTIME_FAILED = [
+    
+]
 """
 Define the TA_fiction_indextime add-on skipped test case list.
 """
