@@ -117,11 +117,11 @@ The following optional arguments are available to modify the default settings in
 
             --search-retry=<retry>
 
-                Number of retries to make if there are no events found while searching in the Splunk instance. Default value: 3.
+                Number of retries to make if there are no events found while searching in the Splunk instance. Default value: 0.
 
             --search-interval=<interval>
 
-                Time interval to wait before retrying the search query.Default value: 3.
+                Time interval to wait before retrying the search query.Default value: 0.
 
 
 Extending pytest-splunk-addon
