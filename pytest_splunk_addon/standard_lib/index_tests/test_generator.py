@@ -83,7 +83,7 @@ class IndexTimeTestGenerator(object):
                     tokenized_event.sample_name
                 )
             )
-        if isinstance(hosts, str) or hosts is None:
+        if isinstance(hosts, str):
             hosts = [hosts]
 
         return hosts
@@ -125,16 +125,16 @@ class IndexTimeTestGenerator(object):
             )
 
     def generate_hosts_params(self, tokenized_event, hosts):
-        for host in hosts:
-            yield pytest.param(
-                {
-                    "host": host,
-                    "sourcetype": self.get_sourcetype(tokenized_event),
-                    "source": self.get_source(tokenized_event),
-                    "tokenized_event": tokenized_event,
-                },
-                id="{}::{}".format(
-                    self.get_sourcetype(tokenized_event),
-                    host if host else tokenized_event.sample_name
-                ),
-            )
+        id_host = hosts[0]+"_to_"+hosts[-1] if hosts else tokenized_event.sample_name
+        yield pytest.param(
+            {
+                "hosts": hosts,
+                "sourcetype": self.get_sourcetype(tokenized_event),
+                "source": self.get_source(tokenized_event),
+                "tokenized_event": tokenized_event,
+            },
+            id="{}::{}".format(
+                self.get_sourcetype(tokenized_event),
+                id_host
+            ),
+        )
