@@ -1,0 +1,2 @@
+2020-06-23T00:00:00.000Z test_sample_stanza_does_not_exist_1 test_static=##int_wrong## user_token=##token_user_name## user=##user_no_all## no_rule=##no_rule## token_incorrect_url=##token_incorrect_url## float_wrong=##float_wrong## list_wrong=##list_wrong## url_wrong##url_wrong## src=##src1## dest=##src2## dvc=##src3## host=##src4## hex_wrong=##hex_wrong## wrong_rt=##wrong_rt## hex_non_numeric=##hex_non_numeric##
+
