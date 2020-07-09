@@ -30,7 +30,7 @@ class IngestorHelper(object):
         return ingestor
 
     @classmethod
-    def ingest_events(cls, ingest_meta_data, addon_path, config_path, bulk_event_ingestion):
+    def ingest_events(cls, ingest_meta_data, addon_path, config_path):
         """
         Events are ingested in the splunk.
         Args:
@@ -40,7 +40,7 @@ class IngestorHelper(object):
             bulk_event_ingestion(bool): Boolean param for bulk event ingestion.
 
         """
-        sample_generator = SampleGenerator(addon_path, config_path, bulk_event_ingestion=bulk_event_ingestion)
+        sample_generator = SampleGenerator(addon_path, config_path)
         ingestor_dict = dict()
         for event in sample_generator.get_samples():
             input_type = event.metadata.get("input_type")

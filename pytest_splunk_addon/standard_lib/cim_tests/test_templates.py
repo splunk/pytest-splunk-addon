@@ -54,7 +54,7 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_fields
     def test_cim_required_fields(
-        self, splunk_search_util, splunk_ingest_bulk_data, splunk_searchtime_cim_fields, record_property
+        self, splunk_search_util, splunk_ingest_data, splunk_searchtime_cim_fields, record_property
     ):
         """
         Test the the required fields in the data models are extracted with valid values.
@@ -156,7 +156,7 @@ class CIMTestTemplates(object):
     def test_cim_fields_not_allowed_in_search(
         self,
         splunk_search_util,
-        splunk_ingest_bulk_data,
+        splunk_ingest_data,
         splunk_searchtime_cim_fields_not_allowed_in_search,
         record_property,
     ):
@@ -239,7 +239,7 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_fields_not_allowed_in_props
     def test_cim_fields_not_allowed_in_props(
-        self, splunk_ingest_bulk_data, splunk_searchtime_cim_fields_not_allowed_in_props, record_property
+        self, splunk_ingest_data, splunk_searchtime_cim_fields_not_allowed_in_props, record_property
     ):
         result_str = (
             "The field extractions are not allowed in the configuration files"
@@ -265,7 +265,7 @@ class CIMTestTemplates(object):
     def test_eventtype_mapped_multiple_cim_datamodel(
         self,
         splunk_search_util,
-        splunk_ingest_bulk_data,
+        splunk_ingest_data,
         splunk_searchtime_cim_mapped_datamodel,
         record_property,
         caplog,

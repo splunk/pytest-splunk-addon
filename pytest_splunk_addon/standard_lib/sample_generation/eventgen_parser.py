@@ -17,7 +17,7 @@ class EventgenParser:
         addon_path (str): Path to the Splunk App 
     """
 
-    splunk_test_type = " "
+    conf_name = " "
 
     def __init__(self, addon_path, config_path=None):
         self._app = App(addon_path, python_analyzer_enable=False)
@@ -53,10 +53,10 @@ class EventgenParser:
                 self._eventgen = self._app.get_config(
                     "pytest-splunk-addon-data-generator.conf", dir=relative_path
                 )
-                self.splunk_test_type = "splunk_indextime"
+                self.conf_name = "psa-data-gen"
             else:
                 self._eventgen = self._app.get_config("eventgen.conf")
-                self.splunk_test_type = "splunk_searchtime"
+                self.conf_name = "eventgen"
             return self._eventgen
         except OSError:
             LOGGER.warning("eventgen.conf not found.")
