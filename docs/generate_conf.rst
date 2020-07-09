@@ -47,6 +47,12 @@ How to generate the new conf file?
 
             generate-indextime-conf <path-to-addon> [<path-to-the-new-conf-file>]
 
+        For example:
+
+        .. code-block:: console
+
+            generate-indextime-conf SampleTA SampleTA/default/pytest-splunk-addon-data-generator.conf        
+
 
     .. note::
         Add-on must contain samples folder, for the utility to work properly.
