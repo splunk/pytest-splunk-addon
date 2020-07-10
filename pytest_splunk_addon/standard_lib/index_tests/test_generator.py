@@ -1,6 +1,7 @@
 import logging
 import pytest
-from ..sample_generation import SampleGenerator
+
+from ..sample_generation import SampleXdistGenerator
 from ..sample_generation.rule import raise_warning
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -8,11 +9,11 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class IndexTimeTestGenerator(object):
     def generate_tests(self, app_path, config_path, test_type):
-        sample_generator = SampleGenerator(
-            app_path, config_path)
-        tokenized_events = list(sample_generator.get_samples())
+        sample_generator = SampleXdistGenerator(app_path, config_path)
+        store_sample = sample_generator.get_samples()
+        tokenized_events = store_sample.get("tokenized_events")
 
-        if not SampleGenerator.conf_name == "psa-data-gen":
+        if not store_sample.get("conf_name") == "psa-data-gen":
             return " Index Time tests cannot be executed using eventgen.conf,\
                  pytest-splunk-addon-data.conf is required."
 

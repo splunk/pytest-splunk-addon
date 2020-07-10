@@ -53,7 +53,6 @@ class SampleEvent(object):
         self.metadata = metadata
         self.sample_name = sample_name
         self.host_count = 0
-        self.fake = Faker()
 
     def update(self, new_event):
         """
@@ -125,7 +124,7 @@ class SampleEvent(object):
             addr = [int(url_ip_count / 256) % 256, url_ip_count % 256]
             return "".join([ip_rules.get(rule)["ip_host"], str(addr[0]), ".", str(addr[1])])
         else:
-            return self.fake.ipv4()
+            return Faker().ipv4()
 
     def get_ipv6(self, rule):
         """
@@ -152,7 +151,7 @@ class SampleEvent(object):
             ipv6 = dest_ipv6 % (int("ffffffffffffffff", 16))
             dest_ipv6 += 1
         else:
-            return self.fake.ipv6()
+            return Faker().ipv6()
 
         hex_count = hex(ipv6)
         non_zero_cnt = len(hex_count[2:])
