@@ -1,7 +1,8 @@
 import logging
 import pytest
 import copy
-import pprint
+
+from math import ceil
 from ..cim_tests import FieldTestHelper
 
 MAX_TIME_DIFFERENCE = 45
@@ -85,7 +86,7 @@ class IndexTimeTestTemplate(object):
                     if not fields_to_check.get(each_field) == result_fields.get(each_field):
                         value_list.append([each_field, fields_to_check[each_field], result_fields.get(each_field)])
                 else:
-                        missing_keys.append([each_field, fields_to_check[each_field]])
+                    missing_keys.append([each_field, fields_to_check[each_field]])
             final_str = ''
             if value_list:
                 result_str = FieldTestHelper.get_table_output(
@@ -114,7 +115,7 @@ class IndexTimeTestTemplate(object):
                 )
                 final_str += f"\n\nSome key fields are not found in search results\n\n{missing_keys_result_str}"
             LOGGER.info(final_str)
-                
+
             assert int(len(value_list)) == 0 and int(len(missing_keys)) == 0, (
                 f"For this search query: '{search}'\n{final_str}"
             )
@@ -175,11 +176,12 @@ class IndexTimeTestTemplate(object):
         results = list(results)
 
         result_fields = {
-            key: [float(item[key]) for item in results]
+            key: [ceil(float(item[key])) for item in results]
             for key in results[0].keys()
         }
 
-        key_time = splunk_indextime_time["tokenized_event"].time_values
+        key_time = [ceil(t) for t in splunk_indextime_time[
+            "tokenized_event"].time_values]
         result_fields["e_time"].sort()
         key_time.sort()
 
