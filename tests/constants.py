@@ -3,6 +3,7 @@
 Define the TA_fiction add-on passed test case list.
 """
 TA_FICTION_PASSED = [
+    '*test_splunk_app_fiction.py::Test_App::test_events_with_untokenised_values PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_splunk_internal_errors PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields*/opt/splunk/var/log/splunk/splunkd.log* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields*/opt/splunk/var/log/splunk/splunkd.log*::field::component* PASSED*',
@@ -234,6 +235,7 @@ TA_FICTION_PASSED = [
 Define the TA_broken add-on passed test case list.
 """
 TA_BROKEN_PASSED = [
+    '*test_splunk_app_broken.py::Test_App::test_events_with_untokenised_values PASSED*',
     '*test_splunk_app_broken.py::Test_App::test_splunk_internal_errors PASSED*',
     '*test_splunk_app_broken.py::Test_App::test_props_fields*splunkd* PASSED*',
     '*test_splunk_app_broken.py::Test_App::test_props_fields*splunkd::REPORT-broken-PASS_tsc-sk-regex-format::broken-tsc-sk-regex-format* PASSED*',
@@ -384,6 +386,7 @@ TA_CIM_FICTION_PASSED = [
     '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_two"::Fiction_Two* PASSED*',
     '*test_splunk_app_cim_fiction.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_fiction_two"::Fiction_Two::component* PASSED*',
     '*test_splunk_app_cim_fiction.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*',
+    '*test_splunk_app_cim_fiction.py::Test_App::test_events_with_untokenised_values PASSED*',
     '*test_splunk_app_cim_fiction.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel* PASSED*',
     '*test_splunk_app_cim_fiction.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_fiction_one"::Fiction_One* PASSED*',
     '*test_splunk_app_cim_fiction.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_fiction_second"::Fiction_Two_Second* PASSED*',
@@ -409,6 +412,7 @@ TA_CIM_BROKEN_PASSED = [
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_with_eval"::Broken_Eval* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_with_eval"::Broken_Eval::pass_multi_value_field* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_app_installed*Splunk_SA_CIM* PASSED*',
+    '*test_splunk_app_cim_broken.py::Test_App::test_events_with_untokenised_values* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_broken"::Broken* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_not_allowed_in_search*eventtype="eventtype_splunkd_broken_2"::Broken* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_not_allowed_in_props*searchtime_cim_fields* PASSED*',
