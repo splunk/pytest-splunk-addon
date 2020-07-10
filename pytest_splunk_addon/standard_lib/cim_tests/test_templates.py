@@ -74,8 +74,14 @@ class CIMTestTemplates(object):
         cim_fields_type = ', '.join(map(lambda f:f.get_type(),cim_fields))
         cim_data_model = cim_data_set[-1].data_model
         data_set = str(cim_data_set[-1])
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
+        
         # Search Query
-        base_search = ""
+        base_search = "| search {}".format(index_list)
         for each_set in cim_data_set:
             base_search += " | search {}".format(each_set.search_constraints)
 
@@ -160,6 +166,10 @@ class CIMTestTemplates(object):
         splunk_searchtime_cim_fields_not_allowed_in_search,
         record_property,
     ):
+        """
+        This test case checks the event_count for the cim fields of type ["not_allowed_in_search_and_props", "not_allowed_in_search"].
+        - Expected event_count for these fields is zero.
+        """
         cim_dataset = splunk_searchtime_cim_fields_not_allowed_in_search["data_set"]
         cim_fields = splunk_searchtime_cim_fields_not_allowed_in_search["fields"]
         cim_tag_stanza = splunk_searchtime_cim_fields_not_allowed_in_search[
@@ -169,8 +179,13 @@ class CIMTestTemplates(object):
         data_set = str(cim_dataset[-1])
 
         # Search Query
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
 
-        base_search = "search"
+        base_search = "search {}".format(index_list)
         for each_set in cim_dataset:
             base_search += " | search {}".format(each_set.search_constraints)
 
@@ -241,6 +256,9 @@ class CIMTestTemplates(object):
     def test_cim_fields_not_allowed_in_props(
         self, splunk_ingest_data, splunk_searchtime_cim_fields_not_allowed_in_props, record_property
     ):
+        """
+        This testcase checks for cim field of type ["not_allowed_in_search_and_props", "not_allowed_in_props"] if an extraction is defined in the configuration file.
+        """
         result_str = (
             "The field extractions are not allowed in the configuration files"
             "\nThese fields are automatically provided by asset and identity"
@@ -417,8 +435,13 @@ class CIMTestTemplates(object):
             {"name": "Vulnerabilities", "tags": [["report", "vulnerability"]]},
             {"name": "Web", "tags": [["web"], ["web", "proxy"]]},
         ]
-
-        search = "search "
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
+        search = "search {} ".format(index_list)
+        # search = "search "
         search += " OR ".join(
             "eventtype={} \n".format(eventtype)
             for eventtype in splunk_searchtime_cim_mapped_datamodel["eventtypes"]
