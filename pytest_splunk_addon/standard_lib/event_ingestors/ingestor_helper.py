@@ -4,7 +4,7 @@ from . import (
     HECMetricEventIngestor,
     SC4SEventIngestor,
 )
-from ..sample_generation import SampleGenerator
+from ..sample_generation import SampleXdistGenerator
 
 class IngestorHelper(object):
     """
@@ -40,9 +40,11 @@ class IngestorHelper(object):
             bulk_event_ingestion(bool): Boolean param for bulk event ingestion.
 
         """
-        sample_generator = SampleGenerator(addon_path, config_path)
+        sample_generator = SampleXdistGenerator(addon_path, config_path)
+        store_sample = sample_generator.get_samples()
+        tokenized_events = store_sample.get("tokenized_events")
         ingestor_dict = dict()
-        for event in sample_generator.get_samples():
+        for event in tokenized_events:
             input_type = event.metadata.get("input_type")
             if input_type in ingestor_dict:
                 ingestor_dict[input_type].append(event)
