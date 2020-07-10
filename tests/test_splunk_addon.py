@@ -296,8 +296,8 @@ def test_splunk_fiction_indextime(testdir):
     result = testdir.runpytest(
         "--splunk-type=docker",
         "-v",
-        "--search-interval=4",
-        "--search-retry=4",
+        "--search-interval=0",
+        "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime/default"
     )
 
