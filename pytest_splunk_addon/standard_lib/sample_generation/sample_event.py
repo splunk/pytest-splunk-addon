@@ -165,7 +165,7 @@ class SampleEvent(object):
         Args:
             token (str): Token name
         """
-        return len(re.findall(token, self.event))
+        return len(re.findall(token, self.event, flags=re.MULTILINE))
 
     def replace_token(self, token, token_values):
         """
@@ -177,7 +177,7 @@ class SampleEvent(object):
         """
         # TODO: How to handle dependent Values with list of token_values
         if isinstance(token_values, list):
-            sample_tokens = re.finditer(token, self.event)
+            sample_tokens = re.finditer(token, self.event, flags=re.MULTILINE)
 
             for _, token_value in enumerate(token_values):
                 token_value = token_value.value
