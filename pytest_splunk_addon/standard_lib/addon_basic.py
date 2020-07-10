@@ -20,7 +20,7 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
     @pytest.mark.first
     @pytest.mark.splunk_indextime
     @pytest.mark.splunk_searchtime
-    def test_hash_checker(
+    def test_events_with_untokenised_values(
         self,
         splunk_search_util,
         splunk_ingest_data,

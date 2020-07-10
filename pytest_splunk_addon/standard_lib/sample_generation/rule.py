@@ -1009,7 +1009,7 @@ class HostRule(Rule):
                             "default",
                         ]:
                             csv_row[0] = sample.get_host()
-                        yield self.token_value(*([choice(csv_row)]*2))
+                    yield self.token_value(*([choice(csv_row)]*2))
                 else:
                     raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
         else:
