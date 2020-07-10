@@ -18,7 +18,7 @@ from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
 import configparser
-
+from filelock import FileLock
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
@@ -319,7 +319,9 @@ def sc4s(request):
 
 
 @pytest.fixture(scope="session")
-def splunk_docker(request, docker_services, docker_compose_files):
+def splunk_docker(
+    request, docker_services, docker_compose_files, tmp_path_factory, worker_id
+):
     """
     Splunk docker depends on lovely-pytest-docker to create the docker instance
     of Splunk this may be changed in the future.
@@ -330,6 +332,15 @@ def splunk_docker(request, docker_services, docker_compose_files):
         dict: Details of the splunk instance including host, port, username & password.
     """
     LOGGER.info("Starting docker_service=splunk")
+
+    if worker_id:
+        # get the temp directory shared by all workers
+        root_tmp_dir = tmp_path_factory.getbasetemp().parent
+        fn = root_tmp_dir / "docker_service_splunk"
+        with FileLock(str(fn) + ".lock"):
+            if fn.is_file():
+                sleep(10)
+
     docker_services.start("splunk")
 
     splunk_info = {
@@ -391,10 +402,18 @@ def splunk_external(request):
 
 
 @pytest.fixture(scope="session")
-def sc4s_docker(docker_services):
+def sc4s_docker(docker_services, tmp_path_factory, worker_id):
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
     """
+    if worker_id:
+        # get the temp directory shared by all workers
+        root_tmp_dir = tmp_path_factory.getbasetemp().parent
+        fn = root_tmp_dir / "docker_service_sc4s"
+        with FileLock(str(fn) + ".lock"):
+            if fn.is_file():
+                sleep(10)
+
     docker_services.start("sc4s")
 
     ports = {514: docker_services.port_for("sc4s", 514)}
