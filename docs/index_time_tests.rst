@@ -15,7 +15,7 @@ Overview
 Prerequisites
 """"""""""""""""
 
-* `pytest-splunk-addon-data-generator.conf` file which contains all the required data
+* `pytest-splunk-addon-data.conf` file which contains all the required data
   executing the tests. The conf file should follow the specifications as mentioned :ref:`here <conf_spec>`.
 
 --------------------------------
@@ -29,7 +29,7 @@ To generate test cases only for index time properties, append the following mark
         -m  splunk_indextime --splunk-data-generator=<Path to the conf file>
 
     .. note::
-        --splunk-data-generator should contain the path to *pytest-splunk-addon-data-generator.conf*,
+        --splunk-data-generator should contain the path to *pytest-splunk-addon-data.conf*,
         as the test cases will not execute on *eventgen.conf* file.
 
 
@@ -43,7 +43,7 @@ Test Scenarios
         test_indextime_key_fields[<sourcetype>::<host_name>]
 
     * Test case verifies if all the key fields are extracted properly, 
-      as mentioned in the `pytest-splunk-addon-data-generator.conf` file.
+      as mentioned in the `pytest-splunk-addon-data.conf` file.
     * The key fields which are checked are as follows:
 
         * src
@@ -106,7 +106,7 @@ Test Scenarios
     * Generates an SPL query using sourcetype and host from the event. 
     * Execute the SPL query in a Splunk instance.
     * The number of results obtained from the search query is matched with the 
-      *expected_event_count* parameter provided in the `pytest-splunk-addon-data-generator.conf` file. 
+      *expected_event_count* parameter provided in the `pytest-splunk-addon-data.conf` file. 
       Both the values must be same.
 
 Testcase Troubleshooting

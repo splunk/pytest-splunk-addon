@@ -155,8 +155,8 @@ def pytest_addoption(parser):
         "--splunk-data-generator",
         action="store",
         dest="splunk_data_generator",
-        default="pytest-splunk-addon-data-generator.conf",
-        help=("Path to pytest-splunk-addon-data-generator.conf."),
+        default="pytest-splunk-addon-data.conf",
+        help=("Path to pytest-splunk-addon-data.conf."),
     )
     group.addoption(
         "--sc4s-host",
