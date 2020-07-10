@@ -95,4 +95,4 @@ class HECMetricEventIngestor(EventIngestor):
 
         except Exception as e:
             LOGGER.error(e)
-            os._exit(0)
+            raise type(e)("An error occurred while data ingestion.{}".format(e))

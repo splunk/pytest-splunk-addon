@@ -97,7 +97,7 @@ class HECEventIngestor(EventIngestor):
             batch_event_list.append(data[i: i + 100])
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
-            executor.map(self.__ingest, batch_event_list)
+            _ = list(executor.map(self.__ingest, batch_event_list))
 
     def __ingest(self, data):
         try:
@@ -116,5 +116,4 @@ class HECEventIngestor(EventIngestor):
 
         except Exception as e:
             LOGGER.error("\n\nAn error occurred while data ingestion.{}".format(e))
-            print("\n\nAn error occurred while data ingestion.{}".format(e))
-            os._exit(0)
+            raise type(e)("An error occurred while data ingestion.{}".format(e))
