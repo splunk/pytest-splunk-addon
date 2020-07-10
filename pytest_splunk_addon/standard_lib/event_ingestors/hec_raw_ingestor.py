@@ -80,7 +80,7 @@ class HECRawEventIngestor(EventIngestor):
 
             main_event.append(event.event)
         with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
-            executor.map(self.__ingest, main_event, param_list)
+            _ = list(executor.map(self.__ingest, main_event, param_list))
 
     def __ingest(self, event, params):
         try:
@@ -100,5 +100,4 @@ class HECRawEventIngestor(EventIngestor):
 
         except Exception as e:
             LOGGER.error("\n\nAn error occurred while data ingestion.{}".format(e))
-            print("\n\nAn error occurred while data ingestion.{}".format(e))
-            os._exit(0)
+            raise type(e)("An error occurred while data ingestion.{}".format(e))
