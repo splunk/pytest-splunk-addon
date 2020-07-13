@@ -47,7 +47,8 @@ class EventgenParser:
             relative_path = os.path.relpath(self.config_path, self.addon_path)
             if os.path.exists(
                 os.path.join(
-                    self.config_path, "pytest-splunk-addon-data.conf"
+                    self.config_path,
+                    "pytest-splunk-addon-data.conf"
                 )
             ):
                 self._eventgen = self._app.get_config(
