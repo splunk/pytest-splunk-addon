@@ -130,33 +130,36 @@ class Rule:
         for each_event in events:
             token_count = each_event.get_token_count(self.token)
             token_values = list(self.replace(each_event, token_count))
-            if self.replacement_type == "all" and token_count > 0:
-                # NOTE: If replacement_type is all and same token is more than
-                #       one time in event then replace all tokens with same
-                #       value in that event
-                for each_token_value in token_values:
-                    new_event = SampleEvent.copy(each_event)
-                    global event_host_count
-                    event_host_count += 1
-                    new_event.metadata["host"] = "{}_{}".format(
-                        each_event.sample_name, event_host_count
+            if token_count > 0:
+                if self.replacement_type == "all":
+                    # NOTE: If replacement_type is all and same token is more than
+                    #       one time in event then replace all tokens with same
+                    #       value in that event
+                    for each_token_value in token_values:
+                        new_event = SampleEvent.copy(each_event)
+                        global event_host_count
+                        event_host_count += 1
+                        new_event.metadata["host"] = "{}_{}".format(
+                            each_event.sample_name, event_host_count
+                            )
+                        new_event.replace_token(self.token, each_token_value.value)
+                        new_event.register_field_value(
+                            self.field, each_token_value
                         )
-                    new_event.replace_token(self.token, each_token_value.value)
-                    new_event.register_field_value(
-                        self.field, each_token_value
+                        new_events.append(new_event)
+                else:
+                    each_event.replace_token(
+                        self.token,
+                        token_values
                     )
-                    new_events.append(new_event)
-            else:
-                each_event.replace_token(
-                    self.token,
-                    token_values
-                )
 
-                if not (
-                    each_event.metadata.get(
-                            'timestamp_type') != 'event'
-                        and self.field == "_time"):
-                    each_event.register_field_value(self.field, token_values)
+                    if not (
+                        each_event.metadata.get(
+                                'timestamp_type') != 'event'
+                            and self.field == "_time"):
+                        each_event.register_field_value(self.field, token_values)
+                    new_events.append(each_event)
+            else:
                 new_events.append(each_event)
         return new_events
 
