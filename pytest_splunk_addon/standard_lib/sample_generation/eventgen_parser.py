@@ -59,8 +59,8 @@ class EventgenParser:
                 self.conf_name = "eventgen"
             return self._eventgen
         except OSError:
-            LOGGER.warning("eventgen.conf not found.")
-            return None
+            LOGGER.warning("pytest-splunk-addon-data.conf/eventgen.conf not Found")
+            raise FileNotFoundError("pytest-splunk-addon-data.conf/eventgen.conf not Found")
 
     def get_sample_stanzas(self):
         """
