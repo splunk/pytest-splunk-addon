@@ -489,7 +489,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
     splunk_hec_uri(tuple): Details for hec uri and session headers
     sc4s(tuple): Details for sc4s server and TCP port
 
-    TODO: For splunk_type=external, data will not be ingested as 
+    TODO: For splunk_type=external, data will not be ingested as
     manual configurations are required.
     """
     global PYTEST_XDIST_TESTRUNUID
@@ -504,6 +504,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
             "sc4s_port": sc4s[1][514]  # for sc4s
         }
         IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
+        sleep(50)
         if ("PYTEST_XDIST_WORKER" in os.environ):
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait", "w+"):
                 PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
