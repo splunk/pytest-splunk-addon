@@ -21,17 +21,7 @@ To generate test cases only for CIM compatibility, append the following marker t
 Test Scenarios
 --------------
 
-**1. Add-on Splunk_SA_CIM should be installed on the given Splunk instance**
-
-    .. code-block:: python
-
-        test_app_installed[Splunk_SA_CIM]
-
-    Splunk_SA_CIM add-on should be installed on the Splunk instance to test the other scenarios. 
-
-.. _mapped_datasets:
-
-**2. Testcase for each eventtype mapped with a dataset.**
+**1. Testcase for each eventtype mapped with a dataset.**
 
     .. code-block:: python
 
@@ -46,7 +36,7 @@ Test Scenarios
     * Then it gets a list of the datasets mapped with an eventtype.
     * Generates test case for each eventtype.
 
-**3. Testcases for all required, conditional and cluster fields in dataset.**
+**2. Testcases for all required, conditional and cluster fields in dataset.**
 
     .. code-block:: python
 
@@ -78,7 +68,7 @@ Test Scenarios
     * Assert the assertions mentioned in :ref:`Testcase assertions<test_assertions>`.
 
 
-**4. Testcase for all not_allowed_in_search fields**
+**3. Testcase for all not_allowed_in_search fields**
 
     .. code-block:: python
 
@@ -94,7 +84,7 @@ Test Scenarios
     .. note::
       `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_ contains fields which are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
 
-**5. Testcase for all not_allowed_in_props fields**
+**4. Testcase for all not_allowed_in_props fields**
 
     .. code-block:: python
 
@@ -108,7 +98,7 @@ Test Scenarios
     * Plugin gets a list of fields whose extractions are defined in props using addon_parser.
     * By comparing we obtain a list of fields whose extractions are not allowed but defined.
 
-**6. Testcase to check that eventtype is not be mapped with multiple datamodels.**
+**5. Testcase to check that eventtype is not be mapped with multiple datamodels.**
 
     .. code-block:: python
 
