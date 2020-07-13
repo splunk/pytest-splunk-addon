@@ -2,14 +2,13 @@ import os
 import re
 import copy
 from . import Rule
+from . import raise_warning
 from . import SampleEvent
-import warnings
 import logging
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-BULK_EVENT_COUNT = 100
-MAXIMUM_EVENT_COUNT = 250
+BULK_EVENT_COUNT = 250
 class SampleStanza(object):
     """
     This class represents a stanza of the eventgen.conf.
@@ -29,8 +28,8 @@ class SampleStanza(object):
     def __init__(self, sample_path, eventgen_params):
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
-        self.sample_rules = list(self._parse_rules(eventgen_params, self.sample_path))
         self.metadata = self._parse_meta(eventgen_params)
+        self.sample_rules = list(self._parse_rules(eventgen_params, self.sample_path))
         self.input_type = self.metadata.get("input_type", "default")
         self.host_count = 0
 
@@ -51,44 +50,34 @@ class SampleStanza(object):
             )
             yield event
 
-    def tokenize(self, bulk_event_ingestion):
+    def tokenize(self, conf_name):
         """
         Tokenizes the raw events by replacing all the tokens in it.
 
         Args:
-            bulk_event_ingestion (bool): 
-                
-                * True: For search time testing
-                * False: For index time testing
+            conf_name (str): Name of the conf file, "eventgen" or "psa-data-gen"
         """
-        event = list(self.tokenized_events)
-
-        if bulk_event_ingestion:
+        if conf_name == "eventgen":
             required_event_count = self.metadata.get("count")
-            if required_event_count is None or int(required_event_count) == 0:
-                required_event_count = BULK_EVENT_COUNT
-                if int(required_event_count) > 250:
-                    required_event_count = MAXIMUM_EVENT_COUNT     
+        else:
+            required_event_count = 1
+
+        if required_event_count is None or int(required_event_count) == 0 or int(required_event_count) > BULK_EVENT_COUNT:
+            required_event_count = BULK_EVENT_COUNT
+
+        bulk_event = []
+        raw_event = []
+        event_counter = 0
+        while (int(required_event_count)) > len((bulk_event)):
+            raw_event.insert(event_counter, list(self._get_raw_sample()))
+            if not raw_event[-1]:
+                break
             for each_rule in self.sample_rules:
                 if each_rule:
-                    event = each_rule.apply(event)
-
-            bulk_event = event
-            raw_event = []
-            event_counter = 0
-            while (int(required_event_count)) > len((bulk_event)):
-                raw_event.insert(event_counter, list(self._get_raw_sample()))
-                for each_rule in self.sample_rules:
-                    if each_rule:
-                        raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
-                bulk_event.extend(raw_event[event_counter])
-                event_counter = event_counter+1
-            event = bulk_event[:int(required_event_count)]
-        
-        else:
-            for each_rule in self.sample_rules:
-                event = each_rule.apply(event)     
-        self.tokenized_events = event
+                    raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
+            bulk_event.extend(raw_event[event_counter])
+            event_counter = event_counter+1
+        self.tokenized_events = bulk_event
 
     def _parse_rules(self, eventgen_params, sample_path):
         """
@@ -100,7 +89,11 @@ class SampleStanza(object):
         """
         token_list = self._sort_tokens_by_replacement_type_all(eventgen_params['tokens'])
         for each_token, token_value in token_list:
-            yield Rule.parse_rule(token_value, eventgen_params, sample_path)
+            applied_rule = Rule.parse_rule(token_value, eventgen_params, sample_path)
+            if not applied_rule:
+                raise_warning("Unidentified Rule: '{}' for token '{}'".format(token_value["replacement"], token_value["token"]))
+            else:
+                yield applied_rule
 
     def _parse_meta(self, eventgen_params):
         """
@@ -115,8 +108,36 @@ class SampleStanza(object):
             if key != "tokens"
         }
         metadata.update(host=self.sample_name)
-        if metadata.get("input_type") is None:
-            metadata.update(input_type="default")        
+        if metadata.get("input_type") not in [
+                "modinput", 
+                "windows_input",
+                "file_monitor",
+                "scripted_input",
+                "syslog_tcp",
+                "syslog_udp",
+                "default"
+            ] and not None:
+            raise_warning("Invalid value for input_type found: '{}' using default input_type".format(metadata.get("input_type")))
+            metadata.update(input_type="default")
+        if metadata.get("host_type") not in ["event", "plugin", None]:
+            raise_warning("Invalid value for host_type: '{}' using host_type = plugin.".format(metadata.get("host_type")))
+            metadata.update(host_type="plugin")
+        if metadata.get("timestamp_type") not in ["event", "plugin", None]:
+            raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
+            metadata.update(timestamp_type="plugin")
+        if metadata.get("timezone") not in ["local", "0000", "+-hhmm", None]:
+            raise_warning("Invalid value for timezone: '{}' using timezone = 0000.".format(metadata.get("timezone")))
+            metadata.update(timezone="0000")
+            eventgen_params.update(timezone="0000")
+        if metadata.get("timestamp_type") not in ["event", "plugin", None]:
+            raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
+            metadata.update(timestamp_type="plugin")
+        if metadata.get("expected_event_count") and not metadata.get("expected_event_count").isnumeric():
+            raise_warning("Invalid value for expected_event_count: '{}' using expected_event_count = 1.".format(metadata.get("expected_event_count")))
+            metadata.update(expected_event_count="1")
+        if metadata.get("count") and not metadata.get("count").isnumeric():
+            raise_warning("Invalid value for count: '{}' using count = 1.".format(metadata.get("count")))
+            metadata.update(count="100")
         return metadata
 
     def get_eventmetadata(self):
@@ -147,8 +168,8 @@ class SampleStanza(object):
         """
         with open(self.sample_path, "r") as sample_file:
             if self.input_type in ["modinput", "windows_input"]:
-                for each_line in sample_file:
-                    if not each_line == '\n':
+                for each_line in sample_file.read().split('\n'):
+                    if each_line:
                         event_metadata = self.get_eventmetadata()
                         yield SampleEvent(
                             each_line, event_metadata, self.sample_name
@@ -160,18 +181,13 @@ class SampleStanza(object):
                 "syslog_udp",
                 "default"
             ]:
-                event = sample_file.read()
-                while event[-1] == '\n': event = event[:-1]
-                yield SampleEvent(
-                    event, self.metadata, self.sample_name
-                )
-            else:
-                LOGGER.warning("Unsupported input_type found: '{}' using default input_type".format(self.input_type))
-                warnings.warn(UserWarning("Unsupported input_type found: '{}' using default input_type".format(self.input_type)))
-                self.metadata["input_type"] = "default"
-                yield SampleEvent(
-                    sample_file.read(), self.metadata, self.sample_name
-                )
+                event = sample_file.read().strip()
+                if not event:
+                    raise_warning("sample file: '{}' is empty".format(self.sample_path))
+                else:
+                    yield SampleEvent(
+                        event, self.metadata, self.sample_name
+                    )
 
             if not self.input_type:
                 # TODO: input_type not found scenario

@@ -6,7 +6,7 @@ Generate Conf Utility
 Overview
 """"""""""
 
-* The utility helps in creating the `pytest-splunk-addon-data-generator.conf` from the existing `eventgen.conf` of the add-on.
+* The utility helps in creating the `pytest-splunk-addon-data.conf` from the existing `eventgen.conf` of the add-on.
 * The utility adds the following metadata required for the index-times tests in the new conf file:
 
     * input_type
@@ -45,7 +45,13 @@ How to generate the new conf file?
 
         .. code-block:: console
 
-            generate-conf <path-to-addon> [<path-to-the-new-conf-file>]
+            generate-indextime-conf <path-to-addon> [<path-to-the-new-conf-file>]
+
+        For example:
+
+        .. code-block:: console
+
+            generate-indextime-conf SampleTA SampleTA/default/pytest-splunk-addon-data.conf        
 
 
     .. note::

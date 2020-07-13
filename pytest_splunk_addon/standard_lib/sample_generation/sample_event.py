@@ -53,7 +53,6 @@ class SampleEvent(object):
         self.metadata = metadata
         self.sample_name = sample_name
         self.host_count = 0
-        self.fake = Faker()
 
     def update(self, new_event):
         """
@@ -125,7 +124,7 @@ class SampleEvent(object):
             addr = [int(url_ip_count / 256) % 256, url_ip_count % 256]
             return "".join([ip_rules.get(rule)["ip_host"], str(addr[0]), ".", str(addr[1])])
         else:
-            return self.fake.ipv4()
+            return Faker().ipv4()
 
     def get_ipv6(self, rule):
         """
@@ -152,7 +151,7 @@ class SampleEvent(object):
             ipv6 = dest_ipv6 % (int("ffffffffffffffff", 16))
             dest_ipv6 += 1
         else:
-            return self.fake.ipv6()
+            return Faker().ipv6()
 
         hex_count = hex(ipv6)
         non_zero_cnt = len(hex_count[2:])
@@ -166,7 +165,7 @@ class SampleEvent(object):
         Args:
             token (str): Token name
         """
-        return len(re.findall(token, self.event))
+        return len(re.findall(token, self.event, flags=re.MULTILINE))
 
     def replace_token(self, token, token_values):
         """
@@ -178,7 +177,7 @@ class SampleEvent(object):
         """
         # TODO: How to handle dependent Values with list of token_values
         if isinstance(token_values, list):
-            sample_tokens = re.finditer(token, self.event)
+            sample_tokens = re.finditer(token, self.event, flags=re.MULTILINE)
 
             for _, token_value in enumerate(token_values):
                 token_value = token_value.value
@@ -225,7 +224,6 @@ class SampleEvent(object):
     def copy(cls, event):
         """
         Copies the SampleEvent object into a new one.
-
         Args:
             event (SampleEvent): Event object which has to be copied
 
@@ -235,6 +233,7 @@ class SampleEvent(object):
         new_event = cls("", {}, "")
         new_event.__dict__ = event.__dict__.copy()
         new_event.key_fields = event.key_fields.copy()
+        new_event.time_values = event.time_values[:]
         new_event.metadata = deepcopy(event.metadata)
         return new_event
 

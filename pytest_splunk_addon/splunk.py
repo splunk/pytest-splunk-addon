@@ -23,7 +23,7 @@ from filelock import FileLock
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
-
+PYTEST_XDIST_TESTRUNUID = ""
 
 def pytest_addoption(parser):
     """Add options for interaction with Splunk this allows the tool to work in two modes
@@ -155,8 +155,8 @@ def pytest_addoption(parser):
         "--splunk-data-generator",
         action="store",
         dest="splunk_data_generator",
-        default="pytest-splunk-addon-data-generator.conf",
-        help=("Path to pytest-splunk-addon-data-generator.conf."),
+        default="pytest-splunk-addon-data.conf",
+        help=("Path to pytest-splunk-addon-data.conf."),
     )
     group.addoption(
         "--sc4s-host",
@@ -183,7 +183,7 @@ def pytest_addoption(parser):
         "--search-retry",
         action="store",
         dest="search_retry",
-        default=3,
+        default=0,
         type=int,
         help="Number of retries to make if there are no events found while searching in the Splunk instance.",
     )
@@ -191,7 +191,7 @@ def pytest_addoption(parser):
         "--search-interval",
         action="store",
         dest="search_interval",
-        default=3,
+        default=0,
         type=int,
         help="Time interval to wait before retrying the search query.",
     )
@@ -475,7 +475,7 @@ def splunk_web_uri(splunk):
     return uri
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="session")
 def splunk_ingest_data(request, splunk_hec_uri, sc4s):
     """
     Generates events for the add-on and ingests into Splunk.
@@ -492,50 +492,25 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
     TODO: For splunk_type=external, data will not be ingested as 
     manual configurations are required.
     """
-    addon_path = request.config.getoption("splunk_app")
-    config_path = request.config.getoption("splunk_data_generator")
+    global PYTEST_XDIST_TESTRUNUID
+    if ("PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
+        addon_path = request.config.getoption("splunk_app")
+        config_path = request.config.getoption("splunk_data_generator")
 
-    ingest_meta_data = {
-        "session_headers": splunk_hec_uri[0].headers,
-        "splunk_hec_uri": splunk_hec_uri[1],
-        "splunk_host": sc4s[0],  # for sc4s
-        "sc4s_port": sc4s[1][514],  # for sc4s
-    }
-    IngestorHelper.ingest_events(
-        ingest_meta_data, addon_path, config_path, bulk_event_ingestion=False
-    )
+        ingest_meta_data = {
+            "session_headers": splunk_hec_uri[0].headers,
+            "splunk_hec_uri": splunk_hec_uri[1],
+            "splunk_host": sc4s[0],  # for sc4s
+            "sc4s_port": sc4s[1][514]  # for sc4s
+        }
+        IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
+        if ("PYTEST_XDIST_WORKER" in os.environ):
+            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait", "w+"):
+                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
 
-
-@pytest.fixture(scope="class")
-def splunk_ingest_bulk_data(request, splunk_hec_uri, sc4s):
-    """
-    Generates events in bulk for the add-on and ingests into Splunk.
-    The ingestion can be done using the following methods:
-        1. HEC Event
-        2. HEC Raw
-        3. SC4S:TCP or SC4S:UDP
-        4. HEC Metrics
-
-    Args:
-    splunk_hec_uri(tuple): Details for hec uri and session headers
-    sc4s(tuple): Details for sc4s server and TCP port
-
-    TODO: For splunk_type=external, data will not be ingested as 
-    manual configurations are required.
-    """
-    addon_path = request.config.getoption("splunk_app")
-    config_path = request.config.getoption("splunk_data_generator")
-
-    ingest_meta_data = {
-        "session_headers": splunk_hec_uri[0].headers,
-        "splunk_hec_uri": splunk_hec_uri[1],
-        "splunk_host": sc4s[0],  # for sc4s
-        "sc4s_port": sc4s[1][514],  # for sc4s
-    }
-
-    IngestorHelper.ingest_events(
-        ingest_meta_data, addon_path, config_path, bulk_event_ingestion=True
-    )
+    else:
+        while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait"):
+            sleep(1)
 
 
 def is_responsive_splunk(splunk):
@@ -590,3 +565,9 @@ def is_responsive(url):
         )
         return False
 
+def pytest_unconfigure(config):
+    if PYTEST_XDIST_TESTRUNUID:
+        if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_wait"):
+            os.remove(PYTEST_XDIST_TESTRUNUID + "_wait")
+        if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_events"):
+            os.remove(PYTEST_XDIST_TESTRUNUID + "_events")

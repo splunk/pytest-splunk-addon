@@ -127,7 +127,7 @@ class CIMTestGenerator(object):
         """
         Generate tests for the fields which the extractions are not allowed in props.conf
 
-        1. Get a list of fields of type in ["not_extracted", "not_allowed"] from common fields json.
+        1. Get a list of fields of type in ["not_allowed_in_search_and_props", "not_allowed_in_props"] from common fields json.
         2. Get a list of fields whose extractions are defined in props.
         3. Compare and get the list of fields whose extractions are not allowed but defined.
         4. yield the field list
@@ -174,8 +174,8 @@ class CIMTestGenerator(object):
         """
         Generates the tests which should not be extracted in an add-on
 
-        1. Get the list of type="not_extracted" fields from common fields json.
-        2. Get the list of type="not_extracted" fields from mapped datasets.
+        1. Get the list of type=["not_allowed_in_search_and_props", "not_allowed_in_search"] fields from common fields json.
+        2. Get the list of type=["not_allowed_in_search_and_props", "not_allowed_in_search"] fields from mapped datasets.
         3. Combine list1 and list2
         4. yield the field list
         5. Expected event_count for the fields: 0

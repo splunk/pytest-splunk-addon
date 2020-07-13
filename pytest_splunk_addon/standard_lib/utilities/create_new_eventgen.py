@@ -228,7 +228,7 @@ def main():
         help="Path to Save the new conf file",
         metavar="new-conf-path",
         nargs="?",
-        default="pytest-splunk-addon-data-generator.conf",
+        default="pytest-splunk-addon-data.conf",
     )
     args = ap.parse_args()
 

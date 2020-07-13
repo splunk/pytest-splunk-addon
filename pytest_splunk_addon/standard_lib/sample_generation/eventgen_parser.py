@@ -2,8 +2,7 @@ import os
 import re
 import logging
 from splunk_appinspect import App
-
-from .rule import Rule
+from .rule import Rule, raise_warning
 from . import SampleStanza
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -18,7 +17,7 @@ class EventgenParser:
         addon_path (str): Path to the Splunk App 
     """
 
-    splunk_test_type = " "
+    conf_name = " "
 
     def __init__(self, addon_path, config_path=None):
         self._app = App(addon_path, python_analyzer_enable=False)
@@ -48,16 +47,16 @@ class EventgenParser:
             relative_path = os.path.relpath(self.config_path, self.addon_path)
             if os.path.exists(
                 os.path.join(
-                    self.config_path, "pytest-splunk-addon-data-generator.conf"
+                    self.config_path, "pytest-splunk-addon-data.conf"
                 )
             ):
                 self._eventgen = self._app.get_config(
-                    "pytest-splunk-addon-data-generator.conf", dir=relative_path
+                    "pytest-splunk-addon-data.conf", dir=relative_path
                 )
-                self.splunk_test_type = "splunk_indextime"
+                self.conf_name = "psa-data-gen"
             else:
                 self._eventgen = self._app.get_config("eventgen.conf")
-                self.splunk_test_type = "splunk_searchtime"
+                self.conf_name = "eventgen"
             return self._eventgen
         except OSError:
             LOGGER.warning("eventgen.conf not found.")
@@ -140,11 +139,4 @@ class EventgenParser:
         if os.path.exists(self.path_to_samples):
             for stanza in self.eventgen.sects:
                 if stanza not in self.match_stanzas:
-                    LOGGER.warning(
-                        "No sample file found for stanza : {}".format(stanza)
-                    )
-                    warnings.warn(
-                        UserWarning(
-                            "No sample file found for stanza : {}".format(stanza)
-                        )
-                    )
+                    raise_warning("No sample file found for stanza : {}".format(stanza))
