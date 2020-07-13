@@ -591,11 +591,11 @@ class TimeRule(Rule):
                 )
 
             if r"%s" == self.replacement.strip("'").strip('"'):
-                yield self.token_value(
-                    *([self.replacement.replace(
-                        r"%s", str(int(mktime(random_time.timetuple())))
-                        )]*2)
+                time_in_sec = self.replacement.replace(
+                    r"%s",
+                    str(int(mktime(random_time.timetuple())))
                     )
+                yield self.token_value(float(time_in_sec), time_in_sec)
 
             else:
                 if timezone_time not in (None, '0000'):

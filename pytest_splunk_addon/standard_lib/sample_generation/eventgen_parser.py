@@ -47,7 +47,8 @@ class EventgenParser:
             relative_path = os.path.relpath(self.config_path, self.addon_path)
             if os.path.exists(
                 os.path.join(
-                    self.config_path, "pytest-splunk-addon-data.conf"
+                    self.config_path,
+                    "pytest-splunk-addon-data.conf"
                 )
             ):
                 self._eventgen = self._app.get_config(
@@ -59,8 +60,8 @@ class EventgenParser:
                 self.conf_name = "eventgen"
             return self._eventgen
         except OSError:
-            LOGGER.warning("eventgen.conf not found.")
-            return None
+            LOGGER.warning("pytest-splunk-addon-data.conf/eventgen.conf not Found")
+            raise FileNotFoundError("pytest-splunk-addon-data.conf/eventgen.conf not Found")
 
     def get_sample_stanzas(self):
         """
