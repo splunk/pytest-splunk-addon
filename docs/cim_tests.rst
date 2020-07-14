@@ -21,6 +21,8 @@ To generate test cases only for CIM compatibility, append the following marker t
 Test Scenarios
 --------------
 
+.. _mapped_datasets:
+
 **1. Testcase for each eventtype mapped with a dataset.**
 
     .. code-block:: python
