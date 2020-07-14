@@ -76,8 +76,8 @@ class IndexTimeTestTemplate(object):
         # Example syslog: all the headers are only tokenized once hence
         #   key_fields = {'host': ['dummy_host']}
         #   result_dict = {'host': ['dummy_host']*n}
-        result_fields = {key: list(set(value)) for key, value in result_fields.items()}
-        fields_to_check = {key: list(set(value)) for key, value in fields_to_check.items()}
+        result_fields = {key: set(value) for key, value in result_fields.items()}
+        fields_to_check = {key: set(value) for key, value in fields_to_check.items()}
         if not result_fields == fields_to_check:
             value_list, missing_keys = [], []
             for each_field in fields_to_check.keys():
@@ -97,7 +97,7 @@ class IndexTimeTestTemplate(object):
                             str(each_value[2]),
                         ]
                         for each_value in value_list
-                    ],     
+                    ],
                 )
                 final_str += f"Some values for the following key fields are missing\n\n{result_str}"
 
