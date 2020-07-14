@@ -183,6 +183,7 @@ class SampleEvent(object):
                 token_value = token_value.value
                 match_object = next(sample_tokens)
                 match_str = match_object.group(0) if len(match_object.groups()) == 0 else match_object.group(1)
+                match_str = re.escape(match_str)
                 self.event = re.sub(
                     match_str, lambda x: str(token_value), self.event, 1, flags=re.MULTILINE
                 )
