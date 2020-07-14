@@ -1,13 +1,16 @@
 from datetime import timedelta, datetime
 import math
 import logging
+import re
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
+
+
 class time_parse():
-    
+
     def __init__(self):
         pass
-    
+
     def convert_to_time(self, sign, num, unit):
         '''
         converts splunk time into datetime format for earliest and latest
@@ -37,10 +40,10 @@ class time_parse():
                 num *= 3
             elif unit in ('y', 'yr', 'yrs', 'year', 'years'):
                 num = num * 12
-                
+
             unittime = datetime.utcnow()
             monthnum = int(num) * -1 if sign == '-' else int(num)
-    
+
             if int(abs(monthnum) / 12) > 0:
                 # if months are more than 12 than increase or decrease the year based on the sign value
                 yearnum = int(
@@ -72,7 +75,7 @@ class time_parse():
 
         return random_time
 
-    def get_timezone_time(self, random_time, sign, hrs, mins):
+    def get_timezone_time(self, random_time, timezone_time):
         '''
         Converts timezone formated time into datetime object for earliest and latest
 
@@ -84,6 +87,10 @@ class time_parse():
         returns: 
             datetime formated time
         '''
+
+        sign, hrs, mins = re.match(
+                    r"([+-])(\d\d)(\d\d)", timezone_time
+                ).groups()
 
         if (hrs <= "00" or hrs >= "23") or (mins <= "00" or mins >= "59"):
             LOGGER.info("Hours should be in range 0-23 and minutes should be in range 0-59")

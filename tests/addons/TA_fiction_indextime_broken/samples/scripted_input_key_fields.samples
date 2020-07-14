@@ -1,0 +1,2 @@
+Timezone1=2020-06-23T00:00:00.000Z text=sample_event_1 src=##token_src_ipv4## dest_ip=##token_dest_ipv4## src_port=##token_src_port## dest_port=##token_dest_port## test_list=##token_list## Timezone2=24-06-2020T00:00:00.000Z
+Timezone1=2020-06-23T00:00:00.000Z text=sample_event_1 src_ip=##token_src_ipv4## dest_ip=##token_dest_ipv4## src_port=##token_src_port## dest_port=##token_dest_port## test_list=##token_list## Timezone2=24-06-2020T00:00:00.000Z

@@ -18,12 +18,12 @@ from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
 import configparser
-
+from filelock import FileLock
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
-
+PYTEST_XDIST_TESTRUNUID = ""
 
 def pytest_addoption(parser):
     """Add options for interaction with Splunk this allows the tool to work in two modes
@@ -155,25 +155,23 @@ def pytest_addoption(parser):
         "--splunk-data-generator",
         action="store",
         dest="splunk_data_generator",
-        default="pytest-splunk-addon-data-generator.conf",
-        help=(
-            "Path to pytest-splunk-addon-data-generator.conf."
-        ),
-    ) 
+        default="pytest-splunk-addon-data.conf",
+        help=("Path to pytest-splunk-addon-data.conf."),
+    )
     group.addoption(
         "--sc4s-host",
         action="store",
         dest="sc4s_host",
         default="127.0.0.1",
-        help="Address of the sc4s Server"
+        help="Address of the sc4s Server",
     )
     group.addoption(
         "--sc4s-port",
         action="store",
         dest="sc4s_port",
         default="514",
-        help="SC4S Port. default is 514"
-    )    
+        help="SC4S Port. default is 514",
+    )
     group.addoption(
         "--search-index",
         action="store",
@@ -185,7 +183,7 @@ def pytest_addoption(parser):
         "--search-retry",
         action="store",
         dest="search_retry",
-        default=3,
+        default=0,
         type=int,
         help="Number of retries to make if there are no events found while searching in the Splunk instance.",
     )
@@ -193,7 +191,7 @@ def pytest_addoption(parser):
         "--search-interval",
         action="store",
         dest="search_interval",
-        default=3,
+        default=0,
         type=int,
         help="Time interval to wait before retrying the search query.",
     )
@@ -274,32 +272,22 @@ def splunk(request):
         request.fixturenames.append("splunk_external")
         splunk_info = request.getfixturevalue("splunk_external")
     elif splunk_type == "docker":
-        os.environ["SPLUNK_APP_PACKAGE"] = request.config.getoption(
-            "splunk_app"
-        )
+        os.environ["SPLUNK_APP_PACKAGE"] = request.config.getoption("splunk_app")
         try:
             config = configparser.ConfigParser()
             config.read(
                 os.path.join(
-                    request.config.getoption("splunk_app"),
-                    "default",
-                    "app.conf",
+                    request.config.getoption("splunk_app"), "default", "app.conf",
                 )
             )
             os.environ["SPLUNK_APP_ID"] = config["package"]["id"]
         except Exception as e:
             pass
             os.environ["SPLUNK_APP_ID"] = "TA_package"
-        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption(
-            "splunk_hec_token"
-        )
+        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
-        os.environ["SPLUNK_PASSWORD"] = request.config.getoption(
-            "splunk_password"
-        )
-        os.environ["SPLUNK_VERSION"] = request.config.getoption(
-            "splunk_version"
-        )
+        os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
+        os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
 
         request.fixturenames.append("splunk_docker")
         splunk_info = request.getfixturevalue("splunk_docker")
@@ -331,7 +319,9 @@ def sc4s(request):
 
 
 @pytest.fixture(scope="session")
-def splunk_docker(request, docker_services, docker_compose_files):
+def splunk_docker(
+    request, docker_services, docker_compose_files, tmp_path_factory, worker_id
+):
     """
     Splunk docker depends on lovely-pytest-docker to create the docker instance
     of Splunk this may be changed in the future.
@@ -342,6 +332,15 @@ def splunk_docker(request, docker_services, docker_compose_files):
         dict: Details of the splunk instance including host, port, username & password.
     """
     LOGGER.info("Starting docker_service=splunk")
+
+    if worker_id:
+        # get the temp directory shared by all workers
+        root_tmp_dir = tmp_path_factory.getbasetemp().parent
+        fn = root_tmp_dir / "docker_service_splunk"
+        with FileLock(str(fn) + ".lock"):
+            if fn.is_file():
+                sleep(10)
+
     docker_services.start("splunk")
 
     splunk_info = {
@@ -364,9 +363,7 @@ def splunk_docker(request, docker_services, docker_compose_files):
     )
 
     docker_services.wait_until_responsive(
-        timeout=180.0,
-        pause=0.5,
-        check=lambda: is_responsive_splunk(splunk_info),
+        timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk_info),
     )
 
     return splunk_info
@@ -394,7 +391,8 @@ def splunk_external(request):
         if is_responsive_splunk(splunk_info):
             break
         sleep(1)
-    else:
+
+    if not is_responsive_splunk(splunk_info):
         raise Exception(
             "Could not connect to the external Splunk. "
             "Please check the log file for possible errors."
@@ -404,10 +402,18 @@ def splunk_external(request):
 
 
 @pytest.fixture(scope="session")
-def sc4s_docker(docker_services):
+def sc4s_docker(docker_services, tmp_path_factory, worker_id):
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
     """
+    if worker_id:
+        # get the temp directory shared by all workers
+        root_tmp_dir = tmp_path_factory.getbasetemp().parent
+        fn = root_tmp_dir / "docker_service_sc4s"
+        with FileLock(str(fn) + ".lock"):
+            if fn.is_file():
+                sleep(10)
+
     docker_services.start("sc4s")
 
     ports = {514: docker_services.port_for("sc4s", 514)}
@@ -416,6 +422,7 @@ def sc4s_docker(docker_services):
 
     return docker_services.docker_ip, ports
 
+
 @pytest.fixture(scope="session")
 def sc4s_external(request):
     """
@@ -423,11 +430,11 @@ def sc4s_external(request):
     TODO: For splunk_type=external, data will not be ingested as 
     manual configurations are required.
     """
-    ports = {514: int(request.config.getoption('sc4s_port'))}
+    ports = {514: int(request.config.getoption("sc4s_port"))}
     for x in range(5000, 5050):
         ports.update({x: x})
 
-    return request.config.getoption('sc4s_host'), ports
+    return request.config.getoption("sc4s_host"), ports
 
 
 @pytest.fixture(scope="session")
@@ -468,7 +475,7 @@ def splunk_web_uri(splunk):
     return uri
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="session")
 def splunk_ingest_data(request, splunk_hec_uri, sc4s):
     """
     Generates events for the add-on and ingests into Splunk.
@@ -482,49 +489,30 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
     splunk_hec_uri(tuple): Details for hec uri and session headers
     sc4s(tuple): Details for sc4s server and TCP port
 
-    TODO: For splunk_type=external, data will not be ingested as 
+    TODO: For splunk_type=external, data will not be ingested as
     manual configurations are required.
     """
-    addon_path = request.config.getoption("splunk_app")
-    config_path = request.config.getoption("splunk_data_generator")
+    global PYTEST_XDIST_TESTRUNUID
+    if ("PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
+        addon_path = request.config.getoption("splunk_app")
+        config_path = request.config.getoption("splunk_data_generator")
 
-    ingest_meta_data = {
-        "session_headers": splunk_hec_uri[0].headers,
-        "splunk_hec_uri": splunk_hec_uri[1],
-        "splunk_host": sc4s[0],  # for sc4s
-        "sc4s_port": sc4s[1][514]  # for sc4s
-    }
-    IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, bulk_event_ingestion=False)
+        ingest_meta_data = {
+            "session_headers": splunk_hec_uri[0].headers,
+            "splunk_hec_uri": splunk_hec_uri[1],
+            "splunk_host": sc4s[0],  # for sc4s
+            "sc4s_port": sc4s[1][514]  # for sc4s
+        }
+        IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
+        sleep(50)
+        if ("PYTEST_XDIST_WORKER" in os.environ):
+            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait", "w+"):
+                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
 
+    else:
+        while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait"):
+            sleep(1)
 
-@pytest.fixture(scope="class")
-def splunk_ingest_bulk_data(request, splunk_hec_uri, sc4s):
-    """
-    Generates events in bulk for the add-on and ingests into Splunk.
-    The ingestion can be done using the following methods:
-        1. HEC Event
-        2. HEC Raw
-        3. SC4S:TCP or SC4S:UDP
-        4. HEC Metrics
-
-    Args:
-    splunk_hec_uri(tuple): Details for hec uri and session headers
-    sc4s(tuple): Details for sc4s server and TCP port
-
-    TODO: For splunk_type=external, data will not be ingested as 
-    manual configurations are required.
-    """
-    addon_path = request.config.getoption("splunk_app")
-    config_path = request.config.getoption("splunk_data_generator")
-
-    ingest_meta_data = {
-        "session_headers": splunk_hec_uri[0].headers,
-        "splunk_hec_uri": splunk_hec_uri[1],
-        "splunk_host": sc4s[0],  # for sc4s
-        "sc4s_port": sc4s[1][514]  # for sc4s
-    }
-
-    IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, bulk_event_ingestion=True)
 
 def is_responsive_splunk(splunk):
     """
@@ -538,8 +526,7 @@ def is_responsive_splunk(splunk):
     """
     try:
         LOGGER.info(
-            "Trying to connect Splunk instance...  splunk=%s",
-            json.dumps(splunk),
+            "Trying to connect Splunk instance...  splunk=%s", json.dumps(splunk),
         )
         client.connect(
             username=splunk["username"],
@@ -551,8 +538,7 @@ def is_responsive_splunk(splunk):
         return True
     except Exception as e:
         LOGGER.warning(
-            "Could not connect to Splunk yet. Will try again. exception=%s",
-            str(e),
+            "Could not connect to Splunk yet. Will try again. exception=%s", str(e),
         )
         return False
 
@@ -576,9 +562,13 @@ def is_responsive(url):
             return True
     except ConnectionError as e:
         LOGGER.warning(
-            "Could not connect to url yet. Will try again. exception=%s",
-            str(e),
+            "Could not connect to url yet. Will try again. exception=%s", str(e),
         )
         return False
 
-
+def pytest_unconfigure(config):
+    if PYTEST_XDIST_TESTRUNUID:
+        if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_wait"):
+            os.remove(PYTEST_XDIST_TESTRUNUID + "_wait")
+        if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_events"):
+            os.remove(PYTEST_XDIST_TESTRUNUID + "_events")
