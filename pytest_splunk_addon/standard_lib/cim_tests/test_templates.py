@@ -24,7 +24,7 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_fields
     def test_cim_required_fields(
-        self, splunk_search_util, splunk_ingest_data, splunk_searchtime_cim_fields, record_property
+        self, splunk_search_util, splunk_searchtime_cim_fields, record_property
     ):
         """
         Test the the required fields in the data models are extracted with valid values.
@@ -132,7 +132,6 @@ class CIMTestTemplates(object):
     def test_cim_fields_not_allowed_in_search(
         self,
         splunk_search_util,
-        splunk_ingest_data,
         splunk_searchtime_cim_fields_not_allowed_in_search,
         record_property,
     ):
@@ -224,7 +223,7 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_fields_not_allowed_in_props
     def test_cim_fields_not_allowed_in_props(
-        self, splunk_ingest_data, splunk_searchtime_cim_fields_not_allowed_in_props, record_property
+        self, splunk_searchtime_cim_fields_not_allowed_in_props, record_property
     ):
         """
         This testcase checks for cim field of type ["not_allowed_in_search_and_props", "not_allowed_in_props"] if an extraction is defined in the configuration file.
@@ -253,7 +252,6 @@ class CIMTestTemplates(object):
     def test_eventtype_mapped_multiple_cim_datamodel(
         self,
         splunk_search_util,
-        splunk_ingest_data,
         splunk_searchtime_cim_mapped_datamodel,
         record_property,
         caplog,

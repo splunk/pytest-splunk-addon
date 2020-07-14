@@ -204,7 +204,7 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope="session")
-def splunk_setup(splunk):
+def splunk_setup(splunk_ingest_data, splunk):
     """
     Override this fixture in conftest.py, if any setup is required before the test session.
     splunk fixture can provide the details of the splunk instance in dict format.

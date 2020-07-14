@@ -40,7 +40,7 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_positive
     def test_props_fields(
-        self, splunk_search_util, splunk_ingest_data, splunk_searchtime_fields_positive, record_property
+        self, splunk_search_util, splunk_searchtime_fields_positive, record_property
     ):
         """
         This test case checks that a field value has the expected values.
@@ -90,7 +90,7 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
     def test_props_fields_no_dash_not_empty(
-        self, splunk_search_util, splunk_ingest_data, splunk_searchtime_fields_negative, record_property
+        self, splunk_search_util, splunk_searchtime_fields_negative, record_property
     ):
         """
         This test case checks negative scenario for the field value.
@@ -144,7 +144,7 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_tags
     def test_tags(
-        self, splunk_search_util, splunk_ingest_data, splunk_searchtime_fields_tags, record_property, caplog
+        self, splunk_search_util, splunk_searchtime_fields_tags, record_property, caplog
     ):
         """
         Test case to check tags mentioned in tags.conf
@@ -199,7 +199,6 @@ class FieldTestTemplates(object):
     def test_eventtype(
         self,
         splunk_search_util,
-        splunk_ingest_data,
         splunk_searchtime_fields_eventtypes,
         record_property,
         caplog,

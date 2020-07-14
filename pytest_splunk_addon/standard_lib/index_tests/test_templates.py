@@ -18,7 +18,6 @@ class IndexTimeTestTemplate(object):
     def test_indextime_key_fields(
         self,
         splunk_search_util,
-        splunk_ingest_data,
         splunk_indextime_key_fields,
         record_property,
         caplog,
@@ -126,7 +125,6 @@ class IndexTimeTestTemplate(object):
     def test_indextime_time(
         self,
         splunk_search_util,
-        splunk_ingest_data,
         splunk_indextime_time,
         record_property,
         caplog,
@@ -200,7 +198,6 @@ class IndexTimeTestTemplate(object):
     def test_indextime_line_breaker(
         self,
         splunk_search_util,
-        splunk_ingest_data,
         splunk_indextime_line_breaker,
         record_property,
         caplog,
