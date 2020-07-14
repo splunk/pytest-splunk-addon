@@ -47,3 +47,4 @@ class SampleGenerator(object):
     def clean_samples(cls):
         del cls.sample_stanzas
         cls.sample_stanzas = list()
+        cls.conf_name = " " 

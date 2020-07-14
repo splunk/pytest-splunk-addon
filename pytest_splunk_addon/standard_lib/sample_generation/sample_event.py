@@ -271,3 +271,13 @@ class SampleEvent(object):
         except IndexError as error:
             LOGGER.error(f"Unexpected data found. Error: {error}")
             raise Exception(error)
+
+    @staticmethod
+    def clean_rules():
+        global host_ipv4, dvc_ipv4, dest_ipv4, src_ipv4, host_ipv6, dvc_ipv6, src_ipv6, dest_ipv6, host_count, fqdn_count, url_ip_count
+        host_ipv4, dvc_ipv4 = 50, 0
+        src_ipv4, dest_ipv4 = 0, 0
+        host_ipv6, dvc_ipv6 = 0, 0
+        src_ipv6, dest_ipv6 = 0, 0
+        host_count, fqdn_count = 0,0
+        url_ip_count = 0
