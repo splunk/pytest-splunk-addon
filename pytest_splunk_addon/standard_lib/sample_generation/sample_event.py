@@ -264,7 +264,7 @@ class SampleEvent(object):
                     value = meta_field.split("=")[1]
                     if field == "host":
                         metadata[field] = f"host_{metadata[field]}"
-                        key_fields["host"] = metadata["host"]
+                        key_fields["host"] = ([metadata["host"]]*2)
                     else:
                         metadata[field] = value
 
