@@ -42,3 +42,8 @@ class SampleGenerator(object):
             SampleGenerator.sample_stanzas = sample_stanzas
         for each_sample in SampleGenerator.sample_stanzas:
             yield from each_sample.get_tokenized_events()
+
+    @classmethod
+    def clean_samples(cls):
+        del cls.sample_stanzas
+        cls.sample_stanzas = list()

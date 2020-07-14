@@ -4,6 +4,7 @@ import shutil
 import logging
 import pytest
 from tests import constants
+from pytest_splunk_addon.standard_lib.sample_generation import SampleGenerator
 
 logger = logging.getLogger("test_pytest_splunk_addon")
 
@@ -291,6 +292,7 @@ def test_splunk_fiction_indextime(testdir):
     )
 
     setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
@@ -333,6 +335,7 @@ def test_splunk_fiction_indextime_broken(testdir):
     )
 
     setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
