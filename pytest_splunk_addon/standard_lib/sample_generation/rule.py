@@ -1002,13 +1002,13 @@ class HostRule(Rule):
                         if sample.metadata.get("input_type") in [
                             "modinput",
                             "windows_input",
+                            "syslog_tcp",
+                            "syslog_udp",
                         ]:
                             csv_row[0] = sample.metadata.get("host")
                         elif sample.metadata.get("input_type") in [
                             "file_monitor",
                             "scripted_input",
-                            "syslog_tcp",
-                            "syslog_udp",
                             "default",
                         ]:
                             csv_row[0] = sample.get_host()
