@@ -225,6 +225,10 @@ class Rule:
                 csv_row.append(sample.get_field_fqdn(rule))
         return csv_row
 
+    @staticmethod
+    def clean_rules():
+        global event_host_count
+        event_host_count = 0
 
 class IntRule(Rule):
     """
