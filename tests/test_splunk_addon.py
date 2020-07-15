@@ -4,6 +4,7 @@ import shutil
 import logging
 import pytest
 from tests import constants
+from pytest_splunk_addon.standard_lib.sample_generation import SampleGenerator, Rule
 
 logger = logging.getLogger("test_pytest_splunk_addon")
 
@@ -291,6 +292,8 @@ def test_splunk_fiction_indextime(testdir):
     )
 
     setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
@@ -333,6 +336,8 @@ def test_splunk_fiction_indextime_broken(testdir):
     )
 
     setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
@@ -345,7 +350,7 @@ def test_splunk_fiction_indextime_broken(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines_random(
-        constants.TA_FICTION_INDEXTIME_BROKEN_PASSED + constants.TA_FICTION_INDEXTIME_BROKEN_PASSED + constants.TA_FICTION_INDEXTIME_BROKEN_SKIPPED
+        constants.TA_FICTION_INDEXTIME_BROKEN_PASSED + constants.TA_FICTION_INDEXTIME_BROKEN_FAILED + constants.TA_FICTION_INDEXTIME_BROKEN_SKIPPED
     )
     result.assert_outcomes(passed=len(constants.TA_FICTION_INDEXTIME_BROKEN_PASSED), skipped=len(constants.TA_FICTION_INDEXTIME_BROKEN_SKIPPED), failed=len(constants.TA_FICTION_INDEXTIME_BROKEN_FAILED))
 
