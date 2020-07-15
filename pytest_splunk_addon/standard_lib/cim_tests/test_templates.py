@@ -131,8 +131,8 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim_fields_not_allowed_in_search
     def test_cim_fields_not_allowed_in_search(
         self,
-        splunk_search_util,
         splunk_ingest_data,
+        splunk_search_util,
         splunk_searchtime_cim_fields_not_allowed_in_search,
         record_property,
     ):

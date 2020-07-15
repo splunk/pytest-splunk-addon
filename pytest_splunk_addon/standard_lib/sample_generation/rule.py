@@ -225,6 +225,10 @@ class Rule:
                 csv_row.append(sample.get_field_fqdn(rule))
         return csv_row
 
+    @staticmethod
+    def clean_rules():
+        global event_host_count
+        event_host_count = 0
 
 class IntRule(Rule):
     """
@@ -1002,13 +1006,13 @@ class HostRule(Rule):
                         if sample.metadata.get("input_type") in [
                             "modinput",
                             "windows_input",
+                            "syslog_tcp",
+                            "syslog_udp",
                         ]:
                             csv_row[0] = sample.metadata.get("host")
                         elif sample.metadata.get("input_type") in [
                             "file_monitor",
                             "scripted_input",
-                            "syslog_tcp",
-                            "syslog_udp",
                             "default",
                         ]:
                             csv_row[0] = sample.get_host()
