@@ -56,7 +56,7 @@ class UpdateEventgen():
 
             try:
                 events_in_file = len(open(os.path.join(self.path_to_samples, stanza)).readlines())
-                eventgen_dict[stanza]["expected_event_count"] = events_in_file
+                eventgen_dict[stanza]["sample_count"] = events_in_file
 
             except:
                 pass
@@ -81,7 +81,7 @@ class UpdateEventgen():
                     events_in_file = len(open(os.path.join(self.path_to_samples, sample_file)).readlines())
                     if sample_file not in eventgen_dict.keys():
                         eventgen_dict.setdefault((sample_file), {})
-                        eventgen_dict[sample_file]["expected_event_count"] = events_in_file
+                        eventgen_dict[sample_file]["sample_count"] = events_in_file
                         eventgen_dict[sample_file]["add_comment"] = True
 
         return eventgen_dict
@@ -104,7 +104,8 @@ class UpdateEventgen():
             'metadata': "#REVIEW : Update metadata as per addon's requirement",
             'replacement': "# REVIEW : Possible value in list : ",
             'field': "# REVIEW : Check if the field is extracted from the events, else remove this field parameter",
-            'mapping': "# REVIEW : Please check if it can be replace with %s rule"
+            'mapping': "# REVIEW : Please check if it can be replace with %s rule",
+            'sample_count': "# REVIEW : Please check for the events per stanza and update sample_count accordingly"
         }
 
         for stanza_name, stanza_data in eventgen_dict.items():
@@ -167,10 +168,11 @@ class UpdateEventgen():
                                                        f"{review_comments['mapping']%key_fields}")
 
             # for assigning expected_event_count at the end of metadata
-            if eventgen_dict.get(stanza_name).get("expected_event_count"):
+            if eventgen_dict.get(stanza_name).get("sample_count"):
                 event_count = eventgen_dict[stanza_name].pop(
-                    "expected_event_count")
-                eventgen_dict[stanza_name]["expected_event_count"] = event_count
+                    "sample_count")
+                eventgen_dict[stanza_name]["sample_count"] =(f"{event_count}"
+                                                             f"  {review_comments['sample_count']}")
 
             # for assigning tokens at the end of metadata
             if eventgen_dict.get(stanza_name).get("tokens"):

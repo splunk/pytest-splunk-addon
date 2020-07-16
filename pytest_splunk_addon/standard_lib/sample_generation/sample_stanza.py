@@ -78,6 +78,16 @@ class SampleStanza(object):
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
             bulk_event.extend(raw_event[event_counter])
             event_counter = event_counter+1
+
+        if self.metadata.get("expected_event_count") is None:    
+            self.metadata.update(expected_event_count=len(bulk_event))
+            for each in bulk_event:
+                each.metadata.update(expected_event_count=len(bulk_event))
+        else:
+            self.metadata.update(sample_count=1)
+            for each in bulk_event:
+                each.metadata.update(sample_count=1)
+
         self.tokenized_events = bulk_event
 
     def _parse_rules(self, eventgen_params, sample_path):
