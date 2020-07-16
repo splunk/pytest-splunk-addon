@@ -8,6 +8,7 @@ import logging
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
+TIMEZONE_REX = "((\+1[0-2])|(-1[0-4])|[+|-][0][0-9])([0-5][0-9])"
 BULK_EVENT_COUNT = 250
 class SampleStanza(object):
     """
@@ -125,7 +126,7 @@ class SampleStanza(object):
         if metadata.get("timestamp_type") not in ["event", "plugin", None]:
             raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
             metadata.update(timestamp_type="plugin")
-        if metadata.get("timezone") not in ["local", "0000", "+-hhmm", None]:
+        if metadata.get("timezone") not in ["local", "0000", None] and not re.match(TIMEZONE_REX, metadata.get("timezone")):
             raise_warning("Invalid value for timezone: '{}' using timezone = 0000.".format(metadata.get("timezone")))
             metadata.update(timezone="0000")
             eventgen_params.update(timezone="0000")
