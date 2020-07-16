@@ -157,7 +157,7 @@ token.<n>.replacement = <string> | <strptime> | ["list","of","values"] | guid | 
         * Column numbers in mvfile references are indexed at 1, meaning the first column is column 1, not 0.
     * For host["host", "ipv4", "ipv6", "fqdn"], 4 types of host replacement are supported. Either one or multiple from the list can be provided to randomly replace the token. 
 
-        * For host["host"], the token will be replaced with a sequential host value with pattern "host_sample_host_<number>".
+        * For host["host"], the token will be replaced with a sequential host value with pattern "host_sample_host_<number>". The line breaker property will only work in this case.
         * For host["ipv4"], the token will be replaced with a random valid IPv4 Address.
         * For host["ipv6"], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3264:0:0:0:0 range.
         * For host["fqdn"], the token will be replaced with a sequential fqdn value with pattern "host_sample_host.sample_domain<number>.com".
@@ -202,10 +202,13 @@ token.<n>.replacement = <string> | <strptime> | ["list","of","values"] | guid | 
     * For dest_port, the token will be replaced with a random dest port value from (80,443,25,22,21)
 
 token.<n>.field = _time | src | dest | src_port | dest_port | dvc | host | url | user
-    * To test the important fields from a sourctype, assign which important field is being extracted through the token. 
+    * To test the important fields from a sourcetype, assign which important field is being extracted through the token. 
     * The value replaced in the token will be verified with the searchtime value of the field given. 
     * The test to verify the extractions of important fields are part of indextime tests. 
-    * Make sure props.conf contains extractions to extract the value from the field. 
+    * Make sure props.conf contains extractions to extract the value from the field.
+
+.. note::
+    Make sure token name is not same as that any of :ref:`key field <key_fields>` values.
 
 
 Example

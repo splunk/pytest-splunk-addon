@@ -13,6 +13,7 @@ The API is divided into the following packages & modules.
    addon_parser
    cim_tests
    fields_tests
+   index_time_tests
    addon_basic
    app_test_generator
    sample_generation
