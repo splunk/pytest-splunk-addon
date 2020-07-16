@@ -203,7 +203,7 @@ token.<n>.replacement = <string> | <strptime> | ["list","of","values"] | guid | 
 
 token.<n>.field = <field_name>
     * "n" is a number starting at 0, and increasing by 1.
-    * Assign the field name to which the token will be assigned in the events.
+    * The field_name for which the tokenized value will be extracted.
     * For this :ref:`key fields <key_fields>`, the index time test cases will be generated.
     * Make sure props.conf contains extractions to extract the value from the field.
     * If this parameter is not provided, the default value will be same as the token name.
