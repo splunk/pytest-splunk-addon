@@ -36,6 +36,8 @@ To generate test cases only for index time properties, append the following mark
 Test Scenarios
 --------------
 
+.. _key_fields:
+
 **1. Test case for key fields extraction:**
 
     .. code-block:: python
@@ -55,9 +57,10 @@ Test Scenarios
         * user
         * url
 
-    .. _test_assertions:
+    .. _test_assertions_key_field:
 
     * This test case will not be generated if there are no key fields specified for the event.
+    * Key field can be assign to token using field property. `i.e token.n.field = <KEY_FIELD>`
 
     Testcase assertions:
 
@@ -74,7 +77,7 @@ Test Scenarios
 
     * Generates an SPL query according to the properties mentioned above. 
     * Execute the SPL query in a Splunk instance.
-    * Assert the test case results as mentioned in :ref:`testcase assertions<test_assertions>`.
+    * Assert the test case results as mentioned in :ref:`testcase assertions<test_assertions_key_field>`.
 
 **2. Test case for _time property:**
 
@@ -84,14 +87,28 @@ Test Scenarios
 
     * Test case verifies if the timestamp for the event is assigned properly.
     * The timestamp is assigned to the _time field which is validated by the test case.
+    * This test case will be generated if timestamp_type = event in stanza.
+    * _time field can be assign to token using field property. i.e `token.n.field = _time`
+
+    Testcase assertions:
+
+    * There should be at least 1 event with the sourcetype and host.
+    * There should be at least 1 token with field _time in stanza.
+    * One event should have only one token with token.n.field = _time.
+    * Every event should have token with token.n.field = _time.
+    * The values of the _time fields obtained from the event 
+      must match with the values of the time values which was used in generating and ingesting the event.
 
     **Workflow:**
 
     * Generates an SPL query using sourcetype and host from the event. 
     * Execute the SPL query in a Splunk instance.
     * The value of _time obtained from the search query is matched
-      with the _time value assigned to the event before ingesting it. 
-      The difference between both the values of _time obtained can be maximum 45 seconds.
+      with the _time value assigned to the event before ingesting it.
+
+    .. note::
+        The test case for _time field will not be generated if `timestamp_type = plugin` in
+        pytest-splunk-addon-data.conf
 
 **3. Test case for line-breaker property:**
 
@@ -100,6 +117,13 @@ Test Scenarios
         test_indextime_line_breaker[<sourcetype>::<host_name>]
 
     * Test case verifies if the LINE_BREAKER property used in props.conf works properly.
+    * If expected_event_count is not given in pytest-splunk-addon-data.conf it will take 
+      expected_event_count = 1
+
+    Testcase assertions:
+
+    * Number of event for particular sourcetype and host should be match with value of 
+      `expected_event_count` given in stanza
 
     **Workflow:**
 

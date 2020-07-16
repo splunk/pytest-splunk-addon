@@ -34,7 +34,25 @@ Release notes
 
     **Bugfixes:**
 
-    * TODO
+    * Enhanced requirements for the following CIM data models:
+
+    +-----------------------+-----------------------------------------------------------+
+    | CIM Data Model        |                   Field Name                              | 
+    +=======================+===========================================================+
+    | IDS                   | src, dest, src_port, dest_port, user                      |
+    +-----------------------+-----------------------------------------------------------+
+    | Network Resolution    | src, dest                                                 |
+    +-----------------------+-----------------------------------------------------------+
+    | Network Traffic       | bytes, bytes_in, bytes_out, icmp_code                     |
+    |                       |                                                           |
+    |                       | packets, packets_in, packets_out                          |
+    |                       |                                                           |    
+    |                       | src, src_translated_port, src_port                        |
+    |                       |                                                           |
+    |                       | dest, dest_translated_port, dest_port                     |
+    +-----------------------+-----------------------------------------------------------+
+    | Web                   | app, uri_path, url_length                                 |
+    +-----------------------+-----------------------------------------------------------+
 
     **Known Issues:**
 

@@ -1,3 +1,6 @@
+"""
+Includes the test scenarios to check the index time properties of an Add-on.
+"""
 import logging
 import pytest
 import copy
@@ -10,6 +13,9 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class IndexTimeTestTemplate(object):
+    """
+    Test templates to test the index time fields of an App
+    """
 
     logger = logging.getLogger("pytest-splunk-addon-tests")
 
@@ -23,6 +29,26 @@ class IndexTimeTestTemplate(object):
         record_property,
         caplog,
     ):
+        """
+        This test case checks that a key_field has the expected values.
+        The key fields are as follows:
+
+            * src
+            * src_port
+            * dest
+            * dest_port
+            * dvc
+            * host
+            * user
+            * url
+
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            splunk_ingest_data (fixture): To ingest data into splunk.
+            splunk_indextime_key_fields (fixture): Test for key fields
+            record_property (fixture): Document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        """
 
         index_list = (
             "(index="
@@ -131,6 +157,16 @@ class IndexTimeTestTemplate(object):
         record_property,
         caplog,
     ):
+        """
+        This test case checks that _time value in the events has the expected values.
+
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            splunk_ingest_data (fixture): To ingest data into splunk.
+            splunk_indextime_time (fixture): Test for _time field
+            record_property (fixture): Document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        """
         index_list = (
             "(index="
             + " OR index=".join(splunk_search_util.search_index.split(","))
@@ -205,6 +241,16 @@ class IndexTimeTestTemplate(object):
         record_property,
         caplog,
     ):
+        """
+        This test case checks that number of events is as expected.
+
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            splunk_ingest_data (fixture): To ingest data into splunk.
+            splunk_indextime_line_breaker (fixture): Test for event count
+            record_property (fixture): Document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        """
         expected_events_count = int(
             splunk_indextime_line_breaker["expected_event_count"]
         )

@@ -8,7 +8,27 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class IndexTimeTestGenerator(object):
+    """
+    Generates test cases to test the index time extraction of an Add-on.
+
+    * Provides the pytest parameters to the test templates.
+    * Supports key_fields: List of fields which should be tested 
+      for the Add-on.
+    """
+
     def generate_tests(self, app_path, config_path, test_type):
+        """
+        Generates the test cases based on test_type 
+
+        Args:
+            app_path (str): Path of the app package
+            config_path (str): Path of package which contains pytest-splunk-addon-data.conf
+            test_type (str): Type of test case
+
+        Yields:
+            pytest.params for the test templates 
+
+        """
         sample_generator = SampleXdistGenerator(app_path, config_path)
         store_sample = sample_generator.get_samples()
         tokenized_events = store_sample.get("tokenized_events")
@@ -42,6 +62,15 @@ class IndexTimeTestGenerator(object):
                     )
 
     def generate_line_breaker_tests(self, tokenized_events):
+        """
+        Generates test case for testing line breaker
+
+        Args:
+            tokenized_events (list): List of tokenized events
+
+        Yields:
+            pytest.params for the test templates 
+        """
         unique_stanzas = set()
         sourcetype = 0
         source = 1
@@ -72,6 +101,15 @@ class IndexTimeTestGenerator(object):
             )
 
     def get_hosts(self, tokenized_event):
+        """
+        Returns value of host for event
+
+        Args:
+            tokenized_event (SampleEvent): Instance containing event info
+
+        Returns:
+            Value of host for event
+        """
         if tokenized_event.metadata.get("host_type") in ("plugin", None):
             hosts = tokenized_event.metadata.get("host")
         elif tokenized_event.metadata.get("host_type") == "event":
@@ -89,17 +127,46 @@ class IndexTimeTestGenerator(object):
         return hosts
 
     def get_sourcetype(self, sample_event):
+        """
+        Returns value of sourcetype for event
+
+        Args:
+            sample_event (SampleEvent): Instance containing event info
+
+        Returns:
+            Value of sourcetype for event
+        """
         return sample_event.metadata.get(
             "sourcetype_to_search",
             sample_event.metadata.get("sourcetype", "*"),
         )
 
     def get_source(self, sample_event):
+        """
+        Returns value of source for event
+
+        Args:
+            sample_event (SampleEvent): Instance containing event info
+
+        Returns:
+            Value of source for event
+        """
         return sample_event.metadata.get(
             "source_to_search", sample_event.metadata.get("source", "*")
         )
 
     def generate_params(self, tokenized_event, identifier_key, hosts):
+        """
+        Generates test case based on parameters
+
+        Args:
+            tokenized_event (SampleEvent): Instance containing event info
+            identifier_key (str): Identifier Key if mention in conf file
+            hosts (list): List of host for event
+
+        Yields:
+            pytest.params for the test templates
+        """
         if identifier_key:
             yield from self.generate_identifier_params(
                 tokenized_event, identifier_key
@@ -108,6 +175,16 @@ class IndexTimeTestGenerator(object):
             yield from self.generate_hosts_params(tokenized_event, hosts)
 
     def generate_identifier_params(self, tokenized_event, identifier_key):
+        """
+        Generates test case based on Identifier key mentioned in conf file
+
+        Args:
+            tokenized_event (SampleEvent): Instance containing event info
+            identifier_key (str): Identifier Key if mention in conf file
+
+        Yields:
+            pytest.params for the test templates
+        """
         identifier_val = tokenized_event.key_fields.get(identifier_key)
         for identifier in identifier_val:
             yield pytest.param(
@@ -125,6 +202,16 @@ class IndexTimeTestGenerator(object):
             )
 
     def generate_hosts_params(self, tokenized_event, hosts):
+        """
+        Generates test case based on host value of the event
+
+        Args:
+            tokenized_event (SampleEvent): Instance containing event info
+            hosts (list): List of hosts for event
+
+        Yields:
+            pytest.params for the test templates
+        """
         id_host = hosts[0]+"_to_"+hosts[-1] if hosts else tokenized_event.sample_name
         yield pytest.param(
             {

@@ -27,6 +27,15 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
         splunk_ingest_data,
         record_property
     ):
+        """
+        Test case to validate that all the events have been properly tokenised
+
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            splunk_ingest_data (fixture): To ingest data into splunk.
+            record_property (fixture): Document facts of test cases.
+
+        """
         query =f'search index=* ##*## | stats count by source, sourcetype'
         record_property("Query", query)
         results = list(
