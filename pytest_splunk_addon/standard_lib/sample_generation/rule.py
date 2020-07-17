@@ -364,7 +364,7 @@ class FileRule(Rule):
 
             except ValueError:
                 for i in self.lookupfile(sample, relative_file_path, index, token_count):
-                    yield from self.token_value(*([i]*2))
+                    yield self.token_value(*([i]*2))
                 
         else:
             try:
@@ -511,8 +511,8 @@ class FileRule(Rule):
                 ):
                     index = sample.replacement_map[file_path][0].strip().split(',').index(index)
                     file_values = sample.replacement_map[file_path][1].split(',')
-
-                    yield file_values[index]
+                    for _ in range(token_count):
+                        yield file_values[index]
                 else:
                     if (
                         hasattr(sample, "replacement_map")
@@ -525,7 +525,8 @@ class FileRule(Rule):
                             sample.__setattr__("replacement_map", {file_path: [header, all_data[self.file_count]]})
                             index = header.strip().split(',').index(index)
                             file_values = all_data[self.file_count].split(',')
-                            yield file_values[index]
+                            for _ in range(token_count):
+                                yield file_values[index]
                         else:
                             LOGGER.warning(f"'replacement_type = {self.replacement_type}' is not supported for the lookup files. Please use 'random' or 'file'")
                             yield self.token

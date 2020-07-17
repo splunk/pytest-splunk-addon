@@ -581,6 +581,7 @@ TA_FICTION_INDEXTIME_BROKEN_PASSED = [
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype:wrong_values::wrong_values.samples* PASSED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:token_not_in_sample::token_not_in_sample.samples* PASSED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:token_not_in_stanza::token_not_in_stanza.samples* PASSED*',
+    '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:wrong_timezone::wrong_timezone.samples* PASSED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_cim_fields_not_allowed_in_props*searchtime_cim_fields* PASSED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel*mapped_datamodel_tests* PASSED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_splunk_internal_errors PASSED*',   
@@ -600,6 +601,7 @@ TA_FICTION_INDEXTIME_BROKEN_FAILED = [
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_time*test:indextime:scripted_input_key_fields::scripted_input_key_fields.samples_to_scripted_input_key_fields.samples* FAILED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_time*test:indextime:scripted_input_line_breaking::scripted_input_line_breaking.samples_3_to_scripted_input_line_breaking.samples_3* FAILED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_time*test:indextime:scripted_input_line_breaking::scripted_input_line_breaking.samples_4_to_scripted_input_line_breaking.samples_4* FAILED*',
+    '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_time*test:indextime:wrong_timezone::wrong_timezone.samples_to_wrong_timezone.samples* FAILED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:failing::failing.samples* FAILED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:scripted_input_line_breaking::scripted_input_line_breaking.samples* FAILED*',
 ]
