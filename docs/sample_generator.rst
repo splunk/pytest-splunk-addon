@@ -57,6 +57,7 @@ input_type = modinput | scripted_input | syslog | syslog_tcp | syslog_udp | file
 sample_count = <count>
     * The no. of events present in the sample file.
     * This parameter will be used to calculate the total number of events which will be generated from the sample file.
+    * If `input_type = modinput`, do not provide this parameter.
 
 expected_event_count = <count>
     * The no. of events this sample stanza should generate
