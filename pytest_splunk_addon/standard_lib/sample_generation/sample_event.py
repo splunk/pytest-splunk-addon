@@ -256,22 +256,18 @@ class SampleEvent(object):
         """
         try:
             if isinstance(event, str) and event.startswith("***SPLUNK***"):
-                header = event.split("\n", 1)[0]
-                event = event.split("\n", 1)[1]
-
-                meta_fields = re.findall(r"[\w]+=[^\s]+", header)
-                for meta_field in meta_fields:
-                    field = meta_field.split("=")[0]
-                    value = meta_field.split("=")[1]
+                header,event = event.split("\n", 1)
+ 
+                for meta_field in re.findall(r"[\w]+=[^\s]+", header):
+                    field, value = meta_field.split("=")
                     if field == "host":
                         metadata[field] = f"host_{metadata[field]}"
-                        key_fields["host"] = ([metadata["host"]]*2)
+                        key_fields["host"] = list([metadata["host"]])
                     else:
                         metadata[field] = value
 
-                return event, metadata, key_fields
-            else:
-                return event, metadata, key_fields
+            return event, metadata, key_fields
+
         except IndexError as error:
             LOGGER.error(f"Unexpected data found. Error: {error}")
             raise Exception(error)
