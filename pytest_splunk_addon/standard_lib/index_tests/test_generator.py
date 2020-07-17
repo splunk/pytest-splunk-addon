@@ -76,13 +76,24 @@ class IndexTimeTestGenerator(object):
         source = 1
         expected_event_count = 2
         sample_name = 3
+        sample_count = 1
+        expected_count = 1
 
         for each_event in tokenized_events:
+            try:
+                sample_count = int(each_event.metadata.get("sample_count", 1))
+                expected_count = int(each_event.metadata.get("expected_event_count", 1))
+            except ValueError as e:
+                raise_warning("Invalid value  {}".format(e)) 
+
+            if each_event.metadata.get("input_type") not in ["modinput", "windows_input"]:
+                expected_count = expected_count*sample_count    
+
             unique_stanzas.add(
                 (
                     self.get_sourcetype(each_event),
                     self.get_source(each_event),
-                    each_event.metadata.get("expected_event_count", 1),
+                    expected_count,
                     each_event.sample_name,
                 )
             )

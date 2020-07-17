@@ -78,6 +78,16 @@ class SampleStanza(object):
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
             bulk_event.extend(raw_event[event_counter])
             event_counter = event_counter+1
+
+        if self.metadata.get("expected_event_count") is None:    
+            self.metadata.update(expected_event_count=len(bulk_event))
+            for each in bulk_event:
+                each.metadata.update(expected_event_count=len(bulk_event))
+        else:
+            self.metadata.update(sample_count=1)
+            for each in bulk_event:
+                each.metadata.update(sample_count=1)
+
         self.tokenized_events = bulk_event
 
     def _parse_rules(self, eventgen_params, sample_path):
@@ -133,6 +143,9 @@ class SampleStanza(object):
         if metadata.get("timestamp_type") not in ["event", "plugin", None]:
             raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
             metadata.update(timestamp_type="plugin")
+        if metadata.get("sample_count") and not metadata.get("sample_count").isnumeric():
+            raise_warning("Invalid value for sample_count: '{}' using sample_count = 1.".format(metadata.get("sample_count")))
+            metadata.update(sample_count="1")
         if metadata.get("expected_event_count") and not metadata.get("expected_event_count").isnumeric():
             raise_warning("Invalid value for expected_event_count: '{}' using expected_event_count = 1.".format(metadata.get("expected_event_count")))
             metadata.update(expected_event_count="1")

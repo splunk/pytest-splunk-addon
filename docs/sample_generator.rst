@@ -20,7 +20,7 @@ pytest-splunk-addon-data.conf.spec
     sourcetype = pytest-splunk-addon
     source = pytest-splunk-addon:{{input_type}}
     sourcetype_to_search = {{sourcetype}}
-    expected_event_count = 1
+    sample_count = 1
     timestamp_type = event
     count = 0
     earliest = now
@@ -54,11 +54,17 @@ input_type = modinput | scripted_input | syslog | syslog_tcp | syslog_udp | file
     * The way with which the sample data is ingested in Splunk depends on Splunk. The most similar ingesting approach is used for each input_type to get accurate index-time testing.
     * For example, in an Add-on, a sourcetype "alert" is ingested through syslog in live environment, provide input_type=syslog.
 
+sample_count = <count>
+    * The no. of events present in the sample file.
+    * This parameter will be used to calculate the total number of events which will be generated from the sample file.
+    * If `input_type = modinput`, do not provide this parameter.
+
 expected_event_count = <count>
     * The no. of events this sample stanza should generate
     * The parameter will be used to test the line breaking in index-time tests
     * To calculate expected_event_count 2 parameters can be used. 1) Number of events in the sample file. 2) Number of values of replacementType=all tokens in the sample file. Both the parameters can be multiplied to get expected_event_count.
-    * For example, if sample contains 3 lines & a token replacement has list of 2 values, then 6 events will be generated.
+    * For example, if sample contains 3 lines & a token has replacement_type=all and replacement has list of 2 values, then 6 events will be generated.
+    * This parameter is optional, if it is not provided by the user, it will be calculated automatically by the pytest-splunk-addon.
 
 timestamp_type = plugin | event
     * This key determines if _time is assigned from event or default _time should be assigned by plugin.
@@ -224,7 +230,7 @@ Example
     host_type = plugin
     input_type = syslog_udp
     timestamp_type = event
-    expected_event_count = 10
+    sample_count = 10
 
     token.0.token = (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z)
     token.0.replacementType = timestamp
