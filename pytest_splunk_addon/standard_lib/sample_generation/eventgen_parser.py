@@ -55,10 +55,24 @@ class EventgenParser:
                     "pytest-splunk-addon-data.conf", dir=relative_path
                 )
                 self.conf_name = "psa-data-gen"
+
+            elif os.path.exists(
+                os.path.join(
+                    self.config_path,
+                    'eventgen.conf'
+                    )
+                ):
+
+                self._eventgen = self._app.get_config(
+                    "eventgen.conf", dir=relative_path
+                )
+                self.conf_name = "eventgen"
+
             else:
                 self._eventgen = self._app.get_config("eventgen.conf")
                 self.conf_name = "eventgen"
             return self._eventgen
+
         except OSError:
             LOGGER.warning("pytest-splunk-addon-data.conf/eventgen.conf not Found")
             raise FileNotFoundError("pytest-splunk-addon-data.conf/eventgen.conf not Found")
