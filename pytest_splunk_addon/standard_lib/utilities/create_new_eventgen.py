@@ -35,7 +35,7 @@ class UpdateEventgen():
                     "stanza_name": 
                     {    
                         "other metadata": "source, sourcetype, etc."
-                        "expected_event_count" : int
+                        "sample_count" : int
                         "tokens": 
                         {
                             0: {
@@ -167,7 +167,7 @@ class UpdateEventgen():
                                 token_data["field"] = (f"{field_value} "
                                                        f"{review_comments['mapping']%key_fields}")
 
-            # for assigning expected_event_count at the end of metadata
+            # for assigning sample_count at the end of metadata
             if eventgen_dict.get(stanza_name).get("sample_count"):
                 event_count = eventgen_dict[stanza_name].pop(
                     "sample_count")

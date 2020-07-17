@@ -143,6 +143,9 @@ class SampleStanza(object):
         if metadata.get("timestamp_type") not in ["event", "plugin", None]:
             raise_warning("Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(metadata.get("timestamp_type")))
             metadata.update(timestamp_type="plugin")
+        if metadata.get("sample_count") and not metadata.get("sample_count").isnumeric():
+            raise_warning("Invalid value for sample_count: '{}' using sample_count = 1.".format(metadata.get("sample_count")))
+            metadata.update(sample_count="1")
         if metadata.get("expected_event_count") and not metadata.get("expected_event_count").isnumeric():
             raise_warning("Invalid value for expected_event_count: '{}' using expected_event_count = 1.".format(metadata.get("expected_event_count")))
             metadata.update(expected_event_count="1")

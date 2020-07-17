@@ -12,7 +12,7 @@ Overview
     * input_type
     * host_type
     * timestamp_type
-    * expected_event_count
+    * sample_count
     * sourcetype_to_search
 
 * All of these above metadata will be appended with keyword 'REVIEW', indicating that these values will have to be filled by the

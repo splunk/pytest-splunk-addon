@@ -117,21 +117,21 @@ Test Scenarios
         test_indextime_line_breaker[<sourcetype>::<host_name>]
 
     * Test case verifies if the LINE_BREAKER property used in props.conf works properly.
-    * If expected_event_count is not given in pytest-splunk-addon-data.conf it will take 
-      expected_event_count = 1
+    * If sample_count is not provided in pytest-splunk-addon-data.conf, it will take
+      sample_count = 1.
 
     Testcase assertions:
 
-    * Number of event for particular sourcetype and host should be match with value of 
-      `expected_event_count` given in stanza
+    * Number of events for particular sourcetype and host should be match with value of 
+      `expected_event_count` given in stanza or the value of `expected_event_count` calculated by 
+      pytest-splunk-addon.
 
     **Workflow:**
 
     * Generates an SPL query using sourcetype and host from the event. 
     * Execute the SPL query in a Splunk instance.
     * The number of results obtained from the search query is matched with the 
-      *expected_event_count* parameter provided in the `pytest-splunk-addon-data.conf` file. 
-      Both the values must be same.
+      *expected_event_count* parameter. Both the values must be same.
 
 Testcase Troubleshooting
 ------------------------
