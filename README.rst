@@ -15,7 +15,7 @@ A Dynamic test tool for Splunk Apps and Add-ons
 
 Documentation
 ---------------
-The detailed documentation for pytest-splunk-addon can be found here :` <https://pytest-splunk-addon.readthedocs.io/>`_
+The detailed documentation for pytest-splunk-addon can be found here : `<https://pytest-splunk-addon.readthedocs.io/>`_
 
 Features
 --------
