@@ -57,6 +57,7 @@ class AppTestGenerator(object):
 
         * splunk_app_searchtime_*
         * splunk_app_cim_*
+        * splunk_indextime
 
         Args:
             fixture(str): fixture name
