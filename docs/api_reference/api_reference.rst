@@ -5,6 +5,12 @@ API Documentation
    :members:
    :show-inheritance:
 
+The workflow of the pytest-splunk-addon is as follows:
+
+.. image:: architecture.jpeg
+    :align: center
+    :alt: Flow diagram
+
 The API is divided into the following packages & modules.
 
 .. toctree::
