@@ -500,7 +500,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
         ingest_meta_data = {
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
-            "splunk_host": sc4s[0],  # for sc4s
+            "sc4s_host": sc4s[0],  # for sc4s
             "sc4s_port": sc4s[1][514]  # for sc4s
         }
         IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)

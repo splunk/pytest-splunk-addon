@@ -15,7 +15,7 @@ class SC4SEventIngestor(EventIngestor):
     The format for required_configs is::
 
         {
-            splunk_host (str): Address of the Splunk Server. Do not provide http scheme in the host.
+            sc4s_host (str): Address of the Splunk Server. Do not provide http scheme in the host.
             sc4s_port (int): Port number of the above host address
         }
 
@@ -24,9 +24,9 @@ class SC4SEventIngestor(EventIngestor):
     """
 
     def __init__(self, required_configs):
-        self.splunk_host = required_configs['splunk_host']
+        self.sc4s_host = required_configs['sc4s_host']
         self.sc4s_port = required_configs['sc4s_port']
-        self.server_address = (required_configs['splunk_host'], required_configs['sc4s_port'])
+        self.server_address = (required_configs['sc4s_host'], required_configs['sc4s_port'])
 
     def ingest(self, events):
         """
