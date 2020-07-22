@@ -44,9 +44,11 @@ Note: Must install docker desktop, vscode or pycharm pro optional
 
 Note2: Appinspect requires libmagic verify this has been installed correctly each time a new workstation/vm is used https://dev.splunk.com/enterprise/docs/releaseapps/appinspect/splunkappinspectclitool/installappinspect
 
-    $ #setup python venv must be 3.7
+.. code:: bash
+
     $ git clone --recurse-submodules -j8 git@github.com:splunk/pytest-splunk-addon.git
-    
+
+    $ #setup python venv must be 3.7    
     $ /Library/Frameworks/Python.framework/Versions/3.7/bin/python3 -m venv .venv
 
     $ source .venv/bin/activate
@@ -142,6 +144,7 @@ Run pytest with the add-on and SA-eventgen installed and enabled in docker
         --splunk-password=Changed@11 \
         -v
 
+For full usage instructions, please visit the `pytest-splunk-addon documentation pages over at readthedocs`_.
 
 Contributing
 ------------
@@ -159,6 +162,7 @@ Issues
 
 If you encounter any problems, please `file an issue`_ along with a detailed description.
 
+.. _`pytest-splunk-addon documentation pages over at readthedocs`: https://pytest-splunk-addon.readthedocs.io/en/latest/
 .. _`Apache Software License 2.0`: http://www.apache.org/licenses/LICENSE-2.0
 .. _`file an issue`: https://github.com/splunk/pytest-splunk-addon/issues
 .. _`pytest`: https://github.com/pytest-dev/pytest
