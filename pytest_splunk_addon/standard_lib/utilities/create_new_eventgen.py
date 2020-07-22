@@ -83,6 +83,7 @@ class UpdateEventgen():
                         eventgen_dict.setdefault((sample_file), {})
                         eventgen_dict[sample_file]["sample_count"] = events_in_file
                         eventgen_dict[sample_file]["add_comment"] = True
+                        eventgen_dict[sample_file]["tokens"] = {}
 
         return eventgen_dict
 
@@ -118,7 +119,7 @@ class UpdateEventgen():
                 'source', f"pytest-splunk-addon:{eventgen_dict[stanza_name]['input_type']}")
 
             for _, token_data in stanza_data.get("tokens", {}).items():
-                token_name = token_data.get("token").strip("#").lower()
+                token_name = token_data.get("token").strip("#()").lower()
                 for _, new_token_values in FIELD_MAPPING.items():
 
                     if token_name in new_token_values.get("token"):
