@@ -180,7 +180,7 @@ class SampleStanza(object):
                 "default"
             ]
         """
-        with open(self.sample_path, "r") as sample_file:
+        with open(self.sample_path, "r", encoding="utf-8") as sample_file:
             if self.input_type in ["modinput", "windows_input"]:
                 for each_line in sample_file.read().split('\n'):
                     if each_line:
