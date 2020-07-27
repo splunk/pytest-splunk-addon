@@ -130,7 +130,7 @@ def test_splunk_app_fiction(testdir):
     setup_test_dir(testdir)
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields","--search-interval=4","--search-retry=4",
+        "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields","--search-interval=4","--search-retry=4","--search-index=*,_internal",
     )
 
     result.stdout.fnmatch_lines_random(constants.TA_FICTION_PASSED)
@@ -162,7 +162,7 @@ def test_splunk_app_broken(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields","--search-interval=4","--search-retry=4",
+        "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields","--search-interval=4","--search-retry=4", "--search-index=*,_internal",
     )
 
     # fnmatch_lines does an assertion internally
@@ -211,6 +211,7 @@ def test_splunk_app_cim_fiction(testdir):
         "-m splunk_searchtime_cim",
         "--search-interval=4",
         "--search-retry=4",
+        "--search-index=*,_internal",
     )
 
     result.stdout.fnmatch_lines_random(constants.TA_CIM_FICTION_PASSED)
@@ -253,6 +254,7 @@ def test_splunk_app_cim_broken(testdir):
         "-m splunk_searchtime_cim",
         "--search-interval=4",
         "--search-retry=4",
+        "--search-index=*,_internal",
     )
 
     # fnmatch_lines does an assertion internally
@@ -301,7 +303,8 @@ def test_splunk_fiction_indextime(testdir):
         "-v",
         "--search-interval=0",
         "--search-retry=0",
-        "--splunk-data-generator=tests/addons/TA_fiction_indextime/default"
+        "--splunk-data-generator=tests/addons/TA_fiction_indextime/default",
+        "--search-index=*,_internal",
     )
 
     # fnmatch_lines does an assertion internally
@@ -345,7 +348,8 @@ def test_splunk_fiction_indextime_broken(testdir):
         "-v",
         "--search-interval=0",
         "--search-retry=0",
-        "--splunk-data-generator=tests/addons/TA_fiction_indextime_broken/default"
+        "--splunk-data-generator=tests/addons/TA_fiction_indextime_broken/default",
+        "--search-index=*,_internal",
     )
 
     # fnmatch_lines does an assertion internally
@@ -383,7 +387,7 @@ def test_splunk_setup_fixture(testdir):
         )
 
     result = testdir.runpytest(
-        "--splunk-type=docker",  "-v", "-k saved_search_lookup","--search-interval=4","--search-retry=4",
+        "--splunk-type=docker",  "-v", "-k saved_search_lookup","--search-interval=4","--search-retry=4", "--search-index=*,_internal",
     )
 
     result.assert_outcomes(
