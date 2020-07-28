@@ -445,6 +445,8 @@ Define the TA_fiction_indextime add-on passed test case list.
 """
 TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_events_with_untokenised_values PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:postfix:regex:stanza::postfix_test_regex_two.samples_1_to_postfix_test_regex_two.samples_1* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:postfix:regex:stanza::postfix_test_regex_two.samples_2_to_postfix_test_regex_two.samples_2* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:file_monitor_time_stamp_plugin::file_monitor_time_stamp_plugin.samples_to_file_monitor_time_stamp_plugin.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:scripted_input_key_fields_fiction::scripted_input_key_fields_fiction.samples_to_scripted_input_key_fields_fiction.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:scripted_input_line_breaking_fiction::scripted_input_line_breaking_fiction.samples_1_to_scripted_input_line_breaking_fiction.samples_1* PASSED*',
@@ -513,6 +515,7 @@ TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype:user_email_relation_time_plugin::sample_file_two.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype_basic::sample_file.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test_scripted_input_sourcetype::test_scripted_input_one.samples* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:postfix:regex:stanza::postfix_test_regex_two.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_props*searchtime_cim_fields* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel*mapped_datamodel_tests* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_splunk_internal_errors PASSED*',
