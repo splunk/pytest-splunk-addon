@@ -32,7 +32,7 @@ setup(
         "pytest~=5.3",
         "splunk-sdk~=1.6",
         "future~=0.17.1",
-        "httplib2~=0.17",
+        "httplib2~=0.18",
         "logutils",
         "junitparser==1.4.1",
         "requests2~=2.16",
