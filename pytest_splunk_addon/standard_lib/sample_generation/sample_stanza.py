@@ -166,7 +166,7 @@ class SampleStanza(object):
 
     def _get_raw_sample(self):
         """
-        Converts a sample file into raw events based on the input type.
+        Converts a sample file into raw events based on the input type and breaker.
         Input: Name of the sample file for which events have to be generated.
         Output: Yields object of SampleEvent.
 
@@ -181,8 +181,16 @@ class SampleStanza(object):
             ]
         """
         with open(self.sample_path, "r") as sample_file:
-            if self.input_type in ["modinput", "windows_input"]:
-                for each_line in sample_file.read().split('\n'):
+            sample_raw = sample_file.read()
+            if self.metadata.get("breaker"):
+                for each_event in self.break_events(sample_raw):
+                    if each_event:
+                        event_metadata = self.get_eventmetadata()
+                        yield SampleEvent(
+                            each_event, event_metadata, self.sample_name
+                        )
+            elif self.input_type in ["modinput", "windows_input"]:
+                for each_line in sample_raw.split('\n'):
                     if each_line:
                         event_metadata = self.get_eventmetadata()
                         yield SampleEvent(
@@ -195,7 +203,7 @@ class SampleStanza(object):
                 "syslog_udp",
                 "default"
             ]:
-                event = sample_file.read().strip()
+                event = sample_raw.strip()
                 if not event:
                     raise_warning("sample file: '{}' is empty".format(self.sample_path))
                 else:
@@ -207,6 +215,34 @@ class SampleStanza(object):
                 # TODO: input_type not found scenario
                 pass
             # More input types to be added here.
+
+    def break_events(self, sample_raw):
+        """
+        Break sample file into list of raw events using breaker
+
+        Args:
+            sample_raw (str): Raw sample
+
+        Return:
+            event_list (list): List of raw events 
+        """
+        
+        sample_match = re.finditer(self.metadata.get("breaker"), sample_raw, flags=re.MULTILINE)
+        pos = 0
+        try:
+            match_obj = next(sample_match)
+            event_list = list()
+            if match_obj.start() != 0:
+                event_list.append(sample_raw[pos:match_obj.start()])
+                pos = match_obj.start()
+            for _, match in enumerate(sample_match):
+                event_list.append(sample_raw[pos:match.start()])
+                pos = match.start()
+            event_list.append(sample_raw[pos:])
+            return event_list
+        except StopIteration:
+            raise_warning("Invalid breaker for stanza {}".format(self.sample_name))
+            return [sample_raw]
 
     def _sort_tokens_by_replacement_type_all(self, tokens_dict):
         """
