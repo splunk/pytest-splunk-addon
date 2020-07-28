@@ -176,7 +176,7 @@ def pytest_addoption(parser):
         "--search-index",
         action="store",
         dest="search_index",
-        default="*,_internal",
+        default="*",
         help="Splunk index of which the events will be searched while testing.",
     )
     group.addoption(

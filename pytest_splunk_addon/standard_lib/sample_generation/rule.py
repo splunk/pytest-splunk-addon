@@ -243,9 +243,9 @@ class IntRule(Rule):
             token_count (int): No. of token in sample event where rule is applicable
         """
         limits_match = re.match(
-            r"[Ii]nteger\[(\d+):(\d+)\]", self.replacement
+            r"[Ii]nteger\[(-?\d+):(-?\d+)\]", self.replacement
         )
-        if limits_match:    
+        if limits_match:
             lower_limit, upper_limit = limits_match.groups() 
             if self.replacement_type == "random":
                 for _ in range(token_count):
@@ -274,11 +274,11 @@ class FloatRule(Rule):
             token_count (int): No. of token in sample event where rule is applicable
         """
         float_match = re.match(
-            r"[Ff]loat\[([\d\.]+):([\d\.]+)\]", self.replacement
+            r"[Ff]loat\[(-?[\d\.]+):(-?[\d\.]+)\]", self.replacement
         )
         if float_match:
             lower_limit, upper_limit = float_match.groups()
-            precision = re.search("\[\d+\.?(\d*):", self.replacement).group(1)
+            precision = re.search("\[-?\d+\.?(\d*):", self.replacement).group(1)
             if not precision:
                 precision = str(1)
             for _ in range(token_count):
