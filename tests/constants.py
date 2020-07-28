@@ -513,12 +513,12 @@ TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype:user_email_relation_time_plugin::sample_file_two.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype_basic::sample_file.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test_scripted_input_sourcetype::test_scripted_input_one.samples* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:file_monitor_line_breaker::file_monitor_line_breaker_sample.samples 
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_1_to_modinput_line_breaker.samples_1 
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_3_to_modinput_line_breaker.samples_3
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_2_to_modinput_line_breaker.samples_2
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_4_to_modinput_line_breaker.samples_4 
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:modinput_line_breaker::modinput_line_breaker.samples 
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:file_monitor_line_breaker::file_monitor_line_breaker_sample.samples ',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_1_to_modinput_line_breaker.samples_1',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_3_to_modinput_line_breaker.samples_3',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_2_to_modinput_line_breaker.samples_2',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_4_to_modinput_line_breaker.samples_4',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:modinput_line_breaker::modinput_line_breaker.samples',
     '*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_props*searchtime_cim_fields* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel*mapped_datamodel_tests* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_splunk_internal_errors PASSED*',
