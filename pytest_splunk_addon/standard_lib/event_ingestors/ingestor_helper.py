@@ -46,7 +46,10 @@ class IngestorHelper(object):
         ingestor_dict = dict()
         for event in tokenized_events:
             input_type = event.metadata.get("input_type")
-            event.event = event.event.encode("utf-8").decode()
+            if not input_type=="HECRawEventIngestor":
+                event.event = event.event.encode("utf-8").decode()
+            else:
+                event.event = event.event.encode("utf-8")
             if input_type in ingestor_dict:
                 ingestor_dict[input_type].append(event)
             else:
