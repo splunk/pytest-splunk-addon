@@ -180,7 +180,7 @@ class SampleStanza(object):
                 "default"
             ]
         """
-        with open(self.sample_path, "r") as sample_file:
+        with open(self.sample_path, "r" , encoding="utf-8") as sample_file:
             sample_raw = sample_file.read()
             if self.metadata.get("breaker"):
                 for each_event in self.break_events(sample_raw):
