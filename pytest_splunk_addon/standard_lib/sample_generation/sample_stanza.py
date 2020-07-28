@@ -79,6 +79,11 @@ class SampleStanza(object):
             bulk_event.extend(raw_event[event_counter])
             event_counter = event_counter+1
 
+        if self.metadata.get("breaker") is not None:
+            self.metadata.update(sample_count=1)
+            for each in bulk_event:
+                each.metadata.update(sample_count=1)
+
         if self.metadata.get("expected_event_count") is None:    
             self.metadata.update(expected_event_count=len(bulk_event))
             for each in bulk_event:
@@ -215,6 +220,34 @@ class SampleStanza(object):
                 # TODO: input_type not found scenario
                 pass
             # More input types to be added here.
+    
+    def break_events(self, sample_raw):
+        """
+        Break sample file into list of raw events using breaker
+
+        Args:
+            sample_raw (str): Raw sample
+
+        Return:
+            event_list (list): List of raw events 
+        """
+        
+        sample_match = re.finditer(self.metadata.get("breaker"), sample_raw, flags=re.MULTILINE)
+        pos = 0
+        try:
+            match_obj = next(sample_match)
+            event_list = list()
+            if match_obj.start() != 0:
+                event_list.append(sample_raw[pos:match_obj.start()].strip())
+                pos = match_obj.start()
+            for _, match in enumerate(sample_match):
+                event_list.append(sample_raw[pos:match.start()].strip())
+                pos = match.start()
+            event_list.append(sample_raw[pos:].strip())
+            return event_list
+        except:
+            raise_warning("Invalid breaker for stanza {}".format(self.sample_name))
+            return [sample_raw]
 
     def break_events(self, sample_raw):
         """

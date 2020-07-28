@@ -1,0 +1,8 @@
+123456 16:02:19 Checking line breaker
+static_value = line
+57 Checking the multiple line breaker regex match
+58 Checking the multiple line breaker regex match
+static_value_1 = 1
+static_value_2 = 2
+static_value_3 = 3
+160419 16:00:47    55 regex_match 
