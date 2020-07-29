@@ -9,9 +9,9 @@ Create a test file in the tests folder
 .. code:: python3
 
     from pytest_splunk_addon.standard_lib.addon_basic import Basic
-        class Test_App(Basic):
-            def empty_method():
-                pass
+    class Test_App(Basic):
+        def empty_method():
+            pass
 
 
 .. _test_execution:

@@ -515,6 +515,12 @@ TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype:user_email_relation_time_plugin::sample_file_two.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype_basic::sample_file.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test_scripted_input_sourcetype::test_scripted_input_one.samples* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:file_monitor_line_breaker::file_monitor_line_breaker_sample.samples* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_1_to_modinput_line_breaker.samples_1* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_3_to_modinput_line_breaker.samples_3* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_2_to_modinput_line_breaker.samples_2* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:modinput_line_breaker::modinput_line_breaker.samples_4_to_modinput_line_breaker.samples_4* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:modinput_line_breaker::modinput_line_breaker.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:postfix:regex:stanza::postfix_test_regex_two.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_props*searchtime_cim_fields* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel*mapped_datamodel_tests* PASSED*',
@@ -591,6 +597,8 @@ TA_FICTION_INDEXTIME_BROKEN_PASSED = [
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:token_not_in_sample::token_not_in_sample.samples* PASSED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:token_not_in_stanza::token_not_in_stanza.samples* PASSED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:wrong_timezone::wrong_timezone.samples* PASSED*',
+    '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:wrong_line_breaker_modinput::wrong_line_breaker_modinput.samples* PASSED*',
+    '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:wrong_line_breaker_file_monitor_fail::wrong_line_breaker_file_monitor_fail.samples* PASSED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_cim_fields_not_allowed_in_props*searchtime_cim_fields* PASSED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel*mapped_datamodel_tests* PASSED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_splunk_internal_errors PASSED*',   
@@ -613,6 +621,8 @@ TA_FICTION_INDEXTIME_BROKEN_FAILED = [
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_time*test:indextime:wrong_timezone::wrong_timezone.samples_to_wrong_timezone.samples* FAILED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:failing::failing.samples* FAILED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:scripted_input_line_breaking::scripted_input_line_breaking.samples* FAILED*',
+    '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_time*test:indextime:wrong_line_breaker_modinput::wrong_line_breaker_modinput.samples_1_to_wrong_line_breaker_modinput.samples_1* FAILED*',
+    '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:wrong_line_breaker_file_monitor::wrong_line_breaker_file_monitor.samples* FAILED*'
 ]
 """
 Define the TA_fiction_indextime_broken add-on skipped test case list.
