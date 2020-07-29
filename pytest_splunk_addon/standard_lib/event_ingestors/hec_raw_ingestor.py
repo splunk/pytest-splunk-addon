@@ -87,7 +87,7 @@ class HECRawEventIngestor(EventIngestor):
             response = requests.post(
                 "{}/{}".format(self.hec_uri, "raw"),
                 auth=None,
-                data=event.encode("utf-8"),
+                data=event,
                 params=params,
                 headers=self.session_headers,
                 verify=False,
