@@ -249,34 +249,6 @@ class SampleStanza(object):
             raise_warning("Invalid breaker for stanza {}".format(self.sample_name))
             return [sample_raw]
 
-    def break_events(self, sample_raw):
-        """
-        Break sample file into list of raw events using breaker
-
-        Args:
-            sample_raw (str): Raw sample
-
-        Return:
-            event_list (list): List of raw events 
-        """
-        
-        sample_match = re.finditer(self.metadata.get("breaker"), sample_raw, flags=re.MULTILINE)
-        pos = 0
-        try:
-            match_obj = next(sample_match)
-            event_list = list()
-            if match_obj.start() != 0:
-                event_list.append(sample_raw[pos:match_obj.start()])
-                pos = match_obj.start()
-            for _, match in enumerate(sample_match):
-                event_list.append(sample_raw[pos:match.start()])
-                pos = match.start()
-            event_list.append(sample_raw[pos:])
-            return event_list
-        except StopIteration:
-            raise_warning("Invalid breaker for stanza {}".format(self.sample_name))
-            return [sample_raw]
-
     def _sort_tokens_by_replacement_type_all(self, tokens_dict):
         """
         Return the sorted token list by replacementType=all first in list.
