@@ -46,7 +46,7 @@ class IngestorHelper(object):
         ingestor_dict = dict()
         for event in tokenized_events:
             input_type = event.metadata.get("input_type")
-            if not input_type=="HECRawEventIngestor":
+            if not input_type in ["file_monitor", "scripted_input", "default"]:
                 event.event = event.event.encode("utf-8").decode()
             else:
                 event.event = event.event.encode("utf-8")
