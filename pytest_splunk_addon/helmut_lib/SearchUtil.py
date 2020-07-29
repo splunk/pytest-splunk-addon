@@ -1008,7 +1008,7 @@ class SearchUtil(object):
         while tryNum <= retries and not status:
             job = self.jobs.create(query, max_time=60)
             job.wait(240)
-            results = job.get_results(offset=0, count=1000)
+            results = job.get_results(offset=0, count=4000)
             result_count = len(results)
             messages = job.get_messages()
 
