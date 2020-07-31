@@ -259,11 +259,11 @@ class IndexTimeTestTemplate(object):
             + " OR index=".join(splunk_search_util.search_index.split(","))
             + ")"
         )
-        query = "search {} sourcetype={} (host=host_{}* OR host={}*) | stats count".format(
+        host = "(\""+"\",\"".join(splunk_indextime_line_breaker.get("host"))+"\")"
+        query = "search {} sourcetype={} host IN {} | stats count".format(
             index_list,
             splunk_indextime_line_breaker.get("sourcetype"),
-            splunk_indextime_line_breaker.get("host"),
-            splunk_indextime_line_breaker.get("host"),
+            host
         )
         record_property("Query", query)
 
