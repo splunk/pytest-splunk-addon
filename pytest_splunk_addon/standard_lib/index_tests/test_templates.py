@@ -65,9 +65,7 @@ class IndexTimeTestTemplate(object):
         if splunk_indextime_key_fields.get("identifier"):
             extra_filter = splunk_indextime_key_fields.get("identifier")
         else:
-            extra_filter = "host=" + " OR host=".join(
-                splunk_indextime_key_fields.get("hosts")
-            )
+            extra_filter = "host IN (\""+"\",\"".join(set(splunk_indextime_key_fields.get("hosts")))+"\")"
         fields_to_check = copy.deepcopy(
             splunk_indextime_key_fields["tokenized_event"].key_fields
         )
@@ -259,11 +257,11 @@ class IndexTimeTestTemplate(object):
             + " OR index=".join(splunk_search_util.search_index.split(","))
             + ")"
         )
-        query = "search {} sourcetype={} (host=host_{}* OR host={}*) | stats count".format(
+        host = "(\""+"\",\"".join(splunk_indextime_line_breaker.get("host"))+"\")"
+        query = "search {} sourcetype={} host IN {} | stats count".format(
             index_list,
             splunk_indextime_line_breaker.get("sourcetype"),
-            splunk_indextime_line_breaker.get("host"),
-            splunk_indextime_line_breaker.get("host"),
+            host
         )
         record_property("Query", query)
 
