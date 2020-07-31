@@ -111,7 +111,9 @@ class IndexTimeTestGenerator(object):
             if not line_breaker_params[event.sample_name].get('host'):
                 line_breaker_params[event.sample_name]['host'] = set()
 
-            line_breaker_params[event.sample_name]['host']|=set(self.get_hosts(event))
+            event_host = self.get_hosts(event)
+            if event_host:
+                line_breaker_params[event.sample_name]['host']|=set(event_host)
 
         for sample_name, params in line_breaker_params.items():
             yield pytest.param(
