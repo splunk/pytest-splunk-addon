@@ -131,7 +131,7 @@ Test Scenarios
     * Generates an SPL query using sourcetype and host from the event. 
     * Execute the SPL query in a Splunk instance.
     * The number of results obtained from the search query is matched with the 
-      *expected_event_count* value, which is calculated by the plugin. Both the values must be same.
+      *expected_event_count* value, which is calculated by the plugin.
 
 Testcase Troubleshooting
 ------------------------
