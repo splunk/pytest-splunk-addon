@@ -66,6 +66,8 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
 
 .. note::
    If live events are available in external Splunk instance or docker splunk, then SA-Eventgen is not required.
+   This is applicable only for Knowledge objects tests and CIM compatibility tests.
+   For the execution of Index Time tests, the data has to be ingested using pytest-splunk-addon.
 
 ----------------------
 
