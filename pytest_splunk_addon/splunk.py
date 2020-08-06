@@ -23,7 +23,7 @@ from filelock import FileLock
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
-PYTEST_XDIST_TESTRUNUID = ""
+
 
 def pytest_addoption(parser):
     """Add options for interaction with Splunk this allows the tool to work in two modes
@@ -492,26 +492,24 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
     TODO: For splunk_type=external, data will not be ingested as
     manual configurations are required.
     """
-    global PYTEST_XDIST_TESTRUNUID
-    if ("PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
-        addon_path = request.config.getoption("splunk_app")
-        config_path = request.config.getoption("splunk_data_generator")
+    addon_path = request.config.getoption("splunk_app")
+    config_path = request.config.getoption("splunk_data_generator")
 
-        ingest_meta_data = {
-            "session_headers": splunk_hec_uri[0].headers,
-            "splunk_hec_uri": splunk_hec_uri[1],
-            "sc4s_host": sc4s[0],  # for sc4s
-            "sc4s_port": sc4s[1][514]  # for sc4s
-        }
-        IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
-        sleep(50)
-        if ("PYTEST_XDIST_WORKER" in os.environ):
-            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait", "w+"):
-                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
+    ingest_meta_data = {
+        "session_headers": splunk_hec_uri[0].headers,
+        "splunk_hec_uri": splunk_hec_uri[1],
+        "sc4s_host": sc4s[0],  # for sc4s
+        "sc4s_port": sc4s[1][514],  # for sc4s
+    }
 
+    if "PYTEST_XDIST_WORKER" in os.environ:
+        file_path = "pytest_wait"
+        with FileLock(str(file_path) + ".lock"):
+            IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
     else:
-        while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait"):
-            sleep(1)
+        IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
+
+    sleep(50)
 
 
 def is_responsive_splunk(splunk):
@@ -565,10 +563,3 @@ def is_responsive(url):
             "Could not connect to url yet. Will try again. exception=%s", str(e),
         )
         return False
-
-def pytest_unconfigure(config):
-    if PYTEST_XDIST_TESTRUNUID:
-        if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_wait"):
-            os.remove(PYTEST_XDIST_TESTRUNUID + "_wait")
-        if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_events"):
-            os.remove(PYTEST_XDIST_TESTRUNUID + "_events")
