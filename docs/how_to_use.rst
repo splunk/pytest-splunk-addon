@@ -65,7 +65,9 @@ There are two ways to execute the tests:
 The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 
 .. note::
-   If live events are available in external Splunk instance or docker splunk, then SA-Eventgen is not required.
+   * If live events are available in external Splunk instance or docker splunk, then SA-Eventgen is not required. This is applicable only till v1.2.0 of pytest-splunk-addon.
+   * From v1.3.0 pytest-splunk-addon ingests data independently which is used for execution of all the test cases.
+
 
 ----------------------
 

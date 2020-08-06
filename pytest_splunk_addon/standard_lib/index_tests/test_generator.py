@@ -69,45 +69,61 @@ class IndexTimeTestGenerator(object):
             tokenized_events (list): List of tokenized events
 
         Yields:
-            pytest.params for the test templates 
+            pytest.params for the test templates
         """
-        unique_stanzas = set()
-        sourcetype = 0
-        source = 1
-        expected_event_count = 2
-        sample_name = 3
+
+        line_breaker_params = {}
         sample_count = 1
         expected_count = 1
 
-        for each_event in tokenized_events:
+        # As all the sample events would have same properties except Host
+        # Assigning those values outside the loop
+        
+
+        for event in tokenized_events:
             try:
-                sample_count = int(each_event.metadata.get("sample_count", 1))
-                expected_count = int(each_event.metadata.get("expected_event_count", 1))
-            except ValueError as e:
-                raise_warning("Invalid value  {}".format(e)) 
-
-            if each_event.metadata.get("input_type") not in ["modinput", "windows_input"]:
-                expected_count = expected_count*sample_count    
-
-            unique_stanzas.add(
-                (
-                    self.get_sourcetype(each_event),
-                    self.get_source(each_event),
-                    expected_count,
-                    each_event.sample_name,
+                sample_count = int(event.metadata.get("sample_count", 1))
+                expected_count = int(
+                    event.metadata.get("expected_event_count", 1)
                 )
-            )
+            except ValueError as e:
+                raise_warning("Invalid value  {}".format(e))
 
-        for each_stanza in unique_stanzas:
+            if event.sample_name not in line_breaker_params:
+                line_breaker_params[event.sample_name] = {}
+
+            if not line_breaker_params[event.sample_name].get('sourcetype'):
+                line_breaker_params[event.sample_name][
+                    "sourcetype"
+                ] = self.get_sourcetype(event)
+            
+
+            if not line_breaker_params[event.sample_name].get('expected_event_count'):
+                if event.metadata.get("input_type") not in [
+                    "modinput",
+                    "windows_input",
+                ]:
+                    expected_count = expected_count * sample_count
+                line_breaker_params[event.sample_name][
+                    "expected_event_count"
+                ] = expected_count
+
+            if not line_breaker_params[event.sample_name].get('host'):
+                line_breaker_params[event.sample_name]['host'] = set()
+
+            event_host = self.get_hosts(event)
+            if event_host:
+                line_breaker_params[event.sample_name]['host']|=set(event_host)
+
+        for sample_name, params in line_breaker_params.items():
             yield pytest.param(
                 {
-                    "host": each_stanza[sample_name],
-                    "sourcetype": each_stanza[sourcetype],
-                    "source": each_stanza[source],
-                    "expected_event_count": each_stanza[expected_event_count],
+                    "host": params["host"],
+                    "sourcetype": params["sourcetype"],
+                    "expected_event_count": params["expected_event_count"],
                 },
                 id="{}::{}".format(
-                    each_stanza[sourcetype], each_stanza[sample_name]
+                    params["sourcetype"].replace(" ", "-"), sample_name
                 ),
             )
 
@@ -223,7 +239,14 @@ class IndexTimeTestGenerator(object):
         Yields:
             pytest.params for the test templates
         """
-        id_host = hosts[0]+"_to_"+hosts[-1] if hosts else tokenized_event.sample_name
+        id_host = tokenized_event.sample_name
+
+        if hosts:
+            if len(hosts) == 1:
+                id_host = hosts[0]
+            else:
+                id_host = hosts[0] + "_to_" + hosts[-1]
+
         yield pytest.param(
             {
                 "hosts": hosts,
@@ -231,8 +254,6 @@ class IndexTimeTestGenerator(object):
                 "source": self.get_source(tokenized_event),
                 "tokenized_event": tokenized_event,
             },
-            id="{}::{}".format(
-                self.get_sourcetype(tokenized_event),
-                id_host
-            ),
+            id="{}::{}".format(self.get_sourcetype(tokenized_event), id_host),
         )
+

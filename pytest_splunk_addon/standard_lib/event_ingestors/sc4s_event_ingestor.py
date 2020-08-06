@@ -38,7 +38,7 @@ class SC4SEventIngestor(EventIngestor):
         """
         raw_events = list()
         for event in events:
-            raw_events.extend(re.split(r'\n|\\n', event.event))
+            raw_events.extend(event.event.splitlines())
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=THREAD_POOL) as executor:
             _ = list(executor.map(self.ingest_event, raw_events))

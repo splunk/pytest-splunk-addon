@@ -336,7 +336,7 @@ def splunk_docker(
     if worker_id:
         # get the temp directory shared by all workers
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "docker_service_splunk"
+        fn = root_tmp_dir / "pytest_docker"
         with FileLock(str(fn) + ".lock"):
             if fn.is_file():
                 sleep(10)
@@ -409,7 +409,7 @@ def sc4s_docker(docker_services, tmp_path_factory, worker_id):
     if worker_id:
         # get the temp directory shared by all workers
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "docker_service_sc4s"
+        fn = root_tmp_dir / "pytest_docker"
         with FileLock(str(fn) + ".lock"):
             if fn.is_file():
                 sleep(10)

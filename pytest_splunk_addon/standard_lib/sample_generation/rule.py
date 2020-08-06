@@ -818,6 +818,18 @@ class UrlRule(Rule):
                     else:
                         url = self.fake.url()
 
+                    if bool(set(["full", "path"]).intersection(value_list)):
+                        url = (
+                            url
+                            + "/"
+                            + choice(
+                                [
+                                    self.fake.uri_path(),
+                                    self.fake.uri_page() + self.fake.uri_extension(),
+                                ]
+                            )
+                        )
+                    
                     if bool(set(["full", "query"]).intersection(value_list)):
                         url = url + self.generate_url_query_params()
                     yield self.token_value(*([str(url)]*2))

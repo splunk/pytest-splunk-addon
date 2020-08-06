@@ -67,8 +67,9 @@ class SampleEvent(object):
         """
         Returns a unique host value
         """
-        self.host_count += 1
-        return "{}_{}_{}".format("host", self.sample_name, str(self.host_count))
+        global host_count
+        host_count += 1
+        return "{}_{}_{}".format("host", self.sample_name, str(host_count))
 
     def get_field_host(self, rule):
         """

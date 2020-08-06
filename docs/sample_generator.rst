@@ -26,6 +26,7 @@ pytest-splunk-addon-data.conf.spec
     earliest = now
     latest = now
     timezone = 0000
+    breaker = {{regex}}
 
 [<sample file name>]
     * The stanza can contain the sample File Name or Regex to match multiple sample files.
@@ -49,10 +50,10 @@ host_type = plugin | event
     * If the value is plugin, the plugin will generate host with format of "stanza_{count}" to uniquely identify the events.
     * If the value is event, the host field should be provided for a token using "token.<n>.field = host". 
 
-input_type = modinput | scripted_input | syslog | syslog_tcp | syslog_udp | file_monitor | windows_input | default
+input_type = modinput | scripted_input | syslog_tcp | file_monitor | windows_input | default
     * The input_type used in addon to ingest data of a sourcetype used in stanza.
     * The way with which the sample data is ingested in Splunk depends on Splunk. The most similar ingesting approach is used for each input_type to get accurate index-time testing.
-    * For example, in an Add-on, a sourcetype "alert" is ingested through syslog in live environment, provide input_type=syslog.
+    * For example, in an Add-on, a sourcetype "alert" is ingested through syslog in live environment, provide input_type=syslog_tcp.
 
 sample_count = <count>
     * The no. of events present in the sample file.
@@ -60,17 +61,22 @@ sample_count = <count>
     * If `input_type = modinput`, do not provide this parameter.
 
 expected_event_count = <count>
-    * The no. of events this sample stanza should generate
-    * The parameter will be used to test the line breaking in index-time tests
+    * The no. of events this sample stanza should generate.
+    * The parameter will be used to test the line breaking in index-time tests.
     * To calculate expected_event_count 2 parameters can be used. 1) Number of events in the sample file. 2) Number of values of replacementType=all tokens in the sample file. Both the parameters can be multiplied to get expected_event_count.
     * For example, if sample contains 3 lines & a token has replacement_type=all and replacement has list of 2 values, then 6 events will be generated.
     * This parameter is optional, if it is not provided by the user, it will be calculated automatically by the pytest-splunk-addon.
 
 timestamp_type = plugin | event
     * This key determines if _time is assigned from event or default _time should be assigned by plugin.
-    * The parameter will be used to test the time extraction in index-time tests
+    * The parameter will be used to test the time extraction in index-time tests.
     * If value is plugin, the plugin will assign the time while ingesting the event.
     * If value is event, that means the time will be extracted from event and therfore, there should be a token provided with token.<n>.field = _time.
+
+breaker = <regex>
+    * The breaker is used to breakdown the sample file into multiple events, based on the regex provided.
+    * This parameter is optional. If it is not provided by the user, the events will be ingested into Splunk,
+      as per the *input_type* provided.
 
 Token replacement settings 
 -----------------------------
@@ -95,7 +101,7 @@ The following replacementType -> replacement values are supported
 +-----------------+-------------------------------------------------------------------------------+
 | random          | float[<start.numzerosforprecision>:<end.numzerosforprecision>]                |
 +-----------------+-------------------------------------------------------------------------------+
-| random          | list[< "," separeted list>]                                                   |
+| random          | list[< "," separated list>]                                                   |
 +-----------------+-------------------------------------------------------------------------------+
 | random          | hex([integer])                                                                |
 +-----------------+-------------------------------------------------------------------------------+
@@ -123,7 +129,7 @@ The following replacementType -> replacement values are supported
 +-----------------+-------------------------------------------------------------------------------+
 | all             | integer[<start>:<end>]                                                        |
 +-----------------+-------------------------------------------------------------------------------+
-| all             | list[< , separeted list>]                                                     |
+| all             | list[< , separated list>]                                                     |
 +-----------------+-------------------------------------------------------------------------------+
 | all             | file[<replacment file name, CSV file supported>:<column number / CSV header>] |
 +-----------------+-------------------------------------------------------------------------------+
@@ -163,7 +169,7 @@ token.<n>.replacement = <string> | <strptime> | ["list","of","values"] | guid | 
         * Column numbers in mvfile references are indexed at 1, meaning the first column is column 1, not 0.
     * For host["host", "ipv4", "ipv6", "fqdn"], 4 types of host replacement are supported. Either one or multiple from the list can be provided to randomly replace the token. 
 
-        * For host["host"], the token will be replaced with a sequential host value with pattern "host_sample_host_<number>". The line breaker test is only supported in this case.
+        * For host["host"], the token will be replaced with a sequential host value with pattern "host_sample_host_<number>".
         * For host["ipv4"], the token will be replaced with a random valid IPv4 Address.
         * For host["ipv6"], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3264:0:0:0:0 range.
         * For host["fqdn"], the token will be replaced with a sequential fqdn value with pattern "host_sample_host.sample_domain<number>.com".
@@ -226,9 +232,9 @@ Example
 
     sourcetype = juniper:junos:secintel:structured
     sourcetype_to_search = juniper:junos:secintel:structured
-    source = pytest-splunk-addon:file_monitor
+    source = pytest-splunk-addon:syslog_tcp
     host_type = plugin
-    input_type = syslog_udp
+    input_type = syslog_tcp
     timestamp_type = event
     sample_count = 10
 
