@@ -13,7 +13,7 @@ class SampleXdistGenerator():
 
     def get_samples(self):
         if "PYTEST_XDIST_WORKER" in os.environ:
-            file_path = "pytest_events"
+            file_path = os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_events"
             with FileLock(str(file_path) + ".lock"):
                 if os.path.exists(file_path):
                     with open(file_path, "rb") as file_obj:
