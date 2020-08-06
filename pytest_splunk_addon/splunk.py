@@ -502,13 +502,17 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
         "sc4s_port": sc4s[1][514],  # for sc4s
     }
 
-    if (
-        "PYTEST_XDIST_WORKER" not in os.environ
-        or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
-    ):
-        file_path = "pytest_wait"
-        with FileLock(str(file_path) + ".lock"):
-            IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
+    # we only want the first thread to potentially generate data every other thread should wait for lock to release
+    if "PYTEST_XDIST_WORKER" in os.environ:
+        if os.environ.get("PYTEST_XDIST_WORKER") == "gw0":
+            file_path = "pytest_wait"
+            with FileLock(str(file_path) + ".lock"):
+                IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
+        else:
+            sleep(10)
+            file_path = "pytest_wait"
+            with FileLock(str(file_path) + ".lock"):
+                pass
     else:
         IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
     sleep(50)
