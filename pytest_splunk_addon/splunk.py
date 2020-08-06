@@ -507,13 +507,11 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
         or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
     ):
         file_path = "pytest_wait"
-        try:
-            with FileLock(str(file_path) + ".lock"):
-                IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
-        except Timeout:
-            pass
+        with FileLock(str(file_path) + ".lock"):
+            IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
     else:
         IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
+    sleep(50)
 
 
 def is_responsive_splunk(splunk):
