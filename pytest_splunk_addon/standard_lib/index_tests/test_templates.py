@@ -208,7 +208,8 @@ class IndexTimeTestTemplate(object):
             retries=splunk_search_util.search_retry,
         )
         results = list(results)
-
+        if not results:
+            assert False, "No Events found for query: " + search
         result_fields = {
             key: [ceil(float(item[key])) for item in results]
             for key in results[0].keys()
@@ -276,4 +277,4 @@ class IndexTimeTestTemplate(object):
 
         assert (
             count_from_results == expected_events_count
-        ), f"Expected count: {expected_events_count} Actual Count: {count_from_results}"
+        ), f"Query: {query} \nExpected count: {expected_events_count} Actual Count: {count_from_results}"

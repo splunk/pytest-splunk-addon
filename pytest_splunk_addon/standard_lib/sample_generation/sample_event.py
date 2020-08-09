@@ -12,6 +12,7 @@ host_ipv6, dvc_ipv6 = 0, 0
 src_ipv6, dest_ipv6 = 0, 0
 host_count, fqdn_count = 0,0
 url_ip_count = 0
+count1, count2 = 0, 0
 
 ip_rules = {
         "src":{
@@ -107,13 +108,17 @@ class SampleEvent(object):
             addr = [int(src_ipv4 / 256) % 256, src_ipv4 % 256]
             return "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])
         elif rule == "host":
-            global host_ipv4
+            global host_ipv4, count1
             host_ipv4 += 1
-            return "".join([ip_rules.get(rule)["ipv4"], str(host_ipv4 % 101), ".0"])
+            if host_ipv4 == 101:
+                host_ipv4 = 51
+            count1 += 1
+            return "".join([ip_rules.get(rule)["ipv4"], str(host_ipv4 % 101), ".", str(count1 % 256)])
         elif rule == "dvc":
-            global dvc_ipv4
+            global dvc_ipv4, count2
             dvc_ipv4 += 1
-            return "".join([ip_rules.get(rule)["ipv4"], str(dvc_ipv4 % 51), ".0"])
+            count2 += 1
+            return "".join([ip_rules.get(rule)["ipv4"], str(dvc_ipv4 % 51), ".", str(count2 % 256)])
         elif rule == "dest":
             global dest_ipv4
             dest_ipv4 += 1
