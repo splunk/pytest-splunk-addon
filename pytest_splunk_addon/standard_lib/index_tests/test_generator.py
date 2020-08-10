@@ -3,6 +3,7 @@ import pytest
 
 from ..sample_generation import SampleXdistGenerator
 from ..sample_generation.rule import raise_warning
+from ..sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -37,6 +38,8 @@ class IndexTimeTestGenerator(object):
             return " Index Time tests cannot be executed using eventgen.conf,\
                  pytest-splunk-addon-data.conf is required."
 
+
+
         if test_type == "line_breaker":
             yield from self.generate_line_breaker_tests(tokenized_events)
 
@@ -50,9 +53,12 @@ class IndexTimeTestGenerator(object):
 
                 # Generate test params only if key_fields
                 if test_type == "key_fields" and tokenized_event.key_fields:
-
+                    event = SampleEvent.copy(tokenized_event)
+                    if tokenized_event.key_fields.get('host') and tokenized_event.metadata.get('host_prefix'):
+                        host_prefix = tokenized_event.metadata.get('host_prefix')
+                        event.key_fields['host'] = self.add_host_prefix(host_prefix, tokenized_event.key_fields.get('host'))
                     yield from self.generate_params(
-                        tokenized_event, identifier_key, hosts
+                        event, identifier_key, hosts
                     )
 
                 # Generate test only if time_values
@@ -150,7 +156,23 @@ class IndexTimeTestGenerator(object):
             )
         if isinstance(hosts, str):
             hosts = [hosts]
+        if tokenized_event.metadata.get("host_prefix"):
+            host_prefix = str(tokenized_event.metadata.get("host_prefix"))
+            hosts = self.add_host_prefix(host_prefix, hosts)
+        return hosts
+    
+    def add_host_prefix(self, host_prefix, hosts):
+        """
+        Returns value of host with prefix
 
+        Args:
+            host_prefix (str): Prefix value to be added in host
+            hosts (list): List of host
+
+        Returns:
+            Value of host with prefix
+        """
+        hosts = [host_prefix + str(host) for host in hosts]
         return hosts
 
     def get_sourcetype(self, sample_event):
