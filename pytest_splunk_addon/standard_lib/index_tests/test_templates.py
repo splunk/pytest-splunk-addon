@@ -185,11 +185,7 @@ class IndexTimeTestTemplate(object):
         if splunk_indextime_time.get("identifier"):
             extra_filter = splunk_indextime_time.get("identifier")
         else:
-            extra_filter = (
-                "(host="
-                + " OR host=".join(splunk_indextime_time.get("hosts"))
-                + ")"
-            )
+            extra_filter = "host IN (\""+"\",\"".join(set(splunk_indextime_time.get("hosts")))+"\")"
 
         if splunk_indextime_time["tokenized_event"].time_values:
             extra_filter += " | eval e_time=_time"
