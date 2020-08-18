@@ -86,7 +86,7 @@ class EventgenParser:
         """
         eventgen_dict = self.get_eventgen_stanzas()
         self.check_samples()
-        for sample_name, stanza_params in eventgen_dict.items():
+        for sample_name, stanza_params in sorted(eventgen_dict.items()):
             sample_path = os.path.join(self.path_to_samples, sample_name)
             yield SampleStanza(
                 sample_path, stanza_params,
@@ -118,10 +118,9 @@ class EventgenParser:
             Dictionary representing eventgen.conf in the above format.
         """
         eventgen_dict = {}
-        child_dict = {"tokens": {}}
         if os.path.exists(self.path_to_samples):
             for sample_file in os.listdir(self.path_to_samples):
-                for stanza in self.eventgen.sects:
+                for stanza in sorted(self.eventgen.sects):
                     stanza_match_obj = re.search(stanza, sample_file)
                     if stanza_match_obj and stanza_match_obj.group(0) == sample_file:
                         self.match_stanzas.add(stanza)
