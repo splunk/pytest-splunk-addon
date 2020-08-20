@@ -5,8 +5,6 @@ import re
 import concurrent.futures
 from .base_event_ingestor import EventIngestor
 
-THREAD_POOL = 20
-
 
 class SC4SEventIngestor(EventIngestor):
     """

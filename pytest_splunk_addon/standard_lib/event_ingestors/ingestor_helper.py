@@ -57,4 +57,4 @@ class IngestorHelper(object):
         for input_type, events in ingestor_dict.items():
 
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
-            event_ingestor.ingest(events, thread_count, thread_count)
+            event_ingestor.ingest(events, thread_count)
