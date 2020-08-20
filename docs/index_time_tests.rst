@@ -154,6 +154,90 @@ For every test case failure, there is a defined structure for the stack trace [1
 
 Get the search query from the stack trace and execute it on the Splunk instance and verify which specific type of events are causing failure.
 
+
+FAQ
+----
+
+1. What is the source of data used while testing with pytest-splunk-addon 1.3.0 and above?
+    * pytest-splunk-addon relies on samples available in addon available in samples folder under path provided ``--splunk-app`` or ``--splunk-data-generator`` options.
+2. When do I assign timestamp_type = event to test the time extraction (_time) for a stanza?
+    * When the Splunk assigns _time value from a timestamp present in event based on props configurations, you should assign ``timestamp_type=event`` for that sample stanza.
+    * Example: 
+        For this sample, Splunk assigns the value ``2020-06-23T00:00:00.000Z`` to ``_time``.
+
+        .. code-block:: text
+          
+          2020-06-23T00:00:00.000Z test_sample_1 test_static=##token_static_field## . . . 
+          
+        In this scenario the value ``2020-06-23T00:00:00.000Z`` should be tokenized, stanza should have ``timestamp_type=event`` and the token should also have ``token.0.field = _time`` as shown below:
+
+        .. code-block:: text
+
+          token.0.token = (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+)
+          token.0.replacementType = timestamp
+          token.0.replacement = %Y-%m-%dT%H:%M:%S
+          token.0.field = _time
+3. When do I assign timestamp_type = plugin to test the time extraction (_time) for a stanza?
+    * When there is no timestamp available in event or the props configurations are written to have the Splunk default timestamp assigned instead timestamp present in event, you should assign ``timestamp_type=plugin`` for that sample stanza.
+    * No _time test generates for the sample stanza when ``timestamp_type = plugin``.
+    * Example: 
+        For this sample, Splunk assigns the value ``2020-06-23T00:00:00.000Z`` to ``_time``.
+
+        .. code-block:: text
+          
+          test_sample_1 test_static=##token_static_field## src=##token_src_ipv4## . . .
+  
+        In this scenario, the stanza should have ``timestamp_type=plugin``.
+4. When do I assign host_type = plugin for a sample stanza?
+    * When there are no configurations written in props to override the host value in event and Splunk default host value is assigned for host field instead of a value present in event, you should assign ``host_type=plugin`` for that sample stanza. 
+5. When do I assign host_type = event for a sample stanza?
+    * When there are some configurations written in props to override the host value for an event you should assign ``host_type=event`` for that sample stanza.
+    * Example:
+        For this sample, Splunk assigns the value sample_host to host based on the props configurations present in addon
+
+        .. code-block:: text
+
+          test_modinput_1 host=sample_host static_value_2=##static_value_2## . . .
+
+        In this scenario the value "sample_host" should be tokenized, stanza should have ``host_type=event`` and the token should also have ``token.0.field = host`` as shown below:
+        
+        .. code-block:: text
+
+          token.0.token = ##host_value##
+          token.0.replacementType = random
+          token.0.replacement = host["host"]
+          token.0.field = host
+6. Can I assign test any field present in my event as Key Field in Key Fields tests?
+    * No, Key Fields are defined in plugin and only below fields can be validated as part of Key Field tests.
+
+      * src
+      * src_port
+      * dest
+      * dest_port
+      * dvc
+      * host
+      * user
+      * url
+7. What if I don't assign any field as key_field in a particular stanza even if its present in props?
+    * No test would generate to test Key Fields for that particular stanza and thus won't be correctly tested.
+8. When do I assign token.<n>.field = <field_name> to test the Key Fields for an event?
+    * When there props configurations written in props to extract any of the field present in Key Fields list, you should add ``token.<n>.field = <field_name>`` to the token for that field value.
+    * Example:
+        For this sample, there is report written in props that extracts ``127.0.0.1`` as ``src``,
+
+        .. code-block:: text
+
+          2020-06-23T00:00:00.000Z test_sample_1 127.0.0.1
+          
+        In this scenario the value ``127.0.0.1`` should be tokenized and the token should also have ``token.0.field = src`` as shown below:
+
+        .. code-block:: text
+
+          token.0.token = ##src_value##
+          token.0.replacementType = random
+          token.0.replacement = src["ipv4"]
+          token.0.field = src
+
 ------------
 
 .. [1] Stacktrace is the text displayed in the Exception block when the Test fails.
