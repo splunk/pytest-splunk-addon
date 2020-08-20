@@ -173,6 +173,15 @@ def pytest_addoption(parser):
         help="SC4S Port. default is 514",
     )
     group.addoption(
+        "--thread-count",
+        action="store",
+        default=20,
+        dest="thread_count",
+        help=(
+            "Thread count for Data ingestion"
+        ),
+    )
+    group.addoption(
         "--search-index",
         action="store",
         dest="search_index",
@@ -503,7 +512,8 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
             "sc4s_host": sc4s[0],  # for sc4s
             "sc4s_port": sc4s[1][514]  # for sc4s
         }
-        IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path)
+        thread_count = int(request.config.getoption("thread_count"))
+        IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, thread_count)
         sleep(50)
         if ("PYTEST_XDIST_WORKER" in os.environ):
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait", "w+"):
