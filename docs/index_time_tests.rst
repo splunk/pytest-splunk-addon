@@ -181,7 +181,7 @@ FAQ
     * When there is no timestamp available in event or the props configurations are written to have the Splunk default timestamp assigned instead timestamp present in event, you should assign ``timestamp_type=plugin`` for that sample stanza.
     * No _time test generates for the sample stanza when ``timestamp_type = plugin``.
     * Example: 
-        For this sample, Splunk assigns the value ``2020-06-23T00:00:00.000Z`` to ``_time``.
+        For this sample, Splunk assigns the default time value to ``_time``.
 
         .. code-block:: text
           
