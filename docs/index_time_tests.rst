@@ -187,7 +187,7 @@ FAQ
           
           test_sample_1 test_static=##token_static_field## src=##token_src_ipv4## . . .
   
-        In this scenario the, stanza should have ``timestamp_type=plugin``.
+        In this scenario, the stanza should have ``timestamp_type=plugin``.
 4. When do I assign host_type = plugin for a sample stanza?
     * When there are no configurations written in props to override the host value in event and Splunk default host value is assigned for host field instead of a value present in event, you should assign ``host_type=plugin`` for that sample stanza. 
 5. When do I assign host_type = event for a sample stanza?
