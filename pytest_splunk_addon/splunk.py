@@ -175,6 +175,7 @@ def pytest_addoption(parser):
     group.addoption(
         "--thread-count",
         action="store",
+        default=20,
         dest="thread_count",
         help=(
             "Thread count for Data ingestion"
