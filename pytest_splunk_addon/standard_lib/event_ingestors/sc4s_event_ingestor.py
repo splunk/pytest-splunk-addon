@@ -28,7 +28,7 @@ class SC4SEventIngestor(EventIngestor):
         self.sc4s_port = required_configs['sc4s_port']
         self.server_address = (required_configs['sc4s_host'], required_configs['sc4s_port'])
 
-    def ingest(self, events):
+    def ingest(self, events, thread_count):
         """
         Ingests events in the splunk via sc4s (Single/Batch of Events)
 
@@ -40,7 +40,7 @@ class SC4SEventIngestor(EventIngestor):
         for event in events:
             raw_events.extend(event.event.splitlines())
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=THREAD_POOL) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=thread_count) as executor:
             _ = list(executor.map(self.ingest_event, raw_events))
 
     def ingest_event(self, event):

@@ -30,7 +30,7 @@ class IngestorHelper(object):
         return ingestor
 
     @classmethod
-    def ingest_events(cls, ingest_meta_data, addon_path, config_path):
+    def ingest_events(cls, ingest_meta_data, addon_path, config_path, thread_count):
         """
         Events are ingested in the splunk.
         Args:
@@ -57,4 +57,4 @@ class IngestorHelper(object):
         for input_type, events in ingestor_dict.items():
 
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
-            event_ingestor.ingest(events)
+            event_ingestor.ingest(events, thread_count, thread_count)

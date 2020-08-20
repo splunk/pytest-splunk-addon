@@ -31,7 +31,7 @@ class HECMetricEventIngestor(EventIngestor):
         self.hec_uri = required_configs.get('splunk_hec_uri')
         self.session_headers = required_configs.get('session_headers')
 
-    def ingest(self, data):
+    def ingest(self, data, thread_count):
         """
         Ingests event and metric data into splunk using HEC token via event endpoint.
         Args:

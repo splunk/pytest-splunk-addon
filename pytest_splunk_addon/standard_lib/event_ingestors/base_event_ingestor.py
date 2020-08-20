@@ -11,5 +11,5 @@ class EventIngestor(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def ingest(self, event_object):
+    def ingest(self, event_object, thread_count):
         raise NotImplementedError

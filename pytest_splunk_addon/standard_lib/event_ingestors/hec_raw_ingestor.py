@@ -32,7 +32,7 @@ class HECRawEventIngestor(EventIngestor):
         self.hec_uri = required_configs['splunk_hec_uri']
         self.session_headers = required_configs['session_headers']
 
-    def ingest(self, events):
+    def ingest(self, events, thread_count):
         """
         Ingests data into splunk via raw endpoint.
 
