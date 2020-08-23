@@ -5,11 +5,13 @@ Provides transforms.conf parsing mechanism
 import logging
 import re
 import os
-import csv 
+import csv
 from urllib.parse import unquote
+
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 from . import convert_to_fields
+
 
 class TransformsParser(object):
     """
@@ -19,8 +21,9 @@ class TransformsParser(object):
         splunk_app_path (str): Path of the Splunk app
         app (splunk_appinspect.App): Object of Splunk app
     """
+
     def __init__(self, splunk_app_path, app):
-        self.app = app 
+        self.app = app
         self.splunk_app_path = splunk_app_path
         self._transforms = None
 
@@ -73,8 +76,10 @@ class TransformsParser(object):
             if "REGEX" in transforms_section.options:
                 LOGGER.info("Parsing REGEX of %s", transforms_stanza)
 
-                regex = r"\(\?P?(?:[<'])([^\>'\s]+)[\>']"
-                match_fields = re.findall(regex, transforms_section.options["REGEX"].value)
+                regex = r"\(\?\<(?!_KEY|_VAL)([A-Za-z0-9_]+)\>"
+                match_fields = re.findall(
+                    regex, transforms_section.options["REGEX"].value
+                )
                 for each_field in match_fields:
                     if not each_field.startswith(("_KEY_", "_VAL_")):
                         yield each_field.strip()
@@ -87,7 +92,9 @@ class TransformsParser(object):
             if "FORMAT" in transforms_section.options:
                 LOGGER.info("Parsing FORMAT of %s", transforms_stanza)
                 regex = r"(\S*)::"
-                match_fields = re.findall(regex, transforms_section.options["FORMAT"].value)
+                match_fields = re.findall(
+                    regex, transforms_section.options["FORMAT"].value
+                )
                 for each_field in match_fields:
                     if not "$" in each_field:
                         yield each_field.strip()
