@@ -3,12 +3,13 @@
 Provides props.conf parsing mechanism
 """
 import logging
-import re 
+import re
 from itertools import product
 from . import convert_to_fields, Field
 from . import TransformsParser
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
+
 
 class PropsParser(object):
     """
@@ -20,7 +21,7 @@ class PropsParser(object):
     """
 
     def __init__(self, splunk_app_path, app):
-        self.app = app 
+        self.app = app
         self.splunk_app_path = splunk_app_path
         self._props = None
         self.transforms_parser = TransformsParser(self.splunk_app_path, self.app)
@@ -46,9 +47,7 @@ class PropsParser(object):
         for stanza_type, stanza_name, stanza in self.get_props_stanzas():
             for classname in stanza.options:
                 LOGGER.info(
-                    "Parsing parameter=%s of stanza=%s",
-                    classname,
-                    stanza_name,
+                    "Parsing parameter=%s of stanza=%s", classname, stanza_name,
                 )
                 props_property = stanza.options[classname]
                 if not re.match("REPORT", classname, re.IGNORECASE):
@@ -61,17 +60,19 @@ class PropsParser(object):
                                 "stanza": stanza_name,
                                 "stanza_type": stanza_type,
                                 "classname": classname,
-                                "fields": field_list
+                                "fields": field_list,
                             }
                 else:
-                    for transform_stanza, fields in self.get_report_fields(props_property):
+                    for transform_stanza, fields in self.get_report_fields(
+                        props_property
+                    ):
                         field_list = list(fields)
                         if field_list:
                             yield {
                                 "stanza": stanza_name,
                                 "stanza_type": stanza_type,
                                 "classname": f"{classname}::{transform_stanza}",
-                                "fields": field_list
+                                "fields": field_list,
                             }
 
     def get_props_method(self, class_name):
@@ -88,7 +89,7 @@ class PropsParser(object):
             "EXTRACT": self.get_extract_fields,
             "EVAL": self.get_eval_fields,
             "FIELDALIAS": self.get_fieldalias_fields,
-            "LOOKUP": self.get_lookup_fields
+            "LOOKUP": self.get_lookup_fields,
         }
         for each_type in method_mapping:
             if re.match(each_type, class_name, re.IGNORECASE):
@@ -156,7 +157,6 @@ class PropsParser(object):
             yield template.format(*each_permutation)
         LOGGER.debug("Found %d combinations", count)
 
-
     def get_sourcetype_assignments(self, props_property):
         """
         Get the sourcetype assigned for the source
@@ -177,10 +177,9 @@ class PropsParser(object):
         Yields:
             the sourcetype field with possible value
         """
-        yield Field({
-            "name": props_property.name,
-            "expected_values": [props_property.value]
-        })
+        yield Field(
+            {"name": props_property.name, "expected_values": [props_property.value]}
+        )
 
     @convert_to_fields
     def get_extract_fields(self, props_property):
@@ -226,7 +225,6 @@ class PropsParser(object):
             yield extract_source_key.group(1)
             fields_group.insert(0, extract_source_key.group(1))
 
-
     @convert_to_fields
     def get_eval_fields(self, props_property):
         """
@@ -248,8 +246,8 @@ class PropsParser(object):
             generator of fields
         """
         regex = r"EVAL-(?P<FIELD>.*)"
-        yield from re.findall(regex, props_property.name, re.IGNORECASE)
-
+        if not props_property.value == "null()":
+            yield from re.findall(regex, props_property.name, re.IGNORECASE)
 
     @convert_to_fields
     def get_fieldalias_fields(self, props_property):
@@ -292,7 +290,6 @@ class PropsParser(object):
         # Convert list of tuples into list
         return list(set([item for t in fields_tuples for item in t]))
 
-
     def get_report_fields(self, props_property):
         """
         Returns the fields parsed from REPORT
@@ -313,13 +310,14 @@ class PropsParser(object):
             generator of (transform_stanza ,fields) parsed from transforms.conf 
         """
 
-        transforms_itr = (each_stanza.strip() for each_stanza in props_property.value.split(","))
+        transforms_itr = (
+            each_stanza.strip() for each_stanza in props_property.value.split(",")
+        )
         for transforms_section in transforms_itr:
             yield (
-                transforms_section, 
-                self.transforms_parser.get_transform_fields(transforms_section)
-            ) 
-
+                transforms_section,
+                self.transforms_parser.get_transform_fields(transforms_section),
+            )
 
     @convert_to_fields
     def get_lookup_fields(self, props_property):
@@ -338,18 +336,22 @@ class PropsParser(object):
             List of lookup fields
         """
         parsed_fields = self.parse_lookup_str(props_property.value)
-        lookup_field_list = parsed_fields["input_fields"] + parsed_fields["output_fields"]
+        lookup_field_list = (
+            parsed_fields["input_fields"] + parsed_fields["output_fields"]
+        )
 
         # If the OUTPUT or OUTPUTNEW argument is never used, then get the fields from the csv file
         if not parsed_fields["output_fields"]:
-            LOGGER.info("OUTPUT fields not found classname=%s. Parsing the lookup csv file",
-                props_property.name
+            LOGGER.info(
+                "OUTPUT fields not found classname=%s. Parsing the lookup csv file",
+                props_property.name,
             )
             lookup_field_list += list(
-                    self.transforms_parser.get_lookup_csv_fields(parsed_fields["lookup_stanza"])
+                self.transforms_parser.get_lookup_csv_fields(
+                    parsed_fields["lookup_stanza"]
                 )
+            )
         return list(set(lookup_field_list))
-
 
     def parse_lookup_str(self, lookup_str):
         """
@@ -409,5 +411,4 @@ class PropsParser(object):
             "output_fields": input_output_field_list[1],
             "lookup_stanza": lookup_stanza,
         }
-
 
