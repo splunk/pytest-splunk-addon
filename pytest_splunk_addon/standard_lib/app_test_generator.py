@@ -86,7 +86,7 @@ class AppTestGenerator(object):
                         store_events,
                         app_path=app_path,
                         config_path=config_path,
-                        test_type="key_fields",
+                        test_type="key_fields"
                         )
                 )
 
@@ -96,7 +96,7 @@ class AppTestGenerator(object):
                         store_events,
                         app_path=app_path,
                         config_path=config_path,
-                        test_type="_time",
+                        test_type="_time"
                         )
                 )
 
@@ -106,7 +106,7 @@ class AppTestGenerator(object):
                         store_events,
                         app_path=app_path,
                         config_path=config_path,
-                        test_type="line_breaker",
+                        test_type="line_breaker"
                         )
                 )
             if isinstance(pytest_params, str):

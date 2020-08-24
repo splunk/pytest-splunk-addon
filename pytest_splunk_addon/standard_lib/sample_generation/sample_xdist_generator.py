@@ -23,9 +23,9 @@ class SampleXdistGenerator():
                     sample_generator = SampleGenerator(
                         self.addon_path, self.config_path)
                     tokenized_events = list(sample_generator.get_samples())
+                    store_sample = {"conf_name" : SampleGenerator.conf_name, "tokenized_events" : tokenized_events}
                     if store_events:
                         self.store_events(tokenized_events)
-                    store_sample = {"conf_name" : SampleGenerator.conf_name, "tokenized_events" : tokenized_events}
                     with open(file_path, "wb") as file_obj:
                         pickle.dump(store_sample, file_obj)
         else:  
