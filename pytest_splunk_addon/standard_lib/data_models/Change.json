@@ -42,25 +42,25 @@
         {
           "name": "object_attrs",
           "multi_value": true,
-          "validity": "if(like(action,'%\\\"%'),null(),action)",
+          "validity": "if(like(object_attrs,'%\\\"%'),null(),object_attrs)",
           "type": "required",
           "comment": "The attributes that were updated on the updated resource object, if applicable."
         },
         {
           "name": "object_category",
-          "validity": "if(like(action,'%\\\"%'),null(),action)",
+          "validity": "if(like(object_category,'%\\\"%'),null(),object_category)",
           "type": "required",
           "comment": "Generic name for the class of the updated resource object. Expected values may be specific to an app."
         },
         {
           "name": "object_id",
-          "validity": "if(like(action,'%\\\"%'),null(),action)",
+          "validity": "if(like(object_id,'%\\\"%'),null(),object_id)",
           "type": "required",
           "comment": "The unique updated resource object ID as presented to the system, if applicable (for instance, a SID, UUID, or GUID value)."
         },
         {
           "name": "object_path",
-          "validity": "if(like(action,'%\\\"%'),null(),action)",
+          "validity": "if(like(object_path,'%\\\"%'),null(),object_path)",
           "type": "required",
           "comment": "The path of the modified resource object, if applicable (such as a file, directory, or volume)."
         },
