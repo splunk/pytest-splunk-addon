@@ -61,7 +61,8 @@ class AppTestGenerator(object):
 
         Args:
             fixture(str): fixture name
-        """
+        """ 
+        store_events = self.pytest_config.getoption("store_events")
         if fixture.startswith("splunk_searchtime_fields"):
             yield from self.dedup_tests(
                 self.fieldtest_generator.generate_tests(fixture), fixture
@@ -82,27 +83,30 @@ class AppTestGenerator(object):
             if "key_fields" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
+                        store_events,
                         app_path=app_path,
                         config_path=config_path,
-                        test_type="key_fields"
+                        test_type="key_fields",
                         )
                 )
 
             elif "_time" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
+                        store_events,
                         app_path=app_path,
                         config_path=config_path,
-                        test_type="_time"
+                        test_type="_time",
                         )
                 )
 
             elif "line_breaker" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
+                        store_events,
                         app_path=app_path,
                         config_path=config_path,
-                        test_type="line_breaker"
+                        test_type="line_breaker",
                         )
                 )
             if isinstance(pytest_params, str):

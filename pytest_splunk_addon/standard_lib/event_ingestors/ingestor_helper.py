@@ -30,7 +30,7 @@ class IngestorHelper(object):
         return ingestor
 
     @classmethod
-    def ingest_events(cls, ingest_meta_data, addon_path, config_path, thread_count):
+    def ingest_events(cls, ingest_meta_data, addon_path, config_path, thread_count, store_events):
         """
         Events are ingested in the splunk.
         Args:
@@ -41,7 +41,7 @@ class IngestorHelper(object):
 
         """
         sample_generator = SampleXdistGenerator(addon_path, config_path)
-        store_sample = sample_generator.get_samples()
+        store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         ingestor_dict = dict()
         for event in tokenized_events:

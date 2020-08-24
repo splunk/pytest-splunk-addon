@@ -210,6 +210,14 @@ def pytest_addoption(parser):
         dest="cim_report",
         help="Create a markdown report summarizing CIM compliance. Provide a relative or absolute path where the report should be created",
     )
+    group.addoption(
+        "--store-events",
+        action="store",
+        dest="store_events",
+        default=False,
+        help="Creates a json file for each of the stanza present in pytest-splunk-addon-data.conf and stores the events after tokenisation and other related info in the json file."
+            "Accepts True/False",
+    )
 
 
 @pytest.fixture(scope="session")
@@ -513,7 +521,8 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
             "sc4s_port": sc4s[1][514]  # for sc4s
         }
         thread_count = int(request.config.getoption("thread_count"))
-        IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, thread_count)
+        store_events = request.config.getoption("store_events")
+        IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, thread_count, store_events)
         sleep(50)
         if ("PYTEST_XDIST_WORKER" in os.environ):
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait", "w+"):
