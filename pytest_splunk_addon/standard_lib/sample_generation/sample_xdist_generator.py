@@ -38,8 +38,8 @@ class SampleXdistGenerator():
         return store_sample
 
     def store_events(self, tokenized_events):
-        if not os.path.exists(os.path.join(os.getcwd(),"tokenized_events")):
-            os.makedirs(os.path.join(os.getcwd(),"tokenized_events"))
+        if not os.path.exists(os.path.join(os.getcwd(),".tokenized_events")):
+            os.makedirs(os.path.join(os.getcwd(),".tokenized_events"))
         tokenized_samples_dict = {}
         for each_event in tokenized_events:
             if each_event.sample_name not in tokenized_samples_dict:
@@ -73,6 +73,6 @@ class SampleXdistGenerator():
                 })
 
         for sample_name,tokenized_sample in tokenized_samples_dict.items():
-            with open("{}.json".format(os.path.join(os.getcwd(),"tokenized_events",sample_name)), "w") as eventfile:
+            with open("{}.json".format(os.path.join(os.getcwd(),".tokenized_events",sample_name)), "w") as eventfile:
                 eventfile.write(json.dumps({sample_name:tokenized_sample}, indent="\t"))
         

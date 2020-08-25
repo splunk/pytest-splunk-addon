@@ -211,12 +211,10 @@ def pytest_addoption(parser):
         help="Create a markdown report summarizing CIM compliance. Provide a relative or absolute path where the report should be created",
     )
     group.addoption(
-        "--store-events",
-        action="store",
+        "--discard-eventlogs",
+        action="store_false",
         dest="store_events",
-        default=False,
-        help="Creates a json file for each of the stanza present in pytest-splunk-addon-data.conf and stores the events after tokenisation and other related info in the json file."
-            "Accepts True/False",
+        help="Avoids generation of the json files with the tokenised events in the working directory."
     )
 
 
