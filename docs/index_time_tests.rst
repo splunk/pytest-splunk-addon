@@ -159,7 +159,7 @@ FAQ
 ----
 
 1. What is the source of data used while testing with pytest-splunk-addon 1.3.0 and above?
-    * pytest-splunk-addon relies on samples available in addon available in samples folder under path provided ``--splunk-app`` or ``--splunk-data-generator`` options.
+    * pytest-splunk-addon relies on samples available in addon folder under path provided ``--splunk-app`` or ``--splunk-data-generator`` options.
 2. When do I assign timestamp_type = event to test the time extraction (_time) for a stanza?
     * When the Splunk assigns _time value from a timestamp present in event based on props configurations, you should assign ``timestamp_type=event`` for that sample stanza.
     * Example: 
@@ -207,7 +207,7 @@ FAQ
           token.0.replacementType = random
           token.0.replacement = host["host"]
           token.0.field = host
-6. Can I assign test any field present in my event as Key Field in Key Fields tests?
+6. Can I test any field present in my event as Key Field in Key Fields tests?
     * No, Key Fields are defined in plugin and only below fields can be validated as part of Key Field tests.
 
       * src
