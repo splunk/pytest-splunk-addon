@@ -17,7 +17,7 @@ class IndexTimeTestGenerator(object):
       for the Add-on.
     """
 
-    def generate_tests(self, app_path, config_path, test_type):
+    def generate_tests(self, store_events, app_path, config_path, test_type):
         """
         Generates the test cases based on test_type 
 
@@ -31,9 +31,8 @@ class IndexTimeTestGenerator(object):
 
         """
         sample_generator = SampleXdistGenerator(app_path, config_path)
-        store_sample = sample_generator.get_samples()
+        store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
-
         if not store_sample.get("conf_name") == "psa-data-gen":
             return " Index Time tests cannot be executed using eventgen.conf,\
                  pytest-splunk-addon-data.conf is required."

@@ -125,6 +125,12 @@ The following optional arguments are available to modify the default settings in
 
                 Time interval to wait before retrying the search query.Default value: 0.
 
+    3. To discard the eventlog generation in the working directory, user can provide following additional argument along with pytest command:
+
+        .. code-block:: console
+
+            --discard-eventlogs
+
 
 Extending pytest-splunk-addon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
