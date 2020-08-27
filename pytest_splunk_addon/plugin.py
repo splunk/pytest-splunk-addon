@@ -4,6 +4,7 @@ import sys
 import traceback
 from .standard_lib import AppTestGenerator
 from .standard_lib.cim_compliance import CIMReportPlugin
+from filelock import FileLock
 
 LOG_FILE = "pytest_splunk_addon.log"
 
@@ -77,15 +78,18 @@ def pytest_generate_tests(metafunc):
     """
     global test_generator
     for fixture in metafunc.fixturenames:
-        if fixture.startswith("splunk_searchtime") or fixture.startswith("splunk_indextime"):
+        if fixture.startswith("splunk_searchtime") or fixture.startswith(
+            "splunk_indextime"
+        ):
             LOGGER.info(
                 "generating testcases for splunk_app_searchtime. fixture=%s", fixture
             )
 
             try:
                 # Load associated test data
-                if test_generator is None:
-                    test_generator = AppTestGenerator(metafunc.config)
+                with FileLock("generator.lock"):
+                    if test_generator is None:
+                        test_generator = AppTestGenerator(metafunc.config)
                 metafunc.parametrize(fixture, test_generator.generate_tests(fixture))
             except Exception as e:
                 log_message = ""
