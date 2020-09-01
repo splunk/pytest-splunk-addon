@@ -96,6 +96,7 @@ class Rule:
             "guid": GuidRule
         }
         rule_all_support = ["integer", "list", "file"]
+        LOGGER.info("The replacement type given is: '{}' for token:'{}'".format(token.get("replacementType"), token.get("token")))
         if token.get("replacementType") not in ["static", "all", "random", "timestamp", "mvfile", "file"]:
             raise_warning("Invalid replacementType: '{}' for token:'{}' using 'random' as replacementType".format(token.get("replacementType"), token.get("token")))
             token["replacement"] = "random"
@@ -887,7 +888,7 @@ class DestRule(Rule):
                     yield self.token_value(*([choice(csv_row)]*2))
                 else:
                     raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
-        else:    
+        else:
             raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  dest['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
 
 

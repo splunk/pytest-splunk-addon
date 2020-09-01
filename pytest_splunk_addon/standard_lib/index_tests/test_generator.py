@@ -34,12 +34,13 @@ class IndexTimeTestGenerator(object):
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         if not store_sample.get("conf_name") == "psa-data-gen":
+            LOGGER.Warning(
+                "Index Time tests cannot be executed using eventgen.conf, pytest-splunk-addon-data.conf is required.")
             return " Index Time tests cannot be executed using eventgen.conf,\
                  pytest-splunk-addon-data.conf is required."
 
-
-
         if test_type == "line_breaker":
+            LOGGER.info("Generating line breaker test")
             yield from self.generate_line_breaker_tests(tokenized_events)
 
         else:
@@ -56,12 +57,15 @@ class IndexTimeTestGenerator(object):
                     if tokenized_event.key_fields.get('host') and tokenized_event.metadata.get('host_prefix'):
                         host_prefix = tokenized_event.metadata.get('host_prefix')
                         event.key_fields['host'] = self.add_host_prefix(host_prefix, tokenized_event.key_fields.get('host'))
+                    LOGGER.info(
+                        "Generating Key field test with the following params:\nevent={e}\nidentifier_key={k}\nhosts={h}".format(e=event,k=identifier_key,h=hosts))
                     yield from self.generate_params(
                         event, identifier_key, hosts
                     )
 
                 # Generate test only if time_values
                 elif test_type == "_time" and tokenized_event.metadata.get('timestamp_type') == 'event':
+                    LOGGER.info("Generating time field test with the following params:\ntokenized_event={e}\nidentifier_key={k}\nhosts={h}".format(e=tokenized_event, k=identifier_key, h=hosts))
                     yield from self.generate_params(
                         tokenized_event, identifier_key, hosts
                     )
@@ -91,6 +95,8 @@ class IndexTimeTestGenerator(object):
                 expected_count = int(
                     event.metadata.get("expected_event_count", 1)
                 )
+                LOGGER.info("Sample Count: {}".format(int(event.metadata.get("sample_count", 1))))
+                LOGGER.info("Expected Count: {}".format(int(event.metadata.get("expected_event_count", 1))))
             except ValueError as e:
                 raise_warning("Invalid value  {}".format(e))
 
@@ -121,6 +127,8 @@ class IndexTimeTestGenerator(object):
                 line_breaker_params[event.sample_name]['host']|=set(event_host)
 
         for sample_name, params in line_breaker_params.items():
+            LOGGER.info(
+                "Generating Line Breaker test with the following params:\nhost:{h}\nsourcetype:{s}\nexpected_event_count{e}".format(h=params["host"], s=params["sourcetype"], e=params["expected_event_count"]))
             yield pytest.param(
                 {
                     "host": params["host"],
@@ -158,6 +166,8 @@ class IndexTimeTestGenerator(object):
         if tokenized_event.metadata.get("host_prefix"):
             host_prefix = str(tokenized_event.metadata.get("host_prefix"))
             hosts = self.add_host_prefix(host_prefix, hosts)
+        LOGGER.info("Returning host with value {} for stanza {}".format(
+            hosts, tokenized_event.sample_name))
         return hosts
     
     def add_host_prefix(self, host_prefix, hosts):

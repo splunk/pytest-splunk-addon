@@ -93,10 +93,11 @@ class time_parse():
                 ).groups()
 
         if (hrs <= "00" or hrs >= "23") or (mins <= "00" or mins >= "59"):
-            LOGGER.info("Hours should be in range 0-23 and minutes should be in range 0-59")
+            LOGGER.info("Provided the following Hrs:%s and Mins:%s. Hours should be in range 0-23 and minutes should be in range 0-59", hrs, mins)
             return random_time
         if sign == '-':
             random_time = random_time - timedelta(hours=int(hrs), minutes=int(mins))
         else:
             random_time = random_time + timedelta(hours=int(hrs), minutes=int(mins))
+        LOGGER.info("Returning the following time for the timezone: %s", random_time)
         return random_time
