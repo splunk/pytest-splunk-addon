@@ -78,6 +78,10 @@ class HECMetricEventIngestor(EventIngestor):
                 ]
         """
         try:
+            LOGGER.info("Making a HEC event request with the following params:\nhec_uri:{}\nheaders:{}".format(
+                str(self.hec_uri), str(self.session_headers)))
+            LOGGER.debug("Creating the following sample event to be ingested via HEC event endoipnt:{}".format(
+                str(data)))
             response = requests.post(
                 self.hec_uri,
                 auth=None,

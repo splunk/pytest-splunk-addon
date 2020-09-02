@@ -4,7 +4,9 @@ from . import (
     HECMetricEventIngestor,
     SC4SEventIngestor,
 )
+import logging
 from ..sample_generation import SampleXdistGenerator
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class IngestorHelper(object):
     """
@@ -27,6 +29,7 @@ class IngestorHelper(object):
         }
 
         ingestor = ingest_methods.get(input_type)(ingest_meta_data)
+        LOGGER.debug("Using the following HEC ingestor: {}".format(str(ingestor)))
         return ingestor
 
     @classmethod
@@ -55,6 +58,7 @@ class IngestorHelper(object):
             else:
                 ingestor_dict[input_type] = [event]
         for input_type, events in ingestor_dict.items():
-
+            LOGGER.debug(
+                "Received the following input type for HEC event: {}".format(input_type))
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
             event_ingestor.ingest(events, thread_count)

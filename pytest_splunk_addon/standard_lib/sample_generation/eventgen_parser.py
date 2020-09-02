@@ -59,6 +59,8 @@ class EventgenParser:
                     "pytest-splunk-addon-data.conf", dir=relative_path
                 )
                 self.conf_name = "psa-data-gen"
+                path = self._app.get_filename(
+                    relative_path, "pytest-splunk-addon-data.conf")
 
             elif os.path.exists(
                 os.path.join(
@@ -71,11 +73,16 @@ class EventgenParser:
                     "eventgen.conf", dir=relative_path
                 )
                 self.conf_name = "eventgen"
+                path = self._app.get_filename(
+                    relative_path, "eventgen.conf")
 
             else:
                 self._eventgen = self._app.get_config("eventgen.conf")
                 self.conf_name = "eventgen"
-            LOGGER.info("Using Eventgen path: {e}\nUsing Conf file name: {c}".format(e=self._eventgen, c=self.conf_name))
+                path = self._app.get_filename(
+                    "default", "eventgen.conf")
+            LOGGER.info("Using Eventgen path: {e}\nUsing Conf file name: {c}".format(
+                e=path, c=self.conf_name))
             return self._eventgen
 
         except OSError:
