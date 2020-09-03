@@ -6,7 +6,6 @@ from ..sample_generation.rule import raise_warning
 from ..sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
-LOGGER.setLevel(logging.INFO)
 
 
 class IndexTimeTestGenerator(object):
