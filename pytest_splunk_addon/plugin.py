@@ -106,7 +106,7 @@ def init_pytest_splunk_addon_logger():
     Configure file based logger for the plugin
     """
     fh = logging.FileHandler(LOG_FILE)
-    fh.setLevel(logging.INFO)
+    fh.setLevel(logging.DEBUG)
     formatter = logging.Formatter(
         "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s"
     )
@@ -114,7 +114,7 @@ def init_pytest_splunk_addon_logger():
     logger = logging.getLogger("pytest-splunk-addon")
     logger.addHandler(fh)
     logging.root.propagate = False
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     return logger
 
 
