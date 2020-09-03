@@ -10,7 +10,7 @@ from ..cim_tests import FieldTestHelper
 
 MAX_TIME_DIFFERENCE = 45
 LOGGER = logging.getLogger("pytest-splunk-addon")
-
+LOGGER.setLevel(logging.INFO)
 
 class IndexTimeTestTemplate(object):
     """

@@ -6,6 +6,7 @@ from ..sample_generation.rule import raise_warning
 from ..sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
+LOGGER.setLevel(logging.INFO)
 
 
 class IndexTimeTestGenerator(object):
@@ -57,7 +58,7 @@ class IndexTimeTestGenerator(object):
                     if tokenized_event.key_fields.get('host') and tokenized_event.metadata.get('host_prefix'):
                         host_prefix = tokenized_event.metadata.get('host_prefix')
                         event.key_fields['host'] = self.add_host_prefix(host_prefix, tokenized_event.key_fields.get('host'))
-                    LOGGER.info(
+                    LOGGER.debug(
                         "Generating Key field test with the following params:\nevent={e}\nidentifier_key={k}\nhosts={h}".format(e=event,k=identifier_key,h=hosts))
                     yield from self.generate_params(
                         event, identifier_key, hosts
@@ -65,7 +66,7 @@ class IndexTimeTestGenerator(object):
 
                 # Generate test only if time_values
                 elif test_type == "_time" and tokenized_event.metadata.get('timestamp_type') == 'event':
-                    LOGGER.info("Generating time field test with the following params:\ntokenized_event={e}\nidentifier_key={k}\nhosts={h}".format(e=tokenized_event, k=identifier_key, h=hosts))
+                    LOGGER.debug("Generating time field test with the following params:\ntokenized_event={e}\nidentifier_key={k}\nhosts={h}".format(e=tokenized_event, k=identifier_key, h=hosts))
                     yield from self.generate_params(
                         tokenized_event, identifier_key, hosts
                     )
@@ -127,7 +128,7 @@ class IndexTimeTestGenerator(object):
                 line_breaker_params[event.sample_name]['host']|=set(event_host)
 
         for sample_name, params in line_breaker_params.items():
-            LOGGER.info(
+            LOGGER.debug(
                 "Generating Line Breaker test with the following params:\nhost:{h}\nsourcetype:{s}\nexpected_event_count{e}".format(h=params["host"], s=params["sourcetype"], e=params["expected_event_count"]))
             yield pytest.param(
                 {

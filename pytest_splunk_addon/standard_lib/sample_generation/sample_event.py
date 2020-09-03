@@ -5,7 +5,7 @@ from faker import Faker
 from copy import deepcopy
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
-
+LOGGER.setLevel(logging.INFO)
 host_ipv4, dvc_ipv4 = 50, 0
 src_ipv4, dest_ipv4 = 0, 0
 host_ipv6, dvc_ipv6 = 0, 0

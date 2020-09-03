@@ -7,7 +7,7 @@ import os
 requests.urllib3.disable_warnings()
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
-
+LOGGER.setLevel(logging.INFO)
 
 class HECEventIngestor(EventIngestor):
     """

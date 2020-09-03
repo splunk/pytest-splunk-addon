@@ -10,7 +10,7 @@ requests.urllib3.disable_warnings()
 import os
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
-
+LOGGER.setLevel(logging.INFO)
 class HECMetricEventIngestor(EventIngestor):
     """
     Class to ingest event via HEC

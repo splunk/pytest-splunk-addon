@@ -96,7 +96,8 @@ class Rule:
             "guid": GuidRule
         }
         rule_all_support = ["integer", "list", "file"]
-        LOGGER.info("The replacement type given is: '{}' for token:'{}'".format(token.get("replacementType"), token.get("token")))
+        LOGGER.info("The replacement type given is: '{}' for token:'{}'".format(
+            token.get("replacementType"), token.get("token")))
         if token.get("replacementType") not in ["static", "all", "random", "timestamp", "mvfile", "file"]:
             raise_warning("Invalid replacementType: '{}' for token:'{}' using 'random' as replacementType".format(token.get("replacementType"), token.get("token")))
             token["replacement"] = "random"
@@ -111,7 +112,8 @@ class Rule:
                 if replacement.lower().startswith(each_rule):
                     if replacement_type == "all" and each_rule not in rule_all_support:
                         token["replacementType"] = "random"
-                        LOGGER.warning("replacement_type=all is not supported for {} rule applied to {} token.".format(each_rule, token.get("token")))
+                        LOGGER.warning("replacement_type=all is not supported for {} rule applied to {} token.".format(
+                            each_rule, token.get("token")))
                         warnings.warn(UserWarning("replacement_type=all is not supported for {} rule applied to {} token.".format(each_rule, token.get("token"))))
                     return rule_book[each_rule](token, sample_path=sample_path)
         elif replacement_type == "file" or replacement_type == "mvfile":
