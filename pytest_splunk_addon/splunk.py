@@ -25,6 +25,7 @@ RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 LOGGER = logging.getLogger("pytest-splunk-addon")
 PYTEST_XDIST_TESTRUNUID = ""
 
+
 def pytest_addoption(parser):
     """Add options for interaction with Splunk this allows the tool to work in two modes
     1) docker mode which is typically used by developers on their workstation
@@ -177,9 +178,7 @@ def pytest_addoption(parser):
         action="store",
         default=20,
         dest="thread_count",
-        help=(
-            "Thread count for Data ingestion"
-        ),
+        help=("Thread count for Data ingestion"),
     )
     group.addoption(
         "--search-index",
@@ -214,7 +213,7 @@ def pytest_addoption(parser):
         "--discard-eventlogs",
         action="store_false",
         dest="store_events",
-        help="Avoids generation of the json files with the tokenised events in the working directory."
+        help="Avoids generation of the json files with the tokenised events in the working directory.",
     )
 
 
@@ -347,16 +346,12 @@ def splunk_docker(
         dict: Details of the splunk instance including host, port, username & password.
     """
     LOGGER.info("Starting docker_service=splunk")
-
     if worker_id:
         # get the temp directory shared by all workers
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
         fn = root_tmp_dir / "pytest_docker"
         with FileLock(str(fn) + ".lock"):
-            if fn.is_file():
-                sleep(10)
-
-    docker_services.start("splunk")
+            docker_services.start("splunk")
 
     splunk_info = {
         "host": docker_services.docker_ip,
@@ -426,10 +421,7 @@ def sc4s_docker(docker_services, tmp_path_factory, worker_id):
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
         fn = root_tmp_dir / "pytest_docker"
         with FileLock(str(fn) + ".lock"):
-            if fn.is_file():
-                sleep(10)
-
-    docker_services.start("sc4s")
+            docker_services.start("sc4s")
 
     ports = {514: docker_services.port_for("sc4s", 514)}
     for x in range(5000, 5007):
@@ -508,7 +500,10 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
     manual configurations are required.
     """
     global PYTEST_XDIST_TESTRUNUID
-    if ("PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
+    if (
+        "PYTEST_XDIST_WORKER" not in os.environ
+        or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
+    ):
         addon_path = request.config.getoption("splunk_app")
         config_path = request.config.getoption("splunk_data_generator")
 
@@ -516,13 +511,15 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
             "sc4s_host": sc4s[0],  # for sc4s
-            "sc4s_port": sc4s[1][514]  # for sc4s
+            "sc4s_port": sc4s[1][514],  # for sc4s
         }
         thread_count = int(request.config.getoption("thread_count"))
         store_events = request.config.getoption("store_events")
-        IngestorHelper.ingest_events(ingest_meta_data, addon_path, config_path, thread_count, store_events)
+        IngestorHelper.ingest_events(
+            ingest_meta_data, addon_path, config_path, thread_count, store_events
+        )
         sleep(50)
-        if ("PYTEST_XDIST_WORKER" in os.environ):
+        if "PYTEST_XDIST_WORKER" in os.environ:
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait", "w+"):
                 PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
 
@@ -582,6 +579,7 @@ def is_responsive(url):
             "Could not connect to url yet. Will try again. exception=%s", str(e),
         )
         return False
+
 
 def pytest_unconfigure(config):
     if PYTEST_XDIST_TESTRUNUID:
