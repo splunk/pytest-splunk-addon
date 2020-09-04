@@ -4,6 +4,8 @@ import os
 
 from splunk_appinspect import App
 from .mapping import FIELD_MAPPING, FILE_MAPPING
+import logging
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class UpdateEventgen():
@@ -21,6 +23,7 @@ class UpdateEventgen():
                 self._eventgen = self._app.get_config("eventgen.conf")
             return self._eventgen
         except OSError:
+            LOGGER.error("Eventgen.conf not found")
             raise Exception("Eventgen.conf not found")
             return None
 
@@ -84,7 +87,6 @@ class UpdateEventgen():
                         eventgen_dict[sample_file]["sample_count"] = events_in_file
                         eventgen_dict[sample_file]["add_comment"] = True
                         eventgen_dict[sample_file]["tokens"] = {}
-
         return eventgen_dict
 
     # update the stanzas in dict
@@ -190,7 +192,7 @@ class UpdateEventgen():
             new_conf_path : file path for creating new conf file
         """
         with open(new_conf_path, 'w') as new_eventgen:
-
+            LOGGER.info("created new file {}".format(new_conf_path))
             # writing file metadata in new eventgen file
             comment = "## Stanza gets metadata from main stanza"
             for file_metadata in self.eventgen.headers:

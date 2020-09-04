@@ -4,6 +4,8 @@ import os
 import re
 import concurrent.futures
 from .base_event_ingestor import EventIngestor
+import logging
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class SC4SEventIngestor(EventIngestor):
@@ -50,7 +52,9 @@ class SC4SEventIngestor(EventIngestor):
                 break
             except Exception as e:
                 tried += 1
+                LOGGER.debug("Attempt {} to ingest data with SC4S".format(str(tried)))
                 if tried > 90:
+                    LOGGER.error("Failed to ingest event with SC4S {} times".format(str(tried)))
                     raise e
                 sleep(1)
         #sendall sends the entire buffer you pass or throws an exception.

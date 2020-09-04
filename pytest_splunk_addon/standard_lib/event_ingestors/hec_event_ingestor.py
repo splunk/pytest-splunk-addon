@@ -8,7 +8,6 @@ requests.urllib3.disable_warnings()
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-
 class HECEventIngestor(EventIngestor):
     """
     Class to ingest event via HEC Event
@@ -89,7 +88,6 @@ class HECEventIngestor(EventIngestor):
             if event.metadata.get('timestamp_type').lower() == 'event':
                 if event.time_values:
                     event_dict['time'] = event.time_values[0]
-
             data.append(event_dict)
 
         batch_event_list = []
@@ -101,6 +99,10 @@ class HECEventIngestor(EventIngestor):
 
     def __ingest(self, data):
         try:
+            LOGGER.info("Making a HEC event request with the following params:\nhec_uri:{}\nheaders:{}".format(
+                str(self.hec_uri), str(self.session_headers)))
+            LOGGER.debug("Creating the following sample event to be ingested via HEC event endoipnt:{}".format(
+                str(data)))
             response = requests.post(
                 "{}/{}".format(self.hec_uri, "event"),
                 auth=None,

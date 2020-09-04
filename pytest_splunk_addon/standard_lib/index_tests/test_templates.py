@@ -11,7 +11,6 @@ from ..cim_tests import FieldTestHelper
 MAX_TIME_DIFFERENCE = 45
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-
 class IndexTimeTestTemplate(object):
     """
     Test templates to test the index time fields of an App
@@ -78,13 +77,16 @@ class IndexTimeTestTemplate(object):
 
         search = "search {} {}".format(index_list, query)
         record_property("Query", search)
-
+        LOGGER.debug(
+            "Base search for indextime key field test: {}".format(search))
         results = splunk_search_util.getFieldValuesList(
             search,
             interval=splunk_search_util.search_interval,
             retries=splunk_search_util.search_retry,
         )
         results = list(results)
+        LOGGER.debug(
+            "Results:{}".format(results))
 
         if not results:
             assert False, "No Events found for query " + search
@@ -197,13 +199,15 @@ class IndexTimeTestTemplate(object):
         search = "search {} {}".format(index_list, query)
 
         record_property("Query", search)
-
+        LOGGER.debug(
+            "Base search for indextime time field test: {}".format(search))
         results = splunk_search_util.getFieldValuesList(
             search,
             interval=splunk_search_util.search_interval,
             retries=splunk_search_util.search_retry,
         )
         results = list(results)
+        LOGGER.debug("Results:{}".format(results))
         if not results:
             assert False, "No Events found for query: " + search
         result_fields = {
@@ -262,6 +266,8 @@ class IndexTimeTestTemplate(object):
         )
         record_property("Query", query)
 
+        LOGGER.debug(
+            "Base search for indextime key field test: {}".format(query))
         results = list(
             splunk_search_util.getFieldValuesList(
                 query,
@@ -270,7 +276,8 @@ class IndexTimeTestTemplate(object):
             )
         )
         count_from_results = int(results[0].get("count"))
-
+        LOGGER.debug(
+            "Resulting count:{}".format(count_from_results))
         assert (
             count_from_results == expected_events_count
         ), f"Query: {query} \nExpected count: {expected_events_count} Actual Count: {count_from_results}"

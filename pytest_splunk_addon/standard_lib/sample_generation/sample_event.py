@@ -5,7 +5,6 @@ from faker import Faker
 from copy import deepcopy
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
-
 host_ipv4, dvc_ipv4 = 50, 0
 src_ipv4, dest_ipv4 = 0, 0
 host_ipv6, dvc_ipv6 = 0, 0
@@ -62,6 +61,8 @@ class SampleEvent(object):
         Args:
             new_event (str): Event content 
         """
+        LOGGER.debug("Updated the event {} with {}".format(
+            self.event, new_event))
         self.event = new_event
 
     def get_host(self):
@@ -70,6 +71,8 @@ class SampleEvent(object):
         """
         global host_count
         host_count += 1
+        LOGGER.debug("Creating host value: {}_{}_{}".format(
+            "host", self.sample_name, str(host_count)))
         return "{}_{}_{}".format("host", self.sample_name, str(host_count))
 
     def get_field_host(self, rule):
@@ -81,6 +84,8 @@ class SampleEvent(object):
         """
         global host_count
         host_count += 1
+        LOGGER.debug("Creating field with value: {}_{}{}".format(
+            rule, "sample_host", host_count))
         return "{}_{}{}".format(rule, "sample_host", host_count)
 
     def get_field_fqdn(self, rule):
@@ -92,6 +97,8 @@ class SampleEvent(object):
         """
         global fqdn_count
         fqdn_count += 1
+        LOGGER.debug("Creating fgdn field with value: {}_{}.{}{}.com".format(
+            rule, "sample_host", "sample_domain", fqdn_count))
         return "{}_{}.{}{}.com".format(rule, "sample_host", "sample_domain", fqdn_count)
 
     def get_ipv4(self, rule):
@@ -106,6 +113,8 @@ class SampleEvent(object):
             global src_ipv4
             src_ipv4 += 1
             addr = [int(src_ipv4 / 256) % 256, src_ipv4 % 256]
+            LOGGER.debug("Creating ipv4 field with value: {}".format("".join(
+                [ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])))
             return "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])
         elif rule == "host":
             global host_ipv4, host_ipv4_octet_count
@@ -113,24 +122,35 @@ class SampleEvent(object):
             if host_ipv4 == 101:
                 host_ipv4 = 51
             host_ipv4_octet_count += 1
+            LOGGER.debug("Creating ipv4 field with value: {}".format("".join([ip_rules.get(rule)[
+                        "ipv4"], str(host_ipv4 % 101), ".", str(host_ipv4_octet_count % 256)])))
             return "".join([ip_rules.get(rule)["ipv4"], str(host_ipv4 % 101), ".", str(host_ipv4_octet_count % 256)])
         elif rule == "dvc":
             global dvc_ipv4, dvc_ipv4_octet_count
             dvc_ipv4 += 1
             dvc_ipv4_octet_count += 1
+            LOGGER.debug("Creating ipv4 field with value: {}".format("".join([ip_rules.get(
+                rule)["ipv4"], str(dvc_ipv4 % 51), ".", str(dvc_ipv4_octet_count % 256)])))
             return "".join([ip_rules.get(rule)["ipv4"], str(dvc_ipv4 % 51), ".", str(dvc_ipv4_octet_count % 256)])
         elif rule == "dest":
             global dest_ipv4
             dest_ipv4 += 1
             addr = [int(dest_ipv4 / 256) % 256, dest_ipv4 % 256]
+            LOGGER.debug("Creating ipv4 field with value: {}".format(
+                "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])))
             return "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])
         elif rule == "url":
             global url_ip_count
             url_ip_count += 1
             addr = [int(url_ip_count / 256) % 256, url_ip_count % 256]
+            LOGGER.debug("Creating ipv4 field with value: {}".format(
+                "".join([ip_rules.get(rule)["ip_host"], str(addr[0]), ".", str(addr[1])])))
             return "".join([ip_rules.get(rule)["ip_host"], str(addr[0]), ".", str(addr[1])])
         else:
-            return Faker().ipv4()
+            temp_ipv4=Faker().ipv4()
+            LOGGER.debug(
+                "Creating ipv4 field with value: {}".format(temp_ipv4))
+            return temp_ipv4
 
     def get_ipv6(self, rule):
         """
@@ -157,11 +177,16 @@ class SampleEvent(object):
             ipv6 = dest_ipv6 % (int("ffffffffffffffff", 16))
             dest_ipv6 += 1
         else:
-            return Faker().ipv6()
+            temp_ipv4 = Faker().ipv6()
+            LOGGER.debug(
+                "Creating ipv6 field with value: {}".format(temp_ipv4))
+            return temp_ipv4
 
         hex_count = hex(ipv6)
         non_zero_cnt = len(hex_count[2:])
         addr = "{}{}".format("0"*(16-non_zero_cnt), hex_count[2:])
+        LOGGER.debug("Creating ipv6 field with value: {}:{}".format(ip_rules.get(rule)[
+                     "ipv6"], ':'.join(addr[i: i+4] for i in range(0, len(addr), 4))))
         return "{}:{}".format(ip_rules.get(rule)["ipv6"],':'.join(addr[i:i+4] for i in range(0, len(addr), 4)))
 
     def get_token_count(self, token):

@@ -29,16 +29,20 @@ class EventgenParser:
     @property
     def path_to_samples(self):
         if os.path.exists(os.path.join(self.config_path, "samples")):
+            LOGGER.info("Samples path is: {}".format(os.path.join(self.config_path, "samples")))
             return os.path.join(self.config_path, "samples")
         elif os.path.exists(
             os.path.join(
                 os.path.abspath(os.path.join(self.config_path, os.pardir)), "samples"
             )
         ):
+            LOGGER.info("Samples path is: {}".format(os.path.join(os.path.abspath(os.path.join(
+                    self.config_path, os.pardir)), "samples")))
             return os.path.join(
                 os.path.abspath(os.path.join(self.config_path, os.pardir)), "samples"
             )
         else:
+            LOGGER.info("Samples path is: {}".format(os.path.join(self.addon_path, "samples")))
             return os.path.join(self.addon_path, "samples")
 
     @property
@@ -55,6 +59,8 @@ class EventgenParser:
                     "pytest-splunk-addon-data.conf", dir=relative_path
                 )
                 self.conf_name = "psa-data-gen"
+                path = self._app.get_filename(
+                    relative_path, "pytest-splunk-addon-data.conf")
 
             elif os.path.exists(
                 os.path.join(
@@ -67,10 +73,16 @@ class EventgenParser:
                     "eventgen.conf", dir=relative_path
                 )
                 self.conf_name = "eventgen"
+                path = self._app.get_filename(
+                    relative_path, "eventgen.conf")
 
             else:
                 self._eventgen = self._app.get_config("eventgen.conf")
                 self.conf_name = "eventgen"
+                path = self._app.get_filename(
+                    "default", "eventgen.conf")
+            LOGGER.info("Using Eventgen path: {e}\nUsing Conf file name: {c}".format(
+                e=path, c=self.conf_name))
             return self._eventgen
 
         except OSError:
@@ -155,3 +167,5 @@ class EventgenParser:
             for stanza in self.eventgen.sects:
                 if stanza not in self.match_stanzas:
                     raise_warning("No sample file found for stanza : {}".format(stanza))
+                LOGGER.info(
+                        "Sample file found for stanza : {}".format(stanza))

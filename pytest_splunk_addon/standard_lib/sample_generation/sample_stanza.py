@@ -167,6 +167,7 @@ class SampleStanza(object):
         event_host = self.metadata.get("host") + "_" + str(self.host_count)
         event_metadata = copy.deepcopy(self.metadata)
         event_metadata.update(host=event_host)
+        LOGGER.info("event metadata: {}".format(event_metadata))
         return event_metadata
 
     def _get_raw_sample(self):
