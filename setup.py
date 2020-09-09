@@ -36,7 +36,7 @@ setup(
         "logutils~=0.3.5",
         "junitparser==1.4.1",
         "requests2~=2.16",
-        "splunk_appinspect>=2.0.1",
+        "splunk_appinspect==2.2.1",
         "six~=1.12.0",
         "jsonschema~=3.2.0",
         "faker~=4.1.1",
@@ -64,9 +64,10 @@ setup(
             "plugin = pytest_splunk_addon.plugin",
             "splunk = pytest_splunk_addon.splunk",
         ],
-        "console_scripts": ["cim-report=pytest_splunk_addon.standard_lib.cim_compliance.junit_parser:main",
-                            "generate-indextime-conf=pytest_splunk_addon.standard_lib.utilities.create_new_eventgen:main"
-                        ]
+        "console_scripts": [
+            "cim-report=pytest_splunk_addon.standard_lib.cim_compliance.junit_parser:main",
+            "generate-indextime-conf=pytest_splunk_addon.standard_lib.utilities.create_new_eventgen:main",
+        ],
     },
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
