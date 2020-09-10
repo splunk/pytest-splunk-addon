@@ -61,15 +61,15 @@ class SC4SEventIngestor(EventIngestor):
                 sock.close()
 
         raw_events = list()
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect(self.server_address)
         for event in events:
             # raw_events.extend()
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect(self.server_address)
             for se in event.event.splitlines():
                 try:
-                    sock.sendall(str.encode(se))
+                    sock.sendall(str.encode(se + "\n"))
                 except Exception as e:
                     LOGGER.debug("Attempt ingest data with SC4S=".format(se))
                     LOGGER.exception(e)
                     sleep(1)
-            sock.close()
+        sock.close()
