@@ -5,6 +5,7 @@ import re
 import concurrent.futures
 from .base_event_ingestor import EventIngestor
 import logging
+
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
@@ -24,9 +25,12 @@ class SC4SEventIngestor(EventIngestor):
     """
 
     def __init__(self, required_configs):
-        self.sc4s_host = required_configs['sc4s_host']
-        self.sc4s_port = required_configs['sc4s_port']
-        self.server_address = (required_configs['sc4s_host'], required_configs['sc4s_port'])
+        self.sc4s_host = required_configs["sc4s_host"]
+        self.sc4s_port = required_configs["sc4s_port"]
+        self.server_address = (
+            required_configs["sc4s_host"],
+            required_configs["sc4s_port"],
+        )
 
     def ingest(self, events, thread_count):
         """
@@ -36,16 +40,10 @@ class SC4SEventIngestor(EventIngestor):
             events (list): Events with newline character or LineBreaker as separator
 
         """
-        raw_events = list()
-        for event in events:
-            raw_events.extend(event.event.splitlines())
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=thread_count) as executor:
-            _ = list(executor.map(self.ingest_event, raw_events))
-
-    def ingest_event(self, event):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)        
+        # This loop just checks for a viable remote connection
         tried = 0
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         while True:
             try:
                 sock.connect(self.server_address)
@@ -54,8 +52,24 @@ class SC4SEventIngestor(EventIngestor):
                 tried += 1
                 LOGGER.debug("Attempt {} to ingest data with SC4S".format(str(tried)))
                 if tried > 90:
-                    LOGGER.error("Failed to ingest event with SC4S {} times".format(str(tried)))
+                    LOGGER.error(
+                        "Failed to ingest event with SC4S {} times".format(str(tried))
+                    )
                     raise e
                 sleep(1)
-        #sendall sends the entire buffer you pass or throws an exception.
-        sock.sendall(str.encode(event))
+            finally:
+                sock.close()
+
+        raw_events = list()
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect(self.server_address)
+        for event in events:
+            # raw_events.extend()
+            for se in event.event.splitlines():
+                try:
+                    sock.sendall(str.encode(se + "\n"))
+                except Exception as e:
+                    LOGGER.debug("Attempt ingest data with SC4S=".format(se))
+                    LOGGER.exception(e)
+                    sleep(1)
+        sock.close()
