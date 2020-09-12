@@ -5,13 +5,13 @@ from faker import Faker
 from copy import deepcopy
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
-host_ipv4, dvc_ipv4 = 50, 0
+host_ipv4, dvc_ipv4 = 51, 0
 src_ipv4, dest_ipv4 = 0, 0
 host_ipv6, dvc_ipv6 = 0, 0
 src_ipv6, dest_ipv6 = 0, 0
 host_count, fqdn_count = 0,0
 url_ip_count = 0
-host_ipv4_octet_count, dvc_ipv4_octet_count = 0, 0
+host_ipv4_octet_count, dvc_ipv4_octet_count = -1, 0
 
 ip_rules = {
         "src":{
@@ -118,10 +118,12 @@ class SampleEvent(object):
             return "".join([ip_rules.get(rule)["ipv4"], str(addr[0]), ".", str(addr[1])])
         elif rule == "host":
             global host_ipv4, host_ipv4_octet_count
-            host_ipv4 += 1
+            host_ipv4_octet_count += 1
+            if host_ipv4_octet_count > 255:
+                host_ipv4 += 1
+                host_ipv4_octet_count = (host_ipv4_octet_count % 256)
             if host_ipv4 == 101:
                 host_ipv4 = 51
-            host_ipv4_octet_count += 1
             LOGGER.debug("Creating ipv4 field with value: {}".format("".join([ip_rules.get(rule)[
                         "ipv4"], str(host_ipv4 % 101), ".", str(host_ipv4_octet_count % 256)])))
             return "".join([ip_rules.get(rule)["ipv4"], str(host_ipv4 % 101), ".", str(host_ipv4_octet_count % 256)])
