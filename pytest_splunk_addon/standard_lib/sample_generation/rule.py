@@ -53,7 +53,7 @@ class Rule:
 
     user_header = ["name", "email", "domain_user", "distinquised_name"]
     src_header = ["host", "ipv4", "ipv6", "fqdn"]
-    token_value = namedtuple("token_value", ['key', 'value'])
+    token_value = namedtuple("token_value", ["key", "value"])
 
     def __init__(self, token, eventgen_params=None, sample_path=None):
         self.token = token["token"]
@@ -93,13 +93,27 @@ class Rule:
             "src": SrcRule,
             "dest": DestRule,
             "dvc": DvcRule,
-            "guid": GuidRule
+            "guid": GuidRule,
         }
         rule_all_support = ["integer", "list", "file"]
-        LOGGER.info("The replacement type given is: '{}' for token:'{}'".format(
-            token.get("replacementType"), token.get("token")))
-        if token.get("replacementType") not in ["static", "all", "random", "timestamp", "mvfile", "file"]:
-            raise_warning("Invalid replacementType: '{}' for token:'{}' using 'random' as replacementType".format(token.get("replacementType"), token.get("token")))
+        LOGGER.info(
+            "The replacement type given is: '{}' for token:'{}'".format(
+                token.get("replacementType"), token.get("token")
+            )
+        )
+        if token.get("replacementType") not in [
+            "static",
+            "all",
+            "random",
+            "timestamp",
+            "mvfile",
+            "file",
+        ]:
+            raise_warning(
+                "Invalid replacementType: '{}' for token:'{}' using 'random' as replacementType".format(
+                    token.get("replacementType"), token.get("token")
+                )
+            )
             token["replacement"] = "random"
         replacement_type = token["replacementType"]
         replacement = token["replacement"]
@@ -112,13 +126,21 @@ class Rule:
                 if replacement.lower().startswith(each_rule):
                     if replacement_type == "all" and each_rule not in rule_all_support:
                         token["replacementType"] = "random"
-                        LOGGER.warning("replacement_type=all is not supported for {} rule applied to {} token.".format(
-                            each_rule, token.get("token")))
-                        warnings.warn(UserWarning("replacement_type=all is not supported for {} rule applied to {} token.".format(each_rule, token.get("token"))))
+                        LOGGER.warning(
+                            "replacement_type=all is not supported for {} rule applied to {} token.".format(
+                                each_rule, token.get("token")
+                            )
+                        )
+                        warnings.warn(
+                            UserWarning(
+                                "replacement_type=all is not supported for {} rule applied to {} token.".format(
+                                    each_rule, token.get("token")
+                                )
+                            )
+                        )
                     return rule_book[each_rule](token, sample_path=sample_path)
         elif replacement_type == "file" or replacement_type == "mvfile":
             return FileRule(token, sample_path=sample_path)
-
 
     def apply(self, events):
         """
@@ -142,24 +164,23 @@ class Rule:
                         new_event = SampleEvent.copy(each_event)
                         global event_host_count
                         event_host_count += 1
-                        new_event.metadata["host"] = "{}_{}".format(
-                            each_event.sample_name, event_host_count
-                            )
-                        new_event.replace_token(self.token, each_token_value.value)
-                        new_event.register_field_value(
-                            self.field, each_token_value
+                        new_event.metadata["host"] = "{}-{}".format(
+                            each_event.sample_name.replace("_", "-").replace(".", "-"),
+                            event_host_count,
                         )
+                        new_event.metadata["id"] = "{}_{}".format(
+                            each_event.sample_name, event_host_count,
+                        )
+                        new_event.replace_token(self.token, each_token_value.value)
+                        new_event.register_field_value(self.field, each_token_value)
                         new_events.append(new_event)
                 else:
-                    each_event.replace_token(
-                        self.token,
-                        token_values
-                    )
+                    each_event.replace_token(self.token, token_values)
 
                     if not (
-                        each_event.metadata.get(
-                                'timestamp_type') != 'event'
-                            and self.field == "_time"):
+                        each_event.metadata.get("timestamp_type") != "event"
+                        and self.field == "_time"
+                    ):
                         each_event.register_field_value(self.field, token_values)
                     new_events.append(each_event)
             else:
@@ -188,15 +209,8 @@ class Rule:
         domain_user = r"sample_domain.com\user{}".format(user_email_count)
         distinguished_name = "CN=user{}".format(user_email_count)
         csv_row.extend([name, email, domain_user, distinguished_name])
-        index_list = [
-            i
-            for i, item in enumerate(headers)
-            if item in value_list
-        ]
-        if (
-            hasattr(sample, "replacement_map")
-            and key in sample.replacement_map
-        ):
+        index_list = [i for i, item in enumerate(headers) if item in value_list]
+        if hasattr(sample, "replacement_map") and key in sample.replacement_map:
             sample.replacement_map[key].append(csv_row)
         else:
             sample.__setattr__("replacement_map", {key: [csv_row]})
@@ -233,10 +247,12 @@ class Rule:
         global event_host_count
         event_host_count = 0
 
+
 class IntRule(Rule):
     """
     IntRule 
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random int between the range mentioned in token.
@@ -245,29 +261,30 @@ class IntRule(Rule):
             sample (SampleEvent): Instance containing event info
             token_count (int): No. of token in sample event where rule is applicable
         """
-        limits_match = re.match(
-            r"[Ii]nteger\[(-?\d+):(-?\d+)\]", self.replacement
-        )
+        limits_match = re.match(r"[Ii]nteger\[(-?\d+):(-?\d+)\]", self.replacement)
         if limits_match:
-            lower_limit, upper_limit = limits_match.groups() 
+            lower_limit, upper_limit = limits_match.groups()
             if self.replacement_type == "random":
                 for _ in range(token_count):
                     yield self.token_value(
-                        *([randint(int(lower_limit), int(upper_limit))]*2)
-                        )
+                        *([randint(int(lower_limit), int(upper_limit))] * 2)
+                    )
             else:
                 for each_int in range(int(lower_limit), int(upper_limit)):
-                    yield self.token_value(
-                        *([str(each_int)]*2)
-                        )
+                    yield self.token_value(*([str(each_int)] * 2))
         else:
-            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try integer[0:10]".format(self.replacement, sample.sample_name))
+            raise_warning(
+                "Non-supported format: '{}' in stanza '{}'.\n Try integer[0:10]".format(
+                    self.replacement, sample.sample_name
+                )
+            )
 
 
 class FloatRule(Rule):
     """
     FloatRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random float no. between the range mentioned in token.
@@ -276,9 +293,7 @@ class FloatRule(Rule):
             sample (SampleEvent): Instance containing event info
             token_count (int): No. of token in sample event where rule is applicable
         """
-        float_match = re.match(
-            r"[Ff]loat\[(-?[\d\.]+):(-?[\d\.]+)\]", self.replacement
-        )
+        float_match = re.match(r"[Ff]loat\[(-?[\d\.]+):(-?[\d\.]+)\]", self.replacement)
         if float_match:
             lower_limit, upper_limit = float_match.groups()
             precision = re.search("\[-?\d+\.?(\d*):", self.replacement).group(1)
@@ -286,23 +301,29 @@ class FloatRule(Rule):
                 precision = str(1)
             for _ in range(token_count):
                 yield self.token_value(
-                        *([round(
-                            uniform(
-                                float(lower_limit),
-                                float(upper_limit)
-                                ),
-                            len(precision),
+                    *(
+                        [
+                            round(
+                                uniform(float(lower_limit), float(upper_limit)),
+                                len(precision),
                             )
-                        ]*2)
-                        )
+                        ]
+                        * 2
+                    )
+                )
         else:
-            raise_warning("Non-supported format: '{}' in stanza '{}'.\n i.e float[0.00:70.00]".format(self.replacement, sample.sample_name))
+            raise_warning(
+                "Non-supported format: '{}' in stanza '{}'.\n i.e float[0.00:70.00]".format(
+                    self.replacement, sample.sample_name
+                )
+            )
 
 
 class ListRule(Rule):
     """
     ListRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random value from the list mentioned in token.
@@ -311,27 +332,30 @@ class ListRule(Rule):
             sample (SampleEvent): Instance containing event info
             token_count (int): No. of token in sample event where rule is applicable
         """
-        value_match = re.match(
-            r"[lL]ist(\[.*?\])", self.replacement
-        )
-        if value_match:    
+        value_match = re.match(r"[lL]ist(\[.*?\])", self.replacement)
+        if value_match:
             value_list_str = value_match.group(1)
             value_list = eval(value_list_str)
 
             if self.replacement_type == "random":
                 for _ in range(token_count):
-                    yield self.token_value(*([str(choice(value_list))]*2))
+                    yield self.token_value(*([str(choice(value_list))] * 2))
             else:
                 for each_value in value_list:
-                    yield self.token_value(*([str(each_value)]*2))
+                    yield self.token_value(*([str(each_value)] * 2))
         else:
-            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  list['value1','value2']".format(self.replacement, sample.sample_name))
+            raise_warning(
+                "Non-supported format: '{}' in stanza '{}'.\n Try  list['value1','value2']".format(
+                    self.replacement, sample.sample_name
+                )
+            )
 
 
 class StaticRule(Rule):
     """
     StaticRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields the static value mentioned in token.
@@ -341,14 +365,16 @@ class StaticRule(Rule):
             token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
-            yield self.token_value(*([self.replacement]*2))
+            yield self.token_value(*([self.replacement] * 2))
 
 
 class FileRule(Rule):
     """
     FileRule
     """
+
     every_replacement_types = []
+
     def replace(self, sample, token_count):
         """
         Yields the values of token by reading files.
@@ -362,24 +388,31 @@ class FileRule(Rule):
         if index:
             try:
                 index = int(index)
-                for i in self.indexed_sample_file(sample, relative_file_path, index, token_count):
-                    yield self.token_value(*([i]*2))   
+                for i in self.indexed_sample_file(
+                    sample, relative_file_path, index, token_count
+                ):
+                    yield self.token_value(*([i] * 2))
 
             except ValueError:
-                for i in self.lookupfile(sample, relative_file_path, index, token_count):
-                    yield self.token_value(*([i]*2))
-                
+                for i in self.lookupfile(
+                    sample, relative_file_path, index, token_count
+                ):
+                    yield self.token_value(*([i] * 2))
+
         else:
             try:
                 with open(relative_file_path) as f:
                     txt = f.read()
                     lines = [each.strip() for each in txt.split("\n") if each]
-                    if self.replacement_type == 'random' or self.replacement_type == 'file':
+                    if (
+                        self.replacement_type == "random"
+                        or self.replacement_type == "file"
+                    ):
                         for _ in range(token_count):
-                            yield self.token_value(*([choice(lines)]*2))
-                    elif self.replacement_type == 'all':
+                            yield self.token_value(*([choice(lines)] * 2))
+                    elif self.replacement_type == "all":
                         for each_value in lines:
-                            yield self.token_value(*([each_value]*2))
+                            yield self.token_value(*([each_value] * 2))
             except IOError:
                 LOGGER.warning("File not found : {}".format(relative_file_path))
 
@@ -388,9 +421,7 @@ class FileRule(Rule):
         Returns the relative sample file path and index value
         """
         if self.replacement.startswith("file" or "File"):
-            sample_file_path = re.match(
-                    r"[fF]ile\[(.*?)\]", self.replacement
-                ).group(1)
+            sample_file_path = re.match(r"[fF]ile\[(.*?)\]", self.replacement).group(1)
         else:
             sample_file_path = self.replacement
 
@@ -403,15 +434,13 @@ class FileRule(Rule):
             # pattern like:
             # <directory_path>/apps/<addon_name>/<file_path>:<index>
             _, splitter, file_path = re.search(
-                r"(.*)(\\?\/?apps\\?\/?[a-zA-Z-_0-9.*]+\\?\/?)(.*)",
-                sample_file_path
-                ).groups()
+                r"(.*)(\\?\/?apps\\?\/?[a-zA-Z-_0-9.*]+\\?\/?)(.*)", sample_file_path
+            ).groups()
             relative_file_path = os.path.join(
-                relative_file_path,
-                file_path.split(":")[0]
-                )
+                relative_file_path, file_path.split(":")[0]
+            )
             file_index = file_path.split(":")
-            index = (file_index[1] if len(file_index) > 1 else None)
+            index = file_index[1] if len(file_index) > 1 else None
 
             if not os.path.isfile(relative_file_path):
                 raise AttributeError
@@ -425,10 +454,10 @@ class FileRule(Rule):
             index = None
             if file_path.count(":") > 0:
                 file_index = file_path.rsplit(":", 1)
-                index = (file_index[1] if len(file_index) > 1 else None)
+                index = file_index[1] if len(file_index) > 1 else None
                 file_path = file_path.rsplit(":", 1)[0]
             relative_file_path = file_path
-        
+
         return relative_file_path, index
 
     def indexed_sample_file(self, sample, file_path, index, token_count):
@@ -443,49 +472,59 @@ class FileRule(Rule):
         """
         all_data = []
         try:
-            with open(file_path, 'r') as _file:
+            with open(file_path, "r") as _file:
                 selected_sample_lines = _file.readlines()
                 for i in selected_sample_lines:
-                    if i.strip() != '':
+                    if i.strip() != "":
                         all_data.append(i.strip())
-            
+
                 if (
                     hasattr(sample, "replacement_map")
                     and file_path in sample.replacement_map
                 ):
                     index = int(index)
-                    file_values = sample.replacement_map[file_path]["data"][self.file_count].split(',')
+                    file_values = sample.replacement_map[file_path]["data"][
+                        self.file_count
+                    ].split(",")
                     if sample.replacement_map[file_path].get("find_all"):
                         # if condition to increase the line no. of sample data
                         # when the replacement_type = all provided in token for indexed file
-                        if self.file_count == len(all_data)-1:
-                            # reset the file count when count reaches to pick value corresponding to 
+                        if self.file_count == len(all_data) - 1:
+                            # reset the file count when count reaches to pick value corresponding to
                             # length of the sample data
                             self.file_count = 0
                         else:
                             self.file_count += 1
                     for _ in range(token_count):
-                        yield file_values[index-1]
+                        yield file_values[index - 1]
                 else:
-                    if self.replacement_type == 'all':
-                        sample.__setattr__("replacement_map", {file_path: {"data":all_data, "find_all":True}})
+                    if self.replacement_type == "all":
+                        sample.__setattr__(
+                            "replacement_map",
+                            {file_path: {"data": all_data, "find_all": True}},
+                        )
                         for i in all_data:
-                            file_values = i.split(',')
-                            yield file_values[index-1]
+                            file_values = i.split(",")
+                            yield file_values[index - 1]
                     else:
-                        random_line = random.randint(0, len(all_data)-1)
+                        random_line = random.randint(0, len(all_data) - 1)
                         if hasattr(sample, "replacement_map"):
-                            sample.replacement_map.update({file_path: {"data":[all_data[random_line]]}})
+                            sample.replacement_map.update(
+                                {file_path: {"data": [all_data[random_line]]}}
+                            )
                         else:
-                            sample.__setattr__("replacement_map", {file_path: {"data":[all_data[random_line]]}})
-                        file_values = all_data[random_line].split(',')
+                            sample.__setattr__(
+                                "replacement_map",
+                                {file_path: {"data": [all_data[random_line]]}},
+                            )
+                        file_values = all_data[random_line].split(",")
                         for _ in range(token_count):
-                            yield file_values[index-1]
+                            yield file_values[index - 1]
         except IndexError:
             LOGGER.error(
                 f"Index for column {index} in replacement"
                 f"file {file_path} is out of bounds"
-                )
+            )
         except IOError:
             LOGGER.warning("File not found : {}".format(file_path))
 
@@ -500,20 +539,25 @@ class FileRule(Rule):
             token_count (int): No. of token in sample event where rule is applicable
         """
         all_data = []
-        header = ''
+        header = ""
         try:
-            with open(file_path, 'r') as _file:
+            with open(file_path, "r") as _file:
                 header = next(_file)
                 for line in _file:
-                    if line.strip() != '':
+                    if line.strip() != "":
                         all_data.append(line.strip())
             for _ in range(token_count):
                 if (
                     hasattr(sample, "replacement_map")
                     and file_path in sample.replacement_map
                 ):
-                    index = sample.replacement_map[file_path][0].strip().split(',').index(index)
-                    file_values = sample.replacement_map[file_path][1].split(',')
+                    index = (
+                        sample.replacement_map[file_path][0]
+                        .strip()
+                        .split(",")
+                        .index(index)
+                    )
+                    file_values = sample.replacement_map[file_path][1].split(",")
                     for _ in range(token_count):
                         yield file_values[index]
                 else:
@@ -523,24 +567,33 @@ class FileRule(Rule):
                     ):
                         sample.replacement_map[file_path].append(all_data)
                     else:
-                        if self.replacement_type == 'random' or self.replacement_type == 'file':
-                            self.file_count = random.randint(0, len(all_data)-1)
-                            sample.__setattr__("replacement_map", {file_path: [header, all_data[self.file_count]]})
-                            index = header.strip().split(',').index(index)
-                            file_values = all_data[self.file_count].split(',')
+                        if (
+                            self.replacement_type == "random"
+                            or self.replacement_type == "file"
+                        ):
+                            self.file_count = random.randint(0, len(all_data) - 1)
+                            sample.__setattr__(
+                                "replacement_map",
+                                {file_path: [header, all_data[self.file_count]]},
+                            )
+                            index = header.strip().split(",").index(index)
+                            file_values = all_data[self.file_count].split(",")
                             for _ in range(token_count):
                                 yield file_values[index]
                         else:
-                            LOGGER.warning(f"'replacement_type = {self.replacement_type}' is not supported for the lookup files. Please use 'random' or 'file'")
+                            LOGGER.warning(
+                                f"'replacement_type = {self.replacement_type}' is not supported for the lookup files. Please use 'random' or 'file'"
+                            )
                             yield self.token
         except ValueError:
-            LOGGER.error("Column '%s' is not present replacement file '%s'" % (index, file_path))
+            LOGGER.error(
+                "Column '%s' is not present replacement file '%s'" % (index, file_path)
+            )
         except IOError:
             LOGGER.warning("File not found : {}".format(file_path))
 
 
 class TimeRule(Rule):
-
     def replace(self, sample, token_count):
         """
         Returns time according to the parameters specified in the input.
@@ -551,21 +604,23 @@ class TimeRule(Rule):
         """
         earliest = self.eventgen_params.get("earliest")
         latest = self.eventgen_params.get("latest")
-        timezone_time = self.eventgen_params.get("timezone",'0000')
+        timezone_time = self.eventgen_params.get("timezone", "0000")
         random_time = datetime.utcnow()
         time_parser = time_parse()
         time_delta = datetime.now().timestamp() - datetime.utcnow().timestamp()
 
         if earliest != "now" and earliest is not None:
 
-            earliest_match = re.match(
-                r"([+-])(\d{1,})(.*)", earliest
-            )
+            earliest_match = re.match(r"([+-])(\d{1,})(.*)", earliest)
             if earliest_match:
                 sign, num, unit = earliest_match.groups()
                 earliest = time_parser.convert_to_time(sign, num, unit)
             else:
-                raise_warning("Invalid value found in earliest: '{}' for stanza '{}'. using earliest = now".format(earliest, sample.sample_name))
+                raise_warning(
+                    "Invalid value found in earliest: '{}' for stanza '{}'. using earliest = now".format(
+                        earliest, sample.sample_name
+                    )
+                )
                 earliest = datetime.utcnow()
         else:
             earliest = datetime.utcnow()
@@ -577,7 +632,11 @@ class TimeRule(Rule):
                 sign, num, unit = latest_match.groups()
                 latest = time_parser.convert_to_time(sign, num, unit)
             else:
-                raise_warning("Invalid value found in latest: '{}' for stanza '{}'. using latest = now".format(latest, sample.sample_name))
+                raise_warning(
+                    "Invalid value found in latest: '{}' for stanza '{}'. using latest = now".format(
+                        latest, sample.sample_name
+                    )
+                )
                 latest = datetime.utcnow()
         else:
             latest = datetime.utcnow()
@@ -592,44 +651,39 @@ class TimeRule(Rule):
             random_time = datetime.fromtimestamp(
                 randint(earliest_in_epoch, latest_in_epoch)
             )
-            if timezone_time in ['local', '"local"', "'local'"]:
-                random_time = random_time.replace(
-                    tzinfo=timezone.utc).astimezone(tz=None)
+            if timezone_time in ["local", '"local"', "'local'"]:
+                random_time = random_time.replace(tzinfo=timezone.utc).astimezone(
+                    tz=None
+                )
 
             elif timezone_time and timezone_time.strip("'").strip('"') != r"0000":
-                random_time = time_parser.get_timezone_time(
-                    random_time, timezone_time
-                )
+                random_time = time_parser.get_timezone_time(random_time, timezone_time)
 
             if r"%s" == self.replacement.strip("'").strip('"'):
                 time_in_sec = self.replacement.replace(
-                    r"%s",
-                    str(int(mktime(random_time.timetuple())))
-                    )
+                    r"%s", str(int(mktime(random_time.timetuple())))
+                )
                 yield self.token_value(float(time_in_sec), time_in_sec)
 
             else:
-                if timezone_time not in (None, '0000'):
+                if timezone_time not in (None, "0000"):
                     modified_random_time = time_parser.get_timezone_time(
                         random_time, self.invert_timezone(timezone_time)
                     )
                 else:
                     modified_random_time = random_time
                 yield self.token_value(
-                    float(mktime(modified_random_time.timetuple()))
-                    + time_delta,
-                    random_time.strftime(
-                        self.replacement.replace(r"%e", r"%d")
-                    ),
+                    float(mktime(modified_random_time.timetuple())) + time_delta,
+                    random_time.strftime(self.replacement.replace(r"%e", r"%d")),
                 )
 
     def invert_timezone(self, timezone_time):
-        if timezone_time == '0000':
-            return '0000'
-        elif timezone_time[0] == '-':
-            return '+'+timezone_time[-4:]
-        elif timezone_time[0] == '+':
-            return '-'+timezone_time[-4:]
+        if timezone_time == "0000":
+            return "0000"
+        elif timezone_time[0] == "-":
+            return "+" + timezone_time[-4:]
+        elif timezone_time[0] == "+":
+            return "-" + timezone_time[-4:]
         else:
             raise Exception("Invalid timezone value found.")
 
@@ -638,6 +692,7 @@ class Ipv4Rule(Rule):
     """
     Ipv4Rule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random ipv4 address.
@@ -647,13 +702,14 @@ class Ipv4Rule(Rule):
             token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
-            yield self.token_value(*([self.fake.ipv4()]*2))
+            yield self.token_value(*([self.fake.ipv4()] * 2))
 
 
 class Ipv6Rule(Rule):
     """
     Ipv6Rule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random ipv6 address
@@ -663,13 +719,14 @@ class Ipv6Rule(Rule):
             token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
-            yield self.token_value(*([self.fake.ipv6()]*2))
+            yield self.token_value(*([self.fake.ipv6()] * 2))
 
 
 class MacRule(Rule):
     """
     MacRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random mac address
@@ -679,13 +736,14 @@ class MacRule(Rule):
             token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
-            yield self.token_value(*([self.fake.mac_address()]*2))
+            yield self.token_value(*([self.fake.mac_address()] * 2))
 
 
 class GuidRule(Rule):
     """
     GuidRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random guid.
@@ -695,13 +753,14 @@ class GuidRule(Rule):
             token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
-            yield self.token_value(*([str(uuid.uuid4())]*2))
+            yield self.token_value(*([str(uuid.uuid4())] * 2))
 
 
 class UserRule(Rule):
     """
     UserRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random user replacement value from the list of values mentioned in token.
@@ -711,9 +770,7 @@ class UserRule(Rule):
             sample (SampleEvent): Instance containing event info
             token_count (int): No. of token in sample event where rule is applicable
         """
-        value_match = re.match(
-            r"[uU]ser(\[.*?\])", self.replacement
-        )
+        value_match = re.match(r"[uU]ser(\[.*?\])", self.replacement)
         if value_match:
             value_list_str = value_match.group(1)
             value_list = eval(value_list_str)
@@ -730,28 +787,32 @@ class UserRule(Rule):
                         if item in value_list
                     ]
                     csv_rows = sample.replacement_map["email"]
-                    yield self.token_value(
-                        *([csv_rows[i][choice(index_list)]]*2)
-                        )
+                    yield self.token_value(*([csv_rows[i][choice(index_list)]] * 2))
                 else:
                     index_list, csv_row = self.get_lookup_value(
-                        sample,
-                        "user",
-                        self.user_header,
-                        value_list,
+                        sample, "user", self.user_header, value_list,
                     )
                     if index_list:
-                        yield self.token_value(*([csv_row[choice(index_list)]]*2))
+                        yield self.token_value(*([csv_row[choice(index_list)]] * 2))
                     else:
-                        raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['name','email','domain_name','distinquised_name']".format(self.replacement, sample.sample_name))
+                        raise_warning(
+                            "Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['name','email','domain_name','distinquised_name']".format(
+                                self.replacement, sample.sample_name
+                            )
+                        )
         else:
-            raise_warning("Unidentified format: '{}' in stanza '{}'.\n Try  user['name','email','domain_name','distinquised_name']".format(self.replacement, sample.sample_name))
+            raise_warning(
+                "Unidentified format: '{}' in stanza '{}'.\n Try  user['name','email','domain_name','distinquised_name']".format(
+                    self.replacement, sample.sample_name
+                )
+            )
 
 
 class EmailRule(Rule):
     """
     EmailRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random email from lookups\\user_email.csv file.
@@ -769,21 +830,22 @@ class EmailRule(Rule):
             ):
                 csv_rows = sample.replacement_map["user"]
                 yield self.token_value(
-                    *([csv_rows[i][self.user_header.index("email")]]*2)
-                    )
+                    *([csv_rows[i][self.user_header.index("email")]] * 2)
+                )
             else:
                 index_list, csv_row = self.get_lookup_value(
-                    sample,
-                    "email",
-                    self.user_header,
-                    ["email"],
+                    sample, "email", self.user_header, ["email"],
                 )
-                yield self.token_value(*([csv_row[self.user_header.index("email")]]*2))
+                yield self.token_value(
+                    *([csv_row[self.user_header.index("email")]] * 2)
+                )
+
 
 class UrlRule(Rule):
     """
     UrlRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random url replacement value from the list
@@ -797,12 +859,23 @@ class UrlRule(Rule):
         """
         replace_token = True
         value_match = re.match(r"[uU]rl(\[.*?\])", self.replacement)
-        if value_match:    
+        if value_match:
             value_list_str = value_match.group(1)
             value_list = eval(value_list_str)
             for each in value_list:
-                if each not in ["ip_host", "fqdn_host", "path", "query", "protocol", "full"]:
-                    raise_warning('Invalid Value for url: "{}" for replacement {} in stanza "{}".\n Accepted values: ["ip_host", "fqdn_host", "path", "query", "protocol"]'.format(each, self.replacement, sample.sample_name))
+                if each not in [
+                    "ip_host",
+                    "fqdn_host",
+                    "path",
+                    "query",
+                    "protocol",
+                    "full",
+                ]:
+                    raise_warning(
+                        'Invalid Value for url: "{}" for replacement {} in stanza "{}".\n Accepted values: ["ip_host", "fqdn_host", "path", "query", "protocol"]'.format(
+                            each, self.replacement, sample.sample_name
+                        )
+                    )
                     replace_token = False
             if replace_token:
                 for _ in range(token_count):
@@ -832,12 +905,16 @@ class UrlRule(Rule):
                                 ]
                             )
                         )
-                    
+
                     if bool(set(["full", "query"]).intersection(value_list)):
                         url = url + self.generate_url_query_params()
-                    yield self.token_value(*([str(url)]*2))
+                    yield self.token_value(*([str(url)] * 2))
         else:
-            raise_warning('Unidentified format: "{}" in stanza "{}".\n Expected values: ["ip_host", "fqdn_host", "path", "query", "protocol", "full"]'.format(self.replacement, sample.sample_name))
+            raise_warning(
+                'Unidentified format: "{}" in stanza "{}".\n Expected values: ["ip_host", "fqdn_host", "path", "query", "protocol", "full"]'.format(
+                    self.replacement, sample.sample_name
+                )
+            )
 
     def generate_url_query_params(self):
         """
@@ -863,6 +940,7 @@ class DestRule(Rule):
     """
     DestRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random dest replacement value from the list
@@ -873,31 +951,36 @@ class DestRule(Rule):
             sample (SampleEvent): Instance containing event info
             token_count (int): No. of token in sample event where rule is applicable
         """
-        value_match = re.match(
-            r"[dD]est(\[.*?\])", self.replacement
-        )
+        value_match = re.match(r"[dD]est(\[.*?\])", self.replacement)
         if value_match:
             value_list_str = value_match.group(1)
             value_list = eval(value_list_str)
 
             for _ in range(token_count):
                 csv_row = self.get_rule_replacement_values(
-                    sample,
-                    value_list,
-                    rule="dest"
+                    sample, value_list, rule="dest"
                 )
                 if csv_row:
-                    yield self.token_value(*([choice(csv_row)]*2))
+                    yield self.token_value(*([choice(csv_row)] * 2))
                 else:
-                    raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+                    raise_warning(
+                        "Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(
+                            self.replacement, sample.sample_name
+                        )
+                    )
         else:
-            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  dest['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+            raise_warning(
+                "Non-supported format: '{}' in stanza '{}'.\n Try  dest['host','ipv4','ipv6','fqdn']".format(
+                    self.replacement, sample.sample_name
+                )
+            )
 
 
 class SrcPortRule(Rule):
     """
     SrcPortRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random port value from the range 4000-5000
@@ -907,15 +990,14 @@ class SrcPortRule(Rule):
             token_count (int): No. of token in sample event where rule is applicable
         """
         for _ in range(token_count):
-            yield self.token_value(
-                *([randint(4000, 5000)]*2)
-                )
+            yield self.token_value(*([randint(4000, 5000)] * 2))
 
 
 class DvcRule(Rule):
     """
     DvcRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random dvc replacement value from the list
@@ -932,22 +1014,29 @@ class DvcRule(Rule):
             value_list = eval(value_list_str)
             for _ in range(token_count):
                 csv_row = self.get_rule_replacement_values(
-                    sample,
-                    value_list,
-                    rule="dvc"
-                    )
+                    sample, value_list, rule="dvc"
+                )
                 if csv_row:
-                    yield self.token_value(*([choice(csv_row)]*2))
+                    yield self.token_value(*([choice(csv_row)] * 2))
                 else:
-                    raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+                    raise_warning(
+                        "Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(
+                            self.replacement, sample.sample_name
+                        )
+                    )
         else:
-            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  dvc['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+            raise_warning(
+                "Non-supported format: '{}' in stanza '{}'.\n Try  dvc['host','ipv4','ipv6','fqdn']".format(
+                    self.replacement, sample.sample_name
+                )
+            )
 
 
 class SrcRule(Rule):
     """
     SrcRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random src replacement value from the list
@@ -964,22 +1053,29 @@ class SrcRule(Rule):
             value_list = eval(value_list_str)
             for _ in range(token_count):
                 csv_row = self.get_rule_replacement_values(
-                    sample,
-                    value_list,
-                    rule="src"
-                    )
+                    sample, value_list, rule="src"
+                )
                 if csv_row:
-                    yield self.token_value(*([choice(csv_row)]*2))
+                    yield self.token_value(*([choice(csv_row)] * 2))
                 else:
-                    raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+                    raise_warning(
+                        "Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(
+                            self.replacement, sample.sample_name
+                        )
+                    )
         else:
-            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  src['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+            raise_warning(
+                "Non-supported format: '{}' in stanza '{}'.\n Try  src['host','ipv4','ipv6','fqdn']".format(
+                    self.replacement, sample.sample_name
+                )
+            )
 
 
 class DestPortRule(Rule):
     """
     DestPortRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random port value from [80, 443, 25, 22, 21]
@@ -990,13 +1086,14 @@ class DestPortRule(Rule):
         """
         DEST_PORT = [80, 443, 25, 22, 21]
         for _ in range(token_count):
-            yield self.token_value(*([choice(DEST_PORT)]*2))
+            yield self.token_value(*([choice(DEST_PORT)] * 2))
 
 
 class HostRule(Rule):
     """
     HostRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random host replacement value from the list
@@ -1007,9 +1104,7 @@ class HostRule(Rule):
             sample (SampleEvent): Instance containing event info
             token_count (int): No. of token in sample event where rule is applicable
         """
-        value_match = re.match(
-            r"[hH]ost(\[.*?\])", self.replacement
-        )
+        value_match = re.match(r"[hH]ost(\[.*?\])", self.replacement)
         if value_match:
             value_list_str = value_match.group(1)
             value_list = eval(value_list_str)
@@ -1032,17 +1127,26 @@ class HostRule(Rule):
                             "default",
                         ]:
                             csv_row[0] = sample.get_host()
-                    yield self.token_value(*([choice(csv_row)]*2))
+                    yield self.token_value(*([choice(csv_row)] * 2))
                 else:
-                    raise_warning("Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+                    raise_warning(
+                        "Invalid Value: '{}' in stanza '{}'.\n Accepted values: ['host','ipv4','ipv6','fqdn']".format(
+                            self.replacement, sample.sample_name
+                        )
+                    )
         else:
-            raise_warning("Non-supported format: '{}' in stanza '{}'.\n Try  host['host','ipv4','ipv6','fqdn']".format(self.replacement, sample.sample_name))
+            raise_warning(
+                "Non-supported format: '{}' in stanza '{}'.\n Try  host['host','ipv4','ipv6','fqdn']".format(
+                    self.replacement, sample.sample_name
+                )
+            )
 
 
 class HexRule(Rule):
     """
     HexRule
     """
+
     def replace(self, sample, token_count):
         """
         Yields a random hex value.
@@ -1051,7 +1155,7 @@ class HexRule(Rule):
             sample (SampleEvent): Instance containing event info
             token_count (int): No. of token in sample event where rule is applicable
         """
-        hex_match =  re.match(r"[Hh]ex\((.*?)\)", self.replacement)
+        hex_match = re.match(r"[Hh]ex\((.*?)\)", self.replacement)
         if hex_match:
             hex_range = hex_match.group(1)
             if hex_range.isnumeric():
@@ -1078,8 +1182,17 @@ class HexRule(Rule):
                     for i in range(int(hex_range)):
                         hex_array.append(hex_digits[randint(0, 15)])
                     hex_value = "".join(hex_array)
-                    yield self.token_value(*([hex_value]*2))
+                    yield self.token_value(*([hex_value] * 2))
             else:
-                raise_warning("Invalid Value: '{}' in stanza '{}'.\n '{}' is not an integer value".format(self.replacement, sample.sample_name, hex_range))
+                raise_warning(
+                    "Invalid Value: '{}' in stanza '{}'.\n '{}' is not an integer value".format(
+                        self.replacement, sample.sample_name, hex_range
+                    )
+                )
         else:
-            raise_warning("Invalid Hex value: '{}' in stanza '{}'. Try hex(<i>) where i is an integer".format(self.replacement, sample.sample_name))
+            raise_warning(
+                "Invalid Hex value: '{}' in stanza '{}'. Try hex(<i>) where i is an integer".format(
+                    self.replacement, sample.sample_name
+                )
+            )
+
