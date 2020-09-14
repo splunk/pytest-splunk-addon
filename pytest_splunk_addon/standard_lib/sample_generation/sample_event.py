@@ -71,9 +71,9 @@ class SampleEvent(object):
         """
         global host_count
         host_count += 1
-        LOGGER.debug("Creating host value: {}_{}_{}".format(
+        LOGGER.debug("Creating host value: {}-{}-{}".format(
             "host", self.sample_name, str(host_count)))
-        return "{}_{}_{}".format("host", self.sample_name, str(host_count))
+        return "{}-{}-{}".format("host", self.sample_name, str(host_count))
 
     def get_field_host(self, rule):
         """
@@ -84,9 +84,9 @@ class SampleEvent(object):
         """
         global host_count
         host_count += 1
-        LOGGER.debug("Creating field with value: {}_{}{}".format(
+        LOGGER.debug("Creating field with value: {}-{}{}".format(
             rule, "sample_host", host_count))
-        return "{}_{}{}".format(rule, "sample_host", host_count)
+        return "{}-{}{}".format(rule, "sample_host", host_count)
 
     def get_field_fqdn(self, rule):
         """
