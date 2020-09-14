@@ -470,7 +470,7 @@ TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample-file-samples-26* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample-file-samples-27* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample-file-samples-28* PASSED*',
-    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample_file-samples-29* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample-file-samples-29* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample-file-samples-30* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:postfix:regex:stanza::postfix_test_regex_two.samples_1* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:postfix:regex:stanza::postfix_test_regex_two.samples_2* PASSED*',
