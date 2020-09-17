@@ -70,6 +70,7 @@ class HECRawEventIngestor(EventIngestor):
             event_dict = {
                 "sourcetype": event.metadata.get('sourcetype', 'pytest_splunk_addon'),
                 "source": event.metadata.get('source', 'pytest_splunk_addon:hec:raw'),
+                "index": event.metadata.get('index', 'main'),
             }
 
             if event.metadata.get("host"):
