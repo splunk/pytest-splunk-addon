@@ -57,7 +57,8 @@ class SampleXdistGenerator():
                         "sourcetype": each_event.metadata.get("sourcetype"),
                         "timestamp_type": each_event.metadata.get("timestamp_type"),
                         "input_type": each_event.metadata.get("input_type"),
-                        "expected_event_count": expected_count
+                        "expected_event_count": expected_count,
+                        "index": each_event.metadata.get("index", "main")
                     },
                     "events":[{
                         "event":each_event.event,

@@ -157,6 +157,8 @@ class SampleStanza(object):
         if metadata.get("count") and not metadata.get("count").isnumeric():
             raise_warning("Invalid value for count: '{}' using count = 1.".format(metadata.get("count")))
             metadata.update(count="100")
+        if metadata.get("index") is not None and metadata.get("input_type") in ["syslog_tcp", "tcp", "udp"]:
+            raise_warning("For input_type '{}', there should be no index set".format(metadata.get("input_type")))
         return metadata
 
     def get_eventmetadata(self):
