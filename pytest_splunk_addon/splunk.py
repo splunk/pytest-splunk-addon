@@ -61,8 +61,17 @@ def pytest_addoption(parser):
         dest="splunk_host",
         default="127.0.0.1",
         help=(
-            "Address of the Splunk Server. Do not provide "
+            "Address of the Splunk Server where search queries will be executed. Do not provide "
             "http scheme in the host. default is 127.0.0.1"
+        ),
+    )
+    group.addoption(
+        "--splunk-forwarder-host",
+        action="store",
+        dest="splunk_forwarder_host",
+        help=(
+            "Address of the Splunk Forwarder Server. Do not provide "
+            "http scheme in the host."
         ),
     )
     group.addoption(
@@ -84,7 +93,7 @@ def pytest_addoption(parser):
         action="store",
         dest="splunk_hec_token",
         default="9b741d03-43e9-4164-908b-e09102327d22",
-        help='Splunk HTTP event collector token. default is "9b741d03-43e9-4164-908b-e09102327d22".',
+        help='Splunk HTTP event collector token. default is "9b741d03-43e9-4164-908b-e09102327d22" If an external forwarder is used provide HEC token of forwarder.',
     )
     group.addoption(
         "--splunk-port",
@@ -92,6 +101,12 @@ def pytest_addoption(parser):
         dest="splunkd_port",
         default="8089",
         help="Splunk Management port. default is 8089.",
+    )
+    group.addoption(
+        "--splunk-forwarder-port",
+        action="store",
+        dest="forwarder_splunkd_port",
+        help="Splunk Forwarder Management port. default is 8089.",
     )
     group.addoption(
         "--splunk-s2s-port",
@@ -127,6 +142,18 @@ def pytest_addoption(parser):
         dest="splunk_password",
         default="Chang3d!",
         help="Password of the Splunk user",
+    )
+    group.addoption(
+        "--splunk-forwarder-user",
+        action="store",
+        dest="splunk_forwarder_user",
+        help="Splunk Forwarder login user. The user should have search capabilities.",
+    )
+    group.addoption(
+        "--splunk-forwarder-password",
+        action="store",
+        dest="splunk_forwarder_password",
+        help="Password of the Splunk Forwarder user",
     )
     group.addoption(
         "--splunk-version",
@@ -388,14 +415,31 @@ def splunk_external(request):
         dict: Details of the splunk instance including host, port, username & password.
     """
     splunk_info = {
-        "host": request.config.getoption("splunk_host"),
-        "port": request.config.getoption("splunkd_port"),
         "port_hec": request.config.getoption("splunk_hec"),
         "port_s2s": request.config.getoption("splunk_s2s"),
         "port_web": request.config.getoption("splunk_web"),
+        "host": request.config.getoption("splunk_host"),
+        "port": request.config.getoption("splunkd_port"),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
     }
+    if not request.config.getoption("splunk_forwarder_host"):
+        splunk_info["forwarder_host"] = splunk_info.get("host")
+    else:
+        splunk_info["forwarder_host"] = request.config.getoption("splunk_forwarder_host")
+    if not request.config.getoption("forwarder_splunkd_port"):
+        splunk_info["forwarder_port"] = splunk_info.get("port")
+    else:
+        splunk_info["forwarder_port"] = request.config.getoption("forwarder_splunkd_port")
+    if not request.config.getoption("splunk_forwarder_user"):
+        splunk_info["forwarder_username"] = splunk_info.get("username")
+    else:
+        splunk_info["forwarder_username"] = request.config.getoption("splunk_forwarder_user")
+    if not request.config.getoption("splunk_forwarder_password"):
+        splunk_info["forwarder_password"] = splunk_info.get("password")
+    else:
+        splunk_info["forwarder_password"] = request.config.getoption("splunk_forwarder_password")
+
 
     for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
         if is_responsive_splunk(splunk_info):
@@ -404,7 +448,7 @@ def splunk_external(request):
 
     if not is_responsive_splunk(splunk_info):
         raise Exception(
-            "Could not connect to the external Splunk. "
+            "Could not connect to the external Splunk or Splunk Forwarder. "
             "Please check the log file for possible errors."
         )
 
@@ -450,8 +494,8 @@ def splunk_rest_uri(splunk):
     Provides a uri to the Splunk rest port
     """
     splunk_session = requests.Session()
-    splunk_session.auth = (splunk["username"], splunk["password"])
-    uri = f'https://{splunk["host"]}:{splunk["port_hec"]}/'
+    splunk_session.auth = (splunk["forwarder_username"], splunk["forwarder_password"])
+    uri = f'https://{splunk["forwarder_host"]}:{splunk["port_hec"]}/'
     LOGGER.info("Fetched splunk_rest_uri=%s", uri)
 
     return splunk_session, uri
@@ -466,11 +510,10 @@ def splunk_hec_uri(request, splunk):
     splunk_session.headers = {
         "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
     }
-    uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["host"]}:{splunk["port_hec"]}/services/collector'
+    uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector'
     LOGGER.info("Fetched splunk_hec_uri=%s", uri)
 
     return splunk_session, uri
-
 
 @pytest.fixture(scope="session")
 def splunk_web_uri(splunk):
@@ -549,10 +592,21 @@ def is_responsive_splunk(splunk):
             port=splunk["port"],
         )
         LOGGER.info("Connected to Splunk instance.")
+        
+        if not splunk.get("forwarder_host")==splunk["host"]:
+        
+            client.connect(
+                username=splunk["forwarder_username"],
+                password=splunk["forwarder_password"],
+                host=splunk["forwarder_host"],
+                port=splunk["forwarder_port"],
+            )
+            LOGGER.info("Connected to Splunk Forwarder instance.")
+        
         return True
     except Exception as e:
         LOGGER.warning(
-            "Could not connect to Splunk yet. Will try again. exception=%s", str(e),
+            "Could not connect to either Splunk or Splunk Forwarder yet. Will try again. exception=%s", str(e),
         )
         return False
 
