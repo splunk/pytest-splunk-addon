@@ -390,6 +390,11 @@ def splunk_docker(
         "password": request.config.getoption("splunk_password"),
     }
 
+    splunk_info["forwarder_host"] = splunk_info.get("host")
+    splunk_info["forwarder_port"] = splunk_info.get("port")
+    splunk_info["forwarder_username"] = splunk_info.get("username")
+    splunk_info["forwarder_password"] = splunk_info.get("password")
+
     LOGGER.info(
         "Docker container splunk info. host=%s, port=%s, port_web=%s port_hec=%s port_s2s=%s",
         docker_services.docker_ip,
