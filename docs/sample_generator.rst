@@ -17,6 +17,7 @@ pytest-splunk-addon-data.conf.spec
     [default]
     host_type = plugin
     input_type = default
+    index = main
     sourcetype = pytest-splunk-addon
     source = pytest-splunk-addon:{{input_type}}
     sourcetype_to_search = {{sourcetype}}
@@ -54,6 +55,12 @@ input_type = modinput | scripted_input | syslog_tcp | file_monitor | windows_inp
     * The input_type used in addon to ingest data of a sourcetype used in stanza.
     * The way with which the sample data is ingested in Splunk depends on Splunk. The most similar ingesting approach is used for each input_type to get accurate index-time testing.
     * For example, in an Add-on, a sourcetype "alert" is ingested through syslog in live environment, provide input_type=syslog_tcp.
+
+index = <index>
+    * The index used to ingest the data.
+    * The index must be configured beforehand.
+    * If the index is not available then the data will not get ingested into Splunk and a warning message will be printed.
+    * Custom index is not supported for syslog_tcp or syslog_udp
 
 sample_count = <count>
     * The no. of events present in the sample file.
@@ -235,6 +242,7 @@ Example
     source = pytest-splunk-addon:syslog_tcp
     host_type = plugin
     input_type = syslog_tcp
+    index = main
     timestamp_type = event
     sample_count = 10
 

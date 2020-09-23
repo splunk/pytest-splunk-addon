@@ -117,6 +117,10 @@ class UpdateEventgen():
                 eventgen_dict[stanza_name][data] = (f"<<{data}>> "
                                                     f"{review_comments['metadata']}")
 
+            if eventgen_dict[stanza_name].get("index"):
+                eventgen_dict[stanza_name]["index"] = (f"{eventgen_dict[stanza_name]['index']} "
+                                                       f"{review_comments['metadata']}")
+
             eventgen_dict[stanza_name]['source'] = eventgen_dict[stanza_name].get(
                 'source', f"pytest-splunk-addon:{eventgen_dict[stanza_name]['input_type']}")
 
