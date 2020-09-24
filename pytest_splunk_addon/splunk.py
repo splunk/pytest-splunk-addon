@@ -499,8 +499,8 @@ def splunk_rest_uri(splunk):
     Provides a uri to the Splunk rest port
     """
     splunk_session = requests.Session()
-    splunk_session.auth = (splunk["forwarder_username"], splunk["forwarder_password"])
-    uri = f'https://{splunk["forwarder_host"]}:{splunk["port_hec"]}/'
+    splunk_session.auth = (splunk["username"], splunk["password"])
+    uri = f'https://{splunk["host"]}:{splunk["port"]}/'
     LOGGER.info("Fetched splunk_rest_uri=%s", uri)
 
     return splunk_session, uri
