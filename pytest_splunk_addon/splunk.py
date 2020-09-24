@@ -451,7 +451,7 @@ def splunk_rest_uri(splunk):
     """
     splunk_session = requests.Session()
     splunk_session.auth = (splunk["username"], splunk["password"])
-    uri = f'https://{splunk["host"]}:{splunk["port_hec"]}/'
+    uri = f'https://{splunk["host"]}:{splunk["port"]}/'
     LOGGER.info("Fetched splunk_rest_uri=%s", uri)
 
     return splunk_session, uri
