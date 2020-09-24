@@ -81,6 +81,7 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
         | makeresults | eval _raw="sample event" | collect index=main, source=test_source, sourcetype=test_src_type
 
     * Sample pytest command with the required params
+    
     .. code:: bash
 
         pytest --splunk-type=external 
