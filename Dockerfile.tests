@@ -8,7 +8,7 @@
 #work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 FROM python:3.7
 
-RUN pip3 install --upgrade pip
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 RUN mkdir -p /work/tests
 RUN mkdir -p /work/test-results/functional
 
@@ -16,7 +16,7 @@ COPY entrypoint.sh /
 RUN apt-get update ; apt-get install -y netcat; apt-get clean
 
 COPY . /tmp/pytest-splunk-addon
-RUN pip3 install -e /tmp/pytest-splunk-addon
+RUN poetry install
 
 COPY pytest-ci.ini /work/pytest.ini
 COPY tests /work/tests/
