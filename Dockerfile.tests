@@ -8,7 +8,6 @@
 #work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 FROM python:3.7
 
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 RUN mkdir -p /work/tests
 RUN mkdir -p /work/test-results/functional
 
@@ -16,8 +15,9 @@ COPY entrypoint.sh /
 RUN apt-get update ; apt-get install -y netcat; apt-get clean
 
 COPY . /tmp/pytest-splunk-addon
-RUN source ~/.poetry/env &&\
-    poetry build; poetry install
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python ;\
+    source ~/.poetry/env &&\
+    cd /tmp/pytest-splunk-addon; poetry build; poetry install
 
 COPY pytest-ci.ini /work/pytest.ini
 COPY tests /work/tests/
