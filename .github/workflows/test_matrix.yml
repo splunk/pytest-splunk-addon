@@ -24,7 +24,7 @@ jobs:
         run: |
           curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
           source $HOME/.poetry/env
-          poetry install
+          poetry install -E docker
           poetry run poetry-dynamic-versioning
       - name: Test with pytest
         run: |
