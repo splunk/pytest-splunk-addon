@@ -24,10 +24,7 @@ jsonschema = "^3.2"
 faker = "^4.1"
 pytest-xdist = "^2.1"
 filelock = "^3.0"
-
-[tool.poetry.dependencies.lovely-pytest-docker]
-version = '^1.0.0'
-optional = true
+lovely-pytest-docker = { version="^0", optional = true }
 
 [tool.poetry.extras]
 docker = ['lovely-pytest-docker']

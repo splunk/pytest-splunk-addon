@@ -596,7 +596,7 @@ testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pyt
 docker = ["lovely-pytest-docker"]
 
 [metadata]
-content-hash = "d4af16d9420aa4a217a0523a41a0839c549b82e759907a7eb33a48f7b9e9c619"
+content-hash = "33ff3e8bd8546fe0317302b4a94a09cc52ead87e5f3bea6679f469d38a0a9368"
 lock-version = "1.0"
 python-versions = "^3.7"
 
