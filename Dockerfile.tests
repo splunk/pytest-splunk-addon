@@ -16,7 +16,8 @@ COPY entrypoint.sh /
 RUN apt-get update ; apt-get install -y netcat; apt-get clean
 
 COPY . /tmp/pytest-splunk-addon
-RUN source ~/.poetry/env;poetry build; poetry install
+RUN source ~/.poetry/env &&\
+    poetry build; poetry install
 
 COPY pytest-ci.ini /work/pytest.ini
 COPY tests /work/tests/
