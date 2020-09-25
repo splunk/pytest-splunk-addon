@@ -1,7 +1,0 @@
-include LICENSE
-include README.rst
-recursive-include pytest_splunk_addon *.json *.py *.txt
-recursive-exclude * __pycache__
-recursive-exclude * *.py[co]
-include versioneer.py
-include pytest_splunk_addon/_version.py

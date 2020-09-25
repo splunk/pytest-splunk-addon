@@ -13,6 +13,7 @@ classifiers = [
         "Operating System :: OS Independent",
         "License :: OSI Approved :: Apache Software License",
 ]
+include = ["pytest_splunk_addon/**/*.json", "pytest_splunk_addon/**/*.txt"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
