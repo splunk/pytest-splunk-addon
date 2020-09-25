@@ -19,5 +19,5 @@ wait-for $SPLUNK_HOST:8088 -t 0 -- echo splunkhec is up
 cd /work
 echo args $@
 sleep 10
-source $HOME/.poetry/env
+source ~/.poetry/env
 exec poetry run pytest $@
