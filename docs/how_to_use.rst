@@ -69,6 +69,37 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
    * From v1.3.0 pytest-splunk-addon ingests data independently which is used for execution of all the test cases.
 
 
+
+**3. Running tests with an external forwarder and Splunk instance**
+
+    * Run pytest with the add-on, using an external forwarder sending events to another Splunk deployment where a user can search for received events.
+    * Forwarding & receiving configuration in --splunk-forwarder-host and --splunk-host must be done before executing the tests.
+    * User can validate the forwarding using makeresults command.
+
+    .. code:: bash
+
+        | makeresults | eval _raw="sample event" | collect index=main, source=test_source, sourcetype=test_src_type
+
+    * Sample pytest command with the required params
+    
+    .. code:: bash
+
+        pytest --splunk-type=external 
+            --splunk-app=<path-to-addon-package> 
+            --splunk-host=<hostname>                                    # Receiver Splunk instance where events are searchable.
+            --splunk-port=<splunk_management_port>                      # default 8089
+            --splunk-user=<username>                                    # default admin     
+            --splunk-password=<password>                                # default Chang3d!
+            --splunk-forwarder-host=<splunk_forwarder_host>             # Splunk instance where forwarding to receiver instance is configured.                
+            --splunk-hec-port=<splunk_forwarder_hec_port>               # HEC port of the forwarder instance.
+            --splunk-hec-token=<splunk_forwarder_hec_token>             # HEC token configured in forwarder instance.
+            --splunk-data-generator=<pytest_splunk_addon_conf_path>     # Path to pytest-splunk-addon-data.conf
+
+.. note::
+   * Forwarder params are supported only for external splunk-type.
+   * If Forwarder params are not provided It will ingest and search in the same Splunk deployment provided in --splunk-host param.
+
+
 ----------------------
 
 There are 3 types of tests included in pytest-splunk-addon are:

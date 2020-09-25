@@ -61,8 +61,17 @@ def pytest_addoption(parser):
         dest="splunk_host",
         default="127.0.0.1",
         help=(
-            "Address of the Splunk Server. Do not provide "
+            "Address of the Splunk Server where search queries will be executed. Do not provide "
             "http scheme in the host. default is 127.0.0.1"
+        ),
+    )
+    group.addoption(
+        "--splunk-forwarder-host",
+        action="store",
+        dest="splunk_forwarder_host",
+        help=(
+            "Address of the Splunk Forwarder Server. Do not provide "
+            "http scheme in the host."
         ),
     )
     group.addoption(
@@ -84,7 +93,7 @@ def pytest_addoption(parser):
         action="store",
         dest="splunk_hec_token",
         default="9b741d03-43e9-4164-908b-e09102327d22",
-        help='Splunk HTTP event collector token. default is "9b741d03-43e9-4164-908b-e09102327d22".',
+        help='Splunk HTTP event collector token. default is "9b741d03-43e9-4164-908b-e09102327d22" If an external forwarder is used provide HEC token of forwarder.',
     )
     group.addoption(
         "--splunk-port",
@@ -363,6 +372,8 @@ def splunk_docker(
         "password": request.config.getoption("splunk_password"),
     }
 
+    splunk_info["forwarder_host"] = splunk_info.get("host")
+
     LOGGER.info(
         "Docker container splunk info. host=%s, port=%s, port_web=%s port_hec=%s port_s2s=%s",
         docker_services.docker_ip,
@@ -388,26 +399,36 @@ def splunk_external(request):
         dict: Details of the splunk instance including host, port, username & password.
     """
     splunk_info = {
-        "host": request.config.getoption("splunk_host"),
-        "port": request.config.getoption("splunkd_port"),
         "port_hec": request.config.getoption("splunk_hec"),
         "port_s2s": request.config.getoption("splunk_s2s"),
         "port_web": request.config.getoption("splunk_web"),
+        "host": request.config.getoption("splunk_host"),
+        "port": request.config.getoption("splunkd_port"),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
     }
+    if not request.config.getoption("splunk_forwarder_host"):
+        splunk_info["forwarder_host"] = splunk_info.get("host")
+    else:
+        splunk_info["forwarder_host"] = request.config.getoption("splunk_forwarder_host")
 
     for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
         if is_responsive_splunk(splunk_info):
+            break
+        if is_responsive_hec(request, splunk_info):
             break
         sleep(1)
 
     if not is_responsive_splunk(splunk_info):
         raise Exception(
-            "Could not connect to the external Splunk. "
+            "Could not connect to the external Splunk Instance"
             "Please check the log file for possible errors."
         )
-
+    if not is_responsive_hec(request, splunk_info):
+        raise Exception(
+            "Could not connect to the external Splunk Instance"
+            "Please check the log file for possible errors."
+        )
     return splunk_info
 
 
@@ -466,7 +487,7 @@ def splunk_hec_uri(request, splunk):
     splunk_session.headers = {
         "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
     }
-    uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["host"]}:{splunk["port_hec"]}/services/collector'
+    uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector'
     LOGGER.info("Fetched splunk_hec_uri=%s", uri)
 
     return splunk_session, uri
@@ -549,13 +570,49 @@ def is_responsive_splunk(splunk):
             port=splunk["port"],
         )
         LOGGER.info("Connected to Splunk instance.")
+
         return True
     except Exception as e:
         LOGGER.warning(
-            "Could not connect to Splunk yet. Will try again. exception=%s", str(e),
+            "Could not connect to Splunk Instance. Will try again. exception=%s", str(e),
         )
         return False
 
+def is_responsive_hec(request, splunk):
+    """
+    Verify if the hec port of Splunk is responsive or not
+
+    Args:
+        splunk (dict): details of the Splunk instance
+
+    Returns:
+        bool: True if Splunk HEC is responsive. False otherwise
+    """
+    try:
+        LOGGER.info(
+            "Trying to connect Splunk HEC...  splunk=%s", json.dumps(splunk),
+        )
+        session_headers = {
+            "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
+        }
+        response = requests.post(
+                "{}/{}".format(f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector', "raw"),
+                auth=None,
+                data={"event":"test_is_responsive_hec"},
+                headers=session_headers,
+                params={"index":"_internal"},
+                verify=False,
+            )
+        LOGGER.debug("Status code: {}".format(response.status_code))
+        if response.status_code in (200,201):
+            LOGGER.info("Splunk HEC is responsive.")
+            return True
+    except Exception as e:
+        LOGGER.warning(
+            "Could not connect to Splunk HEC. Will try again. exception=%s", str(e),
+        )
+        return False
+    
 
 def is_responsive(url):
     """
