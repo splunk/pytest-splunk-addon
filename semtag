@@ -23,16 +23,16 @@ Usage:
   $PROG
   $PROG getlast
   $PROG getfinal
-  $PROG (final|alpha|beta|candidate) [-s <scope> (major|minor|patch|auto) | -o]
+  $PROG (final|a|b|candidate) [-s <scope> (major|minor|patch|auto) | -o]
   $PROG --help
   $PROG --version
 Options:
   -s         The scope that must be increased, can be major, minor or patch.
                The resulting version will match X.Y.Z(-PRERELEASE)(+BUILD)
                where X, Y and Z are positive integers, PRERELEASE is an optionnal
-               string composed of alphanumeric characters describing if the build is
-               a release candidate, alpha or beta version, with a number.
-               BUILD is also an optional string composed of alphanumeric
+               string composed of anumeric characters describing if the build is
+               a release candidate, a or b version, with a number.
+               BUILD is also an optional string composed of anumeric
                characters and hyphens.
                Setting the scope as 'auto', the script will chose the scope between
                'minor' and 'patch', depending on the amount of lines added (<10% will
@@ -53,9 +53,9 @@ Commands:
   final      Tags the current build as a final version, this only can be done on the master branch.
   candidate  Tags the current build as a release candidate, the tag will contain all
                the commits from the last final version.
-  alpha      Tags the current build as an alpha version, the tag will contain all
+  a      Tags the current build as an a version, the tag will contain all
                the commits from the last final version.
-  beta       Tags the current build as a beta version, the tag will contain all
+  b       Tags the current build as a b version, the tag will contain all
                the commits from the last final version."
 
 # Commands and options
@@ -591,7 +591,7 @@ case $ACTION in
     fi
     increase_version
     ;;
-  alpha|beta)
+  a|b)
     init
     identifier="$ACTION"
     increase_version

@@ -151,16 +151,21 @@ jobs:
     steps:
       - setup_remote_docker:
           docker_layer_caching: true
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
+      - restore_cache:
+          keys:
+            - poetry-cache-{{ checksum "poetry.lock" }}
       - run:
-          name: "Publish on PyPI"
+          name: Install Tools
           command: |
-            PATH=$PATH:/usr/local/go/bin
-            pip install twine
-            python setup.py sdist bdist_wheel
-            twine upload dist/*
+            curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+      - run:
+          name: Build
+          command: |
+            source $HOME/.poetry/env
+            poetry install
+            poetry run poetry-dynamic-versioning
+            poetry publish --build -u ${TWINE_USERNAME} -p ${TWINE_PASSWORD}
 
 workflows:
   build:
