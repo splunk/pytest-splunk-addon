@@ -23,11 +23,4 @@ jobs:
       - name: Install dependencies
         run: |
           curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-          source $HOME/.poetry/env
-          poetry install -E docker
-      - name: Test with pytest
-        run: |
-          source $HOME/.poetry/env
-          poetry run poetry-dynamic-versioning
-          poetry build          
           poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker
