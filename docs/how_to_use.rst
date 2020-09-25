@@ -90,10 +90,7 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
             --splunk-port=<splunk_management_port>                      # default 8089
             --splunk-user=<username>                                    # default admin     
             --splunk-password=<password>                                # default Chang3d!
-            --splunk-forwarder-host=<splunk_forwarder_host>             # Splunk instance where forwarding to receiver instance is configured.
-            --splunk-forwarder-port=<splunk_forwarder_port>             # default 8089
-            --splunk-forwarder-user=<splunk_forwarder_user>             # default admin
-            --splunk-forwarder-password=<splunk_forwarder_password>     # default Chang3d!                
+            --splunk-forwarder-host=<splunk_forwarder_host>             # Splunk instance where forwarding to receiver instance is configured.                
             --splunk-hec-port=<splunk_forwarder_hec_port>               # HEC port of the forwarder instance.
             --splunk-hec-token=<splunk_forwarder_hec_token>             # HEC token configured in forwarder instance.
             --splunk-data-generator=<pytest_splunk_addon_conf_path>     # Path to pytest-splunk-addon-data.conf

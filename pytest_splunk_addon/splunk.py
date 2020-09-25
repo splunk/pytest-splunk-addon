@@ -103,12 +103,6 @@ def pytest_addoption(parser):
         help="Splunk Management port. default is 8089.",
     )
     group.addoption(
-        "--splunk-forwarder-port",
-        action="store",
-        dest="forwarder_splunkd_port",
-        help="Splunk Forwarder Management port. default is 8089.",
-    )
-    group.addoption(
         "--splunk-s2s-port",
         action="store",
         dest="splunk_s2s",
@@ -142,18 +136,6 @@ def pytest_addoption(parser):
         dest="splunk_password",
         default="Chang3d!",
         help="Password of the Splunk user",
-    )
-    group.addoption(
-        "--splunk-forwarder-user",
-        action="store",
-        dest="splunk_forwarder_user",
-        help="Splunk Forwarder login user. The user should have search capabilities.",
-    )
-    group.addoption(
-        "--splunk-forwarder-password",
-        action="store",
-        dest="splunk_forwarder_password",
-        help="Password of the Splunk Forwarder user",
     )
     group.addoption(
         "--splunk-version",
@@ -392,8 +374,6 @@ def splunk_docker(
 
     splunk_info["forwarder_host"] = splunk_info.get("host")
     splunk_info["forwarder_port"] = splunk_info.get("port")
-    splunk_info["forwarder_username"] = splunk_info.get("username")
-    splunk_info["forwarder_password"] = splunk_info.get("password")
 
     LOGGER.info(
         "Docker container splunk info. host=%s, port=%s, port_web=%s port_hec=%s port_s2s=%s",
@@ -432,19 +412,6 @@ def splunk_external(request):
         splunk_info["forwarder_host"] = splunk_info.get("host")
     else:
         splunk_info["forwarder_host"] = request.config.getoption("splunk_forwarder_host")
-    if not request.config.getoption("forwarder_splunkd_port"):
-        splunk_info["forwarder_port"] = splunk_info.get("port")
-    else:
-        splunk_info["forwarder_port"] = request.config.getoption("forwarder_splunkd_port")
-    if not request.config.getoption("splunk_forwarder_user"):
-        splunk_info["forwarder_username"] = splunk_info.get("username")
-    else:
-        splunk_info["forwarder_username"] = request.config.getoption("splunk_forwarder_user")
-    if not request.config.getoption("splunk_forwarder_password"):
-        splunk_info["forwarder_password"] = splunk_info.get("password")
-    else:
-        splunk_info["forwarder_password"] = request.config.getoption("splunk_forwarder_password")
-
 
     for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
         if is_responsive_splunk(splunk_info):
@@ -453,10 +420,9 @@ def splunk_external(request):
 
     if not is_responsive_splunk(splunk_info):
         raise Exception(
-            "Could not connect to the external Splunk or Splunk Forwarder. "
+            "Could not connect to the external Splunk Instance"
             "Please check the log file for possible errors."
         )
-
     return splunk_info
 
 
@@ -518,7 +484,16 @@ def splunk_hec_uri(request, splunk):
     uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector'
     LOGGER.info("Fetched splunk_hec_uri=%s", uri)
 
-    return splunk_session, uri
+    for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
+        if is_responsive_hec(splunk, splunk_session, uri):
+            return splunk_session, uri
+        sleep(1)
+
+    if not is_responsive_hec(splunk_info, splunk_session, uri):
+        raise Exception(
+            "Could not connect to the external Splunk HEC"
+            "Please check the log file for possible errors."
+        )
 
 @pytest.fixture(scope="session")
 def splunk_web_uri(splunk):
@@ -597,17 +572,7 @@ def is_responsive_splunk(splunk):
             port=splunk["port"],
         )
         LOGGER.info("Connected to Splunk instance.")
-        
-        if not splunk.get("forwarder_host")==splunk["host"]:
-        
-            client.connect(
-                username=splunk["forwarder_username"],
-                password=splunk["forwarder_password"],
-                host=splunk["forwarder_host"],
-                port=splunk["forwarder_port"],
-            )
-            LOGGER.info("Connected to Splunk Forwarder instance.")
-        
+
         return True
     except Exception as e:
         LOGGER.warning(
@@ -615,6 +580,38 @@ def is_responsive_splunk(splunk):
         )
         return False
 
+def is_responsive_hec(splunk, splunk_session, uri):
+    """
+    Verify if the hec port of Splunk is responsive or not
+
+    Args:
+        splunk (dict): details of the Splunk instance
+
+    Returns:
+        bool: True if Splunk HEC is responsive. False otherwise
+    """
+    try:
+        LOGGER.info(
+            "Trying to connect Splunk HEC...  splunk=%s", json.dumps(splunk),
+        )
+        response = requests.post(
+                "{}/{}".format(uri, "raw"),
+                auth=None,
+                data={"event":"test_is_responsive_hec"},
+                headers=splunk_session.headers,
+                verify=False,
+            )
+        LOGGER.debug("Status code: {}".format(response.status_code))
+        LOGGER.info("Splunk HEC is responsive.")
+        
+        return True
+
+    except Exception as e:
+        LOGGER.warning(
+            "Could not connect to either Splunk HEC. Will try again. exception=%s", str(e),
+        )
+        return False
+    
 
 def is_responsive(url):
     """
