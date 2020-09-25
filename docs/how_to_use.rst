@@ -74,7 +74,7 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
 
     * Run pytest with the add-on, using an external forwarder sending events to another Splunk deployment where a user can search for received events.
     * Forwarding & receiving configuration in --splunk-forwarder-host and --splunk-host must be done before executing the tests.
-    * User must test using makeresults command if forwarding & receiving is properly configured or not.
+    * User can validate the forwarding using makeresults command.
 
     .. code:: bash
 

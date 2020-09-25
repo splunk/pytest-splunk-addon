@@ -373,7 +373,6 @@ def splunk_docker(
     }
 
     splunk_info["forwarder_host"] = splunk_info.get("host")
-    splunk_info["forwarder_port"] = splunk_info.get("port")
 
     LOGGER.info(
         "Docker container splunk info. host=%s, port=%s, port_web=%s port_hec=%s port_s2s=%s",
@@ -416,9 +415,16 @@ def splunk_external(request):
     for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
         if is_responsive_splunk(splunk_info):
             break
+        if is_responsive_hec(request, splunk_info):
+            break
         sleep(1)
 
     if not is_responsive_splunk(splunk_info):
+        raise Exception(
+            "Could not connect to the external Splunk Instance"
+            "Please check the log file for possible errors."
+        )
+    if not is_responsive_hec(request, splunk_info):
         raise Exception(
             "Could not connect to the external Splunk Instance"
             "Please check the log file for possible errors."
@@ -484,16 +490,8 @@ def splunk_hec_uri(request, splunk):
     uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector'
     LOGGER.info("Fetched splunk_hec_uri=%s", uri)
 
-    for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
-        if is_responsive_hec(splunk, splunk_session, uri):
-            return splunk_session, uri
-        sleep(1)
+    return splunk_session, uri
 
-    if not is_responsive_hec(splunk_info, splunk_session, uri):
-        raise Exception(
-            "Could not connect to the external Splunk HEC"
-            "Please check the log file for possible errors."
-        )
 
 @pytest.fixture(scope="session")
 def splunk_web_uri(splunk):
@@ -576,11 +574,11 @@ def is_responsive_splunk(splunk):
         return True
     except Exception as e:
         LOGGER.warning(
-            "Could not connect to either Splunk or Splunk Forwarder yet. Will try again. exception=%s", str(e),
+            "Could not connect to Splunk Instance. Will try again. exception=%s", str(e),
         )
         return False
 
-def is_responsive_hec(splunk, splunk_session, uri):
+def is_responsive_hec(request, splunk):
     """
     Verify if the hec port of Splunk is responsive or not
 
@@ -594,21 +592,24 @@ def is_responsive_hec(splunk, splunk_session, uri):
         LOGGER.info(
             "Trying to connect Splunk HEC...  splunk=%s", json.dumps(splunk),
         )
+        session_headers = {
+            "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
+        }
         response = requests.post(
-                "{}/{}".format(uri, "raw"),
+                "{}/{}".format(f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector', "raw"),
                 auth=None,
                 data={"event":"test_is_responsive_hec"},
-                headers=splunk_session.headers,
+                headers=session_headers,
+                params={"index":"_internal"},
                 verify=False,
             )
         LOGGER.debug("Status code: {}".format(response.status_code))
-        LOGGER.info("Splunk HEC is responsive.")
-        
-        return True
-
+        if response.status_code in (200,201):
+            LOGGER.info("Splunk HEC is responsive.")
+            return True
     except Exception as e:
         LOGGER.warning(
-            "Could not connect to either Splunk HEC. Will try again. exception=%s", str(e),
+            "Could not connect to Splunk HEC. Will try again. exception=%s", str(e),
         )
         return False
     
