@@ -145,6 +145,38 @@ orbs:
               gh_token: <<parameters.gh_token>>
 
 jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - poetry-cache-{{ checksum "poetry.lock" }}
+      - run:
+          name: Install Tools
+          command: |
+            curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+      - run:
+          name: Build
+          command: |
+            source $HOME/.poetry/env
+            poetry install
+            poetry run poetry-dynamic-versioning
+            poetry build
+      - save_cache:
+          key: poetry-cache-{{ checksum "poetry.lock" }}
+          paths:
+            - ~/.cache/pypoetry
+      - store_artifacts:
+          path: dist
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: .
+          # Must be relative path from root
+          paths:
+            - dist
   publish-pypi:
     docker:
       - image: circleci/python:3.7
@@ -170,25 +202,34 @@ jobs:
 workflows:
   build:
     jobs:
+      - build
       - splunk-app-test/test_aio:
+          requires:
+            - build
           name: test-splunk-8-0
           splunk_version: "8.0"
           filters:
             branches:
               only: /.*/
       - splunk-app-test/test_aio:
+          requires:
+            - build
           name: test-splunk-7-3
           splunk_version: "7.3"
           filters:
             branches:
               only: /.*/
       - splunk-app-test/test_aio:
+          requires:
+            - build
           name: test-splunk-7-2
           splunk_version: "7.2"
           filters:
             branches:
               only: /.*/
       - splunk-release/tag:
+          requires:
+            - build
           name: tag-alpha
           tag_level: alpha
           gh_user: ${GH_USER}
@@ -204,6 +245,8 @@ workflows:
             branches:
               only: develop
       - splunk-release/tag:
+          requires:
+            - build
           name: tag-beta
           tag_level: beta
           gh_user: ${GH_USER}
@@ -257,6 +300,8 @@ workflows:
           requires:
             - approval-tag-final-minor
       - approval-tag-final-patch:
+          requires:
+            - build
           type: approval
           requires:
             - tag-candidate
