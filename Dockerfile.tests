@@ -15,12 +15,11 @@ COPY entrypoint.sh /
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 RUN apt-get update ; apt-get install -y netcat; apt-get clean
 
-COPY . /work
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-
 COPY pytest-ci.ini /work/pytest.ini
-COPY tests /work/tests/
+COPY . /work
 WORKDIR /work
+RUN cd /work;~/.poetry/bin/poetry install
 
 ENTRYPOINT "/entrypoint.sh"
 CMD tests
