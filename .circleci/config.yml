@@ -298,8 +298,6 @@ workflows:
           requires:
             - approval-tag-final-minor
       - approval-tag-final-patch:
-          requires:
-            - build
           type: approval
           requires:
             - tag-candidate
