@@ -21,7 +21,6 @@ RUN pip install --upgrade setuptools pip;\
 COPY . /work
 COPY pytest-ci.ini /work/pytest.ini
 WORKDIR /work
-RUN cd /work;~/.poetry/bin/poetry config virtualenvs.create false;~/.poetry/bin/poetry build;~/.poetry/bin/poetry install
 
 ENTRYPOINT "/entrypoint.sh"
 CMD tests

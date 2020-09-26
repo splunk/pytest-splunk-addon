@@ -23,7 +23,7 @@ requests = "^2"
 splunk_appinspect = "2.0.1"
 jsonschema = "^3.2"
 faker = "^4.1"
-pytest-xdist = "^2.1"
+pytest-xdist = "*"
 filelock = "^3.0"
 lovely-pytest-docker = { version="^0", optional = true }
 
@@ -31,7 +31,6 @@ lovely-pytest-docker = { version="^0", optional = true }
 docker = ['lovely-pytest-docker']
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.0"
 poetry-dynamic-versioning = "*"
 
 [tool.poetry.plugins]
