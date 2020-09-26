@@ -14,8 +14,10 @@ RUN mkdir -p /work/test-results/functional
 COPY entrypoint.sh /
 RUN apt-get update ; apt-get install -y curl wget git; apt-get clean
 
-RUN curl https://pyenv.run | bash;\
+RUN pip install --upgrade setuptools pip;\
+    curl https://pyenv.run | bash;\
     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+
 COPY . /work
 COPY pytest-ci.ini /work/pytest.ini
 WORKDIR /work
