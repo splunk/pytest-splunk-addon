@@ -245,8 +245,6 @@ workflows:
             branches:
               only: develop
       - splunk-release/tag:
-          requires:
-            - build
           name: tag-beta
           tag_level: beta
           gh_user: ${GH_USER}
