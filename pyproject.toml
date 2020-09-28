@@ -25,6 +25,7 @@ jsonschema = "^3.2"
 faker = "^4.1"
 pytest-xdist = "*"
 filelock = "^3.0"
+junitparser = "*"
 lovely-pytest-docker = { version="^0", optional = true }
 
 [tool.poetry.extras]
