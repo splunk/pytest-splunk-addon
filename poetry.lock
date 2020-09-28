@@ -148,6 +148,14 @@ futures = "*"
 
 [[package]]
 category = "main"
+description = "A comprehensive HTTP client library."
+name = "httplib2"
+optional = false
+python-versions = "*"
+version = "0.18.1"
+
+[[package]]
+category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -607,7 +615,7 @@ testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pyt
 docker = ["lovely-pytest-docker"]
 
 [metadata]
-content-hash = "1bb56885362fdcf7a16da09b7a2c7329893c6293ba49a88fb9e3b81c4ef623da"
+content-hash = "57db44447ae18f27ef3e72e44f8e85aeafe59a8a002d794825c4e785fb671762"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -671,6 +679,10 @@ futures = [
 ]
 futures-then = [
     {file = "futures_then-0.1.1.tar.gz", hash = "sha256:976f684e5b336a1a13c8c2f342e28352519febf6591175aeb3bbc5ce60dde04a"},
+]
+httplib2 = [
+    {file = "httplib2-0.18.1-py3-none-any.whl", hash = "sha256:ca2914b015b6247791c4866782fa6042f495b94401a0f0bd3e1d6e0ba2236782"},
+    {file = "httplib2-0.18.1.tar.gz", hash = "sha256:8af66c1c52c7ffe1aa5dc4bcd7c769885254b0756e6e69f953c7f0ab49a70ba3"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
