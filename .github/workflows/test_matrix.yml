@@ -32,6 +32,7 @@ jobs:
           source ~/.poetry/env
       - name: Test with pytest
         run: |
+          export PATH="~/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"          
           source ~/.poetry/env
           ~/.poetry/bin/poetry install -E docker
