@@ -14,16 +14,15 @@ RUN mkdir -p /work/test-results/functional
 COPY entrypoint.sh /
 
 COPY . /tmp/pytest-splunk-addon
-RUN \
+
+RUN export DEBIAN_FRONTEND=noninteractive ;\
     apt-get update ;\
-    apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git ;\
-    curl https://pyenv.run | bash ;\
-    export PATH="~/.pyenv/bin:$PATH" ;\
-    eval "$(pyenv init -)" ;\
-    pyenv install 3.7.8 ;\
-    pyenv local 3.7.8 ;\
-    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python ;\
-    source ~/.poetry/env
+    apt-get install -y --no-install-recommends apt-utils ;\
+    apt-get install -y locales ;\
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 ;\
+    apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git 
+
+ENV LANG en_US.utf8
 
 COPY pytest-ci.ini /work/pytest.ini
 COPY tests /work/tests/
