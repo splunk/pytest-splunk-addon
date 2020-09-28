@@ -36,5 +36,4 @@ jobs:
           eval "$(pyenv init -)"          
           source ~/.poetry/env
           poetry install -E docker
-          ls -l
           poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker
