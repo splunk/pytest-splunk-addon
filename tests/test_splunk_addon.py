@@ -68,11 +68,10 @@ def test_splunk_connection_external(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=external",
         "--splunk-app=addons/TA_fiction",
         "--splunk-type=external",
-        f"--splunk-host=splunk",
-        f"--splunk-port=8089",
+        "--splunk-host=splunk",
+        "--splunk-port=8089",
         "--splunk-forwarder-host=splunk",
         "-v",
     )

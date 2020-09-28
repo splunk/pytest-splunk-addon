@@ -10,4 +10,4 @@ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poet
 source ~/.poetry/env
 
 poetry install -E docker
-exec poetry run pytest $@
+exec poetry run pytest -vv $@
