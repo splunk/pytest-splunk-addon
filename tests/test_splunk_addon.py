@@ -71,8 +71,6 @@ def test_splunk_connection_external(testdir):
         "--splunk-type=external",
         "--splunk-app=addons/TA_fiction",
         "--splunk-type=external",
-        f"--splunk-host=splunk",
-        f"--splunk-port=8089",
         "-v",
     )
 
