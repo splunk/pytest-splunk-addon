@@ -26,4 +26,5 @@ jobs:
           curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
       - name: Test with pytest
         run: |
+          ~/.poetry/bin/poetry install -E docker
           ~/.poetry/bin/poetry run -vv pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker
