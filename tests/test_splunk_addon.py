@@ -74,6 +74,7 @@ def test_splunk_connection_external(testdir):
         f"--splunk-host=splunk",
         f"--splunk-port=8089",
         "--splunk-forwarder-host=splunk",
+        "--splunk-forwarder-port=8088"
         "-v",
     )
 
