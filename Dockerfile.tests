@@ -13,7 +13,7 @@ RUN mkdir -p /work/test-results/functional
 
 COPY entrypoint.sh /
 
-COPY . /tmp/pytest-splunk-addon
+COPY . /work
 
 RUN export DEBIAN_FRONTEND=noninteractive ;\
     apt-get update ;\
