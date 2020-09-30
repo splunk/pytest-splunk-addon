@@ -595,18 +595,16 @@ def is_responsive_hec(request, splunk):
         session_headers = {
             "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
         }
-        response = requests.post(
-                "{}/{}".format(f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/health/1.0', ""),
-                auth=None,
-                data=None,
-                headers=None,
-                params={"index":"_internal"},
+        response = requests.get(
+                f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/health/1.0',
                 verify=False,
             )
         LOGGER.debug("Status code: {}".format(response.status_code))
         if response.status_code in (200,201):
             LOGGER.info("Splunk HEC is responsive.")
             return True
+        else:
+            return False
     except Exception as e:
         LOGGER.warning(
             "Could not connect to Splunk HEC. Will try again. exception=%s", str(e),
