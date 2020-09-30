@@ -29,11 +29,13 @@ filelock = "^3.0"
 junitparser = "*"
 lovely-pytest-docker = { version="^0", optional = true }
 
+
 [tool.poetry.extras]
 docker = ['lovely-pytest-docker']
 
 [tool.poetry.dev-dependencies]
 poetry-dynamic-versioning = "*"
+sphinx_rtd_theme = "*"
 
 [tool.poetry.plugins]
 pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_addon.splunk" }
