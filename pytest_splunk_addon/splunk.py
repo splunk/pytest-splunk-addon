@@ -596,10 +596,10 @@ def is_responsive_hec(request, splunk):
             "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
         }
         response = requests.post(
-                "{}/{}".format(f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector', ""),
+                "{}/{}".format(f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/health/1.0', ""),
                 auth=None,
-                data={"event":"test_is_responsive_hec"},
-                headers=session_headers,
+                data=None,
+                headers=None,
                 params={"index":"_internal"},
                 verify=False,
             )
