@@ -51,18 +51,14 @@ class JunitParser(object):
             Dictionary: dictionary with all the required properties of Testcase.
         """
         if testcase.result:
-            status = (
-                "failed" if testcase.result._tag == "failure" else "skipped"
-            )
+            status = "failed" if testcase.result._tag == "failure" else "skipped"
         else:
             status = "passed"
 
         test_property = (
             "-"
             if not status == "failed"
-            else escape(
-                unescape(testcase.result.message.splitlines()[0])[:100]
-            )
+            else escape(unescape(testcase.result.message.splitlines()[0])[:100])
         )
         row_template = {
             "status": status,
@@ -79,9 +75,7 @@ class JunitParser(object):
                 row_template[prop.name] = prop.value
 
         if len(row_template) != 7:
-            raise Exception(
-                testcase.name + " does not have all required properties"
-            )
+            raise Exception(testcase.name + " does not have all required properties")
         return row_template
 
     def yield_properties(self, testcase):
@@ -109,9 +103,7 @@ def main():
         Entrypoint to the script.
     """
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "junit_xml", help="Path to JUnit XML file", metavar="junit-xml"
-    )
+    ap.add_argument("junit_xml", help="Path to JUnit XML file", metavar="junit-xml")
     ap.add_argument(
         "report_path",
         help="Path to Save Report",

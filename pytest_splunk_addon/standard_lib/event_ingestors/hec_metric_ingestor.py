@@ -6,10 +6,13 @@ from .base_event_ingestor import EventIngestor
 import requests
 import time
 import logging
+
 requests.urllib3.disable_warnings()
 import os
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
+
+
 class HECMetricEventIngestor(EventIngestor):
     """
     Class to ingest event via HEC
@@ -27,8 +30,8 @@ class HECMetricEventIngestor(EventIngestor):
                 }
             }
         """
-        self.hec_uri = required_configs.get('splunk_hec_uri')
-        self.session_headers = required_configs.get('session_headers')
+        self.hec_uri = required_configs.get("splunk_hec_uri")
+        self.session_headers = required_configs.get("session_headers")
 
     def ingest(self, data, thread_count):
         """
@@ -77,10 +80,16 @@ class HECMetricEventIngestor(EventIngestor):
                 ]
         """
         try:
-            LOGGER.info("Making a HEC event request with the following params:\nhec_uri:{}\nheaders:{}".format(
-                str(self.hec_uri), str(self.session_headers)))
-            LOGGER.debug("Creating the following sample event to be ingested via HEC event endoipnt:{}".format(
-                str(data)))
+            LOGGER.info(
+                "Making a HEC event request with the following params:\nhec_uri:{}\nheaders:{}".format(
+                    str(self.hec_uri), str(self.session_headers)
+                )
+            )
+            LOGGER.debug(
+                "Creating the following sample event to be ingested via HEC event endoipnt:{}".format(
+                    str(data)
+                )
+            )
             response = requests.post(
                 self.hec_uri,
                 auth=None,

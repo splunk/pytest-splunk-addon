@@ -30,9 +30,12 @@ class AddonParser(object):
     Args:
         splunk_app_path (str): Path to the Splunk App
     """
+
     def __init__(self, splunk_app_path):
         self.splunk_app_path = splunk_app_path
-        LOGGER.info(f"Initializing the splunk_appinspect.App from path={splunk_app_path}")
+        LOGGER.info(
+            f"Initializing the splunk_appinspect.App from path={splunk_app_path}"
+        )
         self._app = None
         self._props_parser = None
         self._tags_parser = None

@@ -7,6 +7,7 @@ import logging
 import pytest
 from ..addon_parser import Field
 
+
 class FieldTestTemplates(object):
     """
     Test templates to test the knowledge objects of an App
@@ -40,7 +41,11 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_positive
     def test_props_fields(
-        self, splunk_search_util, splunk_ingest_data, splunk_searchtime_fields_positive, record_property
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_searchtime_fields_positive,
+        record_property,
     ):
         """
         This test case checks that a field value has the expected values.
@@ -52,12 +57,16 @@ class FieldTestTemplates(object):
             caplog (fixture): fixture to capture logs.
         """
 
-        # Search Query 
+        # Search Query
         record_property("stanza_name", splunk_searchtime_fields_positive["stanza"])
         record_property("stanza_type", splunk_searchtime_fields_positive["stanza_type"])
         record_property("fields", splunk_searchtime_fields_positive["fields"])
 
-        index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
         search = (
             f"search {index_list}"
             f" {splunk_searchtime_fields_positive['stanza_type']}=\""
@@ -78,7 +87,9 @@ class FieldTestTemplates(object):
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
         )
         record_property("search", search)
 
@@ -90,7 +101,11 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
     def test_props_fields_no_dash_not_empty(
-        self, splunk_search_util, splunk_ingest_data, splunk_searchtime_fields_negative, record_property
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_searchtime_fields_negative,
+        record_property,
     ):
         """
         This test case checks negative scenario for the field value.
@@ -106,12 +121,16 @@ class FieldTestTemplates(object):
                 fixture to capture logs.
         """
 
-        # Search Query 
+        # Search Query
         record_property("stanza_name", splunk_searchtime_fields_negative["stanza"])
         record_property("stanza_type", splunk_searchtime_fields_negative["stanza_type"])
         record_property("fields", splunk_searchtime_fields_negative["fields"])
 
-        index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
         search = (
             f"search {index_list}"
             f" {splunk_searchtime_fields_negative['stanza_type']}=\""
@@ -126,7 +145,7 @@ class FieldTestTemplates(object):
             fields_search.append(f"({field} IN ({negative_values}))")
         search += " AND ({})".format(" OR ".join(fields_search))
         search += " | stats count by sourcetype"
-        
+
         self.logger.info(f"Executing the search query: {search}")
 
         # run search
@@ -144,7 +163,12 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_tags
     def test_tags(
-        self, splunk_search_util, splunk_ingest_data, splunk_searchtime_fields_tags, record_property, caplog
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_searchtime_fields_tags,
+        record_property,
+        caplog,
     ):
         """
         Test case to check tags mentioned in tags.conf
@@ -169,14 +193,20 @@ class FieldTestTemplates(object):
         record_property("tag", tag)
         record_property("is_tag_enabled", is_tag_enabled)
 
-        index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
         search = f"search {index_list} {tag_query} AND tag={tag}"
         search += " | stats count by sourcetype"
 
         self.logger.info(f"Search: {search}")
 
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
         )
 
         record_property("search", search)
@@ -220,13 +250,17 @@ class FieldTestTemplates(object):
         Returns:
             Asserts whether test case passes or fails.
         """
-        record_property(
-            "eventtype", splunk_searchtime_fields_eventtypes["stanza"]
+        record_property("eventtype", splunk_searchtime_fields_eventtypes["stanza"])
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
         )
-        index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
-        search = (f"search {index_list} AND "
-                  f"eventtype="
-                  f"\"{splunk_searchtime_fields_eventtypes['stanza']}\"")
+        search = (
+            f"search {index_list} AND "
+            f"eventtype="
+            f"\"{splunk_searchtime_fields_eventtypes['stanza']}\""
+        )
         search += " | stats count by sourcetype"
 
         self.logger.info(
@@ -237,7 +271,9 @@ class FieldTestTemplates(object):
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
         )
         record_property("search", search)
         assert result, (

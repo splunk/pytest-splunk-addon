@@ -5,10 +5,10 @@ import os
 
 pytest_plugins = "pytester"
 
+
 def pytest_configure(config):
     config.addinivalue_line("markers", "external: Test search time only")
     config.addinivalue_line("markers", "docker: Test search time only")
-
 
 
 @pytest.fixture(scope="session")
@@ -24,7 +24,7 @@ def docker_compose_files(request):
     docker_compose_path = os.path.join(
         str(request.config.invocation_dir), "docker-compose.yml"
     )
-    #LOGGER.info("docker-compose path: %s", docker_compose_path)
+    # LOGGER.info("docker-compose path: %s", docker_compose_path)
 
     return [docker_compose_path]
 
@@ -44,8 +44,8 @@ class TASetup(object):
     def enable_savedsearch(self, addon_name, savedsearch):
         splunk_binding = binding.connect(**self.splunk)
         splunk_binding.post(
-            f"/servicesNS/nobody/{addon_name}/saved/searches/{savedsearch}/enable"
-            , data=''
+            f"/servicesNS/nobody/{addon_name}/saved/searches/{savedsearch}/enable",
+            data="",
         )
 
 

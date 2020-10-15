@@ -122,12 +122,20 @@ class FieldTestHelper(object):
                         "-",
                     )
                 field_dict.update(
-                    {"sourcetype": sourcetype, "event_count": event_count, "source": source}
+                    {
+                        "sourcetype": sourcetype,
+                        "event_count": event_count,
+                        "source": source,
+                    }
                 )
                 self.parsed_result.append(field_dict)
             if not self.fields:
                 self.parsed_result.append(
-                    {"sourcetype": sourcetype, "event_count": event_count, "source": source}
+                    {
+                        "sourcetype": sourcetype,
+                        "event_count": event_count,
+                        "source": source,
+                    }
                 )
         return self.parsed_result
 
@@ -168,9 +176,9 @@ class FieldTestHelper(object):
                 headers=["Source", "Sourcetype", "Event Count"],
                 value_list=[
                     [
-                        each_result["source"], 
-                        each_result["sourcetype"], 
-                        each_result["event_count"]
+                        each_result["source"],
+                        each_result["sourcetype"],
+                        each_result["event_count"],
                     ]
                     for each_result in self.parsed_result
                 ],
@@ -230,7 +238,9 @@ class FieldTestHelper(object):
         """
         table_output = ""
         table_list = [headers] + value_list
-        col_length = [max(map(lambda cell: len(str(cell)),col)) for col in zip(*table_list)]
+        col_length = [
+            max(map(lambda cell: len(str(cell)), col)) for col in zip(*table_list)
+        ]
         format_str = " | ".join(["{{:<{}}}".format(i) for i in col_length])
         # Separating line
         table_list.insert(1, ["-" * i for i in col_length])

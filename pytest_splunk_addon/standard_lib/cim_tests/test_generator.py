@@ -232,7 +232,6 @@ class CIMTestGenerator(object):
         for each_eventtype in self.addon_parser.get_eventtypes():
             eventtypes.append(each_eventtype.get("stanza"))
 
-        yield pytest.param( 
-                {"eventtypes" : eventtypes},
-                id=f"mapped_datamodel_tests",
-            )
+        yield pytest.param(
+            {"eventtypes": eventtypes}, id=f"mapped_datamodel_tests",
+        )

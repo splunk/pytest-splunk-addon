@@ -30,9 +30,7 @@ class AppTestGenerator(object):
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
         self.seen_tests = set()
-        LOGGER.debug(
-            "Initializing FieldTestGenerator to generate the test cases"
-        )
+        LOGGER.debug("Initializing FieldTestGenerator to generate the test cases")
         self.fieldtest_generator = FieldTestGenerator(
             self.pytest_config.getoption("splunk_app"),
             field_bank=self.pytest_config.getoption("field_bank", False),
@@ -41,9 +39,7 @@ class AppTestGenerator(object):
         data_model_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "data_models"
         )
-        LOGGER.debug(
-            "Initializing CIMTestGenerator to generate the test cases"
-        )
+        LOGGER.debug("Initializing CIMTestGenerator to generate the test cases")
         self.cim_test_generator = CIMTestGenerator(
             self.pytest_config.getoption("splunk_app"),
             self.pytest_config.getoption("splunk_dm_path") or data_model_path,
@@ -61,7 +57,7 @@ class AppTestGenerator(object):
 
         Args:
             fixture(str): fixture name
-        """ 
+        """
         store_events = self.pytest_config.getoption("store_events")
         if fixture.startswith("splunk_searchtime_fields"):
             yield from self.dedup_tests(
@@ -78,7 +74,9 @@ class AppTestGenerator(object):
             pytest_params = None
 
             app_path = self.pytest_config.getoption("splunk_app")
-            config_path = config_path = self.pytest_config.getoption("splunk_data_generator")
+            config_path = config_path = self.pytest_config.getoption(
+                "splunk_data_generator"
+            )
 
             if "key_fields" in fixture:
                 pytest_params = list(
@@ -86,8 +84,8 @@ class AppTestGenerator(object):
                         store_events,
                         app_path=app_path,
                         config_path=config_path,
-                        test_type="key_fields"
-                        )
+                        test_type="key_fields",
+                    )
                 )
 
             elif "_time" in fixture:
@@ -96,8 +94,8 @@ class AppTestGenerator(object):
                         store_events,
                         app_path=app_path,
                         config_path=config_path,
-                        test_type="_time"
-                        )
+                        test_type="_time",
+                    )
                 )
 
             elif "line_breaker" in fixture:
@@ -106,8 +104,8 @@ class AppTestGenerator(object):
                         store_events,
                         app_path=app_path,
                         config_path=config_path,
-                        test_type="line_breaker"
-                        )
+                        test_type="line_breaker",
+                    )
                 )
             if isinstance(pytest_params, str):
                 LOGGER.warning(pytest_params)

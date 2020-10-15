@@ -4,6 +4,7 @@ Includes base class for data model schema.
 """
 from abc import ABC, abstractclassmethod
 
+
 class BaseSchema(ABC):
     """
     Abstract class to parse the Data model files. 

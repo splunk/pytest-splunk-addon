@@ -1195,4 +1195,3 @@ class HexRule(Rule):
                     self.replacement, sample.sample_name
                 )
             )
-

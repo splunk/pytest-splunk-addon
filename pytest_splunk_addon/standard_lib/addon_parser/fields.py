@@ -5,6 +5,8 @@ to convert a list to field list
 """
 
 from functools import wraps
+
+
 class Field(object):
     """
     Contains the field properties
@@ -19,6 +21,7 @@ class Field(object):
     Args:
         field_json (dict): dictionary containing field properties 
     """
+
     SUPPORTED_TYPES = ["required", "conditional", "optional"]
 
     def __init__(self, field_json=None):
@@ -63,9 +66,11 @@ def convert_to_fields(func):
     """
     Decorator to initialize the list of fields 
     """
+
     @wraps(func)
     def inner_func(*args, **kwargs):
         for each_field in func(*args, **kwargs):
             if each_field:
                 yield Field({"name": each_field})
+
     return inner_func

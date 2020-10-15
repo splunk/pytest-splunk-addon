@@ -7,6 +7,7 @@ import json
 from ..addon_parser import Field
 from ..addon_parser import PropsParser
 
+
 class FieldBank(object):
     """
     Supports field_bank: List of fields with patterns and expected
@@ -64,19 +65,19 @@ class FieldBank(object):
             for each_stanza in stanza_list:
                 if each_stanza.startswith("host::"):
                     continue
-                field_list = Field.parse_fields(stanza_list[each_stanza]) 
+                field_list = Field.parse_fields(stanza_list[each_stanza])
                 if each_stanza.startswith("source::"):
                     for each_source in PropsParser.get_list_of_sources(each_stanza):
                         yield {
                             "stanza": each_source,
                             "stanza_type": "source",
                             "classname": "field_bank",
-                            "fields": field_list
+                            "fields": field_list,
                         }
                 else:
-                    yield { 
+                    yield {
                         "stanza": each_stanza,
                         "stanza_type": "sourcetype",
                         "classname": "field_bank",
-                        "fields": field_list
+                        "fields": field_list,
                     }

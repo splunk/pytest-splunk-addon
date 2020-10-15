@@ -411,4 +411,3 @@ class PropsParser(object):
             "output_fields": input_output_field_list[1],
             "lookup_stanza": lookup_stanza,
         }
-

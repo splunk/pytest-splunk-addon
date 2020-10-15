@@ -4,7 +4,9 @@ Provides tags.conf parsing mechanism
 """
 from urllib.parse import unquote
 import logging
+
 LOGGER = logging.getLogger("pytest-splunk-addon")
+
 
 class TagsParser(object):
     """
@@ -14,8 +16,9 @@ class TagsParser(object):
         splunk_app_path (str): Path of the Splunk app
         app (splunk_appinspect.App): Object of Splunk app
     """
+
     def __init__(self, splunk_app_path, app):
-        self.app = app 
+        self.app = app
         self.splunk_app_path = splunk_app_path
         self._tags = None
 
@@ -47,8 +50,11 @@ class TagsParser(object):
             LOGGER.debug(f"Parsed tags-stanza={stanza}")
             for key in tag_sections.options:
                 tags_property = tag_sections.options[key]
-                LOGGER.info("Parsing tag=%s enabled=%s of stanza=%s ",
-                    tags_property.name, tags_property.value, stanza
+                LOGGER.info(
+                    "Parsing tag=%s enabled=%s of stanza=%s ",
+                    tags_property.name,
+                    tags_property.value,
+                    stanza,
                 )
                 tag_container = {
                     "stanza": stanza,
@@ -58,5 +64,5 @@ class TagsParser(object):
                 if tags_property.value == "enabled":
                     tag_container["enabled"] = True
                 else:
-                    tag_container["enabled"]= False
+                    tag_container["enabled"] = False
                 yield tag_container
