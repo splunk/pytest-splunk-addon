@@ -36,6 +36,7 @@ docker = ['lovely-pytest-docker']
 [tool.poetry.dev-dependencies]
 poetry-dynamic-versioning = "*"
 sphinx_rtd_theme = "0.5.0"
+lovely-pytest-docker = "*"
 
 [tool.poetry.plugins]
 pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_addon.splunk" }
@@ -46,7 +47,7 @@ generate-indextime-conf = 'pytest_splunk_addon.standard_lib.utilities.create_new
 
 
 [tool.poetry-dynamic-versioning]
-enable = true
+enable = false
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]
