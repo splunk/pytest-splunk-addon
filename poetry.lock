@@ -302,7 +302,7 @@ six = "*"
 category = "main"
 description = "Pytest testing utilities with docker containers."
 name = "lovely-pytest-docker"
-optional = true
+optional = false
 python-versions = "*"
 version = "0.2.0"
 
@@ -791,7 +791,7 @@ testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pyt
 docker = ["lovely-pytest-docker"]
 
 [metadata]
-content-hash = "b1df980f0f921a957026274c9ae6a975ff101b44fa3eb5794f349c6afba3f2a4"
+content-hash = "b690ab4cab237df300558a1f91a20a7bb885e34be2f4c828b06b77c2db24a1d2"
 lock-version = "1.0"
 python-versions = "^3.7"
 

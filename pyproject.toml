@@ -36,6 +36,7 @@ docker = ['lovely-pytest-docker']
 [tool.poetry.dev-dependencies]
 poetry-dynamic-versioning = "*"
 sphinx_rtd_theme = "0.5.0"
+lovely-pytest-docker = "*"
 
 [tool.poetry.plugins]
 pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_addon.splunk" }
