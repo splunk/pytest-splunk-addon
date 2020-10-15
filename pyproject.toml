@@ -47,7 +47,7 @@ generate-indextime-conf = 'pytest_splunk_addon.standard_lib.utilities.create_new
 
 
 [tool.poetry-dynamic-versioning]
-enable = true
+enable = false
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]
