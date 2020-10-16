@@ -498,7 +498,7 @@ def splunk_web_uri(splunk):
     """
     Provides a uri to the Splunk web port
     """
-    uri = f'http://{splunk["host"]}:{splunk["port_web"]}/'
+    uri = f'https://{splunk["host"]}:{splunk["port_web"]}/'
     LOGGER.info("Fetched splunk_web_uri=%s", uri)
     return uri
 
