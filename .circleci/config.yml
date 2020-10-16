@@ -161,7 +161,7 @@ jobs:
           name: Build
           command: |
             source $HOME/.poetry/env
-            pip3 install poetry-dynamic-versioning
+            pip3 install poetry-dynamic-versioning tomlkit
             python3 -m poetry-dynamic-versioning --style pep440
             poetry publish --build -u $TWINE_USERNAME -p $TWINE_PASSWORD
       - save_cache:
