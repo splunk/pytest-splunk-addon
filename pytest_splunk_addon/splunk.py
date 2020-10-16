@@ -82,6 +82,13 @@ def pytest_addoption(parser):
         help="Splunk HTTP event collector port. default is https.",
     )
     group.addoption(
+        "--splunk-web-scheme",
+        action="store",
+        dest="splunk_web_scheme",
+        default="http",
+        help="Enable SSL (HTTPS) in Splunk Web? default is http.",
+    )
+    group.addoption(
         "--splunk-hec-port",
         action="store",
         dest="splunk_hec",
@@ -498,7 +505,7 @@ def splunk_web_uri(splunk):
     """
     Provides a uri to the Splunk web port
     """
-    uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["host"]}:{splunk["port_web"]}/'
+    uri = f'{request.config.getoption("splunk_web_scheme")}://{splunk["host"]}:{splunk["port_web"]}/'
     LOGGER.info("Fetched splunk_web_uri=%s", uri)
     return uri
 
