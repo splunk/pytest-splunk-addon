@@ -162,9 +162,8 @@ jobs:
           command: |
             #
             source $HOME/.poetry/env
-            pip3 install tomlkit
-            pip3 install poetry-dynamic-versioning
-            poetry-dynamic-versioning
+            poetry install
+            poetry run poetry-dynamic-versioning
             poetry publish --build -u $TWINE_USERNAME -p $TWINE_PASSWORD
       - save_cache:
           key: poetry-cache-{{ checksum "poetry.lock" }}

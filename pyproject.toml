@@ -21,7 +21,7 @@ python = "^3.7"
 pytest = ">5.4.0, <6.1"
 splunk-sdk = "^1.6"
 requests = "^2"
-splunk_appinspect = "2.0.1"
+splunk_appinspect = "^2"
 jsonschema = "^3.2"
 faker = "^4.1"
 pytest-xdist = "*"
@@ -34,7 +34,7 @@ lovely-pytest-docker = { version="^0", optional = true }
 docker = ['lovely-pytest-docker']
 
 [tool.poetry.dev-dependencies]
-poetry-dynamic-versioning = "*"
+poetry-dynamic-versioning = "0.9.0"
 sphinx_rtd_theme = "0.5.0"
 lovely-pytest-docker = "*"
 
