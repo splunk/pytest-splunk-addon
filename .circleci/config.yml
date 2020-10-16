@@ -202,7 +202,7 @@ workflows:
               only: /.*/
       - splunk-release/tag:
           name: tag-alpha
-          tag_level: alpha
+          tag_level: a
           gh_user: ${GH_USER}
           gh_token: ${GH_PAT}
           filters:
@@ -217,7 +217,7 @@ workflows:
               only: develop
       - splunk-release/tag:
           name: tag-beta
-          tag_level: beta
+          tag_level: b
           gh_user: ${GH_USER}
           gh_token: ${GH_PAT}
           requires:
