@@ -501,7 +501,7 @@ def splunk_hec_uri(request, splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_web_uri(splunk):
+def splunk_web_uri(request, splunk):
     """
     Provides a uri to the Splunk web port
     """
