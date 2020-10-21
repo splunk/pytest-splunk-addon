@@ -18,7 +18,7 @@ include = ["pytest_splunk_addon/**/*.json", "pytest_splunk_addon/**/*.txt"]
 [tool.poetry.dependencies]
 httplib2 = "*"
 python = "^3.7"
-pytest = ">5.4.0, <6.1"
+pytest = "*"
 splunk-sdk = "^1.6"
 requests = "^2"
 splunk_appinspect = "^2"
@@ -28,7 +28,7 @@ pytest-xdist = "*"
 filelock = "^3.0"
 junitparser = "*"
 lovely-pytest-docker = { version="^0", optional = true }
-
+pytest-splunk-env = "*"
 
 [tool.poetry.extras]
 docker = ['lovely-pytest-docker']

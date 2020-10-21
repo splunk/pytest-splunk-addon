@@ -51,68 +51,6 @@ def setup_test_dir(testdir):
     )
 
 
-@pytest.mark.external
-def test_splunk_connection_external(testdir):
-    """Make sure that pytest accepts our fixture."""
-
-    # create a temporary pytest test module
-    testdir.makepyfile(test_connection_only)
-
-    # Copy the content of source to destination
-    shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
-        os.path.join(testdir.tmpdir, "package"),
-    )
-    SampleGenerator.clean_samples()
-    Rule.clean_rules()
-
-    # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-app=addons/TA_fiction",
-        "--splunk-type=external",
-        "--splunk-host=splunk",
-        "--splunk-port=8089",
-        "--splunk-forwarder-host=splunk",
-        "-v",
-    )
-
-    # fnmatch_lines does an assertion internally
-    result.assert_outcomes(passed=1, failed=0)
-
-    # make sure that that we get a '0' exit code for the testsuite
-    assert result.ret == 0
-
-
-@pytest.mark.docker
-def test_splunk_connection_docker(testdir):
-    """Make sure that pytest accepts our fixture."""
-
-    # create a temporary pytest test module
-    testdir.makepyfile(test_connection_only)
-
-    # Copy the content of source to destination
-
-    shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
-        os.path.join(testdir.tmpdir, "package"),
-    )
-
-    setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
-    Rule.clean_rules()
-
-    # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-type=docker", "-v",
-    )
-
-    # fnmatch_lines does an assertion internally
-    result.assert_outcomes(passed=1, failed=0)
-
-    # make sure that that we get a '0' exit code for the testsuite
-    assert result.ret == 0
-
-
 @pytest.mark.docker
 def test_splunk_app_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
@@ -138,7 +76,7 @@ def test_splunk_app_fiction(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields","--search-interval=4","--search-retry=4","--search-index=*,_internal",
+        "--splunk-type=docker-compose","--sc4s-type=docker-compose",  "-v", "-m splunk_searchtime_fields","--search-interval=4","--search-retry=4","--search-index=*,_internal",
     )
 
     result.stdout.fnmatch_lines_random(constants.TA_FICTION_PASSED)
@@ -172,7 +110,7 @@ def test_splunk_app_broken(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker",  "-v", "-m splunk_searchtime_fields","--search-interval=4","--search-retry=4", "--search-index=*,_internal",
+        "--splunk-type=docker-compose","--sc4s-type=docker-compose",  "-v", "-m splunk_searchtime_fields","--search-interval=4","--search-retry=4", "--search-index=*,_internal",
     )
 
     # fnmatch_lines does an assertion internally
@@ -217,7 +155,7 @@ def test_splunk_app_cim_fiction(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker",
+        "--splunk-type=docker-compose","--sc4s-type=docker-compose",
         "--splunk-dm-path=tests/data_models",
         "-v",
         "-m splunk_searchtime_cim",
@@ -262,7 +200,7 @@ def test_splunk_app_cim_broken(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker",
+        "--splunk-type=docker-compose","--sc4s-type=docker-compose",
         "--splunk-dm-path=tests/data_models",
         "-v",
         "-m splunk_searchtime_cim",
@@ -313,7 +251,7 @@ def test_splunk_fiction_indextime(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker",
+        "--splunk-type=docker-compose","--sc4s-type=docker-compose",
         "-v",
         "--search-interval=0",
         "--search-retry=0",
@@ -358,7 +296,7 @@ def test_splunk_fiction_indextime_broken(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker",
+        "--splunk-type=docker-compose","--sc4s-type=docker-compose",
         "-v",
         "--search-interval=0",
         "--search-retry=0",
@@ -403,26 +341,11 @@ def test_splunk_setup_fixture(testdir):
         )
 
     result = testdir.runpytest(
-        "--splunk-type=docker",  "-v", "-k saved_search_lookup","--search-interval=4","--search-retry=4", "--search-index=*,_internal",
+        "--splunk-type=docker-compose","--sc4s-type=docker-compose",  "-v", "-k saved_search_lookup","--search-interval=4","--search-retry=4", "--search-index=*,_internal",
     )
 
     result.assert_outcomes(
         passed=2
-    )
-
-@pytest.mark.doc
-def test_help_message(testdir):
-    result = testdir.runpytest("--help",)
-    # fnmatch_lines does an assertion internally
-    result.stdout.fnmatch_lines(
-        [
-            "splunk-addon:",
-            "*--splunk-app=*",
-            "*--splunk-host=*",
-            "*--splunk-port=*",
-            "*--splunk-user=*",
-            "*--splunk-password=*",
-        ]
     )
 
 @pytest.mark.doc
