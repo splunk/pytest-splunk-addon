@@ -12,10 +12,6 @@ from time import sleep
 import json
 import pytest
 import requests
-import splunklib.client as client
-from .helmut.manager.jobs import Jobs
-from .helmut.splunk.cloud import CloudSplunk
-from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
 import configparser
 from filelock import FileLock

@@ -301,7 +301,7 @@ def test_splunk_fiction_indextime_broken(testdir):
         "--search-interval=0",
         "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime_broken/default",
-        "--search-index=*,_internal",
+        "--search-index=*,_internal","--keepalive","--splunk-version=8.0.6" 
     )
 
     # fnmatch_lines does an assertion internally
