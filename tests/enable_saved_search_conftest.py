@@ -54,3 +54,4 @@ def splunk_setup(splunk):
     ta_setup = TASetup(splunk)
     ta_setup.enable_savedsearch("TA_SavedSearch", "ta_saved_search_one")
     ta_setup.wait_for_lookup("ta_saved_search_lookup")
+    return splunk
