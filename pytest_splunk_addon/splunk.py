@@ -100,7 +100,7 @@ def splunk_rest_uri(splunk_setup):
 
 
 @pytest.fixture(scope="session")
-def splunk_hec_uri(request, splunk_setup):
+def splunk_hec_uri(splunk_setup):
     """
     Provides a uri to the Splunk hec port
     """
@@ -115,7 +115,7 @@ def splunk_hec_uri(request, splunk_setup):
 
 
 @pytest.fixture(scope="session")
-def splunk_web_uri(request, splunk):
+def splunk_web_uri(splunk_setup):
     """
     Provides a uri to the Splunk web port
     """

@@ -49,7 +49,8 @@ jobs:
             pyenv local << parameters.python >>
             poetry install --no-ansi -E docker
             mkdir -p test-results || true
-            poetry run pytest tests -v --tb=long --junitxml=test-results/test.xml
+            poetry run pytest tests -v --tb=long --junitxml=test-results/test.xml -n 3
+          no_output_timeout: 90m
       - save_cache:
           key: poetry-cache-<< parameters.python >>-{{ checksum "poetry.lock" }}
           paths:
@@ -141,7 +142,7 @@ workflows:
           matrix:
             parameters:
               os: [linux]
-              python: ["3.7.9", "3.8.6", "3.9.0"]
+              python: ["3.7.9", "3.8.6"]
           filters:
             branches:
               only: /.*/
