@@ -97,9 +97,10 @@ def splunk_ingest_data(request, splunk_setup, sc4s):
         config_path = request.config.getoption("splunk_data_generator")
 
         sc4s_ip, sc4s_port = sc4s.get_service(514)
+        splunk_hec_uri = splunk_setup.splunk_hec_uri
         ingest_meta_data = {
-            "session_headers": splunk_setup.splunk_hec_uri[0].headers,
-            "splunk_hec_uri": splunk_setup.splunk_hec_uri[1],
+            "session_headers": splunk_hec_uri[0].headers,
+            "splunk_hec_uri": splunk_hec_uri[1],
             "sc4s_host": sc4s_ip,
             "sc4s_port": sc4s_port,  # for sc4s
         }
