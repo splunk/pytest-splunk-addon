@@ -22,7 +22,7 @@ class IndexTimeTestTemplate(object):
     @pytest.mark.splunk_indextime
     def test_indextime_key_fields(
         self,
-        splunk_search_util,
+        splunk_setup,
         splunk_ingest_data,
         splunk_indextime_key_fields,
         record_property,
@@ -51,7 +51,7 @@ class IndexTimeTestTemplate(object):
 
         index_list = (
             "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + " OR index=".join(splunk_setup.search_util.search_index.split(","))
             + ")"
         )
 
@@ -79,10 +79,10 @@ class IndexTimeTestTemplate(object):
         record_property("Query", search)
         LOGGER.debug(
             "Base search for indextime key field test: {}".format(search))
-        results = splunk_search_util.getFieldValuesList(
+        results = splunk_setup.search_util.getFieldValuesList(
             search,
-            interval=splunk_search_util.search_interval,
-            retries=splunk_search_util.search_retry,
+            interval=splunk_setup.search_util.search_interval,
+            retries=splunk_setup.search_util.search_retry,
         )
         results = list(results)
         LOGGER.debug(
@@ -151,7 +151,7 @@ class IndexTimeTestTemplate(object):
     @pytest.mark.splunk_indextime
     def test_indextime_time(
         self,
-        splunk_search_util,
+        splunk_setup,
         splunk_ingest_data,
         splunk_indextime_time,
         record_property,
@@ -169,7 +169,7 @@ class IndexTimeTestTemplate(object):
         """
         index_list = (
             "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + " OR index=".join(splunk_setup.search_util.search_index.split(","))
             + ")"
         )
 
@@ -201,10 +201,10 @@ class IndexTimeTestTemplate(object):
         record_property("Query", search)
         LOGGER.debug(
             "Base search for indextime time field test: {}".format(search))
-        results = splunk_search_util.getFieldValuesList(
+        results = splunk_setup.search_util.getFieldValuesList(
             search,
-            interval=splunk_search_util.search_interval,
-            retries=splunk_search_util.search_retry,
+            interval=splunk_setup.search_util.search_interval,
+            retries=splunk_setup.search_util.search_retry,
         )
         results = list(results)
         LOGGER.debug("Results:{}".format(results))
@@ -234,7 +234,7 @@ class IndexTimeTestTemplate(object):
     @pytest.mark.splunk_indextime
     def test_indextime_line_breaker(
         self,
-        splunk_search_util,
+        splunk_setup,
         splunk_ingest_data,
         splunk_indextime_line_breaker,
         record_property,
@@ -255,7 +255,7 @@ class IndexTimeTestTemplate(object):
         )
         index_list = (
             "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + " OR index=".join(splunk_setup.search_util.search_index.split(","))
             + ")"
         )
         host = "(\""+"\",\"".join(splunk_indextime_line_breaker.get("host"))+"\")"
@@ -269,10 +269,10 @@ class IndexTimeTestTemplate(object):
         LOGGER.debug(
             "Base search for indextime key field test: {}".format(query))
         results = list(
-            splunk_search_util.getFieldValuesList(
+            splunk_setup.search_util.getFieldValuesList(
                 query,
-                interval=splunk_search_util.search_interval,
-                retries=splunk_search_util.search_retry,
+                interval=splunk_setup.search_util.search_interval,
+                retries=splunk_setup.search_util.search_retry,
             )
         )
         count_from_results = int(results[0].get("count"))

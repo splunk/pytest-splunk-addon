@@ -23,7 +23,7 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
     @pytest.mark.splunk_searchtime_fields
     def test_events_with_untokenised_values(
         self,
-        splunk_search_util,
+        splunk_setup,
         splunk_ingest_data,
         record_property
     ):
@@ -39,7 +39,7 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
         query =f'search index=* ##*## | stats count by source, sourcetype'
         record_property("Query", query)
         results = list(
-            splunk_search_util.getFieldValuesList(
+            splunk_setup.search_util.getFieldValuesList(
                 query,
                 interval=0,
                 retries=0,
