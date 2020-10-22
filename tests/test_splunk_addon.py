@@ -8,18 +8,6 @@ from pytest_splunk_addon.standard_lib.sample_generation import SampleGenerator, 
 
 logger = logging.getLogger("test_pytest_splunk_addon")
 
-test_connection_only = """
-        def test_connection_splunk(splunk_search_util):
-            search = "search (index=_internal) | head 5"
-
-             # run search
-            result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-                search,
-                interval=1, retries=1)
-            assert result
-    """
-
-
 def setup_test_dir(testdir):
     shutil.copytree(
         os.path.join(testdir.request.config.invocation_dir, "deps"),
@@ -313,40 +301,6 @@ def test_splunk_fiction_indextime_broken(testdir):
     # The test suite should fail as this is a negative test
     assert result.ret != 0
 
-@pytest.mark.docker
-def test_splunk_setup_fixture(testdir):
-    testdir.makepyfile(
-        """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
-        class Test_App(Basic):
-            def empty_method():
-                pass
-
-        """
-    )
-    setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
-    Rule.clean_rules()
-    with open(
-        os.path.join(
-            testdir.request.fspath.dirname,
-            "enable_saved_search_conftest.py"
-        )
-    ) as conf_test_file:
-        testdir.makeconftest(conf_test_file.read())
-
-    shutil.copytree(
-            os.path.join(testdir.request.fspath.dirname, "addons/TA_SavedSearch"),
-            os.path.join(testdir.tmpdir, "package"),
-        )
-
-    result = testdir.runpytest(
-        "--splunk-type=docker-compose","--sc4s-type=docker-compose",  "-v", "-k saved_search_lookup","--search-interval=4","--search-retry=4", "--search-index=*,_internal",
-    )
-
-    result.assert_outcomes(
-        passed=2
-    )
 
 @pytest.mark.doc
 def test_docstrings(testdir):

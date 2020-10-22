@@ -485,7 +485,7 @@ pytest = ">=3.10"
 
 [[package]]
 name = "pytest-splunk-env"
-version = "0.1.2"
+version = "0.1.3a2"
 description = "pytest fixtures for interaction with Splunk Enterprise and Splunk Cloud"
 category = "main"
 optional = false
@@ -814,7 +814,7 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "1.0"
 python-versions = "^3.7"
-content-hash = "cb5051509d66781e6d96a76c952d8bfb7f350985328afd571a1c87149aa3cd09"
+content-hash = "82077b6c8cc6f49229802e08578916149830f99f01cdf50d642ddb9b08e63763"
 
 [metadata.files]
 alabaster = [
@@ -1068,8 +1068,8 @@ pytest-forked = [
     {file = "pytest_forked-1.3.0-py2.py3-none-any.whl", hash = "sha256:dc4147784048e70ef5d437951728825a131b81714b398d5d52f17c7c144d8815"},
 ]
 pytest-splunk-env = [
-    {file = "pytest-splunk-env-0.1.2.tar.gz", hash = "sha256:8b87cf7ddfc2e5e4c656418c6ea2795190dc0bce1c2f238ee379cd613a304b08"},
-    {file = "pytest_splunk_env-0.1.2-py3-none-any.whl", hash = "sha256:2c51d003bd5cce3eff8e47c7b740f4da1120cd44ec13ea65223958962df7c792"},
+    {file = "pytest-splunk-env-0.1.3a2.tar.gz", hash = "sha256:0c4890f7618dc0057dae81a9cdb317c03bcfc6e500117704f98fa33cf9e9fc2b"},
+    {file = "pytest_splunk_env-0.1.3a2-py3-none-any.whl", hash = "sha256:c5df773f51442c496b6434e5b0825adc6d1c6b0a8cd01619fda6fca1df46fcd7"},
 ]
 pytest-xdist = [
     {file = "pytest-xdist-2.1.0.tar.gz", hash = "sha256:82d938f1a24186520e2d9d3a64ef7d9ac7ecdf1a0659e095d18e596b8cbd0672"},

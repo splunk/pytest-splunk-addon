@@ -72,56 +72,7 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope="session")
-def splunk_search_util(splunk_setup):
-    """
-    This is a simple connection to Splunk via the SplunkSDK
-
-    Returns:
-        helmut_lib.SearchUtil.SearchUtil: The SearchUtil object
-    """
-    
-    return splunk_setup.search_util
-
-@pytest.fixture(scope="session")
-def splunk_rest_uri(splunk_setup):
-    """
-    Provides a uri to the Splunk rest port
-    """
-    splunk_session = requests.Session()
-    splunk_session.auth = (splunk_setup.username, splunk_setup.password)
-    uri = f'{splunk_setup.splunkd_scheme}://{splunk_setup.splunkd_host}:{splunk_setup.splunkd_port}/'
-    LOGGER.info("Fetched splunk_rest_uri=%s", uri)
-
-    return splunk_session, uri
-
-
-@pytest.fixture(scope="session")
-def splunk_hec_uri(splunk_setup):
-    """
-    Provides a uri to the Splunk hec port
-    """
-    splunk_session = requests.Session()
-    splunk_session.headers = {
-        "Authorization": f'Splunk {splunk_setup.hec_token}'
-    }
-    uri = f'{splunk_setup.hec_scheme}://{splunk_setup.hec_host}:{splunk_setup.hec_port}/services/collector'
-    LOGGER.info("Fetched splunk_hec_uri=%s", uri)
-
-    return splunk_session, uri
-
-
-@pytest.fixture(scope="session")
-def splunk_web_uri(splunk_setup):
-    """
-    Provides a uri to the Splunk web port
-    """
-    uri = f'{request.config.getoption("splunk_web_scheme")}://{splunk["host"]}:{splunk["port_web"]}/'
-    LOGGER.info("Fetched splunk_web_uri=%s", uri)
-    return uri
-
-
-@pytest.fixture(scope="session")
-def splunk_ingest_data(request, splunk_hec_uri, sc4s):
+def splunk_ingest_data(request, splunk_setup, sc4s):
     """
     Generates events for the add-on and ingests into Splunk.
     The ingestion can be done using the following methods:
@@ -131,7 +82,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
         4. HEC Metrics
 
     Args:
-    splunk_hec_uri(tuple): Details for hec uri and session headers
+    splunk_setup: Splunk Fixture post setup
     sc4s(tuple): Details for sc4s server and TCP port
 
     TODO: For splunk_type=external, data will not be ingested as
@@ -147,8 +98,8 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
 
         sc4s_ip, sc4s_port = sc4s.get_service(514)
         ingest_meta_data = {
-            "session_headers": splunk_hec_uri[0].headers,
-            "splunk_hec_uri": splunk_hec_uri[1],
+            "session_headers": splunk_setup.splunk_hec_uri[0].headers,
+            "splunk_hec_uri": splunk_setup.splunk_hec_uri[1],
             "sc4s_host": sc4s_ip,
             "sc4s_port": sc4s_port,  # for sc4s
         }
