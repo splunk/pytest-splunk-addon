@@ -40,7 +40,7 @@ def setup_test_dir(testdir):
 
 
 @pytest.mark.docker
-def test_splunk_app_fiction(testdir):
+def test_splunk_app_fiction(testdir,caplog):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -64,7 +64,14 @@ def test_splunk_app_fiction(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker-compose","--sc4s-type=docker-compose",  "-v", "-m splunk_searchtime_fields","--search-interval=4","--search-retry=4","--search-index=*,_internal",
+        "--splunk-type=docker-compose",
+        "--sc4s-type=docker-compose",  
+        "-vv", 
+        "-m splunk_searchtime_fields",
+        "--search-interval=1",
+        "--search-retry=1",
+        "--search-index=*,_internal","pytest --tb=long"
+        
     )
 
     result.stdout.fnmatch_lines_random(constants.TA_FICTION_PASSED)
