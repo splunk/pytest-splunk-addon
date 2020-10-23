@@ -66,7 +66,7 @@ def test_splunk_app_fiction(testdir,caplog):
     result = testdir.runpytest(
         "--splunk-type=docker-compose",
         "--sc4s-type=docker-compose",  
-        "-vv", 
+        "-v", 
         "-m splunk_searchtime_fields",
         "--search-interval=1",
         "--search-retry=1",
