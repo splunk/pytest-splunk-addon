@@ -68,8 +68,8 @@ def test_splunk_app_fiction(testdir,caplog):
         "--sc4s-type=docker-compose",  
         "-v", 
         "-m splunk_searchtime_fields",
-        "--search-interval=1",
-        "--search-retry=1",
+        "--search-interval=4",
+        "--search-retry=4",
         "--search-index=*,_internal"
         
     )
@@ -296,7 +296,7 @@ def test_splunk_fiction_indextime_broken(testdir):
         "--search-interval=0",
         "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime_broken/default",
-        "--search-index=*,_internal","--keepalive","--splunk-version=8.0.6" 
+        "--search-index=*,_internal"
     )
 
     # fnmatch_lines does an assertion internally
