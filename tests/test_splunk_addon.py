@@ -70,7 +70,7 @@ def test_splunk_app_fiction(testdir,caplog):
         "-m splunk_searchtime_fields",
         "--search-interval=1",
         "--search-retry=1",
-        "--search-index=*,_internal","pytest --tb=long"
+        "--search-index=*,_internal"
         
     )
 
