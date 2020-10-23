@@ -154,8 +154,8 @@ def test_splunk_app_cim_fiction(testdir):
         "--splunk-dm-path=tests/data_models",
         "-v",
         "-m splunk_searchtime_cim",
-        "--search-interval=4",
-        "--search-retry=4",
+        "--search-interval=1",
+        "--search-retry=1",
         "--search-index=*,_internal",
     )
 

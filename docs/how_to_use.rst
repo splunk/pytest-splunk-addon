@@ -213,12 +213,6 @@ Extending pytest-splunk-addon
         - Wait for an lookup to be populated.
         - Restart Splunk.
 
-    The following snippet shows an example in which the setup fixture is used to enable a saved search.
-
-    .. literalinclude:: ../tests/enable_saved_search_conftest.py
-       :language: python
-       :lines: 2,31-
-
 
 **4. Check mapping of an add-on with custom data models**
 
