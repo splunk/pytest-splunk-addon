@@ -225,6 +225,13 @@ def pytest_addoption(parser):
         help="Avoids generation of the json files with the tokenised events in the working directory.",
     )
 
+    group.addoption(
+        "--no-splunk-cleanup",
+        action="store_false",
+        dest="splunk_clean",
+        help="Disable a Splunk env cleanup (events deletion) before running tests.",
+    )
+
 
 @pytest.fixture(scope="session")
 def splunk_setup(splunk):
@@ -504,7 +511,7 @@ def splunk_web_uri(splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_ingest_data(request, splunk_hec_uri, sc4s):
+def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_clear_eventdata):
     """
     Generates events for the add-on and ingests into Splunk.
     The ingestion can be done using the following methods:
@@ -514,11 +521,12 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
         4. HEC Metrics
 
     Args:
-    splunk_hec_uri(tuple): Details for hec uri and session headers
-    sc4s(tuple): Details for sc4s server and TCP port
+        splunk_hec_uri(tuple): Details for hec uri and session headers
+        sc4s(tuple): Details for sc4s server and TCP port
+        splunk_clear_eventdata: Unused but required to ensure fixture deleting all events will be run before ingesting new events
 
-    TODO: For splunk_type=external, data will not be ingested as
-    manual configurations are required.
+    TODO:
+        For splunk_type=external, data will not be ingested as manual configurations are required.
     """
     global PYTEST_XDIST_TESTRUNUID
     if (
@@ -548,6 +556,25 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s):
         while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait"):
             sleep(1)
 
+
+@pytest.fixture(scope="session")
+def splunk_clear_eventdata(request, splunk_search_util):
+    """
+    Deletes all events from all indexes to ensure tests are being run on clean environment.
+
+    Note that events are hidden from search but they are still available on disk according to
+    `Splunk doc <https://docs.splunk.com/Documentation/Splunk/8.0.6/Indexer/RemovedatafromSplunk#How_to_delete>`_
+
+    Args:
+        splunk_search_util: Other fixture preparing connection to Splunk Search.
+
+    """
+    splunk_clean = request.config.getoption("splunk_clean")
+    if splunk_clean:
+        LOGGER.info("Running the old events cleanup")
+        splunk_search_util.deleteEventsFromIndex()
+    else:
+        LOGGER.info("Events cleanup was disabled.")
 
 def is_responsive_splunk(splunk):
     """
@@ -610,7 +637,7 @@ def is_responsive_hec(request, splunk):
             "Could not connect to Splunk HEC. Will try again. exception=%s", str(e),
         )
         return False
-    
+
 
 def is_responsive(url):
     """
