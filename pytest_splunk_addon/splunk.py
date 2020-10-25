@@ -228,7 +228,7 @@ def pytest_addoption(parser):
     group.addoption(
         "--no-splunk-cleanup",
         action="store_false",
-        dest="splunk_clean",
+        dest="splunk_cleanup",
         help="Disable a Splunk env cleanup (events deletion) before running tests.",
     )
 
@@ -511,7 +511,7 @@ def splunk_web_uri(splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_clear_eventdata):
+def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_events_cleanup):
     """
     Generates events for the add-on and ingests into Splunk.
     The ingestion can be done using the following methods:
@@ -558,7 +558,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_clear_eventdata):
 
 
 @pytest.fixture(scope="session")
-def splunk_clear_eventdata(request, splunk_search_util):
+def splunk_events_cleanup(request, splunk_search_util):
     """
     Deletes all events from all indexes to ensure tests are being run on clean environment.
 
@@ -569,8 +569,7 @@ def splunk_clear_eventdata(request, splunk_search_util):
         splunk_search_util: Other fixture preparing connection to Splunk Search.
 
     """
-    splunk_clean = request.config.getoption("splunk_clean")
-    if splunk_clean:
+    if request.config.getoption("splunk_cleanup"):
         LOGGER.info("Running the old events cleanup")
         splunk_search_util.deleteEventsFromIndex()
     else:

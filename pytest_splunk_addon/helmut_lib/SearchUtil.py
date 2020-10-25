@@ -128,19 +128,19 @@ class SearchUtil(object):
                 time.sleep(interval)
         return False
 
-    def deleteEventsFromIndex(self, index_name="*"):
+    def deleteEventsFromIndex(self, index_name="*", max_wait_time=120):
         """
         Hides events belonging to specified index from SPL Search using ``| delete`` command.
 
         Args:
             index_name: Name of the index to delete events from.
+            max_wait_time: Amount of time job can wait to finish.
         """
-        max_wait_time_seconds = 300
         query = f"search index={index_name} | delete"
         self.logger.debug("query is %s", query)
         try:
             job = self.jobs.create(query)
-            job.wait(max_wait_time_seconds)
+            job.wait(max_wait_time)
             self.logger.info("Successfully deleted old events")
 
         except Exception as e:
@@ -163,13 +163,13 @@ class SearchUtil(object):
             return False, job.get_results()
 
     def checkQueryFields(
-            self,
-            query,
-            expected,  # can be list, set, tuple, or string
-            expectedMinRow=1,
-            interval=15,
-            retries=4,
-            namespace="SA-ThreatIntelligence",
+        self,
+        query,
+        expected,  # can be list, set, tuple, or string
+        expectedMinRow=1,
+        interval=15,
+        retries=4,
+        namespace="SA-ThreatIntelligence",
     ):
 
         """Execute a query and check for a matching set (not necessarily
@@ -344,13 +344,13 @@ class SearchUtil(object):
         return status
 
     def checkExactQueryContent(
-            self,
-            query,
-            expected,
-            namespace="SA-ThreatIntelligence",
-            interval=15,
-            retries=4,
-            reformat=False,
+        self,
+        query,
+        expected,
+        namespace="SA-ThreatIntelligence",
+        interval=15,
+        retries=4,
+        reformat=False,
     ):
 
         """Check for exact content in a specific search result.
@@ -426,13 +426,13 @@ class SearchUtil(object):
         return status
 
     def checkGapSearch(
-            self,
-            query,
-            warningGapSizeLimit,
-            warningGapCountLimit,
-            interval=1,
-            retries=0,
-            namespace="splunk_for_vmware",
+        self,
+        query,
+        warningGapSizeLimit,
+        warningGapCountLimit,
+        interval=1,
+        retries=0,
+        namespace="splunk_for_vmware",
     ):
 
         """
@@ -559,7 +559,7 @@ class SearchUtil(object):
         return status
 
     def checkFieldAgainstCanon(
-            self, query, field, canon, interval=30, retries=4, namespace="splunk_for_vmware"
+        self, query, field, canon, interval=30, retries=4, namespace="splunk_for_vmware"
     ):
         """
             Execute a search that returns results containing a particular field. Then
@@ -738,13 +738,13 @@ class SearchUtil(object):
         return status
 
     def checkQueryContent(
-            self,
-            query,
-            expected,
-            expectedRow,
-            interval=15,
-            retries=4,
-            namespace="SA-ThreatIntelligence",
+        self,
+        query,
+        expected,
+        expectedRow,
+        interval=15,
+        retries=4,
+        namespace="SA-ThreatIntelligence",
     ):
 
         """Check for specific content in a specific search result row.
@@ -844,7 +844,7 @@ class SearchUtil(object):
         return status
 
     def getRealtimeNotableSearchResults(
-            self, searchName, interval=15, retries=4, minimumNumberEvents=1
+        self, searchName, interval=15, retries=4, minimumNumberEvents=1
     ):
         self.logger.debug("Retry count: %d", retries)
 
@@ -905,13 +905,13 @@ class SearchUtil(object):
         return status
 
     def checkQueryFieldValueIsGreaterThanZero(
-            self,
-            query,
-            field_name,  # can be list, set, tuple, or string
-            expectedMinRow=0,
-            interval=15,
-            retries=4,
-            namespace="SA-ThreatIntelligence",
+        self,
+        query,
+        field_name,  # can be list, set, tuple, or string
+        expectedMinRow=0,
+        interval=15,
+        retries=4,
+        namespace="SA-ThreatIntelligence",
     ):
 
         """Execute a query and check for a matching set (not necessarily
@@ -1077,14 +1077,14 @@ class SearchUtil(object):
             py.test.skip("NetBIOS services (nmbd) not running on host")
 
     def checkQueryFieldAllValuesContainsRegex(
-            self,
-            query,
-            field,
-            regex,
-            interval=15,
-            retries=4,
-            number_results=100,
-            max_time=60,
+        self,
+        query,
+        field,
+        regex,
+        interval=15,
+        retries=4,
+        number_results=100,
+        max_time=60,
     ):
         tryNum = 0
         r = re.compile(regex)
@@ -1125,13 +1125,13 @@ class SearchUtil(object):
         return match_found
 
     def checkQueryAllFieldAllValuesContainsRegex(
-            self,
-            query,
-            field_regex_json,
-            interval=15,
-            retries=4,
-            number_results=100,
-            max_time=60,
+        self,
+        query,
+        field_regex_json,
+        interval=15,
+        retries=4,
+        number_results=100,
+        max_time=60,
     ):
         tryNum = 0
         match_found = False
