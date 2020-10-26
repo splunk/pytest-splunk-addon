@@ -24,7 +24,7 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_fields
     def test_cim_required_fields(
-        self, splunk_search_util, splunk_ingest_data, splunk_searchtime_cim_fields, record_property
+        self, splunk_setup, splunk_ingest_data, splunk_searchtime_cim_fields, record_property
     ):
         """
         Test the the required fields in the data models are extracted with valid values.
@@ -46,7 +46,7 @@ class CIMTestTemplates(object):
         data_set = str(cim_data_set[-1])
         index_list = (
             "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + " OR index=".join(splunk_setup.search_util.search_index.split(","))
             + ")"
         )
         
@@ -58,7 +58,7 @@ class CIMTestTemplates(object):
         base_search += " | search {}".format(cim_tag_stanza)
 
         test_helper = FieldTestHelper(
-            splunk_search_util, cim_fields, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+            splunk_setup.search_util, cim_fields, interval=splunk_setup.search_util.search_interval, retries=splunk_setup.search_util.search_retry
         )
         record_property("search", base_search)
         record_property("tag_stanza", cim_tag_stanza)
@@ -132,7 +132,7 @@ class CIMTestTemplates(object):
     def test_cim_fields_not_allowed_in_search(
         self,
         splunk_ingest_data,
-        splunk_search_util,
+        splunk_setup,
         splunk_searchtime_cim_fields_not_allowed_in_search,
         record_property,
     ):
@@ -151,7 +151,7 @@ class CIMTestTemplates(object):
         # Search Query
         index_list = (
             "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + " OR index=".join(splunk_setup.search_util.search_index.split(","))
             + ")"
         )
 
@@ -187,8 +187,8 @@ class CIMTestTemplates(object):
 
         self.logger.info("base_search: %s", base_search)
         results = list(
-            splunk_search_util.getFieldValuesList(
-                base_search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+            splunk_setup.search_util.getFieldValuesList(
+                base_search, interval=splunk_setup.search_util.search_interval, retries=splunk_setup.search_util.search_retry
             )
         )
 
@@ -252,7 +252,7 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim_mapped_datamodel
     def test_eventtype_mapped_multiple_cim_datamodel(
         self,
-        splunk_search_util,
+        splunk_setup,
         splunk_ingest_data,
         splunk_searchtime_cim_mapped_datamodel,
         record_property,
@@ -407,7 +407,7 @@ class CIMTestTemplates(object):
         ]
         index_list = (
             "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + " OR index=".join(splunk_setup.search_util.search_index.split(","))
             + ")"
         )
         search = "search {} ".format(index_list)
@@ -432,7 +432,7 @@ class CIMTestTemplates(object):
 
         record_property("search", search)
 
-        results = list(splunk_search_util.getFieldValuesList(search, splunk_search_util.search_interval, splunk_search_util.search_retry))
+        results = list(splunk_setup.search_util.getFieldValuesList(search, splunk_setup.search_util.search_interval, splunk_setup.search_util.search_retry))
         if results:
             record_property("results", results)
             result_str = FieldTestHelper.get_table_output(
