@@ -111,7 +111,7 @@ class SearchUtil(object):
         return False
 
     def checkQueryCountIsGreaterThanZero(
-        self, query, interval=15, retries=4, max_time=120
+            self, query, interval=15, retries=4, max_time=120
     ):
         self.logger.debug("query is %s", query)
         tryNum = 0
@@ -127,6 +127,25 @@ class SearchUtil(object):
                 tryNum += 1
                 time.sleep(interval)
         return False
+
+    def deleteEventsFromIndex(self, index_name="*", max_wait_time=120):
+        """
+        Hides events belonging to specified index from SPL Search using ``| delete`` command.
+
+        Args:
+            index_name: Name of the index to delete events from.
+            max_wait_time: Amount of time job can wait to finish.
+        """
+        query = f"search index={index_name} | delete"
+        self.logger.debug("query is %s", query)
+        try:
+            job = self.jobs.create(query)
+            job.wait(max_wait_time)
+            self.logger.info("Successfully deleted old events")
+
+        except Exception as e:
+            self.logger.debug("CAREFUL - Could not delete old events!")
+            self.logger.debug(e)
 
     def checkQueryCountIsZero(self, query, max_time=120):
         self.logger.debug("query is %s", query)
@@ -484,7 +503,7 @@ class SearchUtil(object):
                             msg="Error Sized Gap detected with detection search",
                             actual="gapSize=" + str(result["delta"]),
                             expected="no gaps, or at least gaps shorter than "
-                            + str(warningGapSizeLimit),
+                                     + str(warningGapSizeLimit),
                             errors="Error sized gap detected.",
                             level="error",
                         )
@@ -616,7 +635,7 @@ class SearchUtil(object):
         return status
 
     def checkQueryErrorMessage(
-        self, query, expected, namespace="SA-ThreatIntelligence"
+            self, query, expected, namespace="SA-ThreatIntelligence"
     ):
 
         """Check for specific error text from a search.
@@ -658,13 +677,13 @@ class SearchUtil(object):
         return status
 
     def checkQueryFieldValues(
-        self,
-        query,
-        expected_values,  # can be list, set, tuple, or string
-        expectedMinRow=0,
-        interval=15,
-        retries=4,
-        namespace="SA-ThreatIntelligence",
+            self,
+            query,
+            expected_values,  # can be list, set, tuple, or string
+            expectedMinRow=0,
+            interval=15,
+            retries=4,
+            namespace="SA-ThreatIntelligence",
     ):
 
         """Execute a query and check for a matching set (not necessarily
