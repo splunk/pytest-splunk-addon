@@ -170,7 +170,7 @@ The following optional arguments are available to modify the default settings in
     
     5. A new functionality is introduced in pytest-splunk-addon to suppress unwanted errors in **test_splunk_internal_errors**.
 
-            - **Splunk related errors**: There is a file maintained in pytest-splunk-addon `".ignore_splunk_internal_errors" <https://github.com/splunk/pytest-splunk-addon/blob/develop/.ignore_splunk_internal_errors>`_ , user can add the string in the file and events cantaining these strings will be suppressed by the search query.
+            - **Splunk related errors**: There is a file maintained in pytest-splunk-addon `".ignore_splunk_internal_errors" <https://github.com/splunk/pytest-splunk-addon/blob/develop/pytest_splunk_addon/.ignore_splunk_internal_errors>`_ , user can add the string in the file and events containing these strings will be suppressed by the search query.
             - **Addon related errors:** To suppress these user can create a file with the list of strings and provide the file in the **--ignore-addon-errors** param while test execution.
 
         .. code-block:: console
