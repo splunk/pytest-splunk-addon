@@ -233,10 +233,10 @@ def pytest_addoption(parser):
     )
 
     group.addoption(
-        "--no-splunk-cleanup",
-        action="store_false",
+        "--splunk-cleanup",
+        action="store_true",
         dest="splunk_cleanup",
-        help="Disable a Splunk env cleanup (events deletion) before running tests.",
+        help="Enable a Splunk env cleanup (events deletion) before running tests.",
     )
 
 
@@ -268,7 +268,7 @@ def splunk_setup(splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_search_util(splunk, splunk_setup, request):
+def splunk_search_util(splunk, request):
     """
     This is a simple connection to Splunk via the SplunkSDK
 
