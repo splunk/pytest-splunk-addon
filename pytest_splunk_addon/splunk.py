@@ -242,7 +242,7 @@ def pytest_addoption(parser):
         "--ignore-addon-errors",
         action="store",
         dest="ignore_addon_errors",
-        help=("Path to file where list of errors to be ignored is mentioned. Default file '.ignore-errors'"),
+        help=("Path to file where list of addon related errors are suppressed."),
     )
 
 
