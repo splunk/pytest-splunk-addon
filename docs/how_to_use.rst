@@ -167,7 +167,33 @@ The following optional arguments are available to modify the default settings in
         .. code-block:: console
 
             --no-splunk-cleanup
+    
+    5. A new functionality is introduced in pytest-splunk-addon to suppress unwanted errors in **test_splunk_internal_errors**.
 
+            - **Splunk related errors**: There is a file maintained in pytest-splunk-addon `".ignore_splunk_internal_errors" <https://github.com/splunk/pytest-splunk-addon/blob/develop/.ignore_splunk_internal_errors>`_ , user can add the string in the file and events cantaining these strings will be suppressed by the search query.
+            - **Addon related errors:** To suppress these user can create a file with the list of strings and provide the file in the **--ignore-addon-errors** param while test execution.
+
+        .. code-block:: console
+
+            --ignore-addon-errors=<path_to_file>
+                
+        - Sample strings in the file.
+
+        .. code-block:: console
+
+            SearchMessages - orig_component="SearchStatusEnforcer"
+            message_key="" message=NOT requires an argument
+
+        .. Note ::
+            *Each line in the file will be considered a separate string to be ignored in the events.*
+        
+        - Sample Event which will be ignored by the search query.
+        
+        .. code-block:: console
+
+            11-04-2020 13:26:01.026 +0000 ERROR SearchMessages - orig_component="SearchStatusEnforcer" app="search" sid="ta_1604496283.232" peer_name="" message_key="" message=NOT requires an argument
+        
+    
 
 Extending pytest-splunk-addon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
