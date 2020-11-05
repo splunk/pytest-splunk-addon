@@ -17,7 +17,7 @@ class FieldTestTemplates(object):
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_internal_errors
-    def test_splunk_internal_errors(self, splunk_search_util, suppress_internal_errors, record_property, caplog):
+    def test_splunk_internal_errors(self, splunk_search_util, ignore_internal_errors, record_property, caplog):
         search = """
             search index=_internal CASE(ERROR)
             sourcetype!=splunkd_ui_access
@@ -26,7 +26,7 @@ class FieldTestTemplates(object):
             AND sourcetype!=splunkd_access
             AND sourcetype!=splunkd
         """
-        for each in suppress_internal_errors:
+        for each in ignore_internal_errors:
             search += ' NOT ' + json.dumps(each)
         search += " | table _raw"
         record_property("search", search)

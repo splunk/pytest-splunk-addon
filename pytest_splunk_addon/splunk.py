@@ -300,7 +300,7 @@ def splunk_search_util(splunk, splunk_setup, request):
     return search_util
 
 @pytest.fixture(scope="session")
-def suppress_internal_errors(request):
+def ignore_internal_errors(request):
     """
     This fixture generates a common list of errors which are suppossed 
     to be ignored in test_splunk_internal_errors.
