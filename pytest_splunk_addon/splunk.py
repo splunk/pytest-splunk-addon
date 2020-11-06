@@ -238,6 +238,12 @@ def pytest_addoption(parser):
         dest="splunk_cleanup",
         help="Disable a Splunk env cleanup (events deletion) before running tests.",
     )
+    group.addoption(
+        "--ignore-addon-errors",
+        action="store",
+        dest="ignore_addon_errors",
+        help=("Path to file where list of addon related errors are suppressed."),
+    )
 
 
 @pytest.fixture(scope="session")
@@ -292,6 +298,26 @@ def splunk_search_util(splunk, splunk_setup, request):
     search_util.search_interval = request.config.getoption("search_interval")
 
     return search_util
+
+@pytest.fixture(scope="session")
+def ignore_internal_errors(request):
+    """
+    This fixture generates a common list of errors which are suppossed 
+    to be ignored in test_splunk_internal_errors.
+
+    Returns:
+        dict: List of the strings to be ignored in test_splunk_internal_errors
+    """
+    error_list = []
+    splunk_error_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),".ignore_splunk_internal_errors")
+    with open(splunk_error_file_path) as splunk_errors:
+        error_list = [each_error.strip() for each_error in splunk_errors.readlines()]
+    if request.config.getoption("ignore_addon_errors"):
+        addon_error_file_path = request.config.getoption("ignore_addon_errors")
+        if os.path.exists(addon_error_file_path):
+            with open(addon_error_file_path, "r") as addon_errors:
+                error_list.extend([each_error.strip() for each_error in addon_errors.readlines()])
+    yield error_list
 
 
 @pytest.fixture(scope="session")
@@ -440,7 +466,7 @@ def splunk_external(request):
         )
     if not is_responsive_hec(request, splunk_info):
         raise Exception(
-            "Could not connect to the external Splunk Instance"
+            "Could not connect to Splunk HEC"
             "Please check the log file for possible errors."
         )
     return splunk_info
