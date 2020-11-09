@@ -35,7 +35,7 @@ class TASetup(object):
 
     def wait_for_lookup(self, lookup):
         splunk_client = client.connect(**self.splunk)
-        for _ in range(30):
+        for _ in range(60):
             job_result = splunk_client.jobs.oneshot(f" | inputlookup {lookup}")
             for _ in results.ResultsReader(job_result):
                 return
