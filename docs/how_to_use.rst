@@ -162,11 +162,11 @@ The following optional arguments are available to modify the default settings in
 
             --discard-eventlogs
 
-    4. To disable the Splunk Index cleanup performed before the test run, user can provide argument along with pytest command:
+    4. To enable the Splunk Index cleanup performed before the test run, user can provide argument along with pytest command:
 
         .. code-block:: console
 
-            --no-splunk-cleanup
+            --splunk-cleanup
     
     5. A new functionality is introduced in pytest-splunk-addon to suppress unwanted errors in **test_splunk_internal_errors**.
 

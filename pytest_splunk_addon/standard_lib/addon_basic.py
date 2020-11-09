@@ -25,6 +25,7 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
         self,
         splunk_search_util,
         splunk_ingest_data,
+        splunk_setup,
         record_property
     ):
         """
