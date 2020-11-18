@@ -142,7 +142,7 @@
           "name": "icmp_type",
           "type": "conditional",
           "condition": "protocol=icmp",
-          "validity": "if(isnum(duration) and duration>0 and duration<254,duration,null())",
+          "validity": "if(isnum(duration) and duration>0 and duration<254,icmp_type,null())",
           "comment": "The RFC 2780 or RFC 4443 numeric value of the traffic. See the ICMP Type Numbers and the ICMPv6 Type Numbers."
         },
         {
