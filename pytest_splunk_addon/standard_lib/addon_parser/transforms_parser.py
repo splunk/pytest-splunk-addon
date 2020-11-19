@@ -76,7 +76,7 @@ class TransformsParser(object):
             if "REGEX" in transforms_section.options:
                 LOGGER.info("Parsing REGEX of %s", transforms_stanza)
 
-                regex = r"\(\?\<(?!_KEY|_VAL)([A-Za-z0-9_]+)\>"
+                regex = r"\(\?P(?:[<'])([^\>'\s]+)[\>']"
                 match_fields = re.findall(
                     regex, transforms_section.options["REGEX"].value
                 )
