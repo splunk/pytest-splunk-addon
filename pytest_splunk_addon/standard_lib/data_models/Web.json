@@ -210,17 +210,17 @@
         },
         {
           "name": "cookie",
-          "type": "not_allowed_in_search",
+          "type": "optional",
           "comment": "The cookie file recorded in the event."
         },
         {
           "name": "http_referrer",
-          "type": "not_allowed_in_search",
+          "type": "optional",
           "comment": "The HTTP referrer used in the request. The W3C specification and many implementations misspell this as http_referer. Use a FIELDALIAS to handle both key names."
         },
         {
           "name": "site",
-          "type": "not_allowed_in_search",
+          "type": "optional",
           "comment": "The virtual site which services the request, if applicable."
         }
       ],
