@@ -70,8 +70,7 @@
         },
         {
           "name": "dest_mac",
-          "type": "conditional",
-          "condition": "| regex dest=\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\"",
+          "type": "optional",
           "validity": "if(dest==dest_mac,dest_mac,null())",
           "comment": "The destination TCP/IP layer 2 Media Access Control (MAC) address of a packet's destination, such as 06:10:9f:eb:8f:14. Note: Always force lower case on this field and use colons instead of dashes, spaces, or no separator."
         },
