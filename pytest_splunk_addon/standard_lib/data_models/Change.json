@@ -11,7 +11,7 @@
         {
           "name": "action",
           "type": "required",
-          "validity": "if(like(action,'%\\\"%'),null(),action)",
+          "validity": "if(like(action,'%\\\"%') OR like(action,' '),null(),action)",
           "comment": "The action performed on the resource."
         },
         {
