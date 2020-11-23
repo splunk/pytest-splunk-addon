@@ -2,7 +2,7 @@
 """
 There are 2 utilities included:
 
-1. CIM Complaince report generator for pytest-splunk-addon
+1. CIM Compliance report generator for pytest-splunk-addon
 2. pytest-splunk-addon-data.conf generator
 
 """
