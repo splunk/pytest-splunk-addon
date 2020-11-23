@@ -27,6 +27,7 @@ faker = "^4.1"
 pytest-xdist = "*"
 filelock = "^3.0"
 junitparser = "*"
+pytest-ordering = "*"
 lovely-pytest-docker = { version="^0", optional = true }
 
 
