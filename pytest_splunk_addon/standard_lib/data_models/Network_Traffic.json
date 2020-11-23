@@ -96,7 +96,8 @@
         },
         {
           "name": "dest_zone",
-          "type": "required",
+          "type": "conditional",
+          "condition":"src_zone=*",
           "comment": "The network zone of the destination."
         },
         {
@@ -212,7 +213,8 @@
         },
         {
           "name": "src_zone",
-          "type": "required",
+          "type": "conditional",
+          "condition":"dest_zone=*",
           "comment": "The network zone of the source."
         },
         {
