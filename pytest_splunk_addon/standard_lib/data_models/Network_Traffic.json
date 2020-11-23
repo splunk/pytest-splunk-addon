@@ -85,7 +85,7 @@
         {
           "name": "dest_translated_ip",
           "type": "conditional",
-          "condition": "protocol=IP OR protocol=ICMP",
+          "condition": "(protocol=IP OR protocol=ICMP) AND src_translated_ip=*",
           "comment": "The NATed IPv4 or IPv6 address to which a packet has been sent."
         },
         {
@@ -208,7 +208,8 @@
         },
         {
           "name": "src_translated_ip",
-          "type": "required",
+          "type": "conditional",
+          "condition": "dest_translated_ip=*",
           "comment": "The interface that is listening locally or sending packets remotely. Can also be referred to as the 'ingress interface.'"
         },
         {
