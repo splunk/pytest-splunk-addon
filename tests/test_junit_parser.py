@@ -3,7 +3,7 @@ import pytest
 import os
 
 
-from pytest_splunk_addon.standard_lib.cim_compliance import JunitParser
+from pytest_splunk_addon.standard_lib.utilities import JunitParser
 
 test_data = [
     {
