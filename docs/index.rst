@@ -12,7 +12,6 @@ pytest-splunk-addon documentation
    
    overview
    how_to_use
-   common_tests
    cim_tests
    cim_compliance
    field_tests

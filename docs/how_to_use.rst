@@ -6,12 +6,14 @@ How To Use
 
 Create a test file in the tests folder
 
-.. code:: python3
+.. dropdown:: Example Test File
 
-    from pytest_splunk_addon.standard_lib.addon_basic import Basic
-    class Test_App(Basic):
-        def empty_method():
-            pass
+    .. code:: python3
+
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
 
 
 .. _test_execution:
@@ -37,24 +39,30 @@ There are two ways to execute the tests:
 
         pip install pytest-splunk-addon[docker]
 
-    Create a Dockerfile-splunk file 
+    Create a Dockerfile-splunk file
 
-    .. literalinclude:: ../Dockerfile.splunk
-       :language: Dockerfile
+    .. dropdown:: Example Dockerfile
+
+        .. literalinclude:: ../Dockerfile.splunk
+            :language: Dockerfile
 
     Create docker-compose.yml
 
-    .. literalinclude:: ../docker-compose.yml
-       :language: YAML
-       :lines: 9-
+    .. dropdown:: Example docker-compose file
+
+        .. literalinclude:: ../docker-compose.yml
+            :language: YAML
+            :lines: 9-
 
 .. _conftest_file:
 
     Create conftest.py in the test folder along with :ref:`the test file <test_file>`
 
-    .. literalinclude:: ../tests/conftest.py
-       :language: python
-       :lines: 2,12-
+    .. dropdown:: Example conftest file
+
+        .. literalinclude:: ../tests/conftest.py
+            :language: python
+            :lines: 2,12-
 
     Run pytest with the add-on, using the following command:
 
@@ -247,9 +255,11 @@ Extending pytest-splunk-addon
 
     The following snippet shows an example in which the setup fixture is used to enable a saved search.
 
-    .. literalinclude:: ../tests/enable_saved_search_conftest.py
-       :language: python
-       :lines: 2,31-
+    .. dropdown:: enable_saved_search_conftest.py
+
+        .. literalinclude:: ../tests/enable_saved_search_conftest.py
+            :language: python
+            :lines: 2,31-
 
 
 **4. Check mapping of an add-on with custom data models**
@@ -267,3 +277,80 @@ Extending pytest-splunk-addon
    <hr width=100%>
    
 .. [#] xfail indicates that you expect a test to fail for some reason. A common example is a test for a feature not yet implemented, or a bug not yet fixed. When a test passes despite being expected to fail, it's an xpass and will be reported in the test summary.
+
+Common Tests
+~~~~~~~~~~~~~
+
+**1. Events ingested are properly tokenised or not.**
+
+    .. code-block:: python
+
+        test_events_with_untokenised_values
+
+    Testcase verifies that all the events have been properly tokenised.
+    That is event does not contain any token from the conf file in its raw form i.e enclosed within ##.
+
+**2. Events containing fields in props.conf/transforms.conf**
+
+    .. code-block:: python
+
+        test_props_fields
+
+    Testcase verifies that all the events that have fields from props.conf or transforms.conf are validated. 
+    That is the search-time knowledge objects such as the following are working correctly:
+    
+    * Extract
+    * Report
+    * Lookups
+    * Fieldalias
+    * Eval 
+    * Eventtypes 
+    * Tags 
+
+**3. Fields from props.conf/transforms.conf are valid**
+
+    .. code-block:: python
+
+        test_props_fields_no_dash_not_empty
+
+    These tests ensures that the field values within the TA are not empty or invalid values.
+
+**4. Test each field mapped with a CIM dataset**
+
+    .. code-block:: python
+
+        test_cim_required_fields
+
+    These tests ensures that the fields that are mapped with a dataset follows the search constraints set by CIM for that dataset and are valid values
+
+**5. Test field values that are not allowed in search fields**
+
+    .. code-block:: python
+
+        test_cim_fields_not_allowed_in_search
+
+    These tests ensures that the fields that are not allowed for a dataset are not present
+
+**6. Test key field values that are ingested in indextime**
+
+    .. code-block:: python
+
+        test_indextime_key_fields
+    
+    These tests ensure that key fields that should be ingested during indextime are ingested correctly into Splunk
+
+**7. Test timestamp values that are ingested in indextime**
+
+    .. code-block:: python
+
+        test_indextime_time
+
+    These tests ensures that the _time field is being ingested correctly into our Splunk instance.
+
+**8. Test linebreaking after indextime ingestion**
+
+    .. code-block:: python
+
+        test_indextime_line_breaker
+
+    These tests ensure that linebreaking tests is working correctly as intended. 

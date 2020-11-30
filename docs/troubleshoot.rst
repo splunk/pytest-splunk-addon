@@ -1,4 +1,4 @@
-Troubleshoot
+Troubleshooting
 ===================
 
 **1. Test Case takes forever to run when using splunk-type=external**
