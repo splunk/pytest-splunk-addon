@@ -54,7 +54,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
 """"""""""""""""""""""""""
     **Changes:**
 
-    * Added support for ingestion of data via Pytest-Splunk-Addon with a user defined Index 
+    * Added support for ingestion of data via Pytest-Splunk-Addon with a user-defined Index 
     * Fixed Splunk rest_uri fixture in splunk.py
 
 
@@ -70,7 +70,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
 """"""""""""""""""""""""""
     **Changes:**
 
-    * Fixed an issue of when threading with syslog we can run out of connections 
+    * Fixed an issue of when threading with Syslog we can run out of connections 
 
 1.3.3 (2020-9-04)
 """"""""""""""""""""""""""
@@ -111,10 +111,10 @@ The best way to track the development of pytest-splunk-addon is through `the Git
 
     **Known Issues:**
 
-    * Event ingestion through SC4S bia UDP port
-    * File ouput for structured sources 
+    * Event ingestion through SC4S via UDP port
+    * File output for structured sources 
     * Support for filed values as host 
-    * Validatibng lock mechanism in pytest-splunk-addon 
+    * Validating lock mechanism in pytest-splunk-addon 
     * Timeout failures in CircleCI 
     * Environment cleanup after running indextime tests for multiple local environment tests. 
     * Threading mechanism issue in Pytest-Splunk-Addon 
@@ -148,7 +148,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
 
     **Features:**
 
-    * The codebase was reformatted to an object-oriented approach to increase the readability, scalability and the reusability of the plugin. 
+    * The codebase was reformatted to an object-oriented approach to increase the readability, scalability, and the reusability of the plugin. 
     * pytest-splunk-addon now generates tests for checking CIM compatibility in your Splunk Technology Add-ons.
 
     **Bugfixes:**
