@@ -1,3 +1,6 @@
+.. _release_history:
+
+=================
 Release History
 =================
 
@@ -10,104 +13,114 @@ The best way to track the development of pytest-splunk-addon is through `the Git
     **Changes:**
 
     * Updated the documentation 
-    * Updated pytest params (added --ignore-addon-errors, and updated --no-splunk-cleanup to --splunk-cleanup so that you have to toggle the cleanup on)
-    * Updated splunk_setup 
-    * Updated waits for lookups
+    * Added ``--ignore-addon-errors`` pytest arguments to suppress internal errors
+    * Updated ``--no-splunk-cleanup`` to ``--splunk-cleanup`` pytest param so that you have to toggle the data cleanup on
+    * Moved splunk_setup fixture from search_util to individual test case.
+    * Updated waits for lookups to 60 secs
 
 1.3.11 (2020-10-27)
 """"""""""""""""""""""""""
     **Changes:**
 
     * Fixed string literal causing SyntaxError issues within Helmut Lib
-    * Added a cleanup of events before testing, which can be toggled with a CLI param (--no-splunk-cleanup)
-
-1.3.10 (2020-10-16)
-""""""""""""""""""""""""""
-    **Changes:**
-
-    * Added pytest-splunk-addon params (--splunk-web-scheme) and updated our tests to utilize HTTPS
+    * Added a cleanup of events before testing, which can be toggled with a CLI param ``--no-splunk-cleanup``
+    * Added ``--splunk-web-scheme`` pytest argument and updated our tests to utilize HTTPS
+    * Updated Pytest-Splunk-Addon package to remove static fixtures that are now installed as part of the environment
 
 1.3.9 (2020-10-15)
 """"""""""""""""""""""""""
     **Changes:**
 
-    * Updated config.yml file
-    * Cleanup outdated environment requirements 
-
-1.3.8 (2020-10-15)
-""""""""""""""""""""""""""
-    **Changes:**
-
-    * Updated requirements for Poetry install and CircleCI test environment
-
-1.3.7 (2020-10-14)
-""""""""""""""""""""""""""
-    **Changes:**
-
-    * Changes to params related to external forwarder 
-    * Updated Splunk_docker fixture 
-    * Updated documentation for Pytest-Splunk-Addon 
-    * Updated forwarder params for Pytest-Splunk-Addon (Added param "is_responsive")
     * Updated the test environments to utilize Python Poetry to install requirements. 
+    * Updated config.yml file to utilize poetry to install dependencies
+    * Cleaned up some of the outdated environment requirements 
+    * Updated Splunk_docker fixture to utilize poetry install 
+    * Updated documentation for Pytest-Splunk-Addon 
+    * Updated forwarder params for Pytest-Splunk-Addon, and added the pytest param ``is_responsive_hec``
 
-1.3.6 (2020-9-24)
+1.3.6 (2020-9-25)
 """"""""""""""""""""""""""
     **Changes:**
 
     * Added support for ingestion of data via Pytest-Splunk-Addon with a user-defined Index 
-    * Fixed Splunk rest_uri fixture in splunk.py
+    * Fixed an issue with the Splunk rest_uri fixture in splunk.py
 
 
 1.3.5 (2020-9-14)
 """"""""""""""""""""""""""
     **Changes:**
 
-    * Updated the host pattern
-    * Updated host generation logic 
+    * Updated the host pattern from using ``_`` to using ``-``
+    * Updated host generation logic to fix an issue for unique IP based hosts from being duplicated due to a limit. Now hosts are getting genreated uniquely.
 
 
 1.3.4 (2020-9-11)
 """"""""""""""""""""""""""
     **Changes:**
 
-    * Fixed an issue of when threading with Syslog we can run out of connections 
+    * Fixed an issue when threading with Syslog in which we can run out of connections 
 
-1.3.3 (2020-9-04)
+1.3.3 (2020-9-09)
 """"""""""""""""""""""""""
     **Changes:**
 
     * Added a file lock when starting Docker 
-    * Added log messages to our tests
+    * Added log messages to our tests to help debug issues
 
-1.3.2 (2020-8-25)
+1.3.2 (2020-8-26)
 """"""""""""""""""""""""""
     **Changes:**
 
-    * CIM requirements change (Updates to action and object fields)
+    * Enhanced requirements for the following CIM data models:
+
+    +-----------------------+-----------------------------------------------------------+
+    | CIM Data Model        |                   Field Name                              | 
+    +=======================+===========================================================+
+    | Change                | action, object_category, object_id, object_path,          |
+    |                       | object_attrs                                              |
+    +-----------------------+-----------------------------------------------------------+
+
     * Added tokenized events in logfiles 
 
-1.3.1 (2020-8-23)
+1.3.1 (2020-8-24)
 """"""""""""""""""""""""""
     **Changes:**
 
     * Now handles situations where TRANSFORMS REGEX uses _VAL
-    * Handles eval functions using NULL better 
+    * Pytest-Splunk-Addon now handles eval functions using NULL better 
 
 1.3.0 (2020-8-21)
 """"""""""""""""""""""""""
     **Features:**
 
-    * pytest-splunk-addon now generates data with it's own data generator feature which replaces eventgen for accuracy. This feature can ingest data using HEC event, HEC Raw, SC4S (TCP and UDP), and HEC metrics
+    * Pytest-splunk-addon now generates data with it's own data generator feature which replaces SA-Eventgen for accuracy. This feature can ingest data using HEC event, HEC Raw, SC4S (TCP and UDP), and HEC metrics
     * pytest-splunk-addon now generates Index Time test cases for your Splunk Technology Add-ons. The plugin is now divided into 5 types of classes: Tests, TestGenerator, SampleGenerator, EventIngestor, and Utility classes. 
     * Added a utility to create a new pytest-splunk-addon-data.conf file from existing eventgen.conf files
     * Backward compatibility for search time tests using existing eventgen.conf
-    * Support of xdist for performance improvements
-    * CircleCI and Jenkins Integration for Indextime Tests
-    * Added --thread-count param to control the number of threads available for data ingestion
+    * Added support of xdist for performance improvements
+    * Added ``--thread-count`` pytest param to control the number of threads available for data ingestion
 
     **Bugfixes:**
 
-    * Corrected incorrect requirements for CIM fields
+    * Enhanced requirements for the following CIM data models:
+
+    +-----------------------+-----------------------------------------------------------+
+    | CIM Data Model        |                   Field Name                              | 
+    +=======================+===========================================================+
+    | IDS                   | src, dest, src_port, dest_port, user                      |
+    +-----------------------+-----------------------------------------------------------+
+    | Network Resolution    | src, dest                                                 |
+    +-----------------------+-----------------------------------------------------------+
+    | Network Traffic       | bytes, bytes_in, bytes_out, icmp_code                     |
+    |                       |                                                           |
+    |                       | packets, packets_in, packets_out                          |
+    |                       |                                                           |    
+    |                       | src, src_translated_port, src_port                        |
+    |                       |                                                           |
+    |                       | dest, dest_translated_port, dest_port                     |
+    +-----------------------+-----------------------------------------------------------+
+    | Web                   | app, uri_path, url_length                                 |
+    +-----------------------+-----------------------------------------------------------+
 
     **Known Issues:**
 
@@ -115,7 +128,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
     * File output for structured sources 
     * Support for filed values as host 
     * Validating lock mechanism in pytest-splunk-addon 
-    * Timeout failures in CircleCI 
+    * Fields for modular regular expressions are not extracted in the plugin.
     * Environment cleanup after running indextime tests for multiple local environment tests. 
     * Threading mechanism issue in Pytest-Splunk-Addon 
 

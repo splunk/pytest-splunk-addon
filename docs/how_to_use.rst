@@ -18,7 +18,7 @@ Create a test file in the tests folder
 
 .. _test_execution:
 
-There are two ways to execute the tests:
+There are three ways to execute the tests:
 
 **1. Running tests with an external Splunk instance**
 
@@ -37,7 +37,7 @@ There are two ways to execute the tests:
 
     .. code:: bash
 
-        pip install pytest-splunk-addon[docker]
+        pip3 install pytest-splunk-addon
 
     Create a Dockerfile-splunk file
 
@@ -62,7 +62,7 @@ There are two ways to execute the tests:
 
         .. literalinclude:: ../tests/conftest.py
             :language: python
-            :lines: 2,12-
+            :lines: 1-2,12-
 
     Run pytest with the add-on, using the following command:
 
@@ -92,8 +92,8 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
     
     .. code:: bash
 
-        pytest --splunk-type=external 
-            --splunk-app=<path-to-addon-package> 
+        pytest --splunk-type=external                                   # Whether you want to run the addon with docker or an external Splunk instance
+            --splunk-app=<path-to-addon-package>                        # Path to Splunk app package. The package should have the configuration files in the default folder.
             --splunk-host=<hostname>                                    # Receiver Splunk instance where events are searchable.
             --splunk-port=<splunk_management_port>                      # default 8089
             --splunk-user=<username>                                    # default admin     
