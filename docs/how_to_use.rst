@@ -37,7 +37,9 @@ There are three ways to execute the tests:
 
     .. code:: bash
 
-        pip3 install pytest-splunk-addon
+        git clone git@github.com:splunk/pytest-splunk-addon.git
+        cd pytest-splunk-addon
+        poetry install
 
     Create a Dockerfile-splunk file
 
@@ -68,7 +70,7 @@ There are three ways to execute the tests:
 
     .. code:: bash
 
-        pytest --splunk-type=docker --splunk-password=Changed@11
+        pytest --splunk-type=docker --splunk-data-generator=tests/knowledge tests/knowledge
 
 The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 
