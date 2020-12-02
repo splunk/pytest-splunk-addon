@@ -45,8 +45,16 @@ There are three ways to execute the tests:
 
     .. dropdown:: Example Dockerfile
 
-        .. literalinclude:: ../Dockerfile.splunk
-            :language: Dockerfile
+        .. code:: Dockerfiles
+
+            ARG SPLUNK_VERSION=latest
+            FROM splunk/splunk:$SPLUNK_VERSION
+            ARG SPLUNK_VERSION=latest
+            ARG SPLUNK_APP_ID=TA_UNKNOWN
+            ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
+            RUN echo Splunk VERSION=$SPLUNK_VERSION
+            COPY deps/apps /opt/splunk/etc/apps/
+            COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
 
     Create docker-compose.yml
 
