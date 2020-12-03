@@ -39,4 +39,5 @@ Or, in any case, if pip is unavailable:
     
     1. git clone https://github.com/splunk/pytest-splunk-addon.git
     2. cd pytest-splunk-addon
-    3. poetry install
+    3. pip install poetry
+    4. poetry install

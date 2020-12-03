@@ -39,13 +39,14 @@ There are three ways to execute the tests:
 
         git clone git@github.com:splunk/pytest-splunk-addon.git
         cd pytest-splunk-addon
+        pip install poetry
         poetry install
 
     Create a Dockerfile-splunk file
 
     .. dropdown:: Example Dockerfile
 
-        .. code:: Dockerfiles
+        .. code:: Dockerfile
 
             ARG SPLUNK_VERSION=latest
             FROM splunk/splunk:$SPLUNK_VERSION
@@ -78,7 +79,7 @@ There are three ways to execute the tests:
 
     .. code:: bash
 
-        pytest --splunk-type=docker --splunk-data-generator=tests/knowledge tests/knowledge
+        pytest --splunk-type=docker --splunk-data-generator=tests/knowledge
 
 The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 
@@ -287,80 +288,3 @@ Extending pytest-splunk-addon
    <hr width=100%>
    
 .. [#] xfail indicates that you expect a test to fail for some reason. A common example is a test for a feature not yet implemented, or a bug not yet fixed. When a test passes despite being expected to fail, it's an xpass and will be reported in the test summary.
-
-Common Tests
-~~~~~~~~~~~~~
-
-**1. Events ingested are properly tokenised or not.**
-
-    .. code-block:: python
-
-        test_events_with_untokenised_values
-
-    Testcase verifies that all the events have been properly tokenised.
-    That is event does not contain any token from the conf file in its raw form i.e enclosed within ##.
-
-**2. Events containing fields in props.conf/transforms.conf**
-
-    .. code-block:: python
-
-        test_props_fields
-
-    Testcase verifies that all the events that have fields from props.conf or transforms.conf are validated. 
-    That is the search-time knowledge objects such as the following are working correctly:
-    
-    * Extract
-    * Report
-    * Lookups
-    * Fieldalias
-    * Eval 
-    * Eventtypes 
-    * Tags 
-
-**3. Fields from props.conf/transforms.conf are valid**
-
-    .. code-block:: python
-
-        test_props_fields_no_dash_not_empty
-
-    These tests ensures that the field values within the TA are not empty or invalid values.
-
-**4. Test each field mapped with a CIM dataset**
-
-    .. code-block:: python
-
-        test_cim_required_fields
-
-    These tests ensures that the fields that are mapped with a dataset follows the search constraints set by CIM for that dataset and are valid values
-
-**5. Test field values that are not allowed in search fields**
-
-    .. code-block:: python
-
-        test_cim_fields_not_allowed_in_search
-
-    These tests ensures that the fields that are not allowed for a dataset are not present
-
-**6. Test key field values that are ingested in indextime**
-
-    .. code-block:: python
-
-        test_indextime_key_fields
-    
-    These tests ensure that key fields that should be ingested during indextime are ingested correctly into Splunk
-
-**7. Test timestamp values that are ingested in indextime**
-
-    .. code-block:: python
-
-        test_indextime_time
-
-    These tests ensures that the _time field is being ingested correctly into our Splunk instance.
-
-**8. Test linebreaking after indextime ingestion**
-
-    .. code-block:: python
-
-        test_indextime_line_breaker
-
-    These tests ensure that linebreaking tests is working correctly as intended. 
