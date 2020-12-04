@@ -30,7 +30,7 @@ There are three ways to execute the tests:
 
     .. code:: bash
 
-        pytest --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password> --splunk-hec-token=<splunk_hec_token>
+        pytest --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password> --splunk-hec-token=<splunk_hec_token>
 
 
 **2. Running tests with docker splunk**
@@ -79,7 +79,7 @@ There are three ways to execute the tests:
 
     .. code:: bash
 
-        pytest --splunk-type=docker --splunk-data-generator=tests/knowledge
+        pytest --splunk-type=docker --splunk-data-generator=<path to pytest-splunk-addon-data.conf file>
 
 The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 

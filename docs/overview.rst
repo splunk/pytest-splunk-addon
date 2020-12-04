@@ -23,7 +23,7 @@ Features
 Release notes
 -------------
 
-:ref:`Release History Page<release_history>`
+Find details about all the releases here: :ref:`Release History Page<release_history>`
 
 Installation
 ------------
