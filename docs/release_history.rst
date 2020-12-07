@@ -25,7 +25,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
     **Changes:**
 
     * Fixed string literal causing SyntaxError within helmut lib.
-    * Added a cleanup of events before testing, which can be toggled with a CLI param ``--no-splunk-cleanup``.
+    * Added ``--no-splunk-cleanup`` CLI param, which disables the cleanup of Splunk environment before the tests execute.
     * Added ``--splunk-web-scheme`` pytest argument which can be used to set the web scheme (http/https) of the Splunk instance.
     * Updated pytest-splunk-addon package to remove static fixtures that are now installed as part of the environment.
 
@@ -105,7 +105,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
     |                       | object_attrs                                              |
     +-----------------------+-----------------------------------------------------------+
 
-    * Now, the tokenised events can be stored in json files in the '.tokenized_events' folder. If these files are not required, use the --discard-eventlogs when executing the tests.
+    * Now, the tokenised events can be stored in json files in the *.tokenized_events* folder. If these files are not required, use the ``--discard-eventlogs`` option when executing the tests.
 
     **Known Issues:**
 
