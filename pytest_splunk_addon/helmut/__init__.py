@@ -4,5 +4,4 @@
 @since: 2011-11-23
 """
 from . import log
-
-log.setup_logger()
+log.setup_logger(debug=True)
