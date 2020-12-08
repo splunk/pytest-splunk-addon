@@ -23,40 +23,7 @@ Features
 Release notes
 -------------
 
-1.3.0
-""""""""""""""""""""""""""
-
-    **New Features:**
-
-    * Removed dependency on SA-Eventgen to generate data for testing.
-    * pytest-splunk-addon now generates data independently, which is required for testing.
-    * pytest-splunk-addon generates tests for testing index-time properties in Splunk Technology Add-ons.
-
-    **Bugfixes:**
-
-    * Enhanced requirements for the following CIM data models:
-
-    +-----------------------+-----------------------------------------------------------+
-    | CIM Data Model        |                   Field Name                              | 
-    +=======================+===========================================================+
-    | IDS                   | src, dest, src_port, dest_port, user                      |
-    +-----------------------+-----------------------------------------------------------+
-    | Network Resolution    | src, dest                                                 |
-    +-----------------------+-----------------------------------------------------------+
-    | Network Traffic       | bytes, bytes_in, bytes_out, icmp_code                     |
-    |                       |                                                           |
-    |                       | packets, packets_in, packets_out                          |
-    |                       |                                                           |    
-    |                       | src, src_translated_port, src_port                        |
-    |                       |                                                           |
-    |                       | dest, dest_translated_port, dest_port                     |
-    +-----------------------+-----------------------------------------------------------+
-    | Web                   | app, uri_path, url_length                                 |
-    +-----------------------+-----------------------------------------------------------+
-
-    **Known Issues:**
-
-    * Fields for modular regular expressions are not extracted in the plugin.
+Find details about all the releases here: :ref:`Release History Page<release_history>`
 
 Installation
 ------------
@@ -72,4 +39,5 @@ Or, in any case, if pip is unavailable:
     
     1. git clone https://github.com/splunk/pytest-splunk-addon.git
     2. cd pytest-splunk-addon
-    3. python3 setup.py install
+    3. pip install poetry
+    4. poetry install
