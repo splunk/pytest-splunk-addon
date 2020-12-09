@@ -9,23 +9,30 @@ import logging
 import logging.config
 import os
 from builtins import object
-from logging import Formatter
+from logging import FileHandler, Formatter
 
 from future.utils import with_metaclass
 
 _LOG_FORMAT = "[%(asctime)s] %(levelname)s - %(name)s: %(message)s"
 _DATE_FORMAT = "%Y-%m-%d %H:%M:%S.%f"
-_FILE_NAME = "..log"
+_FILE_NAME = "helmut.log"
 
-
-def setup_logger():
+def setup_logger(debug=False):
     """
     Setups up the logging library
+
+    @param debug: If debug log messages are to be outputted
+    @type debug: bool
     """
-    logging_conf = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "logging.conf"
-    )
-    logging.config.fileConfig(logging_conf)
+    logger = logging.getLogger('')
+    handler = FileHandler(filename=_FILE_NAME, mode="w")
+    handler.setFormatter(HelmutFormatter(_LOG_FORMAT))
+    level = logging.INFO
+    if debug:
+        level = logging.DEBUG
+    logger.addHandler(handler)
+    logger.setLevel(level)
+    logger.debug('Logger: DEBUG logging is enabled')
 
 
 class HelmutFormatter(Formatter):
