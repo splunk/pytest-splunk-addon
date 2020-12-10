@@ -8,6 +8,34 @@ Release History
 
 The best way to track the development of pytest-splunk-addon is through `the GitHub Repo <https://github.com/splunk/pytest-splunk-addon/>`_.
 
+1.3.14
+""""""""""""""""""""""""""
+    **Changes:**
+ 
+    * Fixed issue that skipped generation of test cases for some field of REPORT.
+    * Updated the default log level to INFO for the logs in **pytest_splunk_addon.log**
+    * Enhanced requirements for the following CIM data models:
+
+    +-----------------------+-----------------------------------------------------------+
+    | CIM Data Model        |                   Field Name                              | 
+    +=======================+===========================================================+
+    | Change                | Updated the search_constraints                            |
+    +-----------------------+-----------------------------------------------------------+
+    | Network Traffic       | dest_ip, dest_mac, src_ip, src_mac                        |
+    |                       |                                                           |
+    |                       | icmp_code, icmp_type, dest_zone, src_zone                 |
+    |                       |                                                           |
+    |                       | dest_translated_ip, src_translated_ip                     |
+    +-----------------------+-----------------------------------------------------------+
+    | Web                   | cookie, http_referrer, site                               |
+    +-----------------------+-----------------------------------------------------------+
+
+    **Known Issues:**
+
+    * Event ingestion through SC4S via UDP port
+    * Fields for modular regular expressions are not extracted in the plugin.
+
+
 1.3.12 (2020-11-09)
 """"""""""""""""""""""""""
     **Changes:**
