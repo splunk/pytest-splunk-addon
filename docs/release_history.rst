@@ -12,7 +12,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
 """"""""""""""""""""""""""
     **Changes:**
  
-    * Updated the parsing of TRANSFORMS in transforms.conf to generate proper test cases.
+    * Fixed issue that skipped generation of test cases for some field of REPORT.
     * Updated the default log level to INFO for the logs in **pytest_splunk_addon.log**
     * Enhanced requirements for the following CIM data models:
 
