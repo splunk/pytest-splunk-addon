@@ -40,7 +40,7 @@ sourcetype = <sourcetype>
     * sourcetype to be assigned to the sample events
 
 source = <source>
-    * sourcetype to be assigned to the sample events
+    * source to be assigned to the sample events
     * default value: pytest-splunk-addon:{{input_type}}
 
 sourcetype_to_search = <sourcetype>
