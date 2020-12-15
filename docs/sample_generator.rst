@@ -28,6 +28,7 @@ pytest-splunk-addon-data.conf.spec
     latest = now
     timezone = 0000
     breaker = {{regex}}
+    host_prefix = {{host_prefix}}
 
 [<sample file name>]
     * The stanza can contain the sample File Name or Regex to match multiple sample files.
@@ -39,7 +40,7 @@ sourcetype = <sourcetype>
     * sourcetype to be assigned to the sample events
 
 source = <source>
-    * sourcetype to be assigned to the sample events
+    * source to be assigned to the sample events
     * default value: pytest-splunk-addon:{{input_type}}
 
 sourcetype_to_search = <sourcetype>
@@ -84,6 +85,9 @@ breaker = <regex>
     * The breaker is used to breakdown the sample file into multiple events, based on the regex provided.
     * This parameter is optional. If it is not provided by the user, the events will be ingested into Splunk,
       as per the *input_type* provided.
+
+host_prefix = <host_prefix>
+    * This param is used as an identification for the **host** field, for the events which are ingested using SC4S.
 
 Token replacement settings 
 -----------------------------

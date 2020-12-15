@@ -67,84 +67,15 @@ orbs:
           - store_test_results:
               path: test-results
 
-  splunk-release:
-    executors:
-      python37:
-        docker:
-          - image: circleci/python:3.7
-    commands:
-      tag:
-        parameters:
-          gh_user:
-            description: Git Hub username
-            type: string
-          gh_token:
-            description: Git Hub token
-            type: string
-          tag_level:
-            description: Tag level
-            type: string
-        steps:
-          - run:
-              name: TAG
-              command: |
-                git remote set-url origin https://<<parameters.gh_user>>:<<parameters.gh_token>>@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git
-                ./semtag <<parameters.tag_level>>
-      merge-to-master:
-        parameters:
-          gh_user:
-            description: Git Hub username
-            type: string
-          gh_token:
-            description: Git Hub token
-            type: string
-        steps:
-          - run:
-              name: Merge
-              command: |
-                git remote set-url origin https://<<parameters.gh_user>>:<<parameters.gh_token>>@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git
-                git config --global user.email "addonreleasesrv@splunk.com"
-                git config --global user.name "Add on release service"
-                git pull origin master
-                git merge master -m "Merge from master"
-                git checkout master
-                git merge develop
-                git push
-    jobs:
-      tag:
-        parameters:
-          gh_user:
-            description: Git Hub username
-            type: string
-          gh_token:
-            description: Git Hub token
-            type: string
-          tag_level:
-            description: Tag level
-            type: string
-        executor: python37
-        steps:
-          - checkout
-          - tag:
-              tag_level: <<parameters.tag_level>>
-              gh_user: <<parameters.gh_user>>
-              gh_token: <<parameters.gh_token>>
-      merge-to-master:
-        executor: python37
-        parameters:
-          gh_user:
-            description: Git Hub username
-            type: string
-          gh_token:
-            description: Git Hub token
-            type: string
-        steps:
-          - checkout
-          - merge-to-master:
-              gh_user: <<parameters.gh_user>>
-              gh_token: <<parameters.gh_token>>
 
 jobs:
+  release:
+    docker:
+      - image: circleci/node:11
+    steps:
+      - checkout
+      - run: npx semantic-release
+
   publish-pypi:
     docker:
       - image: circleci/python:3.7
@@ -164,7 +95,7 @@ jobs:
             source $HOME/.poetry/env
             poetry install
             poetry run poetry-dynamic-versioning
-            poetry publish --build -u $TWINE_USERNAME -p $TWINE_PASSWORD
+            poetry publish --build -u $PYPI_USERNAME -p $PYPI_TOKEN
       - save_cache:
           key: poetry-cache-{{ checksum "poetry.lock" }}
           paths:
@@ -200,89 +131,17 @@ workflows:
           filters:
             branches:
               only: /.*/
-      - splunk-release/tag:
-          name: tag-alpha
-          tag_level: a
-          gh_user: ${GH_USER}
-          gh_token: ${GH_PAT}
-          filters:
-            branches:
-              only: develop
-      - approval-tag-beta:
+      - release:
           requires:
-            - tag-alpha
-          type: approval
-          filters:
-            branches:
-              only: develop
-      - splunk-release/tag:
-          name: tag-beta
-          tag_level: b
-          gh_user: ${GH_USER}
-          gh_token: ${GH_PAT}
-          requires:
-            - approval-tag-beta
-      - approval-merge-beta-to-master:
-          requires:
-            - tag-beta
-          type: approval
-          filters:
-            branches:
-              only: develop
-      - splunk-release/merge-to-master:
-          name: merge-beta-to-master
-          gh_user: ${GH_USER}
-          gh_token: ${GH_PAT}
-          requires:
-            - approval-merge-beta-to-master
-          filters:
-            branches:
-              only: develop
-      - splunk-release/tag:
-          name: tag-candidate
-          tag_level: candidate
-          gh_user: ${GH_USER}
-          gh_token: ${GH_PAT}
-          filters:
-            branches:
-              only: master
-      - approval-tag-final-major:
-          type: approval
-          requires:
-            - tag-candidate
-      - splunk-release/tag:
-          name: tag-final-major
-          tag_level: final -s major
-          gh_user: ${GH_USER}
-          gh_token: ${GH_PAT}
-          requires:
-            - approval-tag-final-major
-      - approval-tag-final-minor:
-          type: approval
-          requires:
-            - tag-candidate
-      - splunk-release/tag:
-          name: tag-final-minor
-          tag_level: final -s minor
-          gh_user: ${GH_USER}
-          gh_token: ${GH_PAT}
-          requires:
-            - approval-tag-final-minor
-      - approval-tag-final-patch:
-          type: approval
-          requires:
-            - tag-candidate
-      - splunk-release/tag:
-          name: tag-final-patch
-          tag_level: final -s patch
-          gh_user: ${GH_USER}
-          gh_token: ${GH_PAT}
-          requires:
-            - approval-tag-final-patch
+            - test-splunk-8-0
+          context:
+            - gdi-github
 
   publish:
     jobs:
       - publish-pypi:
+          context:
+            - gdi-pypi      
           filters:
             branches:
               ignore: /.*/

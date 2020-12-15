@@ -1,7 +1,7 @@
 """
 Parse the Junit XML report and convert it to required format
 """
-from . import CIMReportGenerator
+from ..cim_compliance import CIMReportGenerator
 import argparse
 import errno
 import os

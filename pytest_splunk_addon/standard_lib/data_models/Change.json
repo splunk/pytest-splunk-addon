@@ -149,7 +149,7 @@
               "fields_cluster": [],
               "fields": [],
               "child_dataset": [],
-              "search_constraints": "action=\"lockout\""
+              "search_constraints": "result=\"lockout\""
             },
             {
               "name": "Accounts_Updated",

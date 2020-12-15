@@ -14,7 +14,7 @@ import json
 import xml.etree.ElementTree as et
 from xml.dom.minidom import parseString
 import time
-
+import six
 
 class RESTConnector(Connector):
     """
@@ -279,7 +279,7 @@ class RESTConnector(Connector):
             self.logger.warn(msg)
             raise AuthenticationError(msg)
 
-        root = et.fromstring(str(content))
+        root = et.fromstring(six.ensure_text(content, "utf-8"))
         self.sessionkey = root[0].text
         if not self._service.credentials.credentials:
             self._service.add_credentials(self._username, self._password)

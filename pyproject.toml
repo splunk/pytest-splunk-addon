@@ -27,6 +27,7 @@ faker = "^4.1"
 pytest-xdist = "*"
 filelock = "^3.0"
 junitparser = "*"
+pytest-ordering = "*"
 lovely-pytest-docker = { version="^0", optional = true }
 
 
@@ -36,13 +37,14 @@ docker = ['lovely-pytest-docker']
 [tool.poetry.dev-dependencies]
 poetry-dynamic-versioning = "0.9.0"
 sphinx_rtd_theme = "0.5.0"
+sphinx-panels = "*"
 lovely-pytest-docker = "*"
 
 [tool.poetry.plugins]
 pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_addon.splunk" }
 
 [tool.poetry.scripts]
-cim-report = 'pytest_splunk_addon.standard_lib.cim_compliance.junit_parser:main'
+cim-report = 'pytest_splunk_addon.standard_lib.utilities.junit_parser:main'
 generate-indextime-conf = 'pytest_splunk_addon.standard_lib.utilities.create_new_eventgen:main'
 
 

@@ -6,17 +6,19 @@ How To Use
 
 Create a test file in the tests folder
 
-.. code:: python3
+.. dropdown:: Example Test File
 
-    from pytest_splunk_addon.standard_lib.addon_basic import Basic
-    class Test_App(Basic):
-        def empty_method():
-            pass
+    .. code:: python3
+
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
 
 
 .. _test_execution:
 
-There are two ways to execute the tests:
+There are three ways to execute the tests:
 
 **1. Running tests with an external Splunk instance**
 
@@ -28,39 +30,56 @@ There are two ways to execute the tests:
 
     .. code:: bash
 
-        pytest --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password> --splunk-hec-token=<splunk_hec_token>
+        pytest --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password> --splunk-hec-token=<splunk_hec_token>
 
 
 **2. Running tests with docker splunk**
 
     .. code:: bash
 
-        pip install pytest-splunk-addon[docker]
+        git clone git@github.com:splunk/pytest-splunk-addon.git
+        cd pytest-splunk-addon
+        pip install poetry
+        poetry install
 
-    Create a Dockerfile-splunk file 
+    Create a Dockerfile-splunk file
 
-    .. literalinclude:: ../Dockerfile.splunk
-       :language: Dockerfile
+    .. dropdown:: Example Dockerfile
+
+        .. code:: Dockerfile
+
+            ARG SPLUNK_VERSION=latest
+            FROM splunk/splunk:$SPLUNK_VERSION
+            ARG SPLUNK_VERSION=latest
+            ARG SPLUNK_APP_ID=TA_UNKNOWN
+            ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
+            RUN echo Splunk VERSION=$SPLUNK_VERSION
+            COPY deps/apps /opt/splunk/etc/apps/
+            COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
 
     Create docker-compose.yml
 
-    .. literalinclude:: ../docker-compose.yml
-       :language: YAML
-       :lines: 9-
+    .. dropdown:: Example docker-compose file
+
+        .. literalinclude:: ../docker-compose.yml
+            :language: YAML
+            :lines: 9-
 
 .. _conftest_file:
 
     Create conftest.py in the test folder along with :ref:`the test file <test_file>`
 
-    .. literalinclude:: ../tests/conftest.py
-       :language: python
-       :lines: 2,12-
+    .. dropdown:: Example conftest file
+
+        .. literalinclude:: ../tests/conftest.py
+            :language: python
+            :lines: 1-2,12-
 
     Run pytest with the add-on, using the following command:
 
     .. code:: bash
 
-        pytest --splunk-type=docker --splunk-password=Changed@11
+        pytest --splunk-type=docker --splunk-data-generator=<path to pytest-splunk-addon-data.conf file>
 
 The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 
@@ -84,8 +103,8 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
     
     .. code:: bash
 
-        pytest --splunk-type=external 
-            --splunk-app=<path-to-addon-package> 
+        pytest --splunk-type=external                                   # Whether you want to run the addon with docker or an external Splunk instance
+            --splunk-app=<path-to-addon-package>                        # Path to Splunk app package. The package should have the configuration files in the default folder.
             --splunk-host=<hostname>                                    # Receiver Splunk instance where events are searchable.
             --splunk-port=<splunk_management_port>                      # default 8089
             --splunk-user=<username>                                    # default admin     
@@ -247,9 +266,11 @@ Extending pytest-splunk-addon
 
     The following snippet shows an example in which the setup fixture is used to enable a saved search.
 
-    .. literalinclude:: ../tests/enable_saved_search_conftest.py
-       :language: python
-       :lines: 2,31-
+    .. dropdown:: enable_saved_search_conftest.py
+
+        .. literalinclude:: ../tests/enable_saved_search_conftest.py
+            :language: python
+            :lines: 2,31-
 
 
 **4. Check mapping of an add-on with custom data models**

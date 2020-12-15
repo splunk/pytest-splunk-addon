@@ -26,7 +26,7 @@ class FieldTestHelper(object):
         self.interval = interval
         self.retries = retries
 
-    def test_field(self, base_search):
+    def test_field(self, base_search, record_property=None):
         """
         Generate a query for the list of fields and return the result 
 
@@ -43,6 +43,7 @@ class FieldTestHelper(object):
 
         Args:
             base_search (str): Base search. Must be a search command.
+            record_property (fixture): Document facts of test cases.
 
         Yields:
             dict: with source, sourcetype, field, event_count, field_count,
@@ -50,6 +51,8 @@ class FieldTestHelper(object):
         """
         self._make_search_query(base_search)
         self.logger.info(f"Executing the search query: {self.search}")
+        if record_property:
+            record_property("search", ' '.join(self.search.splitlines()))
         self.results = list(
             self.search_util.getFieldValuesList(
                 self.search, self.interval, self.retries
