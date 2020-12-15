@@ -133,7 +133,7 @@ workflows:
               only: /.*/
       - release:
           requires:
-            - test
+            - test-splunk-8-0
           context:
             - gdi-github
 
