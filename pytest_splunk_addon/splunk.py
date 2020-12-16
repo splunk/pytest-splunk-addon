@@ -569,6 +569,10 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_events_cleanup):
         addon_path = request.config.getoption("splunk_app")
         config_path = request.config.getoption("splunk_data_generator")
 
+        # ************
+        # Add boolean input config if we need requirement tests to be run eg: requirement_tests = True/False
+        # ************
+
         ingest_meta_data = {
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],

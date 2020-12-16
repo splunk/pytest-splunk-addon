@@ -50,6 +50,9 @@ class AppTestGenerator(object):
         )
         self.indextime_test_generator = IndexTimeTestGenerator()
 
+        # ******
+        # Add for requirement test tool
+
     def generate_tests(self, fixture):
         """
         Generate the test cases based on the fixture provided 
@@ -114,6 +117,8 @@ class AppTestGenerator(object):
 
             elif pytest_params:
                 yield from sorted(pytest_params, key=lambda param: param.id)
+
+        # ******* Add for requirement test tool
 
     def dedup_tests(self, test_list, fixture):
         """

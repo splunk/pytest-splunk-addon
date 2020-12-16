@@ -43,7 +43,7 @@ class IngestorHelper(object):
             bulk_event_ingestion(bool): Boolean param for bulk event ingestion.
 
         """
-        sample_generator = SampleXdistGenerator(addon_path, config_path)
+        sample_generator = SampleXdistGenerator(addon_path, config_path, requirement_test_flag)
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         ingestor_dict = dict()
@@ -62,3 +62,8 @@ class IngestorHelper(object):
                 "Received the following input type for HEC event: {}".format(input_type))
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
             event_ingestor.ingest(events, thread_count)
+
+        # **************
+        # ADD if requirement_test_flag==True fetch events from requirement file
+        # Fetch events from requirement_event_ingester_helper.py ,
+        # Ingest using above method event_ingestor.ingest
