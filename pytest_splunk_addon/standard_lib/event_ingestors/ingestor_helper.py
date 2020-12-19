@@ -41,9 +41,10 @@ class IngestorHelper(object):
             addon_path: Path to Splunk app package.
             config_path: Path to pytest-splunk-addon-sample-generator.conf.
             bulk_event_ingestion(bool): Boolean param for bulk event ingestion.
-
+            run_requirement_test(bool) :Boolean to identify if we want to run the requirement tests
         """
-        sample_generator = SampleXdistGenerator(addon_path, config_path, requirement_test_flag)
+
+        sample_generator = SampleXdistGenerator(addon_path, config_path, run_requirement_test)
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         ingestor_dict = dict()
@@ -63,7 +64,8 @@ class IngestorHelper(object):
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
             event_ingestor.ingest(events, thread_count)
 
-        # **************
-        # ADD if requirement_test_flag==True fetch events from requirement file
-        # Fetch events from requirement_event_ingester_helper.py ,
-        # Ingest using above method event_ingestor.ingest
+        ''' 
+        if (run_requirement_test == True) :
+            requirement_test_ingestor = cls
+            raw_events = RequirementEventIngestor.get_events() 
+        '''

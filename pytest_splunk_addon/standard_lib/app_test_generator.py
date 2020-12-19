@@ -50,8 +50,11 @@ class AppTestGenerator(object):
         )
         self.indextime_test_generator = IndexTimeTestGenerator()
 
-        # ******
-        # Add for requirement test tool
+        '''
+        self.requirement_test_generator = ReqsTestGenerator(
+        self.pytest_config.getoption("splunk_app")
+        )
+        '''
 
     def generate_tests(self, fixture):
         """
