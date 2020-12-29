@@ -264,3 +264,53 @@ class FieldTestTemplates(object):
             f"No result found for the search.\nsearch={search}\n"
             f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
         )
+
+
+    @pytest.mark.splunk_searchtime_fields
+    @pytest.mark.splunk_searchtime_fields_savedsearches
+    def test_savedsearches(
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_setup,
+        splunk_searchtime_fields_savedsearches,
+        record_property,
+        caplog,
+    ):
+        """
+        Tests if all savedsearches in savedsearches.conf are being executed properly to generate proper results.
+
+        Args:
+            splunk_search_util (fixture): 
+                Fixture to create a simple connection to Splunk via SplunkSDK
+            splunk_searchtime_fields_savedsearches (fixture): 
+                Fixture containing list of savedsearches
+            record_property (fixture): 
+                Used to add user properties to test report
+            caplog (fixture): 
+                Access and control log capturing
+
+        Returns:
+            Asserts whether test case passes or fails.
+        """
+        search_query = splunk_searchtime_fields_savedsearches["search"]
+        earliest_time = splunk_searchtime_fields_savedsearches["dispatch.earliest_time"]
+        latest_time = splunk_searchtime_fields_savedsearches["dispatch.latest_time"]
+
+        temp_search_query = search_query.split('|')
+        temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(earliest_time,latest_time)
+        search_query = "|".join(temp_search_query)
+        
+        search = (f"search {search_query}")
+
+        self.logger.info(f"Search: {search}")
+
+        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
+            search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+        )
+
+        record_property("search", search)
+        assert result, (
+            f"No result found for the search.\nsearch={search}\n"
+            f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
+        )

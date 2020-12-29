@@ -41,6 +41,7 @@ class FieldTestGenerator(object):
             * splunk_app_searchtime_negative
             * splunk_app_searchtime_eventtypes
             * splunk_app_searchtime_tags
+            * splunk_app_searchtime_savedsearches
 
         Args:
             fixture(str): fixture name
@@ -54,6 +55,8 @@ class FieldTestGenerator(object):
             yield from self.generate_tag_tests()
         elif fixture.endswith("eventtypes") :
             yield from self.generate_eventtype_tests()
+        elif fixture.endswith("savedsearches"):
+            yield from self.generate_savedsearches_tests()
 
     def generate_field_tests(self, is_positive):
         """
@@ -142,6 +145,18 @@ class FieldTestGenerator(object):
                     each_eventtype,
                     id="eventtype::{stanza}".format(**each_eventtype)
                 )
+
+    def generate_savedsearches_tests(self):
+        """
+        Generate test case for savedsearches
+
+        Yields:
+            pytest.params for the test templates
+        """
+        for each_savedsearch in self.addon_parser.get_savedsearches():
+            yield pytest.param(
+                    each_savedsearch,
+                    id="{stanza}".format(**each_savedsearch))
 
     def _contains_classname(self, fields_group, criteria):
         """

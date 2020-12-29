@@ -228,6 +228,13 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_is_splunkd* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_for_tags_positive* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_is_splunkd-%host%* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_savedsearches*search_earliest_time_latest_time* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_savedsearches*basic_search* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_savedsearches*search_earliest_time* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_savedsearches*search_latest_time* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_savedsearches*empty_search* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_savedsearches*empty_search_latest_time* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_savedsearches*no_search_no_time* PASSED*',
 ]
 
 
@@ -358,6 +365,12 @@ TA_BROKEN_FAILED = [
     '*test_splunk_app_broken.py::Test_App::test_tags*source="/opt/splunk/var/log/splunk/splunkd.log"::tag::tags_negative_testing* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_eventtype*eventtype::broken_is_splunkd* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_eventtype*eventtype::broken_is_splunkd-%host%* FAILED*',
+    '*test_splunk_app_broken.py::Test_App::test_savedsearches*search_invalid_earliest_latest* FAILED*',
+    '*test_splunk_app_broken.py::Test_App::test_savedsearches*search_invalid_earliest* FAILED*',
+    '*test_splunk_app_broken.py::Test_App::test_savedsearches*negative_search* FAILED*',
+    '*test_splunk_app_broken.py::Test_App::test_savedsearches*search_invalid_latest* FAILED*',
+    '*test_splunk_app_broken.py::Test_App::test_savedsearches*no_search* FAILED*',
+    '*test_splunk_app_broken.py::Test_App::test_savedsearches*empty_search_earliest_time* FAILED*',
 ]
 
 """
@@ -610,6 +623,7 @@ TA_FICTION_INDEXTIME_SKIPPED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_search*splunk_searchtime_cim_fields_not_allowed_in_search0* SKIPPED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_tags*splunk_searchtime_fields_tags0* SKIPPED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*',    
+    '*test_splunk_fiction_indextime.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*',    
 ]
 """
 Define the TA_fiction_indextime_broken add-on passed test case list.
@@ -698,4 +712,5 @@ TA_FICTION_INDEXTIME_BROKEN_SKIPPED = [
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_props_fields_no_dash_not_empty*splunk_searchtime_fields_negative0* SKIPPED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_tags*splunk_searchtime_fields_tags0* SKIPPED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*', 
+    '*test_splunk_fiction_indextime_broken.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*', 
 ]

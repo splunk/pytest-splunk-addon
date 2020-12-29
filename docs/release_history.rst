@@ -8,7 +8,19 @@ Release History
 
 The best way to track the development of pytest-splunk-addon is through `the GitHub Repo <https://github.com/splunk/pytest-splunk-addon/>`_.
 
-1.3.14
+1.4.0
+""""""""""""""""""""""""""
+    **Changes:**
+ 
+    * Plugin now generates and executes tests to validate savedsearches defined in savedsearches.conf.
+
+    **Known Issues:**
+
+    * Event ingestion through SC4S via UDP port
+    * Fields for modular regular expressions are not extracted in the plugin.
+
+
+1.3.15
 """"""""""""""""""""""""""
     **Changes:**
  
