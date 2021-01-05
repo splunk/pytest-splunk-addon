@@ -15,6 +15,7 @@ Overview
     5. Eval
     6. Eventtypes
     7. Tags
+    8. Savedsearches
 
 --------------------------------
 
@@ -121,7 +122,21 @@ Test Scenarios
     **Workflow:** 
 
     * In tags.conf for each tag defined in the stanza, the plugin generates a test case.
-    * For each tag, the plugin generates a search query including the stanza and the tag and asserts event_count > 0
+    * For each tag, the plugin generates a search query including the stanza and the tag and asserts event_count > 0.
+
+**7. Search query should be present in each savedsearches.**
+
+    .. code-block:: python
+
+        test_savedsearches[<savedsearch_stanza>]
+
+    Test case verifies that the search mentioned in savedsearch.conf generates valid search results. 
+    Here <savedsearch_stanza> is a stanza mentioned in savedsearches.conf file.
+
+    **Workflow:** 
+
+    * In savedsearches.conf for each stanza, the plugin generates a test case.
+    * For each stanza mentioned in savedsearches.conf plugin generates an SPL search query and asserts event_count > 0 for the savedsearch.
 
 Testcase Troubleshooting
 ------------------------

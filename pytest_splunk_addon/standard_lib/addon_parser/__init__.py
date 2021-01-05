@@ -18,6 +18,7 @@ from .transforms_parser import TransformsParser
 from .props_parser import PropsParser
 from .tags_parser import TagsParser
 from .eventtype_parser import EventTypeParser
+from .savedsearches_parser import SavedSearchParser
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -37,6 +38,7 @@ class AddonParser(object):
         self._props_parser = None
         self._tags_parser = None
         self._eventtype_parser = None
+        self._savedsearch_parser = None
 
     @property
     def app(self):
@@ -61,6 +63,12 @@ class AddonParser(object):
         if not self._eventtype_parser:
             self._eventtype_parser = EventTypeParser(self.splunk_app_path, self.app)
         return self._eventtype_parser
+
+    @property
+    def savedsearch_parser(self):
+        if not self._savedsearch_parser:
+            self._savedsearch_parser = SavedSearchParser(self.splunk_app_path,self.app)
+        return self._savedsearch_parser
 
     def get_props_fields(self):
         """
@@ -88,3 +96,12 @@ class AddonParser(object):
             generator of list of eventtypes
         """
         return self.eventtype_parser.get_eventtypes()
+
+    def get_savedsearches(self):
+        """
+        Parse the App configuration files & yield searchedservices
+
+        Yields:
+            generator of list of searchedservices
+        """
+        return self.savedsearch_parser.get_savedsearches()
