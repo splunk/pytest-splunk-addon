@@ -482,7 +482,7 @@ def splunk_external(request):
         "port": request.config.getoption("splunkd_port"),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
-        "uf_username": request.config.getoption("splunk_uf_username"),
+        "uf_username": request.config.getoption("splunk_uf_user"),
         "uf_password": request.config.getoption("splunk_uf_password"),
         "uf_host": request.config.getoption("splunk_uf_host"),
         "uf_port": request.config.getoption("splunk_uf_port"),
