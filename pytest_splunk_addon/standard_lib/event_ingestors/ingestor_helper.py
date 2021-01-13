@@ -3,6 +3,7 @@ from . import (
     HECRawEventIngestor,
     HECMetricEventIngestor,
     SC4SEventIngestor,
+    FileMonitorEventIngestor,
 )
 import logging
 from ..sample_generation import SampleXdistGenerator
@@ -21,6 +22,7 @@ class IngestorHelper(object):
             "modinput": HECEventIngestor,
             "windows_input": HECEventIngestor,
             "file_monitor": HECRawEventIngestor,
+            "uf_file_monitor": FileMonitorEventIngestor,
             "scripted_input": HECRawEventIngestor,
             "hec_metric": HECMetricEventIngestor,
             "syslog_tcp": SC4SEventIngestor,
@@ -51,6 +53,8 @@ class IngestorHelper(object):
             input_type = event.metadata.get("input_type")
             if input_type in ["modinput", "windows_input", "syslog_tcp", "syslog_udp"]:
                 event.event = event.event.encode("utf-8").decode()
+            elif input_type in ["uf_file_monitor"]:
+                pass
             else:
                 event.event = event.event.encode("utf-8")
             if input_type in ingestor_dict:

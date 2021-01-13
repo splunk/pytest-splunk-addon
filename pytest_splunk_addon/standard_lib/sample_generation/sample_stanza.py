@@ -40,7 +40,7 @@ class SampleStanza(object):
         """
         # self.sample_raw_data = list(self._get_raw_sample())
         self.tokenized_events = self._get_raw_sample()
-
+        
     def get_tokenized_events(self):
         """
         Yields the tokenized events
@@ -128,6 +128,7 @@ class SampleStanza(object):
                 "modinput", 
                 "windows_input",
                 "file_monitor",
+                "uf_file_monitor",
                 "scripted_input",
                 "syslog_tcp",
                 "syslog_udp",
@@ -206,6 +207,7 @@ class SampleStanza(object):
                         )
             elif self.input_type in [
                 "file_monitor",
+                "uf_file_monitor",
                 "scripted_input",
                 "syslog_tcp",
                 "syslog_udp",

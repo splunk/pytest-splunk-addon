@@ -244,6 +244,41 @@ def pytest_addoption(parser):
         dest="ignore_addon_errors",
         help=("Path to file where list of addon related errors are suppressed."),
     )
+    group.addoption(
+        "--splunk-receive-port",
+        action="store",
+        dest="splunk_receive",
+        default="9997",
+        help="Splunk receving port on which splunk instance can receive data from forwarder. default is 9997.",
+    )
+    group.addoption(
+        "--splunk-uf-host",
+        action="store",
+        dest="splunk_uf_host",
+        default="uf",
+        help="Address of Universal Forwarder Server.",
+    )
+    group.addoption(
+        "--splunk-uf-port",
+        action="store",
+        dest="splunk_uf_port",
+        default="8089",
+        help="Universal Forwarder Management port. default is 8089.",
+    )
+    group.addoption(
+        "--splunk-uf-user",
+        action="store",
+        dest="splunk_uf_user",
+        default="admin",
+        help="Universal Forwarder login user.",
+    )
+    group.addoption(
+        "--splunk-uf-password",
+        action="store",
+        dest="splunk_uf_password",
+        default="Chang3d!",
+        help="Password of the Universal Forwarder user",
+    )
 
 
 @pytest.fixture(scope="session")
@@ -442,10 +477,15 @@ def splunk_external(request):
         "port_hec": request.config.getoption("splunk_hec"),
         "port_s2s": request.config.getoption("splunk_s2s"),
         "port_web": request.config.getoption("splunk_web"),
+        "port_receive": request.config.getoption("splunk_receive"),
         "host": request.config.getoption("splunk_host"),
         "port": request.config.getoption("splunkd_port"),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
+        "uf_username": request.config.getoption("splunk_uf_username"),
+        "uf_password": request.config.getoption("splunk_uf_password"),
+        "uf_host": request.config.getoption("splunk_uf_host"),
+        "uf_port": request.config.getoption("splunk_uf_port"),
     }
     if not request.config.getoption("splunk_forwarder_host"):
         splunk_info["forwarder_host"] = splunk_info.get("host")
@@ -544,7 +584,7 @@ def splunk_web_uri(request, splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_events_cleanup):
+def splunk_ingest_data(request, splunk, splunk_hec_uri, sc4s, splunk_events_cleanup):
     """
     Generates events for the add-on and ingests into Splunk.
     The ingestion can be done using the following methods:
@@ -570,6 +610,12 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_events_cleanup):
         config_path = request.config.getoption("splunk_data_generator")
 
         ingest_meta_data = {
+            "uf_host": splunk.get("uf_host"),
+            "uf_port": splunk.get("uf_port"),
+            "uf_username": splunk.get("uf_username"),
+            "uf_password": splunk.get("uf_password"),
+            "splunk_receive_port": splunk.get("port_receive"),
+            "splunk_host": splunk.get("host"),
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
             "sc4s_host": sc4s[0],  # for sc4s
