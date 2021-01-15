@@ -244,6 +244,14 @@ def pytest_addoption(parser):
         dest="ignore_addon_errors",
         help=("Path to file where list of addon related errors are suppressed."),
     )
+    group.addoption(
+        "--requirement_test",
+        action="store",
+        default= True,
+        type=bool,
+        dest="requirement_test",
+        help=("True if requirement tests need to be run"),
+    )
 
 
 @pytest.fixture(scope="session")
@@ -568,7 +576,14 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_events_cleanup):
     ):
         addon_path = request.config.getoption("splunk_app")
         config_path = request.config.getoption("splunk_data_generator")
+        run_requirement_test = request.config.getoption("requirement_test")
+        '''
+        Add boolean input config if we need requirement tests to be run eg: requirement_tests = True/False
+        run_requirement_test = request.config.getoption("splunk_requirement_test")
+        '''
 
+        logging.info("Value " + str(addon_path))
+        logging.info("Value " + str(run_requirement_test))
         ingest_meta_data = {
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
@@ -578,7 +593,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_events_cleanup):
         thread_count = int(request.config.getoption("thread_count"))
         store_events = request.config.getoption("store_events")
         IngestorHelper.ingest_events(
-            ingest_meta_data, addon_path, config_path, thread_count, store_events
+            ingest_meta_data, addon_path, config_path, thread_count, store_events, run_requirement_test
         )
         sleep(50)
         if "PYTEST_XDIST_WORKER" in os.environ:
