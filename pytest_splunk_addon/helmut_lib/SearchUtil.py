@@ -162,6 +162,13 @@ class SearchUtil(object):
             self.logger.debug("Count of results is > 0, it is:%d", result_count)
             return False, job.get_results()
 
+    def doSearch(self, query, max_time=20):
+        self.logger.debug("query is %s", query)
+
+        job = self.jobs.create(query, auto_finalize_ec=200, max_time=max_time)
+        job.wait(max_time)
+        return job.get_results()
+
     def checkQueryFields(
         self,
         query,

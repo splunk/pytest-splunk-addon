@@ -13,7 +13,7 @@ class FieldTestTemplates(object):
     Test templates to test the knowledge objects of an App
     """
 
-    logger = logging.getLogger("pytest-splunk-addon-tests")
+    logger = logging.getLogger("pytest-splunk-addon")
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_internal_errors
@@ -138,6 +138,7 @@ class FieldTestTemplates(object):
 
             fields_search.append(f"({field} IN ({negative_values}))")
         search += " AND ({})".format(" OR ".join(fields_search))
+        base_search = search
         search += " | stats count by sourcetype"
         
         self.logger.info(f"Executing the search query: {search}")
@@ -149,9 +150,16 @@ class FieldTestTemplates(object):
             record_property("results", results.as_list)
             pp = pprint.PrettyPrinter(indent=4)
             result_str = pp.pformat(results.as_list[:10])
+
+            query_for_unique_events = base_search + " | dedup punct | head 5"
+            query_results = splunk_search_util.doSearch(query_for_unique_events)
+            results_formatted_str = pp.pformat(query_results.as_list)
         assert result, (
             f"Query result greater than 0.\nsearch={search}\n"
-            f"found result={result_str}"
+            f"found result={result_str}\n"
+            " === STRUCTURALLY UNIQUE EVENTS:\n"
+            f"query={query_for_unique_events}\n"
+            f"events= {results_formatted_str}"
         )
 
     @pytest.mark.splunk_searchtime_fields

@@ -79,3 +79,6 @@ venv
 # Vs Code Settings
 .vscode
 test_report.md
+
+# Pycharm
+.idea/
