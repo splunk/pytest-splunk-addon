@@ -152,7 +152,7 @@ class FieldTestTemplates(object):
             result_str = pp.pformat(results.as_list[:10])
 
             query_for_unique_events = base_search + " | dedup punct | head 5"
-            query_results = splunk_search_util.doSearch(query_for_unique_events)
+            query_results = splunk_search_util.get_search_results(query_for_unique_events)
             results_formatted_str = pp.pformat(query_results.as_list)
         assert result, (
             f"Query result greater than 0.\nsearch={search}\n"
