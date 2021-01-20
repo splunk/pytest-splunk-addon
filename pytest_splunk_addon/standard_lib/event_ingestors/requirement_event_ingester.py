@@ -7,6 +7,8 @@
 import requests
 import logging
 import os
+from xml.etree import cElementTree as ET
+from ..sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -35,6 +37,32 @@ class RequirementEventIngestor(object):
         """
         pass
 
+    def check_xml_format(self, file_name):
+        if ET.parse(file_name):
+            return True
+        else:
+            return False
+
+
+    def get_root(self, filename):
+        """
+        Input: Filename ending with .log extension
+        Function to return raw event string
+        """
+        tree = ET.parse(filename)
+        root = tree.getroot()
+        return root
+
+    def get_event(self, root):
+        """
+        Input: Root of the xml file
+        Function to return raw event string
+        """
+        event = None
+        for raw in root.iter('raw'):
+            event = raw.text
+        return event
+
     def get_events(self):
         req_file_path = os.path.join(self.app_path, "requirement_files")
         if os.path.isdir(req_file_path):
@@ -42,7 +70,20 @@ class RequirementEventIngestor(object):
                 filename = os.path.join(req_file_path, file1)
                 if filename.endswith(".log"):
                     LOGGER.info(filename)
-        """
+                    if self.check_xml_format(filename):
+                        LOGGER.info("XML check")
+                        root = self.get_root(filename)
+                        for event_tag in root.iter('event'):
+                            unescaped_event = self.get_event(event_tag)
+                            LOGGER.info("before return")
+                            metadata ={'input_type': 'default',
+                                      'sourcetype': 'sourcetype::juniper:idp',
+                                        'index' : 'main'
+                                     }
+                            e = SampleEvent(unescaped_event,metadata, "requirement_test" )
+
+                            return [e]
+                            """
         Send Sourcetyped events to event ingestor
         """
         pass

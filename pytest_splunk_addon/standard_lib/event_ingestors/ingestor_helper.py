@@ -48,15 +48,20 @@ class IngestorHelper(object):
         tokenized_events = store_sample.get("tokenized_events")
         ingestor_dict = dict()
         for event in tokenized_events:
+            LOGGER.info("This called")
             input_type = event.metadata.get("input_type")
             if input_type in ["modinput", "windows_input", "syslog_tcp", "syslog_udp"]:
+                LOGGER.info(str(input_type))
                 event.event = event.event.encode("utf-8").decode()
             else:
                 event.event = event.event.encode("utf-8")
+                LOGGER.info(str(input_type))
             if input_type in ingestor_dict:
                 ingestor_dict[input_type].append(event)
+                LOGGER.info(str(input_type))
             else:
                 ingestor_dict[input_type] = [event]
+                LOGGER.info(str(input_type))
         for input_type, events in ingestor_dict.items():
             LOGGER.debug(
                 "Received the following input type for HEC event: {}".format(input_type))
@@ -65,4 +70,9 @@ class IngestorHelper(object):
 
         if run_requirement_test:
             requirement_event = RequirementEventIngestor(addon_path)
-            requirement_event.get_events()
+            events = requirement_event.get_events()
+            input_type = "default"
+            LOGGER.info(events)
+            event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
+            event_ingestor.ingest(events, thread_count)
+            LOGGER.info("Ingestion Done")
