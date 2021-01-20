@@ -245,13 +245,6 @@ def pytest_addoption(parser):
         help=("Path to file where list of addon related errors are suppressed."),
     )
     group.addoption(
-        "--splunk-receive-port",
-        action="store",
-        dest="splunk_receive",
-        default="9997",
-        help="Splunk receving port on which splunk instance can receive data from forwarder. default is 9997.",
-    )
-    group.addoption(
         "--splunk-uf-host",
         action="store",
         dest="splunk_uf_host",
@@ -477,7 +470,6 @@ def splunk_external(request):
         "port_hec": request.config.getoption("splunk_hec"),
         "port_s2s": request.config.getoption("splunk_s2s"),
         "port_web": request.config.getoption("splunk_web"),
-        "port_receive": request.config.getoption("splunk_receive"),
         "host": request.config.getoption("splunk_host"),
         "port": request.config.getoption("splunkd_port"),
         "username": request.config.getoption("splunk_user"),
@@ -614,7 +606,7 @@ def splunk_ingest_data(request, splunk, splunk_hec_uri, sc4s, splunk_events_clea
             "uf_port": splunk.get("uf_port"),
             "uf_username": splunk.get("uf_username"),
             "uf_password": splunk.get("uf_password"),
-            "splunk_receive_port": splunk.get("port_receive"),
+            "splunk_s2s_port": splunk.get("port_s2s")
             "splunk_host": splunk.get("host"),
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
