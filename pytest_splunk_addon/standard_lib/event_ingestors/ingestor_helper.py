@@ -71,8 +71,8 @@ class IngestorHelper(object):
         if run_requirement_test:
             requirement_event = RequirementEventIngestor(addon_path)
             events = requirement_event.get_events()
-            input_type = "default"
             LOGGER.info(events)
+            input_type = "default"
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
             event_ingestor.ingest(events, thread_count)
             LOGGER.info("Ingestion Done")

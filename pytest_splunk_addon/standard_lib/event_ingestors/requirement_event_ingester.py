@@ -7,10 +7,17 @@
 import requests
 import logging
 import os
+import configparser, re
 from xml.etree import cElementTree as ET
 from ..sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
+
+
+class SrcRegex(object):
+    def __init__(self):
+        self.regex_src = None
+        self.source_type = None
 
 
 class RequirementEventIngestor(object):
@@ -43,7 +50,6 @@ class RequirementEventIngestor(object):
         else:
             return False
 
-
     def get_root(self, filename):
         """
         Input: Filename ending with .log extension
@@ -63,8 +69,45 @@ class RequirementEventIngestor(object):
             event = raw.text
         return event
 
+    def extractRegexTransforms(self):
+        """
+        Requirement : app transform.conf
+        Return: SrcRegex objects list containing pair of regex and sourcetype
+        """
+        parser = configparser.ConfigParser(interpolation=None)
+        transforms_path = os.path.join(str(self.app_path), "default/transforms.conf")
+        parser.read_file(open(transforms_path))
+        list_src_regex = []
+        for stanza in parser.sections():
+            stanza_keys = list(parser[stanza].keys())
+            obj = SrcRegex()
+            if "dest_key" in stanza_keys:
+                if str(parser[stanza]["dest_key"]) == "MetaData:Sourcetype":
+                    for key in stanza_keys:
+                        key_value = str(parser[stanza][key])
+                        if key == "regex":
+                            obj.regex_src = key_value
+                        if key == "format":
+                            obj.source_type = key_value
+                    list_src_regex.append(obj)
+        return list_src_regex
+
+    def extract_sourcetype(self, list_src_regex, event):
+        """
+        Input: event, List of SrcRegex
+        Return:Sourcetype of the event
+        """
+        sourcetype = None
+        for regex_src_obj in list_src_regex:
+            regex_match = re.search(regex_src_obj.regex_src, event)
+            if regex_match:
+                _, sourcetype = str(regex_src_obj.source_type).split('::', 1)
+        return sourcetype
+
     def get_events(self):
         req_file_path = os.path.join(self.app_path, "requirement_files")
+        src_regex = self.extractRegexTransforms()
+        events = []
         if os.path.isdir(req_file_path):
             for file1 in os.listdir(req_file_path):
                 filename = os.path.join(req_file_path, file1)
@@ -75,17 +118,15 @@ class RequirementEventIngestor(object):
                         root = self.get_root(filename)
                         for event_tag in root.iter('event'):
                             unescaped_event = self.get_event(event_tag)
+                            sourcetype = self.extract_sourcetype(src_regex, unescaped_event)
                             LOGGER.info("before return")
-                            metadata ={'input_type': 'default',
-                                      'sourcetype': 'sourcetype::juniper:idp',
-                                        'index' : 'main'
-                                     }
-                            e = SampleEvent(unescaped_event,metadata, "requirement_test" )
-
-                            return [e]
-                            """
+                            metadata = {'input_type': 'default',
+                                        'sourcetype': sourcetype,
+                                        'index': 'main'
+                                        }
+                            events.append(SampleEvent(unescaped_event, metadata, "requirement_test"))
+                        return events
+                        """
         Send Sourcetyped events to event ingestor
         """
         pass
-
-
