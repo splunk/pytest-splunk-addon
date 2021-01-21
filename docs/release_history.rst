@@ -11,7 +11,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
 1.4.0
 """"""""""""""""""""""""""
     **Changes:**
- 
+
     * Plugin now generates and executes tests to validate savedsearches defined in savedsearches.conf.
 
     **Known Issues:**
@@ -23,13 +23,13 @@ The best way to track the development of pytest-splunk-addon is through `the Git
 1.3.15
 """"""""""""""""""""""""""
     **Changes:**
- 
+
     * Fixed issue that skipped generation of test cases for some field of REPORT.
     * Updated the default log level to INFO for the logs in **pytest_splunk_addon.log**
     * Enhanced requirements for the following CIM data models:
 
     +-----------------------+-----------------------------------------------------------+
-    | CIM Data Model        |                   Field Name                              | 
+    | CIM Data Model        |                   Field Name                              |
     +=======================+===========================================================+
     | Change                | Updated the search_constraints                            |
     +-----------------------+-----------------------------------------------------------+
@@ -51,7 +51,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
 1.3.12 (2020-11-09)
 """"""""""""""""""""""""""
     **Changes:**
- 
+
     * Added ``--ignore-addon-errors`` pytest param to suppress Splunk Addon internal errors.
     * Updated ``--no-splunk-cleanup`` pytest param to ``--splunk-cleanup`` which is used to clean the data on the Splunk instance before testing.
 
@@ -114,7 +114,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
 """"""""""""""""""""""""""
     **Changes:**
 
-    * Removed threading mechanism while sending data using SC4S as SC4S expects sequential ingestion of data rather than parallel ingestion. 
+    * Removed threading mechanism while sending data using SC4S as SC4S expects sequential ingestion of data rather than parallel ingestion.
 
     **Known Issues:**
 
@@ -139,7 +139,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
     * Enhanced requirements for the following CIM data models:
 
     +-----------------------+-----------------------------------------------------------+
-    | CIM Data Model        |                   Field Name                              | 
+    | CIM Data Model        |                   Field Name                              |
     +=======================+===========================================================+
     | Change                | action, object_category, object_id, object_path,          |
     |                       | object_attrs                                              |
@@ -157,7 +157,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
     **Changes:**
 
     * Now handles situations where TRANSFORMS REGEX uses _VAL in transforms.conf.
-    * pytest-splunk-addon now handles eval functions using NULL more efficiently. 
+    * pytest-splunk-addon now handles eval functions using NULL more efficiently.
 
     **Known Issues:**
 
@@ -169,7 +169,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
     **Features:**
 
     * pytest-splunk-addon now generates data with it's own data generator feature which replaces SA-Eventgen for accuracy. This feature can ingest data using HEC event, HEC Raw and SC4S (TCP).
-    * pytest-splunk-addon now generates Index Time test cases for your Splunk Technology Add-ons. 
+    * pytest-splunk-addon now generates Index Time test cases for your Splunk Technology Add-ons.
     * Added a utility to create a new pytest-splunk-addon-data.conf file from existing eventgen.conf file.
     * Backward compatibility for search time tests using existing eventgen.conf.
 
@@ -178,7 +178,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
     * Enhanced requirements for the following CIM data models:
 
     +-----------------------+-----------------------------------------------------------+
-    | CIM Data Model        |                   Field Name                              | 
+    | CIM Data Model        |                   Field Name                              |
     +=======================+===========================================================+
     | IDS                   | src, dest, src_port, dest_port, user                      |
     +-----------------------+-----------------------------------------------------------+
@@ -187,7 +187,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
     | Network Traffic       | bytes, bytes_in, bytes_out, icmp_code                     |
     |                       |                                                           |
     |                       | packets, packets_in, packets_out                          |
-    |                       |                                                           |    
+    |                       |                                                           |
     |                       | src, src_translated_port, src_port                        |
     |                       |                                                           |
     |                       | dest, dest_translated_port, dest_port                     |
@@ -223,7 +223,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
 
     **Features:**
 
-    * The codebase was reformatted to an object-oriented approach to increase the readability, scalability, and the reusability of the plugin. 
+    * The codebase was reformatted to an object-oriented approach to increase the readability, scalability, and the reusability of the plugin.
     * pytest-splunk-addon now generates tests for checking CIM compatibility in your Splunk Technology Add-ons.
 
     **Bugfixes:**

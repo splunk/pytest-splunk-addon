@@ -208,6 +208,7 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_as_input_outputnew_multiple* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_as_keyword* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_as_output* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields[splunkd::LOOKUP-test_as_host_keyword* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_command_spelling_output3* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_command_spelling_outputnew3* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_multiple_input* PASSED*',
@@ -235,6 +236,15 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_savedsearches*empty_search* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_savedsearches*empty_search_latest_time* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_savedsearches*no_search_no_time* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields[splunkd::field::"as_host"* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields[splunkd::field::"AS_port"* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields[splunkd::field::AS_port* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields[splunkd::field::as_host* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::LOOKUP-test_as_host_keyword* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::field::"as_host"* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::field::as_host* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::field::AS_port* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::field::"AS_port"* PASSED*',
 ]
 
 
@@ -310,6 +320,8 @@ TA_BROKEN_PASSED = [
     '*test_splunk_app_broken.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-PASS_test_empty_csv* PASSED*',
     '*test_splunk_app_broken.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-PASS_test_lookup_not_found* PASSED*',
     '*test_splunk_app_broken.py::Test_App::test_tags*sourcetype="splunkd"::tag::tags_negative_testing* PASSED*',
+    '*test_splunk_app_broken.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::LOOKUP-FAIL_test_wrong_AS_field_name_output* PASSED*',
+    '*test_splunk_app_broken.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::LOOKUP-FAIL_test_wrong_as_field_name_output* PASSED*'
 ]
 
 """
@@ -371,6 +383,8 @@ TA_BROKEN_FAILED = [
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*search_invalid_latest* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*no_search* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*empty_search_earliest_time* FAILED*',
+    '*test_splunk_app_broken.py::Test_App::test_props_fields[splunkd::LOOKUP-FAIL_test_wrong_AS_field_name_output* FAILED*',
+    '*test_splunk_app_broken.py::Test_App::test_props_fields[splunkd::LOOKUP-FAIL_test_wrong_as_field_name_output* FAILED*'
 ]
 
 """
@@ -623,7 +637,7 @@ TA_FICTION_INDEXTIME_SKIPPED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_search*splunk_searchtime_cim_fields_not_allowed_in_search0* SKIPPED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_tags*splunk_searchtime_fields_tags0* SKIPPED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*',    
-    '*test_splunk_fiction_indextime.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*',    
+    '*test_splunk_fiction_indextime.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*',
 ]
 """
 Define the TA_fiction_indextime_broken add-on passed test case list.
@@ -712,5 +726,5 @@ TA_FICTION_INDEXTIME_BROKEN_SKIPPED = [
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_props_fields_no_dash_not_empty*splunk_searchtime_fields_negative0* SKIPPED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_tags*splunk_searchtime_fields_tags0* SKIPPED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*', 
-    '*test_splunk_fiction_indextime_broken.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*', 
+    '*test_splunk_fiction_indextime_broken.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*',
 ]
