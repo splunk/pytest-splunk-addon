@@ -14,8 +14,8 @@ class FileMonitorEventIngestor(EventIngestor):
         self.uf_port = required_configs.get("uf_port")
         self.uf_username = required_configs.get("uf_username")
         self.uf_password = required_configs.get("uf_password")
-        self.splunk_host = required_configs.get("splunk_host")
-        self.splunk_s2s_port = required_configs.get("splunk_s2s_port")
+        self.splunk_host = "splunk"
+        self.splunk_s2s_port = "9997"
         self.uf_rest_uri = "https://{}:{}".format(self.uf_host, self.uf_port)
         self.outputs_endpoint = "{}/services/data/outputs/tcp/group".format(self.uf_rest_uri)
         self.inputs_endpoint = "{}/servicesNS/nobody/search/data/inputs/monitor".format(self.uf_rest_uri)
@@ -25,7 +25,7 @@ class FileMonitorEventIngestor(EventIngestor):
         self.create_file_monitor_dir()
         for each_event in events:
             self.create_file(each_event)
-            sleep(5)
+            sleep(10)
             self.create_inputs_stanza(each_event)
 
     def create_output_conf(self):
@@ -45,14 +45,19 @@ class FileMonitorEventIngestor(EventIngestor):
 
     def create_inputs_stanza(self, event):
         file_path = self.get_file_path(event)
+        sourcetype = event.metadata.get("sourcetype")
+        if not sourcetype:
+            sourcetype = event.metadata.get("sourcetype_to_search", "pytest_splunk_addon")
         stanza = {
             "name": file_path,
-            "sourcetype": event.metadata.get("sourcetype_to_search", "pytest_splunk_addon"),
+            "sourcetype": sourcetype,
             "index": event.metadata.get("index", "main"),
             "disabled": False
         }
         if event.metadata.get("host_type") in ("plugin"):
             stanza["host"] = event.metadata.get("host")
+        if event.metadata.get("source"):
+            stanza["rename-source"] = event.metadata.get("source")
         response = requests.post(self.inputs_endpoint, stanza, auth=(self.uf_username, self.uf_password), verify=False)
         if response not in (200, 201):
             print(response._content)

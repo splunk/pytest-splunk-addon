@@ -423,13 +423,18 @@ def splunk_docker(
         dict: Details of the splunk instance including host, port, username & password.
     """
     LOGGER.info("Starting docker_service=splunk")
+    os.environ["CURRENT_DIR"] = os.getcwd()
     if worker_id:
         # get the temp directory shared by all workers
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
         fn = root_tmp_dir / "pytest_docker"
         with FileLock(str(fn) + ".lock"):
             docker_services.start("splunk")
+            print(docker_services.docker_ip)
+            docker_services.start("uf")
+            # print(docker_services.docker_ip)
 
+    print("--------", os.environ.get('DOCKER_HOST', '').strip())
     splunk_info = {
         "host": docker_services.docker_ip,
         "port": docker_services.port_for("splunk", 8089),
@@ -438,6 +443,10 @@ def splunk_docker(
         "port_web": docker_services.port_for("splunk", 8000),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
+        "uf_username": request.config.getoption("splunk_uf_user"),
+        "uf_password": request.config.getoption("splunk_uf_password"),
+        "uf_host": docker_services.docker_ip,
+        "uf_port": docker_services.port_for("uf", 8089),
     }
 
     splunk_info["forwarder_host"] = splunk_info.get("host")
@@ -606,8 +615,6 @@ def splunk_ingest_data(request, splunk, splunk_hec_uri, sc4s, splunk_events_clea
             "uf_port": splunk.get("uf_port"),
             "uf_username": splunk.get("uf_username"),
             "uf_password": splunk.get("uf_password"),
-            "splunk_s2s_port": splunk.get("port_s2s")
-            "splunk_host": splunk.get("host"),
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
             "sc4s_host": sc4s[0],  # for sc4s
