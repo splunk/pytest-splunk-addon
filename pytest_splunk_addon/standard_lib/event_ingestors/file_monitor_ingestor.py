@@ -52,7 +52,8 @@ class FileMonitorEventIngestor(EventIngestor):
             "name": file_path,
             "sourcetype": sourcetype,
             "index": event.metadata.get("index", "main"),
-            "disabled": False
+            "disabled": False,
+            "crc-salt": "<SOURCE>"
         }
         if event.metadata.get("host_type") in ("plugin"):
             stanza["host"] = event.metadata.get("host")
