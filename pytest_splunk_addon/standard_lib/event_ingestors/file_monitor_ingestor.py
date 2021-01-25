@@ -38,6 +38,12 @@ class FileMonitorEventIngestor(EventIngestor):
         monitor_dir = os.path.join(os.getcwd(), MONITOR_DIR)
         if not os.path.exists(monitor_dir):
             os.mkdir(monitor_dir)
+        LOGGER.warn("=====================================================")
+        LOGGER.warn(os.listdir("."))
+        try:
+            os.mkdir("random_dir")
+        except:
+            LOGGER.warn("Unable to create random dir")
         try:
             os.chmod(monitor_dir, 0o600)
         except:
