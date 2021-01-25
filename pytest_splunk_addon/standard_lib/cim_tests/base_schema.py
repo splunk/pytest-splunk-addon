@@ -4,9 +4,10 @@ Includes base class for data model schema.
 """
 from abc import ABC, abstractclassmethod
 
+
 class BaseSchema(ABC):
     """
-    Abstract class to parse the Data model files. 
+    Abstract class to parse the Data model files.
     The possible format can be JSON, YML, CSV, Cim_json
     """
 
@@ -21,11 +22,11 @@ class BaseSchema(ABC):
             {
                 "name":"Default_Authentication",
                 "tags": ["authentication","default"],
-                "fields_cluster":[],     
+                "fields_cluster":[],
                 "fields":[
-                    {     
-                        "fieldname": "action",     
-                        "field_type": "required",    
+                    {
+                        "fieldname": "action",
+                        "field_type": "required",
                         "condition": "action IN ('success','failure','error')",
                         "comment":"The action performed on the resource."
                     },

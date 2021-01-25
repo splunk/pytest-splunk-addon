@@ -10,8 +10,8 @@ from pytest_splunk_addon.helmut.util.string_unicode_convert import normalize_to_
 
 class RESTStanzaWrapper(Stanza):
     """
-        This class is the associated subclass of Stanza to the L{RESTConnector}.
-        This represents and wraps a Stanza object using the Splunk REST API.
+    This class is the associated subclass of Stanza to the L{RESTConnector}.
+    This represents and wraps a Stanza object using the Splunk REST API.
     """
 
     def __init__(self, rest_conf, rest_stanza):

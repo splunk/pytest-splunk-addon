@@ -14,7 +14,7 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 class PropsParser(object):
     """
     Parses props.conf and extracts the fields.
-    
+
     Args:
         splunk_app_path (str): Path of the Splunk app
         app (splunk_appinspect.App): Object of Splunk app
@@ -42,12 +42,14 @@ class PropsParser(object):
         Parse the props.conf and yield all supported fields
 
         Yields:
-            generator of all the supported fields 
+            generator of all the supported fields
         """
         for stanza_type, stanza_name, stanza in self.get_props_stanzas():
             for classname in stanza.options:
                 LOGGER.info(
-                    "Parsing parameter=%s of stanza=%s", classname, stanza_name,
+                    "Parsing parameter=%s of stanza=%s",
+                    classname,
+                    stanza_name,
                 )
                 props_property = stanza.options[classname]
                 if not re.match("REPORT", classname, re.IGNORECASE):
@@ -78,9 +80,9 @@ class PropsParser(object):
     def get_props_method(self, class_name):
         """
         Get the parsing method depending on classname
-        
+
         Args:
-            class_name (str): class name of the props property 
+            class_name (str): class name of the props property
 
         Returns:
             instance method to parse the property
@@ -125,7 +127,7 @@ class PropsParser(object):
     def get_list_of_sources(source):
         """
         For source with | (OR), it will return all combinations.
-        Uses itertools.product to list the combinations 
+        Uses itertools.product to list the combinations
 
         Example::
 
@@ -167,7 +169,7 @@ class PropsParser(object):
             sourcetype = splunkd
 
         Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
                 The configuration setting object of REPORT.
                 properties used:
 
@@ -191,7 +193,7 @@ class PropsParser(object):
             EXTRACT-one = regex with (?<capturing_group>.*)
 
         Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
                 The configuration setting object of EXTRACT.
                 properties used:
 
@@ -235,7 +237,7 @@ class PropsParser(object):
             EVAL-action = if(isnull(action), "unknown", action)
 
         Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
                 The configuration setting object of eval
                 properties used:
 
@@ -259,7 +261,7 @@ class PropsParser(object):
             FIELDALIAS-class = source AS dest, sc2 AS dest2
 
         Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
                 The configuration setting object of FIELDALIAS
                 properties used:
 
@@ -294,11 +296,11 @@ class PropsParser(object):
         """
         Returns the fields parsed from REPORT
 
-        In order to parse the fields REPORT, the method parses the 
+        In order to parse the fields REPORT, the method parses the
         transforms.conf and returns the list
 
         Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
 
                 The configuration setting object of REPORT.
                 properties used:
@@ -307,7 +309,7 @@ class PropsParser(object):
                 * value : value of the respective name in the configuration
 
         Yields:
-            generator of (transform_stanza ,fields) parsed from transforms.conf 
+            generator of (transform_stanza ,fields) parsed from transforms.conf
         """
 
         transforms_itr = (
@@ -322,10 +324,10 @@ class PropsParser(object):
     @convert_to_fields
     def get_lookup_fields(self, props_property):
         """
-        Extracts the lookup fields 
+        Extracts the lookup fields
 
         Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting): 
+            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
                 The configuration setting object of eval
                 properties used:
 
@@ -368,7 +370,7 @@ class PropsParser(object):
         Regex:
             Parse the fields from the lookup string. Examples,
 
-            * field1 AS field2, field3 field4 as field5 
+            * field1 AS field2, field3 field4 as field5
 
         Returns:
             (dict):
@@ -411,4 +413,3 @@ class PropsParser(object):
             "output_fields": input_output_field_list[1],
             "lookup_stanza": lookup_stanza,
         }
-

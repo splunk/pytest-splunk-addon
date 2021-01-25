@@ -22,7 +22,7 @@ from pytest_splunk_addon.helmut.util.string_unicode_convert import (
 
 class RESTConfsWrapper(Confs):
     """
-        The Confs subclass that is associated with the RESTConnector.
+    The Confs subclass that is associated with the RESTConnector.
     """
 
     @property

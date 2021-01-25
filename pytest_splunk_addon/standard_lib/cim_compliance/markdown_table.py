@@ -16,7 +16,7 @@ class MarkdownTable(BaseTable):
         """
         Adds Title string to the table
 
-        Args: 
+        Args:
             title(str): Title string.
         """
         return "### {}".format(title) if title else ""
@@ -39,7 +39,7 @@ class MarkdownTable(BaseTable):
         """
         Adds description string to the table
 
-        Args: 
+        Args:
             description(str): Description string.
         """
         self.table_description = "\n {} \n".format(description)
@@ -60,7 +60,7 @@ class MarkdownTable(BaseTable):
         """
         It adds the note at the end of the table
 
-        Args: 
+        Args:
             note_str(str): Note string to be added.
         """
         self.table_note = "\n*NOTE: {} *\n ".format(note_str)

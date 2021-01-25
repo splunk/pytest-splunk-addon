@@ -299,24 +299,29 @@ def splunk_search_util(splunk, request):
 
     return search_util
 
+
 @pytest.fixture(scope="session")
 def ignore_internal_errors(request):
     """
-    This fixture generates a common list of errors which are suppossed 
+    This fixture generates a common list of errors which are suppossed
     to be ignored in test_splunk_internal_errors.
 
     Returns:
         dict: List of the strings to be ignored in test_splunk_internal_errors
     """
     error_list = []
-    splunk_error_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),".ignore_splunk_internal_errors")
+    splunk_error_file_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), ".ignore_splunk_internal_errors"
+    )
     with open(splunk_error_file_path) as splunk_errors:
         error_list = [each_error.strip() for each_error in splunk_errors.readlines()]
     if request.config.getoption("ignore_addon_errors"):
         addon_error_file_path = request.config.getoption("ignore_addon_errors")
         if os.path.exists(addon_error_file_path):
             with open(addon_error_file_path, "r") as addon_errors:
-                error_list.extend([each_error.strip() for each_error in addon_errors.readlines()])
+                error_list.extend(
+                    [each_error.strip() for each_error in addon_errors.readlines()]
+                )
     yield error_list
 
 
@@ -340,7 +345,9 @@ def splunk(request):
             config = configparser.ConfigParser()
             config.read(
                 os.path.join(
-                    request.config.getoption("splunk_app"), "default", "app.conf",
+                    request.config.getoption("splunk_app"),
+                    "default",
+                    "app.conf",
                 )
             )
             os.environ["SPLUNK_APP_ID"] = config["package"]["id"]
@@ -424,7 +431,9 @@ def splunk_docker(
     )
 
     docker_services.wait_until_responsive(
-        timeout=180.0, pause=0.5, check=lambda: is_responsive_splunk(splunk_info),
+        timeout=180.0,
+        pause=0.5,
+        check=lambda: is_responsive_splunk(splunk_info),
     )
 
     return splunk_info
@@ -450,7 +459,9 @@ def splunk_external(request):
     if not request.config.getoption("splunk_forwarder_host"):
         splunk_info["forwarder_host"] = splunk_info.get("host")
     else:
-        splunk_info["forwarder_host"] = request.config.getoption("splunk_forwarder_host")
+        splunk_info["forwarder_host"] = request.config.getoption(
+            "splunk_forwarder_host"
+        )
 
     for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
         if is_responsive_splunk(splunk_info):
@@ -495,7 +506,7 @@ def sc4s_docker(docker_services, tmp_path_factory, worker_id):
 def sc4s_external(request):
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
-    TODO: For splunk_type=external, data will not be ingested as 
+    TODO: For splunk_type=external, data will not be ingested as
     manual configurations are required.
     """
     ports = {514: int(request.config.getoption("sc4s_port"))}
@@ -608,6 +619,7 @@ def splunk_events_cleanup(request, splunk_search_util):
     else:
         LOGGER.info("Events cleanup was disabled.")
 
+
 def is_responsive_splunk(splunk):
     """
     Verify if the management port of Splunk is responsive or not
@@ -620,7 +632,8 @@ def is_responsive_splunk(splunk):
     """
     try:
         LOGGER.info(
-            "Trying to connect Splunk instance...  splunk=%s", json.dumps(splunk),
+            "Trying to connect Splunk instance...  splunk=%s",
+            json.dumps(splunk),
         )
         client.connect(
             username=splunk["username"],
@@ -633,9 +646,11 @@ def is_responsive_splunk(splunk):
         return True
     except Exception as e:
         LOGGER.warning(
-            "Could not connect to Splunk Instance. Will try again. exception=%s", str(e),
+            "Could not connect to Splunk Instance. Will try again. exception=%s",
+            str(e),
         )
         return False
+
 
 def is_responsive_hec(request, splunk):
     """
@@ -649,24 +664,26 @@ def is_responsive_hec(request, splunk):
     """
     try:
         LOGGER.info(
-            "Trying to connect Splunk HEC...  splunk=%s", json.dumps(splunk),
+            "Trying to connect Splunk HEC...  splunk=%s",
+            json.dumps(splunk),
         )
         session_headers = {
             "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
         }
         response = requests.get(
-                f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/health/1.0',
-                verify=False,
-            )
+            f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/health/1.0',
+            verify=False,
+        )
         LOGGER.debug("Status code: {}".format(response.status_code))
-        if response.status_code in (200,201):
+        if response.status_code in (200, 201):
             LOGGER.info("Splunk HEC is responsive.")
             return True
         else:
             return False
     except Exception as e:
         LOGGER.warning(
-            "Could not connect to Splunk HEC. Will try again. exception=%s", str(e),
+            "Could not connect to Splunk HEC. Will try again. exception=%s",
+            str(e),
         )
         return False
 
@@ -690,7 +707,8 @@ def is_responsive(url):
             return True
     except ConnectionError as e:
         LOGGER.warning(
-            "Could not connect to url yet. Will try again. exception=%s", str(e),
+            "Could not connect to url yet. Will try again. exception=%s",
+            str(e),
         )
         return False
 

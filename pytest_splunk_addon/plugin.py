@@ -38,7 +38,8 @@ def pytest_configure(config):
         "splunk_searchtime_fields_eventtypes: Test search time eventtypes only",
     )
     config.addinivalue_line(
-        "markers", "splunk_searchtime_fields_savedsearches: Test search time savedsearches only"
+        "markers",
+        "splunk_searchtime_fields_savedsearches: Test search time savedsearches only",
     )
     config.addinivalue_line(
         "markers", "splunk_searchtime_cim: Test CIM compatibility only"
