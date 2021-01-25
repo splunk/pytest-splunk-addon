@@ -1,0 +1,14 @@
+name: Python Code Style Check
+
+on: [push]
+
+jobs:
+  style-check:
+    runs-on: ubuntu-latest
+    container: python:latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          pip install black
+          black --check --exclude "deps" ./
+        name: Install and run black style checker
