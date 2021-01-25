@@ -38,7 +38,11 @@ class FileMonitorEventIngestor(EventIngestor):
         monitor_dir = os.path.join(os.getcwd(), MONITOR_DIR)
         if not os.path.exists(monitor_dir):
             os.mkdir(monitor_dir)
-            
+        try:
+            os.chmod(monitor_dir, 0o600)
+        except:
+            LOGGER.warn("Unable to change permission of dir : {}".format(monitor_dir))
+
 
     def create_event_file(self, event):
         try:
