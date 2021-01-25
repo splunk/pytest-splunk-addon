@@ -29,21 +29,6 @@ class RequirementEventIngestor(object):
         self.app_path = app_path
         pass
 
-    def extract_raw_events(self):
-        """
-        This function returns raw events in <raw> section of the requirement files
-        Iterate over all the requirement files and then send all the events to ingestor helper class
-        """
-        pass
-
-    def extract_sourcetype(self):
-        """
-        Using app path extract sourcetype of the events
-        From tranforms.conf [Metadata: Sourcetype] Regex
-        This only works for syslog apps with this section
-        """
-        pass
-
     def check_xml_format(self, file_name):
         if ET.parse(file_name):
             return True
@@ -59,8 +44,10 @@ class RequirementEventIngestor(object):
         root = tree.getroot()
         return root
 
-    def get_event(self, root):
+    def extract_raw_events(self, root):
         """
+        This function returns raw events in <raw> section of the requirement files
+        Iterate over all the requirement files and then send all the events to ingestor helper class
         Input: Root of the xml file
         Function to return raw event string
         """
@@ -69,7 +56,7 @@ class RequirementEventIngestor(object):
             event = raw.text
         return event
 
-    def extractRegexTransforms(self):
+    def extract_regex_transforms(self):
         """
         Requirement : app transform.conf
         Return: SrcRegex objects list containing pair of regex and sourcetype
@@ -94,6 +81,9 @@ class RequirementEventIngestor(object):
 
     def extract_sourcetype(self, list_src_regex, event):
         """
+        Using app path extract sourcetype of the events
+        From tranforms.conf [Metadata: Sourcetype] Regex
+        This only works for syslog apps with this section
         Input: event, List of SrcRegex
         Return:Sourcetype of the event
         """
@@ -106,7 +96,7 @@ class RequirementEventIngestor(object):
 
     def get_events(self):
         req_file_path = os.path.join(self.app_path, "requirement_files")
-        src_regex = self.extractRegexTransforms()
+        src_regex = self.extract_regex_transforms()
         events = []
         if os.path.isdir(req_file_path):
             for file1 in os.listdir(req_file_path):
@@ -114,19 +104,13 @@ class RequirementEventIngestor(object):
                 if filename.endswith(".log"):
                     LOGGER.info(filename)
                     if self.check_xml_format(filename):
-                        LOGGER.info("XML check")
                         root = self.get_root(filename)
                         for event_tag in root.iter('event'):
-                            unescaped_event = self.get_event(event_tag)
+                            unescaped_event = self.extract_raw_events(event_tag)
                             sourcetype = self.extract_sourcetype(src_regex, unescaped_event)
-                            LOGGER.info("before return")
                             metadata = {'input_type': 'default',
                                         'sourcetype': sourcetype,
                                         'index': 'main'
                                         }
                             events.append(SampleEvent(unescaped_event, metadata, "requirement_test"))
                         return events
-                        """
-        Send Sourcetyped events to event ingestor
-        """
-        pass
