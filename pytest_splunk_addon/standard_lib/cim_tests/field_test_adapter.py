@@ -32,8 +32,8 @@ class FieldTestAdapater(Field):
             ["a", "b"] to '\"a\", \"b\"'
 
         Args:
-            values (list): List of str values 
-        
+            values (list): List of str values
+
         Returns:
             str: SPL query list
         """
@@ -60,18 +60,14 @@ class FieldTestAdapater(Field):
             self.validity_query += ("\n"
                 f"| eval {self.valid_field}={self.validity}")
             if self.expected_values:
+                values = self.get_query_from_values(self.expected_values)
                 self.validity_query += ("\n"
-                     "| eval {valid_field}=if(searchmatch(\"{valid_field} IN ({values})\"), {valid_field}, null())".format(
-                         valid_field=self.valid_field,
-                         values=self.get_query_from_values(self.expected_values)
-                     )
+                     f"| eval {self.valid_field}=if(searchmatch(\"{self.valid_field} IN ({values})\"), {self.valid_field}, null())"
                 )
             if self.negative_values:
+                values = self.get_query_from_values(self.negative_values)
                 self.validity_query += ("\n"
-                     "| eval {valid_field}=if(searchmatch(\"{valid_field} IN ({values})\"), null(), {valid_field})".format(
-                         valid_field=self.valid_field,
-                         values=self.get_query_from_values(self.negative_values)
-                     )
+                     f"| eval {self.valid_field}=if(searchmatch(\"{self.valid_field} IN ({values})\"), null(), {self.valid_field})"
                 )
             self.validity_query += ("\n"
                 f"| eval {self.invalid_field}=if(isnull({self.valid_field}), {self.name}, null())")
