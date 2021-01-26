@@ -35,7 +35,8 @@ jobs:
           export PATH="~/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"          
           source ~/.poetry/env
-          poetry install -E docker pytest-cov
+          poetry install -E docker
+          pip install pytest-cov
           poetry run pytest -v --cov=pytest_splunk_addon --cov-report=html --splunk-version=${{ matrix.splunk-version }} -m docker
       - name: Archive test coverage results
         uses: actions/upload-artifact@v2
