@@ -245,12 +245,10 @@ def pytest_addoption(parser):
         help=("Path to file where list of addon related errors are suppressed."),
     )
     group.addoption(
-        "--requirement_test",
-        action="store",
-        default= True,
-        type=bool,
+        "--requirement-test",
+        action="store_true",
         dest="requirement_test",
-        help=("True if requirement tests need to be run"),
+        help=("Default false use if requirement tests need to be run"),
     )
 
 
