@@ -432,9 +432,7 @@ def splunk_docker(
             docker_services.start("splunk")
             print(docker_services.docker_ip)
             docker_services.start("uf")
-            # print(docker_services.docker_ip)
 
-    print("--------", os.environ.get('DOCKER_HOST', '').strip())
     splunk_info = {
         "host": docker_services.docker_ip,
         "port": docker_services.port_for("splunk", 8089),
@@ -655,7 +653,8 @@ def splunk_events_cleanup(request, splunk_search_util):
 
 @pytest.fixture(scope="session")
 def file_system_prerequisite():
-    monitor_dir = os.path.join(os.getcwd(), "uf_files")
+    UF_FILE_MONTOR_DIR = "uf_files"
+    monitor_dir = os.path.join(os.getcwd(), UF_FILE_MONTOR_DIR)
     if os.path.exists(monitor_dir):
         os.rmdir(monitor_dir)
     os.mkdir(monitor_dir)

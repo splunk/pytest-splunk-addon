@@ -52,9 +52,10 @@ host_type = plugin | event
     * If the value is plugin, the plugin will generate host with format of "stanza_{count}" to uniquely identify the events.
     * If the value is event, the host field should be provided for a token using "token.<n>.field = host". 
 
-input_type = modinput | scripted_input | syslog_tcp | file_monitor | windows_input | default
+input_type = modinput | scripted_input | syslog_tcp | file_monitor | windows_input | uf_file_monitor | default
     * The input_type used in addon to ingest data of a sourcetype used in stanza.
     * The way with which the sample data is ingested in Splunk depends on Splunk. The most similar ingesting approach is used for each input_type to get accurate index-time testing.
+    * In input_type=uf_file_monitor, universal forwarder will use file monitor to read event and then it will send data to indexer. uf_file_monitor will only work with splunk_type=docker.
     * For example, in an Add-on, a sourcetype "alert" is ingested through syslog in live environment, provide input_type=syslog_tcp.
 
 index = <index>
