@@ -710,9 +710,6 @@ TA_FICTION_INDEXTIME_BROKEN_FAILED = [
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_time*test:indextime:pytest_splunk_addon_index_wrong::test-index-wrong-samples-12* FAILED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_time*test:indextime:pytest_splunk_addon_index_wrong::test-index-wrong-samples-13* FAILED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:test_index_HECEventIngestor_wrong::test_index_HECEventIngestor_wrong.samples* FAILED*',
-    '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_key_fields*test:indextime:uf_file_monitor_wrong_host::host-sample_host1_to_host-sample_host2* FAILED*',
-    '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_key_fields*test:indextime:uf_file_monitor_wrong_host::host-sample_host3_to_host-sample_host4* FAILED*',
-    '*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:uf_file_monitor_wrong_host::uf_file_monitor_wrong_host.sample* FAILED*',
 ]
 """
 Define the TA_fiction_indextime_broken add-on skipped test case list.
