@@ -66,7 +66,7 @@ class FileMonitorEventIngestor(EventIngestor):
             with open(self.get_file_path(event), "w+") as fp:
                 fp.write(event.event)
         except Exception as e:
-            LOGGER.warning("Unable to create event file for host : {}, Reason : {}".format(event.metadata.get("host")), e)
+            LOGGER.warning("Unable to create event file for host : {}, Reason : {}".format(event.metadata.get("host"), e))
 
     def create_inputs_stanza(self, event):
         """
