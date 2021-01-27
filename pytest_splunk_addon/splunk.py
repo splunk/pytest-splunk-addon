@@ -349,7 +349,7 @@ def ignore_internal_errors(request):
 
 
 @pytest.fixture(scope="session")
-def splunk(request):
+def splunk(request, file_system_prerequisite):
     """
     This fixture based on the passed option will provide a real fixture
     for external or docker Splunk
@@ -652,6 +652,13 @@ def splunk_events_cleanup(request, splunk_search_util):
         splunk_search_util.deleteEventsFromIndex()
     else:
         LOGGER.info("Events cleanup was disabled.")
+
+@pytest.fixture(scope="session")
+def file_system_prerequisite():
+    monitor_dir = os.path.join(os.getcwd(), "uf_files")
+    if os.path.exists(monitor_dir):
+        os.rmdir(monitor_dir)
+    os.mkdir(monitor_dir)
 
 def is_responsive_splunk(splunk):
     """
