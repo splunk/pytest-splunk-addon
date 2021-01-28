@@ -65,7 +65,13 @@ services:
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
 
   uf:
-    image: splunk/universalforwarder:${SPLUNK_VERSION}
+    build:
+      context: .
+      dockerfile: Dockerfile-uf
+      args:
+        SPLUNK_APP_ID: ${SPLUNK_APP_ID}
+        SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
+        SPLUNK_VERSION: ${SPLUNK_VERSION}
     hostname: uf
     ports:
       - "9997"
