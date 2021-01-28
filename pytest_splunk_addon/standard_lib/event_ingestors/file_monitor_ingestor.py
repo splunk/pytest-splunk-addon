@@ -56,6 +56,8 @@ class FileMonitorEventIngestor(EventIngestor):
         Create stanza in outputs.conf file of universal forwarder to send on splunk(indexer).  
         """
         tcp_out_dict = {"name":"uf_monitor", "servers":"{}:{}".format(self.splunk_host, self.splunk_s2s_port)}
+        LOGGER.info("Making rest call to create stanza in outputs.conf file with following endpoint : {}".format(self.outputs_endpoint))
+        LOGGER.debug("Creating following stanza in output.conf : {}".format(tcp_out_dict))
         response = requests.post(self.outputs_endpoint, tcp_out_dict, auth=(self.uf_username, self.uf_password), verify=False)
         if response.status_code not in (200, 201):
             LOGGER.warning("Unable to create stanza in outputs.conf\nStatus code: {} \nReason: {} \ntext:{}".format(response.status_code, response.reason, response.text))
@@ -69,7 +71,9 @@ class FileMonitorEventIngestor(EventIngestor):
         """
         try:
             with open(self.get_file_path(event), "w+") as fp:
+                LOGGER.info("Writing events file for host={}".format(event.metadata.get("host")))
                 fp.write(event.event)
+                LOGGER.debug("Wrote tokenized events file on path : {}".format(self.get_file_path(event)))
         except Exception as e:
             LOGGER.warning("Unable to create event file for host : {}, Reason : {}".format(event.metadata.get("host"), e))
 
@@ -95,6 +99,8 @@ class FileMonitorEventIngestor(EventIngestor):
             stanza["host"] = event.metadata.get("host")
         if event.metadata.get("source"):
             stanza["rename-source"] = event.metadata.get("source")
+        LOGGER.info("Making rest call to create stanza in inputs.conf file with following endpoint : {}".format(self.inputs_endpoint))
+        LOGGER.debug("Creating following stanza in inputs.conf : {}".format(stanza))
         response = requests.post(self.inputs_endpoint, stanza, auth=(self.uf_username, self.uf_password), verify=False)
         if response.status_code not in (200, 201):
             LOGGER.warning("Unable to add stanza in inputs.conf\nStatus code: {} \nReason: {} \ntext:{}".format(response.status_code, response.reason, response.text))

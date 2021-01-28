@@ -67,7 +67,7 @@ services:
   uf:
     build:
       context: .
-      dockerfile: Dockerfile-uf
+      dockerfile: Dockerfile.uf
       args:
         SPLUNK_APP_ID: ${SPLUNK_APP_ID}
         SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
