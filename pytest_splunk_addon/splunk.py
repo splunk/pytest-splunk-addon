@@ -8,6 +8,7 @@ Module usage:
 
 import logging
 import os
+import shutil
 from time import sleep
 import json
 import pytest
@@ -653,10 +654,14 @@ def splunk_events_cleanup(request, splunk_search_util):
 
 @pytest.fixture(scope="session")
 def file_system_prerequisite():
+    """
+    File system prerequisite before running tests.
+    Creating uf_files directory to write tokenized events for uf_file_monitor input.
+    """
     UF_FILE_MONTOR_DIR = "uf_files"
     monitor_dir = os.path.join(os.getcwd(), UF_FILE_MONTOR_DIR)
     if os.path.exists(monitor_dir):
-        os.rmdir(monitor_dir)
+        shutil.rmtree(UF_FILE_MONTOR_DIR, ignore_errors=True)
     os.mkdir(monitor_dir)
 
 def is_responsive_splunk(splunk):

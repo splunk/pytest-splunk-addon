@@ -41,7 +41,9 @@ class FileMonitorEventIngestor(EventIngestor):
 
     def ingest(self, events, thread_count):
         """
-        Ingests data into splunk via file monitor. 
+        Ingests data into splunk via file monitor.
+        Args:
+            events (list): List of events (SampleEvent) to be ingested
         """
         self.create_output_conf()
         for each_event in events:
@@ -61,6 +63,9 @@ class FileMonitorEventIngestor(EventIngestor):
     def create_event_file(self, event):
         """
         Write each tokenized event in files with host name as name of file. The host of all events will be unique.
+
+        Args:
+            event (SampleEvent): Instance containing event info
         """
         try:
             with open(self.get_file_path(event), "w+") as fp:
@@ -70,7 +75,10 @@ class FileMonitorEventIngestor(EventIngestor):
 
     def create_inputs_stanza(self, event):
         """
-        Create stanza in inputs.conf on universal forwarder for each tokenized event. 
+        Create stanza in inputs.conf on universal forwarder for each tokenized event.
+
+        Args:
+            event (SampleEvent): Instance containing event info
         """
         file_path = self.get_file_path(event)
         sourcetype = event.metadata.get("sourcetype")
@@ -94,5 +102,8 @@ class FileMonitorEventIngestor(EventIngestor):
     def get_file_path(self, event):
         """
         Returns absolute path for tokenized events.
+
+        Args:
+            event (SampleEvent): Instance containing event info
         """
         return "{}/{}/{}".format(os.getcwd(), MONITOR_DIR, event.metadata.get("host"))

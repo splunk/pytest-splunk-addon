@@ -55,8 +55,11 @@ host_type = plugin | event
 input_type = modinput | scripted_input | syslog_tcp | file_monitor | windows_input | uf_file_monitor | default
     * The input_type used in addon to ingest data of a sourcetype used in stanza.
     * The way with which the sample data is ingested in Splunk depends on Splunk. The most similar ingesting approach is used for each input_type to get accurate index-time testing.
-    * In input_type=uf_file_monitor, universal forwarder will use file monitor to read event and then it will send data to indexer. uf_file_monitor will only work with splunk_type=docker.
+    * In input_type=uf_file_monitor, universal forwarder will use file monitor to read event and then it will send data to indexer.
     * For example, in an Add-on, a sourcetype "alert" is ingested through syslog in live environment, provide input_type=syslog_tcp.
+    
+    .. warning::
+        uf_file_monitor input_type will only work with splunk_type=docker.
 
 index = <index>
     * The index used to ingest the data.
