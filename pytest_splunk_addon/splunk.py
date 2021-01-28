@@ -431,7 +431,6 @@ def splunk_docker(
         fn = root_tmp_dir / "pytest_docker"
         with FileLock(str(fn) + ".lock"):
             docker_services.start("splunk")
-            print(docker_services.docker_ip)
             docker_services.start("uf")
 
     splunk_info = {
