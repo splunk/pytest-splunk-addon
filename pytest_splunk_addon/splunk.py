@@ -245,7 +245,7 @@ def pytest_addoption(parser):
         dest="ignore_addon_errors",
         help=("Path to file where list of addon related errors are suppressed."),
     )
-        group.addoption(
+    group.addoption(
         "--splunk-uf-host",
         action="store",
         dest="splunk_uf_host",
@@ -441,6 +441,10 @@ def splunk_docker(
         "port_web": docker_services.port_for("splunk", 8000),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
+        "uf_username": request.config.getoption("splunk_uf_user"),
+        "uf_password": request.config.getoption("splunk_uf_password"),
+        "uf_host": docker_services.docker_ip,
+        "uf_port": docker_services.port_for("uf", 8089),
     }
 
     splunk_info["forwarder_host"] = splunk_info.get("host")
@@ -477,6 +481,10 @@ def splunk_external(request):
         "port": request.config.getoption("splunkd_port"),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
+        "uf_username": request.config.getoption("splunk_uf_user"),
+        "uf_password": request.config.getoption("splunk_uf_password"),
+        "uf_host": request.config.getoption("splunk_uf_host"),
+        "uf_port": request.config.getoption("splunk_uf_port"),
     }
     if not request.config.getoption("splunk_forwarder_host"):
         splunk_info["forwarder_host"] = splunk_info.get("host")
@@ -575,7 +583,7 @@ def splunk_web_uri(request, splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_events_cleanup):
+def splunk_ingest_data(request, splunk, splunk_hec_uri, sc4s, splunk_events_cleanup):
     """
     Generates events for the add-on and ingests into Splunk.
     The ingestion can be done using the following methods:
@@ -601,6 +609,10 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_events_cleanup):
         config_path = request.config.getoption("splunk_data_generator")
 
         ingest_meta_data = {
+            "uf_host": splunk.get("uf_host"),
+            "uf_port": splunk.get("uf_port"),
+            "uf_username": splunk.get("uf_username"),
+            "uf_password": splunk.get("uf_password"),
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
             "sc4s_host": sc4s[0],  # for sc4s
