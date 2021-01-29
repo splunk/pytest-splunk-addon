@@ -431,7 +431,7 @@ def uf(request):
     yield uf
 
 @pytest.fixture(scope="session")
-def uf_docker(docker_services, tmp_path_factory, worker_id)
+def uf_docker(docker_services, tmp_path_factory, worker_id):
     """
     Provides IP of the uf server and management port based on pytest-args(splunk_type)
     """
