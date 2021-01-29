@@ -20,9 +20,12 @@ def test_get_eventtypes_calls_app_get_config(parser):
         mock.assert_called_once()
 
 
-def test_no_config_file(parser):
+def test_no_eventtype_config_file(parser):
     parser.app.eventtypes_conf = os_error
-    assert not parser.eventtypes, "eventtypes created when no config file exists"
+    output = []
+    for i in parser.get_eventtypes():
+        output.append(i)
+    assert not output, "eventtypes created when no config file exists"
 
 
 @pytest.fixture()
