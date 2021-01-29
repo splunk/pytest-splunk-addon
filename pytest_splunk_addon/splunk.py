@@ -426,8 +426,8 @@ def uf(request):
         uf = request.getfixturevalue("uf_docker")
     else:
         raise Exception
-    uf["uf_username"]: request.config.getoption("splunk_uf_user"),
-    uf["uf_password"]: request.config.getoption("splunk_uf_password"),
+    uf["uf_username"] = request.config.getoption("splunk_uf_user")
+    uf["uf_password"] = request.config.getoption("splunk_uf_password")
     yield uf
 
 @pytest.fixture(scope="session")
