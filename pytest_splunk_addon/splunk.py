@@ -436,6 +436,7 @@ def uf_docker(docker_services, tmp_path_factory, worker_id):
     Provides IP of the uf server and management port based on pytest-args(splunk_type)
     """
     LOGGER.info("Starting docker_service=uf")
+    os.environ["CURRENT_DIR"] = os.getcwd()
     if worker_id:
         # get the temp directory shared by all workers
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
@@ -474,14 +475,12 @@ def splunk_docker(
         dict: Details of the splunk instance including host, port, username & password.
     """
     LOGGER.info("Starting docker_service=splunk")
-    os.environ["CURRENT_DIR"] = os.getcwd()
     if worker_id:
         # get the temp directory shared by all workers
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
         fn = root_tmp_dir / "pytest_docker"
         with FileLock(str(fn) + ".lock"):
             docker_services.start("splunk")
-            docker_services.start("uf")
 
     splunk_info = {
         "host": docker_services.docker_ip,
