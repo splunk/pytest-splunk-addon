@@ -607,6 +607,18 @@ TA_FICTION_INDEXTIME_PASSED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:test_pytest_splunk_addon_index_raw::test-index-samples-64* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:test_pytest_splunk_addon_index_raw::test_index.samples* PASSED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:test_index_HECEventIngestor::test_index_HECEventIngestor.samples* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:uf_file_monitor_host_event::host-sample_host387_to_host-sample_host388* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:uf_file_monitor_host_event::host-sample_host389_to_host-sample_host390* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:uf_file_monitor_host_plugin::uf-file-monitor-host-plugin-sample-69* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:uf_file_monitor_host_plugin::uf-file-monitor-host-plugin-sample-70* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:uf_file_monitor_rename_sourcetype:source::uf-file-monitor-rename-sourcetype-sample-71* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:uf_file_monitor_rename_sourcetype:source::uf-file-monitor-rename-sourcetype-sample-72* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:uf_file_monitor_host_event::uf_file_monitor_host_event.sample* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:uf_file_monitor_host_plugin::uf_file_monitor_host_plugin.sample* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:uf_file_monitor_rename_sourcetype:source::uf_file_monitor_rename_sourcetype.sample* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:uf_file_monitor_indexed_extraction::uf_file_monitor_indexed_extraction.sample* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_time*test:indextime:uf_file_monitor_indexed_extraction::uf_file_monitor_indexed_extraction.sample* PASSED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_indextime_line_breaker*test:indextime:uf_file_monitor_indexed_extraction::uf_file_monitor_indexed_extraction.sample* PASSED*',
 ]
 
 """
