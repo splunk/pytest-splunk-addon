@@ -428,6 +428,7 @@ def uf(request):
         raise Exception
     uf["uf_username"] = request.config.getoption("splunk_uf_user")
     uf["uf_password"] = request.config.getoption("splunk_uf_password")
+    sleep(60)
     yield uf
 
 @pytest.fixture(scope="session")
