@@ -8,6 +8,7 @@ Module usage:
 
 import logging
 import os
+import shutil
 from time import sleep
 import json
 import pytest
@@ -244,6 +245,34 @@ def pytest_addoption(parser):
         dest="ignore_addon_errors",
         help=("Path to file where list of addon related errors are suppressed."),
     )
+    group.addoption(
+        "--splunk-uf-host",
+        action="store",
+        dest="splunk_uf_host",
+        default="uf",
+        help="Address of Universal Forwarder Server.",
+    )
+    group.addoption(
+        "--splunk-uf-port",
+        action="store",
+        dest="splunk_uf_port",
+        default="8089",
+        help="Universal Forwarder Management port. default is 8089.",
+    )
+    group.addoption(
+        "--splunk-uf-user",
+        action="store",
+        dest="splunk_uf_user",
+        default="admin",
+        help="Universal Forwarder login user.",
+    )
+    group.addoption(
+        "--splunk-uf-password",
+        action="store",
+        dest="splunk_uf_password",
+        default="Chang3d!",
+        help="Password of the Universal Forwarder user",
+    )
 
 
 @pytest.fixture(scope="session")
@@ -321,7 +350,7 @@ def ignore_internal_errors(request):
 
 
 @pytest.fixture(scope="session")
-def splunk(request):
+def splunk(request, file_system_prerequisite):
     """
     This fixture based on the passed option will provide a real fixture
     for external or docker Splunk
@@ -379,6 +408,61 @@ def sc4s(request):
         raise Exception
 
     yield sc4s
+
+@pytest.fixture(scope="session")
+def uf(request):
+    """
+    This fixture based on the passed option will provide a real fixture
+    for external or docker uf configuration
+
+    Returns:
+        dict: Details of uf which includes host, port, username and password
+    """
+    if request.config.getoption("splunk_type") == "external":
+        request.fixturenames.append("uf_external")
+        uf = request.getfixturevalue("uf_external")
+    elif request.config.getoption("splunk_type") == "docker":
+        request.fixturenames.append("uf_docker")
+        uf = request.getfixturevalue("uf_docker")
+    else:
+        raise Exception
+    uf["uf_username"] = request.config.getoption("splunk_uf_user")
+    uf["uf_password"] = request.config.getoption("splunk_uf_password")
+    for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
+        if is_responsive_splunk(uf):
+            break
+        sleep(1)
+    yield uf
+
+@pytest.fixture(scope="session")
+def uf_docker(docker_services, tmp_path_factory, worker_id):
+    """
+    Provides IP of the uf server and management port based on pytest-args(splunk_type)
+    """
+    LOGGER.info("Starting docker_service=uf")
+    os.environ["CURRENT_DIR"] = os.getcwd()
+    if worker_id:
+        # get the temp directory shared by all workers
+        root_tmp_dir = tmp_path_factory.getbasetemp().parent
+        fn = root_tmp_dir / "pytest_docker"
+        with FileLock(str(fn) + ".lock"):
+            docker_services.start("uf")
+    uf_info = {
+        "uf_host": docker_services.docker_ip,
+        "uf_port": docker_services.port_for("uf", 8089),
+    }
+    return uf_info
+
+@pytest.fixture(scope="session")
+def uf_external(request):
+    """
+    Provides IP of the uf server and management port based on pytest-args(splunk_type)
+    """
+    uf_info = {
+        "uf_host": request.config.getoption("splunk_uf_host"),
+        "uf_port": request.config.getoption("splunk_uf_port"),
+    }
+    return uf_info
 
 
 @pytest.fixture(scope="session")
@@ -544,7 +628,7 @@ def splunk_web_uri(request, splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_events_cleanup):
+def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup):
     """
     Generates events for the add-on and ingests into Splunk.
     The ingestion can be done using the following methods:
@@ -570,6 +654,10 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, splunk_events_cleanup):
         config_path = request.config.getoption("splunk_data_generator")
 
         ingest_meta_data = {
+            "uf_host": uf.get("uf_host"),
+            "uf_port": uf.get("uf_port"),
+            "uf_username": uf.get("uf_username"),
+            "uf_password": uf.get("uf_password"),
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
             "sc4s_host": sc4s[0],  # for sc4s
@@ -607,6 +695,18 @@ def splunk_events_cleanup(request, splunk_search_util):
         splunk_search_util.deleteEventsFromIndex()
     else:
         LOGGER.info("Events cleanup was disabled.")
+
+@pytest.fixture(scope="session")
+def file_system_prerequisite():
+    """
+    File system prerequisite before running tests.
+    Creating uf_files directory to write tokenized events for uf_file_monitor input.
+    """
+    UF_FILE_MONTOR_DIR = "uf_files"
+    monitor_dir = os.path.join(os.getcwd(), UF_FILE_MONTOR_DIR)
+    if os.path.exists(monitor_dir):
+        shutil.rmtree(UF_FILE_MONTOR_DIR, ignore_errors=True)
+    os.mkdir(monitor_dir)
 
 def is_responsive_splunk(splunk):
     """
