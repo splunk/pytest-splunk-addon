@@ -409,6 +409,56 @@ def sc4s(request):
 
     yield sc4s
 
+@pytest.fixture(scope="session")
+def uf(request):
+    """
+    This fixture based on the passed option will provide a real fixture
+    for external or docker uf configuration
+
+    Returns:
+        dict: Details of uf which includes host, port, username and password
+    """
+    if request.config.getoption("splunk_type") == "external":
+        request.fixturenames.append("uf_external")
+        uf = request.getfixturevalue("uf_external")
+    elif request.config.getoption("splunk_type") == "docker":
+        request.fixturenames.append("uf_docker")
+        uf = request.getfixturevalue("uf_docker")
+    else:
+        raise Exception
+    uf["uf_username"]: request.config.getoption("splunk_uf_user"),
+    uf["uf_password"]: request.config.getoption("splunk_uf_password"),
+    yield uf
+
+@pytest.fixture(scope="session")
+def uf_docker(docker_services, tmp_path_factory, worker_id)
+    """
+    Provides IP of the uf server and management port based on pytest-args(splunk_type)
+    """
+    LOGGER.info("Starting docker_service=uf")
+    if worker_id:
+        # get the temp directory shared by all workers
+        root_tmp_dir = tmp_path_factory.getbasetemp().parent
+        fn = root_tmp_dir / "pytest_docker"
+        with FileLock(str(fn) + ".lock"):
+            docker_services.start("uf")
+    uf_info = {
+        "uf_host": docker_services.docker_ip,
+        "uf_port": docker_services.port_for("uf", 8089),
+    }
+    return uf_info
+
+@pytest.fixture(scope="session")
+def uf_external(request):
+    """
+    Provides IP of the uf server and management port based on pytest-args(splunk_type)
+    """
+    uf_info = {
+        "uf_host": request.config.getoption("splunk_uf_host"),
+        "uf_port": request.config.getoption("splunk_uf_port"),
+    }
+    return uf_info
+
 
 @pytest.fixture(scope="session")
 def splunk_docker(
@@ -441,10 +491,6 @@ def splunk_docker(
         "port_web": docker_services.port_for("splunk", 8000),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
-        "uf_username": request.config.getoption("splunk_uf_user"),
-        "uf_password": request.config.getoption("splunk_uf_password"),
-        "uf_host": docker_services.docker_ip,
-        "uf_port": docker_services.port_for("uf", 8089),
     }
 
     splunk_info["forwarder_host"] = splunk_info.get("host")
@@ -481,10 +527,6 @@ def splunk_external(request):
         "port": request.config.getoption("splunkd_port"),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
-        "uf_username": request.config.getoption("splunk_uf_user"),
-        "uf_password": request.config.getoption("splunk_uf_password"),
-        "uf_host": request.config.getoption("splunk_uf_host"),
-        "uf_port": request.config.getoption("splunk_uf_port"),
     }
     if not request.config.getoption("splunk_forwarder_host"):
         splunk_info["forwarder_host"] = splunk_info.get("host")
@@ -583,7 +625,7 @@ def splunk_web_uri(request, splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_ingest_data(request, splunk, splunk_hec_uri, sc4s, splunk_events_cleanup):
+def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup):
     """
     Generates events for the add-on and ingests into Splunk.
     The ingestion can be done using the following methods:
@@ -609,10 +651,10 @@ def splunk_ingest_data(request, splunk, splunk_hec_uri, sc4s, splunk_events_clea
         config_path = request.config.getoption("splunk_data_generator")
 
         ingest_meta_data = {
-            "uf_host": splunk.get("uf_host"),
-            "uf_port": splunk.get("uf_port"),
-            "uf_username": splunk.get("uf_username"),
-            "uf_password": splunk.get("uf_password"),
+            "uf_host": uf.get("uf_host"),
+            "uf_port": uf.get("uf_port"),
+            "uf_username": uf.get("uf_username"),
+            "uf_password": uf.get("uf_password"),
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
             "sc4s_host": sc4s[0],  # for sc4s
