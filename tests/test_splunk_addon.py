@@ -117,7 +117,6 @@ def test_splunk_connection_docker(testdir):
     assert result.ret == 0
 
 
-@pytest.mark.docker
 def test_splunk_app_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -157,7 +156,6 @@ def test_splunk_app_fiction(testdir):
     assert result.ret == 0
 
 
-@pytest.mark.docker
 def test_splunk_app_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -201,7 +199,6 @@ def test_splunk_app_broken(testdir):
     # The test suite should fail as this is a negative test
     assert result.ret != 0
 
-@pytest.mark.docker
 def test_splunk_app_cim_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -246,7 +243,6 @@ def test_splunk_app_cim_fiction(testdir):
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
 
-@pytest.mark.docker
 def test_splunk_app_cim_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
