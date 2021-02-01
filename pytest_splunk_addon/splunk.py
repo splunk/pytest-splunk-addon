@@ -429,7 +429,7 @@ def uf(request):
     uf["uf_username"] = request.config.getoption("splunk_uf_user")
     uf["uf_password"] = request.config.getoption("splunk_uf_password")
     for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
-        if is_responsive_splunk(uf):
+        if is_responsive_uf(uf):
             break
         sleep(1)
     yield uf
@@ -707,6 +707,35 @@ def file_system_prerequisite():
     if os.path.exists(monitor_dir):
         shutil.rmtree(UF_FILE_MONTOR_DIR, ignore_errors=True)
     os.mkdir(monitor_dir)
+
+def is_responsive_uf(uf):
+    """
+    Verify if the management port of Universal Forwarder is responsive or not
+
+    Args:
+        uf (dict): details of the Universal Forwarder instance
+
+    Returns:
+        bool: True if Universal Forwarder is responsive. False otherwise
+    """
+    try:
+        LOGGER.info(
+            "Trying to connect Universal Forwarder instance...  splunk=%s", json.dumps(uf),
+        )
+        client.connect(
+            username=uf["uf_username"],
+            password=uf["uf_password"],
+            host=uf["uf_host"],
+            port=uf["uf_port"],
+        )
+        LOGGER.info("Connected to Universal Forwarder instance.")
+
+        return True
+    except Exception as e:
+        LOGGER.warning(
+            "Could not connect to Universal Forwarder Instance. Will try again. exception=%s", str(e),
+        )
+        return False
 
 def is_responsive_splunk(splunk):
     """

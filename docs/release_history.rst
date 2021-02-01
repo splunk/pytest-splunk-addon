@@ -8,7 +8,18 @@ Release History
 
 The best way to track the development of pytest-splunk-addon is through `the GitHub Repo <https://github.com/splunk/pytest-splunk-addon/>`_.
 
-1.4.0
+1.5.0
+"""""""""""""""""""""""""
+    **Changes:**
+ 
+    * Added support for ingestion of data via pytest-splunk-addon with a user-defined index ``index = <index_name>``.
+
+    **Known Issues:**
+
+    * Event ingestion through SC4S via UDP port
+    * Fields for modular regular expressions are not extracted in the plugin.
+
+1.4.0 (2021-01-05)
 """"""""""""""""""""""""""
     **Changes:**
  
@@ -20,7 +31,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
     * Fields for modular regular expressions are not extracted in the plugin.
 
 
-1.3.15
+1.3.15 (2020-12-16)
 """"""""""""""""""""""""""
     **Changes:**
  
