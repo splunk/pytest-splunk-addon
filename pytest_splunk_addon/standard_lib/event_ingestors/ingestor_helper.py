@@ -51,10 +51,8 @@ class IngestorHelper(object):
         ingestor_dict = dict()
         for event in tokenized_events:
             input_type = event.metadata.get("input_type")
-            if input_type in ["modinput", "windows_input", "syslog_tcp", "syslog_udp"]:
+            if input_type in ["modinput", "windows_input", "syslog_tcp", "syslog_udp", "uf_file_monitor"]:
                 event.event = event.event.encode("utf-8").decode()
-            elif input_type in ["uf_file_monitor"]:
-                pass
             else:
                 event.event = event.event.encode("utf-8")
             if input_type in ingestor_dict:
