@@ -12,7 +12,7 @@ The best way to track the development of pytest-splunk-addon is through `the Git
 """""""""""""""""""""""""
     **Changes:**
  
-    * Added support for ingestion of data via pytest-splunk-addon with a user-defined index ``index = <index_name>``.
+    * Added support for file monitoring  which uses universal forwarder to monitor files and ingest data.
 
     **Known Issues:**
 
