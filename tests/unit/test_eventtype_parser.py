@@ -3,10 +3,14 @@ from pytest_splunk_addon.standard_lib.addon_parser.eventtype_parser import (
     EventTypeParser,
 )
 
-
-@pytest.mark.parametrize(
+pytest_args = [
     "parser",
     [{"tested_class": EventTypeParser, "func_name": "eventtypes_conf"}],
+]
+
+
+@pytest.mark.parametrize(
+    *pytest_args,
     indirect=True,
 )
 def test_eventtypes_can_be_parsed_and_extracted(parser):
@@ -16,8 +20,7 @@ def test_eventtypes_can_be_parsed_and_extracted(parser):
 
 
 @pytest.mark.parametrize(
-    "parser",
-    [{"tested_class": EventTypeParser, "func_name": "eventtypes_conf"}],
+    *pytest_args,
     indirect=True,
 )
 def test_eventtypes_can_be_parsed_and_returned(parser):
@@ -31,8 +34,7 @@ def test_eventtypes_can_be_parsed_and_returned(parser):
 
 
 @pytest.mark.parametrize(
-    "parser",
-    [{"tested_class": EventTypeParser, "func_name": "eventtypes_conf"}],
+    *pytest_args,
     indirect=True,
 )
 def test_get_eventtypes_calls_app_get_config(parser):
@@ -42,8 +44,7 @@ def test_get_eventtypes_calls_app_get_config(parser):
 
 
 @pytest.mark.parametrize(
-    "parser",
-    [{"tested_class": EventTypeParser, "func_name": "eventtypes_conf"}],
+    *pytest_args,
     indirect=True,
 )
 def test_no_eventtype_config_file(parser):
