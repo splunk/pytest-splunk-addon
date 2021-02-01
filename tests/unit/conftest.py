@@ -1,12 +1,9 @@
 import pytest
 from unittest.mock import Mock
-from pytest_splunk_addon.standard_lib.addon_parser.eventtype_parser import (
-    EventTypeParser,
-)
 
 
 @pytest.fixture()
-def parser():
+def parser(request):
     class FakeConfigurationFile:
         def __init__(self):
             self.headers = []
@@ -23,7 +20,9 @@ def parser():
             self.errors = []
 
     FakeApp = Mock()
-    FakeApp.eventtypes = FakeConfigurationFile()
-    FakeApp.eventtypes_conf.return_value = FakeConfigurationFile()
+    attrs = {
+        "{}.return_value".format(request.param["func_name"]): FakeConfigurationFile()
+    }
+    FakeApp.configure_mock(**attrs)
 
-    return EventTypeParser("fake_path", FakeApp)
+    return request.param["tested_class"]("fake_path", FakeApp)
