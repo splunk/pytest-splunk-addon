@@ -128,6 +128,7 @@ class SampleStanza(object):
                 "modinput", 
                 "windows_input",
                 "file_monitor",
+                "uf_file_monitor",
                 "scripted_input",
                 "syslog_tcp",
                 "syslog_udp",
@@ -206,6 +207,7 @@ class SampleStanza(object):
                         )
             elif self.input_type in [
                 "file_monitor",
+                "uf_file_monitor",
                 "scripted_input",
                 "syslog_tcp",
                 "syslog_udp",
