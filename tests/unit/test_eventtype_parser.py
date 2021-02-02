@@ -6,19 +6,15 @@ from pytest_splunk_addon.standard_lib.addon_parser.eventtype_parser import (
 
 output_to_build = {
     "fiction_is_splunkd": {"search": "index=_internal sourcetype=splunkd"},
-    "fiction_for_tags_positive": {
-        "search": "sourcetype=splunkd",
-    },
-    "fiction_is_splunkd-%host%": {
-        "search": "index=_internal sourcetype=splunkd",
-    },
+    "fiction_for_tags_positive": {"search": "sourcetype=splunkd"},
+    "fiction_is_splunkd-%host%": {"search": "index=_internal sourcetype=splunkd"},
 }
 
 
 def test_eventtypes_can_be_parsed_and_extracted(parser_instance):
     assert hasattr(
         parser_instance.eventtypes, "sects"
-    ), "eventypes can not be called or does have sects attribute"
+    ), "eventypes can not be called or does not have sects attribute"
 
 
 def test_eventtypes_can_be_parsed_and_returned(parsed_output, parser_instance):

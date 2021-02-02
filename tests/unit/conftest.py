@@ -18,7 +18,6 @@ def parser():
             )
         }
         FakeApp.configure_mock(**attrs)
-
         return parser_class("fake_path", FakeApp)
 
     return create_parser
@@ -30,7 +29,7 @@ def build_parsed_output():
         """
         builds expected parser output from provided dict
         :param output_elements: dictionary with {stanza: {option: value, ...}, ...}
-        :return: parsed_output:
+        :return: parsed_output
         """
         parsed_output = {}
         for stanza, stanza_value in output_elements.items():

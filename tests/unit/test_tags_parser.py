@@ -20,7 +20,7 @@ output_to_build = {
 def test_tags_can_be_parsed_and_extracted(parser_instance):
     assert hasattr(
         parser_instance.tags, "sects"
-    ), "tags can not be called or does have sects attribute"
+    ), "tags can not be called or does not have sects attribute"
 
 
 def test_tags_can_be_parsed_and_returned(parsed_output, parser_instance):
