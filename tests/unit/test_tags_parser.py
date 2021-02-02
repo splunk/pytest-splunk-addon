@@ -54,7 +54,7 @@ def test_no_tags_config_file(parser_instance):
     assert output == [], "tags created when no config file exists"
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def parsed_output(build_parsed_output):
     return build_parsed_output(output_to_build)
 

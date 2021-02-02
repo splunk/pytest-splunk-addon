@@ -41,7 +41,7 @@ def test_no_eventtype_config_file(parser_instance):
     assert output == [], "eventtypes created when no config file exists"
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def parsed_output(build_parsed_output):
     return build_parsed_output(output_to_build)
 

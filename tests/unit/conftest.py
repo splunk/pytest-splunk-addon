@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import Mock
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def parser():
     def create_parser(parser_class, func_to_be_mocked, parsed_output):
         class FakeConfigurationFile:
@@ -24,11 +24,11 @@ def parser():
     return create_parser
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def build_parsed_output():
     def parsed_output(output_elements):
         """
-        builds expected parser output from provided
+        builds expected parser output from provided dict
         :param output_elements: dictionary with {stanza: {option: value, ...}, ...}
         :return: parsed_output:
         """
