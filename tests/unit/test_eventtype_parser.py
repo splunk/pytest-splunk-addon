@@ -3,9 +3,28 @@ from pytest_splunk_addon.standard_lib.addon_parser.eventtype_parser import (
     EventTypeParser,
 )
 
+
+parsed_output = {
+    "fake_splunkd": {
+        "name": "fake_splunkd",
+        "options": "index=_internal sourcetype=splunkd",
+    },
+    "fake_for_tags_positive": {
+        "name": "fake_for_tags_positive",
+        "options": "sourcetype=splunkd",
+    },
+}
+
+
 pytest_args = [
     "parser",
-    [{"tested_class": EventTypeParser, "func_name": "eventtypes_conf"}],
+    [
+        {
+            "tested_class": EventTypeParser,
+            "func_name": "eventtypes_conf",
+            "parsed_output": parsed_output,
+        }
+    ],
 ]
 
 
