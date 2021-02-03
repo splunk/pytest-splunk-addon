@@ -1,5 +1,8 @@
 import pytest
 from collections import namedtuple
+from pytest_splunk_addon.standard_lib.addon_parser.eventtype_parser import (
+    EventTypeParser,
+)
 
 
 @pytest.fixture
