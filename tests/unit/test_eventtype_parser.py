@@ -12,9 +12,11 @@ output_to_build = {
 
 
 def test_eventtypes_can_be_parsed_and_extracted(parser_instance):
-    assert hasattr(
-        parser_instance.eventtypes, "sects"
-    ), "eventypes can not be called or does not have sects attribute"
+    assert list(parser_instance.eventtypes.sects.keys()) == [
+        "fiction_is_splunkd",
+        "fiction_for_tags_positive",
+        "fiction_is_splunkd-%host%",
+    ], "eventypes can not be called or does not have sects attribute"
 
 
 def test_eventtypes_can_be_parsed_and_returned(parsed_output, parser_instance):

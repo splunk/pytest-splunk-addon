@@ -18,24 +18,35 @@ output_to_build = {
 
 
 def test_tags_can_be_parsed_and_extracted(parser_instance):
-    assert hasattr(
-        parser_instance.tags, "sects"
-    ), "tags can not be called or does not have sects attribute"
+    assert list(parser_instance.tags.sects.keys()) == [
+        "eventtype=fiction_for_tags_positive",
+        "source=%2Fopt%2Fsplunk%2Fvar%2Flog%2Fsplunk%2Fsplunkd.log",
+    ], "tags can not be called or does not have sects attribute"
 
 
-def test_tags_can_be_parsed_and_returned(parsed_output, parser_instance):
-    expected_outputs = []
-    for stanza, section in parsed_output.items():
-        stanza = stanza.replace("=", '="')
-        stanza = unquote('{}"'.format(stanza))
-        for item, value in section.options.items():
-            expected_outputs.append(
-                {
-                    "stanza": stanza,
-                    "tag": value.name,
-                    "enabled": True if value.value == "enabled" else False,
-                }
-            )
+def test_tags_can_be_parsed_and_returned(parser_instance):
+    expected_outputs = [
+        {
+            "stanza": 'eventtype="fiction_for_tags_positive"',
+            "tag": "tags_positive_event",
+            "enabled": True,
+        },
+        {
+            "stanza": 'eventtype="fiction_for_tags_positive"',
+            "tag": "tags_disabled_event",
+            "enabled": False,
+        },
+        {
+            "stanza": 'source="/opt/splunk/var/log/splunk/splunkd.log"',
+            "tag": "tags_positive_event",
+            "enabled": True,
+        },
+        {
+            "stanza": 'source="/opt/splunk/var/log/splunk/splunkd.log"',
+            "tag": "tags_disabled_event",
+            "enabled": False,
+        },
+    ]
     for i, event in enumerate(parser_instance.get_tags()):
         assert event == expected_outputs[i], "expeceted event {} not found".format(
             expected_outputs[i]
