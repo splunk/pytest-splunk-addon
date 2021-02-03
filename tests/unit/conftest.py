@@ -11,6 +11,7 @@ def fake_app(mocker):
         fa = mocker.Mock()
         fa.eventtypes = cf
         fa.eventtypes_conf.return_value = cf
+        fa.props_conf.return_value = cf
         return fa
 
     return func
