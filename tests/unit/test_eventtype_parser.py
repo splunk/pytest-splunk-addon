@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch, PropertyMock
 from pytest_splunk_addon.standard_lib.addon_parser.eventtype_parser import (
     EventTypeParser,
 )
@@ -35,8 +36,19 @@ def test_get_eventtypes_calls_app_get_config(parser_instance):
 
 def test_no_eventtype_config_file(parser_instance):
     parser_instance.app.eventtypes_conf.side_effect = OSError
-    output = [eventtype for eventtype in parser_instance.get_eventtypes() if eventtype]
-    assert output == [], "eventtypes created when no config file exists"
+    assert (
+        parser_instance.eventtypes is None
+    ), "eventtypes created when no config file exists"
+
+
+def test_nothing_returned_when_no_tags_config_file(parser):
+    with patch.object(
+        EventTypeParser, "eventtypes", new_callable=PropertyMock
+    ) as eventtypes_mock:
+        eventtypes_mock.return_value = None
+        parser_instance = parser(EventTypeParser, "eventtypes_conf", {})
+        output = [tag for tag in parser_instance.get_eventtypes() if tag]
+        assert output == [], "eventtypes returned when no config file exists"
 
 
 @pytest.fixture(scope="module")

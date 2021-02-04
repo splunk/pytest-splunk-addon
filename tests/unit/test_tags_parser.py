@@ -1,7 +1,7 @@
 import pytest
+from unittest.mock import patch, PropertyMock
 from pytest_splunk_addon.standard_lib.addon_parser.tags_parser import (
     TagsParser,
-    unquote,
 )
 
 
@@ -61,8 +61,15 @@ def test_get_tags_calls_app_get_config(parser_instance):
 
 def test_no_tags_config_file(parser_instance):
     parser_instance.app.get_config.side_effect = OSError
-    output = [tag for tag in parser_instance.get_tags() if tag]
-    assert output == [], "tags created when no config file exists"
+    assert parser_instance.tags is None, "tags created when no config file exists"
+
+
+def test_nothing_returned_when_no_tags_config_file(parser):
+    with patch.object(TagsParser, "tags", new_callable=PropertyMock) as tags_mock:
+        tags_mock.return_value = None
+        parser_instance = parser(TagsParser, "get_config", {})
+        output = [tag for tag in parser_instance.get_tags() if tag]
+        assert output == [], "tags returned when no config file exists"
 
 
 @pytest.fixture(scope="module")
