@@ -2,6 +2,27 @@ from collections import namedtuple
 import pytest
 from unittest.mock import MagicMock, call
 
+# helpers variables to make test input/outup easier to change
+FIELD = "field"
+FIELDS = f"{FIELD}s"
+FIELD1 = f"{FIELD}1"
+FIELD2 = f"{FIELD}2"
+FIELD3 = f"{FIELD}3"
+FIELD4 = f"{FIELD}4"
+FIELD5 = f"{FIELD}5"
+FIELD6 = f"{FIELD}6"
+FIELD7 = f"{FIELD}7"
+FIELD8 = f"{FIELD}8"
+NAME = "Name"
+OUTPUTNEW = "OUTPUTNEW"
+OUTPUT = "OUTPUT"
+INPUT_FIELDS = "input_fields"
+OUTPUT_FIELDS = "output_fields"
+STANZA = "stanza"
+LOOKUP_STANZA = f"lookup_{STANZA}"
+STANZA_TYPE = f"{STANZA}_type"
+CLASSNAME = "classname"
+
 PropsProperty = namedtuple("PropsProperty", ["name", "value"])
 
 
@@ -124,59 +145,59 @@ def test_get_props_fields(default_props_parser, get_props_stanza_results):
     gps.return_value = get_props_stanza_results
     default_props_parser.get_props_stanzas = gps
     gpm = MagicMock()
-    gpm.return_value = lambda x: ("field1", "field2")
+    gpm.return_value = lambda x: (FIELD1, FIELD2)
     default_props_parser.get_props_method = gpm
     grf = MagicMock()
-    grf.return_value = [("transform_string", ("field3", "field4"))]
+    grf.return_value = [("transform_string", (FIELD3, FIELD4))]
     default_props_parser.get_report_fields = grf
     assert list(default_props_parser.get_props_fields()) == [
         {
-            "stanza": "snow:incident",
-            "stanza_type": "sourcetype",
-            "classname": "REPORT::transform_string",
-            "fields": ["field3", "field4"],
+            STANZA: "snow:incident",
+            STANZA_TYPE: "sourcetype",
+            CLASSNAME: "REPORT::transform_string",
+            FIELDS: [FIELD3, FIELD4],
         },
         {
-            "stanza": "snow:incident",
-            "stanza_type": "sourcetype",
-            "classname": "NON_report",
-            "fields": ["field1", "field2"],
+            STANZA: "snow:incident",
+            STANZA_TYPE: "sourcetype",
+            CLASSNAME: "NON_report",
+            FIELDS: [FIELD1, FIELD2],
         },
         {
-            "stanza": "*ta_snow_setup.log*1",
-            "stanza_type": "source",
-            "classname": "REPORT::transform_string",
-            "fields": ["field3", "field4"],
+            STANZA: "*ta_snow_setup.log*1",
+            STANZA_TYPE: "source",
+            CLASSNAME: "REPORT::transform_string",
+            FIELDS: [FIELD3, FIELD4],
         },
         {
-            "stanza": "*ta_snow_setup.log*1",
-            "stanza_type": "source",
-            "classname": "NON_report",
-            "fields": ["field1", "field2"],
+            STANZA: "*ta_snow_setup.log*1",
+            STANZA_TYPE: "source",
+            CLASSNAME: "NON_report",
+            FIELDS: [FIELD1, FIELD2],
         },
         {
-            "stanza": "*ta_snow_setup.log*2",
-            "stanza_type": "source",
-            "classname": "REPORT::transform_string",
-            "fields": ["field3", "field4"],
+            STANZA: "*ta_snow_setup.log*2",
+            STANZA_TYPE: "source",
+            CLASSNAME: "REPORT::transform_string",
+            FIELDS: [FIELD3, FIELD4],
         },
         {
-            "stanza": "*ta_snow_setup.log*2",
-            "stanza_type": "source",
-            "classname": "NON_report",
-            "fields": ["field1", "field2"],
+            STANZA: "*ta_snow_setup.log*2",
+            STANZA_TYPE: "source",
+            CLASSNAME: "NON_report",
+            FIELDS: [FIELD1, FIELD2],
         },
         {
-            "stanza": "*ta_snow_ticket.log*",
-            "stanza_type": "source",
-            "classname": "REPORT::transform_string",
-            "fields": ["field3", "field4"],
+            STANZA: "*ta_snow_ticket.log*",
+            STANZA_TYPE: "source",
+            CLASSNAME: "REPORT::transform_string",
+            FIELDS: [FIELD3, FIELD4],
         },
         {
-            "stanza": "*ta_snow_ticket.log*",
-            "stanza_type": "source",
-            "classname": "NON_report",
-            "fields": ["field1", "field2"],
+            STANZA: "*ta_snow_ticket.log*",
+            STANZA_TYPE: "source",
+            CLASSNAME: "NON_report",
+            FIELDS: [FIELD1, FIELD2],
         },
     ]
 
@@ -238,53 +259,53 @@ def test_get_list_of_sources(default_props_parser, src, expected):
 
 
 def test_get_sourcetype_assignments(default_props_parser, field_mock):
-    pp = PropsProperty("Name", "Value")
+    pp = PropsProperty(NAME, "Value")
     assert len(list(default_props_parser.get_sourcetype_assignments(pp))) == 1
     field_mock.assert_called_once()
-    field_mock.assert_called_with({"name": "Name", "expected_values": ["Value"]})
+    field_mock.assert_called_with({"name": NAME, "expected_values": ["Value"]})
 
 
 @pytest.mark.parametrize(
     "lookup_str, expected",
     [
         (
-            "field1 field2 OUTPUTNEW field3 field4 as field5",
+            f"{FIELD1} {FIELD2} {OUTPUTNEW} {FIELD3} {FIELD4} as {FIELD5}",
             {
-                "input_fields": ["field2"],
-                "output_fields": ["field3", "field5"],
-                "lookup_stanza": "field1",
+                INPUT_FIELDS: [FIELD2],
+                OUTPUT_FIELDS: [FIELD3, FIELD5],
+                LOOKUP_STANZA: FIELD1,
             },
         ),
         (
-            "field1 field2 field3 field4 as field5",
+            f"{FIELD1} {FIELD2} {FIELD3} {FIELD4} as {FIELD5}",
             {
-                "input_fields": ["field2", "field3", "field5"],
-                "output_fields": [],
-                "lookup_stanza": "field1",
+                INPUT_FIELDS: [FIELD2, FIELD3, FIELD5],
+                OUTPUT_FIELDS: [],
+                LOOKUP_STANZA: FIELD1,
             },
         ),
         (
-            "field1 field2 OUTPUT field3 field4 as field5",
+            f"{FIELD1} {FIELD2} {OUTPUT} {FIELD3} {FIELD4} as {FIELD5}",
             {
-                "input_fields": ["field2"],
-                "output_fields": ["field3", "field5"],
-                "lookup_stanza": "field1",
+                INPUT_FIELDS: [FIELD2],
+                OUTPUT_FIELDS: [FIELD3, FIELD5],
+                LOOKUP_STANZA: FIELD1,
             },
         ),
         (
-            "field1 field2 OUTPUTNEW field3 field4 as field5 field6 as field7",
+            f"{FIELD1} {FIELD2} {OUTPUTNEW} {FIELD3} {FIELD4} as {FIELD5} {FIELD6} as {FIELD7}",
             {
-                "input_fields": ["field2"],
-                "output_fields": ["field3", "field5", "field7"],
-                "lookup_stanza": "field1",
+                INPUT_FIELDS: [FIELD2],
+                OUTPUT_FIELDS: [FIELD3, FIELD5, FIELD7],
+                LOOKUP_STANZA: FIELD1,
             },
         ),
         (
-            "field1 field2 OUTPUTNEW field3 field4 as field5 OUTPUT field6 as field7",
+            f"{FIELD1} {FIELD2} {OUTPUTNEW} {FIELD3} {FIELD4} as {FIELD5} {OUTPUT} {FIELD6} as {FIELD7}",
             {
-                "input_fields": ["field2"],
-                "output_fields": ["field7"],
-                "lookup_stanza": "field1",
+                INPUT_FIELDS: [FIELD2],
+                OUTPUT_FIELDS: [FIELD7],
+                LOOKUP_STANZA: FIELD1,
             },
         ),
     ],
@@ -294,7 +315,7 @@ def test_parse_lookup_str(default_props_parser, lookup_str, expected):
 
 
 def test_get_report_fields(default_props_parser, transforms_parser, mocker):
-    pp = PropsProperty("Name", "Value, YYYYY,  AAAAAA GGGGG UUUUUUU , IIIIII")
+    pp = PropsProperty(NAME, "Value, YYYYY,  AAAAAA GGGGG UUUUUUU , IIIIII")
     transforms_parser.get_transform_fields = MagicMock()
     assert list(default_props_parser.get_report_fields(pp)) == [
         ("Value", mocker.ANY),
@@ -309,31 +330,31 @@ def test_get_report_fields(default_props_parser, transforms_parser, mocker):
 
 def test_get_lookup_fields(default_props_parser):
     pp = PropsProperty(
-        "Name",
-        "field1 field2 OUTPUTNEW field3 field4 as field5 OUTPUT field6 as field7",
+        NAME,
+        f"{FIELD1} {FIELD2} {OUTPUTNEW} {FIELD3} {FIELD4} as {FIELD5} {OUTPUT} {FIELD6} as {FIELD7}",
     )
     default_props_parser.parse_lookup_str = MagicMock(
         return_value={
-            "input_fields": ["field2"],
-            "output_fields": ["field7"],
-            "lookup_stanza": "field1",
+            INPUT_FIELDS: [FIELD2],
+            OUTPUT_FIELDS: [FIELD7],
+            LOOKUP_STANZA: FIELD1,
         }
     )
     fields_list = default_props_parser.get_lookup_fields.__wrapped__(
         default_props_parser, pp
     )
     assert len(fields_list) == 2
-    assert "field2" in fields_list
-    assert "field7" in fields_list
+    assert FIELD2 in fields_list
+    assert FIELD7 in fields_list
 
 
 def test_get_lookup_fields_no_output_fields(default_props_parser):
-    pp = PropsProperty("Name", "field1 field2 field3 field4 as field5")
+    pp = PropsProperty(NAME, f"{FIELD1} {FIELD2} {FIELD3} {FIELD4} as {FIELD5}")
     default_props_parser.parse_lookup_str = MagicMock(
         return_value={
-            "input_fields": ["field2", "field3", "field5"],
-            "output_fields": [],
-            "lookup_stanza": "field1",
+            INPUT_FIELDS: [FIELD2, FIELD3, FIELD5],
+            OUTPUT_FIELDS: [],
+            LOOKUP_STANZA: FIELD1,
         }
     )
     default_props_parser.transforms_parser.get_lookup_csv_fields = MagicMock(
@@ -343,9 +364,9 @@ def test_get_lookup_fields_no_output_fields(default_props_parser):
         default_props_parser, pp
     )
     assert len(fields_list) == 4
-    assert "field2" in fields_list
-    assert "field3" in fields_list
-    assert "field5" in fields_list
+    assert FIELD2 in fields_list
+    assert FIELD3 in fields_list
+    assert FIELD5 in fields_list
     assert "csv_field" in fields_list
 
 
@@ -354,39 +375,39 @@ def test_get_lookup_fields_no_output_fields(default_props_parser):
     [
         (
             PropsProperty(
-                "Name",
-                "field1 as field2 field8",
+                NAME,
+                f"{FIELD1} as {FIELD2} {FIELD8}",
             ),
-            ("field1", "field2"),
+            (FIELD1, FIELD2),
         ),
         (
             PropsProperty(
-                "Name",
-                "field1 AS field2 field8",
+                NAME,
+                f"{FIELD1} AS {FIELD2} {FIELD8}",
             ),
-            ("field1", "field2"),
+            (FIELD1, FIELD2),
         ),
         (
             PropsProperty(
-                "Name",
-                "field1 ASNEW field2 field8 field5 asnew field6",
+                NAME,
+                f"{FIELD1} ASNEW {FIELD2} {FIELD8} {FIELD5} asnew {FIELD6}",
             ),
-            ("field1", "field2", "field5", "field6"),
+            (FIELD1, FIELD2, FIELD5, FIELD6),
         ),
         (
             PropsProperty(
-                "Name",
-                "field1 field2 ASNEW OUTPUTNEW field3 asnew fieldx field4 AS field5 field6 field7 as field8",
+                NAME,
+                f"{FIELD1} {FIELD2} ASNEW {OUTPUTNEW} {FIELD3} asnew fieldx {FIELD4} AS {FIELD5} {FIELD6} {FIELD7} as {FIELD8}",
             ),
             (
-                "field2",
-                "OUTPUTNEW",
-                "field3",
+                FIELD2,
+                OUTPUTNEW,
+                FIELD3,
                 "fieldx",
-                "field4",
-                "field5",
-                "field7",
-                "field8",
+                FIELD4,
+                FIELD5,
+                FIELD7,
+                FIELD8,
             ),
         ),
     ],
@@ -402,7 +423,7 @@ def test_get_fieldalias_fields(default_props_parser, prop, expected):
 @pytest.mark.parametrize(
     "prop, expected",
     [
-        (PropsProperty("key EVAL-val", "EVAL-333 field1"), ["val"]),
+        (PropsProperty("key EVAL-val", f"EVAL-333 {FIELD1}"), ["val"]),
         (PropsProperty("key EVAL-val", "null()"), []),
     ],
 )
@@ -418,13 +439,13 @@ def test_get_eval_fields(default_props_parser, prop, expected):
 @pytest.mark.parametrize(
     "prop, expected",
     [
-        (PropsProperty("Name", "(?P<_KEY_df>the rest"), []),
-        (PropsProperty("Name", "(?<_VAL_df>the rest"), []),
-        (PropsProperty("Name", "(?<to_extract>the rest"), ["to_extract"]),
-        (PropsProperty("Name", "(?P'to_extract'the rest"), ["to_extract"]),
+        (PropsProperty(NAME, "(?P<_KEY_df>the rest"), []),
+        (PropsProperty(NAME, "(?<_VAL_df>the rest"), []),
+        (PropsProperty(NAME, "(?<to_extract>the rest"), ["to_extract"]),
+        (PropsProperty(NAME, "(?P'to_extract'the rest"), ["to_extract"]),
         (
-            PropsProperty("Name", "(?P<to_extract>the rest In field1  "),
-            ["to_extract", "field1"],
+            PropsProperty(NAME, f"(?P<to_extract>the rest In {FIELD1}  "),
+            ["to_extract", FIELD1],
         ),
     ],
 )
