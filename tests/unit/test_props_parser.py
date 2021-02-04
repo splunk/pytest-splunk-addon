@@ -117,6 +117,13 @@ def props_parser_empty_conf(pp, fake_app, conf_file, mocker):
 
 
 @pytest.fixture
+def props_parser_props_conf_erroring(pp, fake_app, conf_file, mocker):
+    fa = fake_app(conf_file([], [], []))
+    fa.props_conf.side_effect = OSError
+    return pp(mocker.ANY, fa)
+
+
+@pytest.fixture
 def get_sects(sect_value):
     def func(sects_keys, sv=None):
         if sv is None:
@@ -138,6 +145,17 @@ def get_props_stanza_results(sect_value):
             sect_value("source::...ta_snow_ticket.log*"),
         ),
     ]
+
+
+def test_props_property(default_props_parser, headers, sects):
+    assert default_props_parser.props.headers == headers
+    assert default_props_parser.props.sects == sects
+    assert default_props_parser.props.errors == []
+
+
+def test_props_property_with_error(props_parser_props_conf_erroring, caplog):
+    assert props_parser_props_conf_erroring.props is None
+    assert caplog.messages == ["Parsing props.conf", "props.conf not found."]
 
 
 def test_get_props_fields(default_props_parser, get_props_stanza_results):
@@ -266,52 +284,93 @@ def test_get_sourcetype_assignments(default_props_parser, field_mock):
 
 
 @pytest.mark.parametrize(
-    "lookup_str, expected",
+    "prop, expected",
     [
+        (PropsProperty(NAME, "(?P<_KEY_df>the rest"), []),
+        (PropsProperty(NAME, "(?<_VAL_df>the rest"), []),
+        (PropsProperty(NAME, "(?<to_extract>the rest"), ["to_extract"]),
+        (PropsProperty(NAME, "(?P'to_extract'the rest"), ["to_extract"]),
         (
-            f"{FIELD1} {FIELD2} {OUTPUTNEW} {FIELD3} {FIELD4} as {FIELD5}",
-            {
-                INPUT_FIELDS: [FIELD2],
-                OUTPUT_FIELDS: [FIELD3, FIELD5],
-                LOOKUP_STANZA: FIELD1,
-            },
-        ),
-        (
-            f"{FIELD1} {FIELD2} {FIELD3} {FIELD4} as {FIELD5}",
-            {
-                INPUT_FIELDS: [FIELD2, FIELD3, FIELD5],
-                OUTPUT_FIELDS: [],
-                LOOKUP_STANZA: FIELD1,
-            },
-        ),
-        (
-            f"{FIELD1} {FIELD2} {OUTPUT} {FIELD3} {FIELD4} as {FIELD5}",
-            {
-                INPUT_FIELDS: [FIELD2],
-                OUTPUT_FIELDS: [FIELD3, FIELD5],
-                LOOKUP_STANZA: FIELD1,
-            },
-        ),
-        (
-            f"{FIELD1} {FIELD2} {OUTPUTNEW} {FIELD3} {FIELD4} as {FIELD5} {FIELD6} as {FIELD7}",
-            {
-                INPUT_FIELDS: [FIELD2],
-                OUTPUT_FIELDS: [FIELD3, FIELD5, FIELD7],
-                LOOKUP_STANZA: FIELD1,
-            },
-        ),
-        (
-            f"{FIELD1} {FIELD2} {OUTPUTNEW} {FIELD3} {FIELD4} as {FIELD5} {OUTPUT} {FIELD6} as {FIELD7}",
-            {
-                INPUT_FIELDS: [FIELD2],
-                OUTPUT_FIELDS: [FIELD7],
-                LOOKUP_STANZA: FIELD1,
-            },
+            PropsProperty(NAME, f"(?P<to_extract>the rest In {FIELD1}  "),
+            ["to_extract", FIELD1],
         ),
     ],
 )
-def test_parse_lookup_str(default_props_parser, lookup_str, expected):
-    default_props_parser.parse_lookup_str(lookup_str)
+def test_get_extract_fields(default_props_parser, prop, expected):
+    assert (
+        list(
+            default_props_parser.get_extract_fields.__wrapped__(
+                default_props_parser, prop
+            )
+        )
+        == expected
+    )
+
+
+@pytest.mark.parametrize(
+    "prop, expected",
+    [
+        (PropsProperty("key EVAL-val", f"EVAL-333 {FIELD1}"), ["val"]),
+        (PropsProperty("key EVAL-val", "null()"), []),
+    ],
+)
+def test_get_eval_fields(default_props_parser, prop, expected):
+    assert (
+        list(
+            default_props_parser.get_eval_fields.__wrapped__(default_props_parser, prop)
+        )
+        == expected
+    )
+
+
+@pytest.mark.parametrize(
+    "prop, expected",
+    [
+        (
+            PropsProperty(
+                NAME,
+                f"{FIELD1} as {FIELD2} {FIELD8}",
+            ),
+            (FIELD1, FIELD2),
+        ),
+        (
+            PropsProperty(
+                NAME,
+                f"{FIELD1} AS {FIELD2} {FIELD8}",
+            ),
+            (FIELD1, FIELD2),
+        ),
+        (
+            PropsProperty(
+                NAME,
+                f"{FIELD1} ASNEW {FIELD2} {FIELD8} {FIELD5} asnew {FIELD6}",
+            ),
+            (FIELD1, FIELD2, FIELD5, FIELD6),
+        ),
+        (
+            PropsProperty(
+                NAME,
+                f"{FIELD1} {FIELD2} ASNEW {OUTPUTNEW} {FIELD3} asnew fieldx {FIELD4} AS {FIELD5} {FIELD6} {FIELD7} as {FIELD8}",
+            ),
+            (
+                FIELD2,
+                OUTPUTNEW,
+                FIELD3,
+                "fieldx",
+                FIELD4,
+                FIELD5,
+                FIELD7,
+                FIELD8,
+            ),
+        ),
+    ],
+)
+def test_get_fieldalias_fields(default_props_parser, prop, expected):
+    fieldaliases = default_props_parser.get_fieldalias_fields.__wrapped__(
+        default_props_parser, prop
+    )
+    assert len(fieldaliases) == len(expected)
+    assert all(field in fieldaliases for field in expected)
 
 
 def test_get_report_fields(default_props_parser, transforms_parser, mocker):
@@ -371,90 +430,49 @@ def test_get_lookup_fields_no_output_fields(default_props_parser):
 
 
 @pytest.mark.parametrize(
-    "prop, expected",
+    "lookup_str, expected",
     [
         (
-            PropsProperty(
-                NAME,
-                f"{FIELD1} as {FIELD2} {FIELD8}",
-            ),
-            (FIELD1, FIELD2),
+            f"{FIELD1} {FIELD2} {OUTPUTNEW} {FIELD3} {FIELD4} as {FIELD5}",
+            {
+                INPUT_FIELDS: [FIELD2],
+                OUTPUT_FIELDS: [FIELD3, FIELD5],
+                LOOKUP_STANZA: FIELD1,
+            },
         ),
         (
-            PropsProperty(
-                NAME,
-                f"{FIELD1} AS {FIELD2} {FIELD8}",
-            ),
-            (FIELD1, FIELD2),
+            f"{FIELD1} {FIELD2} {FIELD3} {FIELD4} as {FIELD5}",
+            {
+                INPUT_FIELDS: [FIELD2, FIELD3, FIELD5],
+                OUTPUT_FIELDS: [],
+                LOOKUP_STANZA: FIELD1,
+            },
         ),
         (
-            PropsProperty(
-                NAME,
-                f"{FIELD1} ASNEW {FIELD2} {FIELD8} {FIELD5} asnew {FIELD6}",
-            ),
-            (FIELD1, FIELD2, FIELD5, FIELD6),
+            f"{FIELD1} {FIELD2} {OUTPUT} {FIELD3} {FIELD4} as {FIELD5}",
+            {
+                INPUT_FIELDS: [FIELD2],
+                OUTPUT_FIELDS: [FIELD3, FIELD5],
+                LOOKUP_STANZA: FIELD1,
+            },
         ),
         (
-            PropsProperty(
-                NAME,
-                f"{FIELD1} {FIELD2} ASNEW {OUTPUTNEW} {FIELD3} asnew fieldx {FIELD4} AS {FIELD5} {FIELD6} {FIELD7} as {FIELD8}",
-            ),
-            (
-                FIELD2,
-                OUTPUTNEW,
-                FIELD3,
-                "fieldx",
-                FIELD4,
-                FIELD5,
-                FIELD7,
-                FIELD8,
-            ),
+            f"{FIELD1} {FIELD2} {OUTPUTNEW} {FIELD3} {FIELD4} as {FIELD5} {FIELD6} as {FIELD7}",
+            {
+                INPUT_FIELDS: [FIELD2],
+                OUTPUT_FIELDS: [FIELD3, FIELD5, FIELD7],
+                LOOKUP_STANZA: FIELD1,
+            },
+        ),
+        (
+            f"{FIELD1} {FIELD2} {OUTPUTNEW} {FIELD3} {FIELD4} as {FIELD5} {OUTPUT} {FIELD6} as {FIELD7}",
+            {
+                INPUT_FIELDS: [FIELD2],
+                OUTPUT_FIELDS: [FIELD7],
+                LOOKUP_STANZA: FIELD1,
+            },
         ),
     ],
 )
-def test_get_fieldalias_fields(default_props_parser, prop, expected):
-    fieldaliases = default_props_parser.get_fieldalias_fields.__wrapped__(
-        default_props_parser, prop
-    )
-    assert len(fieldaliases) == len(expected)
-    assert all(field in fieldaliases for field in expected)
-
-
-@pytest.mark.parametrize(
-    "prop, expected",
-    [
-        (PropsProperty("key EVAL-val", f"EVAL-333 {FIELD1}"), ["val"]),
-        (PropsProperty("key EVAL-val", "null()"), []),
-    ],
-)
-def test_get_eval_fields(default_props_parser, prop, expected):
-    assert (
-        list(
-            default_props_parser.get_eval_fields.__wrapped__(default_props_parser, prop)
-        )
-        == expected
-    )
-
-
-@pytest.mark.parametrize(
-    "prop, expected",
-    [
-        (PropsProperty(NAME, "(?P<_KEY_df>the rest"), []),
-        (PropsProperty(NAME, "(?<_VAL_df>the rest"), []),
-        (PropsProperty(NAME, "(?<to_extract>the rest"), ["to_extract"]),
-        (PropsProperty(NAME, "(?P'to_extract'the rest"), ["to_extract"]),
-        (
-            PropsProperty(NAME, f"(?P<to_extract>the rest In {FIELD1}  "),
-            ["to_extract", FIELD1],
-        ),
-    ],
-)
-def test_get_extract_fields(default_props_parser, prop, expected):
-    assert (
-        list(
-            default_props_parser.get_extract_fields.__wrapped__(
-                default_props_parser, prop
-            )
-        )
-        == expected
-    )
+def test_parse_lookup_str(default_props_parser, lookup_str, expected):
+    default_props_parser.parse_lookup_str(lookup_str)
