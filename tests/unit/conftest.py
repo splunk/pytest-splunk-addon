@@ -1,5 +1,6 @@
 import pytest
 from collections import namedtuple
+from unittest.mock import Mock
 
 
 @pytest.fixture
