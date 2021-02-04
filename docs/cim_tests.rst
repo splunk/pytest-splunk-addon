@@ -118,7 +118,6 @@ In case of test case failure check if:
 
     - The add-on to be tested is installed on the Splunk instance.
     - Data is generated sufficiently for the addon being tested.
-    - Splunk_SA_CIM is installed on the Splunk instance.
     - Splunk licence has not expired.
     - Splunk instance is up and running.
     - Splunk instance's management port is accessible from the test machine.
