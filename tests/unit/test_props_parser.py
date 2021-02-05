@@ -85,20 +85,6 @@ def sects(sect_value):
 
 
 @pytest.fixture
-def conf_file(configuration_file, headers, sects):
-    def func(hs=None, ss=None, es=None):
-        if hs is None:
-            hs = headers
-        if ss is None:
-            ss = sects
-        if es is None:
-            es = []
-        return configuration_file(headers=hs, sects=ss, errors=es)
-
-    return func
-
-
-@pytest.fixture
 def default_props_parser(parser, pp, sects, headers):
     return parser(pp, "props_conf", sects, headers)
 

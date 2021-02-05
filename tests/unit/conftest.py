@@ -4,18 +4,6 @@ from unittest.mock import Mock
 
 
 @pytest.fixture
-def fake_app(mocker):
-    def func(cf):
-        fa = mocker.Mock()
-        fa.eventtypes = cf
-        fa.eventtypes_conf.return_value = cf
-        fa.props_conf.return_value = cf
-        return fa
-
-    return func
-
-
-@pytest.fixture
 def parser(configuration_file):
     def create_parser(parser_class, func_to_be_mocked, parsed_output, headers=None):
         headers = headers if headers else []
