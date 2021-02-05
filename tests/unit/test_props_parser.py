@@ -1,6 +1,7 @@
-from collections import namedtuple
+import importlib
 import pytest
-from unittest.mock import MagicMock, call
+from collections import namedtuple
+from unittest.mock import MagicMock, patch, call
 
 # helpers variables to make test input/outup easier to change
 FIELD = "field"
@@ -26,30 +27,31 @@ CLASSNAME = "classname"
 PropsProperty = namedtuple("PropsProperty", ["name", "value"])
 
 
-@pytest.fixture
-def field_mock(monkeypatch):
-    field = MagicMock()
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.addon_parser.props_parser.Field", field
-    )
-    return field
+@pytest.fixture(scope="session")
+def field_mock():
+    return MagicMock()
 
 
-@pytest.fixture
-def transforms_parser(monkeypatch):
-    tp = MagicMock
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.addon_parser.props_parser.TransformsParser",
-        tp,
-    )
-    return tp
+@pytest.fixture(scope="session")
+def transforms_parser():
+    return MagicMock
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def pp(field_mock, transforms_parser):
-    import pytest_splunk_addon.standard_lib.addon_parser.props_parser as pp
+    with patch(
+        "pytest_splunk_addon.standard_lib.addon_parser.Field", field_mock
+    ), patch(
+        "pytest_splunk_addon.standard_lib.addon_parser.convert_to_fields",
+        lambda x: x,
+    ), patch(
+        "pytest_splunk_addon.standard_lib.addon_parser.TransformsParser",
+        transforms_parser,
+    ):
+        import pytest_splunk_addon.standard_lib.addon_parser.props_parser
 
-    return pp.PropsParser
+        importlib.reload(pytest_splunk_addon.standard_lib.addon_parser.props_parser)
+        return pytest_splunk_addon.standard_lib.addon_parser.props_parser.PropsParser
 
 
 @pytest.fixture
@@ -96,31 +98,21 @@ def conf_file(configuration_file, headers, sects):
     return func
 
 
-@pytest.fixture()
-def props_parser(pp, fake_app, mocker):
-    def func(cf):
-        return pp(mocker.ANY, fake_app(cf))
-
-    return func
+@pytest.fixture
+def default_props_parser(parser, pp, sects, headers):
+    return parser(pp, "props_conf", sects, headers)
 
 
 @pytest.fixture
-def default_props_parser(props_parser, conf_file):
-    return props_parser(conf_file())
+def props_parser_empty_conf(parser, pp):
+    return parser(pp, "props_conf", [])
 
 
 @pytest.fixture
-def props_parser_empty_conf(pp, fake_app, conf_file, mocker):
-    fa = fake_app(conf_file([], [], []))
-    fa.props_conf.return_value = []
-    return pp(mocker.ANY, fa)
-
-
-@pytest.fixture
-def props_parser_props_conf_erroring(pp, fake_app, conf_file, mocker):
-    fa = fake_app(conf_file([], [], []))
-    fa.props_conf.side_effect = OSError
-    return pp(mocker.ANY, fa)
+def props_parser_props_conf_erroring(parser, pp):
+    parser_instance = parser(pp, "props_conf", [])
+    parser_instance.app.props_conf.side_effect = OSError
+    return parser_instance
 
 
 @pytest.fixture
@@ -297,14 +289,7 @@ def test_get_sourcetype_assignments(default_props_parser, field_mock):
     ],
 )
 def test_get_extract_fields(default_props_parser, prop, expected):
-    assert (
-        list(
-            default_props_parser.get_extract_fields.__wrapped__(
-                default_props_parser, prop
-            )
-        )
-        == expected
-    )
+    assert list(default_props_parser.get_extract_fields(prop)) == expected
 
 
 @pytest.mark.parametrize(
@@ -315,12 +300,7 @@ def test_get_extract_fields(default_props_parser, prop, expected):
     ],
 )
 def test_get_eval_fields(default_props_parser, prop, expected):
-    assert (
-        list(
-            default_props_parser.get_eval_fields.__wrapped__(default_props_parser, prop)
-        )
-        == expected
-    )
+    assert list(default_props_parser.get_eval_fields(prop)) == expected
 
 
 @pytest.mark.parametrize(
@@ -366,9 +346,7 @@ def test_get_eval_fields(default_props_parser, prop, expected):
     ],
 )
 def test_get_fieldalias_fields(default_props_parser, prop, expected):
-    fieldaliases = default_props_parser.get_fieldalias_fields.__wrapped__(
-        default_props_parser, prop
-    )
+    fieldaliases = default_props_parser.get_fieldalias_fields(prop)
     assert len(fieldaliases) == len(expected)
     assert all(field in fieldaliases for field in expected)
 
@@ -399,9 +377,7 @@ def test_get_lookup_fields(default_props_parser):
             LOOKUP_STANZA: FIELD1,
         }
     )
-    fields_list = default_props_parser.get_lookup_fields.__wrapped__(
-        default_props_parser, pp
-    )
+    fields_list = default_props_parser.get_lookup_fields(pp)
     assert len(fields_list) == 2
     assert FIELD2 in fields_list
     assert FIELD7 in fields_list
@@ -419,9 +395,7 @@ def test_get_lookup_fields_no_output_fields(default_props_parser):
     default_props_parser.transforms_parser.get_lookup_csv_fields = MagicMock(
         return_value=("csv_field",)
     )
-    fields_list = default_props_parser.get_lookup_fields.__wrapped__(
-        default_props_parser, pp
-    )
+    fields_list = default_props_parser.get_lookup_fields(pp)
     assert len(fields_list) == 4
     assert FIELD2 in fields_list
     assert FIELD3 in fields_list
