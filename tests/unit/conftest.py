@@ -1,26 +1,33 @@
 import pytest
+from collections import namedtuple
 from unittest.mock import Mock
 
 
-@pytest.fixture(scope="session")
-def parser():
-    def create_parser(parser_class, func_to_be_mocked, parsed_output):
-        class FakeConfigurationFile:
-            def __init__(self, sects):
-                self.headers = []
-                self.sects = sects
-                self.errors = []
-
+@pytest.fixture
+def parser(configuration_file):
+    def create_parser(parser_class, func_to_be_mocked, parsed_output, headers=None):
+        headers = headers if headers else []
         FakeApp = Mock()
         attrs = {
-            "{}.return_value".format(func_to_be_mocked): FakeConfigurationFile(
-                parsed_output
+            "{}.return_value".format(func_to_be_mocked): configuration_file(
+                headers=headers, sects=parsed_output, errors=[]
             )
         }
         FakeApp.configure_mock(**attrs)
         return parser_class("fake_path", FakeApp)
 
     return create_parser
+
+
+@pytest.fixture
+def configuration_file():
+    def func(headers, sects, errors):
+        ConfigurationFile = namedtuple(
+            "ConfigurationFile", ["headers", "sects", "errors"]
+        )
+        return ConfigurationFile(headers, sects, errors)
+
+    return func
 
 
 @pytest.fixture(scope="session")
