@@ -12,6 +12,7 @@ TYPE = "type"
 TYPE1 = "Type1"
 MULTI_VALUE = "multi_value"
 MULTI_VALUE1 = "Multi_value1"
+TEST_VALUE = "Test_values"
 EXPECTED_VALUES = "expected_values"
 EXPECTED_VALUES1 = "Expected_values1"
 NEGATIVE_VALUES = "negative_values"
@@ -51,6 +52,7 @@ def default_field(field_json):
 @pytest.fixture
 def field_mock(monkeypatch):
     field_mock = MagicMock()
+    field_mock.return_value = TEST_VALUE
     monkeypatch.setattr(
         "pytest_splunk_addon.standard_lib.addon_parser.fields.Field", field_mock
     )
@@ -96,13 +98,14 @@ def test_get_type(default_field):
 
 
 def test_parse_fields(default_field, field_mock):
-    list(default_field.parse_fields([{"one": 1}, {"two": 2}], three=3, four=4))
+    result = list(default_field.parse_fields([{"one": 1}, {"two": 2}], three=3, four=4))
     field_mock.assert_has_calls(
         [
             call({"three": 3, "four": 4, "one": 1}),
             call({"three": 3, "four": 4, "two": 2}),
         ]
     )
+    assert result == 2 * [TEST_VALUE]
 
 
 def test_get_properties(default_field):
@@ -111,7 +114,8 @@ def test_get_properties(default_field):
 
 def test_convert_to_fields(field_mock):
     func = lambda: ["field1", "field2", "field3"]
-    list(convert_to_fields(func)())
+    result = list(convert_to_fields(func)())
     field_mock.assert_has_calls(
         [call({"name": "field1"}), call({"name": "field2"}), call({"name": "field3"})]
     )
+    assert result == 3 * [TEST_VALUE]
