@@ -39,37 +39,23 @@ def test_addonparser_init(addonparser):
     assert ap.eventtype_parser == EVENTTYPE_RETURN_VALUE
 
 
-def test_get_tags(addonparser, monkeypatch):
-    get_tags_mock = MagicMock()
-    get_tags_mock.get_tags.return_value = TEST_VALUE
+@pytest.mark.parametrize(
+    "function, obj_to_mock",
+    [
+        ("get_tags", "tags_parser"),
+        ("get_props_fields", "props_parser"),
+        ("get_eventtypes", "eventtype_parser"),
+    ],
+)
+def test_get_methods(addonparser, monkeypatch, function, obj_to_mock):
+    attr_mock = MagicMock()
+    gt = MagicMock()
+    gt.return_value = TEST_VALUE
+    setattr(attr_mock, function, gt)
     with patch(
-        f"{ADDON_PARSER_PATH}.AddonParser.tags_parser",
+        f"{ADDON_PARSER_PATH}.AddonParser.{obj_to_mock}",
         new_callable=PropertyMock,
-        return_value=get_tags_mock,
+        return_value=attr_mock,
     ):
         ap = addonparser(EXAMPLE_PATH)
-        assert ap.get_tags() == TEST_VALUE
-
-
-def test_get_props_fields(addonparser, monkeypatch):
-    get_props_fields_mock = MagicMock()
-    get_props_fields_mock.get_props_fields.return_value = TEST_VALUE
-    with patch(
-        f"{ADDON_PARSER_PATH}.AddonParser.props_parser",
-        new_callable=PropertyMock,
-        return_value=get_props_fields_mock,
-    ):
-        ap = addonparser(EXAMPLE_PATH)
-        assert ap.get_props_fields() == TEST_VALUE
-
-
-def test_get_eventtypes(addonparser, monkeypatch):
-    get_eventtypes_mock = MagicMock()
-    get_eventtypes_mock.get_eventtypes.return_value = TEST_VALUE
-    with patch(
-        f"{ADDON_PARSER_PATH}.AddonParser.eventtype_parser",
-        new_callable=PropertyMock,
-        return_value=get_eventtypes_mock,
-    ):
-        ap = addonparser(EXAMPLE_PATH)
-        assert ap.get_eventtypes() == TEST_VALUE
+        assert getattr(ap, function)() == TEST_VALUE
