@@ -57,6 +57,7 @@ def test_get_tags_calls_app_get_config(parser_instance):
     for _ in parser_instance.get_tags():
         pass
     parser_instance.app.get_config.assert_called_once()
+    parser_instance.app.get_config.assert_called_with("tags.conf")
 
 
 def test_no_tags_config_file(parser_instance):
