@@ -91,7 +91,7 @@ def default_props_parser(parser, pp, sects, headers):
 
 @pytest.fixture
 def props_parser_empty_conf(parser, pp):
-    return parser(pp, "props_conf", [])
+    return parser(pp, "props_conf", [], props_conf=[])
 
 
 @pytest.fixture
