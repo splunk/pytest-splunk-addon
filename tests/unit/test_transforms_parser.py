@@ -66,6 +66,36 @@ csv_fieldnames = [
 csv_reader = namedtuple("DictReader", ["fieldnames"])
 
 
+@pytest.fixture(scope="module")
+def parsed_output(build_parsed_output):
+    return build_parsed_output(output_to_build)
+
+
+@pytest.fixture()
+def parser_instance(parsed_output, parser):
+    return parser(TransformsParser, "transforms_conf", parsed_output)
+
+
+@pytest.fixture()
+def parser_with_empty_transforms_mocked(parser):
+    with patch.object(
+        TransformsParser, "transforms", new_callable=PropertyMock, return_value=None
+    ):
+        yield parser(TransformsParser, "transforms_conf", {})
+
+
+@pytest.fixture()
+def parser_with_mocked_transforms(configuration_file, parser, parsed_output):
+    conf_file = configuration_file(headers=[], sects=parsed_output, errors=[])
+    with patch.object(
+        TransformsParser,
+        "transforms",
+        new_callable=PropertyMock,
+        return_value=conf_file,
+    ):
+        yield parser(TransformsParser, "transforms_conf", {})
+
+
 def test_transforms_can_be_parsed_and_extracted(parser_instance):
     assert list(parser_instance.transforms.sects.keys()) == [
         "ta_fiction_lookup",
@@ -95,9 +125,11 @@ def test_transforms_calls_app_transforms_conf(parser_instance):
 def test_transforms_fields_can_be_parsed_and_returned(
     parsed_output, parser_instance, stanza, expected_outputs
 ):
-    for i, event in enumerate(parser_instance.get_transform_fields(stanza)):
-        assert event == expected_outputs[i], "expeceted event {} not found".format(
-            expected_outputs[i]
+    for event, expected_output in zip(
+        parser_instance.get_transform_fields(stanza), expected_outputs
+    ):
+        assert event == expected_output, "expeceted event {} not found".format(
+            expected_output
         )
 
 
@@ -160,33 +192,3 @@ def test_lookup_files_does_not_exist(parser_with_mocked_transforms, caplog):
     assert caplog.messages == [
         "Could not read the lookup file, skipping test. error=no such file"
     ]
-
-
-@pytest.fixture(scope="module")
-def parsed_output(build_parsed_output):
-    return build_parsed_output(output_to_build)
-
-
-@pytest.fixture()
-def parser_instance(parsed_output, parser):
-    return parser(TransformsParser, "transforms_conf", parsed_output)
-
-
-@pytest.fixture()
-def parser_with_empty_transforms_mocked(parser):
-    with patch.object(
-        TransformsParser, "transforms", new_callable=PropertyMock, return_value=None
-    ):
-        yield parser(TransformsParser, "transforms_conf", {})
-
-
-@pytest.fixture()
-def parser_with_mocked_transforms(configuration_file, parser, parsed_output):
-    conf_file = configuration_file(headers=[], sects=parsed_output, errors=[])
-    with patch.object(
-        TransformsParser,
-        "transforms",
-        new_callable=PropertyMock,
-        return_value=conf_file,
-    ):
-        yield parser(TransformsParser, "transforms_conf", {})
