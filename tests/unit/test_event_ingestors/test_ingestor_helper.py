@@ -222,7 +222,7 @@ def test_events_can_be_ingested(get_ingestor_mock, sample_mock, tokenized_events
     )
 
 
-def test_requirement_tests_can_be_performed(get_ingestor_mock, sample_mock, requirement_mock, requirement_events):
+def test_requirement_tests_can_be_run(get_ingestor_mock, sample_mock, requirement_mock, requirement_events):
     event_ingestors.ingestor_helper.IngestorHelper.ingest_events(
         ingest_meta_data={},
         addon_path="fake_path",
