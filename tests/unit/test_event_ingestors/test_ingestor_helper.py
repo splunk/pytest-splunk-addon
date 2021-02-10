@@ -12,10 +12,7 @@ HEC_METRIC_EVENT_INGESTOR_RETURN_VALUE = "hec_metric_event_ingestor_return_value
 SC4S_EVENT_INGESTOR_RETURN_VALUE = "sc4s_event_ingestor_return_value"
 
 
-SampleEvent = recordtype(
-    "SampleEvent",
-    ["event", "host_count", "key_fields", "metadata", "sample_name", "time_values"],
-)
+SampleEvent = recordtype("SampleEvent", ["event", "metadata", "sample_name"],)
 
 
 @pytest.fixture()
@@ -66,14 +63,7 @@ def get_ingestor_mock():
 def tokenized_events():
     return [
         SampleEvent(
-            event="2021-02-09 11:50:19 host=test-host-file_monitor_host_prefix.sample-2",
-            host_count=0,
-            key_fields={
-                "host": [
-                    "host-file_monitor_host_prefix.sample-2",
-                    "host-file_monitor_host_prefix.sample-4",
-                ]
-            },
+            event="host=test-host-file_monitor_host_prefix.sample-2",
             metadata={
                 "interval": "60",
                 "earliest": "-60s",
@@ -90,12 +80,9 @@ def tokenized_events():
                 "expected_event_count": 1,
             },
             sample_name="file_monitor_host_prefix.sample",
-            time_values=[1612871418.999996, 1612871406.999996],
         ),
         SampleEvent(
-            event="test_modinput_1 host=modinput_host_event_time_plugin.samples_1 static_value_2=sample_value_2 static_value_3=sample_value_3",
-            host_count=0,
-            key_fields={"host": ["modinput_host_event_time_plugin.samples_1"]},
+            event="test_modinput_1 host=modinput_host_event_time_plugin.samples_1",
             metadata={
                 "sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin",
                 "host_type": "event",
@@ -108,12 +95,9 @@ def tokenized_events():
                 "expected_event_count": 2,
             },
             sample_name="modinput_host_event_time_plugin.samples",
-            time_values=[],
         ),
         SampleEvent(
-            event="test_modinput_2 host=modinput_host_event_time_plugin.samples_2 static_value_2=sample_value_2 static_value_3=sample_value_3",
-            host_count=0,
-            key_fields={"host": ["modinput_host_event_time_plugin.samples_2"]},
+            event="test_modinput_2 host=modinput_host_event_time_plugin.samples_2",
             metadata={
                 "sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin",
                 "host_type": "event",
@@ -126,7 +110,28 @@ def tokenized_events():
                 "expected_event_count": 2,
             },
             sample_name="modinput_host_event_time_plugin.samples",
-            time_values=[],
+        ),
+    ]
+
+
+@pytest.fixture()
+def requirement_events():
+    return [
+        SampleEvent(
+            event="requirement event",
+            metadata={
+                "source": "requirement source",
+                "sourcetype": "requirement source type",
+                "input_type": "file_monitor",
+                "host_type": "event",
+                "host_prefix": "test-",
+                "sourcetype_to_search": "test:indextime:requirement",
+                "timestamp_type": "event",
+                "sample_count": "2",
+                "host": "requirement_host_prefix.sample",
+                "expected_event_count": 1,
+            },
+            sample_name="requirement_test",
         ),
     ]
 
@@ -144,6 +149,21 @@ def sample_mock(monkeypatch, tokenized_events):
         sample_mock,
     )
     return sample_mock
+
+
+@pytest.fixture()
+def requirement_mock(monkeypatch):
+    req_mock = MagicMock()
+    req_mock.return_value = req_mock
+    req_mock.get_events.return_value = {
+        "conf_name": "psa-data-gen",
+        "tokenized_events": tokenized_events,
+    }
+    monkeypatch.setattr(
+        "pytest_splunk_addon.standard_lib.event_ingestors.ingestor_helper.RequirementEventIngestor",
+        req_mock,
+    )
+    return req_mock
 
 
 @pytest.mark.parametrize(
@@ -200,3 +220,18 @@ def test_events_can_be_ingested(get_ingestor_mock, sample_mock, tokenized_events
     get_ingestor_mock.ingest.has_calls(
         [tokenized_events[0], 20], [[tokenized_events[1], tokenized_events[2]], 20]
     )
+
+
+def test_requirement_tests_can_be_performed(get_ingestor_mock, sample_mock, requirement_mock, requirement_events):
+    event_ingestors.ingestor_helper.IngestorHelper.ingest_events(
+        ingest_meta_data={},
+        addon_path="fake_path",
+        config_path="tests/unit/event_ingestors",
+        thread_count=20,
+        store_events=False,
+        run_requirement_test=True,
+    )
+    requirement_mock.assert_called_once_with('fake_path')
+    requirement_mock.get_events.assert_called_once
+    assert get_ingestor_mock.ingest.call_count == 3
+    get_ingestor_mock.ingest.has_calls([requirement_events, 20])
