@@ -42,7 +42,7 @@ There are three ways to execute the tests:
         pip install poetry
         poetry install
 
-    Create a Dockerfile-splunk file
+    Create a Dockerfile.splunk file
 
     .. dropdown:: Example Dockerfile
 
@@ -56,6 +56,19 @@ There are three ways to execute the tests:
             RUN echo Splunk VERSION=$SPLUNK_VERSION
             COPY deps/apps /opt/splunk/etc/apps/
             COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
+
+    Create a Dockerfile.uf file
+
+    .. dropdown:: Example Dockerfile
+
+        .. code:: Dockerfile
+
+            ARG SPLUNK_VERSION=latest
+            FROM splunk/universalforwarder:$SPLUNK_VERSION
+            ARG SPLUNK_VERSION=latest
+            ARG SPLUNK_APP_ID=TA_UNKNOWN
+            ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
+            COPY $SPLUNK_APP_PACKAGE /opt/splunkforwarder/etc/apps/$SPLUNK_APP_ID
 
     Create docker-compose.yml
 

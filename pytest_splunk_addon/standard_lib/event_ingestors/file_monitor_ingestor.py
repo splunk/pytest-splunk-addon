@@ -89,6 +89,9 @@ class FileMonitorEventIngestor(EventIngestor):
             event (SampleEvent): Instance containing event info
         """
         file_path = self.get_file_path(event)
+        host_segment = len(file_path.split(os.sep)) - 2 
+        # If file path is /home/uf_files/host_name/sample_name
+        # Then split will return ['', home, 'uf_files', 'host_name', 'sample_name']
         sourcetype = event.metadata.get("sourcetype")
         if not sourcetype:
             sourcetype = event.metadata.get("sourcetype_to_search", "pytest_splunk_addon")
@@ -100,15 +103,13 @@ class FileMonitorEventIngestor(EventIngestor):
             "crc-salt": "<SOURCE>"
         }
         if event.metadata.get("host_type") in ("plugin"):
-            stanza["host"] = event.metadata.get("host")
-        if event.metadata.get("source"):
-            stanza["rename-source"] = event.metadata.get("source")
+            stanza["host_segment"] = host_segment
         LOGGER.info("Making rest call to create stanza in inputs.conf file with following endpoint : {}".format(self.inputs_endpoint))
         LOGGER.debug("Creating following stanza in inputs.conf : {}".format(stanza))
         try:
             response = requests.post(self.inputs_endpoint, stanza, auth=(self.uf_username, self.uf_password), verify=False)
             if response.status_code not in (200, 201):
-                LOGGER.warning("Unable to add stanza in inputs.conf\nStatus code: {} \nReason: {} \ntext:{}".format(response.status_code, response.reason, response.text))
+                LOGGER.warning("Unable to add stanza in inputs.conf for Path : {} \nStatus code: {} \nReason: {} \ntext:{}".format(file_path, response.status_code, response.reason, response.text))
         except ConnectionError as e:
             LOGGER.error("Unable to connect to Universal forwarder, {}".format(e))
 
@@ -119,4 +120,7 @@ class FileMonitorEventIngestor(EventIngestor):
         Args:
             event (SampleEvent): Instance containing event info
         """
-        return "{}/{}/{}".format(os.getcwd(), MONITOR_DIR, event.metadata.get("host"))
+        host_dir = os.path.join(os.getcwd(), MONITOR_DIR, event.metadata.get("host"))
+        if not os.path.exists(host_dir):
+            os.mkdir(host_dir)
+        return os.path.join(host_dir, event.metadata.get("source"))
