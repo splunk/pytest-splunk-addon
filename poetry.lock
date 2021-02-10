@@ -623,7 +623,7 @@ optional = false
 python-versions = "*"
 
 [package.dependencies]
-requests = "">=2.3,<3"
+requests = ">=2.3,<3"
 six = "*"
 
 [[package]]
