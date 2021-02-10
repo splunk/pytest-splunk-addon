@@ -350,7 +350,7 @@ def ignore_internal_errors(request):
 
 
 @pytest.fixture(scope="session")
-def splunk(request, file_system_prerequisite):
+def splunk(request):
     """
     This fixture based on the passed option will provide a real fixture
     for external or docker Splunk
@@ -426,16 +426,10 @@ def uf(request):
         uf = request.getfixturevalue("uf_docker")
     else:
         raise Exception
-    uf["uf_username"] = request.config.getoption("splunk_uf_user")
-    uf["uf_password"] = request.config.getoption("splunk_uf_password")
-    for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
-        if is_responsive_uf(uf):
-            break
-        sleep(1)
     yield uf
 
 @pytest.fixture(scope="session")
-def uf_docker(docker_services, tmp_path_factory, worker_id):
+def uf_docker(docker_services, tmp_path_factory, worker_id, request):
     """
     Provides IP of the uf server and management port based on pytest-args(splunk_type)
     """
@@ -450,7 +444,13 @@ def uf_docker(docker_services, tmp_path_factory, worker_id):
     uf_info = {
         "uf_host": docker_services.docker_ip,
         "uf_port": docker_services.port_for("uf", 8089),
+        "uf_username": request.config.getoption("splunk_uf_user"),
+        "uf_password": request.config.getoption("splunk_uf_password"),
     }
+    for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
+        if is_responsive_uf(uf_info):
+            break
+        sleep(1)
     return uf_info
 
 @pytest.fixture(scope="session")
@@ -461,6 +461,8 @@ def uf_external(request):
     uf_info = {
         "uf_host": request.config.getoption("splunk_uf_host"),
         "uf_port": request.config.getoption("splunk_uf_port"),
+        "uf_username": request.config.getoption("splunk_uf_user"),
+        "uf_password": request.config.getoption("splunk_uf_password"),
     }
     return uf_info
 
@@ -650,6 +652,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
         "PYTEST_XDIST_WORKER" not in os.environ
         or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
     ):
+        file_system_prerequisite()
         addon_path = request.config.getoption("splunk_app")
         config_path = request.config.getoption("splunk_data_generator")
 
@@ -696,7 +699,6 @@ def splunk_events_cleanup(request, splunk_search_util):
     else:
         LOGGER.info("Events cleanup was disabled.")
 
-@pytest.fixture(scope="session")
 def file_system_prerequisite():
     """
     File system prerequisite before running tests.
@@ -705,7 +707,7 @@ def file_system_prerequisite():
     UF_FILE_MONTOR_DIR = "uf_files"
     monitor_dir = os.path.join(os.getcwd(), UF_FILE_MONTOR_DIR)
     if os.path.exists(monitor_dir):
-        shutil.rmtree(UF_FILE_MONTOR_DIR, ignore_errors=True)
+        shutil.rmtree(monitor_dir, ignore_errors=True)
     os.mkdir(monitor_dir)
 
 def is_responsive_uf(uf):
