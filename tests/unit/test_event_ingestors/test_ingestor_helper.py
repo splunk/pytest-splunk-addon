@@ -49,7 +49,6 @@ def get_ingestor_mock():
     with patch.object(
         event_ingestors.ingestor_helper.IngestorHelper,
         "get_event_ingestor",
-        # new=MagicMock(),
     ) as ingestor_mock:
         ingestor_mock.return_value = ingestor_mock
         ingest = MagicMock()
@@ -125,7 +124,9 @@ def test_non_implemented_ingestor_can_not_be_obtained(ingestor_helper, ingest_me
     )
 
 
-def test_events_can_be_ingested(get_ingestor_mock, sample_mock, tokenized_events):
+def test_events_can_be_ingested(
+    get_ingestor_mock, sample_mock, file_monitor_events, modinput_events
+):
     event_ingestors.ingestor_helper.IngestorHelper.ingest_events(
         ingest_meta_data={},
         addon_path="fake_path",
@@ -140,11 +141,13 @@ def test_events_can_be_ingested(get_ingestor_mock, sample_mock, tokenized_events
     )
     assert get_ingestor_mock.ingest.call_count == 2
     get_ingestor_mock.ingest.assert_has_calls(
-        [call([tokenized_events[0], tokenized_events[1]], 20), call([tokenized_events[2], tokenized_events[3]], 20)]
+        [call(file_monitor_events, 20), call(modinput_events, 20)]
     )
 
 
-def test_requirement_tests_can_be_run(get_ingestor_mock, sample_mock, requirement_mock, requirement_events):
+def test_requirement_tests_can_be_run(
+    get_ingestor_mock, sample_mock, requirement_mock, requirement_events
+):
     event_ingestors.ingestor_helper.IngestorHelper.ingest_events(
         ingest_meta_data={},
         addon_path="fake_path",
@@ -153,7 +156,7 @@ def test_requirement_tests_can_be_run(get_ingestor_mock, sample_mock, requiremen
         store_events=False,
         run_requirement_test=True,
     )
-    requirement_mock.assert_called_once_with('fake_path')
+    requirement_mock.assert_called_once_with("fake_path")
     requirement_mock.get_events.assert_called_once()
     assert get_ingestor_mock.ingest.call_count == 3
     get_ingestor_mock.ingest.has_calls([requirement_events, 20])
