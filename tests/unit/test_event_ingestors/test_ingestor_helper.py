@@ -76,10 +76,7 @@ def sample_mock(monkeypatch, tokenized_events):
 def requirement_mock(monkeypatch, requirement_events):
     req_mock = MagicMock()
     req_mock.return_value = req_mock
-    req_mock.get_events.return_value = {
-        "conf_name": "psa-data-gen",
-        "tokenized_events": requirement_events,
-    }
+    req_mock.get_events.return_value = requirement_events
     monkeypatch.setattr(
         "pytest_splunk_addon.standard_lib.event_ingestors.ingestor_helper.RequirementEventIngestor",
         req_mock,
@@ -159,4 +156,4 @@ def test_requirement_tests_can_be_run(
     requirement_mock.assert_called_once_with("fake_path")
     requirement_mock.get_events.assert_called_once()
     assert get_ingestor_mock.ingest.call_count == 3
-    get_ingestor_mock.ingest.has_calls([requirement_events, 20])
+    get_ingestor_mock.ingest.assert_has_calls([call(requirement_events, 20)])
