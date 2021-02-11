@@ -4,7 +4,7 @@ from .test_hec_raw_ingestor import HEC_URI
 
 SampleEvent = recordtype(
     "SampleEvent",
-    ["event", "metadata", "sample_name"],
+    ["event", "metadata", "sample_name", ("key_fields", None)],
 )
 
 
@@ -13,6 +13,7 @@ def modinput_events():
     return [
         SampleEvent(
             event="test_modinput_1 host=modinput_host_event_time_plugin.samples_1",
+            key_fields={'host': ['modinput_host_event_time_plugin.samples_1']},
             metadata={
                 "sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin",
                 "host_type": "event",
@@ -28,6 +29,7 @@ def modinput_events():
         ),
         SampleEvent(
             event="test_modinput_2 host=modinput_host_event_time_plugin.samples_2",
+            key_fields={'host': ['modinput_host_event_time_plugin.samples_2']},
             metadata={
                 "sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin",
                 "host_type": "event",
@@ -43,6 +45,27 @@ def modinput_events():
         ),
     ]
 
+
+@pytest.fixture()
+def modinput_posts_sent():
+    return [
+        (
+            f"POST {HEC_URI}/event",
+            '[{'
+            '"sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin", '
+            '"source": "pytest-splunk-addon:modinput", '
+            '"event": "test_modinput_1 host=modinput_host_event_time_plugin.samples_1", '
+            '"index": "main", '
+            '"host": "modinput_host_event_time_plugin.samples_1"'
+            '}, {'
+            '"sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin", '
+            '"source": "pytest-splunk-addon:modinput", '
+            '"event": "test_modinput_2 host=modinput_host_event_time_plugin.samples_2", '
+            '"index": "main", '
+            '"host": "modinput_host_event_time_plugin.samples_2"'
+            '}]'
+        )
+    ]
 
 @pytest.fixture()
 def file_monitor_events():
