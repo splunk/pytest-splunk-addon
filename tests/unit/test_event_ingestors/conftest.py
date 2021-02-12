@@ -1,6 +1,6 @@
 import pytest
 from recordtype import recordtype
-from .test_hec_raw_ingestor import HEC_URI
+from .test_hec_event_metric_raw_ingestor import HEC_URI
 
 SampleEvent = recordtype(
     "SampleEvent",
