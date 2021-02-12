@@ -64,11 +64,13 @@ def test_exception_raised_when_sc4s_socket_can_not_be_opened(
     socket_mock.connect.side_effect = Exception
     pytest.raises(Exception, sc4s_ingestor.ingest, *(sc4s_events, 20))
     assert "Failed to ingest event with SC4S 91 times" in caplog.messages
+    assert socket_mock.connect.call_count == socket_mock.close.call_count == 91
 
 
 def test_exception_raised_when_sc4s_event_sent(
     socket_mock, sleep_mock, sc4s_ingestor, sc4s_events, caplog
 ):
-    socket_mock.sendall.side_effect = MagicMock(side_effect=Exception("Send data fail"))
+    socket_mock.sendall.side_effect = Exception("Send data fail")
     sc4s_ingestor.ingest(sc4s_events, 20)
     assert "Send data fail" in caplog.messages
+    assert socket_mock.connect.call_count == socket_mock.close.call_count == 2
