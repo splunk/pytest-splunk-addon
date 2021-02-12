@@ -184,17 +184,6 @@ def metric_events():
             "host": "file_monitor_host_prefix.sample",
             "sample_name": "fake_metric_host_prefix.sample_1",
         },
-        # SampleEvent(
-        #     event="fake metric event sample 2 src=127.0.0.1 dest=10.0.0.2",
-        #     metadata={
-        #         "source": "pytest-splunk-addon:metric",
-        #         "sourcetype": "test:metric:file_monitor_host_prefix",
-        #         "input_type": "metric",
-        #         "host_type": "event",
-        #         "host": "file_monitor_host_prefix.sample",
-        #     },
-        #     sample_name="fake_metric_host_prefix.sample_1",
-        # ),
     ]
 
 
@@ -243,5 +232,43 @@ def requirement_events():
                 "expected_event_count": 1,
             },
             sample_name="requirement_test",
+        ),
+    ]
+
+
+@pytest.fixture()
+def sc4s_events():
+    return [
+        SampleEvent(
+            event='sc4s-host-plugin-time-sample-31 EPOEvents - EventFwd [agentInfo@3401 tenantId="1" bpsId="1" tenantGUID="50486da4-b851-47eb-9e27-a3337f14522f',
+            metadata={
+                "timestamp_type": "event",
+                "sourcetype": "mcafee:epo:syslog",
+                "host_type": "plugin",
+                "input_type": "syslog_tcp",
+                "source": "mcafee_agent",
+                "sourcetype_to_search": "mcafee:epo:syslog",
+                "sample_count": "1",
+                "host": "sc4s-host-plugin-time-sample-31",
+                "id": "sc4s_host_plugin_time.sample_31",
+                "expected_event_count": 2,
+            },
+            sample_name="sc4s_host_plugin_time.sample",
+        ),
+        SampleEvent(
+            event='sc4s-host-plugin-time-sample-32 EPOEvents - EventFwd [agentInfo@3401 tenantId="1" bpsId="1" tenantGUID="523efa00-cb66-4682-8ad7-c8b800adabd1"',
+            metadata={
+                "timestamp_type": "event",
+                "sourcetype": "mcafee:epo:syslog",
+                "host_type": "plugin",
+                "input_type": "syslog_tcp",
+                "source": "mcafee_agent",
+                "sourcetype_to_search": "mcafee:epo:syslog",
+                "sample_count": "1",
+                "host": "sc4s-host-plugin-time-sample-32",
+                "id": "sc4s-host-plugin-time-sample-32",
+                "expected_event_count": 2,
+            },
+            sample_name="sc4s_host_plugin_time.sample",
         ),
     ]
