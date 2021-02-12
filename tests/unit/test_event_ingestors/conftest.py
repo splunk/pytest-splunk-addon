@@ -4,7 +4,7 @@ from .test_hec_raw_ingestor import HEC_URI
 
 SampleEvent = recordtype(
     "SampleEvent",
-    ["event", "metadata", "sample_name", ("key_fields", None)],
+    ["event", "metadata", "sample_name", ("key_fields", None), ("time_values", None)],
 )
 
 
@@ -13,7 +13,7 @@ def modinput_events():
     return [
         SampleEvent(
             event="test_modinput_1 host=modinput_host_event_time_plugin.samples_1",
-            key_fields={'host': ['modinput_host_event_time_plugin.samples_1']},
+            key_fields={"host": ["modinput_host_event_time_plugin.samples_1"]},
             metadata={
                 "sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin",
                 "host_type": "event",
@@ -29,7 +29,7 @@ def modinput_events():
         ),
         SampleEvent(
             event="test_modinput_2 host=modinput_host_event_time_plugin.samples_2",
-            key_fields={'host': ['modinput_host_event_time_plugin.samples_2']},
+            key_fields={"host": ["modinput_host_event_time_plugin.samples_2"]},
             metadata={
                 "sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin",
                 "host_type": "event",
@@ -43,6 +43,19 @@ def modinput_events():
             },
             sample_name="modinput_host_event_time_plugin.samples",
         ),
+        SampleEvent(
+            event="fake event nothing happened",
+            key_fields={},
+            metadata={
+                "host_type": "plugin",
+                "input_type": "modinput",
+                "index": "fake_index",
+                "timestamp_type": "event",
+                "host": "fake host",
+            },
+            sample_name="fake.samples",
+            time_values=[1234.5678, 1234.5679],
+        ),
     ]
 
 
@@ -51,21 +64,29 @@ def modinput_posts_sent():
     return [
         (
             f"POST {HEC_URI}/event",
-            '[{'
+            "[{"
             '"sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin", '
             '"source": "pytest-splunk-addon:modinput", '
             '"event": "test_modinput_1 host=modinput_host_event_time_plugin.samples_1", '
             '"index": "main", '
             '"host": "modinput_host_event_time_plugin.samples_1"'
-            '}, {'
+            "}, {"
             '"sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin", '
             '"source": "pytest-splunk-addon:modinput", '
             '"event": "test_modinput_2 host=modinput_host_event_time_plugin.samples_2", '
             '"index": "main", '
             '"host": "modinput_host_event_time_plugin.samples_2"'
-            '}]'
+            "}, {"
+            '"sourcetype": "pytest_splunk_addon", '
+            '"source": "pytest_splunk_addon:hec:event", '
+            '"event": "fake event nothing happened", '
+            '"index": "fake_index", '
+            '"host": "fake host", '
+            '"time": 1234.5678'
+            "}]",
         )
     ]
+
 
 @pytest.fixture()
 def file_monitor_events():
@@ -109,7 +130,7 @@ def file_monitor_events():
             sample_name="failing.samples",
         ),
         SampleEvent(
-            event="fake event nothing happend src=0.0.0.0 src_port=5050 dest=10.0.0.1 dest_port=6060",
+            event="fake event nothing happened src=0.0.0.0 src_port=5050 dest=10.0.0.1 dest_port=6060",
             metadata={
                 "input_type": "file_monitor",
                 "index": "fake_index",
@@ -145,8 +166,54 @@ def file_monitor_posts_sent():
             "sourcetype=pytest_splunk_addon&"
             "source=pytest_splunk_addon:hec:raw&"
             "index=fake_index",
-            "fake event nothing happend src=0.0.0.0 src_port=5050 dest=10.0.0.1 dest_port=6060",
+            "fake event nothing happened src=0.0.0.0 src_port=5050 dest=10.0.0.1 dest_port=6060",
         ),
+    ]
+
+
+@pytest.fixture()
+def metric_events():
+    return [
+        {
+            "event": "fake metric event sample 1 src=0.0.0.0 dest=10.0.0.1",
+            "source": "pytest-splunk-addon:metric",
+            "sourcetype": "test:metric:file_monitor_host_prefix",
+            "input_type": "metric",
+            "host_type": "event",
+            "index": "fake_index",
+            "host": "file_monitor_host_prefix.sample",
+            "sample_name": "fake_metric_host_prefix.sample_1",
+        },
+        # SampleEvent(
+        #     event="fake metric event sample 2 src=127.0.0.1 dest=10.0.0.2",
+        #     metadata={
+        #         "source": "pytest-splunk-addon:metric",
+        #         "sourcetype": "test:metric:file_monitor_host_prefix",
+        #         "input_type": "metric",
+        #         "host_type": "event",
+        #         "host": "file_monitor_host_prefix.sample",
+        #     },
+        #     sample_name="fake_metric_host_prefix.sample_1",
+        # ),
+    ]
+
+
+@pytest.fixture()
+def metric_posts_sent():
+    return [
+        (
+            f"POST {HEC_URI}",
+            "[{"
+            '"event": "fake metric event sample 1 src=0.0.0.0 dest=10.0.0.1", '
+            '"source": "pytest-splunk-addon:metric", '
+            '"sourcetype": "test:metric:file_monitor_host_prefix", '
+            '"input_type": "metric", '
+            '"host_type": "event", '
+            '"index": "fake_index", '
+            '"host": "file_monitor_host_prefix.sample", '
+            '"sample_name": "fake_metric_host_prefix.sample_1"'
+            "}]",
+        )
     ]
 
 
