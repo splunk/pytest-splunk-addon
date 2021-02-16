@@ -301,6 +301,6 @@ class SampleEvent(object):
 
             return event, metadata, key_fields
 
-        except IndexError as error:
+        except KeyError as error:
             LOGGER.error(f"Unexpected data found. Error: {error}")
-            raise Exception(error)
+            raise error
