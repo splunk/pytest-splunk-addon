@@ -97,7 +97,8 @@ def test_exception_raised_when_event_ingestion_returns_error(
 ):
     requests_mock.post(url, text="Not Found", status_code=404)
     ingestor = ingestors[ingestor_name]
-    pytest.raises(Exception, ingestor["ingestor"].ingest, *(ingestor["events"], 1))
+    with pytest.raises(Exception, match="An error occurred while data ingestion"):
+        ingestor["ingestor"].ingest(ingestor["events"], 1)
     if check_logger:
         assert (
             f"\n\nAn error occurred while data ingestion.\nStatus code: 404 \nReason: None \ntext:Not Found"
