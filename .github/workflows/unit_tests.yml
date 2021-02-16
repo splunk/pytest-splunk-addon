@@ -32,7 +32,8 @@ jobs:
           eval "$(pyenv init -)"
           source ~/.poetry/env
           poetry install
-          poetry run pytest -v --cov=pytest_splunk_addon --cov-report=html tests/unit
+          poetry run coverage run --source=. -m pytest -v tests/unit
+          poetry run coverage html
       - name: Archive test coverage results
         uses: actions/upload-artifact@v2
         with:
