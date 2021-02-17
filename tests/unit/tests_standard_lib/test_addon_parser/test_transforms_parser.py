@@ -1,12 +1,10 @@
 import importlib
-import sys
 import pytest
 from unittest.mock import patch, mock_open, PropertyMock
 from collections import namedtuple
 
-with patch.object(
-    sys.modules["pytest_splunk_addon.standard_lib.addon_parser"],
-    "convert_to_fields",
+with patch(
+    "pytest_splunk_addon.standard_lib.addon_parser.convert_to_fields",
     lambda x: x,
 ):
     import pytest_splunk_addon.standard_lib.addon_parser.transforms_parser
