@@ -298,19 +298,23 @@ class FieldTestTemplates(object):
         latest_time = splunk_searchtime_fields_savedsearches["dispatch.latest_time"]
 
         temp_search_query = search_query.split('|')
-        temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(earliest_time,latest_time)
-        search_query = "|".join(temp_search_query)
-        
-        search = (f"search {search_query}")
+        if temp_search_query[0].strip() is "":
+            temp_search_query[1] += " earliest_time = {0} latest_time = {1} ".format(earliest_time,latest_time)
+            search_query = "|".join(temp_search_query)
+            search_query = (f"{search_query}")
+        else:
+            temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(earliest_time,latest_time)
+            search_query = "|".join(temp_search_query)
+            search_query = (f"search {search_query}")
 
-        self.logger.info(f"Search: {search}")
+        self.logger.info(f"Search: {search_query}")
 
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+            search_query, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
         )
 
-        record_property("search", search)
+        record_property("search", search_query)
         assert result, (
-            f"No result found for the search.\nsearch={search}\n"
+            f"No result found for the search.\nsearch={search_query}\n"
             f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
         )
