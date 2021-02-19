@@ -18,3 +18,9 @@ SC4S Event Ingestor
 .. automodule:: standard_lib.event_ingestors.sc4s_event_ingestor
    :members:
    :show-inheritance:
+
+File Monitor Ingestor
+~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: standard_lib.event_ingestors.file_monitor_ingestor
+   :members:
+   :show-inheritance:

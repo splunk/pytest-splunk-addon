@@ -34,3 +34,9 @@ TransformsParser
 .. automodule:: standard_lib.addon_parser.transforms_parser
    :members:
    :show-inheritance:
+
+SavedsearchesParser
+~~~~~~~~~~~~~~~~~~~
+.. automodule:: standard_lib.addon_parser.savedsearches_parser
+   :members:
+   :show-inheritance:

@@ -7,7 +7,7 @@ Overview
 The CIM tests are written with a purpose of testing the compatibility of the add-on with CIM Data Models (Based on Splunk_SA_CIM 4.15.0).
 An add-on is said to be CIM compatible if it fulfils the following two criteria:
 
-1. The add-on extracts all the fields with valid values, which are marked as required by the `Data Model Definitions <https://github.com/splunk/pytest-splunk-addon/tree/master/pytest_splunk_addon/standard_lib/data_models>`_.
+1. The add-on extracts all the fields with valid values, which are marked as required by the `Data Model Definitions <https://github.com/splunk/pytest-splunk-addon/tree/main/pytest_splunk_addon/standard_lib/data_models>`_.
 2. Any event for the add-on is not mapped with more than one data model.
 
 ---------------------
@@ -34,7 +34,7 @@ Test Scenarios
     **Workflow:**
 
     * Plugin parses tags.conf to get a list of tags for each eventtype.
-    * Plugin parses all the `supported datamodels <https://github.com/splunk/pytest-splunk-addon/tree/master/pytest_splunk_addon/standard_lib/data_models>`_.
+    * Plugin parses all the `supported datamodels <https://github.com/splunk/pytest-splunk-addon/tree/main/pytest_splunk_addon/standard_lib/data_models>`_.
     * Then it gets a list of the datasets mapped with an eventtype.
     * Generates test case for each eventtype.
 
@@ -80,11 +80,11 @@ Test Scenarios
 
     **Workflow:**
 
-    * Plugin collects the list of not_allowed_in_search fields from mapped datasets and `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_.
+    * Plugin collects the list of not_allowed_in_search fields from mapped datasets and `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_.
     * Using search query the test case verifies if not_allowed_in_search fields are populated in search or not.
 
     .. note::
-      `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_ contains fields which are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
+      `CommonFields.json <https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json>`_ contains fields which are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
 
 **4. Testcase for all not_allowed_in_props fields**
 
@@ -118,7 +118,6 @@ In case of test case failure check if:
 
     - The add-on to be tested is installed on the Splunk instance.
     - Data is generated sufficiently for the addon being tested.
-    - Splunk_SA_CIM is installed on the Splunk instance.
     - Splunk licence has not expired.
     - Splunk instance is up and running.
     - Splunk instance's management port is accessible from the test machine.
