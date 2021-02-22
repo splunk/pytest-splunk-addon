@@ -43,7 +43,7 @@ def test_get_query_from_values():
     )
 
 
-def test_field_test_adapter_instatitation(field_mock, field_instance):
+def test_field_test_adapter_instantiation(field_mock, field_instance):
     fta = FieldTestAdapater(field_instance)
     assert fta.field_key_1 == 1
     assert fta.field_key_2 == "2"
