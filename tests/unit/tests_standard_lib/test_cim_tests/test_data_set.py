@@ -8,7 +8,7 @@ field = namedtuple("Field", ["name"])
 
 @pytest.fixture()
 def mocked_dataset_constructor():
-    from pytest_splunk_addon.standard_lib.cim_tests.data_set import DataSet, Field
+    from pytest_splunk_addon.standard_lib.cim_tests.data_set import Field
 
     with patch.object(
         DataSet, "load_dataset", return_value=("child_dataset1", "child_dataset2")
