@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import patch, MagicMock, call
+from unittest.mock import patch, MagicMock
 from collections import namedtuple
 from pytest_splunk_addon.standard_lib.cim_tests.field_test_helper import FieldTestHelper
 
