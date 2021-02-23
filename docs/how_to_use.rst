@@ -42,7 +42,7 @@ There are three ways to execute the tests:
         pip install poetry
         poetry install
 
-    Create a Dockerfile-splunk file
+    Create a Dockerfile.splunk file
 
     .. dropdown:: Example Dockerfile
 
@@ -56,6 +56,19 @@ There are three ways to execute the tests:
             RUN echo Splunk VERSION=$SPLUNK_VERSION
             COPY deps/apps /opt/splunk/etc/apps/
             COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
+
+    Create a Dockerfile.uf file
+
+    .. dropdown:: Example Dockerfile
+
+        .. code:: Dockerfile
+
+            ARG SPLUNK_VERSION=latest
+            FROM splunk/universalforwarder:$SPLUNK_VERSION
+            ARG SPLUNK_VERSION=latest
+            ARG SPLUNK_APP_ID=TA_UNKNOWN
+            ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
+            COPY $SPLUNK_APP_PACKAGE /opt/splunkforwarder/etc/apps/$SPLUNK_APP_ID
 
     Create docker-compose.yml
 
@@ -279,9 +292,9 @@ Extending pytest-splunk-addon
 
     How can this be achieved :
 
-        - Make json representation of the data models, which satisfies this `DataModelSchema <https://github.com/splunk/pytest-splunk-addon/blob/master/pytest_splunk_addon/standard_lib/cim_tests/DatamodelSchema.json>`_.
+        - Make json representation of the data models, which satisfies this `DataModelSchema <https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/standard_lib/cim_tests/DatamodelSchema.json>`_.
         - Provide the path to the directory having all the data models by adding ``--splunk_dm_path path_to_dir`` to the pytest command
-        - The test cases will now be generated for the data models provided to the plugin and not for the `default data models <https://github.com/splunk/pytest-splunk-addon/tree/master/pytest_splunk_addon/standard_lib/data_models>`_.
+        - The test cases will now be generated for the data models provided to the plugin and not for the `default data models <https://github.com/splunk/pytest-splunk-addon/tree/main/pytest_splunk_addon/standard_lib/data_models>`_.
 
 .. raw:: html
 

@@ -128,6 +128,7 @@ class SampleStanza(object):
                 "modinput", 
                 "windows_input",
                 "file_monitor",
+                "uf_file_monitor",
                 "scripted_input",
                 "syslog_tcp",
                 "syslog_udp",
@@ -159,6 +160,8 @@ class SampleStanza(object):
             metadata.update(count="100")
         if metadata.get("index") is not None and metadata.get("input_type") in ["syslog_tcp", "tcp", "udp"]:
             raise_warning("For input_type '{}', there should be no index set".format(metadata.get("input_type")))
+        if metadata.get("input_type") == "uf_file_monitor":
+            metadata["host"] = metadata.get("host").replace("_", "-").replace(".", "-")
         return metadata
 
     def get_eventmetadata(self):
@@ -206,6 +209,7 @@ class SampleStanza(object):
                         )
             elif self.input_type in [
                 "file_monitor",
+                "uf_file_monitor",
                 "scripted_input",
                 "syslog_tcp",
                 "syslog_udp",
