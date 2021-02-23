@@ -74,7 +74,10 @@
           "A",
           "MX",
           "NS",
-          "PTR"
+          "PTR",
+          "AAAA",
+          "CNAME",
+          "SRV"
         ],
         "comment": "The field may contain DNS OpCodes or Resource Record Type codes. For details, see the Domain Name System Parameters on the Internet Assigned Numbers Authority (IANA) web site. If a value is not set, the DNS.record_type field is referenced."
       },
@@ -86,7 +89,10 @@
           "DNAME",
           "MX",
           "NS",
-          "PTR"
+          "PTR",
+          "AAAA",
+          "CNAME",
+          "TXT"
         ],
         "comment": "The DNS resource record type. For details, see the List of DNS record types on Wikipedia."
       },
@@ -110,7 +116,9 @@
           "BADTIME",
           "BADMODE",
           "BADNAME",
-          "BADALG"
+          "BADALG",
+          "NXDomain",
+          "NoError"
         ],
         "comment": "The return code for the response. For details, see the Domain Name System Parameters on the Internet Assigned Numbers Authority (IANA) web site."
       },
