@@ -1,13 +1,13 @@
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, call
 from collections import namedtuple
 from pytest_splunk_addon.standard_lib.cim_tests.field_test_helper import FieldTestHelper
 
 
 field = namedtuple(
     "Field",
-    ["name", "condition", "get_stats_query", "gen_validity_query"],
-    defaults=("", "", None, None),
+    ["name", "condition", "get_stats_query", "gen_validity_query", "get_properties"],
+    defaults=("", "", None, None, None),
 )
 
 
@@ -30,6 +30,15 @@ def field_test_adapter_mock(monkeypatch):
 def mocked_field_test_helper():
     with patch.object(FieldTestHelper, "__init__", return_value=None):
         return FieldTestHelper()
+
+
+@pytest.fixture()
+def search_util_mock():
+    su = MagicMock()
+    su.getFieldValuesList.return_value = (
+        f"SEARCH_UTIL_RETURN_VALUE_{i}" for i in range(3)
+    )
+    return su
 
 
 @pytest.mark.parametrize(
@@ -66,13 +75,47 @@ def test_field_test_helper_instantiation(
     assert fth.retries == expected_retries
 
 
+def test_test_field(mocked_field_test_helper, search_util_mock):
+    record_property = MagicMock()
+    mocked_field_test_helper.search = (
+        "| search (index=* OR index=_internal)\n| search tag=tag_splunkd_fiction_one"
+    )
+    mocked_field_test_helper.search_util = search_util_mock
+    mocked_field_test_helper.interval = 10
+    mocked_field_test_helper.retries = 3
+    with patch.object(
+        FieldTestHelper, "_make_search_query"
+    ) as make_search_mock, patch.object(
+        FieldTestHelper, "_parse_result", return_value={"RESULT": "OK"}
+    ) as parse_result_mock:
+        assert mocked_field_test_helper.test_field("base_search", record_property) == {
+            "RESULT": "OK"
+        }
+        make_search_mock.assert_called_once_with("base_search")
+        parse_result_mock.assert_called_once_with(
+            [
+                "SEARCH_UTIL_RETURN_VALUE_0",
+                "SEARCH_UTIL_RETURN_VALUE_1",
+                "SEARCH_UTIL_RETURN_VALUE_2",
+            ]
+        )
+        record_property.assert_called_once_with(
+            "search",
+            "| search (index=* OR index=_internal) | search tag=tag_splunkd_fiction_one",
+        )
+
+
 def test_gen_condition(mocked_field_test_helper):
     mocked_field_test_helper.fields = [
-        field(condition="value > min"),
+        field(condition="value > threshold_1"),
         field(condition=""),
-        field(condition="value < max"),
+        field(condition="value < threshold_2"),
+        field(condition="value = threshold_3"),
     ]
-    assert mocked_field_test_helper._gen_condition() == "value > min OR value < max"
+    assert (
+        mocked_field_test_helper._gen_condition()
+        == "value > threshold_1 OR value < threshold_2 OR value = threshold_3"
+    )
 
 
 @pytest.mark.parametrize(
@@ -190,3 +233,79 @@ def test_make_search_query(mocked_field_test_helper, fields, expected_output):
         == "index=* event=alert OR event=emergency"
     )
     assert mocked_field_test_helper.search == expected_output
+
+
+@pytest.mark.parametrize(
+    "fields, expected_output",
+    [
+        (
+            None,
+            "Source, Sourcetype, Event Count\nutility.log, splunkd, 12\nsys.log, sc4s, 69\n\nSearch = base_search",
+        ),
+        (
+            [
+                field(name="field_1", get_properties=lambda: "field_1_properties"),
+                field(
+                    name="unknown_field",
+                    get_properties=lambda: "unknown_field_properties",
+                ),
+            ],
+            "Source, Sourcetype, Field, Event Count, Field Count, Invalid Field Count, Invalid Values\n"
+            "utility.log, splunkd, field_1, 12, 10, 0, -\n"
+            "sys.log, sc4s, unknown_field, 69, 9, 8, ['null', 'none']"
+            "\n\nSearch = base_search"
+            "\n\nProperties for the field :: field_1_properties"
+            "\n\nProperties for the field :: unknown_field_properties",
+        ),
+    ],
+)
+def test_format_exc_message(mocked_field_test_helper, fields, expected_output):
+    mocked_field_test_helper.parsed_result = [
+        {
+            "sourcetype": "splunkd",
+            "source": "utility.log",
+            "field": field(name="field_1"),
+            "event_count": 12,
+            "field_count": 10,
+            "valid_field_count": 10,
+            "invalid_values": [],
+        },
+        {
+            "sourcetype": "sc4s",
+            "source": "sys.log",
+            "field": field(name="unknown_field"),
+            "event_count": 69,
+            "field_count": 9,
+            "valid_field_count": 1,
+            "invalid_values": ["null", "none"],
+        },
+    ]
+    mocked_field_test_helper.fields = fields or []
+    mocked_field_test_helper.search = "base_search"
+    new_line = "\n"
+    with patch.object(
+        FieldTestHelper,
+        "get_table_output",
+        side_effect=lambda headers, value_list: f'{", ".join(headers)}\n'
+        f'{new_line.join([", ".join([str(y) for y in x]) for x in value_list])}',
+    ):
+        assert mocked_field_test_helper.format_exc_message() == expected_output
+
+
+@pytest.mark.parametrize(
+    "headers, value_list, expected_output",
+    [
+        (
+            ["Header1", "Header2"],
+            [["One", "Value1"], ["Two", "Value2"]],
+            "Header1 | Header2\n------- | -------\nOne     | Value1 \nTwo     | Value2 \n",
+        ),
+        (
+            ["header", "long header"],
+            [["field", "val1"], ["long field", "val2"]],
+            "header     | long header\n---------- | -----------\nfield      | val1       \nlong field | val2       \n",
+        ),
+    ],
+)
+def test_get_table_output(headers, value_list, expected_output):
+    assert FieldTestHelper.get_table_output(headers, value_list) == expected_output
