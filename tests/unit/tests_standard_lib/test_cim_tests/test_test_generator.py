@@ -1,12 +1,32 @@
 import pytest
 from unittest.mock import patch, MagicMock
+from collections import namedtuple
 from pytest_splunk_addon.standard_lib.cim_tests.test_generator import CIMTestGenerator
+
+field = namedtuple("Field", ["type", "name"], defaults=["", ""])
+data_set = namedtuple("DataSet", ["fields", "fields_cluster"])
+
+TEST_TYPES = ["indextime", "modinput", "knowledge"]
+FIELDS = [
+    field(type="knowledge", name="knowledge_field"),
+    field(type="cim", name="cim_field"),
+    field(type="modinput", name="modinput_field"),
+]
 
 
 @pytest.fixture()
 def mocked_cim_test_generator():
     with patch.object(CIMTestGenerator, "__init__", return_value=None):
         return CIMTestGenerator()
+
+
+@pytest.fixture()
+def field_mock(monkeypatch):
+    field = MagicMock()
+    monkeypatch.setattr(
+        "pytest_splunk_addon.standard_lib.cim_tests.test_generator.Field", field
+    )
+    return field
 
 
 @pytest.mark.parametrize(
@@ -79,3 +99,110 @@ def test_generate_tests(mocked_cim_test_generator, fixture_name, expected_ouptpu
         assert list(mocked_cim_test_generator.generate_tests(fixture_name)) == [
             expected_ouptput
         ]
+
+
+def test_get_mapped_datasets(mocked_cim_test_generator):
+    dth = MagicMock()
+    dth.get_mapped_data_models.side_effect = lambda x: (
+        f"data_model_{i}" for i in range(3)
+    )
+    mocked_cim_test_generator.data_model_handler = dth
+    mocked_cim_test_generator.addon_parser = "fake_addon_parser"
+    assert list(mocked_cim_test_generator.get_mapped_datasets()) == [
+        "data_model_0",
+        "data_model_1",
+        "data_model_2",
+    ]
+    dth.get_mapped_data_models.assert_called_once_with("fake_addon_parser")
+
+
+def test_generate_cim_fields_tests(mocked_cim_test_generator):
+    mocked_cim_test_generator.test_field_type = TEST_TYPES
+    data_set_list = [data_set(fields=FIELDS, fields_cluster=[FIELDS])]
+    stanza = 'eventtype="eventtype_splunkd_fiction_one"'
+    mapped_datasets = [
+        (
+            stanza,
+            data_set_list,
+        ),
+    ]
+    with patch.object(
+        CIMTestGenerator, "get_mapped_datasets", return_value=mapped_datasets
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+        assert list(mocked_cim_test_generator.generate_cim_fields_tests()) == [
+            (
+                {"tag_stanza": stanza, "data_set": data_set_list, "fields": []},
+                f"{stanza}::{data_set_list[0]}",
+            ),
+            (
+                {
+                    "tag_stanza": stanza,
+                    "data_set": data_set_list,
+                    "fields": [FIELDS[0]],
+                },
+                f"{stanza}::{data_set_list[0]}::{FIELDS[0]}",
+            ),
+            (
+                {
+                    "tag_stanza": stanza,
+                    "data_set": data_set_list,
+                    "fields": [FIELDS[2]],
+                },
+                f"{stanza}::{data_set_list[0]}::{FIELDS[2]}",
+            ),
+            (
+                {
+                    "tag_stanza": stanza,
+                    "data_set": data_set_list,
+                    "fields": FIELDS,
+                },
+                f"{stanza}::{data_set_list[0]}::knowledge_field+cim_field+modinput_field",
+            ),
+        ]
+        assert param_mock.call_count == 4
+
+
+@pytest.mark.parametrize(
+    "args, expected_output", [((TEST_TYPES,), [FIELDS[0], FIELDS[2]]), (tuple(), [])]
+)
+def test_get_common_fields(
+    open_mock,
+    json_load_mock,
+    field_mock,
+    mocked_cim_test_generator,
+    args,
+    expected_output,
+):
+    json_load_mock.return_value = {"fields": FIELDS}
+    field_mock.parse_fields.side_effect = lambda x: x
+    mocked_cim_test_generator.common_fields_path = "fake_path"
+    assert mocked_cim_test_generator.get_common_fields(*args) == expected_output
+    field_mock.parse_fields.assert_called_once_with(FIELDS)
+    open_mock.assert_called_once_with("fake_path", "r")
+
+
+def test_generate_mapped_datamodel_tests(mocked_cim_test_generator):
+    event_types = [
+        {"stanza": "fiction_is_splunkd"},
+        {"stanza": "fiction_for_tags_positive"},
+        {"stanza": "fiction_is_splunkd-%host%"},
+    ]
+    ap = MagicMock()
+    ap.get_eventtypes.side_effect = lambda: (event for event in event_types)
+    mocked_cim_test_generator.addon_parser = ap
+    with patch.object(
+        pytest, "param", return_value="PYTEST_PARAM_RETURN_VALUE"
+    ) as param_mock:
+        assert list(mocked_cim_test_generator.generate_mapped_datamodel_tests()) == [
+            "PYTEST_PARAM_RETURN_VALUE"
+        ]
+        param_mock.assert_called_once_with(
+            {
+                "eventtypes": [
+                    "fiction_is_splunkd",
+                    "fiction_for_tags_positive",
+                    "fiction_is_splunkd-%host%",
+                ]
+            },
+            id="mapped_datamodel_tests",
+        )

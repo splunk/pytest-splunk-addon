@@ -6,6 +6,15 @@ from pytest_splunk_addon.standard_lib.cim_tests.field_test_adapter import (
 
 
 @pytest.fixture()
+def field_mock(monkeypatch):
+    field = MagicMock()
+    monkeypatch.setattr(
+        "pytest_splunk_addon.standard_lib.cim_tests.field_test_adapter.Field", field
+    )
+    return field
+
+
+@pytest.fixture()
 def field_instance():
     field = MagicMock()
     field.field_key_1 = 1

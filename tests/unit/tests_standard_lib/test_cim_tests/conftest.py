@@ -3,18 +3,9 @@ from unittest.mock import MagicMock, mock_open
 
 
 @pytest.fixture()
-def field_mock(monkeypatch):
-    field = MagicMock()
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.cim_tests.field_test_adapter.Field", field
-    )
-    return field
-
-
-@pytest.fixture()
 def open_mock(monkeypatch):
     open_mock = mock_open()
-    monkeypatch.setattr("builtins.open", mock_open())
+    monkeypatch.setattr("builtins.open", open_mock)
     return open_mock
 
 
