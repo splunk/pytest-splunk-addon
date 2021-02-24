@@ -8,18 +8,6 @@ error = namedtuple("ValidationError", ["path", "instance", "message"])
 
 
 @pytest.fixture()
-def open_mock(monkeypatch):
-    monkeypatch.setattr("builtins.open", mock_open())
-
-
-@pytest.fixture()
-def json_load_mock(monkeypatch):
-    load_mock = MagicMock()
-    load_mock.side_effect = [{"key1": "val1"}, {"key2": "val2"}]
-    monkeypatch.setattr("json.load", load_mock)
-
-
-@pytest.fixture()
 def validator_mock(monkeypatch):
     with patch(
         "pytest_splunk_addon.standard_lib.cim_tests.json_schema.Draft7Validator"
@@ -72,6 +60,7 @@ def validator_mock_raises_decode_error():
 def test_parse_data_model_returns_parsed_json_data(
     open_mock, json_load_mock, validator_mock
 ):
+    json_load_mock.side_effect = [{"key1": "val1"}, {"key2": "val2"}]
     assert JSONSchema.parse_data_model("fake_path") == {"key2": "val2"}
 
 

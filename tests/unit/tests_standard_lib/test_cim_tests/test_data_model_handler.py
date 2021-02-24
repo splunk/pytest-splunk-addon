@@ -27,7 +27,6 @@ def data_model_mock(monkeypatch):
 @pytest.fixture()
 def json_schema_mock(monkeypatch):
     js = MagicMock()
-    js.return_value = js
     js.parse_data_model.side_effect = ["parsed_data_model_1", "parsed_data_model_2"]
     monkeypatch.setattr(
         "pytest_splunk_addon.standard_lib.cim_tests.data_model_handler.JSONSchema", js
