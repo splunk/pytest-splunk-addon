@@ -378,7 +378,7 @@ TA_BROKEN_FAILED = [
     '*test_splunk_app_broken.py::Test_App::test_eventtype*eventtype::broken_is_splunkd* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_eventtype*eventtype::broken_is_splunkd-%host%* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_props_fields[splunkd::LOOKUP-FAIL_test_wrong_AS_field_name_output* FAILED*',
-    '*test_splunk_app_broken.py::Test_App::test_props_fields[splunkd::LOOKUP-FAIL_test_wrong_as_field_name_output* FAILED*'
+    '*test_splunk_app_broken.py::Test_App::test_props_fields[splunkd::LOOKUP-FAIL_test_wrong_as_field_name_output* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*search_invalid_earliest_latest* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*search_invalid_earliest* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*negative_search* FAILED*',

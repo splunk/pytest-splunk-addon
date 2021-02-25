@@ -286,7 +286,7 @@ format_nongpl = ["idna", "jsonpointer (>1.13)", "webcolors", "rfc3986-validator 
 
 [[package]]
 name = "junitparser"
-version = "2.0.0"
+version = "1.6.3"
 description = "Manipulates JUnit/xUnit Result XML files"
 category = "main"
 optional = false
@@ -1056,8 +1056,8 @@ jsonschema = [
     {file = "jsonschema-3.2.0.tar.gz", hash = "sha256:c8a85b28d377cc7737e46e2d9f2b4f44ee3c0e1deac6bf46ddefc7187d30797a"},
 ]
 junitparser = [
-    {file = "junitparser-2.0.0-py2.py3-none-any.whl", hash = "sha256:653005a60785ca9899b7c08cc5959591c144a38bc5e5150a5477c95f3503660a"},
-    {file = "junitparser-2.0.0.tar.gz", hash = "sha256:760b01e3e678eae2aa37bd9b4345774e1cd8ac49c95fbf790fbe602e0a6ce11d"},
+    {file = "junitparser-1.6.3-py2.py3-none-any.whl", hash = "sha256:56d6dceda8eaac8b13dbad5150e94011ffffd0fb62032bd734757ccb5e956c3f"},
+    {file = "junitparser-1.6.3.tar.gz", hash = "sha256:0ba24b5897a34e9182e043e92ecc30dbe6dbbf537ce1dfdc50eb78f0ee6173d8"},
 ]
 langdetect = [
     {file = "langdetect-1.0.7.zip", hash = "sha256:91a170d5f0ade380db809b3ba67f08e95fe6c6c8641f96d67a51ff7e98a9bf30"},
