@@ -12,6 +12,11 @@ FIELDS = [
     field(type="cim", name="cim_field"),
     field(type="modinput", name="modinput_field"),
 ]
+NOT_ALLOWED_FIELDS = [
+    field(type="not_allowed_in_search_and_props", name="field_props_and_search_na"),
+    field(type="not_allowed_in_props", name="field_props_na"),
+    field(type="not_allowed_in_search_and_props", name="field_not_allowed"),
+]
 
 
 @pytest.fixture()
@@ -27,6 +32,41 @@ def field_mock(monkeypatch):
         "pytest_splunk_addon.standard_lib.cim_tests.test_generator.Field", field
     )
     return field
+
+
+@pytest.fixture()
+def mapped_datasets():
+    return [
+        (
+            'eventtype="eventtype_splunkd_fiction_one"',
+            [data_set(fields=FIELDS[:], fields_cluster=[FIELDS[:]])],
+        ),
+    ]
+
+
+@pytest.fixture()
+def fake_addon_parser():
+    event_types = [
+        {"stanza": "fiction_is_splunkd"},
+        {"stanza": "fiction_for_tags_positive"},
+        {"stanza": "fiction_is_splunkd-%host%"},
+    ]
+    props_fields = [
+        {
+            "stanza": "eventtype_splunkd_fiction_one",
+            "fields": [FIELDS[0], NOT_ALLOWED_FIELDS[0]],
+            "classname": "invalid_fields",
+        },
+        {
+            "stanza": "eventtype_splunkd_fiction_two",
+            "fields": [NOT_ALLOWED_FIELDS[1], FIELDS[1], NOT_ALLOWED_FIELDS[2]],
+            "classname": "broken_tests",
+        },
+    ]
+    ap = MagicMock()
+    ap.get_eventtypes.side_effect = lambda: (event for event in event_types)
+    ap.get_props_fields.side_effect = lambda: (ps for ps in props_fields)
+    return ap
 
 
 @pytest.mark.parametrize(
@@ -116,16 +156,10 @@ def test_get_mapped_datasets(mocked_cim_test_generator):
     dth.get_mapped_data_models.assert_called_once_with("fake_addon_parser")
 
 
-def test_generate_cim_fields_tests(mocked_cim_test_generator):
+def test_generate_cim_fields_tests(mocked_cim_test_generator, mapped_datasets):
     mocked_cim_test_generator.test_field_type = TEST_TYPES
-    data_set_list = [data_set(fields=FIELDS, fields_cluster=[FIELDS])]
-    stanza = 'eventtype="eventtype_splunkd_fiction_one"'
-    mapped_datasets = [
-        (
-            stanza,
-            data_set_list,
-        ),
-    ]
+    data_set_list = mapped_datasets[0][1]
+    stanza = mapped_datasets[0][0]
     with patch.object(
         CIMTestGenerator, "get_mapped_datasets", return_value=mapped_datasets
     ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
@@ -162,6 +196,93 @@ def test_generate_cim_fields_tests(mocked_cim_test_generator):
         assert param_mock.call_count == 4
 
 
+def test_generate_field_extractions_test(
+    mocked_cim_test_generator, mapped_datasets, fake_addon_parser
+):
+    mocked_cim_test_generator.addon_parser = fake_addon_parser
+    mapped_datasets[0][1][0].fields.extend(NOT_ALLOWED_FIELDS[1:])
+    with patch.object(
+        CIMTestGenerator, "get_common_fields", return_value=NOT_ALLOWED_FIELDS[:2]
+    ), patch.object(
+        CIMTestGenerator,
+        "get_mapped_datasets",
+        side_effect=lambda: (dataset for dataset in mapped_datasets),
+    ), patch.object(
+        pytest, "param", side_effect=lambda x, id: (x, id)
+    ) as param_mock:
+        assert list(mocked_cim_test_generator.generate_field_extractions_test()) == [
+            (
+                {
+                    "fields": [
+                        {
+                            "name": NOT_ALLOWED_FIELDS[0].name,
+                            "stanza": "eventtype_splunkd_fiction_one",
+                            "classname": "invalid_fields",
+                        },
+                        {
+                            "name": NOT_ALLOWED_FIELDS[1].name,
+                            "stanza": "eventtype_splunkd_fiction_two",
+                            "classname": "broken_tests",
+                        },
+                        {
+                            "name": NOT_ALLOWED_FIELDS[2].name,
+                            "stanza": "eventtype_splunkd_fiction_two",
+                            "classname": "broken_tests",
+                        },
+                    ]
+                },
+                f"searchtime_cim_fields",
+            )
+        ]
+        param_mock.assert_called_once()
+
+
+def test_generate_fields_event_count_test(mocked_cim_test_generator, mapped_datasets):
+    mapped_datasets.extend(
+        [
+            (
+                'eventtype="empty_stanza"',
+                [data_set(fields=[], fields_cluster=[])],
+            ),
+            (
+                'eventtype="not_allowed_stanza"',
+                [data_set(fields=NOT_ALLOWED_FIELDS, fields_cluster=[])],
+            ),
+        ]
+    )
+    data_set_list = [mapped_datasets[0][1], mapped_datasets[2][1]]
+    stanza = [mapped_datasets[0][0], mapped_datasets[2][0]]
+    with patch.object(
+        CIMTestGenerator, "get_common_fields", return_value=NOT_ALLOWED_FIELDS[:2]
+    ), patch.object(
+        CIMTestGenerator,
+        "get_mapped_datasets",
+        side_effect=lambda: (dataset for dataset in mapped_datasets),
+    ), patch.object(
+        pytest, "param", side_effect=lambda x, id: (x, id)
+    ) as param_mock:
+        out = list(mocked_cim_test_generator.generate_fields_event_count_test())
+        assert out == [
+            (
+                {
+                    "tag_stanza": stanza[0],
+                    "data_set": data_set_list[0],
+                    "fields": NOT_ALLOWED_FIELDS[:2],
+                },
+                f"{stanza[0]}::{data_set_list[0][0]}",
+            ),
+            (
+                {
+                    "tag_stanza": stanza[1],
+                    "data_set": data_set_list[1],
+                    "fields": NOT_ALLOWED_FIELDS,
+                },
+                f"{stanza[1]}::{data_set_list[1][0]}",
+            ),
+        ]
+        assert param_mock.call_count == 2
+
+
 @pytest.mark.parametrize(
     "args, expected_output", [((TEST_TYPES,), [FIELDS[0], FIELDS[2]]), (tuple(), [])]
 )
@@ -181,15 +302,8 @@ def test_get_common_fields(
     open_mock.assert_called_once_with("fake_path", "r")
 
 
-def test_generate_mapped_datamodel_tests(mocked_cim_test_generator):
-    event_types = [
-        {"stanza": "fiction_is_splunkd"},
-        {"stanza": "fiction_for_tags_positive"},
-        {"stanza": "fiction_is_splunkd-%host%"},
-    ]
-    ap = MagicMock()
-    ap.get_eventtypes.side_effect = lambda: (event for event in event_types)
-    mocked_cim_test_generator.addon_parser = ap
+def test_generate_mapped_datamodel_tests(mocked_cim_test_generator, fake_addon_parser):
+    mocked_cim_test_generator.addon_parser = fake_addon_parser
     with patch.object(
         pytest, "param", return_value="PYTEST_PARAM_RETURN_VALUE"
     ) as param_mock:
