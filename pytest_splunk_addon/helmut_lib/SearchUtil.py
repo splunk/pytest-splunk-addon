@@ -162,6 +162,25 @@ class SearchUtil(object):
             self.logger.debug("Count of results is > 0, it is:%d", result_count)
             return False, job.get_results()
 
+    def get_search_results(self, query, max_time=120):
+        """
+            Execute a search query
+        Args:
+            query (str): query string for Splunk Search
+            max_time: Amount of time job can wait to finish.
+        Returns:
+            events that match the query
+        """
+
+        self.logger.debug("query is %s", query)
+        try:
+            job = self.jobs.create(query, auto_finalize_ec=120, max_time=max_time)
+            job.wait(max_time)
+            return job.get_results()
+        except Exception as e:
+            self.logger.debug("Errors when executing search!!!")
+            self.logger.debug(e)
+
     def checkQueryFields(
         self,
         query,

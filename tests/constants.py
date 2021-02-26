@@ -208,6 +208,7 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_as_input_outputnew_multiple* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_as_keyword* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_as_output* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields[splunkd::LOOKUP-test_as_host_keyword* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_command_spelling_output3* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_command_spelling_outputnew3* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-test_multiple_input* PASSED*',
@@ -228,6 +229,15 @@ TA_FICTION_PASSED = [
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_is_splunkd* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_for_tags_positive* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_eventtype*eventtype::fiction_is_splunkd-%host%* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields[splunkd::field::"as_host"* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields[splunkd::field::"AS_port"* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields[splunkd::field::AS_port* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields[splunkd::field::as_host* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::LOOKUP-test_as_host_keyword* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::field::"as_host"* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::field::as_host* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::field::AS_port* PASSED*',
+    '*test_splunk_app_fiction.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::field::"AS_port"* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_savedsearches*search_earliest_time_latest_time* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_savedsearches*basic_search* PASSED*',
     '*test_splunk_app_fiction.py::Test_App::test_savedsearches*search_earliest_time* PASSED*',
@@ -310,6 +320,8 @@ TA_BROKEN_PASSED = [
     '*test_splunk_app_broken.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-PASS_test_empty_csv* PASSED*',
     '*test_splunk_app_broken.py::Test_App::test_props_fields_no_dash_not_empty*splunkd::LOOKUP-PASS_test_lookup_not_found* PASSED*',
     '*test_splunk_app_broken.py::Test_App::test_tags*sourcetype="splunkd"::tag::tags_negative_testing* PASSED*',
+    '*test_splunk_app_broken.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::LOOKUP-FAIL_test_wrong_AS_field_name_output* PASSED*',
+    '*test_splunk_app_broken.py::Test_App::test_props_fields_no_dash_not_empty[splunkd::LOOKUP-FAIL_test_wrong_as_field_name_output* PASSED*'
 ]
 
 """
@@ -365,6 +377,8 @@ TA_BROKEN_FAILED = [
     '*test_splunk_app_broken.py::Test_App::test_tags*source="/opt/splunk/var/log/splunk/splunkd.log"::tag::tags_negative_testing* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_eventtype*eventtype::broken_is_splunkd* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_eventtype*eventtype::broken_is_splunkd-%host%* FAILED*',
+    '*test_splunk_app_broken.py::Test_App::test_props_fields[splunkd::LOOKUP-FAIL_test_wrong_AS_field_name_output* FAILED*',
+    '*test_splunk_app_broken.py::Test_App::test_props_fields[splunkd::LOOKUP-FAIL_test_wrong_as_field_name_output* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*search_invalid_earliest_latest* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*search_invalid_earliest* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*negative_search* FAILED*',

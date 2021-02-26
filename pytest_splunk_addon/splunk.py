@@ -246,6 +246,12 @@ def pytest_addoption(parser):
         help=("Path to file where list of addon related errors are suppressed."),
     )
     group.addoption(
+        "--requirement-test",
+        action="store_true",
+        dest="requirement_test",
+        help=("Default false use if requirement tests need to be run"),
+    )
+    group.addoption(
         "--splunk-uf-host",
         action="store",
         dest="splunk_uf_host",
@@ -654,7 +660,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
     ):
         addon_path = request.config.getoption("splunk_app")
         config_path = request.config.getoption("splunk_data_generator")
-
+        run_requirement_test = request.config.getoption("requirement_test")
         ingest_meta_data = {
             "uf_host": uf.get("uf_host"),
             "uf_port": uf.get("uf_port"),
@@ -668,7 +674,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
         thread_count = int(request.config.getoption("thread_count"))
         store_events = request.config.getoption("store_events")
         IngestorHelper.ingest_events(
-            ingest_meta_data, addon_path, config_path, thread_count, store_events
+            ingest_meta_data, addon_path, config_path, thread_count, store_events, run_requirement_test
         )
         sleep(50)
         if "PYTEST_XDIST_WORKER" in os.environ:
