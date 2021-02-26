@@ -132,3 +132,19 @@ def test_generate_savedsearches_tests(addon_parser_mock):
             (savedsearches[1], savedsearches[1]["stanza"]),
         ]
         assert param_mock.call_count == len(savedsearches)
+
+
+@pytest.mark.parametrize(
+    "fields_group, criteria, expected_result",
+    [
+        ({"classname": "valid_classname"}, ["valid_class", "valid_classname"], True),
+        ({"classname": "invalid_classname"}, ["valid_class", "valid_classname"], False),
+    ],
+)
+def test_contains_classname(fields_group, criteria, expected_result):
+    assert (
+        FieldTestGenerator("app_path", "field_bank")._contains_classname(
+            fields_group, criteria
+        )
+        is expected_result
+    )
