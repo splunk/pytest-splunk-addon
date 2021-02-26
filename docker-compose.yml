@@ -63,7 +63,27 @@ services:
       - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
       - SPLUNK_START_ARGS=--accept-license
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
-  
+
+  uf:
+    build:
+      context: .
+      dockerfile: Dockerfile.uf
+      args:
+        SPLUNK_APP_ID: ${SPLUNK_APP_ID}
+        SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
+        SPLUNK_VERSION: ${SPLUNK_VERSION}
+    hostname: uf
+    ports:
+      - "9997"
+      - "8089"
+    links:
+      - splunk
+    environment:
+      - SPLUNK_PASSWORD=Chang3d!
+      - SPLUNK_START_ARGS=--accept-license
+    volumes:
+      - ${CURRENT_DIR}/uf_files:${CURRENT_DIR}/uf_files
+
 volumes:
   splunk-sc4s-var:
     external: false

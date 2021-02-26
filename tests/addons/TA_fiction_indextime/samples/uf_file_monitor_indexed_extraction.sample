@@ -1,0 +1,4 @@
+#fields	ts	src	src_port	dest	dest_port
+#types	time	addr	port	addr	port
+1331904609.110000	##SRC##	##SRC_PORT##	##DEST##	##DEST_PORT##
+1331904609.120000	##SRC##	##SRC_PORT##	##DEST##	##DEST_PORT##

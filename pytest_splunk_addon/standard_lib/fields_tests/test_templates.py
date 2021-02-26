@@ -8,12 +8,16 @@ import pytest
 from ..addon_parser import Field
 import json
 
+TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART = " | dedup punct | head 5"
+COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART = " | stats count by sourcetype"
+
+
 class FieldTestTemplates(object):
     """
     Test templates to test the knowledge objects of an App
     """
 
-    logger = logging.getLogger("pytest-splunk-addon-tests")
+    logger = logging.getLogger("pytest-splunk-addon")
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_internal_errors
@@ -80,7 +84,7 @@ class FieldTestTemplates(object):
                 search + f" AND ({field} IN ({expected_values})"
                 f" AND NOT {field} IN ({negative_values}))"
             )
-        search += " | stats count by sourcetype"
+        search += COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART
 
         self.logger.info(f"Executing the search query: {search}")
 
@@ -125,7 +129,7 @@ class FieldTestTemplates(object):
         record_property("fields", splunk_searchtime_fields_negative["fields"])
 
         index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
-        search = (
+        base_search = (
             f"search {index_list}"
             f" {splunk_searchtime_fields_negative['stanza_type']}=\""
             f"{splunk_searchtime_fields_negative['stanza']}\""
@@ -137,8 +141,8 @@ class FieldTestTemplates(object):
             negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
 
             fields_search.append(f"({field} IN ({negative_values}))")
-        search += " AND ({})".format(" OR ".join(fields_search))
-        search += " | stats count by sourcetype"
+        base_search += " AND ({})".format(" OR ".join(fields_search))
+        search = base_search + COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART
         
         self.logger.info(f"Executing the search query: {search}")
 
@@ -149,9 +153,16 @@ class FieldTestTemplates(object):
             record_property("results", results.as_list)
             pp = pprint.PrettyPrinter(indent=4)
             result_str = pp.pformat(results.as_list[:10])
+
+            query_for_unique_events = base_search + TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART
+            query_results = splunk_search_util.get_search_results(query_for_unique_events)
+            results_formatted_str = pp.pformat(query_results.as_list)
         assert result, (
             f"Query result greater than 0.\nsearch={search}\n"
-            f"found result={result_str}"
+            f"found result={result_str}\n"
+            " === STRUCTURALLY UNIQUE EVENTS:\n"
+            f"query={query_for_unique_events}\n"
+            f"events= {results_formatted_str}"
         )
 
     @pytest.mark.splunk_searchtime_fields
@@ -190,7 +201,7 @@ class FieldTestTemplates(object):
 
         index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
         search = f"search {index_list} {tag_query} AND tag={tag}"
-        search += " | stats count by sourcetype"
+        search += COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART
 
         self.logger.info(f"Search: {search}")
 
@@ -247,7 +258,7 @@ class FieldTestTemplates(object):
         search = (f"search {index_list} AND "
                   f"eventtype="
                   f"\"{splunk_searchtime_fields_eventtypes['stanza']}\"")
-        search += " | stats count by sourcetype"
+        search += COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART
 
         self.logger.info(
             "Testing eventtype =%s", splunk_searchtime_fields_eventtypes["stanza"]
@@ -259,6 +270,56 @@ class FieldTestTemplates(object):
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
         )
+        record_property("search", search)
+        assert result, (
+            f"No result found for the search.\nsearch={search}\n"
+            f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
+        )
+
+
+    @pytest.mark.splunk_searchtime_fields
+    @pytest.mark.splunk_searchtime_fields_savedsearches
+    def test_savedsearches(
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_setup,
+        splunk_searchtime_fields_savedsearches,
+        record_property,
+        caplog,
+    ):
+        """
+        Tests if all savedsearches in savedsearches.conf are being executed properly to generate proper results.
+
+        Args:
+            splunk_search_util (fixture): 
+                Fixture to create a simple connection to Splunk via SplunkSDK
+            splunk_searchtime_fields_savedsearches (fixture): 
+                Fixture containing list of savedsearches
+            record_property (fixture): 
+                Used to add user properties to test report
+            caplog (fixture): 
+                Access and control log capturing
+
+        Returns:
+            Asserts whether test case passes or fails.
+        """
+        search_query = splunk_searchtime_fields_savedsearches["search"]
+        earliest_time = splunk_searchtime_fields_savedsearches["dispatch.earliest_time"]
+        latest_time = splunk_searchtime_fields_savedsearches["dispatch.latest_time"]
+
+        temp_search_query = search_query.split('|')
+        temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(earliest_time,latest_time)
+        search_query = "|".join(temp_search_query)
+        
+        search = (f"search {search_query}")
+
+        self.logger.info(f"Search: {search}")
+
+        result = splunk_search_util.checkQueryCountIsGreaterThanZero(
+            search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+        )
+
         record_property("search", search)
         assert result, (
             f"No result found for the search.\nsearch={search}\n"

@@ -86,7 +86,7 @@ class HECRawEventIngestor(EventIngestor):
         try:
             LOGGER.info("Making a HEC raw endpoint request with the following params:\nhec_uri:{}\nheaders:{}".format(
                 str(self.hec_uri), str(self.session_headers)))
-            LOGGER.debug("Creating the following sample event to be ingested via HEC RAW endpoint:\nEvents: {}\nParams:".format(
+            LOGGER.debug("Creating the following sample event to be ingested via HEC RAW endpoint:\nEvents: {}\nParams:{}".format(
                 str(event),str(params)))
             response = requests.post(
                 "{}/{}".format(self.hec_uri, "raw"),
