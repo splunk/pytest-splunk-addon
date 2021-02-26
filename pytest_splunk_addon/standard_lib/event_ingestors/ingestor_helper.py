@@ -8,7 +8,7 @@ from . import (
 import logging
 from ..sample_generation import SampleXdistGenerator
 LOGGER = logging.getLogger("pytest-splunk-addon")
-
+from .requirement_event_ingester import RequirementEventIngestor
 class IngestorHelper(object):
     """
     Module for helper methods for ingestors.
@@ -35,7 +35,7 @@ class IngestorHelper(object):
         return ingestor
 
     @classmethod
-    def ingest_events(cls, ingest_meta_data, addon_path, config_path, thread_count, store_events):
+    def ingest_events(cls, ingest_meta_data, addon_path, config_path, thread_count, store_events, run_requirement_test):
         """
         Events are ingested in the splunk.
         Args:
@@ -43,9 +43,9 @@ class IngestorHelper(object):
             addon_path: Path to Splunk app package.
             config_path: Path to pytest-splunk-addon-sample-generator.conf.
             bulk_event_ingestion(bool): Boolean param for bulk event ingestion.
-
+            run_requirement_test(bool) :Boolean to identify if we want to run the requirement tests
         """
-        sample_generator = SampleXdistGenerator(addon_path, config_path)
+        sample_generator = SampleXdistGenerator(addon_path, config_path, run_requirement_test)
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         ingestor_dict = dict()
@@ -64,3 +64,12 @@ class IngestorHelper(object):
                 "Received the following input type for HEC event: {}".format(input_type))
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
             event_ingestor.ingest(events, thread_count)
+
+        if run_requirement_test:
+            requirement_event = RequirementEventIngestor(addon_path)
+            events = requirement_event.get_events()
+            LOGGER.info(events)
+            input_type = "default"
+            event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
+            event_ingestor.ingest(events, thread_count)
+            LOGGER.info("Ingestion Done")
