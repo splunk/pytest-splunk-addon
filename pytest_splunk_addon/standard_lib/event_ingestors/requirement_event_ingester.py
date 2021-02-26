@@ -94,6 +94,15 @@ class RequirementEventIngestor(object):
                 _, sourcetype = str(regex_src_obj.source_type).split('::', 1)
         return sourcetype
 
+    def escape_before_ingest(self, event):
+        """
+        Function to escape event's with backslash before ingest
+        """
+        escape_splunk_chars = ["\""]
+        for character in escape_splunk_chars:
+            event = event.replace(character, '\\' + character)
+        return event
+
     def get_events(self):
         req_file_path = os.path.join(self.app_path, "requirement_files")
         src_regex = self.extract_regex_transforms()
@@ -108,9 +117,10 @@ class RequirementEventIngestor(object):
                         for event_tag in root.iter('event'):
                             unescaped_event = self.extract_raw_events(event_tag)
                             sourcetype = self.extract_sourcetype(src_regex, unescaped_event)
+                            escaped_ingest = self.escape_before_ingest(unescaped_event)
                             metadata = {'input_type': 'default',
                                         'sourcetype': sourcetype,
                                         'index': 'main'
                                         }
-                            events.append(SampleEvent(unescaped_event, metadata, "requirement_test"))
+                            events.append(SampleEvent(escaped_ingest, metadata, "requirement_test"))
                         return events

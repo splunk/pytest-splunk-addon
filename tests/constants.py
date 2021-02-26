@@ -649,7 +649,8 @@ TA_FICTION_INDEXTIME_SKIPPED = [
     '*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_search*splunk_searchtime_cim_fields_not_allowed_in_search0* SKIPPED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_tags*splunk_searchtime_fields_tags0* SKIPPED*',
     '*test_splunk_fiction_indextime.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*',    
-    '*test_splunk_fiction_indextime.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*',    
+    '*test_splunk_fiction_indextime.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*',
+    '*test_splunk_fiction_indextime.py::Test_App::test_requirement_params* SKIPPED*',
 ]
 """
 Define the TA_fiction_indextime_broken add-on passed test case list.
@@ -738,5 +739,18 @@ TA_FICTION_INDEXTIME_BROKEN_SKIPPED = [
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_props_fields_no_dash_not_empty*splunk_searchtime_fields_negative0* SKIPPED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_tags*splunk_searchtime_fields_tags0* SKIPPED*',
     '*test_splunk_fiction_indextime_broken.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*', 
-    '*test_splunk_fiction_indextime_broken.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*', 
+    '*test_splunk_fiction_indextime_broken.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*',
+    '*test_splunk_fiction_indextime_broken.py::Test_App::test_requirement_params* SKIPPED*',
+]
+"""
+Define TA_requirement_tests passed test
+"""
+TA_REQUIREMENTS_PASSED = [
+    '*test_splunk_app_requirements.py::Test_App::test_events_with_untokenised_values PASSED*',
+    '*test_splunk_app_requirements.py::Test_App::test_requirement_params* PASSED*',
+
+]
+
+TA_REQUIREMENTS_FAILED = [
+    '*test_splunk_app_requirements.py::Test_App::test_requirement_params* FAILED*',
 ]
