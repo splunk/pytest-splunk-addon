@@ -5,6 +5,23 @@ from pytest_splunk_addon.standard_lib.fields_tests.test_generator import (
 )
 
 
+def field_1():
+    pass
+
+
+def field_2():
+    pass
+
+
+def field_3():
+    pass
+
+
+field_1.__dict__.update({"name": "field_1"})
+field_2.__dict__.update({"name": "field_2"})
+field_3.__dict__.update({"name": "field_3"})
+
+
 @pytest.fixture()
 def addon_parser_mock(monkeypatch):
     ap = MagicMock()
@@ -13,6 +30,15 @@ def addon_parser_mock(monkeypatch):
         "pytest_splunk_addon.standard_lib.fields_tests.test_generator.AddonParser", ap
     )
     return ap
+
+
+@pytest.fixture()
+def field_bank_mock(monkeypatch):
+    fb = MagicMock()
+    monkeypatch.setattr(
+        "pytest_splunk_addon.standard_lib.fields_tests.test_generator.FieldBank", fb
+    )
+    return fb
 
 
 def test_field_test_generator_instantiation(addon_parser_mock):
@@ -148,3 +174,196 @@ def test_contains_classname(fields_group, criteria, expected_result):
         )
         is expected_result
     )
+
+
+@pytest.mark.parametrize(
+    "is_positive, contains_classname, field_bank, prpos_fields, expected_output",
+    [
+        (
+            False,
+            [False, False],
+            [
+                {
+                    "stanza": "sourcetype::splunkd",
+                    "stanza_type": "sourcetype",
+                    "classname": "field_bank",
+                    "fields": [field_2, field_3],
+                }
+            ],
+            [
+                {
+                    "stanza": "snow:incident",
+                    "stanza_type": "sourcetype",
+                    "classname": "REPORT::transform_string",
+                    "fields": [field_1],
+                }
+            ],
+            [
+                (
+                    {
+                        "stanza": "sourcetype::splunkd",
+                        "stanza_type": "sourcetype",
+                        "classname": "field_bank",
+                        "fields": [{"name": "field_2"}],
+                    },
+                    f"sourcetype::splunkd::field_bank_1::{field_2}",
+                ),
+                (
+                    {
+                        "stanza": "sourcetype::splunkd",
+                        "stanza_type": "sourcetype",
+                        "classname": "field_bank",
+                        "fields": [{"name": "field_3"}],
+                    },
+                    f"sourcetype::splunkd::field_bank_2::{field_3}",
+                ),
+                (
+                    {
+                        "stanza": "snow:incident",
+                        "stanza_type": "sourcetype",
+                        "classname": "REPORT::transform_string",
+                        "fields": [{"name": "field_1"}],
+                    },
+                    f"snow:incident::field::{field_1}",
+                ),
+            ],
+        ),
+        (
+            True,
+            [False, False],
+            [
+                {
+                    "stanza": "sourcetype::splunkd",
+                    "stanza_type": "sourcetype",
+                    "classname": "field_bank",
+                    "fields": [field_2],
+                }
+            ],
+            [
+                {
+                    "stanza": "snow:incident",
+                    "stanza_type": "sourcetype",
+                    "classname": "REPORT::transform_string",
+                    "fields": [field_1],
+                }
+            ],
+            [
+                (
+                    {
+                        "stanza": "sourcetype::splunkd",
+                        "stanza_type": "sourcetype",
+                        "classname": "field_bank",
+                        "fields": [],
+                    },
+                    "sourcetype::splunkd",
+                ),
+                (
+                    {
+                        "stanza": "sourcetype::splunkd",
+                        "stanza_type": "sourcetype",
+                        "classname": "field_bank",
+                        "fields": [{"name": "field_2"}],
+                    },
+                    f"sourcetype::splunkd::field_bank_1::{field_2}",
+                ),
+                (
+                    {
+                        "stanza": "snow:incident",
+                        "stanza_type": "sourcetype",
+                        "classname": "REPORT::transform_string",
+                        "fields": [],
+                    },
+                    "snow:incident",
+                ),
+                (
+                    {
+                        "stanza": "snow:incident",
+                        "stanza_type": "sourcetype",
+                        "classname": "REPORT::transform_string",
+                        "fields": [{"name": "field_1"}],
+                    },
+                    f"snow:incident::field::{field_1}",
+                ),
+            ],
+        ),
+        (
+            False,
+            [False, True],
+            [
+                {
+                    "stanza": "sourcetype::splunkd",
+                    "stanza_type": "sourcetype",
+                    "classname": "field_bank",
+                    "fields": [field_2],
+                }
+            ],
+            [
+                {
+                    "stanza": "snow:incident",
+                    "stanza_type": "sourcetype",
+                    "classname": "REPORT::transform_string",
+                    "fields": [field_1, field_3],
+                }
+            ],
+            [
+                (
+                    {
+                        "stanza": "sourcetype::splunkd",
+                        "stanza_type": "sourcetype",
+                        "classname": "field_bank",
+                        "fields": [{"name": "field_2"}],
+                    },
+                    f"sourcetype::splunkd::field_bank_1::{field_2}",
+                ),
+                (
+                    {
+                        "stanza": "snow:incident",
+                        "stanza_type": "sourcetype",
+                        "classname": "REPORT::transform_string",
+                        "fields": [{"name": "field_1"}, {"name": "field_3"}],
+                    },
+                    "snow:incident::REPORT::transform_string",
+                ),
+                (
+                    {
+                        "stanza": "snow:incident",
+                        "stanza_type": "sourcetype",
+                        "classname": "REPORT::transform_string",
+                        "fields": [{"name": "field_1"}],
+                    },
+                    f"snow:incident::field::{field_1}",
+                ),
+                (
+                    {
+                        "stanza": "snow:incident",
+                        "stanza_type": "sourcetype",
+                        "classname": "REPORT::transform_string",
+                        "fields": [{"name": "field_3"}],
+                    },
+                    f"snow:incident::field::{field_3}",
+                ),
+            ],
+        ),
+    ],
+)
+def test_generate_field_tests(
+    addon_parser_mock,
+    field_bank_mock,
+    is_positive,
+    contains_classname,
+    field_bank,
+    prpos_fields,
+    expected_output,
+):
+    addon_parser_mock.get_props_fields.return_value = prpos_fields
+    field_bank_mock.init_field_bank_tests.return_value = field_bank
+    with patch.object(
+        FieldTestGenerator, "_contains_classname", side_effect=contains_classname
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+        out = list(
+            FieldTestGenerator("app_path", "field_bank").generate_field_tests(
+                is_positive
+            )
+        )
+        assert out == expected_output
+        assert param_mock.call_count == len(expected_output)
