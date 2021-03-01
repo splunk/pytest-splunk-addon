@@ -11,6 +11,10 @@ field = namedtuple(
 )
 
 
+field_1 = field(name="field_1", gen_validity_query=lambda: True)
+field_2 = field(name="field_2", gen_validity_query=lambda: True)
+
+
 @pytest.fixture()
 def field_test_adapter_mock(monkeypatch):
     fta_mock = MagicMock()
@@ -151,10 +155,7 @@ def test_gen_condition(mocked_field_test_helper):
                     "field_2_invalid_values": "2",
                 },
             ],
-            [
-                field(name="field_1", gen_validity_query=lambda: True),
-                field(name="field_2", gen_validity_query=lambda: True),
-            ],
+            [field_1, field_2],
             [
                 {
                     "sourcetype": "splunkd",
@@ -163,7 +164,7 @@ def test_gen_condition(mocked_field_test_helper):
                     "field_count": 8,
                     "valid_field_count": 5,
                     "invalid_values": "-",
-                    "field_name": "field_1",
+                    "field": field_1,
                 },
                 {
                     "sourcetype": "splunkd",
@@ -172,7 +173,7 @@ def test_gen_condition(mocked_field_test_helper):
                     "field_count": 9,
                     "valid_field_count": 7,
                     "invalid_values": "2",
-                    "field_name": "field_2",
+                    "field": field_2,
                 },
             ],
         ),
@@ -182,13 +183,6 @@ def test_parse_result(
     field_test_adapter_mock, mocked_field_test_helper, results, fields, expected_output
 ):
     mocked_field_test_helper.fields = fields or []
-    if fields:
-        for output in expected_output:
-            for field in fields:
-                if field.name == output["field_name"]:
-                    output.update({"field": field})
-                    output.pop("field_name")
-                    break
     assert mocked_field_test_helper._parse_result(results) == expected_output
 
 
@@ -282,13 +276,14 @@ def test_format_exc_message(mocked_field_test_helper, fields, expected_output):
     ]
     mocked_field_test_helper.fields = fields or []
     mocked_field_test_helper.search = "base_search"
-    new_line = "\n"
-    with patch.object(
-        FieldTestHelper,
-        "get_table_output",
-        side_effect=lambda headers, value_list: f'{", ".join(headers)}\n'
-        f'{new_line.join([", ".join([str(y) for y in x]) for x in value_list])}',
-    ):
+
+    def table_output(headers, value_list):
+        header = ", ".join(headers)
+        rows = [", ".join([str(value) for value in row]) for row in value_list]
+        output = "\n".join([header] + rows)
+        return output
+
+    with patch.object(FieldTestHelper, "get_table_output", side_effect=table_output):
         assert mocked_field_test_helper.format_exc_message() == expected_output
 
 
