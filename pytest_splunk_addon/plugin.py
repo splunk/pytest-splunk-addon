@@ -58,6 +58,10 @@ def pytest_configure(config):
         "markers",
         "splunk_searchtime_cim_mapped_datamodel: Test an eventtype is mapped with only one data models",
     )
+    config.addinivalue_line(
+        "markers",
+        "splunk_searchtime_requirements: Test an requirement test only  is mapped with only one data models",
+    )
     if config.getoption("splunk_app", None):
         test_generator = AppTestGenerator(config)
 

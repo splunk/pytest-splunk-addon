@@ -7,9 +7,11 @@ field extractions and CIM compatibility.
 from .fields_tests import FieldTestTemplates
 from .cim_tests import CIMTestTemplates, FieldTestHelper
 from .index_tests import IndexTimeTestTemplate
+from .requirement_tests import ReqsTestTemplates
 import pytest
 
-class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
+
+class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate, ReqsTestTemplates):
     """
     Base class for test cases. Inherit this class to include the test 
     cases for an Add-on. Only implement the common tests here, all the other 
@@ -21,6 +23,7 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
     @pytest.mark.splunk_indextime
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_fields
+    @pytest.mark.splunk_searchtime_requirements
     def test_events_with_untokenised_values(
         self,
         splunk_search_util,
