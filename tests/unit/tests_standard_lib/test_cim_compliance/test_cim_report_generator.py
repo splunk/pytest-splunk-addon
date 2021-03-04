@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch, call
 from collections import Counter
 from pytest_splunk_addon.standard_lib.cim_compliance.cim_report_generator import (
     CIMReportGenerator,
+    NOT_SUPPORTED_DATAMODELS,
 )
 
 
@@ -254,5 +255,62 @@ def test_generate_skip_tests_table(cim_report_generator, markdown_table_mock):
             [
                 call.add_section_title("Skipped Tests Summary"),
                 call.add_table("| table |"),
+            ]
+        )
+
+
+def test_generate_report(cim_report_generator, markdown_table_mock):
+    cim_report_generator.data = [
+        {
+            "tag_stanza": "fake_stanza",
+            "data_model": "fake_data_model",
+            "data_set": "fake_data_set",
+            "fields": "fake_fields",
+            "fields_type": "fake_fields_type",
+        },
+        {
+            "tag_stanza": "abstract_stanza",
+            "data_model": "abstract_data_model",
+            "data_set": "abstract_data_set",
+            "fields": "abstract_fields",
+            "fields_type": "abstract_fields_type",
+        },
+    ]
+    with patch.object(
+        CIMReportGenerator, "generate_summary_table"
+    ) as generate_summary_table_mock, patch.object(
+        CIMReportGenerator, "generate_tag_stanza_mapping_table"
+    ) as generate_tag_stanza_mapping_table_mock, patch.object(
+        CIMReportGenerator, "generate_field_summary_table"
+    ) as generate_field_summary_table_mock, patch.object(
+        CIMReportGenerator, "generate_skip_tests_table"
+    ) as generate_skip_tests_table_mock:
+        cim_report_generator.generate_report("fake_path")
+        generate_summary_table_mock.assert_called_once()
+        generate_tag_stanza_mapping_table_mock.assert_called_once()
+        generate_field_summary_table_mock.assert_called_once()
+        generate_skip_tests_table_mock.assert_called_once()
+        markdown_table_mock.assert_has_calls(
+            [
+                call("Not Supported Datamodels", ["Name"]),
+                call.add_row(["Application_State"]),
+                call.add_row(["Change_Analysis"]),
+                call.add_row(["Compute_Inventory"]),
+                call.add_row(["Databases"]),
+                call.add_row(["Event_Signatures"]),
+                call.add_row(["Interprocess_Messaging"]),
+                call.add_row(["JVM"]),
+                call.add_row(["Performance"]),
+                call.add_row(["Splunk_Audit"]),
+                call.add_row(["Splunk_CIM_Validation"]),
+                call.add_row(["Ticket_Management"]),
+                call.return_table_str(),
+            ],
+        )
+        cim_report_generator.report_generator.assert_has_calls(
+            [
+                call.set_title("CIM AUDIT REPORT"),
+                call.add_table("| table |"),
+                call.write("fake_path"),
             ]
         )
