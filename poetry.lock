@@ -404,7 +404,7 @@ dev = ["pre-commit", "tox"]
 
 [[package]]
 name = "poetry-dynamic-versioning"
-version = "0.12.3"
+version = "0.12.4"
 description = "Plugin for Poetry to enable dynamic versioning based on VCS tags"
 category = "dev"
 optional = false
@@ -883,7 +883,7 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "73171c32dd37a4ab891f3a6d039c9fa96e7319bda9546b58d5858ef8900c4295"
+content-hash = "4db4b7f48fa99dffd4d707b9c2d09a193480b64a60abee201cf8614ee4c4a232"
 
 [metadata.files]
 alabaster = [
@@ -1182,8 +1182,8 @@ pluggy = [
     {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
 ]
 poetry-dynamic-versioning = [
-    {file = "poetry-dynamic-versioning-0.12.3.tar.gz", hash = "sha256:4ee5884205bc2533a162c8796b551bae53687e9734a625e04ca6563d44857346"},
-    {file = "poetry_dynamic_versioning-0.12.3-py3-none-any.whl", hash = "sha256:5ea1fdea7c3763d8840f4b43f5e749cc4b65b0659796e41fb7e683cd35a17f81"},
+    {file = "poetry-dynamic-versioning-0.12.4.tar.gz", hash = "sha256:8bc15c31c5cc095c1a5c9bc42582387ba2cbefa3ae230bda5a84cc834c8b28b1"},
+    {file = "poetry_dynamic_versioning-0.12.4-py3-none-any.whl", hash = "sha256:29a3670de4682ef7830e99d9f5a7e179f98c85d78a332af5f6b5385b4400cb20"},
 ]
 py = [
     {file = "py-1.10.0-py2.py3-none-any.whl", hash = "sha256:3b80836aa6d1feeaa108e046da6423ab8f6ceda6468545ae8d02d9d58d18818a"},
