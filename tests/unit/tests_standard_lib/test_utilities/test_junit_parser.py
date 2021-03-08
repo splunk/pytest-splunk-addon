@@ -26,9 +26,16 @@ def junit_parser():
 
 
 @pytest.fixture()
-def os_path_mock(monkeypatch):
+def os_path_is_file_mock(monkeypatch):
     os = MagicMock()
-    monkeypatch.setattr("os.path", os)
+    monkeypatch.setattr("os.path.isfile", os)
+    return os
+
+
+@pytest.fixture()
+def os_path_is_dir_mock(monkeypatch):
+    os = MagicMock()
+    monkeypatch.setattr("os.path.isdir", os)
     return os
 
 
@@ -69,8 +76,8 @@ def sys_exit_mock(monkeypatch):
     return sys
 
 
-def test_junit_parser_instantiation(junit_xml_mock, os_path_mock):
-    os_path_mock.isfile.return_value = True
+def test_junit_parser_instantiation(junit_xml_mock, os_path_is_file_mock):
+    os_path_is_file_mock.return_value = True
     junit_xml_mock.fromfile.return_value = "JUnit Xml from file return value"
     jup = JunitParser("fake_path")
     assert jup._xml == "JUnit Xml from file return value"
@@ -92,10 +99,14 @@ def test_junit_parser_instantiation(junit_xml_mock, os_path_mock):
     ],
 )
 def test_junit_parser_instantiation_exception(
-    os_path_mock, multiple_xml, expected_error, error_message
+    os_path_is_file_mock,
+    os_path_is_dir_mock,
+    multiple_xml,
+    expected_error,
+    error_message,
 ):
-    os_path_mock.isfile.return_value = False
-    os_path_mock.isdir.return_value = multiple_xml
+    os_path_is_file_mock.return_value = False
+    os_path_is_dir_mock.return_value = multiple_xml
     with pytest.raises(expected_error, match=error_message):
         JunitParser("fake_path")
 
