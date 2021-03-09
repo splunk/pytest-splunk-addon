@@ -20,4 +20,3 @@ def parser(configuration_file):
         return parser_class("fake_path", FakeApp)
 
     return create_parser
-

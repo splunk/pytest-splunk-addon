@@ -51,14 +51,6 @@ def cim_report_generator_mock(monkeypatch):
 
 
 @pytest.fixture()
-def argparse_mock(monkeypatch):
-    ap = MagicMock()
-    ap.return_value = ap
-    monkeypatch.setattr("argparse.ArgumentParser", ap)
-    return ap
-
-
-@pytest.fixture()
 def junit_parser_mock(monkeypatch):
     jup = MagicMock()
     jup.return_value = jup
