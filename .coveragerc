@@ -1,0 +1,12 @@
+# .coveragerc to control coverage.py
+[run]
+omit =
+    */test_templates.py
+    pytest_splunk_addon/standard_lib/cim_compliance/base_report.py
+    pytest_splunk_addon/standard_lib/cim_compliance/base_table.py
+    pytest_splunk_addon/standard_lib/cim_tests/base_schema.py
+    pytest_splunk_addon/standard_lib/event_ingestors/base_event_ingestor.py
+
+[report]
+exclude_lines =
+    if __name__ == .__main__.:
