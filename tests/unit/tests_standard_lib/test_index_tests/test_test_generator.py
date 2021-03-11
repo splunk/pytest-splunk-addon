@@ -31,6 +31,16 @@ def sample_event_mock(monkeypatch):
     return se
 
 
+@pytest.fixture()
+def raise_warning_mock(monkeypatch):
+    rw = MagicMock()
+    monkeypatch.setattr(
+        "pytest_splunk_addon.standard_lib.index_tests.test_generator.raise_warning",
+        rw,
+    )
+    return rw
+
+
 def test_generate_tests_without_conf_file(sample_generator_mock, caplog):
     sample_generator_mock.return_value = sample_generator_mock
     sample_generator_mock.get_samples.return_value = {"tokenized_events": []}
@@ -162,6 +172,95 @@ def test_generate_tests_triggers_generate_line_breaker_tests(sample_generator_mo
         assert out == [sample_event(sample_name="line_breaker_event")]
         generate_line_breaker_tests.assert_called_once_with(
             [sample_event(sample_name="line_breaker_event")]
+        )
+
+
+def test_generate_line_breaker_tests(raise_warning_mock):
+    tokenized_events = [
+        sample_event(
+            metadata={
+                "sample_count": 5,
+                "expected_event_count": 3,
+                "sourcetype": "splunkd",
+                "input_type": "file_monitor",
+                "host": ["host1", "host2"],
+            },
+            sample_name="sample.1",
+        ),
+        sample_event(
+            metadata={
+                "sample_count": 5,
+                "expected_event_count": "three",
+                "sourcetype": "splunkd",
+                "input_type": "modinput",
+                "host": "host1",
+            },
+            sample_name="sample.2",
+        ),
+        sample_event(
+            metadata={
+                "sample_count": 1,
+                "expected_event_count": 1,
+                "sourcetype": "sc4s",
+                "input_type": "syslog_tcp",
+                "host": ["host2", "host3"],
+            },
+            sample_name="sample.1",
+        ),
+    ]
+    with patch.object(
+        IndexTimeTestGenerator,
+        "get_sourcetype",
+        side_effect=lambda event: event.metadata["sourcetype"],
+    ), patch.object(
+        IndexTimeTestGenerator,
+        "get_hosts",
+        side_effect=lambda event: event.metadata["host"]
+        if type(event.metadata["host"]) == list
+        else [event.metadata["host"]],
+    ), patch.object(
+        pytest, "param", side_effect=lambda x, id: (x, id)
+    ) as param_mock:
+        out = list(
+            IndexTimeTestGenerator().generate_line_breaker_tests(tokenized_events)
+        )
+        assert out == [
+            (
+                {
+                    "sourcetype": "splunkd",
+                    "expected_event_count": 15,
+                    "host": {"host1", "host2", "host3"},
+                },
+                "splunkd::sample.1",
+            ),
+            (
+                {
+                    "sourcetype": "splunkd",
+                    "expected_event_count": 15,
+                    "host": {"host1"},
+                },
+                "splunkd::sample.2",
+            ),
+        ]
+        param_mock.assert_has_calls(
+            [
+                call(
+                    {
+                        "sourcetype": "splunkd",
+                        "expected_event_count": 15,
+                        "host": {"host1", "host2", "host3"},
+                    },
+                    id="splunkd::sample.1",
+                ),
+                call(
+                    {
+                        "sourcetype": "splunkd",
+                        "expected_event_count": 15,
+                        "host": {"host1"},
+                    },
+                    id="splunkd::sample.2",
+                ),
+            ]
         )
 
 
