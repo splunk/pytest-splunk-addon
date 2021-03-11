@@ -1,6 +1,7 @@
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, call
 from collections import namedtuple
+from copy import deepcopy
 from pytest_splunk_addon.standard_lib.index_tests.test_generator import (
     IndexTimeTestGenerator,
 )
@@ -20,6 +21,16 @@ def sample_generator_mock(monkeypatch):
     return sg
 
 
+@pytest.fixture()
+def sample_event_mock(monkeypatch):
+    se = MagicMock()
+    monkeypatch.setattr(
+        "pytest_splunk_addon.standard_lib.index_tests.test_generator.SampleEvent",
+        se,
+    )
+    return se
+
+
 def test_generate_tests_without_conf_file(sample_generator_mock, caplog):
     sample_generator_mock.return_value = sample_generator_mock
     sample_generator_mock.get_samples.return_value = {"tokenized_events": []}
@@ -33,10 +44,125 @@ def test_generate_tests_without_conf_file(sample_generator_mock, caplog):
     ]
 
 
-def test_generate_tests(sample_generator_mock):
+@pytest.mark.parametrize(
+    "test_type, tokenized_events, expected_output",
+    [
+        (
+            "key_fields",
+            [
+                sample_event(
+                    metadata={
+                        "identifier": "sample.1",
+                        "host": ["localhost", "remotehost"],
+                        "host_prefix": "p_",
+                    },
+                    key_fields={"host": "localhost"},
+                )
+            ],
+            [
+                (
+                    sample_event(
+                        metadata={
+                            "identifier": "sample.1",
+                            "host": ["localhost", "remotehost"],
+                            "host_prefix": "p_",
+                        },
+                        key_fields={"host": ["p_localhost"]},
+                    ),
+                    "sample.1",
+                    ["localhost", "remotehost"],
+                )
+            ],
+        ),
+        (
+            "_time",
+            [
+                sample_event(
+                    metadata={
+                        "identifier": "sample.2",
+                        "host": "localhost",
+                        "timestamp_type": "event",
+                    },
+                )
+            ],
+            [
+                (
+                    sample_event(
+                        metadata={
+                            "identifier": "sample.2",
+                            "host": "localhost",
+                            "timestamp_type": "event",
+                        },
+                    ),
+                    "sample.2",
+                    ["localhost"],
+                )
+            ],
+        ),
+    ],
+)
+def test_generate_tests_triggers_generate_params(
+    sample_generator_mock,
+    sample_event_mock,
+    test_type,
+    tokenized_events,
+    expected_output,
+):
     sample_generator_mock.return_value = sample_generator_mock
-    sample_generator_mock.get_samples.return_value = {"tokenized_events": []}
-    pass
+    sample_event_mock.copy.side_effect = lambda x: deepcopy(x)
+    sample_generator_mock.get_samples.return_value = {
+        "tokenized_events": tokenized_events,
+        "conf_name": "psa-data-gen",
+    }
+    with patch.object(
+        IndexTimeTestGenerator,
+        "get_hosts",
+        side_effect=lambda event: event.metadata["host"]
+        if type(event.metadata["host"]) == list
+        else [event.metadata["host"]],
+    ), patch.object(
+        IndexTimeTestGenerator,
+        "add_host_prefix",
+        side_effect=lambda host_prefix, hosts: [
+            host_prefix + str(host) for host in hosts
+        ]
+        if type(hosts) == list
+        else [host_prefix + str(hosts)],
+    ), patch.object(
+        IndexTimeTestGenerator,
+        "generate_params",
+        side_effect=lambda event, ids, hosts: ((event, ids, hosts) for x in range(1)),
+    ) as generate_params_mock:
+        out = list(
+            IndexTimeTestGenerator().generate_tests(
+                True, "fake_app_path", "fake_config_path", test_type
+            )
+        )
+        assert out == expected_output
+        generate_params_mock.assert_has_calls([call(*args) for args in expected_output])
+        assert generate_params_mock.call_count == len(expected_output)
+
+
+def test_generate_tests_triggers_generate_line_breaker_tests(sample_generator_mock):
+    sample_generator_mock.return_value = sample_generator_mock
+    sample_generator_mock.get_samples.return_value = {
+        "tokenized_events": [sample_event(sample_name="line_breaker_event")],
+        "conf_name": "psa-data-gen",
+    }
+    with patch.object(
+        IndexTimeTestGenerator,
+        "generate_line_breaker_tests",
+        side_effect=lambda events: (event for event in events),
+    ) as generate_line_breaker_tests:
+        out = list(
+            IndexTimeTestGenerator().generate_tests(
+                True, "fake_app_path", "fake_config_path", "line_breaker"
+            )
+        )
+        assert out == [sample_event(sample_name="line_breaker_event")]
+        generate_line_breaker_tests.assert_called_once_with(
+            [sample_event(sample_name="line_breaker_event")]
+        )
 
 
 @pytest.mark.parametrize(
@@ -89,7 +215,7 @@ def test_get_hosts(event, expected_output, log, caplog):
         IndexTimeTestGenerator,
         "add_host_prefix",
         side_effect=lambda host_prefix, hosts: [
-            host_prefix + str(host) for host in hosts if hosts
+            host_prefix + str(host) for host in hosts
         ],
     ):
         assert IndexTimeTestGenerator().get_hosts(event) == expected_output
@@ -132,3 +258,150 @@ def test_get_sourcetype(event, expected_output):
 )
 def test_get_source(event, expected_output):
     assert IndexTimeTestGenerator().get_source(event) == expected_output
+
+
+@pytest.mark.parametrize(
+    "identifier_key, hosts, expected_output",
+    [
+        (["identifier_1", "identifier_2"], [], ["identifier_1", "identifier_2"]),
+        ([], ["host1", "host2"], ["host1", "host2"]),
+    ],
+)
+def test_generate_params(identifier_key, hosts, expected_output):
+    with patch.object(
+        IndexTimeTestGenerator,
+        "generate_identifier_params",
+        side_effect=lambda event, ids: (id for id in ids),
+    ) as generate_identifier_params_mock, patch.object(
+        IndexTimeTestGenerator,
+        "generate_hosts_params",
+        side_effect=lambda event, hosts: (host for host in hosts),
+    ) as generate_hosts_params_mock:
+        out = list(
+            IndexTimeTestGenerator().generate_params(
+                "empty_event", identifier_key, hosts
+            )
+        )
+        assert out == expected_output
+        generate_identifier_params_mock.assert_has_calls(
+            [call("empty_event", identifier_key)] if identifier_key else []
+        )
+        generate_hosts_params_mock.assert_has_calls(
+            [call("empty_event", hosts)] if hosts else []
+        )
+
+
+@pytest.mark.parametrize(
+    "tokenized_event, expected_output",
+    [
+        (
+            sample_event(
+                key_fields={"key1": ["val1a", "val1b"], "key2": ["val2a", "val2b"]}
+            ),
+            [
+                (
+                    {
+                        "identifier": "key1=val1a",
+                        "sourcetype": "splunkd",
+                        "source": "utility.log",
+                        "tokenized_event": sample_event(
+                            key_fields={
+                                "key1": ["val1a", "val1b"],
+                                "key2": ["val2a", "val2b"],
+                            }
+                        ),
+                    },
+                    "splunkd::key1:val1a",
+                ),
+                (
+                    {
+                        "identifier": "key1=val1b",
+                        "sourcetype": "splunkd",
+                        "source": "utility.log",
+                        "tokenized_event": sample_event(
+                            key_fields={
+                                "key1": ["val1a", "val1b"],
+                                "key2": ["val2a", "val2b"],
+                            }
+                        ),
+                    },
+                    "splunkd::key1:val1b",
+                ),
+            ],
+        )
+    ],
+)
+def test_generate_identifier_params(tokenized_event, expected_output):
+    with patch.object(
+        IndexTimeTestGenerator, "get_sourcetype", return_value="splunkd"
+    ), patch.object(
+        IndexTimeTestGenerator, "get_source", return_value="utility.log"
+    ), patch.object(
+        pytest, "param", side_effect=lambda x, id: (x, id)
+    ) as param_mock:
+        out = list(
+            IndexTimeTestGenerator().generate_identifier_params(tokenized_event, "key1")
+        )
+        assert out == expected_output
+        param_mock.assert_has_calls(
+            [call(arg[0], id=arg[1]) for arg in expected_output]
+        )
+        assert param_mock.call_count == len(expected_output)
+
+
+@pytest.mark.parametrize(
+    "hosts, expected_output",
+    [
+        (
+            ["localhost"],
+            (
+                {
+                    "hosts": ["localhost"],
+                    "sourcetype": "splunkd",
+                    "source": "utility.log",
+                    "tokenized_event": sample_event(sample_name="empty_event"),
+                },
+                "splunkd::localhost",
+            ),
+        ),
+        (
+            ["host1", "host2", "host3"],
+            (
+                {
+                    "hosts": ["host1", "host2", "host3"],
+                    "sourcetype": "splunkd",
+                    "source": "utility.log",
+                    "tokenized_event": sample_event(sample_name="empty_event"),
+                },
+                "splunkd::host1_to_host3",
+            ),
+        ),
+        (
+            [],
+            (
+                {
+                    "hosts": [],
+                    "sourcetype": "splunkd",
+                    "source": "utility.log",
+                    "tokenized_event": sample_event(sample_name="empty_event"),
+                },
+                "splunkd::empty_event",
+            ),
+        ),
+    ],
+)
+def test_generate_hosts_params(hosts, expected_output):
+    with patch.object(
+        IndexTimeTestGenerator, "get_sourcetype", return_value="splunkd"
+    ), patch.object(
+        IndexTimeTestGenerator, "get_source", return_value="utility.log"
+    ), patch.object(
+        pytest, "param", side_effect=lambda x, id: (x, id)
+    ) as param_mock:
+        out = list(
+            IndexTimeTestGenerator().generate_hosts_params(
+                sample_event(sample_name="empty_event"), hosts
+            )
+        )
+        assert out == [expected_output]
+        param_mock.assert_called_once_with(expected_output[0], id=expected_output[1])
