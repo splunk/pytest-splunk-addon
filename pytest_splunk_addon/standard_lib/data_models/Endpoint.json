@@ -125,7 +125,8 @@
         {
           "name": "parent_process_name",
           "type": "required",
-          "comment": "The friendly name of the parent process, such as notepad.exe."
+          "comment": "The friendly name of the parent process, such as notepad.exe.",
+          "validity": "if(match(parent_process_name,\"^[^\\\\\\/]+$\"),parent_process_name,null())"
         },
         {
           "name": "parent_process_path",
@@ -172,7 +173,8 @@
         {
           "name": "process_name",
           "type": "required",
-          "comment": "The friendly name of the process, such as notepad.exe."
+          "comment": "The friendly name of the process, such as notepad.exe.",
+          "validity": "if(match(process_name,\"^[^\\\\\\/]+$\"),process_name,null())"
         },
         {
           "name": "process_path",
