@@ -25,7 +25,6 @@ class UpdateEventgen():
         except OSError:
             LOGGER.error("Eventgen.conf not found")
             raise Exception("Eventgen.conf not found")
-            return None
 
     def get_eventgen_stanzas(self):
         """
