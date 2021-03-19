@@ -111,19 +111,18 @@ def test_src_regex_can_be_instantiated():
     assert hasattr(srcregex, "source_type")
 
 
-def test_generate_tests(reqs_test_generator):
+def test_generate_tests():
     with patch.object(
         ReqsTestGenerator,
         "generate_cim_req_params",
         side_effect=lambda: (tc for tc in ["test_1", "test_2", "test_3"]),
     ):
-        out = list(
-            reqs_test_generator.generate_tests("splunk_searchtime_requirement_param")
-        )
+        rtg = ReqsTestGenerator("fake_path")
+        out = list(rtg.generate_tests("splunk_searchtime_requirement_param"))
         assert out == ["test_1", "test_2", "test_3"]
 
 
-def test_extract_key_value_xml(reqs_test_generator):
+def test_extract_key_value_xml():
     event = MagicMock()
     event.iter.side_effect = lambda x: (
         d
@@ -132,7 +131,8 @@ def test_extract_key_value_xml(reqs_test_generator):
             {"name": "field2", "value": "value2"},
         ]
     )
-    out = reqs_test_generator.extract_key_value_xml(event)
+    rtg = ReqsTestGenerator("fake_path")
+    out = rtg.extract_key_value_xml(event)
     assert out == {"field1": "value1", "field2": "value2"}
     event.iter.assert_called_once_with("field")
 
@@ -228,7 +228,6 @@ def test_extract_key_value_xml(reqs_test_generator):
 def test_generate_cim_req_params(
     os_path_is_dir_mock,
     os_listdir_mock,
-    reqs_test_generator,
     root_mock,
     listdir_return_value,
     check_xml_format_return_value,
@@ -268,7 +267,8 @@ def test_generate_cim_req_params(
     ), patch.object(
         pytest, "param", side_effect=lambda x, id: (x, id)
     ) as param_mock:
-        out = list(reqs_test_generator.generate_cim_req_params())
+        rtg = ReqsTestGenerator("fake_path")
+        out = list(rtg.generate_cim_req_params())
         assert out == expected_output
         param_mock.assert_has_calls(
             [call(param[0], id=param[1]) for param in expected_output]
