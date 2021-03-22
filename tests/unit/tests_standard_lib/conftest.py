@@ -1,9 +1,8 @@
 import pytest
-from collections import namedtuple
 from unittest.mock import MagicMock, mock_open
+from collections import namedtuple
 
 
-@pytest.fixture
 def open_mock(monkeypatch):
     open_mock = mock_open()
     monkeypatch.setattr("builtins.open", open_mock)
