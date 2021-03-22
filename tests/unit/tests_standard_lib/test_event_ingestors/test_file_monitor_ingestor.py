@@ -161,7 +161,8 @@ def test_create_inputs_stanza(requests_mock, event, post_args):
     [
         (
             {"text": "Not Found", "status_code": 404},
-            f"Unable to add stanza in inputs.conf for Path : {os_sep}home{os_sep}uf_files{os_sep}host_name{os_sep}sample_name \nStatus code: 404 \nReason: None \ntext:Not Found",
+            f"Unable to add stanza in inputs.conf for Path : {os_sep}home{os_sep}uf_files{os_sep}host_name{os_sep}"
+            f"sample_name \nStatus code: 404 \nReason: None \ntext:Not Found",
         ),
         (
             {"exc": ConnectionError("test connection error")},
