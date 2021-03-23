@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import patch, call
 from collections import namedtuple
 from copy import deepcopy
 from pytest_splunk_addon.standard_lib.index_tests.test_generator import (
@@ -10,6 +10,10 @@ module = "pytest_splunk_addon.standard_lib.index_tests.test_generator"
 sample_event = namedtuple(
     "SampleEvent", ["metadata", "key_fields", "sample_name"], defaults=[{}, {}, ""]
 )
+
+
+def patch_object(func_to_mock, **kwargs):
+    return patch.object(IndexTimeTestGenerator, func_to_mock, **kwargs)
 
 
 def test_generate_tests_without_conf_file(mock_object, caplog):
@@ -97,22 +101,19 @@ def test_generate_tests_triggers_generate_params(
         "tokenized_events": tokenized_events,
         "conf_name": "psa-data-gen",
     }
-    with patch.object(
-        IndexTimeTestGenerator,
+    with patch_object(
         "get_hosts",
         side_effect=lambda event: event.metadata["host"]
         if type(event.metadata["host"]) == list
         else [event.metadata["host"]],
-    ), patch.object(
-        IndexTimeTestGenerator,
+    ), patch_object(
         "add_host_prefix",
         side_effect=lambda host_prefix, hosts: [
             host_prefix + str(host) for host in hosts
         ]
         if type(hosts) == list
         else [host_prefix + str(hosts)],
-    ), patch.object(
-        IndexTimeTestGenerator,
+    ), patch_object(
         "generate_params",
         side_effect=lambda event, ids, hosts: ((event, ids, hosts) for x in range(1)),
     ) as generate_params_mock:
@@ -133,8 +134,7 @@ def test_generate_tests_triggers_generate_line_breaker_tests(mock_object):
         "tokenized_events": [sample_event(sample_name="line_breaker_event")],
         "conf_name": "psa-data-gen",
     }
-    with patch.object(
-        IndexTimeTestGenerator,
+    with patch_object(
         "generate_line_breaker_tests",
         side_effect=lambda events: (event for event in events),
     ) as generate_line_breaker_tests:
@@ -183,12 +183,10 @@ def test_generate_line_breaker_tests(mock_object):
             sample_name="sample.1",
         ),
     ]
-    with patch.object(
-        IndexTimeTestGenerator,
+    with patch_object(
         "get_sourcetype",
         side_effect=lambda event: event.metadata["sourcetype"],
-    ), patch.object(
-        IndexTimeTestGenerator,
+    ), patch_object(
         "get_hosts",
         side_effect=lambda event: event.metadata["host"]
         if type(event.metadata["host"]) == list
@@ -285,8 +283,7 @@ def test_generate_line_breaker_tests(mock_object):
     ],
 )
 def test_get_hosts(event, expected_output, log, caplog):
-    with patch.object(
-        IndexTimeTestGenerator,
+    with patch_object(
         "add_host_prefix",
         side_effect=lambda host_prefix, hosts: [
             host_prefix + str(host) for host in hosts
@@ -342,12 +339,10 @@ def test_get_source(event, expected_output):
     ],
 )
 def test_generate_params(identifier_key, hosts, expected_output):
-    with patch.object(
-        IndexTimeTestGenerator,
+    with patch_object(
         "generate_identifier_params",
         side_effect=lambda event, ids: (id for id in ids),
-    ) as generate_identifier_params_mock, patch.object(
-        IndexTimeTestGenerator,
+    ) as generate_identifier_params_mock, patch_object(
         "generate_hosts_params",
         side_effect=lambda event, hosts: (host for host in hosts),
     ) as generate_hosts_params_mock:
@@ -406,13 +401,9 @@ def test_generate_params(identifier_key, hosts, expected_output):
     ],
 )
 def test_generate_identifier_params(tokenized_event, expected_output):
-    with patch.object(
-        IndexTimeTestGenerator, "get_sourcetype", return_value="splunkd"
-    ), patch.object(
-        IndexTimeTestGenerator, "get_source", return_value="utility.log"
-    ), patch.object(
-        pytest, "param", side_effect=lambda x, id: (x, id)
-    ) as param_mock:
+    with patch_object("get_sourcetype", return_value="splunkd"), patch_object(
+        "get_source", return_value="utility.log"
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
         out = list(
             IndexTimeTestGenerator().generate_identifier_params(tokenized_event, "key1")
         )
@@ -465,13 +456,9 @@ def test_generate_identifier_params(tokenized_event, expected_output):
     ],
 )
 def test_generate_hosts_params(hosts, expected_output):
-    with patch.object(
-        IndexTimeTestGenerator, "get_sourcetype", return_value="splunkd"
-    ), patch.object(
-        IndexTimeTestGenerator, "get_source", return_value="utility.log"
-    ), patch.object(
-        pytest, "param", side_effect=lambda x, id: (x, id)
-    ) as param_mock:
+    with patch_object("get_sourcetype", return_value="splunkd"), patch_object(
+        "get_source", return_value="utility.log"
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
         out = list(
             IndexTimeTestGenerator().generate_hosts_params(
                 sample_event(sample_name="empty_event"), hosts
