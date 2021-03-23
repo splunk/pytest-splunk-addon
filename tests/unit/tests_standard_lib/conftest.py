@@ -4,6 +4,16 @@ from collections import namedtuple
 
 
 @pytest.fixture()
+def mock_object(monkeypatch):
+    def create_mock_object(object_path):
+        mo = MagicMock()
+        monkeypatch.setattr(object_path, mo)
+        return mo
+
+    return create_mock_object
+
+
+@pytest.fixture()
 def open_mock(monkeypatch):
     open_mock = mock_open()
     monkeypatch.setattr("builtins.open", open_mock)
@@ -11,17 +21,14 @@ def open_mock(monkeypatch):
 
 
 @pytest.fixture()
-def json_load_mock(monkeypatch):
-    load_mock = MagicMock()
-    monkeypatch.setattr("json.load", load_mock)
-    return load_mock
+def json_load_mock(mock_object):
+    return mock_object("json.load")
 
 
 @pytest.fixture()
-def argparse_mock(monkeypatch):
-    ap = MagicMock()
+def argparse_mock(mock_object):
+    ap = mock_object("argparse.ArgumentParser")
     ap.return_value = ap
-    monkeypatch.setattr("argparse.ArgumentParser", ap)
     return ap
 
 
