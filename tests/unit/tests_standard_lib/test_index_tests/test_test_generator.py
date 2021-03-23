@@ -6,42 +6,14 @@ from pytest_splunk_addon.standard_lib.index_tests.test_generator import (
     IndexTimeTestGenerator,
 )
 
+module = 'pytest_splunk_addon.standard_lib.index_tests.test_generator'
 sample_event = namedtuple(
     "SampleEvent", ["metadata", "key_fields", "sample_name"], defaults=[{}, {}, ""]
 )
 
 
-@pytest.fixture()
-def sample_generator_mock(monkeypatch):
-    sg = MagicMock()
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.index_tests.test_generator.SampleXdistGenerator",
-        sg,
-    )
-    return sg
-
-
-@pytest.fixture()
-def sample_event_mock(monkeypatch):
-    se = MagicMock()
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.index_tests.test_generator.SampleEvent",
-        se,
-    )
-    return se
-
-
-@pytest.fixture()
-def raise_warning_mock(monkeypatch):
-    rw = MagicMock()
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.index_tests.test_generator.raise_warning",
-        rw,
-    )
-    return rw
-
-
-def test_generate_tests_without_conf_file(sample_generator_mock, caplog):
+def test_generate_tests_without_conf_file(mock_object, caplog):
+    sample_generator_mock = mock_object(f'{module}.SampleXdistGenerator')
     sample_generator_mock.return_value = sample_generator_mock
     sample_generator_mock.get_samples.return_value = {"tokenized_events": []}
     list(
@@ -112,13 +84,14 @@ def test_generate_tests_without_conf_file(sample_generator_mock, caplog):
     ],
 )
 def test_generate_tests_triggers_generate_params(
-    sample_generator_mock,
-    sample_event_mock,
+    mock_object,
     test_type,
     tokenized_events,
     expected_output,
 ):
+    sample_generator_mock = mock_object(f'{module}.SampleXdistGenerator')
     sample_generator_mock.return_value = sample_generator_mock
+    sample_event_mock = mock_object(f'{module}.SampleEvent')
     sample_event_mock.copy.side_effect = lambda x: deepcopy(x)
     sample_generator_mock.get_samples.return_value = {
         "tokenized_events": tokenized_events,
@@ -153,7 +126,8 @@ def test_generate_tests_triggers_generate_params(
         assert generate_params_mock.call_count == len(expected_output)
 
 
-def test_generate_tests_triggers_generate_line_breaker_tests(sample_generator_mock):
+def test_generate_tests_triggers_generate_line_breaker_tests(mock_object):
+    sample_generator_mock = mock_object(f'{module}.SampleXdistGenerator')
     sample_generator_mock.return_value = sample_generator_mock
     sample_generator_mock.get_samples.return_value = {
         "tokenized_events": [sample_event(sample_name="line_breaker_event")],
@@ -175,7 +149,8 @@ def test_generate_tests_triggers_generate_line_breaker_tests(sample_generator_mo
         )
 
 
-def test_generate_line_breaker_tests(raise_warning_mock):
+def test_generate_line_breaker_tests(mock_object):
+    mock_object(f'{module}.raise_warning')
     tokenized_events = [
         sample_event(
             metadata={
