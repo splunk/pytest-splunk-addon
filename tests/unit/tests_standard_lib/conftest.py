@@ -11,9 +11,16 @@ def open_mock(monkeypatch):
 
 @pytest.fixture()
 def mock_object(monkeypatch):
-    def create_mock_object(object_path):
-        mo = MagicMock()
+    def create_mock_object(object_path, **kwargs):
+        mo = MagicMock(**kwargs)
         monkeypatch.setattr(object_path, mo)
         return mo
 
     return create_mock_object
+
+
+@pytest.fixture()
+def os_path_join_file_mock(mock_object):
+    os = mock_object("os.path.join")
+    os.side_effect = lambda x, y: f"{x}/{y}"
+    return os

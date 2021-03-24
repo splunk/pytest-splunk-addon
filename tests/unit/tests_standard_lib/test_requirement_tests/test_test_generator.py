@@ -12,35 +12,6 @@ src_regex = recordtype("SrcRegex", [("regex_src", None), ("source_type", None)])
 
 
 @pytest.fixture()
-def os_listdir_mock(monkeypatch):
-    listdir = MagicMock()
-    monkeypatch.setattr("os.listdir", listdir)
-    return listdir
-
-
-@pytest.fixture()
-def os_path_is_file_mock(monkeypatch):
-    os = MagicMock()
-    monkeypatch.setattr("os.path.isfile", os)
-    return os
-
-
-@pytest.fixture()
-def os_path_join_file_mock(monkeypatch):
-    os = MagicMock()
-    os.side_effect = lambda x, y: f"{x}/{y}"
-    monkeypatch.setattr("os.path.join", os)
-    return os
-
-
-@pytest.fixture()
-def os_path_is_dir_mock(monkeypatch):
-    os = MagicMock()
-    monkeypatch.setattr("os.path.isdir", os)
-    return os
-
-
-@pytest.fixture()
 def reqs_test_generator(os_path_join_file_mock):
     return ReqsTestGenerator("fake_path")
 
@@ -226,8 +197,7 @@ def test_extract_key_value_xml():
     ],
 )
 def test_generate_cim_req_params(
-    os_path_is_dir_mock,
-    os_listdir_mock,
+    mock_object,
     root_mock,
     listdir_return_value,
     check_xml_format_return_value,
@@ -237,7 +207,9 @@ def test_generate_cim_req_params(
     extract_key_value_xml_return_value,
     expected_output,
 ):
+    os_path_is_dir_mock = mock_object("os.path.isdir")
     os_path_is_dir_mock.return_value = True
+    os_listdir_mock = mock_object("os.listdir")
     os_listdir_mock.return_value = listdir_return_value
     root_mock.tags.update(root_events)
     with patch.object(

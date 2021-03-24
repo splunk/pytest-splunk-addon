@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import MagicMock, mock_open, call, patch
+from unittest.mock import MagicMock, call, patch
 from recordtype import recordtype
 from pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester import (
     RequirementEventIngestor,
@@ -8,6 +8,7 @@ from pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester
 )
 
 
+module = "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester"
 src_regex = recordtype("SrcRegex", [("regex_src", None), ("source_type", None)])
 sample_event = recordtype(
     "SampleEvent",
@@ -16,30 +17,13 @@ sample_event = recordtype(
 
 
 @pytest.fixture()
-def open_mock(monkeypatch):
-    monkeypatch.setattr("builtins.open", mock_open())
-
-
-@pytest.fixture()
-def os_mock(monkeypatch):
-    monkeypatch.setattr("os.path.isdir", MagicMock(return_value=True))
-    monkeypatch.setattr("os.listdir", MagicMock(return_value=["sample.log"]))
-
-
-@pytest.fixture()
 def sample_event_mock(monkeypatch):
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester.SampleEvent",
-        sample_event,
-    )
+    monkeypatch.setattr(f"{module}.SampleEvent", sample_event)
 
 
 @pytest.fixture()
 def src_regex_mock(monkeypatch):
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester.SrcRegex",
-        src_regex,
-    )
+    monkeypatch.setattr(f"{module}.SrcRegex", src_regex)
 
 
 @pytest.fixture()
@@ -47,10 +31,7 @@ def get_root_mocked(monkeypatch):
     tree_mock = MagicMock()
     tree_mock.return_value = tree_mock
     tree_mock.getroot.return_value = "root"
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester.ET.parse",
-        tree_mock,
-    )
+    monkeypatch.setattr(f"{module}.ET.parse", tree_mock)
 
 
 @pytest.fixture()
@@ -92,36 +73,24 @@ def configparser_mock(monkeypatch):
 
 
 @pytest.fixture()
-def requirement_ingestor_mocked(monkeypatch):
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester."
-        "RequirementEventIngestor.extract_regex_transforms",
-        MagicMock(return_value=[src_regex("event", "host::$1")]),
+def requirement_ingestor_mocked(monkeypatch, mock_object):
+    mock_object(
+        f"{module}.RequirementEventIngestor.extract_regex_transforms",
+        return_value=[src_regex("event", "host::$1")],
     )
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester."
-        "RequirementEventIngestor.check_xml_format",
-        MagicMock(return_value=True),
+    mock_object(
+        f"{module}.RequirementEventIngestor.check_xml_format", return_value=True
     )
-    root_mock = MagicMock()
+    root_mock = mock_object(f"{module}.RequirementEventIngestor.get_root")
     root_mock.return_value = root_mock
     root_mock.iter.return_value = ["session created", "session closed"]
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester."
-        "RequirementEventIngestor.get_root",
-        root_mock,
+    ere_mock = mock_object(
+        f"{module}.RequirementEventIngestor.extract_raw_events",
+        side_effect=lambda x: f"event: {x}",
     )
-    ere_mock = MagicMock(side_effect=lambda x: f"event: {x}")
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester."
-        "RequirementEventIngestor.extract_raw_events",
-        ere_mock,
-    )
-    es_mock = MagicMock(side_effect=("host$1", "host$2"))
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester."
-        "RequirementEventIngestor.extract_sourcetype",
-        es_mock,
+    es_mock = mock_object(
+        f"{module}.RequirementEventIngestor.extract_sourcetype",
+        side_effect=("host$1", "host$2"),
     )
     return {"root_mock": root_mock, "ere_mock": ere_mock, "es_mock": es_mock}
 
@@ -174,8 +143,10 @@ def test_sourcetype_can_be_extracted():
 
 
 def test_events_can_be_obtained(
-    requirement_ingestor_mocked, os_mock, sample_event_mock
+    mock_object, requirement_ingestor_mocked, sample_event_mock
 ):
+    mock_object("os.path.isdir", return_value=True)
+    mock_object("os.listdir", return_value=["sample.log"])
     req = RequirementEventIngestor("fake_path")
     assert req.get_events() == [
         sample_event(
