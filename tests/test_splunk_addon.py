@@ -282,6 +282,7 @@ def test_splunk_app_cim_broken(testdir):
         "-m splunk_searchtime_cim",
         "--search-interval=4",
         "--search-retry=4",
+        "--splunk-data-generator=tests/addons/TA_CIM_Broken/default",
         "--search-index=*,_internal",
     )
 
