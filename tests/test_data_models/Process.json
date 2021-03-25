@@ -1,30 +1,31 @@
 {
-	"version":"1.0.0",
-	"model_name": "Process",
-	"objects": [{
-		"name": "Process",
-		"tags": [
-			[
-				"tag_splunkd_process"
-			]
-		],
-		"fields_cluster": [],
-		"fields": [
+  "version": "1.0.0",
+  "model_name": "Process",
+  "objects": [
+    {
+      "name": "Process",
+      "tags": [
+        [
+          "tag_splunkd_process"
+        ]
+      ],
+      "fields_cluster": [],
+      "fields": [
         {
           "name": "process_name",
           "type": "required",
           "comment": "The friendly name of the process, such as notepad.exe.",
-		  "validity": "if(match(process_name,\"^[^\\\\\\/]+$\"),parent_process_name,null())"
+          "validity": "if(match(process_name,\"^[^\\\\\\/]+$\"),parent_process_name,null())"
         },
-		{
+        {
           "name": "parent_process_name",
           "type": "required",
           "comment": "The friendly name of the process, such as notepad.exe.",
-		  "validity": "if(match(parent_process_name,\"^[^\\\\\\/]+$\"),parent_process_name,null())"
+          "validity": "if(match(parent_process_name,\"^[^\\\\\\/]+$\"),parent_process_name,null())"
         }
-		],
-		"child_dataset": [],
-		"search_constraints": "tag=tag_splunkd_process"
-	}]
-
+      ],
+      "child_dataset": [],
+      "search_constraints": "tag=tag_splunkd_process"
+    }
+  ]
 }
