@@ -22,5 +22,5 @@ def mock_object(monkeypatch):
 @pytest.fixture()
 def os_path_join_file_mock(mock_object):
     os = mock_object("os.path.join")
-    os.side_effect = lambda x, y: f"{x}/{y}"
+    os.side_effect = lambda *x: "/".join(x)
     return os

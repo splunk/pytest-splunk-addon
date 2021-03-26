@@ -185,11 +185,9 @@ def test_create_inputs_stanza_bad_request(requests_mock, caplog, response, messa
         assert message in caplog.messages
 
 
-def test_get_file_path(open_mock, mock_object):
+def test_get_file_path(open_mock, mock_object, os_path_join_file_mock):
     os_getcwd_mock = mock_object("os.getcwd")
     os_getcwd_mock.return_value = "/fake_path"
-    os_path_join_mock = mock_object("os.path.join")
-    os_path_join_mock.side_effect = lambda *x: "/".join(x)
     os_path_exists = mock_object("os.path.exists")
     os_path_exists.return_value = False
     os_mkdir = mock_object("os.mkdir")
