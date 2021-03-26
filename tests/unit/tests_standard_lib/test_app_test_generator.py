@@ -178,15 +178,6 @@ def test_generate_tests(
         assert dedup_mock.call_count == dedup_call_count
 
 
-# def test_generate_test_conf_tests_differs_from_psa_data_gen(app_test_generator, caplog):
-#     msg = "Index Time tests cannot be executed using eventgen.conf, pytest-splunk-addon-data.conf is required."
-#     atg = AppTestGenerator(test_config)
-#     atg.indextime_test_generator.generate_tests.return_value = msg
-#     out = list(atg.generate_tests('splunk_indextime_line_breaker'))
-#     assert out == []
-#     assert msg in caplog
-
-
 def test_dedup_tests(app_test_generator):
     parameter_list = [params(values=f"val{x}", id=x) for x in range(7)]
     atg = AppTestGenerator(test_config)
