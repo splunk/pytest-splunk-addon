@@ -420,7 +420,8 @@ class FileRule(Rule):
         """
         Returns the relative sample file path and index value
         """
-        if self.replacement.startswith("file" or "File"):
+
+        if self.replacement.startswith(("file", "File")):
             sample_file_path = re.match(r"[fF]ile\[(.*?)\]", self.replacement).group(1)
         else:
             sample_file_path = self.replacement

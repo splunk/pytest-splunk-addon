@@ -669,7 +669,7 @@ class TestFileRule:
 
 
 class TestTimeRule:
-    @freeze_time("2012-01-01")
+    @freeze_time("2020-11-01T04:16:13-04:00")
     @pytest.mark.parametrize(
         "earliest, latest, expected",
         [
@@ -677,18 +677,18 @@ class TestTimeRule:
                 "24h",
                 "6h",
                 [
-                    token_value(key=1325368800.0, value=REPL),
-                    token_value(key=1325368800.0, value=REPL),
-                    token_value(key=1325368800.0, value=REPL),
+                    token_value(key=1604211373.0, value=REPL),
+                    token_value(key=1604211373.0, value=REPL),
+                    token_value(key=1604211373.0, value=REPL),
                 ],
             ),
             (
                 "now",
                 None,
                 [
-                    token_value(key=1325368800.0, value=REPL),
-                    token_value(key=1325368800.0, value=REPL),
-                    token_value(key=1325368800.0, value=REPL),
+                    token_value(key=1604211373.0, value=REPL),
+                    token_value(key=1604211373.0, value=REPL),
+                    token_value(key=1604211373.0, value=REPL),
                 ],
             ),
             (
@@ -713,7 +713,7 @@ class TestTimeRule:
         ):
             assert list(rule.replace(eve, 3)) == expected
 
-    @freeze_time("2012-01-01")
+    @freeze_time("2020-11-01T04:16:13-04:00")
     @pytest.mark.parametrize(
         "timezone, replacement, expected",
         [
