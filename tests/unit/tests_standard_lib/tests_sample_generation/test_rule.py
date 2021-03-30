@@ -1,9 +1,9 @@
 import datetime
+import pytest
+import pytz
 from collections import namedtuple
 from freezegun import freeze_time
 from unittest.mock import MagicMock, call, patch, mock_open, ANY
-
-import pytest
 
 import pytest_splunk_addon.standard_lib.sample_generation.rule
 
@@ -709,7 +709,7 @@ class TestTimeRule:
         )
         with patch(
             "pytest_splunk_addon.standard_lib.sample_generation.rule.time_parse.convert_to_time",
-            MagicMock(return_value=datetime.datetime(2021, 3, 26, 18, 18, 46, 466863)),
+            MagicMock(return_value=datetime.datetime(2021, 3, 26, 18, 18, 46, 466863, pytz.UTC)),
         ):
             assert list(rule.replace(eve, 3)) == expected
 
@@ -743,13 +743,13 @@ class TestTimeRule:
         )
         with patch(
             "pytest_splunk_addon.standard_lib.sample_generation.rule.time_parse.convert_to_time",
-            MagicMock(return_value=datetime.datetime(2021, 3, 26, 18, 18, 46, 466863)),
+            MagicMock(return_value=datetime.datetime(2021, 3, 26, 18, 18, 46, 466863, pytz.UTC)),
         ), patch(
             "pytest_splunk_addon.standard_lib.sample_generation.rule.randint",
             MagicMock(return_value=1616801099),
         ), patch(
             "pytest_splunk_addon.standard_lib.sample_generation.rule.time_parse.get_timezone_time",
-            MagicMock(return_value=datetime.datetime(2021, 3, 26, 18, 18, 46, 1)),
+            MagicMock(return_value=datetime.datetime(2021, 3, 26, 18, 18, 46, 1, pytz.UTC)),
         ), patch.object(
             rule, "invert_timezone", MagicMock(return_value="0000")
         ):
