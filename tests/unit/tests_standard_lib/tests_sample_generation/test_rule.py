@@ -422,9 +422,7 @@ class TestFileRule:
         rule.token_value = token_value_mock
         rule.lookupfile = MagicMock(return_value=(ELEM_1, ELEM_2))
         assert list(rule.replace(eve, 4)) == [TOKEN_DATA] * 2
-        token_value_mock.assert_has_calls(
-            [call(ELEM_1, ELEM_1), call(ELEM_2, ELEM_2)]
-        )
+        token_value_mock.assert_has_calls([call(ELEM_1, ELEM_1), call(ELEM_2, ELEM_2)])
 
     @pytest.mark.parametrize(
         "replacement_type, token_cnt, expected",
