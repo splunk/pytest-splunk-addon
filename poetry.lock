@@ -137,7 +137,7 @@ testing = ["pre-commit"]
 
 [[package]]
 name = "faker"
-version = "6.5.0"
+version = "7.0.1"
 description = "Faker is a Python package that generates fake data for you."
 category = "main"
 optional = false
@@ -883,7 +883,7 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "73171c32dd37a4ab891f3a6d039c9fa96e7319bda9546b58d5858ef8900c4295"
+content-hash = "0d862fa993c13863567c794db38d3936b5dd9de55c6a591c8d7c655b4ba9d8d3"
 
 [metadata.files]
 alabaster = [
@@ -991,8 +991,8 @@ execnet = [
     {file = "execnet-1.8.0.tar.gz", hash = "sha256:b73c5565e517f24b62dea8a5ceac178c661c4309d3aa0c3e420856c072c411b4"},
 ]
 faker = [
-    {file = "Faker-6.5.0-py3-none-any.whl", hash = "sha256:90b69e9e05d622edb2fa5ebfda7bef41c88675cace85e72689fde5b8723d00a3"},
-    {file = "Faker-6.5.0.tar.gz", hash = "sha256:da395fe545f40d4366b82b1a02448847a4586bd2b28af393b3edbd1e45d1e0fc"},
+    {file = "Faker-7.0.1-py3-none-any.whl", hash = "sha256:08c4cfbfd498c0e90aff6741771c01803d894013df858db6a573182c6a47951f"},
+    {file = "Faker-7.0.1.tar.gz", hash = "sha256:20c6e4253b73ef2a783d38e085e7c8d8916295fff31c7403116d2af8f908f7ca"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
