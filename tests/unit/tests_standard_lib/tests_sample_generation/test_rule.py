@@ -47,6 +47,7 @@ DUMMY_FILE_PATH = "/dummy/path/to/file"
 
 TokenValue = namedtuple("TokenValue", ["value"])
 token_value = namedtuple("token_value", ["key", "value"])
+mocked_datetime = datetime.datetime(2021, 3, 26, 18, 18, 46, 1, pytz.UTC)
 
 
 def token(replacement=REPL, replacement_type=STATIC):
@@ -56,6 +57,13 @@ def token(replacement=REPL, replacement_type=STATIC):
         "replacementType": replacement_type,
         "field": FIELD,
     }
+
+
+def get_patch(func, return_value):
+    return patch(
+        f"pytest_splunk_addon.standard_lib.sample_generation.rule.{func}",
+        MagicMock(return_value=return_value),
+    )
 
 
 def test_raise_warning(caplog):
@@ -377,10 +385,7 @@ def test_guid_rule(event):
     eve = event()
     rule = get_rule_class(GUID)(token())
     _uuid = "123e4567-e89b-12d3-a456-426614174000"
-    with patch(
-        "pytest_splunk_addon.standard_lib.sample_generation.rule.uuid.uuid4",
-        MagicMock(return_value=_uuid),
-    ):
+    with get_patch("uuid.uuid4", _uuid):
         assert list(rule.replace(eve, 2)) == [
             token_value(key=_uuid, value=_uuid),
             token_value(key=_uuid, value=_uuid),
@@ -446,9 +451,8 @@ class TestFileRule:
         token_value_mock = MagicMock(return_value=TOKEN_DATA)
         rule.token_value = token_value_mock
         data = f"{ELEM_1}\n{ELEM_2}\n{ELEM_3}"
-        with patch("builtins.open", mock_open(read_data=data)), patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.rule.choice",
-            MagicMock(return_value=ELEM_1),
+        with patch("builtins.open", mock_open(read_data=data)), get_patch(
+            CHOICE, ELEM_1
         ):
             assert list(rule.replace(eve, 2)) == [TOKEN_DATA] * token_cnt
             token_value_mock.assert_has_calls(expected)
@@ -666,6 +670,105 @@ class TestFileRule:
             assert caplog.messages == [err_msg]
 
 
+class TestTimeRule:
+    @freeze_time("2020-11-01T04:16:13-04:00")
+    @pytest.mark.parametrize(
+        "earliest, latest, expected",
+        [
+            (
+                "24h",
+                "6h",
+                [
+                    token_value(key=1616779126, value=REPL),
+                    token_value(key=1616779126, value=REPL),
+                    token_value(key=1616779126, value=REPL),
+                ],
+            ),
+            (
+                "now",
+                None,
+                [
+                    token_value(key=1616779126, value=REPL),
+                    token_value(key=1616779126, value=REPL),
+                    token_value(key=1616779126, value=REPL),
+                ],
+            ),
+            (
+                "+10000",
+                "+10000",
+                [
+                    token_value(key=1616779126.0, value=REPL),
+                    token_value(key=1616779126.0, value=REPL),
+                    token_value(key=1616779126.0, value=REPL),
+                ],
+            ),
+        ],
+    )
+    def test_replace(self, event, earliest, latest, expected):
+        eve = event()
+        rule = get_rule_class(TIME)(
+            token(), eventgen_params={"earliest": earliest, "latest": latest}
+        )
+        with get_patch("time_parse.convert_to_time", mocked_datetime), get_patch(
+            "randint", 1439905910
+        ), get_patch("datetime.fromtimestamp", mocked_datetime), get_patch(
+            "mktime", 1616779126
+        ) as mktime_mock:
+            assert list(rule.replace(eve, 3)) == expected
+            mktime_mock.assert_has_calls([call(mocked_datetime.timetuple())] * 3)
+
+    @freeze_time("2020-11-01T04:16:13-04:00")
+    @pytest.mark.parametrize(
+        "timezone, replacement, expected",
+        [
+            (
+                "local",
+                REPL,
+                [
+                    token_value(key=1616779126.0, value=REPL),
+                    token_value(key=1616779126.0, value=REPL),
+                ],
+            ),
+            (
+                "0001",
+                "%s",
+                [
+                    token_value(key=1616779126.0, value="1616779126"),
+                    token_value(key=1616779126.0, value="1616779126"),
+                ],
+            ),
+        ],
+    )
+    def test_replace_local_timezone(self, event, timezone, replacement, expected):
+        eve = event()
+        rule = get_rule_class(TIME)(
+            token(replacement=replacement),
+            eventgen_params={"earliest": "24h", "latest": "6h", "timezone": timezone},
+        )
+        with get_patch("time_parse.convert_to_time", mocked_datetime), get_patch(
+            "randint", 1616801099
+        ), get_patch("time_parse.get_timezone_time", mocked_datetime), patch.object(
+            rule, "invert_timezone", MagicMock(return_value="0000")
+        ), get_patch(
+            "mktime", 1616779126
+        ) as mktime_mock:
+            assert list(rule.replace(eve, 2)) == expected
+            mktime_mock.assert_has_calls([call(mocked_datetime.timetuple())] * 2)
+
+    @pytest.mark.parametrize(
+        "timezone_time, expected",
+        [("0000", "0000"), ("-12345", "+2345"), ("+12345", "-2345")],
+    )
+    def test_invert_timezone(self, timezone_time, expected):
+        rule = get_rule_class(TIME)(token())
+        assert rule.invert_timezone(timezone_time) == expected
+
+    def test_invert_timezone_error(self):
+        rule = get_rule_class(TIME)(token())
+        with pytest.raises(Exception, match="Invalid timezone value found."):
+            rule.invert_timezone("1234")
+
+
 @pytest.mark.parametrize(
     "class_name, replacement, replacement_map, index_list, expected",
     [
@@ -729,10 +832,7 @@ def test_user_and_email_rule(
         rule,
         "get_lookup_value",
         MagicMock(return_value=(index_list, ["one", "two", "three"])),
-    ), patch(
-        "pytest_splunk_addon.standard_lib.sample_generation.rule.choice",
-        MagicMock(return_value=1),
-    ):
+    ), get_patch(CHOICE, 1):
         assert list(rule.replace(eve, 2)) == expected
 
 
@@ -767,13 +867,7 @@ class TestUrlRule:
     def test_replace(self, event, replacement, expected):
         eve = event()
         rule = get_rule_class(URL)(token(replacement=replacement))
-        with patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.rule.choice",
-            MagicMock(return_value="a"),
-        ), patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.rule.randint",
-            MagicMock(return_value=3),
-        ), patch.object(
+        with get_patch(CHOICE, "a"), get_patch("randint", 3), patch.object(
             rule.fake,
             URL,
             MagicMock(return_value="http://example.com"),
@@ -782,13 +876,7 @@ class TestUrlRule:
 
     def test_generate_url_query_params(self):
         rule = get_rule_class(URL)(token())
-        with patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.rule.choice",
-            MagicMock(return_value="a"),
-        ), patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.rule.randint",
-            MagicMock(return_value=3),
-        ):
+        with get_patch(CHOICE, "a"), get_patch("randint", 3):
             assert rule.generate_url_query_params() == "?aaa=aaa&aaa=aaa&aaa=aaa"
 
 
@@ -870,10 +958,7 @@ class TestDestDvcSrcRules:
             rule,
             "get_rule_replacement_values",
             MagicMock(return_value=replacement_values),
-        ), patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.rule.choice",
-            MagicMock(return_value=ELEM_2),
-        ):
+        ), get_patch(CHOICE, ELEM_2):
             assert list(rule.replace(eve, 2)) == expected
 
 
@@ -881,10 +966,7 @@ class TestSrcPortRule:
     def test_replace(self, event):
         eve = event()
         rule = get_rule_class(SRCPORT)(token())
-        with patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.rule.randint",
-            MagicMock(return_value=4211),
-        ):
+        with get_patch("randint", 4211):
             assert list(rule.replace(eve, 2)) == [
                 token_value(key=4211, value=4211),
                 token_value(key=4211, value=4211),
@@ -895,10 +977,7 @@ class TestDestPortRule:
     def test_replace(self, event):
         eve = event()
         rule = get_rule_class(DESTPORT)(token())
-        with patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.rule.choice",
-            MagicMock(return_value=22),
-        ):
+        with get_patch(CHOICE, 22):
             assert list(rule.replace(eve, 2)) == [
                 token_value(key=22, value=22),
                 token_value(key=22, value=22),
@@ -950,10 +1029,7 @@ class TestHostRule:
             rule,
             "get_rule_replacement_values",
             MagicMock(return_value=replacement_values),
-        ), patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.rule.choice",
-            MagicMock(return_value=ELEM_2),
-        ):
+        ), get_patch(CHOICE, ELEM_2):
             assert list(rule.replace(eve, 2)) == expected
 
 
@@ -975,8 +1051,5 @@ class TestHexRule:
     def test_replace(self, event, replacement, expected):
         eve = event()
         rule = get_rule_class(HEX)(token(replacement=replacement))
-        with patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.rule.randint",
-            MagicMock(return_value=8),
-        ):
+        with get_patch("randint", 8):
             assert list(rule.replace(eve, 2)) == expected
