@@ -92,16 +92,20 @@ class ReqsTestGenerator(object):
                                 continue
                             for model in model_list:
                                 model = model.replace(" ", "_")
+                                # Function to extract data set
+                                model, dataset, subdataset = self.split_model(model)
+                                logging.info(dataset)
                                 req_test_id = req_test_id + 1
                                 yield pytest.param(
                                     {
                                         "model": model,
+                                        "dataset": dataset,
                                         "escaped_event": escaped_event,
                                         "filename": filename,
                                         "sourcetype": sourcetype,
                                         "Key_value_dict": key_value_dict,
                                     },
-                                    id=f"{model}::{filename}::req_test_id::{req_test_id}",
+                                    id=f"{model}::{dataset}::{filename}::req_test_id::{req_test_id}",
                                 )
                     except Exception:
                         req_test_id = req_test_id + 1
@@ -125,6 +129,29 @@ class ReqsTestGenerator(object):
         for model in root.iter('model'):
             model_list.append(str(model.text))
         return model_list
+
+    def split_model(self, model):
+        """
+        Input: Root of the xml file
+        Function to return list of models in each event of the log file
+        """
+        model_name = model.split(':', 2)
+        if len(model_name) == 3:
+            model = model_name[0]
+            dataset = model_name[1]
+            subdataset = model_name[2]
+        elif len(model_name) == 2:
+            model = model_name[0]
+            dataset = model_name[1]
+            subdataset = ""
+        else:
+            model = model_name[0]
+            dataset = ""
+            subdataset = ""
+        if model:
+            model = model.replace(" ", "_")
+        return model, dataset, subdataset
+
 
     def get_event(self, root):
         """
