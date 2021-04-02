@@ -32,13 +32,14 @@ class ReqsTestTemplates(object):
         for key, value in keyValueXML.items():
             res = key in keyValueprocessedSPL and value == keyValueprocessedSPL[key]
             if not res:
-                self.logger.info(key + " not in SPL extracted fields")
+                self.logger.info(key + "="+ value + " pair in requirement file not in SPL extracted fields values")
                 flag = False
         return flag
 
     @pytest.mark.splunk_searchtime_requirements
     def test_requirement_params(self, splunk_searchtime_requirement_param, splunk_search_util):
         model = splunk_searchtime_requirement_param["model"]
+        dataset = splunk_searchtime_requirement_param["dataset"]
         escaped_event = splunk_searchtime_requirement_param["escaped_event"]
         filename = splunk_searchtime_requirement_param["filename"]
         sourcetype = splunk_searchtime_requirement_param["sourcetype"]
@@ -56,7 +57,7 @@ class ReqsTestTemplates(object):
             assert result
 
         # Search for getting both data model and field extractions
-        search = f"| datamodel {model}  search | search source=	pytest_splunk_addon:hec:raw sourcetype={sourcetype} {escaped_event}"
+        search = f"| datamodel {model} {dataset}  search | search source=	pytest_splunk_addon:hec:raw sourcetype={sourcetype} {escaped_event}"
         datamodel_check = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRIES
         )
