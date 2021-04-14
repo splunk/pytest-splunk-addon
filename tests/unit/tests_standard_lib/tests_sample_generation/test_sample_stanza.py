@@ -13,6 +13,7 @@ tokens = {
     "token_1": {"replacementType": "all"},
     "token_2": {"replacementType": "random"},
 }
+rule_obj = namedtuple("rule_obj", ["metadata"])
 
 
 def get_params_for_get_raw_sample():
@@ -95,6 +96,50 @@ class TestSampleStanza:
                 assert m.event == "one"
                 assert m.metadata == "two"
                 assert m.key_fields == "three"
+
+    @pytest.mark.parametrize(
+        "eventgen_params, conf_name, expected",
+        [
+            (
+                {"tokens": tokens},
+                "something",
+                [rule_obj({"breaker": 1, "expected_event_count": 1})],
+            ),
+            (
+                {"tokens": tokens, "count": "1"},
+                "eventgen",
+                [rule_obj({"breaker": 1, "expected_event_count": 1})],
+            ),
+            (
+                {"tokens": tokens, "expected_event_count": "1", "breaker": "4"},
+                "som",
+                [rule_obj({"breaker": 1, "sample_count": 1})],
+            ),
+            (
+                {"tokens": tokens, "count": "0"},
+                "eventgen",
+                [rule_obj({"breaker": 1, "expected_event_count": 250})]
+                + [rule_obj({"expected_event_count": 250})] * 249,
+            ),
+        ],
+    )
+    def test_tokenize(self, sample_stanza, eventgen_params, conf_name, expected):
+        ss = sample_stanza(eventgen_params=eventgen_params)
+        ss._get_raw_sample = MagicMock(return_value=[rule_obj({})])
+        rule = MagicMock()
+        rule.apply.return_value = [(rule_obj({"breaker": 1}),)]
+        ss.sample_rules = [rule]
+        ss.tokenize(conf_name)
+        assert ss.tokenized_events == expected
+
+    def test_tokenize_empty_raw_event(self, sample_stanza):
+        ss = sample_stanza()
+        ss._get_raw_sample = MagicMock(return_value=[])
+        rule = MagicMock()
+        rule.apply.return_value = [(rule_obj({"breaker": 1}),)]
+        ss.sample_rules = [rule]
+        ss.tokenize("conf_name")
+        assert ss.tokenized_events == []
 
     @pytest.mark.parametrize(
         "rule_value, expected", [("value", ["value", "value"]), (None, [])]
