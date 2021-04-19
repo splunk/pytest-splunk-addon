@@ -118,8 +118,7 @@ class TestSampleStanza:
             (
                 {"tokens": tokens, "count": "0"},
                 "eventgen",
-                [rule_obj({"breaker": 1, "expected_event_count": 250})]
-                + [rule_obj({"expected_event_count": 250})] * 249,
+                [rule_obj({"breaker": 1, "expected_event_count": 250})] * 250,
             ),
         ],
     )
@@ -127,7 +126,7 @@ class TestSampleStanza:
         ss = sample_stanza(eventgen_params=eventgen_params)
         ss._get_raw_sample = MagicMock(return_value=[rule_obj({})])
         rule = MagicMock()
-        rule.apply.return_value = [(rule_obj({"breaker": 1}),)]
+        rule.apply.return_value = [rule_obj({"breaker": 1})]
         ss.sample_rules = [rule]
         ss.tokenize(conf_name)
         assert ss.tokenized_events == expected
@@ -136,7 +135,7 @@ class TestSampleStanza:
         ss = sample_stanza()
         ss._get_raw_sample = MagicMock(return_value=[])
         rule = MagicMock()
-        rule.apply.return_value = [(rule_obj({"breaker": 1}),)]
+        rule.apply.return_value = [rule_obj({"breaker": 1})]
         ss.sample_rules = [rule]
         ss.tokenize("conf_name")
         assert ss.tokenized_events == []
