@@ -122,38 +122,41 @@ def test_extract_key_value_xml():
             [True],
             {"event": ["event_1", "event_2"]},
             ["splunkd", "sc4s"],
-            [["model_1", "model_2"], ["model_3"]],
+            [["model_1:dataset_1", "model_2:dataset_2"], ["model_3:dataset_3"]],
             [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
             [
                 (
                     {
                         "model": "model_1",
+                        "dataset": "dataset_1",
                         "escaped_event": "event_1",
                         "filename": "fake_path/requirement_files/requirement.log",
                         "sourcetype": "splunkd",
                         "Key_value_dict": {"field1": "value1", "field2": "value2"},
                     },
-                    "model_1::fake_path/requirement_files/requirement.log::req_test_id::1",
+                    "model_1::dataset_1::fake_path/requirement_files/requirement.log::req_test_id::1",
                 ),
                 (
                     {
                         "model": "model_2",
+                        "dataset": "dataset_2",
                         "escaped_event": "event_1",
                         "filename": "fake_path/requirement_files/requirement.log",
                         "sourcetype": "splunkd",
                         "Key_value_dict": {"field1": "value1", "field2": "value2"},
                     },
-                    "model_2::fake_path/requirement_files/requirement.log::req_test_id::2",
+                    "model_2::dataset_2::fake_path/requirement_files/requirement.log::req_test_id::2",
                 ),
                 (
                     {
                         "model": "model_3",
+                        "dataset": "dataset_3",
                         "escaped_event": "event_2",
                         "filename": "fake_path/requirement_files/requirement.log",
                         "sourcetype": "sc4s",
                         "Key_value_dict": {"field3": "value3"},
                     },
-                    "model_3::fake_path/requirement_files/requirement.log::req_test_id::3",
+                    "model_3::dataset_3::fake_path/requirement_files/requirement.log::req_test_id::3",
                 ),
             ],
         ),
@@ -162,7 +165,7 @@ def test_extract_key_value_xml():
             [True],
             {"event": ["event_1", "event_2"]},
             ["splunkd", "sc4s"],
-            [["model_1", "model_2"], ["model_3"]],
+            [["model_1:dataset_1", "model_2:dataset_2"], ["model_3:dataset_3"]],
             [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
             [],
         ),
@@ -171,7 +174,7 @@ def test_extract_key_value_xml():
             Exception,
             {"event": ["event_1", "event_2"]},
             ["splunkd", "sc4s"],
-            [["model_1", "model_2"], ["model_3"]],
+            [["model_1:dataset_1", "model_2:dataset_2"], ["model_3:dataset_3"]],
             [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
             [
                 (
@@ -236,6 +239,10 @@ def test_generate_cim_req_params(
         ReqsTestGenerator,
         "extract_key_value_xml",
         side_effect=extract_key_value_xml_return_value,
+    ), patch.object(
+        ReqsTestGenerator,
+        "split_model",
+        side_effect=lambda x: (x.split(":")[0], x.split(":")[1], ""),
     ), patch.object(
         pytest, "param", side_effect=lambda x, id: (x, id)
     ) as param_mock:
