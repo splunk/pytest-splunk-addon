@@ -35,7 +35,7 @@ junitparser = "<2.0.0"
 docker = ['lovely-pytest-docker']
 
 [tool.poetry.dev-dependencies]
-poetry-dynamic-versioning = "0.12.3"
+poetry-dynamic-versioning = "0.12.6"
 sphinx_rtd_theme = "0.5.1"
 sphinx-panels = "*"
 lovely-pytest-docker = "*"
