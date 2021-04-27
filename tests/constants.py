@@ -383,6 +383,8 @@ TA_BROKEN_FAILED = [
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*search_invalid_earliest* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*negative_search* FAILED*',
     '*test_splunk_app_broken.py::Test_App::test_savedsearches*search_invalid_latest* FAILED*',
+    # '*test_splunk_app_broken.py::Test_App::test_savedsearches*no_search* FAILED*',
+    # '*test_splunk_app_broken.py::Test_App::test_savedsearches*empty_search_earliest_time* FAILED*',
 ]
 
 """
