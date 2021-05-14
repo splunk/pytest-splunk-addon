@@ -75,7 +75,9 @@ class ReqsTestGenerator(object):
                 LOGGER.info(filename)
                 if filename.endswith(".log"):
                     try:
-                        model = None
+                        model_list = None
+                        list_model_dataset_subdataset = None
+                        key_value_dict = {"None": "None"}
                         escaped_event = None
                         sourcetype = None
                         abc = self.check_xml_format(filename)
@@ -90,33 +92,34 @@ class ReqsTestGenerator(object):
                             # self.logger.info(key_value_dict)
                             if len(model_list) == 0:
                                 continue
+                            list_model_dataset_subdataset = []
                             for model in model_list:
                                 model = model.replace(" ", "_")
                                 # Function to extract data set
-                                model, dataset, subdataset = self.split_model(model)
-                                logging.info(dataset)
-                                req_test_id = req_test_id + 1
-                                yield pytest.param(
-                                    {
-                                        "model": model,
-                                        "dataset": dataset,
-                                        "escaped_event": escaped_event,
-                                        "filename": filename,
-                                        "sourcetype": sourcetype,
-                                        "Key_value_dict": key_value_dict,
-                                    },
-                                    id=f"{model}::{dataset}::{filename}::req_test_id::{req_test_id}",
-                                )
+                                model_name = self.split_model(model)
+                                list_model_dataset_subdataset.append(model_name)
+                                logging.info(model_name)
+                            req_test_id = req_test_id + 1
+                            yield pytest.param(
+                                {
+                                    "model_list": list_model_dataset_subdataset,
+                                    "escaped_event": escaped_event,
+                                    "filename": filename,
+                                    "sourcetype": sourcetype,
+                                    "Key_value_dict": key_value_dict,
+                                },
+                                id=f"{model_list}::{filename}::req_test_id::{req_test_id}",
+                            )
                     except Exception:
                         req_test_id = req_test_id + 1
                         yield pytest.param(
                             {
-                                "model": model,
+                                "model_list": list_model_dataset_subdataset,
                                 "escaped_event": escaped_event,
                                 "filename": filename,
                                 "sourcetype": sourcetype,
                             },
-                            id=f"{model}::{filename}::req_test_id::{req_test_id}",
+                            id=f"{model_list}::{filename}::req_test_id::{req_test_id}",
                         )
 
 
@@ -140,17 +143,18 @@ class ReqsTestGenerator(object):
             model = model_name[0]
             dataset = model_name[1]
             subdataset = model_name[2]
+            model = model.replace(" ", "_")
+            model_dataset_subdaset = model + "_" + dataset + "_" +subdataset
         elif len(model_name) == 2:
             model = model_name[0]
             dataset = model_name[1]
-            subdataset = ""
+            model = model.replace(" ", "_")
+            model_dataset_subdaset = model + "_" + dataset
         else:
             model = model_name[0]
-            dataset = ""
-            subdataset = ""
-        if model:
-            model = model.replace(" ", "_")
-        return model, dataset, subdataset
+            model_dataset_subdaset = model
+
+        return model_dataset_subdaset
 
 
     def get_event(self, root):
@@ -184,7 +188,7 @@ class ReqsTestGenerator(object):
         """
         escape_splunk_chars = ["\\", "`", "~", "!", "@", "#", "$", "%",
                                "^", "&", "*", "(", ")", "-", "=", "+", "[", "]", "}", "{", "|",
-                               ";", ":", "'", "\"", "\,", "<", ">", "\/", "?"]
+                               ";", ":", "'", "\,", "<", ">", "\/", "?", "IN", "AS", "BY", "OVER", "WHERE", "LIKE"]
         for character in escape_splunk_chars:
             event = event.replace(character, '\\' + character)
         return event

@@ -127,36 +127,28 @@ def test_extract_key_value_xml():
             [
                 (
                     {
-                        "model": "model_1",
-                        "dataset": "dataset_1",
+                        "model_list": [
+                            ("model_1", "dataset_1", ""),
+                            ("model_2", "dataset_2", ""),
+                        ],
                         "escaped_event": "event_1",
                         "filename": "fake_path/requirement_files/requirement.log",
                         "sourcetype": "splunkd",
                         "Key_value_dict": {"field1": "value1", "field2": "value2"},
                     },
-                    "model_1::dataset_1::fake_path/requirement_files/requirement.log::req_test_id::1",
+                    "['model_1:dataset_1',"
+                    " 'model_2:dataset_2']::fake_path/requirement_files/requirement.log"
+                    "::req_test_id::1",
                 ),
                 (
                     {
-                        "model": "model_2",
-                        "dataset": "dataset_2",
-                        "escaped_event": "event_1",
-                        "filename": "fake_path/requirement_files/requirement.log",
-                        "sourcetype": "splunkd",
-                        "Key_value_dict": {"field1": "value1", "field2": "value2"},
-                    },
-                    "model_2::dataset_2::fake_path/requirement_files/requirement.log::req_test_id::2",
-                ),
-                (
-                    {
-                        "model": "model_3",
-                        "dataset": "dataset_3",
+                        "model_list": [("model_3", "dataset_3", "")],
                         "escaped_event": "event_2",
                         "filename": "fake_path/requirement_files/requirement.log",
                         "sourcetype": "sc4s",
                         "Key_value_dict": {"field3": "value3"},
                     },
-                    "model_3::dataset_3::fake_path/requirement_files/requirement.log::req_test_id::3",
+                    "['model_3:dataset_3']::fake_path/requirement_files/requirement.log::req_test_id::2",
                 ),
             ],
         ),
@@ -179,7 +171,7 @@ def test_extract_key_value_xml():
             [
                 (
                     {
-                        "model": None,
+                        "model_list": None,
                         "escaped_event": None,
                         "filename": "fake_path/requirement_files/not_requirement.log",
                         "sourcetype": None,
@@ -290,41 +282,46 @@ def test_check_xml_format(et_parse_mock, is_xml_valid, expected_output):
 @pytest.mark.parametrize(
     "escape_char, expected_output",
     [
-        ("\\", "SESSION\\\\CREATED"),
-        ("`", "SESSION\\`CREATED"),
-        ("~", "SESSION\\~CREATED"),
-        ("!", "SESSION\\!CREATED"),
-        ("@", "SESSION\\@CREATED"),
-        ("#", "SESSION\\#CREATED"),
-        ("$", "SESSION\\$CREATED"),
-        ("%", "SESSION\\%CREATED"),
-        ("^", "SESSION\\^CREATED"),
-        ("&", "SESSION\\&CREATED"),
-        ("*", "SESSION\\*CREATED"),
-        ("(", "SESSION\\(CREATED"),
-        (")", "SESSION\\)CREATED"),
-        ("-", "SESSION\\-CREATED"),
-        ("=", "SESSION\\=CREATED"),
-        ("+", "SESSION\\+CREATED"),
-        ("[", "SESSION\\[CREATED"),
-        ("]", "SESSION\\]CREATED"),
-        ("}", "SESSION\\}CREATED"),
-        ("{", "SESSION\\{CREATED"),
-        ("|", "SESSION\\|CREATED"),
-        (";", "SESSION\\;CREATED"),
-        (":", "SESSION\\:CREATED"),
-        ("'", "SESSION\\'CREATED"),
-        ('"', 'SESSION\\"CREATED'),
-        ("\,", "SESSION\\\\\,CREATED"),
-        ("<", "SESSION\\<CREATED"),
-        (">", "SESSION\\>CREATED"),
-        ("\/", "SESSION\\\\\/CREATED"),
-        ("?", "SESSION\\?CREATED"),
+        ("\\", "SESSION \\\\ CREATED"),
+        ("`", "SESSION \\` CREATED"),
+        ("~", "SESSION \\~ CREATED"),
+        ("!", "SESSION \\! CREATED"),
+        ("@", "SESSION \\@ CREATED"),
+        ("#", "SESSION \\# CREATED"),
+        ("$", "SESSION \\$ CREATED"),
+        ("%", "SESSION \\% CREATED"),
+        ("^", "SESSION \\^ CREATED"),
+        ("&", "SESSION \\& CREATED"),
+        ("*", "SESSION \\* CREATED"),
+        ("(", "SESSION \\( CREATED"),
+        (")", "SESSION \\) CREATED"),
+        ("-", "SESSION \\- CREATED"),
+        ("=", "SESSION \\= CREATED"),
+        ("+", "SESSION \\+ CREATED"),
+        ("[", "SESSION \\[ CREATED"),
+        ("]", "SESSION \\] CREATED"),
+        ("}", "SESSION \\} CREATED"),
+        ("{", "SESSION \\{ CREATED"),
+        ("|", "SESSION \\| CREATED"),
+        (";", "SESSION \\; CREATED"),
+        (":", "SESSION \\: CREATED"),
+        ("'", "SESSION \\' CREATED"),
+        ("\,", "SESSION \\\\\, CREATED"),
+        ("<", "SESSION \\< CREATED"),
+        (">", "SESSION \\> CREATED"),
+        ("\/", "SESSION \\\\\/ CREATED"),
+        ("?", "SESSION \\? CREATED"),
+        ("IN", "SESSION \\IN CREATED"),
+        ("AS", "SESSION \\AS CREATED"),
+        ("BY", "SESSION \\BY CREATED"),
+        ("OVER", "SESSION \\OVER CREATED"),
+        ("WHERE", "SESSION \\WHERE CREATED"),
+        ("LIKE", "SESSION \\LIKE CREATED"),
     ],
 )
 def test_escape_char_event(escape_char, expected_output):
     rtg = ReqsTestGenerator("fake_path")
-    assert rtg.escape_char_event(f"SESSION{escape_char}CREATED") == expected_output
+    assert rtg.escape_char_event(f"SESSION {escape_char} CREATED") == expected_output
 
 
 def test_extrect_regex_transforms(open_mock, configparser_mock, src_regex_mock):

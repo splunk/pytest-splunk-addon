@@ -1,7 +1,6 @@
 import logging
 import pytest
-import time
-
+from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 INTERVAL = 3
 RETRIES = 3
 
@@ -36,38 +35,92 @@ class ReqsTestTemplates(object):
                 flag = False
         return flag
 
+    # Function to extract tags from Splunk search result returned.
+    def extract_tag(self, keyValueSPL):
+        for key, value in keyValueSPL.items():
+            if key == "tag":
+                # Converting string to list
+                self.logger.info(value)
+                list_of_extracted_tags = value.strip('][').split(', ')
+                c=[]
+                for item in list_of_extracted_tags:
+                    item = item.replace("'", "")
+                    c.append(item)
+                self.logger.info(list_of_extracted_tags)
+                return c
+
+    # Function to find matching data models based on the tags
+    def fetch_datamodel_by_tags(self, tag):
+        list_matching_datamodel = {}
+        for datamodel, tags in dict_datamodel_tag.items():
+            if set(tags) <= set(tag):
+                list_matching_datamodel.update({datamodel: tags})
+        return list_matching_datamodel
+
+    # Function to remove subset datamodels from the list
+    def remove_subset_datamodel(self, datamodel_dict):
+        return (dict([i for i in datamodel_dict.items() if
+                      not any(set(j).issuperset(set(i[1])) and j != i[1] for j in datamodel_dict.values())]))
+
+    # Function to compare datamodel from tags returned in splunk search and requirement file
+    def compare_datamodel(self, requirementfile_datamodels, datamodel_based_on_tag):
+        lis_extra_extracted_splunkside = []
+        list_extra_datamodel_requirement_file = []
+        for key in datamodel_based_on_tag:
+            if key in requirementfile_datamodels:
+                continue
+            else:
+                lis_extra_extracted_splunkside.append(key)
+        for item in requirementfile_datamodels:
+            if item in datamodel_based_on_tag.keys():
+                continue
+            else:
+                list_extra_datamodel_requirement_file.append(item)
+        return set(lis_extra_extracted_splunkside), set(list_extra_datamodel_requirement_file)
+
+    # Function which runs data model check
+    def datamodel_check_test(self, keyValue_dict_SPL, requrement_file_model_list):
+        extracted_tags = self.extract_tag(keyValue_dict_SPL)
+        datamodel_based_on_tag = self.fetch_datamodel_by_tags(extracted_tags)
+        datamodel_based_on_tag = self.remove_subset_datamodel(datamodel_based_on_tag)
+        lis_extra_extracted_splunkside, list_extra_datamodel_requirement_file = self.compare_datamodel(
+            requrement_file_model_list, datamodel_based_on_tag)
+        return list_extra_datamodel_requirement_file, lis_extra_extracted_splunkside
+
     @pytest.mark.splunk_searchtime_requirements
     def test_requirement_params(self, splunk_searchtime_requirement_param, splunk_search_util):
-        model = splunk_searchtime_requirement_param["model"]
-        dataset = splunk_searchtime_requirement_param["dataset"]
+        model_datalist = splunk_searchtime_requirement_param["model_list"]
+        self.logger.info(model_datalist[0])
         escaped_event = splunk_searchtime_requirement_param["escaped_event"]
         filename = splunk_searchtime_requirement_param["filename"]
         sourcetype = splunk_searchtime_requirement_param["sourcetype"]
         key_values_xml = splunk_searchtime_requirement_param["Key_value_dict"]
-        self.logger.info(key_values_xml)
         result = False
-        if model is None and escaped_event is None:
-            self.logger.info("Issue parsing log file {}".format(filename))
-            pytest.skip('Issue parsing log file')
-        if model is None and escaped_event is not None:
-            self.logger.info("No model present in file")
-            pytest.skip('No model present in file')
         if sourcetype is None:
             self.logger.info("Issue finding sourcetype")
             assert result
-
-        # Search for getting both data model and field extractions
-        search = f"| datamodel {model} {dataset}  search | search source=	pytest_splunk_addon:hec:raw sourcetype={sourcetype} {escaped_event}"
-        datamodel_check = splunk_search_util.checkQueryCountIsGreaterThanZero(
+        search = f" search source= pytest_splunk_addon:hec:raw sourcetype={sourcetype} {escaped_event} |fields * "
+        ingestion_check = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRIES
         )
-        assert datamodel_check, (
-            f"Data model mismatch \nsearch={search}\n"
+        assert ingestion_check, (
+            f"ingestion failure \nsearch={search}\n"
         )
-        self.logger.info(f"Data model mapping check: {datamodel_check}")
-
+        self.logger.info(f"ingestion_check: {ingestion_check}")
         keyValue_dict_SPL = splunk_search_util.getFieldValuesDict(
             search, interval=INTERVAL, retries=RETRIES
+        )
+        list_unmatched_datamodel_splunkside, list_unmatched_datamodel_requirement_file = self.datamodel_check_test(keyValue_dict_SPL, model_datalist)
+        datamodel_check = not bool(list_unmatched_datamodel_splunkside or list_unmatched_datamodel_requirement_file )
+        self.logger.info(f"Data model check: {datamodel_check}")
+        if not list_unmatched_datamodel_requirement_file:
+            list_unmatched_datamodel_requirement_file = "None"
+        if not list_unmatched_datamodel_splunkside:
+            list_unmatched_datamodel_splunkside = "None"
+        assert datamodel_check, (
+            f"datamodel check: {datamodel_check} \n"
+            f"datamodel in requirement file but not extracted on splunk side or missing dataset {list_unmatched_datamodel_splunkside}\n"
+            f"datamodel extracted on splunk side but not in requirement file {list_unmatched_datamodel_requirement_file}\n"
         )
         field_extraction_check = self.compare(keyValue_dict_SPL, key_values_xml)
         self.logger.info(f"Field mapping check: {field_extraction_check}")
