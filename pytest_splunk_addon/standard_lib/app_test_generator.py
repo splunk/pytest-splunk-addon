@@ -79,9 +79,10 @@ class AppTestGenerator(object):
                 self.cim_test_generator.generate_tests(fixture), fixture
             )
         elif fixture.startswith("splunk_searchtime_requirement"):
-            yield from self.dedup_tests(
-                self.requirement_test_generator.generate_tests(fixture), fixture
-            )
+            if self.pytest_config.getoption("requirement_test"):
+                yield from self.dedup_tests(
+                    self.requirement_test_generator.generate_tests(fixture), fixture
+                )
         elif fixture.startswith("splunk_indextime"):
             # TODO: What should be the id of the test case?
             # Sourcetype + Host + Key field + _count
