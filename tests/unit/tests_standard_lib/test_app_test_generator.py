@@ -10,6 +10,7 @@ config = {
     "splunk_dm_path": "fake_path",
     "store_events": True,
     "splunk_data_generator": "psa.conf",
+    "requirement_test": True,
 }
 pytest_config = namedtuple("Config", ["getoption"])
 test_config = pytest_config(getoption=lambda x, *y: config[x])
