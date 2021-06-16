@@ -4,29 +4,20 @@
 # Function:  Sourcetype the event before ingesting  to Splunk by using
 # transforms.conf regex in config [Metadata: Sourcetype]
 
-import requests
 import logging
 import os
-import configparser, re
 from xml.etree import cElementTree as ET
 from ..sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-
-class SrcRegex(object):
-    def __init__(self):
-        self.regex_src = None
-        self.source_type = None
-
-
 class RequirementEventIngestor(object):
 
-    def __init__(self, app_path):
+    def __init__(self, requirement_file_path):
         """
         app_path to drill down to requirement file folder in package/tests/requirement_files/
         """
-        self.app_path = app_path
+        self.requirement_file_path = requirement_file_path
         pass
 
     def check_xml_format(self, file_name):
@@ -56,71 +47,62 @@ class RequirementEventIngestor(object):
             event = raw.text
         return event
 
-    def extract_regex_transforms(self):
-        """
-        Requirement : app transform.conf
-        Return: SrcRegex objects list containing pair of regex and sourcetype
-        """
-        parser = configparser.ConfigParser(interpolation=None)
-        transforms_path = os.path.join(str(self.app_path), "default/transforms.conf")
-        parser.read_file(open(transforms_path))
-        list_src_regex = []
-        for stanza in parser.sections():
-            stanza_keys = list(parser[stanza].keys())
-            obj = SrcRegex()
-            if "dest_key" in stanza_keys:
-                if str(parser[stanza]["dest_key"]) == "MetaData:Sourcetype":
-                    for key in stanza_keys:
-                        key_value = str(parser[stanza][key])
-                        if key == "regex":
-                            obj.regex_src = key_value
-                        if key == "format":
-                            obj.source_type = key_value
-                    list_src_regex.append(obj)
-        return list_src_regex
-
-    def extract_sourcetype(self, list_src_regex, event):
-        """
-        Using app path extract sourcetype of the events
-        From tranforms.conf [Metadata: Sourcetype] Regex
-        This only works for syslog apps with this section
-        Input: event, List of SrcRegex
-        Return:Sourcetype of the event
-        """
-        sourcetype = None
-        for regex_src_obj in list_src_regex:
-            regex_match = re.search(regex_src_obj.regex_src, event)
-            if regex_match:
-                _, sourcetype = str(regex_src_obj.source_type).split('::', 1)
-        return sourcetype
-
     def escape_before_ingest(self, event):
         """
         Function to escape event's with backslash before ingest
         """
-        escape_splunk_chars = ["\""]
-        for character in escape_splunk_chars:
-            event = event.replace(character, '\\' + character)
+        # escape_splunk_chars = ["\""]
+        # for character in escape_splunk_chars:
+        #     event = event.replace(character, '\\' + character)
+        event = event.strip()
         return event
 
+    # extract transport tag
+    def extract_transport_tag(self, event):
+        for transport in event.iter('transport'):
+            return transport.get('type')
+
+    # to get models tag in an event
+    def get_models(self, root):
+        """
+        Input: Root of the xml file
+        Function to return list of models in each event of the log file
+        """
+        model_list = []
+        for model in root.iter('model'):
+            model_list.append(str(model.text))
+        return model_list
+
     def get_events(self):
-        req_file_path = os.path.join(self.app_path, "requirement_files")
-        src_regex = self.extract_regex_transforms()
+        req_file_path = self.requirement_file_path
         events = []
         if os.path.isdir(req_file_path):
             for file1 in os.listdir(req_file_path):
                 filename = os.path.join(req_file_path, file1)
                 if filename.endswith(".log"):
-                    LOGGER.info(filename)
                     if self.check_xml_format(filename):
                         root = self.get_root(filename)
                         for event_tag in root.iter('event'):
-                            unescaped_event = self.extract_raw_events(event_tag)
-                            sourcetype = self.extract_sourcetype(src_regex, unescaped_event)
-                            escaped_ingest = self.escape_before_ingest(unescaped_event)
-                            metadata = {'input_type': 'default',
-                                        'sourcetype': sourcetype,
-                                        'index': 'main'
-                                        }
-                            events.append(SampleEvent(escaped_ingest, metadata, "requirement_test"))
-                        return events
+                            model_list = self.get_models(event_tag)
+                            if len(model_list) != 0:
+                                transport_type = self.extract_transport_tag(event_tag)
+                                if transport_type == "syslog":
+                                    LOGGER.info("sending data using sc4s {}".format(filename))
+                                else:
+                                    transport_type = "default"
+                                unescaped_event = self.extract_raw_events(event_tag)
+                                escaped_ingest = self.escape_before_ingest(unescaped_event)
+                                metadata = {'input_type': transport_type,
+                                            'index': 'main'
+                                            }
+                                events.append(SampleEvent(escaped_ingest, metadata, "requirement_test"))
+                            else:
+                                # if there is no model in event do not ingest that event
+                                continue
+                    else:
+                        LOGGER.error("Requirement event ingestion failure: Invalid XML {}".format(filename))
+                else:
+                    LOGGER.error("Requirement event ingestion failure: Invalid file format not .log {}".format(filename))
+        else:
+            LOGGER.error("Requirement event ingestion failure: Invalid requirement file path {}".format(req_file_path))
+        return events
