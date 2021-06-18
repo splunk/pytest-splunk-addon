@@ -247,9 +247,10 @@ def pytest_addoption(parser):
     )
     group.addoption(
         "--requirement-test",
-        action="store_true",
+        action="store",
         dest="requirement_test",
-        help=("Default false use if requirement tests need to be run"),
+        default="None",
+        help="Default None, path to --requirement-test files if requirement tests need to be run",
     )
     group.addoption(
         "--splunk-uf-host",

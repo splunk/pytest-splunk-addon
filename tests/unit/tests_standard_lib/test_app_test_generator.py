@@ -10,7 +10,7 @@ config = {
     "splunk_dm_path": "fake_path",
     "store_events": True,
     "splunk_data_generator": "psa.conf",
-    "requirement_test": True,
+    "requirement_test": "fake_requirement_path",
 }
 pytest_config = namedtuple("Config", ["getoption"])
 test_config = pytest_config(getoption=lambda x, *y: config[x])
@@ -52,7 +52,7 @@ def test_app_test_generator_instantiation(
         config["splunk_app"], field_bank=config["field_bank"]
     )
     atg.cim_test_generator.assert_called_once_with(config["splunk_app"], path)
-    atg.requirement_test_generator.assert_called_once_with(config["splunk_app"])
+    atg.requirement_test_generator.assert_called_once_with(config["requirement_test"])
     atg.indextime_test_generator.assert_called_once_with()
 
 

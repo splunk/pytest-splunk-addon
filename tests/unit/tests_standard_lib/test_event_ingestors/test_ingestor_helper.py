@@ -130,7 +130,7 @@ def test_events_can_be_ingested(
         config_path="tests/unit/event_ingestors",
         thread_count=20,
         store_events=False,
-        run_requirement_test=False,
+        run_requirement_test="None",
     )
     assert get_ingestor_mock.call_count == 2
     get_ingestor_mock.assert_has_calls(
@@ -151,9 +151,9 @@ def test_requirement_tests_can_be_run(
         config_path="tests/unit/event_ingestors",
         thread_count=20,
         store_events=False,
-        run_requirement_test=True,
+        run_requirement_test="fake_requirement_path",
     )
-    requirement_mock.assert_called_once_with("fake_path")
+    requirement_mock.assert_called_once_with("fake_requirement_path")
     requirement_mock.get_events.assert_called_once()
     assert get_ingestor_mock.ingest.call_count == 3
     get_ingestor_mock.ingest.assert_has_calls([call(requirement_events, 20)])
