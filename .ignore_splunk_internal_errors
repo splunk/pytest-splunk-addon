@@ -1,0 +1,8 @@
+message_key="" message=Could not load lookup=LOOKUP-FAIL_test_wrong_outputnew
+message_key="" message=Could not load lookup=LOOKUP-FAIL_test_no_inputfield
+message_key="" message=Could not load lookup=LOOKUP-FAIL_test_no_lookup
+message_key="" message=Could not load lookup=LOOKUP-FAIL_test_nonexistent_lookup
+message_key="" message=Could not load lookup=LOOKUP-FAIL_test_wrong_AS_field_name_output 
+message_key="" message=Could not load lookup=LOOKUP-FAIL_test_wrong_as_field_name_output
+message_key="" message=Could not load lookup=LOOKUP-FAIL_test_wrong_output
+message_key="" message=Could not load lookup=LOOKUP-PASS_test_lookup_not_found
