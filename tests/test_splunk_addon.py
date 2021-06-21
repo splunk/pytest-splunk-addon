@@ -180,6 +180,10 @@ def test_splunk_app_broken(testdir):
         os.path.join(testdir.request.fspath.dirname, "addons/TA_broken"),
         os.path.join(testdir.tmpdir, "package"),
     )
+    shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, ".ignore_splunk_internal_errors"),
+        testdir.tmpdir,
+    )
     setup_test_dir(testdir)
     SampleGenerator.clean_samples()
     Rule.clean_rules()
@@ -192,6 +196,7 @@ def test_splunk_app_broken(testdir):
         "--search-interval=4",
         "--search-retry=4",
         "--search-index=*,_internal",
+        "--ignore-addon-errors=.ignore_splunk_internal_errors",
     )
 
     # fnmatch_lines does an assertion internally
