@@ -149,7 +149,7 @@ testing = ["pre-commit"]
 
 [[package]]
 name = "faker"
-version = "8.10.1"
+version = "6.5.0"
 description = "Faker is a Python package that generates fake data for you."
 category = "main"
 optional = false
