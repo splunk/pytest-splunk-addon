@@ -41,7 +41,7 @@ sphinx-panels = "*"
 lovely-pytest-docker = "*"
 pytest-mock = "^3.5.1"
 pytest-cov = "^2.11.1"
-requests-mock = "^1.8.0"
+requests-mock = "^1.9.3"
 freezegun = "^1.1.0"
 
 [tool.poetry.plugins]
