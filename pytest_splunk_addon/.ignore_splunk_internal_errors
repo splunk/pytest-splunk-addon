@@ -1,7 +1,5 @@
 message_key="INPUT_CSV:INVALID_LOOKUP_TABLE_TYPE" message=The lookup table 'dmc_assets' requires a .csv or KV store lookup definition.
 message_key="" message=DAG Execution Exception: Search has been cancelled
-message_key="INPUT_CSV:INVALID_LOOKUP_TABLE_TYPE" message=The lookup table 'dmc_assets' requires a .csv or KV store lookup definition.
-message_key="" message=DAG Execution Exception: Search has been cancelled
 app="cloud-monitoring-console-summarizer"
 app="skynet-rest"
 app="cloud_administration"
