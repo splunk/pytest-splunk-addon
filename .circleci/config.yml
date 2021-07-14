@@ -179,7 +179,7 @@ workflows:
             - test-splunk-8-2
           context:
             - gdi-github
-
+            
   publish:
     jobs:
       - publish-pypi:

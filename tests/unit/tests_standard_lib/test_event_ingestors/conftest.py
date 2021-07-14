@@ -1,11 +1,15 @@
 import pytest
-from recordtype import recordtype
+from dataclasses import dataclass
 from .test_hec_event_metric_raw_ingestor import HEC_URI
 
-SampleEvent = recordtype(
-    "SampleEvent",
-    ["event", "metadata", "sample_name", ("key_fields", None), ("time_values", None)],
-)
+
+@dataclass()
+class SampleEvent:
+    event: str
+    metadata: dict
+    sample_name: str
+    key_fields: dict = None
+    time_values: list = None
 
 
 @pytest.fixture()

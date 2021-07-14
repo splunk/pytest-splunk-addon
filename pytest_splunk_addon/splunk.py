@@ -246,6 +246,12 @@ def pytest_addoption(parser):
         help=("Path to file where list of addon related errors are suppressed."),
     )
     group.addoption(
+        "--ignore-errors-not-related-to-addon",
+        action="store",
+        dest="ignore_errors_not_related_to_addon",
+        help=("Path to file where list of errors not related to addon are suppressed."),
+    )
+    group.addoption(
         "--requirement-test",
         action="store",
         dest="requirement_test",
@@ -353,6 +359,12 @@ def ignore_internal_errors(request):
         if os.path.exists(addon_error_file_path):
             with open(addon_error_file_path, "r") as addon_errors:
                 error_list.extend([each_error.strip() for each_error in addon_errors.readlines()])
+    if request.config.getoption("ignore_errors_not_related_to_addon"):
+        file_path = request.config.getoption("ignore_errors_not_related_to_addon")
+        if os.path.exists(file_path):
+            with open(file_path, "r") as non_ta_errors:
+                error_list.extend([each_error.strip() for each_error in non_ta_errors.readlines()])
+
     yield error_list
 
 
