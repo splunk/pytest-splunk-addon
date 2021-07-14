@@ -176,7 +176,7 @@ workflows:
               only: /.*/
       - release:
           requires:
-            - test-splunk-8-0
+            - test-splunk-8-2
           context:
             - gdi-github
             
