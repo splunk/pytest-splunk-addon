@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, call, patch
-from recordtype import recordtype
+from dataclasses import dataclass
 from pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester import (
     RequirementEventIngestor,
     ET,
@@ -8,20 +8,20 @@ from pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester
 
 
 module = "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester"
-sample_event = recordtype(
-    "SampleEvent",
-    ["event", "metadata", "sample_name", ("key_fields", None), ("time_values", None)],
-)
+
+
+@dataclass()
+class SampleEvent:
+    event: str
+    metadata: dict
+    sample_name: str
+    key_fields: dict = None
+    time_values: list = None
 
 
 @pytest.fixture()
 def sample_event_mock(monkeypatch):
-    monkeypatch.setattr(f"{module}.SampleEvent", sample_event)
-
-
-@pytest.fixture()
-def src_regex_mock(monkeypatch):
-    monkeypatch.setattr(f"{module}.SrcRegex", src_regex)
+    monkeypatch.setattr(f"{module}.SampleEvent", SampleEvent)
 
 
 @pytest.fixture()
@@ -116,12 +116,12 @@ def test_events_can_be_obtained(
     mock_object("os.listdir", return_value=["sample.log"])
     req = RequirementEventIngestor("fake_path")
     assert req.get_events() == [
-        sample_event(
+        SampleEvent(
             event="event: session created",
             metadata={"input_type": "syslog", "index": "main"},
             sample_name="requirement_test",
         ),
-        sample_event(
+        SampleEvent(
             event="event: session closed",
             metadata={"input_type": "syslog", "index": "main"},
             sample_name="requirement_test",
