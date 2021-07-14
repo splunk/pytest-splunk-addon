@@ -151,6 +151,12 @@ workflows:
   build:
     jobs:
       - splunk-app-test/test_aio:
+          name: test-splunk-8-2
+          splunk_version: "8.2"
+          filters:
+            branches:
+              only: /.*/
+      - splunk-app-test/test_aio:
           name: test-splunk-8-1
           splunk_version: "8.1"
           filters:
@@ -159,18 +165,6 @@ workflows:
       - splunk-app-test/test_aio:
           name: test-splunk-8-0
           splunk_version: "8.0"
-          filters:
-            branches:
-              only: /.*/
-      - splunk-app-test/test_aio:
-          name: test-splunk-7-3
-          splunk_version: "7.3"
-          filters:
-            branches:
-              only: /.*/
-      - splunk-app-test/test_aio:
-          name: test-splunk-7-2
-          splunk_version: "7.2"
           filters:
             branches:
               only: /.*/
@@ -185,7 +179,7 @@ workflows:
             - test-splunk-8-0
           context:
             - gdi-github
-
+            
   publish:
     jobs:
       - publish-pypi:
