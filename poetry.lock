@@ -609,17 +609,6 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 
 [[package]]
-name = "recordtype"
-version = "1.3"
-description = "Similar to namedtuple, but instances are mutable."
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-six = "*"
-
-[[package]]
 name = "regex"
 version = "2019.06.08"
 description = "Alternative regular expression module, to replace re."
@@ -919,7 +908,7 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "71278f02186d9a87b945d02caa77c3d60e1145e1c305acdd80f6b2357ccb7b71"
+content-hash = "5d662ce1555685daac2477e5eacfce197ace7667b17642d1b28d8dcaaeab3090"
 
 [metadata.files]
 alabaster = [
@@ -1344,10 +1333,6 @@ pyyaml = [
     {file = "PyYAML-5.4.1-cp39-cp39-win32.whl", hash = "sha256:49d4cdd9065b9b6e206d0595fee27a96b5dd22618e7520c33204a4a3239d5b10"},
     {file = "PyYAML-5.4.1-cp39-cp39-win_amd64.whl", hash = "sha256:c20cfa2d49991c8b4147af39859b167664f2ad4561704ee74c1de03318e898db"},
     {file = "PyYAML-5.4.1.tar.gz", hash = "sha256:607774cbba28732bfa802b54baa7484215f530991055bb562efbed5b2f20a45e"},
-]
-recordtype = [
-    {file = "recordtype-1.3-py2.py3-none-any.whl", hash = "sha256:69525cdb75b7240f7aa353aa340bfdda128528de24e2a7700ba375687382a8d1"},
-    {file = "recordtype-1.3.cygwin-2.10.0-x86_64.tar.gz", hash = "sha256:9bbe8a217690bc1acb7ec0c2d9e12e65bf99cf08d43df3a621012ff2b88a1979"},
 ]
 regex = [
     {file = "regex-2019.06.08-cp27-none-win32.whl", hash = "sha256:38e6486c7e14683cd1b17a4218760f0ea4c015633cf1b06f7c190fb882a51ba7"},
