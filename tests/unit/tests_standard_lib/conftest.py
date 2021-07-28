@@ -5,8 +5,8 @@ from collections import namedtuple
 
 @pytest.fixture()
 def mock_object(monkeypatch):
-    def create_mock_object(object_path):
-        mo = MagicMock()
+    def create_mock_object(object_path, **kwargs):
+        mo = MagicMock(**kwargs)
         monkeypatch.setattr(object_path, mo)
         return mo
 
@@ -18,6 +18,13 @@ def open_mock(monkeypatch):
     open_mock = mock_open()
     monkeypatch.setattr("builtins.open", open_mock)
     return open_mock
+
+
+@pytest.fixture()
+def os_path_join_file_mock(mock_object):
+    os = mock_object("os.path.join")
+    os.side_effect = lambda *x: "/".join(x)
+    return os
 
 
 @pytest.fixture()

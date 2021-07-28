@@ -23,7 +23,7 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_searchtime_internal_errors
     def test_splunk_internal_errors(self, splunk_search_util, ignore_internal_errors, record_property, caplog):
         search = """
-            search index=_internal CASE(ERROR)
+            search index=_internal log_level=ERROR
             sourcetype!=splunkd_ui_access
             AND sourcetype!=splunk_web_access
             AND sourcetype!=splunk_web_service

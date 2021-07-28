@@ -45,7 +45,7 @@ class IngestorHelper(object):
             bulk_event_ingestion(bool): Boolean param for bulk event ingestion.
             run_requirement_test(bool) :Boolean to identify if we want to run the requirement tests
         """
-        sample_generator = SampleXdistGenerator(addon_path, config_path, run_requirement_test)
+        sample_generator = SampleXdistGenerator(addon_path, config_path)
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         ingestor_dict = dict()
@@ -65,11 +65,10 @@ class IngestorHelper(object):
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
             event_ingestor.ingest(events, thread_count)
 
-        if run_requirement_test:
-            requirement_event = RequirementEventIngestor(addon_path)
+        if run_requirement_test != "None":
+            requirement_event = RequirementEventIngestor(run_requirement_test)
             events = requirement_event.get_events()
-            LOGGER.info(events)
-            input_type = "default"
+            input_type = "syslog_tcp"
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
             event_ingestor.ingest(events, thread_count)
             LOGGER.info("Ingestion Done")

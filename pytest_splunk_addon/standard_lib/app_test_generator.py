@@ -18,10 +18,10 @@ class AppTestGenerator(object):
     """
     Test Generator for an App.
     Generates test cases of Fields and CIM.
-    The test generator is to include all the specific test generators. 
+    The test generator is to include all the specific test generators.
 
-    AppTestGenerator should not have any direct generation methods, it should call a specific 
-    test generator methods only. Make sure there is no heavy initialization in __init__, all the 
+    AppTestGenerator should not have any direct generation methods, it should call a specific
+    test generator methods only. Make sure there is no heavy initialization in __init__, all the
     configurations and operations should only take place in generate_tests method.
 
     Args:
@@ -53,13 +53,13 @@ class AppTestGenerator(object):
             "Initializing ReqsTestGenerator to generate the test cases"
         )
         self.requirement_test_generator = ReqsTestGenerator(
-            self.pytest_config.getoption("splunk_app"),
+            self.pytest_config.getoption("requirement_test"),
         )
         self.indextime_test_generator = IndexTimeTestGenerator()
 
     def generate_tests(self, fixture):
         """
-        Generate the test cases based on the fixture provided 
+        Generate the test cases based on the fixture provided
         supported fixtures:
 
         * splunk_app_searchtime_*
@@ -68,7 +68,7 @@ class AppTestGenerator(object):
 
         Args:
             fixture(str): fixture name
-        """ 
+        """
         store_events = self.pytest_config.getoption("store_events")
         if fixture.startswith("splunk_searchtime_fields"):
             yield from self.dedup_tests(
@@ -79,9 +79,10 @@ class AppTestGenerator(object):
                 self.cim_test_generator.generate_tests(fixture), fixture
             )
         elif fixture.startswith("splunk_searchtime_requirement"):
-            yield from self.dedup_tests(
-                self.requirement_test_generator.generate_tests(fixture), fixture
-            )
+            if self.pytest_config.getoption("requirement_test") != "None":
+                yield from self.dedup_tests(
+                    self.requirement_test_generator.generate_tests(fixture), fixture
+                )
         elif fixture.startswith("splunk_indextime"):
             # TODO: What should be the id of the test case?
             # Sourcetype + Host + Key field + _count
@@ -120,11 +121,8 @@ class AppTestGenerator(object):
                         test_type="line_breaker"
                         )
                 )
-            if isinstance(pytest_params, str):
-                LOGGER.warning(pytest_params)
 
-            elif pytest_params:
-                yield from sorted(pytest_params, key=lambda param: param.id)
+            yield from sorted(pytest_params, key=lambda param: param.id)
 
     def dedup_tests(self, test_list, fixture):
         """

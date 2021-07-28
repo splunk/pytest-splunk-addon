@@ -36,6 +36,11 @@ def setup_test_dir(testdir):
         os.path.join(testdir.tmpdir, ""),
     )
 
+    shutil.copytree(
+        os.path.join(testdir.request.config.invocation_dir, "tests/requirement_test"),
+        os.path.join(testdir.tmpdir, "tests/requirement_test"),
+    )
+
     shutil.copy(
         os.path.join(testdir.request.config.invocation_dir, "Dockerfile.splunk"),
         testdir.tmpdir,
@@ -175,6 +180,10 @@ def test_splunk_app_broken(testdir):
         os.path.join(testdir.request.fspath.dirname, "addons/TA_broken"),
         os.path.join(testdir.tmpdir, "package"),
     )
+    shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, ".ignore_splunk_internal_errors"),
+        testdir.tmpdir,
+    )
     setup_test_dir(testdir)
     SampleGenerator.clean_samples()
     Rule.clean_rules()
@@ -187,6 +196,7 @@ def test_splunk_app_broken(testdir):
         "--search-interval=4",
         "--search-retry=4",
         "--search-index=*,_internal",
+        "--ignore-addon-errors=.ignore_splunk_internal_errors",
     )
 
     # fnmatch_lines does an assertion internally
@@ -493,7 +503,7 @@ def test_splunk_app_requirements(testdir):
         "--search-interval=4",
         "--search-retry=4",
         "--search-index=*,_internal",
-        "--requirement-test",
+        "--requirement-test=tests/requirement_test",
     )
     logger.info(result.outlines)
     logger.info(len(constants.TA_REQUIREMENTS_PASSED))

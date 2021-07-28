@@ -1,45 +1,27 @@
 import pytest
-from unittest.mock import MagicMock, mock_open, call, patch
-from recordtype import recordtype
+from unittest.mock import MagicMock, call, patch
+from dataclasses import dataclass
 from pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester import (
     RequirementEventIngestor,
-    SrcRegex,
     ET,
 )
 
 
-src_regex = recordtype("SrcRegex", [("regex_src", None), ("source_type", None)])
-sample_event = recordtype(
-    "SampleEvent",
-    ["event", "metadata", "sample_name", ("key_fields", None), ("time_values", None)],
-)
+module = "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester"
 
 
-@pytest.fixture()
-def open_mock(monkeypatch):
-    monkeypatch.setattr("builtins.open", mock_open())
-
-
-@pytest.fixture()
-def os_mock(monkeypatch):
-    monkeypatch.setattr("os.path.isdir", MagicMock(return_value=True))
-    monkeypatch.setattr("os.listdir", MagicMock(return_value=["sample.log"]))
+@dataclass()
+class SampleEvent:
+    event: str
+    metadata: dict
+    sample_name: str
+    key_fields: dict = None
+    time_values: list = None
 
 
 @pytest.fixture()
 def sample_event_mock(monkeypatch):
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester.SampleEvent",
-        sample_event,
-    )
-
-
-@pytest.fixture()
-def src_regex_mock(monkeypatch):
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester.SrcRegex",
-        src_regex,
-    )
+    monkeypatch.setattr(f"{module}.SampleEvent", SampleEvent)
 
 
 @pytest.fixture()
@@ -47,10 +29,7 @@ def get_root_mocked(monkeypatch):
     tree_mock = MagicMock()
     tree_mock.return_value = tree_mock
     tree_mock.getroot.return_value = "root"
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester.ET.parse",
-        tree_mock,
-    )
+    monkeypatch.setattr(f"{module}.ET.parse", tree_mock)
 
 
 @pytest.fixture()
@@ -92,44 +71,25 @@ def configparser_mock(monkeypatch):
 
 
 @pytest.fixture()
-def requirement_ingestor_mocked(monkeypatch):
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester."
-        "RequirementEventIngestor.extract_regex_transforms",
-        MagicMock(return_value=[src_regex("event", "host::$1")]),
+def requirement_ingestor_mocked(monkeypatch, mock_object):
+    mock_object(
+        f"{module}.RequirementEventIngestor.check_xml_format", return_value=True
     )
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester."
-        "RequirementEventIngestor.check_xml_format",
-        MagicMock(return_value=True),
+    mock_object(
+        f"{module}.RequirementEventIngestor.get_models", return_value="Network_Traffic"
     )
-    root_mock = MagicMock()
+    mock_object(
+        f"{module}.RequirementEventIngestor.extract_transport_tag",
+        return_value="syslog",
+    )
+    root_mock = mock_object(f"{module}.RequirementEventIngestor.get_root")
     root_mock.return_value = root_mock
     root_mock.iter.return_value = ["session created", "session closed"]
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester."
-        "RequirementEventIngestor.get_root",
-        root_mock,
+    ere_mock = mock_object(
+        f"{module}.RequirementEventIngestor.extract_raw_events",
+        side_effect=lambda x: f"event: {x}",
     )
-    ere_mock = MagicMock(side_effect=lambda x: f"event: {x}")
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester."
-        "RequirementEventIngestor.extract_raw_events",
-        ere_mock,
-    )
-    es_mock = MagicMock(side_effect=("host$1", "host$2"))
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester."
-        "RequirementEventIngestor.extract_sourcetype",
-        es_mock,
-    )
-    return {"root_mock": root_mock, "ere_mock": ere_mock, "es_mock": es_mock}
-
-
-def test_src_regex_can_be_instantiated():
-    srcregex = SrcRegex()
-    assert hasattr(srcregex, "regex_src")
-    assert hasattr(srcregex, "source_type")
+    return {"root_mock": root_mock, "ere_mock": ere_mock}
 
 
 def test_check_xml_format():
@@ -149,53 +109,25 @@ def test_raw_events_can_be_extracted(root_mock):
     assert req.extract_raw_events(root_mock) == "raw event extracted"
 
 
-def test_regex_transforms_can_be_extracted(
-    open_mock, configparser_mock, src_regex_mock
-):
-    req = RequirementEventIngestor("fake_path")
-    assert req.extract_regex_transforms() == [
-        src_regex(None, 'comp::"$1"'),
-        src_regex("group=(?<extractone>[^,]+)", None),
-    ]
-
-
-def test_sourcetype_can_be_extracted():
-    req = RequirementEventIngestor("fake_path")
-    assert (
-        req.extract_sourcetype(
-            [
-                src_regex("alert", "source::host$1"),
-                src_regex("emergency", "source::host$2"),
-            ],
-            "event: alert something happened",
-        )
-        == "host$1"
-    )
-
-
 def test_events_can_be_obtained(
-    requirement_ingestor_mocked, os_mock, sample_event_mock
+    mock_object, requirement_ingestor_mocked, sample_event_mock
 ):
+    mock_object("os.path.isdir", return_value=True)
+    mock_object("os.listdir", return_value=["sample.log"])
     req = RequirementEventIngestor("fake_path")
     assert req.get_events() == [
-        sample_event(
+        SampleEvent(
             event="event: session created",
-            metadata={"input_type": "default", "sourcetype": "host$1", "index": "main"},
+            metadata={"input_type": "syslog", "index": "main"},
             sample_name="requirement_test",
         ),
-        sample_event(
+        SampleEvent(
             event="event: session closed",
-            metadata={"input_type": "default", "sourcetype": "host$2", "index": "main"},
+            metadata={"input_type": "syslog", "index": "main"},
             sample_name="requirement_test",
         ),
     ]
     requirement_ingestor_mocked["root_mock"].iter.assert_has_calls([call("event")])
     requirement_ingestor_mocked["ere_mock"].assert_has_calls(
         [call("session created"), call("session closed")]
-    )
-    requirement_ingestor_mocked["es_mock"].assert_has_calls(
-        [
-            call([src_regex("event", "host::$1")], "event: session created"),
-            call([src_regex("event", "host::$1")], "event: session closed"),
-        ]
     )
