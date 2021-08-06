@@ -49,7 +49,7 @@ pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_ad
 [tool.poetry.scripts]
 cim-report = 'pytest_splunk_addon.standard_lib.utilities.junit_parser:main'
 generate-indextime-conf = 'pytest_splunk_addon.standard_lib.utilities.create_new_eventgen:main'
-
+cim-field-report = 'pytest_splunk_addon.tools.cim_field_report:main'
 
 [tool.poetry-dynamic-versioning]
 enable = true
