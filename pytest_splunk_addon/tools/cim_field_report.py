@@ -7,43 +7,7 @@ from pytest_splunk_addon.helmut.manager.jobs import Jobs
 from pytest_splunk_addon.helmut.splunk.cloud import CloudSplunk
 from pytest_splunk_addon.standard_lib.addon_parser import AddonParser
 
-
 LOGGER = logging.getLogger('cim_field_report')
-
-
-def get_punct_by_eventtype(jobs, eventtypes):
-    eventtypes_str = ",".join(['"{}"'.format(et) for et in eventtypes])
-    query = 'search (index=*) eventtype IN ({}) | dedup punct,eventtype | table punct,eventtype'.format(eventtypes_str)
-    print(query)
-    try:
-        max_time = 120
-        job = jobs.create(query, auto_finalize_ec=120, max_time=max_time)
-        job.wait(max_time)
-        print(job.get_results().as_list)
-        return [(v["eventtype"], v["punct"]) for v in job.get_results().as_list]
-    except Exception as e:
-        LOGGER.error("Errors when executing search!!! Error: {}".format(e))
-
-
-def get_fieldsummary(jobs, eventtype, punct):
-    query = 'search (index=*) eventtype="{}" punct="{}" | fieldsummary'.format(eventtype,
-                                                                               punct.replace("\\", "\\\\").replace('"',
-                                                                                                                   '\\"'))
-    LOGGER.debug(query)
-    try:
-        max_time = 120
-        job = jobs.create(query, auto_finalize_ec=120, max_time=max_time)
-        job.wait(max_time)
-        summary = job.get_results().as_list
-    except Exception as e:
-        LOGGER.error("Errors when executing search!!! Error: {}".format(e))
-
-    try:
-        for f in summary:
-            f["values"] = json.loads(f["values"])
-        return summary
-    except Exception as e:
-        LOGGER.error('Parameter "values" is not a json object: {}'.format(e))
 
 
 def parse_args():
@@ -61,8 +25,46 @@ def parse_args():
     parser.add_argument('--splunk-password', dest='splunk_password', type=str, help='Password of the Splunk user')
     parser.add_argument('--splunk-app', dest='splunk_app', type=str, help='Path to Splunk app package. The package '
                         'should have the configuration files in the default folder.')
+    parser.add_argument('--splunk-report-file', dest='splunk_report_file', default='cim_field_report.json', type=str,
+                        help='Output file for cim field report. Default is: ./cim_field_report.json')
+    parser.add_argument('--splunk-max-time', dest='splunk_max_time', default='120', type=str,
+                        help='Search query execution time out in seconds. Default is: 120')
 
     return parser.parse_args()
+
+
+def get_punct_by_eventtype(jobs, eventtypes, max_time):
+    eventtypes_str = ",".join(['"{}"'.format(et) for et in eventtypes])
+    query = 'search (index=*) eventtype IN ({}) | dedup punct,eventtype | table punct,eventtype'.format(eventtypes_str)
+    LOGGER.debug(query)
+    try:
+        job = jobs.create(query, auto_finalize_ec=120, max_time=max_time)
+        job.wait(max_time)
+        LOGGER.debug(job.get_results().as_list)
+        return [(v["eventtype"], v["punct"]) for v in job.get_results().as_list]
+    except Exception as e:
+        LOGGER.error("Errors when executing search!!! Error: {}".format(e))
+
+
+def get_fieldsummary(jobs, eventtype, punct, max_time):
+
+    query = 'search (index=*) eventtype="{}" punct="{}" | fieldsummary'.format(eventtype,
+                                                                               punct.replace("\\", "\\\\").replace('"',
+                                                                                                                   '\\"'))
+    LOGGER.debug(query)
+    try:
+        job = jobs.create(query, auto_finalize_ec=120, max_time=max_time)
+        job.wait(max_time)
+        summary = job.get_results().as_list
+    except Exception as e:
+        LOGGER.error("Errors when executing search!!! Error: {}".format(e))
+
+    try:
+        for f in summary:
+            f["values"] = json.loads(f["values"])
+        return summary
+    except Exception as e:
+        LOGGER.error('Parameter "values" is not a json object: {}'.format(e))
 
 
 def main():
@@ -92,26 +94,26 @@ def main():
         conn = cloud_splunk.create_logged_in_connector()
         jobs = Jobs(conn)
         res = {}
-        for eventtype, punct in get_punct_by_eventtype(jobs, eventtypes):
+        for eventtype, punct in get_punct_by_eventtype(jobs, eventtypes, args.splunk_max_time):
             print(eventtype, punct)
             if eventtype not in res:
                 res[eventtype] = []
 
-            res[eventtype].append(get_fieldsummary(jobs, eventtype, punct))
+            res[eventtype].append(get_fieldsummary(jobs, eventtype, punct, args.splunk_max_time))
 
-        with open("cim_field_report.json", "w") as f:
+        with open(args.splunk_report_file, "w") as f:
             json.dump(res, f, indent=4)
 
-    except TimeoutError:
-        msg = 'Wrong Splunk Host Address: {}'.format(args.splunk_host)
+    except TimeoutError as error:
+        msg = 'Wrong Splunk Host Address: {}, {}'.format(args.splunk_host, error)
         LOGGER.error(msg)
         sys.exit(msg)
-    except ValueError:
-        msg = 'Wrong Splunk Scheme: {}'.format(args.splunk_web_scheme)
+    except ValueError as error:
+        msg = 'Wrong Splunk Scheme: {}, {}'.format(args.splunk_web_scheme, error)
         LOGGER.error(msg)
         sys.exit(msg)
-    except ConnectionRefusedError:
-        msg = 'Wrong Splunk Port Number: {}'.format(args.splunk_port)
+    except ConnectionRefusedError as error:
+        msg = 'Wrong Splunk Port Number: {}, {}'.format(args.splunk_port, error)
         LOGGER.error(msg)
         sys.exit(msg)
     except Exception as error:
