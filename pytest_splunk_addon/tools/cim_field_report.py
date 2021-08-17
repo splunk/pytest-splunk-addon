@@ -81,11 +81,11 @@ def get_fieldsummary(jobs, eventtype, punct, config):
         LOGGER.warn('Parameter "values" is not a json object: {}'.format(e))
 
 
-def get_cim_fields_summary(jobs, eventtype, eventtypes, cim_summary, config):
+def get_cim_fields_summary(jobs, eventtype, eventtypes, cim_summary, sourcetypes, config):
     for data_set in eventtypes[eventtype]:
         data_set_name = ":".join(data_set["name"])
         fields = ",".join(data_set["fields"])
-        query = 'search (index="{}") eventtype="{}" | table {}'.format(config.splunk_index, eventtype, fields)
+        query = 'search (index="{}") eventtype="{}" | table sourcetype,{}'.format(config.splunk_index, eventtype, fields)
         LOGGER.debug(query)
         try:
             job = jobs.create(query, auto_finalize_ec=120, max_time=config.splunk_max_time)
@@ -101,6 +101,7 @@ def get_cim_fields_summary(jobs, eventtype, eventtypes, cim_summary, config):
             if eventtype not in cim_summary[data_set_name]:
                 cim_summary[data_set_name][eventtype] = []
 
+            sourcetypes.add(event.pop("sourcetype", None))
             found_fields = sorted(event.keys())
             for record in cim_summary[data_set_name][eventtype]:
                 if record["fields"] == found_fields:
@@ -116,6 +117,7 @@ def get_cim_fields_summary(jobs, eventtype, eventtypes, cim_summary, config):
 def build_report(jobs, eventtypes, config):
     cim_summary = {}
     fieldsummary = {}
+    sourcetypes = set()
     punct_by_eventtype = get_punct_by_eventtype(jobs, eventtypes, config)
     if not punct_by_eventtype:
         sys.exit("No punct by eventtype found")
@@ -124,7 +126,7 @@ def build_report(jobs, eventtypes, config):
         LOGGER.info("{}, {}".format(eventtype, punct))
 
         if eventtype not in fieldsummary:
-            get_cim_fields_summary(jobs, eventtype, eventtypes, cim_summary, config)
+            get_cim_fields_summary(jobs, eventtype, eventtypes, cim_summary, sourcetypes, config)
 
         if eventtype not in fieldsummary:
             fieldsummary[eventtype] = {
@@ -135,6 +137,7 @@ def build_report(jobs, eventtypes, config):
         fieldsummary[eventtype]["summary"].append(get_fieldsummary(jobs, eventtype, punct, config))
 
     summary = {
+        "sourcetypes": list(sourcetypes),
         "cimsummary": cim_summary,
         "fieldsummary": fieldsummary
     }
