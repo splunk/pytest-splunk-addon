@@ -275,7 +275,7 @@ format_nongpl = ["idna", "jsonpointer (>1.13)", "webcolors", "rfc3986-validator 
 
 [[package]]
 name = "junitparser"
-version = "2.1.1"
+version = "1.6.3"
 description = "Manipulates JUnit/xUnit Result XML files"
 category = "main"
 optional = false
@@ -725,7 +725,7 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "361179b288e169928fe2079d252a424097cd876311a0505c0a8c8dbb15ceb029"
+content-hash = "4b286a9534cc82af4f0fb73ea5a2aefe70f9fa7bf0a6a1008f3e6a7791ba5326"
 
 [metadata.files]
 atomicwrites = [
@@ -883,8 +883,8 @@ jsonschema = [
     {file = "jsonschema-3.2.0.tar.gz", hash = "sha256:c8a85b28d377cc7737e46e2d9f2b4f44ee3c0e1deac6bf46ddefc7187d30797a"},
 ]
 junitparser = [
-    {file = "junitparser-2.1.1-py2.py3-none-any.whl", hash = "sha256:f98cb6d07aaaca6451f4f046b1d41e490758d40ecf65c14721edf52333252fe8"},
-    {file = "junitparser-2.1.1.tar.gz", hash = "sha256:d54d0eaa2b15ee2efab0220ce0ab31448d26dcb78170d5667453d7755b9f1480"},
+    {file = "junitparser-1.6.3-py2.py3-none-any.whl", hash = "sha256:56d6dceda8eaac8b13dbad5150e94011ffffd0fb62032bd734757ccb5e956c3f"},
+    {file = "junitparser-1.6.3.tar.gz", hash = "sha256:0ba24b5897a34e9182e043e92ecc30dbe6dbbf537ce1dfdc50eb78f0ee6173d8"},
 ]
 langdetect = [
     {file = "langdetect-1.0.7.zip", hash = "sha256:91a170d5f0ade380db809b3ba67f08e95fe6c6c8641f96d67a51ff7e98a9bf30"},

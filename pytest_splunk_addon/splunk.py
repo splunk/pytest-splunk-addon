@@ -291,7 +291,7 @@ def pytest_addoption(parser):
         action="store",
         dest="event_path",
         help="Path to tokenised event directory",
-        default="events.pickel"
+        default="events.pickle"
     )
     group.addoption(
         "--tokenized-event-source",
