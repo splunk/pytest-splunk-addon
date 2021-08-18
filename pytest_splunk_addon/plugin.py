@@ -83,9 +83,6 @@ def pytest_sessionstart(session):
     SampleXdistGenerator.event_path = session.config.getoption("event_path")
     SampleXdistGenerator.event_stored = False
     SampleXdistGenerator.tokenized_event_source = session.config.getoption("tokenized_event_source").lower()
-    # For scenario (store_new, False, False) get_samples from SampleXdistGenerator will not be invoked
-    # Because all teh tests are skipped, So event.pickle file will not be generated
-    # For this scenarios tokenized_event is generated here
     if (
         SampleXdistGenerator.tokenized_event_source == "store_new"
         and session.config.getoption("ingest_events").lower() in ["no", "n", "false", "f"]
