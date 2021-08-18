@@ -298,7 +298,7 @@ def pytest_addoption(parser):
         action="store",
         dest="tokenized_event_source",
         help="One of (new|pregenerated|store_new)",
-        default="new"
+        default="store_new"
     )
     group.addoption(
         "--ingest-events",
