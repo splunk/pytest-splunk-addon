@@ -286,7 +286,34 @@ def pytest_addoption(parser):
         default="Chang3d!",
         help="Password of the Universal Forwarder user",
     )
-
+    group.addoption(
+        "--event-file-path",
+        action="store",
+        dest="event_path",
+        help="Path to tokenised event directory",
+        default="events.pickle"
+    )
+    group.addoption(
+        "--tokenized-event-source",
+        action="store",
+        dest="tokenized_event_source",
+        help="One of (new|pregenerated|store_new)",
+        default="store_new"
+    )
+    group.addoption(
+        "--ingest-events",
+        action="store",
+        dest="ingest_events",
+        help="Should ingest events or not (True|False)",
+        default="True"
+    )
+    group.addoption(
+        "--execute-test",
+        action="store",
+        dest="execute_test",
+        help="Should execute test or not (True|False)",
+        default="True"
+    )
 
 @pytest.fixture(scope="session")
 def splunk_setup(splunk):
@@ -666,6 +693,8 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
     TODO:
         For splunk_type=external, data will not be ingested as manual configurations are required.
     """
+    if request.config.getoption("ingest_events").lower() in ['n','no','false','f']:
+        return
     global PYTEST_XDIST_TESTRUNUID
     if (
         "PYTEST_XDIST_WORKER" not in os.environ

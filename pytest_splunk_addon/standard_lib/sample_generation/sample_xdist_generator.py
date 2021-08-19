@@ -4,6 +4,7 @@ import os
 import pickle
 from filelock import FileLock
 import json
+import pytest
 
 class SampleXdistGenerator():
 
@@ -13,6 +14,21 @@ class SampleXdistGenerator():
         self.config_path = config_path
 
     def get_samples(self, store_events):
+
+        if self.tokenized_event_source == 'pregenerated':
+            with open(self.event_path,"rb") as file_obj:
+                store_sample = pickle.load(file_obj)
+                if store_events and (
+                    "PYTEST_XDIST_WORKER" not in os.environ 
+                    or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
+                ):
+                    try:
+                        tokenized_events = store_sample.get("tokenized_events")
+                        self.store_events(tokenized_events)
+                    except Exception as e:
+                        pytest.exit(str(e))
+                return store_sample
+        
         if "PYTEST_XDIST_WORKER" in os.environ:
             file_path = os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_events"
             with FileLock(str(file_path) + ".lock"):
@@ -35,6 +51,10 @@ class SampleXdistGenerator():
             store_sample = {"conf_name" : SampleGenerator.conf_name, "tokenized_events" : tokenized_events}
             if store_events:
                 self.store_events(tokenized_events)
+        if self.tokenized_event_source == "store_new" and not self.event_stored:
+            with open(self.event_path, "wb") as file_obj:
+                pickle.dump(store_sample, file_obj)
+            self.event_stored = True
         return store_sample
 
     def store_events(self, tokenized_events):
