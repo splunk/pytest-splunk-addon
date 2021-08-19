@@ -15,6 +15,7 @@ from pytest_splunk_addon.standard_lib.addon_parser import AddonParser
 from splunklib import binding
 
 LOGGER = logging.getLogger('cim_field_report')
+LOGGER.setLevel('ERROR')
 
 PSA_DATA_MODELS_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "standard_lib", "data_models"))
 
@@ -39,6 +40,8 @@ def get_gonfig():
                         help='Output file for cim field report. Default is: cim_field_report.json')
     parser.add_argument('--splunk-max-time', dest='splunk_max_time', default='120', type=int,
                         help='Search query execution time out in seconds. Default is: 120')
+    parser.add_argument('--log-level', dest='log_level', default='ERROR', type=str, choices=['CRITICAL', 'ERROR', 'WARNING' 'INFO', 'DEBUG'],
+                        help='Logging level used by the tool')
 
     args =  parser.parse_args()
 
@@ -114,6 +117,14 @@ def get_cim_fields_summary(jobs, eventtype, eventtypes, cim_summary, sourcetypes
                 })
 
 
+def read_ta_meta(config):
+    app_manifest = os.path.join(config.splunk_app, "app.manifest")
+    with open(app_manifest) as f:
+        manifest = json.load(f)
+
+    ta_id_info = manifest.get("info", {}).get("id", {})
+    return {k:v for k,v in ta_id_info.items() if k in ["name", "version"]}
+
 def build_report(jobs, eventtypes, config):
     cim_summary = {}
     fieldsummary = {}
@@ -137,6 +148,7 @@ def build_report(jobs, eventtypes, config):
         fieldsummary[eventtype]["summary"].append(get_fieldsummary(jobs, eventtype, punct, config))
 
     summary = {
+        "ta_name": read_ta_meta(config),
         "sourcetypes": list(sourcetypes),
         "cimsummary": cim_summary,
         "fieldsummary": fieldsummary
@@ -205,6 +217,7 @@ def get_addon_eventtypes(addon_path, data_sets):
 
 def main():
     config = get_gonfig()
+    LOGGER.setLevel(config.log_level)
 
     splunk_cfg = {
         "splunkd_scheme": config.splunk_web_scheme,
