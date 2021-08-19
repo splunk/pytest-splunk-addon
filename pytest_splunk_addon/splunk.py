@@ -311,7 +311,7 @@ def pytest_addoption(parser):
         "--execute-test",
         action="store",
         dest="execute_test",
-        help="Should ingest events or not (True|False)",
+        help="Should execute test or not (True|False)",
         default="True"
     )
 
