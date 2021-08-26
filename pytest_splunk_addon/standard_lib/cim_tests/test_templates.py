@@ -9,14 +9,14 @@ from .field_test_helper import FieldTestHelper
 
 class CIMTestTemplates(object):
     """
-    Test scenarios to check the CIM compatibility of an Add-on 
+    Test scenarios to check the CIM compatibility of an Add-on
     Supported Test scenarios:
 
-        - The eventtype should exctract all required fields of data model 
-        - One eventtype should not be mapped with more than one data model 
+        - The eventtype should exctract all required fields of data model
+        - One eventtype should not be mapped with more than one data model
         - Field Cluster should be verified (should be included with required field test)
-        - Verify if CIM installed or not 
-        - Not Allowed Fields should not be extracted 
+        - Verify if CIM installed or not
+        - Not Allowed Fields should not be extracted
     """
 
     logger = logging.getLogger("pytest-splunk-addon-cim-tests")
@@ -24,12 +24,12 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_fields
     def test_cim_required_fields(
-        self, 
-        splunk_search_util, 
-        splunk_ingest_data, 
-        splunk_setup, 
-        splunk_searchtime_cim_fields, 
-        record_property
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_setup,
+        splunk_searchtime_cim_fields,
+        record_property,
     ):
         """
         Test the the required fields in the data models are extracted with valid values.
@@ -45,8 +45,8 @@ class CIMTestTemplates(object):
         cim_fields = splunk_searchtime_cim_fields["fields"]
         cim_tag_stanza = splunk_searchtime_cim_fields["tag_stanza"]
 
-        cim_single_field = ', '.join(map(str,cim_fields))
-        cim_fields_type = ', '.join(map(lambda f:f.get_type(),cim_fields))
+        cim_single_field = ", ".join(map(str, cim_fields))
+        cim_fields_type = ", ".join(map(lambda f: f.get_type(), cim_fields))
         cim_data_model = cim_data_set[-1].data_model
         data_set = str(cim_data_set[-1])
         index_list = (
@@ -54,7 +54,7 @@ class CIMTestTemplates(object):
             + " OR index=".join(splunk_search_util.search_index.split(","))
             + ")"
         )
-        
+
         # Search Query
         base_search = "| search {}".format(index_list)
         for each_set in cim_data_set:
@@ -63,13 +63,16 @@ class CIMTestTemplates(object):
         base_search += " | search {}".format(cim_tag_stanza)
 
         test_helper = FieldTestHelper(
-            splunk_search_util, cim_fields, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+            splunk_search_util,
+            cim_fields,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
         )
         record_property("tag_stanza", cim_tag_stanza)
         record_property("data_model", cim_data_model)
         record_property("data_set", data_set)
         record_property("fields", cim_single_field)
-        record_property("fields_type", cim_fields_type)       
+        record_property("fields_type", cim_fields_type)
         # Execute the query and get the results
         results = test_helper.test_field(base_search, record_property)
 
@@ -98,8 +101,8 @@ class CIMTestTemplates(object):
             # The field should be extracted if event count > 0
             for each_field in results:
                 assert not each_field["field_count"] == 0, (
-                        f"Field {test_field} is not extracted in any events."
-                        f"\n{test_helper.format_exc_message()}"
+                    f"Field {test_field} is not extracted in any events."
+                    f"\n{test_helper.format_exc_message()}"
                 )
                 if each_field["field_count"] > each_field["event_count"]:
                     raise AssertionError(
@@ -188,12 +191,14 @@ class CIMTestTemplates(object):
         record_property("tag_stanza", cim_tag_stanza)
         record_property("data_model", cim_data_model)
         record_property("data_set", data_set)
-        record_property("fields", ', '.join(map(str,cim_fields)))
+        record_property("fields", ", ".join(map(str, cim_fields)))
 
         self.logger.info("base_search: %s", base_search)
         results = list(
             splunk_search_util.getFieldValuesList(
-                base_search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+                base_search,
+                interval=splunk_search_util.search_interval,
+                retries=splunk_search_util.search_retry,
             )
         )
 
@@ -229,11 +234,11 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_fields_not_allowed_in_props
     def test_cim_fields_not_allowed_in_props(
-        self, 
+        self,
         splunk_ingest_data,
         splunk_setup,
-        splunk_searchtime_cim_fields_not_allowed_in_props, 
-        record_property
+        splunk_searchtime_cim_fields_not_allowed_in_props,
+        record_property,
     ):
         """
         This testcase checks for cim field of type ["not_allowed_in_search_and_props", "not_allowed_in_props"] if an extraction is defined in the configuration file.
@@ -269,7 +274,7 @@ class CIMTestTemplates(object):
         caplog,
     ):
         """
-        This test case check that event type is not be mapped with more than one data model 
+        This test case check that event type is not be mapped with more than one data model
 
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
@@ -286,25 +291,19 @@ class CIMTestTemplates(object):
                     ["authentication"],
                     ["authentication", "default"],
                     ["authentication", "insecure"],
-                    ["authentication", "privileged"]
+                    ["authentication", "privileged"],
                 ],
             },
+            {"name": "Certificates", "tags": [["certificate"], ["certificate", "ssl"]]},
             {
-                "name": "Certificates", 
-                "tags": [
-                    ["certificate"],
-                    ["certificate", "ssl"]
-                ]
-            },
-            {
-                "name": "Change", 
+                "name": "Change",
                 "tags": [
                     ["change"],
-                    ["change","audit"],
-                    ["change","endpoint"],
-                    ["change","network"],
-                    ["change","account"]
-                ]
+                    ["change", "audit"],
+                    ["change", "endpoint"],
+                    ["change", "network"],
+                    ["change", "account"],
+                ],
             },
             {
                 "name": "Compute_Inventory",
@@ -336,13 +335,13 @@ class CIMTestTemplates(object):
                 ],
             },
             {
-                "name": "Email", 
+                "name": "Email",
                 "tags": [
                     ["email"],
                     ["email", "delivery"],
                     ["email", "content"],
-                    ["email", "filter"]
-                ]
+                    ["email", "filter"],
+                ],
             },
             {
                 "name": "Endpoint",
@@ -442,7 +441,13 @@ class CIMTestTemplates(object):
 
         record_property("search", search)
 
-        results = list(splunk_search_util.getFieldValuesList(search, splunk_search_util.search_interval, splunk_search_util.search_retry))
+        results = list(
+            splunk_search_util.getFieldValuesList(
+                search,
+                splunk_search_util.search_interval,
+                splunk_search_util.search_retry,
+            )
+        )
         if results:
             record_property("results", results)
             result_str = FieldTestHelper.get_table_output(

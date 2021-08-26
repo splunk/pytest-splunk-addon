@@ -11,8 +11,8 @@ from ..sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-class RequirementEventIngestor(object):
 
+class RequirementEventIngestor(object):
     def __init__(self, requirement_file_path):
         """
         app_path to drill down to requirement file folder in package/tests/requirement_files/
@@ -43,7 +43,7 @@ class RequirementEventIngestor(object):
         Function to return raw event string
         """
         event = None
-        for raw in root.iter('raw'):
+        for raw in root.iter("raw"):
             event = raw.text
         return event
 
@@ -59,8 +59,8 @@ class RequirementEventIngestor(object):
 
     # extract transport tag
     def extract_transport_tag(self, event):
-        for transport in event.iter('transport'):
-            return transport.get('type')
+        for transport in event.iter("transport"):
+            return transport.get("type")
 
     # to get models tag in an event
     def get_models(self, root):
@@ -69,7 +69,7 @@ class RequirementEventIngestor(object):
         Function to return list of models in each event of the log file
         """
         model_list = []
-        for model in root.iter('model'):
+        for model in root.iter("model"):
             model_list.append(str(model.text))
         return model_list
 
@@ -95,7 +95,7 @@ class RequirementEventIngestor(object):
                 if filename.endswith(".log"):
                     if self.check_xml_format(filename):
                         root = self.get_root(filename)
-                        for event_tag in root.iter('event'):
+                        for event_tag in root.iter("event"):
                             model_list = self.get_models(event_tag)
                             if len(model_list) != 0:
                                 transport_type = self.extract_transport_tag(event_tag)
@@ -123,13 +123,26 @@ class RequirementEventIngestor(object):
                                             "timestamp_type": "event",
                                             }
                                 events.append(SampleEvent(escaped_ingest, metadata, "requirement_test"))
+
                             else:
                                 # if there is no model in event do not ingest that event
                                 continue
                     else:
-                        LOGGER.error("Requirement event ingestion failure: Invalid XML {}".format(filename))
+                        LOGGER.error(
+                            "Requirement event ingestion failure: Invalid XML {}".format(
+                                filename
+                            )
+                        )
                 else:
-                    LOGGER.error("Requirement event ingestion failure: Invalid file format not .log {}".format(filename))
+                    LOGGER.error(
+                        "Requirement event ingestion failure: Invalid file format not .log {}".format(
+                            filename
+                        )
+                    )
         else:
-            LOGGER.error("Requirement event ingestion failure: Invalid requirement file path {}".format(req_file_path))
+            LOGGER.error(
+                "Requirement event ingestion failure: Invalid requirement file path {}".format(
+                    req_file_path
+                )
+            )
         return events

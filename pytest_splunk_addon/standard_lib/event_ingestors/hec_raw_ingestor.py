@@ -5,9 +5,12 @@ import concurrent.futures
 import logging
 import os
 import time
+
 requests.urllib3.disable_warnings()
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
+
+
 class HECRawEventIngestor(EventIngestor):
     """
     Class to ingest event via HEC Raw
@@ -28,8 +31,8 @@ class HECRawEventIngestor(EventIngestor):
     """
 
     def __init__(self, required_configs):
-        self.hec_uri = required_configs['splunk_hec_uri']
-        self.session_headers = required_configs['session_headers']
+        self.hec_uri = required_configs["splunk_hec_uri"]
+        self.session_headers = required_configs["session_headers"]
 
     def ingest(self, events, thread_count):
         """
@@ -68,13 +71,13 @@ class HECRawEventIngestor(EventIngestor):
         param_list = []
         for event in events:
             event_dict = {
-                "sourcetype": event.metadata.get('sourcetype', 'pytest_splunk_addon'),
-                "source": event.metadata.get('source', 'pytest_splunk_addon:hec:raw'),
-                "index": event.metadata.get('index', 'main'),
+                "sourcetype": event.metadata.get("sourcetype", "pytest_splunk_addon"),
+                "source": event.metadata.get("source", "pytest_splunk_addon:hec:raw"),
+                "index": event.metadata.get("index", "main"),
             }
 
             if event.metadata.get("host"):
-                event_dict['host'] = event.metadata.get("host")
+                event_dict["host"] = event.metadata.get("host")
 
             param_list.append(event_dict)
 
@@ -84,10 +87,16 @@ class HECRawEventIngestor(EventIngestor):
 
     def __ingest(self, event, params):
         try:
-            LOGGER.info("Making a HEC raw endpoint request with the following params:\nhec_uri:{}\nheaders:{}".format(
-                str(self.hec_uri), str(self.session_headers)))
-            LOGGER.debug("Creating the following sample event to be ingested via HEC RAW endpoint:\nEvents: {}\nParams:{}".format(
-                str(event),str(params)))
+            LOGGER.info(
+                "Making a HEC raw endpoint request with the following params:\nhec_uri:{}\nheaders:{}".format(
+                    str(self.hec_uri), str(self.session_headers)
+                )
+            )
+            LOGGER.debug(
+                "Creating the following sample event to be ingested via HEC RAW endpoint:\nEvents: {}\nParams:{}".format(
+                    str(event), str(params)
+                )
+            )
             response = requests.post(
                 "{}/{}".format(self.hec_uri, "raw"),
                 auth=None,
@@ -98,9 +107,11 @@ class HECRawEventIngestor(EventIngestor):
             )
             LOGGER.debug("Status code: {}".format(response.status_code))
             if response.status_code not in (200, 201):
-                raise Exception("\nStatus code: {} \nReason: {} \ntext:{}".format(
+                raise Exception(
+                    "\nStatus code: {} \nReason: {} \ntext:{}".format(
                         response.status_code, response.reason, response.text
-                    ))
+                    )
+                )
 
         except Exception as e:
             LOGGER.error("\n\nAn error occurred while data ingestion.{}".format(e))

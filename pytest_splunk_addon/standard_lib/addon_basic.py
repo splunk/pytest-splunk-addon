@@ -11,25 +11,23 @@ from .requirement_tests import ReqsTestTemplates
 import pytest
 
 
-class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate, ReqsTestTemplates):
+class Basic(
+    FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate, ReqsTestTemplates
+):
     """
-    Base class for test cases. Inherit this class to include the test 
-    cases for an Add-on. Only implement the common tests here, all the other 
-    specific test case should be implemented in a TestTemplate class and Basic 
+    Base class for test cases. Inherit this class to include the test
+    cases for an Add-on. Only implement the common tests here, all the other
+    specific test case should be implemented in a TestTemplate class and Basic
     should inherit it.
     """
-    
+
     @pytest.mark.first
     @pytest.mark.splunk_indextime
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_requirements
     def test_events_with_untokenised_values(
-        self,
-        splunk_search_util,
-        splunk_ingest_data,
-        splunk_setup,
-        record_property
+        self, splunk_search_util, splunk_ingest_data, splunk_setup, record_property
     ):
         """
         Test case to validate that all the events have been properly tokenised
@@ -40,7 +38,7 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate, ReqsTes
             record_property (fixture): Document facts of test cases.
 
         """
-        query =f'search index=* ##*## | stats count by source, sourcetype'
+        query = f"search index=* ##*## | stats count by source, sourcetype"
         record_property("Query", query)
         results = list(
             splunk_search_util.getFieldValuesList(
@@ -52,7 +50,7 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate, ReqsTes
         if results:
             record_property("results", results)
             result_str = FieldTestHelper.get_table_output(
-                headers=["Source","Sourcetype"],
+                headers=["Source", "Sourcetype"],
                 value_list=[
                     [
                         result.get("source"),

@@ -7,12 +7,16 @@ from . import (
 )
 import logging
 from ..sample_generation import SampleXdistGenerator
+
 LOGGER = logging.getLogger("pytest-splunk-addon")
 from .requirement_event_ingester import RequirementEventIngestor
+
+
 class IngestorHelper(object):
     """
     Module for helper methods for ingestors.
     """
+
     @classmethod
     def get_event_ingestor(cls, input_type, ingest_meta_data):
         """
@@ -27,7 +31,7 @@ class IngestorHelper(object):
             "hec_metric": HECMetricEventIngestor,
             "syslog_tcp": SC4SEventIngestor,
             "syslog_udp": None,  # TBD
-            "default": HECRawEventIngestor
+            "default": HECRawEventIngestor,
         }
 
         ingestor = ingest_methods.get(input_type)(ingest_meta_data)
@@ -49,8 +53,16 @@ class IngestorHelper(object):
                 ingestor_dict[input_type] = [event]
         return ingestor_dict
 
-    @classmethod
-    def ingest_events(cls, ingest_meta_data, addon_path, config_path, thread_count, store_events, run_requirement_test):
+
+    def ingest_events(
+        cls,
+        ingest_meta_data,
+        addon_path,
+        config_path,
+        thread_count,
+        store_events,
+        run_requirement_test,
+    ):
         """
         Events are ingested in the splunk.
         Args:
@@ -66,7 +78,8 @@ class IngestorHelper(object):
         ingestor_dict = cls.get_consolidated_events(tokenized_events)
         for input_type, events in ingestor_dict.items():
             LOGGER.debug(
-                "Received the following input type for HEC event: {}".format(input_type))
+                "Received the following input type for HEC event: {}".format(input_type)
+            )
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
             event_ingestor.ingest(events, thread_count)
 

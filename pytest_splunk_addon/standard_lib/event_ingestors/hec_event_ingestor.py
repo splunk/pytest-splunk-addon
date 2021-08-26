@@ -4,9 +4,11 @@ from time import time, mktime
 import concurrent.futures
 import logging
 import os
+
 requests.urllib3.disable_warnings()
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
+
 
 class HECEventIngestor(EventIngestor):
     """
@@ -71,12 +73,10 @@ class HECEventIngestor(EventIngestor):
         for event in events:
 
             event_dict = {
-                "sourcetype": event.metadata.get("sourcetype",
-                                                 "pytest_splunk_addon"),
-                "source": event.metadata.get("source",
-                                             "pytest_splunk_addon:hec:event"),
+                "sourcetype": event.metadata.get("sourcetype", "pytest_splunk_addon"),
+                "source": event.metadata.get("source", "pytest_splunk_addon:hec:event"),
                 "event": event.event,
-                "index": event.metadata.get("index", "main")
+                "index": event.metadata.get("index", "main"),
             }
 
             if event.metadata.get("host_type") in ("plugin", None):
@@ -84,26 +84,32 @@ class HECEventIngestor(EventIngestor):
             else:
                 host = event.key_fields.get("host")[0]
             if host:
-                event_dict['host'] = host
+                event_dict["host"] = host
 
-            if event.metadata.get('timestamp_type').lower() == 'event':
+            if event.metadata.get("timestamp_type").lower() == "event":
                 if event.time_values:
-                    event_dict['time'] = event.time_values[0]
+                    event_dict["time"] = event.time_values[0]
             data.append(event_dict)
 
         batch_event_list = []
         for i in range(0, len(data), 100):
-            batch_event_list.append(data[i: i + 100])
+            batch_event_list.append(data[i : i + 100])
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
             _ = list(executor.map(self.__ingest, batch_event_list))
 
     def __ingest(self, data):
         try:
-            LOGGER.info("Making a HEC event request with the following params:\nhec_uri:{}\nheaders:{}".format(
-                str(self.hec_uri), str(self.session_headers)))
-            LOGGER.debug("Creating the following sample event to be ingested via HEC event endoipnt:{}".format(
-                str(data)))
+            LOGGER.info(
+                "Making a HEC event request with the following params:\nhec_uri:{}\nheaders:{}".format(
+                    str(self.hec_uri), str(self.session_headers)
+                )
+            )
+            LOGGER.debug(
+                "Creating the following sample event to be ingested via HEC event endoipnt:{}".format(
+                    str(data)
+                )
+            )
             response = requests.post(
                 "{}/{}".format(self.hec_uri, "event"),
                 auth=None,
@@ -113,9 +119,11 @@ class HECEventIngestor(EventIngestor):
             )
             LOGGER.debug("Status code: {}".format(response.status_code))
             if response.status_code not in (200, 201):
-                raise Exception("\nStatus code: {} \nReason: {} \ntext:{}".format(
+                raise Exception(
+                    "\nStatus code: {} \nReason: {} \ntext:{}".format(
                         response.status_code, response.reason, response.text
-                    ))
+                    )
+                )
 
         except Exception as e:
             LOGGER.error("\n\nAn error occurred while data ingestion.{}".format(e))

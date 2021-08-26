@@ -13,7 +13,7 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class JSONSchema(BaseSchema):
     """
-    JsonSchema + Parser of the Data model json files 
+    JsonSchema + Parser of the Data model json files
 
     Args:
         schema_path (str): Relative or absolute path of the schema file
@@ -22,7 +22,8 @@ class JSONSchema(BaseSchema):
     SCHEMA_FILE = "DatamodelSchema.json"
 
     def __init__(
-        self, schema_path=None,
+        self,
+        schema_path=None,
     ):
         self.schema_path = schema_path or op.join(
             op.dirname(op.abspath(__file__)), self.SCHEMA_FILE
@@ -37,7 +38,10 @@ class JSONSchema(BaseSchema):
             schema_path (str): Relative or absolute path of the data model json file
         """
         try:
-            with open(cls().schema_path, "r",) as schema_f:
+            with open(
+                cls().schema_path,
+                "r",
+            ) as schema_f:
                 json_schema = json.load(schema_f)
             with open(file_path, "r") as json_f:
                 json_data = json.load(json_f)
