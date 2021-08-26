@@ -29,12 +29,12 @@ FIELD_MAPPING = {
             "src-fqdn",
             "sourcefqdn",
             "source_fqdn",
-            "source-fqdn"
+            "source-fqdn",
         ],
         "replacementType": "random",
         "replacement": "src[]",
         "field": "src",
-        "possible_replacement": ['ipv4', 'ipv6', 'host', 'fqdn']
+        "possible_replacement": ["ipv4", "ipv6", "host", "fqdn"],
     },
     "dest": {
         "token": [
@@ -63,26 +63,19 @@ FIELD_MAPPING = {
             "dest-fqdn",
             "destinationfqdn",
             "destination_fqdn",
-            "destination-fqdn"
+            "destination-fqdn",
         ],
         "replacementType": "random",
         "replacement": "dest[]",
         "field": "dest",
-        "possible_replacement": ['ipv4', 'ipv6', 'host', 'fqdn']
+        "possible_replacement": ["ipv4", "ipv6", "host", "fqdn"],
     },
     "user": {
-        "token": [
-            "user",
-            "username",
-            "usr",
-            "user_name",
-            "user-name",
-            "users"
-        ],
+        "token": ["user", "username", "usr", "user_name", "user-name", "users"],
         "replacementType": "random",
         "replacement": "user[]",
         "field": "user",
-        "possible_replacement": ["name", "email", "domain_user", "distinquised_name"]
+        "possible_replacement": ["name", "email", "domain_user", "distinquised_name"],
     },
     "src_port": {
         "token": [
@@ -91,11 +84,11 @@ FIELD_MAPPING = {
             "source_port",
             "source-port",
             "sourceport",
-            "srcport"
+            "srcport",
         ],
         "replacementType": "random",
         "replacement": "src_port",
-        "field": "src_port"
+        "field": "src_port",
     },
     "dest_port": {
         "token": [
@@ -104,38 +97,27 @@ FIELD_MAPPING = {
             "destination_port",
             "destination-port",
             "destinationport",
-            "destport"
+            "destport",
         ],
         "replacementType": "random",
         "replacement": "dest_port",
-        "field": "dest_port"
+        "field": "dest_port",
     },
     "dvc": {
-        "token": [
-            "dvc"
-        ],
+        "token": ["dvc"],
         "replacementType": "random",
         "replacement": "dvc[]",
         "field": "dvc",
-        "possible_replacement": ['ipv4', 'ipv6', 'host', 'fqdn']
+        "possible_replacement": ["ipv4", "ipv6", "host", "fqdn"],
     },
     "url": {
-        "token": [
-            "url",
-            "uri"
-        ],
+        "token": ["url", "uri"],
         "replacementType": "random",
         "replacement": "url[]",
         "field": "url",
-        "possible_replacement": ["ip_host", "fqdn_host", "path", "query", "protocol"]
+        "possible_replacement": ["ip_host", "fqdn_host", "path", "query", "protocol"],
     },
-    "guid": {
-        "token": [
-            "guid"
-        ],
-        "replacementType": "random",
-        "replacement": "guid"
-    },
+    "guid": {"token": ["guid"], "replacementType": "random", "replacement": "guid"},
     "host": {
         "token": [
             "host",
@@ -150,12 +132,12 @@ FIELD_MAPPING = {
             "http-host",
             "hostname",
             "host_name",
-            "host-name"
+            "host-name",
         ],
         "replacementType": "random",
         "replacement": "host[] # REVIEW : ",
         "field": "host",
-        "possible_replacement": ["host", "ipv4", "ipv6", "fqdn"]
+        "possible_replacement": ["host", "ipv4", "ipv6", "fqdn"],
     },
     "ipv4": {
         "token": [
@@ -166,25 +148,16 @@ FIELD_MAPPING = {
             "ip-addr",
             "ipaddress",
             "ip_address",
-            "ip-address"
+            "ip-address",
         ],
         "replacementType": "random",
-        "replacement": "ipv4"
+        "replacement": "ipv4",
     },
-    "ipv6": {
-        "token": [
-            "ipv6"
-        ],
-        "replacementType": "random",
-        "replacement": "ipv6"
-    },
+    "ipv6": {"token": ["ipv6"], "replacementType": "random", "replacement": "ipv6"},
     "hex": {
-        "token": [
-            "hex",
-            "puid"
-        ],
+        "token": ["hex", "puid"],
         "replacementType": "random",
-        "replacement": "hex(20)"
+        "replacement": "hex(20)",
     },
     "email": {
         "token": [
@@ -203,10 +176,10 @@ FIELD_MAPPING = {
             "email-addr",
             "emailaddress",
             "email_address",
-            "email-address"
+            "email-address",
         ],
         "replacementType": "random",
-        "replacement": "email"
+        "replacement": "email",
     },
     "mac": {
         "token": [
@@ -219,20 +192,37 @@ FIELD_MAPPING = {
             "mac-address",
             "macname",
             "mac_name",
-            "mac-name"
+            "mac-name",
         ],
         "replacementType": "random",
-        "replacement": "mac"
-    }
+        "replacement": "mac",
+    },
 }
 
 
 FILE_MAPPING = {
-    "ipv4": ["anomalous.ip_address.sample", "ip_address.sample", "webhosts.sample", "ip.sample", "ipaddress.sample"],
-    "mac": ["anomalous.mac_address.sample", "mac_address.sample", "mac.sample", "remote_mac.sample"],
-    "host": ["anomalous.hostname.sample", "hostname.sample", "linux.host.sample", "computer_name.sample", "host_name.sample"],
+    "ipv4": [
+        "anomalous.ip_address.sample",
+        "ip_address.sample",
+        "webhosts.sample",
+        "ip.sample",
+        "ipaddress.sample",
+    ],
+    "mac": [
+        "anomalous.mac_address.sample",
+        "mac_address.sample",
+        "mac.sample",
+        "remote_mac.sample",
+    ],
+    "host": [
+        "anomalous.hostname.sample",
+        "hostname.sample",
+        "linux.host.sample",
+        "computer_name.sample",
+        "host_name.sample",
+    ],
     "user": ["userName.sample", "mac_user.sample", "user_name.sample"],
     "dvc": ["dvc.sample", "dvc_ids.sample"],
     "url": ["uri.sample", "url.sample"],
-    "email": ["email_address.sample"]
+    "email": ["email_address.sample"],
 }

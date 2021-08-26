@@ -31,9 +31,12 @@ class AddonParser(object):
     Args:
         splunk_app_path (str): Path to the Splunk App
     """
+
     def __init__(self, splunk_app_path):
         self.splunk_app_path = splunk_app_path
-        LOGGER.info(f"Initializing the splunk_appinspect.App from path={splunk_app_path}")
+        LOGGER.info(
+            f"Initializing the splunk_appinspect.App from path={splunk_app_path}"
+        )
         self._app = None
         self._props_parser = None
         self._tags_parser = None
@@ -67,7 +70,7 @@ class AddonParser(object):
     @property
     def savedsearch_parser(self):
         if not self._savedsearch_parser:
-            self._savedsearch_parser = SavedSearchParser(self.splunk_app_path,self.app)
+            self._savedsearch_parser = SavedSearchParser(self.splunk_app_path, self.app)
         return self._savedsearch_parser
 
     def get_props_fields(self):
@@ -75,7 +78,7 @@ class AddonParser(object):
         Parse the props.conf and yield all supported fields
 
         Yields:
-            generator of all the supported fields 
+            generator of all the supported fields
         """
         return self.props_parser.get_props_fields()
 
@@ -91,7 +94,7 @@ class AddonParser(object):
     def get_eventtypes(self):
         """
         Parse the App configuration files & yield eventtypes
-        
+
         Yields:
             generator of list of eventtypes
         """

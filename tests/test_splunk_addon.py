@@ -112,7 +112,8 @@ def test_splunk_connection_docker(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=docker", "-v",
+        "--splunk-type=docker",
+        "-v",
     )
 
     # fnmatch_lines does an assertion internally
@@ -181,7 +182,9 @@ def test_splunk_app_broken(testdir):
         os.path.join(testdir.tmpdir, "package"),
     )
     shutil.copy(
-        os.path.join(testdir.request.config.invocation_dir, ".ignore_splunk_internal_errors"),
+        os.path.join(
+            testdir.request.config.invocation_dir, ".ignore_splunk_internal_errors"
+        ),
         testdir.tmpdir,
     )
     setup_test_dir(testdir)
@@ -210,6 +213,7 @@ def test_splunk_app_broken(testdir):
 
     # The test suite should fail as this is a negative test
     assert result.ret != 0
+
 
 @pytest.mark.docker
 def test_splunk_app_cim_fiction(testdir):
@@ -255,6 +259,7 @@ def test_splunk_app_cim_fiction(testdir):
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
+
 
 @pytest.mark.docker
 def test_splunk_app_cim_broken(testdir):
@@ -307,6 +312,7 @@ def test_splunk_app_cim_broken(testdir):
     # The test suite should fail as this is a negative test
     assert result.ret != 0
 
+
 @pytest.mark.docker
 def test_splunk_fiction_indextime(testdir):
     """Make sure that pytest accepts our fixture."""
@@ -346,11 +352,18 @@ def test_splunk_fiction_indextime(testdir):
     )
 
     # fnmatch_lines does an assertion internally
-    result.stdout.fnmatch_lines_random(constants.TA_FICTION_INDEXTIME_PASSED + constants.TA_FICTION_INDEXTIME_SKIPPED)
-    result.assert_outcomes(passed=len(constants.TA_FICTION_INDEXTIME_PASSED), skipped=len(constants.TA_FICTION_INDEXTIME_SKIPPED), failed=0)
+    result.stdout.fnmatch_lines_random(
+        constants.TA_FICTION_INDEXTIME_PASSED + constants.TA_FICTION_INDEXTIME_SKIPPED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_FICTION_INDEXTIME_PASSED),
+        skipped=len(constants.TA_FICTION_INDEXTIME_SKIPPED),
+        failed=0,
+    )
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
+
 
 @pytest.mark.docker
 def test_splunk_fiction_indextime_broken(testdir):
@@ -367,7 +380,9 @@ def test_splunk_fiction_indextime_broken(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction_indextime_broken"),
+        os.path.join(
+            testdir.request.fspath.dirname, "addons/TA_fiction_indextime_broken"
+        ),
         os.path.join(testdir.tmpdir, "package"),
     )
 
@@ -392,12 +407,19 @@ def test_splunk_fiction_indextime_broken(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines_random(
-        constants.TA_FICTION_INDEXTIME_BROKEN_PASSED + constants.TA_FICTION_INDEXTIME_BROKEN_FAILED + constants.TA_FICTION_INDEXTIME_BROKEN_SKIPPED
+        constants.TA_FICTION_INDEXTIME_BROKEN_PASSED
+        + constants.TA_FICTION_INDEXTIME_BROKEN_FAILED
+        + constants.TA_FICTION_INDEXTIME_BROKEN_SKIPPED
     )
-    result.assert_outcomes(passed=len(constants.TA_FICTION_INDEXTIME_BROKEN_PASSED), skipped=len(constants.TA_FICTION_INDEXTIME_BROKEN_SKIPPED), failed=len(constants.TA_FICTION_INDEXTIME_BROKEN_FAILED))
+    result.assert_outcomes(
+        passed=len(constants.TA_FICTION_INDEXTIME_BROKEN_PASSED),
+        skipped=len(constants.TA_FICTION_INDEXTIME_BROKEN_SKIPPED),
+        failed=len(constants.TA_FICTION_INDEXTIME_BROKEN_FAILED),
+    )
 
     # The test suite should fail as this is a negative test
     assert result.ret != 0
+
 
 @pytest.mark.docker
 def test_splunk_setup_fixture(testdir):
@@ -414,17 +436,14 @@ def test_splunk_setup_fixture(testdir):
     SampleGenerator.clean_samples()
     Rule.clean_rules()
     with open(
-        os.path.join(
-            testdir.request.fspath.dirname,
-            "enable_saved_search_conftest.py"
-        )
+        os.path.join(testdir.request.fspath.dirname, "enable_saved_search_conftest.py")
     ) as conf_test_file:
         testdir.makeconftest(conf_test_file.read())
 
     shutil.copytree(
-            os.path.join(testdir.request.fspath.dirname, "addons/TA_SavedSearch"),
-            os.path.join(testdir.tmpdir, "package"),
-        )
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_SavedSearch"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
 
     result = testdir.runpytest(
         "--splunk-type=docker",
@@ -435,13 +454,14 @@ def test_splunk_setup_fixture(testdir):
         "--search-index=*,_internal",
     )
 
-    result.assert_outcomes(
-        passed=2
-    )
+    result.assert_outcomes(passed=2)
+
 
 @pytest.mark.doc
 def test_help_message(testdir):
-    result = testdir.runpytest("--help",)
+    result = testdir.runpytest(
+        "--help",
+    )
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines(
         [
@@ -454,24 +474,25 @@ def test_help_message(testdir):
         ]
     )
 
+
 @pytest.mark.doc
 def test_docstrings(testdir):
     from sphinx.application import Sphinx
-    docs_dir = os.path.join(
-        testdir.request.config.invocation_dir,
-        "docs"
-    )
+
+    docs_dir = os.path.join(testdir.request.config.invocation_dir, "docs")
     output_dir = os.path.join(docs_dir, "_build", "html")
-    doctree_dir =os.path.join(docs_dir, "_build", "doctrees")
+    doctree_dir = os.path.join(docs_dir, "_build", "doctrees")
     all_files = 1
-    app = Sphinx(docs_dir,
+    app = Sphinx(
+        docs_dir,
         docs_dir,
         output_dir,
         doctree_dir,
-        buildername='html',
+        buildername="html",
         warningiserror=True,
     )
     app.build(force_all=all_files)
+
 
 @pytest.mark.docker
 def test_splunk_app_requirements(testdir):
@@ -507,7 +528,9 @@ def test_splunk_app_requirements(testdir):
     )
     logger.info(result.outlines)
     logger.info(len(constants.TA_REQUIREMENTS_PASSED))
-    result.stdout.fnmatch_lines_random(constants.TA_REQUIREMENTS_PASSED + constants.TA_REQUIREMENTS_FAILED)
+    result.stdout.fnmatch_lines_random(
+        constants.TA_REQUIREMENTS_PASSED + constants.TA_REQUIREMENTS_FAILED
+    )
     result.assert_outcomes(passed=len(constants.TA_REQUIREMENTS_PASSED), failed=1)
 
     # make sure that that we get a non '0' exit code for the testsuite as it contains failure

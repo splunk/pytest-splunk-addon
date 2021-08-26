@@ -16,6 +16,7 @@ from xml.dom.minidom import parseString
 import time
 import six
 
+
 class RESTConnector(Connector):
     """
     This represents workaround to access REST thru HTTP client library httplib2
@@ -45,26 +46,30 @@ class RESTConnector(Connector):
 
     def __init__(self, splunk, username=None, password=None, app=None, owner=None):
         """
-         Creates a new REST connector.
+        Creates a new REST connector.
 
-         The connector will logged in when created with default values
+        The connector will logged in when created with default values
 
-         @param splunk: The Splunk instance
-         @type splunk: L{..splunk.Splunk}
-         @param username: The username to use. If None (default)
-                          L{Connector.DEFAULT_USERNAME} is used.
-         @type username: str
-         @param password: The password to use. If None (default)
-                          L{Connector.DEFAULT_PASSWORD} is used.
-         @type password: str
-         @param app: The app to use.This will construct namespace <ownerr>:<app>
-         @type app: str
-         @param app: The owner to use.This will construct namespace <ownerr>:<app>
-         @type app: str
+        @param splunk: The Splunk instance
+        @type splunk: L{..splunk.Splunk}
+        @param username: The username to use. If None (default)
+                         L{Connector.DEFAULT_USERNAME} is used.
+        @type username: str
+        @param password: The password to use. If None (default)
+                         L{Connector.DEFAULT_PASSWORD} is used.
+        @type password: str
+        @param app: The app to use.This will construct namespace <ownerr>:<app>
+        @type app: str
+        @param app: The owner to use.This will construct namespace <ownerr>:<app>
+        @type app: str
 
         """
         super(RESTConnector, self).__init__(
-            splunk, username=username, password=password, owner=owner, app=app,
+            splunk,
+            username=username,
+            password=password,
+            owner=owner,
+            app=app,
         )
         self.uri_base = splunk.uri_base()
         self._timeout = 60
@@ -260,9 +265,9 @@ class RESTConnector(Connector):
 
     def login(self):
         """
-         Logs the connector in.
+        Logs the connector in.
 
-         Just hits the auth endpoint and retreives and sets the sessionkey.
+        Just hits the auth endpoint and retreives and sets the sessionkey.
 
         """
         body = urllib.parse.urlencode(
@@ -286,10 +291,10 @@ class RESTConnector(Connector):
 
     def _clone_existing_service(self):
         """
-         clones the existing service
+        clones the existing service
 
-         @return: The newly created service (httplib) http object
-         @rtype: http object
+        @return: The newly created service (httplib) http object
+        @rtype: http object
         """
         http = httplib2.Http(
             timeout=self._timeout,

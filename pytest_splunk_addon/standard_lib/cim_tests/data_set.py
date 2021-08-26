@@ -4,6 +4,7 @@ Includes DataSet class which handles a single data set
 """
 from ..addon_parser import Field
 
+
 class DataSet(object):
     """
     Handles a single data set
@@ -11,18 +12,27 @@ class DataSet(object):
     Args:
         data_set_json(dict): Json of a single DataSet
     """
+
     def __init__(self, data_set_json, data_model):
         self.name = data_set_json.get("name")
         self.tags = data_set_json.get("tags")
         self.data_model = data_model
-        self.child_dataset = list(self.load_dataset(data_set_json.get("child_dataset"), self.data_model))
-        self.fields = list(Field.parse_fields(
-            data_set_json.get("fields"),
-            expected_values=[],
-            negative_values=["", "-", "unknown", "null", "(null)"]
-            ))
-        self.fields_cluster = self._parse_fields_cluster(data_set_json.get("fields_cluster"))
-        self.search_constraints = self._parse_constraint(data_set_json.get("search_constraints"))
+        self.child_dataset = list(
+            self.load_dataset(data_set_json.get("child_dataset"), self.data_model)
+        )
+        self.fields = list(
+            Field.parse_fields(
+                data_set_json.get("fields"),
+                expected_values=[],
+                negative_values=["", "-", "unknown", "null", "(null)"],
+            )
+        )
+        self.fields_cluster = self._parse_fields_cluster(
+            data_set_json.get("fields_cluster")
+        )
+        self.search_constraints = self._parse_constraint(
+            data_set_json.get("search_constraints")
+        )
 
     @classmethod
     def load_dataset(cls, dataset_list, data_model):
@@ -40,14 +50,13 @@ class DataSet(object):
             for each_dataset in dataset_list:
                 yield cls(each_dataset, data_model)
 
-
     @classmethod
     def _parse_constraint(cls, constraint_search):
         """
-        For future implementation when 
+        For future implementation when
         Constraint parsing mechanism should be added.
         This would come in picture while we parse data model Json.
-        """ 
+        """
         return constraint_search
 
     def _parse_fields_cluster(self, fields_clusters):
@@ -56,10 +65,10 @@ class DataSet(object):
         """
         parsed_fields_clusters = []
         for each_cluster in fields_clusters:
-            parsed_cluster = list(filter(lambda f:f.name in each_cluster, self.fields))
-            assert len(each_cluster) == len(parsed_cluster), (
-                f"Dataset={self.name}, Each cluster field should be included in fields list"
-            )
+            parsed_cluster = list(filter(lambda f: f.name in each_cluster, self.fields))
+            assert len(each_cluster) == len(
+                parsed_cluster
+            ), f"Dataset={self.name}, Each cluster field should be included in fields list"
             parsed_fields_clusters.append(parsed_cluster)
         return parsed_fields_clusters
 

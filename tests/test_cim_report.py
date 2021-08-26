@@ -3,6 +3,7 @@ import os
 
 from pytest_splunk_addon.standard_lib.cim_compliance import CIMReportGenerator
 
+
 class TestCIMReport(object):
     @pytest.mark.docker
     def test_report(self):
@@ -23,7 +24,7 @@ class TestCIMReport(object):
                 "data_set": "Default_Authentication",
                 "tag_stanza": "file_authentication",
                 "status": "skipped",
-                "test_property": "-",               
+                "test_property": "-",
             },
             {
                 "data_model": "Network_Traffic",
@@ -42,16 +43,18 @@ class TestCIMReport(object):
                 "tag_stanza": "file_integrity_monitoring",
                 "status": "passed",
                 "test_property": "-",
-            }
+            },
         ]
         cim_report_gen = CIMReportGenerator(data)
-        cim_report_gen.generate_report('test_report.md')
+        cim_report_gen.generate_report("test_report.md")
 
-        with open("test_report.md","r") as inputfile:
+        with open("test_report.md", "r") as inputfile:
             test_data = inputfile.read()
-        with open(os.path.join(os.path.dirname(__file__), "test_data", "sample_cim_report.md"),"r") as input_file:
-            actual_data = input_file.read() 
-        assert test_data==actual_data    
-
-
-
+        with open(
+            os.path.join(
+                os.path.dirname(__file__), "test_data", "sample_cim_report.md"
+            ),
+            "r",
+        ) as input_file:
+            actual_data = input_file.read()
+        assert test_data == actual_data

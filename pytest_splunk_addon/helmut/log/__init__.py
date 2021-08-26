@@ -17,6 +17,7 @@ _LOG_FORMAT = "[%(asctime)s] %(levelname)s - %(name)s: %(message)s"
 _DATE_FORMAT = "%Y-%m-%d %H:%M:%S.%f"
 _FILE_NAME = "helmut.log"
 
+
 def setup_logger(debug=False):
     """
     Setups up the logging library
@@ -24,7 +25,7 @@ def setup_logger(debug=False):
     @param debug: If debug log messages are to be outputted
     @type debug: bool
     """
-    logger = logging.getLogger('')
+    logger = logging.getLogger("")
     handler = FileHandler(filename=_FILE_NAME, mode="w")
     handler.setFormatter(HelmutFormatter(_LOG_FORMAT))
     level = logging.INFO
@@ -32,7 +33,7 @@ def setup_logger(debug=False):
         level = logging.DEBUG
     logger.addHandler(handler)
     logger.setLevel(level)
-    logger.debug('Logger: DEBUG logging is enabled')
+    logger.debug("Logger: DEBUG logging is enabled")
 
 
 class HelmutFormatter(Formatter):

@@ -24,8 +24,8 @@ import urllib.request, urllib.parse, urllib.error
 
 class RESTConfWrapper(Conf):
     """
-       The L{Conf} object corresponding to a Conf object in the Splunk REST API.
-       It holds a set of L{RESTStanza}s.
+    The L{Conf} object corresponding to a Conf object in the Splunk REST API.
+    It holds a set of L{RESTStanza}s.
     """
 
     def __init__(self, rest_connector, rest_conf):
@@ -42,7 +42,9 @@ class RESTConfWrapper(Conf):
                 return stanza
         raise StanzaNotFound(self.name, stanza_name)
 
-    def stanzas_list(self,):
+    def stanzas_list(
+        self,
+    ):
         stanza_list = []
         url = PATH_PERFIX + self._raw_rest_conf.path + COUNT_OFFSET
         req_args = {"output_mode": "json"}
@@ -164,7 +166,9 @@ class RestStanza(object):
         )
         assert response["status"] == "200"
 
-    def refresh(self,):
+    def refresh(
+        self,
+    ):
         name = urllib.parse.quote_plus(self._name)
         url = (
             PATH_PERFIX + self.rest_conf.path + "{stanza_name}".format(stanza_name=name)

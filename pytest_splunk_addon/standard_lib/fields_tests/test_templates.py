@@ -21,7 +21,9 @@ class FieldTestTemplates(object):
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_internal_errors
-    def test_splunk_internal_errors(self, splunk_search_util, ignore_internal_errors, record_property, caplog):
+    def test_splunk_internal_errors(
+        self, splunk_search_util, ignore_internal_errors, record_property, caplog
+    ):
         search = """
             search index=_internal log_level=ERROR
             sourcetype!=splunkd_ui_access
@@ -31,7 +33,7 @@ class FieldTestTemplates(object):
             AND sourcetype!=splunkd
         """
         for each in ignore_internal_errors:
-            search += ' NOT ' + json.dumps(each)
+            search += " NOT " + json.dumps(each)
         search += " | table _raw"
         record_property("search", search)
         result, results = splunk_search_util.checkQueryCountIsZero(search)
@@ -52,7 +54,7 @@ class FieldTestTemplates(object):
         splunk_ingest_data,
         splunk_setup,
         splunk_searchtime_fields_positive,
-        record_property
+        record_property,
     ):
         """
         This test case checks that a field value has the expected values.
@@ -64,12 +66,16 @@ class FieldTestTemplates(object):
             caplog (fixture): fixture to capture logs.
         """
 
-        # Search Query 
+        # Search Query
         record_property("stanza_name", splunk_searchtime_fields_positive["stanza"])
         record_property("stanza_type", splunk_searchtime_fields_positive["stanza_type"])
         record_property("fields", splunk_searchtime_fields_positive["fields"])
 
-        index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
         search = (
             f"search {index_list}"
             f" {splunk_searchtime_fields_positive['stanza_type']}=\""
@@ -90,7 +96,9 @@ class FieldTestTemplates(object):
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
         )
         record_property("search", search)
 
@@ -107,28 +115,32 @@ class FieldTestTemplates(object):
         splunk_ingest_data,
         splunk_setup,
         splunk_searchtime_fields_negative,
-        record_property
+        record_property,
     ):
         """
         This test case checks negative scenario for the field value.
 
         Args:
-            splunk_search_util (SearchUtil): 
+            splunk_search_util (SearchUtil):
                 Object that helps to search on Splunk.
-            splunk_searchtime_fields_negative (fixture): 
+            splunk_searchtime_fields_negative (fixture):
                 Test for stanza field.
-            record_property (fixture): 
+            record_property (fixture):
                 Document facts of test cases.
-            caplog (fixture): 
+            caplog (fixture):
                 fixture to capture logs.
         """
 
-        # Search Query 
+        # Search Query
         record_property("stanza_name", splunk_searchtime_fields_negative["stanza"])
         record_property("stanza_type", splunk_searchtime_fields_negative["stanza_type"])
         record_property("fields", splunk_searchtime_fields_negative["fields"])
 
-        index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
         base_search = (
             f"search {index_list}"
             f" {splunk_searchtime_fields_negative['stanza_type']}=\""
@@ -143,7 +155,7 @@ class FieldTestTemplates(object):
             fields_search.append(f"({field} IN ({negative_values}))")
         base_search += " AND ({})".format(" OR ".join(fields_search))
         search = base_search + COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART
-        
+
         self.logger.info(f"Executing the search query: {search}")
 
         # run search
@@ -154,8 +166,12 @@ class FieldTestTemplates(object):
             pp = pprint.PrettyPrinter(indent=4)
             result_str = pp.pformat(results.as_list[:10])
 
-            query_for_unique_events = base_search + TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART
-            query_results = splunk_search_util.get_search_results(query_for_unique_events)
+            query_for_unique_events = (
+                base_search + TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART
+            )
+            query_results = splunk_search_util.get_search_results(
+                query_for_unique_events
+            )
             results_formatted_str = pp.pformat(query_results.as_list)
         assert result, (
             f"Query result greater than 0.\nsearch={search}\n"
@@ -174,7 +190,7 @@ class FieldTestTemplates(object):
         splunk_setup,
         splunk_searchtime_fields_tags,
         record_property,
-        caplog
+        caplog,
     ):
         """
         Test case to check tags mentioned in tags.conf
@@ -183,7 +199,7 @@ class FieldTestTemplates(object):
         and also checks that a tag is not assigned to the event if disabled.
 
         Args:
-            splunk_search_util (helmut_lib.SearchUtil.SearchUtil): 
+            splunk_search_util (helmut_lib.SearchUtil.SearchUtil):
                 object that helps to search on Splunk.
             splunk_searchtime_fields_tags (fixture): pytest parameters to test.
             record_property (fixture): pytest fixture to document facts of test cases.
@@ -199,14 +215,20 @@ class FieldTestTemplates(object):
         record_property("tag", tag)
         record_property("is_tag_enabled", is_tag_enabled)
 
-        index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
         search = f"search {index_list} {tag_query} AND tag={tag}"
         search += COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART
 
         self.logger.info(f"Search: {search}")
 
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
         )
 
         record_property("search", search)
@@ -239,25 +261,29 @@ class FieldTestTemplates(object):
         Tests if all eventtypes in eventtypes.conf are generated in Splunk.
 
         Args:
-            splunk_search_util (fixture): 
+            splunk_search_util (fixture):
                 Fixture to create a simple connection to Splunk via SplunkSDK
-            splunk_searchtime_fields_eventtypes (fixture): 
+            splunk_searchtime_fields_eventtypes (fixture):
                 Fixture containing list of eventtypes
-            record_property (fixture): 
+            record_property (fixture):
                 Used to add user properties to test report
-            caplog (fixture): 
+            caplog (fixture):
                 Access and control log capturing
 
         Returns:
             Asserts whether test case passes or fails.
         """
-        record_property(
-            "eventtype", splunk_searchtime_fields_eventtypes["stanza"]
+        record_property("eventtype", splunk_searchtime_fields_eventtypes["stanza"])
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
         )
-        index_list = "(index=" + " OR index=".join(splunk_search_util.search_index.split(',')) + ")"
-        search = (f"search {index_list} AND "
-                  f"eventtype="
-                  f"\"{splunk_searchtime_fields_eventtypes['stanza']}\"")
+        search = (
+            f"search {index_list} AND "
+            f"eventtype="
+            f"\"{splunk_searchtime_fields_eventtypes['stanza']}\""
+        )
         search += COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART
 
         self.logger.info(
@@ -268,14 +294,15 @@ class FieldTestTemplates(object):
 
         # run search
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
         )
         record_property("search", search)
         assert result, (
             f"No result found for the search.\nsearch={search}\n"
             f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
         )
-
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_savedsearches
@@ -292,13 +319,13 @@ class FieldTestTemplates(object):
         Tests if all savedsearches in savedsearches.conf are being executed properly to generate proper results.
 
         Args:
-            splunk_search_util (fixture): 
+            splunk_search_util (fixture):
                 Fixture to create a simple connection to Splunk via SplunkSDK
-            splunk_searchtime_fields_savedsearches (fixture): 
+            splunk_searchtime_fields_savedsearches (fixture):
                 Fixture containing list of savedsearches
-            record_property (fixture): 
+            record_property (fixture):
                 Used to add user properties to test report
-            caplog (fixture): 
+            caplog (fixture):
                 Access and control log capturing
 
         Returns:
@@ -308,16 +335,20 @@ class FieldTestTemplates(object):
         earliest_time = splunk_searchtime_fields_savedsearches["dispatch.earliest_time"]
         latest_time = splunk_searchtime_fields_savedsearches["dispatch.latest_time"]
 
-        temp_search_query = search_query.split('|')
-        temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(earliest_time,latest_time)
+        temp_search_query = search_query.split("|")
+        temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(
+            earliest_time, latest_time
+        )
         search_query = "|".join(temp_search_query)
-        
-        search = (f"search {search_query}")
+
+        search = f"search {search_query}"
 
         self.logger.info(f"Search: {search}")
 
         result = splunk_search_util.checkQueryCountIsGreaterThanZero(
-            search, interval=splunk_search_util.search_interval, retries=splunk_search_util.search_retry
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
         )
 
         record_property("search", search)

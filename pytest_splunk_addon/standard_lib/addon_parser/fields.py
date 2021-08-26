@@ -5,6 +5,8 @@ to convert a list to field list
 """
 
 from functools import wraps
+
+
 class Field(object):
     """
     Contains the field properties
@@ -14,11 +16,12 @@ class Field(object):
     * expected_values (list): The field should have this expected values
     * negative_values (list): The field should not have negative values
     * condition (spl): The field should only be checked if the condition satisfies
-    * validity (eval): eval statement to extract the valid fields only 
+    * validity (eval): eval statement to extract the valid fields only
 
     Args:
-        field_json (dict): dictionary containing field properties 
+        field_json (dict): dictionary containing field properties
     """
+
     SUPPORTED_TYPES = ["required", "conditional", "optional"]
 
     def __init__(self, field_json=None):
@@ -39,10 +42,10 @@ class Field(object):
     @classmethod
     def parse_fields(cls, field_list, **kwargs):
         """
-        Parse the fields from a list 
+        Parse the fields from a list
 
         Args:
-            field_list (list): list of field names 
+            field_list (list): list of field names
         """
         for each_fields in field_list:
             yield Field(dict(kwargs, **each_fields))
@@ -61,11 +64,13 @@ class Field(object):
 
 def convert_to_fields(func):
     """
-    Decorator to initialize the list of fields 
+    Decorator to initialize the list of fields
     """
+
     @wraps(func)
     def inner_func(*args, **kwargs):
         for each_field in func(*args, **kwargs):
             if each_field:
                 yield Field({"name": each_field})
+
     return inner_func
