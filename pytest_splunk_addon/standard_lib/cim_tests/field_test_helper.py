@@ -13,7 +13,7 @@ class FieldTestHelper(object):
 
     Args:
         search_util (SearchUtil): the util class to search on the Splunk instance
-        fields (list addon_parser.Field): The field to be tested 
+        fields (list addon_parser.Field): The field to be tested
         interval (int): at what interval each retry should be made
         retries (int): number of retries to make if no results found
     """
@@ -28,12 +28,12 @@ class FieldTestHelper(object):
 
     def test_field(self, base_search, record_property=None):
         """
-        Generate a query for the list of fields and return the result 
+        Generate a query for the list of fields and return the result
 
         Format of the query is::
 
-            <condition> 
-            | eval <validity> 
+            <condition>
+            | eval <validity>
             | eval <expected_values>
             | eval <not negative_values>
             | eval <invalid_fields>
@@ -52,7 +52,7 @@ class FieldTestHelper(object):
         self._make_search_query(base_search)
         self.logger.info(f"Executing the search query: {self.search}")
         if record_property:
-            record_property("search", ' '.join(self.search.splitlines()))
+            record_property("search", " ".join(self.search.splitlines()))
         self.results = list(
             self.search_util.getFieldValuesList(
                 self.search, self.interval, self.retries
@@ -64,8 +64,8 @@ class FieldTestHelper(object):
         """
         Make the search query by using the list of fields::
 
-            <base_search> <condition> 
-            | eval valid_field=<validity> 
+            <base_search> <condition>
+            | eval valid_field=<validity>
             | eval valid_field = if(field in <expected_values>)
             | eval valid_field = if(field not in <not negative_values>)
             | eval invalid_field = field if isnull(valid_field)
@@ -74,7 +74,7 @@ class FieldTestHelper(object):
                 values(invalid_field) by sourcetype, source
 
         Args:
-            base_search (str): The base search 
+            base_search (str): The base search
         """
         self.search = f"{base_search} {self._gen_condition()}"
         self.search_event = self.search
@@ -125,12 +125,20 @@ class FieldTestHelper(object):
                         "-",
                     )
                 field_dict.update(
-                    {"sourcetype": sourcetype, "event_count": event_count, "source": source}
+                    {
+                        "sourcetype": sourcetype,
+                        "event_count": event_count,
+                        "source": source,
+                    }
                 )
                 self.parsed_result.append(field_dict)
             if not self.fields:
                 self.parsed_result.append(
-                    {"sourcetype": sourcetype, "event_count": event_count, "source": source}
+                    {
+                        "sourcetype": sourcetype,
+                        "event_count": event_count,
+                        "source": source,
+                    }
                 )
         return self.parsed_result
 
@@ -141,7 +149,7 @@ class FieldTestHelper(object):
 
     def format_exc_message(self):
         """
-        Format the exception message to display 
+        Format the exception message to display
 
         1) There's no field in the result::
 
@@ -171,9 +179,9 @@ class FieldTestHelper(object):
                 headers=["Source", "Sourcetype", "Event Count"],
                 value_list=[
                     [
-                        each_result["source"], 
-                        each_result["sourcetype"], 
-                        each_result["event_count"]
+                        each_result["source"],
+                        each_result["sourcetype"],
+                        each_result["event_count"],
                     ]
                     for each_result in self.parsed_result
                 ],
@@ -228,12 +236,14 @@ class FieldTestHelper(object):
             --------------
 
         Args:
-            headers (list): list of headers 
+            headers (list): list of headers
             value_list (list of list): list of rows for the table
         """
         table_output = ""
         table_list = [headers] + value_list
-        col_length = [max(map(lambda cell: len(str(cell)),col)) for col in zip(*table_list)]
+        col_length = [
+            max(map(lambda cell: len(str(cell)), col)) for col in zip(*table_list)
+        ]
         format_str = " | ".join(["{{:<{}}}".format(i) for i in col_length])
         # Separating line
         table_list.insert(1, ["-" * i for i in col_length])

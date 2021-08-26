@@ -178,7 +178,9 @@ class RestIndex(object):
         response, content = self.connector.make_request("DELETE", url)
         assert response["status"] == "200"
 
-    def roll_hot_buckets(self,):
+    def roll_hot_buckets(
+        self,
+    ):
         name = self.encode_name()
         url = PATH_PERFIX + name + ROLL_HOT_BUCKETS
         req_args = {"output_mode": "json"}

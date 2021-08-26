@@ -10,6 +10,7 @@ class ReqsTestTemplates(object):
     """
     Test templates to test the log files in the event_analytics folder
     """
+
     logger = logging.getLogger()
 
     # Function to remove the data model subset concatenated to fields from the dictionary
@@ -18,7 +19,7 @@ class ReqsTestTemplates(object):
         new_dict = {}
         for k, v in in_str.items():
             # self.logger.info(k, v)
-            b = k.split('.', 1)
+            b = k.split(".", 1)
             if len(b) == 1:
                 new_dict.update({b[0]: v})
             else:
@@ -43,8 +44,8 @@ class ReqsTestTemplates(object):
             if key == "tag":
                 # Converting string to list
                 self.logger.info(value)
-                list_of_extracted_tags = value.strip('][').split(', ')
-                c=[]
+                list_of_extracted_tags = value.strip("][").split(", ")
+                c = []
                 for item in list_of_extracted_tags:
                     item = item.replace("'", "")
                     c.append(item)
@@ -61,8 +62,16 @@ class ReqsTestTemplates(object):
 
     # Function to remove subset datamodels from the list
     def remove_subset_datamodel(self, datamodel_dict):
-        return (dict([i for i in datamodel_dict.items() if
-                      not any(set(j).issuperset(set(i[1])) and j != i[1] for j in datamodel_dict.values())]))
+        return dict(
+            [
+                i
+                for i in datamodel_dict.items()
+                if not any(
+                    set(j).issuperset(set(i[1])) and j != i[1]
+                    for j in datamodel_dict.values()
+                )
+            ]
+        )
 
     # Function to compare datamodel from tags returned in splunk search and requirement file
     def compare_datamodel(self, requirementfile_datamodels, datamodel_based_on_tag):
@@ -111,9 +120,7 @@ class ReqsTestTemplates(object):
         ingestion_check = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRIES
         )
-        assert ingestion_check, (
-            f"ingestion failure \nsearch={search}\n"
-        )
+        assert ingestion_check, f"ingestion failure \nsearch={search}\n"
         self.logger.info(f"ingestion_check: {ingestion_check}")
         keyValue_dict_SPL = splunk_search_util.getFieldValuesDict(
             search, interval=INTERVAL, retries=RETRIES

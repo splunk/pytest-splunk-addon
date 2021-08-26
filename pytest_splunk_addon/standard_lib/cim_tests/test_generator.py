@@ -18,13 +18,13 @@ class CIMTestGenerator(object):
     Generates test cases to verify the CIM compatibility.
 
     Args:
-        addon_path (str): 
+        addon_path (str):
             Relative or absolute path to the add-on
-        data_model_path (str): 
+        data_model_path (str):
             Relative or absolute path to the data model json files
-        test_field_type (list): 
+        test_field_type (list):
             For which types of fields, the test cases should be generated
-        common_fields_path (str): 
+        common_fields_path (str):
             Relative or absolute path of the json file with common fields
     """
 
@@ -47,7 +47,7 @@ class CIMTestGenerator(object):
 
     def generate_tests(self, fixture):
         """
-        Generate the test cases based on the fixture provided 
+        Generate the test cases based on the fixture provided
         supported fixtures:
 
             * splunk_searchtime_cim_fields
@@ -79,10 +79,10 @@ class CIMTestGenerator(object):
         """
         Generates the test cases for required/conditional/cluster fields.
 
-        1. List CIM mapped models 
-        2. Iterate through each field in CIM data model 
+        1. List CIM mapped models
+        2. Iterate through each field in CIM data model
         3. Generate & Yield pytest.param for each test case
-        4. Include the cluster test case as well. 
+        4. Include the cluster test case as well.
         """
         LOGGER.info("Generating cim fields tests")
         for tag_stanza, dataset_list in self.get_mapped_datasets():
@@ -167,7 +167,8 @@ class CIMTestGenerator(object):
             )
 
         yield pytest.param(
-            {"fields": not_allowed_fields}, id=f"searchtime_cim_fields",
+            {"fields": not_allowed_fields},
+            id=f"searchtime_cim_fields",
         )
 
     def generate_fields_event_count_test(self):
@@ -223,16 +224,16 @@ class CIMTestGenerator(object):
 
     def generate_mapped_datamodel_tests(self):
         """
-            Generates the tests to check event type is not be mapped with more than one data model
+        Generates the tests to check event type is not be mapped with more than one data model
 
-            1. Get a list of eventtype which defined in eventtype configuration.
-            2. yield the eventtype list
+        1. Get a list of eventtype which defined in eventtype configuration.
+        2. yield the eventtype list
         """
         eventtypes = []
         for each_eventtype in self.addon_parser.get_eventtypes():
             eventtypes.append(each_eventtype.get("stanza"))
 
-        yield pytest.param( 
-                {"eventtypes" : eventtypes},
-                id=f"mapped_datamodel_tests",
-            )
+        yield pytest.param(
+            {"eventtypes": eventtypes},
+            id=f"mapped_datamodel_tests",
+        )
