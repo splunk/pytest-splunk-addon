@@ -78,5 +78,5 @@ dict_datamodel_tag = {
             'Updates_Update_Errors': ['update', 'error'],
             'Vulnerabilities': ['report', 'vulnerability'],
             'Web': ['web'],
-            'Web_proxy': ['web', 'proxy']
+            'Web_Proxy': ['web', 'proxy']
 }

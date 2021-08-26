@@ -118,12 +118,26 @@ def test_events_can_be_obtained(
     assert req.get_events() == [
         SampleEvent(
             event="event: session created",
-            metadata={"input_type": "syslog", "index": "main"},
+            metadata={
+                "input_type": "syslog_tcp",
+                "index": "main",
+                "source": "",
+                "host": "",
+                "sourcetype": "",
+                "timestamp_type": "event",
+            },
             sample_name="requirement_test",
         ),
         SampleEvent(
             event="event: session closed",
-            metadata={"input_type": "syslog", "index": "main"},
+            metadata={
+                "input_type": "syslog_tcp",
+                "index": "main",
+                "source": "",
+                "host": "",
+                "sourcetype": "",
+                "timestamp_type": "event",
+            },
             sample_name="requirement_test",
         ),
     ]

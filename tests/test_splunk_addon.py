@@ -41,6 +41,11 @@ def setup_test_dir(testdir):
         os.path.join(testdir.tmpdir, "tests/requirement_test"),
     )
 
+    shutil.copytree(
+        os.path.join(testdir.request.config.invocation_dir, "tests/requirement_test_modinput"),
+        os.path.join(testdir.tmpdir, "tests/requirement_test_modinput"),
+    )
+
     shutil.copy(
         os.path.join(testdir.request.config.invocation_dir, "Dockerfile.splunk"),
         testdir.tmpdir,
@@ -509,6 +514,46 @@ def test_splunk_app_requirements(testdir):
     logger.info(len(constants.TA_REQUIREMENTS_PASSED))
     result.stdout.fnmatch_lines_random(constants.TA_REQUIREMENTS_PASSED + constants.TA_REQUIREMENTS_FAILED)
     result.assert_outcomes(passed=len(constants.TA_REQUIREMENTS_PASSED), failed=1)
+
+    # make sure that that we get a non '0' exit code for the testsuite as it contains failure
+    assert result.ret != 0
+
+@pytest.mark.docker
+def test_splunk_app_requirements_modinput(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_requirement_test_modinput"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
+
+    setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        "--splunk-type=docker",
+        "-v",
+        "-m splunk_searchtime_requirements",
+        "--search-interval=4",
+        "--search-retry=4",
+        "--search-index=*,_internal",
+        "--requirement-test=tests/requirement_test_modinput",
+    )
+    logger.info(result.outlines)
+    logger.info(len(constants.TA_REQUIREMENTS_MODINPUT_PASSED))
+    result.stdout.fnmatch_lines_random(constants.TA_REQUIREMENTS_MODINPUT_PASSED + constants.TA_REQUIREMENTS_MODINPUT_FAILED)
+    result.assert_outcomes(passed=len(constants.TA_REQUIREMENTS_MODINPUT_PASSED), failed=1)
 
     # make sure that that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0
