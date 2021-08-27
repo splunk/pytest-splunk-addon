@@ -73,9 +73,22 @@ class RequirementEventIngestor(object):
             model_list.append(str(model.text))
         return model_list
 
+    #extract_params_transport
+    def extract_params(self, event):
+        host, source, source_type = "", "", ""
+        for transport in event.iter('transport'):
+            if transport.get('host'):
+                host = transport.get('host')
+            if transport.get('source'):
+                source = transport.get('source')
+            if transport.get('sourcetype'):
+                source_type = transport.get('sourcetype')
+        return host, source, source_type
+
     def get_events(self):
         req_file_path = self.requirement_file_path
         events = []
+        host, source, sourcetype = "", "",""
         if os.path.isdir(req_file_path):
             for file1 in os.listdir(req_file_path):
                 filename = os.path.join(req_file_path, file1)
@@ -87,24 +100,30 @@ class RequirementEventIngestor(object):
                             if len(model_list) != 0:
                                 transport_type = self.extract_transport_tag(event_tag)
                                 if transport_type == "syslog":
-                                    LOGGER.info(
-                                        "sending data using sc4s {}".format(filename)
-                                    )
+                                    transport_type = "syslog_tcp"
+                                    LOGGER.info("sending data using sc4s {}".format(filename))
+                                elif transport_type in ("modinput","Modinput", "Mod input","Modular Input", "Modular input", "modular input","modular_input", "Mod Input","hec_event"):
+                                    transport_type = "modinput"
+                                    LOGGER.info("sending data via HEC {}".format(filename))
+                                    host, source, sourcetype = self.extract_params(event_tag)
+                                    LOGGER.info(f"sending data via HEC {host}, {source} {sourcetype}")
+                                elif transport_type == "dbx":
+                                    transport_type = "modinput"
+                                elif transport_type == "windows_input":
+                                    transport_type = "windows_input"
                                 else:
                                     transport_type = "default"
                                 unescaped_event = self.extract_raw_events(event_tag)
-                                escaped_ingest = self.escape_before_ingest(
-                                    unescaped_event
-                                )
-                                metadata = {
-                                    "input_type": transport_type,
-                                    "index": "main",
-                                }
-                                events.append(
-                                    SampleEvent(
-                                        escaped_ingest, metadata, "requirement_test"
-                                    )
-                                )
+                                escaped_ingest = self.escape_before_ingest(unescaped_event)
+                                metadata = {'input_type': transport_type,
+                                            'index': 'main',
+                                            "source": source,
+                                            "host": host,
+                                            "sourcetype": sourcetype,
+                                            "timestamp_type": "event",
+                                            }
+                                events.append(SampleEvent(escaped_ingest, metadata, "requirement_test"))
+
                             else:
                                 # if there is no model in event do not ingest that event
                                 continue

@@ -247,7 +247,6 @@ TA_FICTION_PASSED = [
     "*test_splunk_app_fiction.py::Test_App::test_savedsearches*no_search_no_time* PASSED*",
 ]
 
-
 """
 Define the TA_broken add-on passed test case list.
 """
@@ -638,7 +637,9 @@ TA_FICTION_INDEXTIME_PASSED = [
 """
 Define the TA_fiction_indextime add-on failed test case list.
 """
+
 TA_FICTION_INDEXTIME_FAILED = []
+
 """
 Define the TA_fiction_indextime add-on skipped test case list.
 """
@@ -750,4 +751,13 @@ TA_REQUIREMENTS_PASSED = [
 
 TA_REQUIREMENTS_FAILED = [
     "*test_splunk_app_requirements.py::Test_App::test_requirement_params* FAILED*",
+]
+
+TA_REQUIREMENTS_MODINPUT_PASSED = [
+    '*test_splunk_app_requirements_modinput.py::Test_App::test_events_with_untokenised_values PASSED*',
+    '*test_splunk_app_requirements_modinput.py::Test_App::test_requirement_params* PASSED*',
+]
+
+TA_REQUIREMENTS_MODINPUT_FAILED = [
+    '*test_splunk_app_requirements_modinput.py::Test_App::test_requirement_params* FAILED*',
 ]

@@ -97,6 +97,7 @@ class ReqsTestGenerator(object):
         """
         req_file_path = self.folder_path
         req_test_id = 0
+        modinput_params = None
         if os.path.isdir(req_file_path):
             for file1 in os.listdir(req_file_path):
                 filename = os.path.join(req_file_path, file1)
@@ -113,17 +114,24 @@ class ReqsTestGenerator(object):
                         event_no += 1
                         unescaped_event = self.get_event(event_tag)
                         transport_type = self.extract_transport_tag(event_tag)
-                        if transport_type == "syslog":
+                        if transport_type.lower() == "syslog":
                             stripped_event = self.strip_syslog_header(unescaped_event)
+                            unescaped_event = stripped_event
+                            if stripped_event is None:
+                                LOGGER.error("Syslog event do not match CEF, RFC_3164, RFC_5424 format")
+                                continue
+                        elif transport_type in ("modinput","Modinput", "Mod input","Modular Input", "Modular input", "modular input","modular_input", "Mod Input", "dbx", "windows_input","hec_event"):
+                            host, source, sourcetype = self.extract_params(event_tag)
+                            modinput_params = {
+                                "host": host,
+                                "source": source,
+                                "sourcetype": sourcetype
+                            }
                         else:
-                            # todo: non syslog events are skipped currently until we support it
+                            # todo: non syslog/modinput events are skipped currently until we support it
                             continue
-                        if stripped_event is None:
-                            LOGGER.error(
-                                "Syslog event do not match CEF, RFC_3164, RFC_5424 format"
-                            )
-                            continue
-                        escaped_event = self.escape_char_event(stripped_event)
+
+                        escaped_event = self.escape_char_event(unescaped_event)
                         model_list = self.get_models(event_tag)
                         # Fetching kay value pair from XML
                         key_value_dict = self.extract_key_value_xml(event_tag)
@@ -144,6 +152,8 @@ class ReqsTestGenerator(object):
                                 "model_list": list_model_dataset_subdataset,
                                 "escaped_event": escaped_event,
                                 "Key_value_dict": key_value_dict,
+                                "modinput_params":  modinput_params,
+                                "transport_type": transport_type,
                             },
                             id=f"{model_list}::{filename}::event_no::{event_no}::req_test_id::{req_test_id}",
                         )
@@ -206,6 +216,19 @@ class ReqsTestGenerator(object):
         else:
             return False
 
+        # extract_params_transport
+
+    def extract_params(self, event):
+        host, source, source_type = "", "", ""
+        for transport in event.iter('transport'):
+            if transport.get('host'):
+                host = transport.get('host')
+            if transport.get('source'):
+                source = transport.get('source')
+            if transport.get('sourcetype'):
+                source_type = transport.get('sourcetype')
+        return host, source, source_type
+
     def escape_char_event(self, event):
         """
         Input: Event getting parsed
@@ -213,7 +236,6 @@ class ReqsTestGenerator(object):
         https://docs.splunk.com/Documentation/StyleGuide/current/StyleGuide/Specialcharacters
         """
         escape_splunk_chars = [
-            "\\",
             "`",
             "~",
             "!",
@@ -249,6 +271,8 @@ class ReqsTestGenerator(object):
             "WHERE",
             "LIKE",
         ]
+        event = event.replace("\\", "\\\\")
         for character in escape_splunk_chars:
-            event = event.replace(character, "\\" + character)
+            event = event.replace(character, '\\' + character)
+        event = event.replace("*", " ")
         return event

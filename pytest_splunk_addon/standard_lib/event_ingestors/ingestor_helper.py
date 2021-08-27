@@ -39,6 +39,21 @@ class IngestorHelper(object):
         return ingestor
 
     @classmethod
+    def get_consolidated_events(cls, events):
+        ingestor_dict = dict()
+        for event in events:
+            input_type = event.metadata.get("input_type")
+            if input_type in ["modinput", "windows_input", "syslog_tcp", "syslog_udp", "uf_file_monitor"]:
+                event.event = event.event.encode("utf-8").decode()
+            else:
+                event.event = event.event.encode("utf-8")
+            if input_type in ingestor_dict:
+                ingestor_dict[input_type].append(event)
+            else:
+                ingestor_dict[input_type] = [event]
+        return ingestor_dict
+
+    @classmethod
     def ingest_events(
         cls,
         ingest_meta_data,
@@ -60,23 +75,7 @@ class IngestorHelper(object):
         sample_generator = SampleXdistGenerator(addon_path, config_path)
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
-        ingestor_dict = dict()
-        for event in tokenized_events:
-            input_type = event.metadata.get("input_type")
-            if input_type in [
-                "modinput",
-                "windows_input",
-                "syslog_tcp",
-                "syslog_udp",
-                "uf_file_monitor",
-            ]:
-                event.event = event.event.encode("utf-8").decode()
-            else:
-                event.event = event.event.encode("utf-8")
-            if input_type in ingestor_dict:
-                ingestor_dict[input_type].append(event)
-            else:
-                ingestor_dict[input_type] = [event]
+        ingestor_dict = cls.get_consolidated_events(tokenized_events)
         for input_type, events in ingestor_dict.items():
             LOGGER.debug(
                 "Received the following input type for HEC event: {}".format(input_type)
@@ -85,9 +84,12 @@ class IngestorHelper(object):
             event_ingestor.ingest(events, thread_count)
 
         if run_requirement_test != "None":
-            requirement_event = RequirementEventIngestor(run_requirement_test)
-            events = requirement_event.get_events()
-            input_type = "syslog_tcp"
-            event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
-            event_ingestor.ingest(events, thread_count)
+            requirement_events = RequirementEventIngestor(run_requirement_test)
+            requirement_events_get = requirement_events.get_events()
+            requirement_events_dict = cls.get_consolidated_events(requirement_events_get)
+            for input_type, events in requirement_events_dict.items():
+                LOGGER.debug(
+                    "Received the following input type for HEC event: {}".format(input_type))
+                event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
+                event_ingestor.ingest(events, thread_count)
             LOGGER.info("Ingestion Done")
