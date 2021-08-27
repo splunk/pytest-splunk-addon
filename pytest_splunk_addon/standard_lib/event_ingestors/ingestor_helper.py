@@ -53,7 +53,7 @@ class IngestorHelper(object):
                 ingestor_dict[input_type] = [event]
         return ingestor_dict
 
-
+    @classmethod
     def ingest_events(
         cls,
         ingest_meta_data,
