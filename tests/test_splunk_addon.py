@@ -42,7 +42,9 @@ def setup_test_dir(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.config.invocation_dir, "tests/requirement_test_modinput"),
+        os.path.join(
+            testdir.request.config.invocation_dir, "tests/requirement_test_modinput"
+        ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_modinput"),
     )
 
@@ -556,7 +558,9 @@ def test_splunk_app_requirements_modinput(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_requirement_test_modinput"),
+        os.path.join(
+            testdir.request.fspath.dirname, "addons/TA_requirement_test_modinput"
+        ),
         os.path.join(testdir.tmpdir, "package"),
     )
 
@@ -576,8 +580,13 @@ def test_splunk_app_requirements_modinput(testdir):
     )
     logger.info(result.outlines)
     logger.info(len(constants.TA_REQUIREMENTS_MODINPUT_PASSED))
-    result.stdout.fnmatch_lines_random(constants.TA_REQUIREMENTS_MODINPUT_PASSED + constants.TA_REQUIREMENTS_MODINPUT_FAILED)
-    result.assert_outcomes(passed=len(constants.TA_REQUIREMENTS_MODINPUT_PASSED), failed=1)
+    result.stdout.fnmatch_lines_random(
+        constants.TA_REQUIREMENTS_MODINPUT_PASSED
+        + constants.TA_REQUIREMENTS_MODINPUT_FAILED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_REQUIREMENTS_MODINPUT_PASSED), failed=1
+    )
 
     # make sure that that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0

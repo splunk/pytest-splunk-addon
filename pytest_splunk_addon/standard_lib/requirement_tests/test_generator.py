@@ -118,14 +118,28 @@ class ReqsTestGenerator(object):
                             stripped_event = self.strip_syslog_header(unescaped_event)
                             unescaped_event = stripped_event
                             if stripped_event is None:
-                                LOGGER.error("Syslog event do not match CEF, RFC_3164, RFC_5424 format")
+                                LOGGER.error(
+                                    "Syslog event do not match CEF, RFC_3164, RFC_5424 format"
+                                )
                                 continue
-                        elif transport_type in ("modinput","Modinput", "Mod input","Modular Input", "Modular input", "modular input","modular_input", "Mod Input", "dbx", "windows_input","hec_event"):
+                        elif transport_type in (
+                            "modinput",
+                            "Modinput",
+                            "Mod input",
+                            "Modular Input",
+                            "Modular input",
+                            "modular input",
+                            "modular_input",
+                            "Mod Input",
+                            "dbx",
+                            "windows_input",
+                            "hec_event",
+                        ):
                             host, source, sourcetype = self.extract_params(event_tag)
                             modinput_params = {
                                 "host": host,
                                 "source": source,
-                                "sourcetype": sourcetype
+                                "sourcetype": sourcetype,
                             }
                         else:
                             # todo: non syslog/modinput events are skipped currently until we support it
@@ -152,7 +166,7 @@ class ReqsTestGenerator(object):
                                 "model_list": list_model_dataset_subdataset,
                                 "escaped_event": escaped_event,
                                 "Key_value_dict": key_value_dict,
-                                "modinput_params":  modinput_params,
+                                "modinput_params": modinput_params,
                                 "transport_type": transport_type,
                             },
                             id=f"{model_list}::{filename}::event_no::{event_no}::req_test_id::{req_test_id}",
@@ -220,13 +234,13 @@ class ReqsTestGenerator(object):
 
     def extract_params(self, event):
         host, source, source_type = "", "", ""
-        for transport in event.iter('transport'):
-            if transport.get('host'):
-                host = transport.get('host')
-            if transport.get('source'):
-                source = transport.get('source')
-            if transport.get('sourcetype'):
-                source_type = transport.get('sourcetype')
+        for transport in event.iter("transport"):
+            if transport.get("host"):
+                host = transport.get("host")
+            if transport.get("source"):
+                source = transport.get("source")
+            if transport.get("sourcetype"):
+                source_type = transport.get("sourcetype")
         return host, source, source_type
 
     def escape_char_event(self, event):
@@ -273,6 +287,6 @@ class ReqsTestGenerator(object):
         ]
         event = event.replace("\\", "\\\\")
         for character in escape_splunk_chars:
-            event = event.replace(character, '\\' + character)
+            event = event.replace(character, "\\" + character)
         event = event.replace("*", " ")
         return event
