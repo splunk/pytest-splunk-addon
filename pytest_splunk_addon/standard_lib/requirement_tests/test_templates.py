@@ -108,15 +108,11 @@ class ReqsTestTemplates(object):
         ) = self.compare_datamodel(requrement_file_model_list, datamodel_based_on_tag)
         return list_extra_datamodel_requirement_file, lis_extra_extracted_splunkside
 
-
     def remove_empty_keys(self, event):
         event = re.sub(
-            r"(\s[a-zA-Z0-9_]*(\\=|\\:)(\\\"\\\"|\\'\\'|\\-))",
-            '',
-            str(event)
+            r"(\s[a-zA-Z0-9_]*(\\=|\\:)(\\\"\\\"|\\'\\'|\\-))", "", str(event)
         )
         return event
-
 
     @pytest.mark.splunk_searchtime_requirements
     def test_requirement_params(
@@ -130,8 +126,15 @@ class ReqsTestTemplates(object):
         # search = f" search source= pytest_splunk_addon:hec:raw sourcetype={sourcetype} {escaped_event} |fields * "
         # removed source and sourcetype as sc4s assigns it based on event
         if transport_type in (
-        "modinput", "Modinput", "Mod input", "Modular Input", "Modular input", "modular input", "modular_input",
-        "Mod Input"):
+            "modinput",
+            "Modinput",
+            "Mod input",
+            "Modular Input",
+            "Modular input",
+            "modular input",
+            "modular_input",
+            "Mod Input",
+        ):
             host = modinput_params["host"]
             source = modinput_params["source"]
             sourcetype = modinput_params["sourcetype"]
@@ -149,9 +152,7 @@ class ReqsTestTemplates(object):
                 search, interval=INTERVAL, retries=RETRIES
             )
 
-        assert ingestion_check, (
-            f"ingestion failure \nsearch={search}\n"
-        )
+        assert ingestion_check, f"ingestion failure \nsearch={search}\n"
         self.logger.info(f"ingestion_check: {ingestion_check}")
         keyValue_dict_SPL = splunk_search_util.getFieldValuesDict(
             search, interval=INTERVAL, retries=RETRIES
