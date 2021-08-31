@@ -5,6 +5,8 @@ import json
 import argparse
 import re
 import glob
+import time
+import traceback
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
@@ -14,11 +16,12 @@ from pytest_splunk_addon.standard_lib.addon_parser import AddonParser
 
 from splunklib import binding
 
-LOGGER = logging.getLogger('cim_field_report')
-LOGGER.setLevel('ERROR')
+logging.basicConfig(
+    format='%(asctime)s.%(msecs)03d %(name)s %(levelname)s %(message)s', 
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=logging.ERROR)
 
-PSA_DATA_MODELS_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "standard_lib", "data_models"))
-
+LOGGER = logging.getLogger('cim-field-report')
 
 def get_gonfig():
     parser = argparse.ArgumentParser(description='Python Script to test Splunk functionality')
@@ -33,17 +36,18 @@ def get_gonfig():
                         help='Splunk Management port. default is 8089.')
     parser.add_argument('--splunk-user', dest='splunk_user', default='admin', type=str,
                         help='Splunk login user. The user should have search capabilities.')
-    parser.add_argument('--splunk-password', dest='splunk_password', type=str, help='Password of the Splunk user')
-    parser.add_argument('--splunk-app', dest='splunk_app', type=str, help='Path to Splunk app package. The package '
+    parser.add_argument('--splunk-password', dest='splunk_password', type=str, required=True, help='Password of the Splunk user')
+    parser.add_argument('--splunk-app', dest='splunk_app', type=str, required=True, help='Path to Splunk app package. The package '
                         'should have the configuration files in the default folder.')
     parser.add_argument('--splunk-report-file', dest='splunk_report_file', default='cim_field_report.json', type=str,
                         help='Output file for cim field report. Default is: cim_field_report.json')
     parser.add_argument('--splunk-max-time', dest='splunk_max_time', default='120', type=int,
                         help='Search query execution time out in seconds. Default is: 120')
-    parser.add_argument('--log-level', dest='log_level', default='ERROR', type=str, choices=['CRITICAL', 'ERROR', 'WARNING' 'INFO', 'DEBUG'],
+    parser.add_argument('--log-level', dest='log_level', default='ERROR', type=str, choices=['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG'],
                         help='Logging level used by the tool')
 
     args =  parser.parse_args()
+    LOGGER.setLevel(args.log_level)
 
     if not os.path.exists(args.splunk_app) or not os.path.isdir(args.splunk_app):
         msg = 'There is no such directory: {}'.format(args.splunk_app)
@@ -52,7 +56,22 @@ def get_gonfig():
 
     return args
 
+
+def collect_job_results(job, acc, fn):
+    offset, count = 0, 1000
+    while True:
+        records = job.get_results(offset=offset, count=count).as_list
+        LOGGER.debug(f"Read fields: offset: {offset}, count: {count}, found: {len(records)}")
+        fn(acc, records)
+        offset += count
+        if len(records) < count:
+            break
+
+    return acc
+
+
 def get_punct_by_eventtype(jobs, eventtypes, config):
+    start = time.time()
     eventtypes_str = ",".join(['"{}"'.format(et) for et in eventtypes])
     query = 'search (index="{}") eventtype IN ({}) | dedup punct,eventtype | table punct,eventtype'.format(config.splunk_index, eventtypes_str)
     LOGGER.debug(query)
@@ -60,61 +79,95 @@ def get_punct_by_eventtype(jobs, eventtypes, config):
         job = jobs.create(query, auto_finalize_ec=120, max_time=config.splunk_max_time)
         job.wait(config.splunk_max_time)
         LOGGER.debug(job.get_results().as_list)
-        return [(v["eventtype"], v["punct"]) for v in job.get_results().as_list]
+        result = [(v["eventtype"], v["punct"]) for v in job.get_results().as_list]
+        LOGGER.info("Time taken to collect eventtype & punct combinations: {} s".format(time.time()-start))
+        return result
     except Exception as e:
         LOGGER.error("Errors when executing search!!! Error: {}".format(e))
+        LOGGER.debug(traceback.format_exc())
 
 
-def get_fieldsummary(jobs, eventtype, punct, config):
-    query_templ = 'search (index="{}") eventtype="{}" punct="{}" | fieldsummary'
-    query = query_templ.format(config.splunk_index, eventtype, punct.replace("\\", "\\\\").replace('"','\\"'))
+def get_field_names(jobs, eventtypes, config):
+    start = time.time()
+    eventtypes_str = ",".join(['"{}"'.format(et) for et in eventtypes])
+    query = 'search (index="{}") eventtype IN ({}) | fieldsummary'.format(config.splunk_index, eventtypes_str)
     LOGGER.debug(query)
     try:
         job = jobs.create(query, auto_finalize_ec=120, max_time=config.splunk_max_time)
         job.wait(config.splunk_max_time)
-        summary = job.get_results().as_list
+        result = collect_job_results(job, [], lambda acc, recs: acc.extend([v["field"] for v in recs]))
+        LOGGER.info("Time taken to collect field names: {} s".format(time.time()-start))
+        return result
     except Exception as e:
-        LOGGER.error("Errors executing search: {}".format(e))
-
-    try:
-        for f in summary:
-            f["values"] = json.loads(f["values"])
-        return summary
-    except Exception as e:
-        LOGGER.warn('Parameter "values" is not a json object: {}'.format(e))
+        LOGGER.error("Errors when executing search!!! Error: {}".format(e))
+        LOGGER.debug(traceback.format_exc())
 
 
-def get_cim_fields_summary(jobs, eventtype, eventtypes, cim_summary, sourcetypes, config):
-    for data_set in eventtypes[eventtype]:
-        data_set_name = ":".join(data_set["name"])
-        fields = ",".join(data_set["fields"])
-        query = 'search (index="{}") eventtype="{}" | table sourcetype,{}'.format(config.splunk_index, eventtype, fields)
+def update_summary(data, records):
+    sourcetypes, summary = data
+    for entry in records:
+        if "sourcetype" in entry:
+            sourcetypes.add(entry.pop("sourcetype"))
+        
+        field_set = frozenset(entry.keys())
+        if field_set in summary:
+            summary[field_set] += 1
+        else:
+            summary[field_set] = 1
+
+
+def get_fieldsummary(jobs, punct_by_eventtype, config):
+    start = time.time()
+    
+    result = {}    
+    for eventtype, punct in punct_by_eventtype:
+        result[eventtype] = []
+        query_templ = 'search (index="{}") eventtype="{}" punct="{}" | fieldsummary'
+        query = query_templ.format(config.splunk_index, eventtype, punct.replace("\\", "\\\\").replace('"','\\"'))
         LOGGER.debug(query)
         try:
             job = jobs.create(query, auto_finalize_ec=120, max_time=config.splunk_max_time)
             job.wait(config.splunk_max_time)
-            events = job.get_results().as_list            
+            summary = job.get_results().as_list
+        except Exception as e:
+            LOGGER.error("Errors executing search: {}".format(e))
+            LOGGER.debug(traceback.format_exc())
+
+
+        try:
+            for f in summary:
+                f["values"] = json.loads(f["values"])
+            result[eventtype].append(summary)
+        except Exception as e:
+            LOGGER.warn('Parameter "values" is not a json object: {}'.format(e))
+            LOGGER.debug(traceback.format_exc())
+
+    LOGGER.info("Time taken to build fieldsummary: {}".format(time.time()-start))
+    return result
+
+
+def get_fields_extractions(jobs, eventtypes, fields, config):
+    start = time.time()
+    report, sourcetypes = {}, set()
+    field_list = ",".join(['"{}"'.format(f) for f in fields])
+    for eventtype, tags in eventtypes.items():
+        query = 'search (index="{}") eventtype="{}" | table sourcetype,{}'.format(config.splunk_index, eventtype, field_list)
+        try:
+            job = jobs.create(query, auto_finalize_ec=120, max_time=config.splunk_max_time)
+            job.wait(config.splunk_max_time)
+            et_sourcetypes, et_summary = collect_job_results(job, [set(), {}], update_summary)
+            sourcetypes = sourcetypes.union(et_sourcetypes)
+            report[eventtype] = {
+                "tags": tags,
+                "sourcetypes": list(et_sourcetypes),
+                "summary": [{"fields": sorted(list(k)), "count": v} for k, v in et_summary.items()]
+            }        
         except Exception as e:
             LOGGER.error("Errors when executing search!!! Error: {}".format(e))
+            LOGGER.debug(traceback.format_exc())
 
-        for event in events:
-            if data_set_name not in cim_summary:
-                cim_summary[data_set_name] = {}
-            
-            if eventtype not in cim_summary[data_set_name]:
-                cim_summary[data_set_name][eventtype] = []
-
-            sourcetypes.add(event.pop("sourcetype", None))
-            found_fields = sorted(event.keys())
-            for record in cim_summary[data_set_name][eventtype]:
-                if record["fields"] == found_fields:
-                    record["count"] += 1
-                    break
-            else:
-                cim_summary[data_set_name][eventtype].append({
-                    "fields": found_fields,
-                    "count": 1
-                })
+    LOGGER.info("Time taken to build fields extractions section: {} s".format(time.time()-start))
+    return report, sourcetypes
 
 
 def read_ta_meta(config):
@@ -125,79 +178,36 @@ def read_ta_meta(config):
     ta_id_info = manifest.get("info", {}).get("id", {})
     return {k:v for k,v in ta_id_info.items() if k in ["name", "version"]}
 
+
 def build_report(jobs, eventtypes, config):
-    cim_summary = {}
-    fieldsummary = {}
-    sourcetypes = set()
+    start = time.time()
+
+    fields = get_field_names(jobs, eventtypes, config)
+    if fields:
+        extractions, sourcetypes = get_fields_extractions(jobs, eventtypes, fields, config)
+    else:
+        extractions, sourcetypes = "No field extractions discovered", []
+
     punct_by_eventtype = get_punct_by_eventtype(jobs, eventtypes, config)
-    if not punct_by_eventtype:
-        sys.exit("No punct by eventtype found")
-
-    for eventtype, punct in punct_by_eventtype:
-        LOGGER.info("{}, {}".format(eventtype, punct))
-
-        if eventtype not in fieldsummary:
-            get_cim_fields_summary(jobs, eventtype, eventtypes, cim_summary, sourcetypes, config)
-
-        if eventtype not in fieldsummary:
-            fieldsummary[eventtype] = {
-                "models": [":".join(ds["name"]) for ds in eventtypes[eventtype]],
-                "summary": []
-            }
-
-        fieldsummary[eventtype]["summary"].append(get_fieldsummary(jobs, eventtype, punct, config))
+    if punct_by_eventtype:    
+        fieldsummary = get_fieldsummary(jobs, punct_by_eventtype, config)
+    else:
+        fieldsummary = "No punct by eventtype combinations discovered"
 
     summary = {
         "ta_name": read_ta_meta(config),
         "sourcetypes": list(sourcetypes),
-        "cimsummary": cim_summary,
+        "extractions": extractions,
         "fieldsummary": fieldsummary
     }
+
     with open(config.splunk_report_file, "w") as f:
         json.dump(summary, f, indent=4)
-
-
-def collect_dataset_info(obj, data_model_name, parent_data_set=None, parent_fields=set()):
-    if "tag=" not in obj.get("search_constraints", ""):
-        return []
     
-    info = {
-        "name": (data_model_name, obj.get("name")),
-        "tags": set(obj.get("tags")[0]),
-        "parent": (data_model_name, parent_data_set),
-        "fields": parent_fields | {f["name"] for f in obj.get("fields", {})}
-    }
-
-    res = [info]
-    for child_dataset in obj.get("child_dataset", []):
-        child_info = collect_dataset_info(child_dataset, data_model_name, obj.get("name"), info["fields"])
-        res.extend(child_info)
-    
-    return res
+    LOGGER.info("Total time taken to generate report: {} s".format(time.time()-start))
 
 
-def load_data_models(dms_path):    
-    data_sets = []
-    for file_name in glob.glob(os.path.join(dms_path, "*.json")):
-        with open(file_name) as f:
-            model = json.load(f)
-            model_name = model.get("model_name")  
-            if not model_name:
-                continue    
-            for obj in model.get("objects", []):
-                data_sets.extend(collect_dataset_info(obj, model_name))
-    return data_sets
-
-
-def find_dataset_by_tags(data_sets, tags):
-    res = []
-    for data_set in data_sets:
-        if data_set["tags"].issubset(tags):
-            res.append(data_set)
-    return res
-
-
-def get_addon_eventtypes(addon_path, data_sets):
+def get_addon_eventtypes(addon_path):
     parser = AddonParser(addon_path)
 
     eventtypes = {eventtype: None for eventtype in parser.eventtype_parser.eventtypes.sects}
@@ -210,14 +220,13 @@ def get_addon_eventtypes(addon_path, data_sets):
             if eventtype in eventtypes:
                 tags = [key for key, option in section.options.items() 
                             if option.value.strip() == "enabled"]
-                eventtypes[eventtype] = find_dataset_by_tags(data_sets, tags)
+                eventtypes[eventtype] = tags
     
     return eventtypes
 
 
 def main():
     config = get_gonfig()
-    LOGGER.setLevel(config.log_level)
 
     splunk_cfg = {
         "splunkd_scheme": config.splunk_web_scheme,
@@ -228,8 +237,7 @@ def main():
     }
 
     try:
-        data_models = load_data_models(PSA_DATA_MODELS_PATH)
-        eventtypes = get_addon_eventtypes(config.splunk_app, data_models)
+        eventtypes = get_addon_eventtypes(config.splunk_app)
 
         cloud_splunk = CloudSplunk(**splunk_cfg)
         conn = cloud_splunk.create_logged_in_connector()
@@ -237,25 +245,19 @@ def main():
         
         build_report(jobs, eventtypes, config)
 
-    except TimeoutError as error:
-        msg = 'Wrong Splunk Host Address: {}, {}'.format(config.splunk_host, error)
-        LOGGER.error(msg)
-        sys.exit(msg)
-    except ValueError as error:
-        msg = 'Wrong Splunk Scheme: {}, {}'.format(config.splunk_web_scheme, error)
-        LOGGER.error(msg)
-        sys.exit(msg)
-    except ConnectionRefusedError as error:
-        msg = 'Wrong Splunk Port Number: {}, {}'.format(config.splunk_port, error)
+    except (TimeoutError, ConnectionRefusedError) as error:
+        msg = 'Failed to connect Splunk instance {}://{}:{}, make sure you provided correct connection information. {}'.format(
+            config.splunk_web_scheme, config.splunk_host, config.splunk_port, error)
         LOGGER.error(msg)
         sys.exit(msg)
     except binding.AuthenticationError as error:
-        msg = 'Splunk Username or Password is not correct: {}'.format(error)
+        msg = 'Authentication to Splunk instance has failed, make sure you provided correct Splunk credentials. {}'.format(error)
         LOGGER.error(msg)
         sys.exit(msg)
     except Exception as error:
-        msg = 'Unexpected exception {}: {}'.format(type(error), error)
+        msg = 'Unexpected exception: {}'.format(error)
         LOGGER.error(msg)
+        LOGGER.debug(traceback.format_exc())
         sys.exit(msg)
 
 
