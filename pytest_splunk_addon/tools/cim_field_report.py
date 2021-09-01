@@ -146,7 +146,7 @@ def get_fieldsummary(jobs, punct_by_eventtype, config):
     return result
 
 
-def get_fields_extractions(jobs, eventtypes, fields, config):
+def get_fieldsreport(jobs, eventtypes, fields, config):
     start = time.time()
     report, sourcetypes = {}, set()
     field_list = ",".join(['"{}"'.format(f) for f in fields])
@@ -184,9 +184,9 @@ def build_report(jobs, eventtypes, config):
 
     fields = get_field_names(jobs, eventtypes, config)
     if fields:
-        extractions, sourcetypes = get_fields_extractions(jobs, eventtypes, fields, config)
+        fieldsreport, sourcetypes = get_fieldsreport(jobs, eventtypes, fields, config)
     else:
-        extractions, sourcetypes = "No field extractions discovered", []
+        fieldsreport, sourcetypes = "No field extractions discovered", []
 
     punct_by_eventtype = get_punct_by_eventtype(jobs, eventtypes, config)
     if punct_by_eventtype:    
@@ -197,7 +197,7 @@ def build_report(jobs, eventtypes, config):
     summary = {
         "ta_name": read_ta_meta(config),
         "sourcetypes": list(sourcetypes),
-        "extractions": extractions,
+        "fieldsreport": fieldsreport,
         "fieldsummary": fieldsummary
     }
 
