@@ -53,7 +53,7 @@ class ConfNotFound(RuntimeError):
         @param conf: The name of the conf file that was missing.
         """
         self.conf = conf
-        super(ConfNotFound, self).__init__(self._error_message)
+        super().__init__(self._error_message)
 
     @property
     def _error_message(self):

@@ -5,7 +5,6 @@
 """
 
 from abc import ABCMeta, abstractmethod
-from builtins import object
 
 from future.utils import with_metaclass
 
@@ -23,8 +22,7 @@ class Collection(with_metaclass(ABCMeta, object)):
         return len(list(self.items()))
 
     def __iter__(self):
-        for item in list(self.items()):
-            yield item
+        yield from list(self.items())
 
     @abstractmethod
     def items(self):

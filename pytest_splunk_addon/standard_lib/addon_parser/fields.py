@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Provides the Field class containing all the field properties and a decorator 
 to convert a list to field list
@@ -7,7 +6,7 @@ to convert a list to field list
 from functools import wraps
 
 
-class Field(object):
+class Field:
     """
     Contains the field properties
 

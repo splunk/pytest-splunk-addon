@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 There are 3 types of tests included:
 

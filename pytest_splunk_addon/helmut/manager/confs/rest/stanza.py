@@ -15,7 +15,7 @@ class RESTStanzaWrapper(Stanza):
     """
 
     def __init__(self, rest_conf, rest_stanza):
-        super(RESTStanzaWrapper, self).__init__(rest_conf, rest_stanza.name)
+        super().__init__(rest_conf, rest_stanza.name)
         self._raw_rest_stanza = rest_stanza
 
     @property

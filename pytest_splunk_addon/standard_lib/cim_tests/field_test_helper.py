@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Provides the helper methods to test addon_parser.Field object
 """
@@ -7,7 +6,7 @@ import json
 from .field_test_adapter import FieldTestAdapater
 
 
-class FieldTestHelper(object):
+class FieldTestHelper:
     """
     Provides the helper methods to test addon_parser.Field object
 

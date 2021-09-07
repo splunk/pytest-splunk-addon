@@ -36,7 +36,7 @@ ip_rules = {
 }
 
 
-class SampleEvent(object):
+class SampleEvent:
     """
     This class represents an event which will be ingested in Splunk.
 

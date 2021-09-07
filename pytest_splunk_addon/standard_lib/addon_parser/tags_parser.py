@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Provides tags.conf parsing mechanism
 """
@@ -8,7 +7,7 @@ import logging
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class TagsParser(object):
+class TagsParser:
     """
     Parses tags.conf and extracts tags
 

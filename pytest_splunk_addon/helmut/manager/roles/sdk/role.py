@@ -23,7 +23,7 @@ class SDKRoleWrapper(Role):
         @param sdk_role: The name of the new role.
         @type sdk_role: String
         """
-        super(SDKRoleWrapper, self).__init__(sdk_connector)
+        super().__init__(sdk_connector)
         self._raw_sdk_role = sdk_role
 
     @property
@@ -45,5 +45,5 @@ class SDKRoleWrapper(Role):
         return self.raw_sdk_role.name
 
     def edit(self, **kwargs):
-        self.logger.info("Editing role %s with: %s" % (self.name, kwargs))
+        self.logger.info("Editing role {} with: {}".format(self.name, kwargs))
         self.raw_sdk_role.update(**kwargs).refresh()

@@ -1,12 +1,6 @@
-from __future__ import print_function
-
 from future import standard_library
 
 standard_library.install_aliases()
-from builtins import zip
-from builtins import str
-from builtins import map
-from builtins import object
 import os
 import re
 import sys
@@ -34,7 +28,7 @@ class SearchUtilException(Exception):
         return repr(self.message)
 
 
-class SearchUtil(object):
+class SearchUtil:
     def __init__(self, jobs, logger):
         """
         Constructor of the SearchUtil object.
@@ -390,8 +384,8 @@ class SearchUtil(object):
 
         path_to_output = os.path.join(os.getcwd(), "data")
         try:
-            output = open(os.path.join(path_to_output, expected), "r")
-        except IOError:
+            output = open(os.path.join(path_to_output, expected))
+        except OSError:
             self.failTest("Expected output file not found.")
         except AttributeError:
             if not reformat:

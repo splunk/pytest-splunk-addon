@@ -4,8 +4,6 @@
 @since: 2018-05-01
 """
 import json
-from builtins import object
-from builtins import range
 
 from pytest_splunk_addon.helmut.manager.confs import Confs
 from pytest_splunk_addon.helmut.manager.confs import (
@@ -89,7 +87,7 @@ class ConfNotFound(RuntimeError):
         @param conf: The name of the conf file that was missing.
         """
         self.conf = conf
-        super(ConfNotFound, self).__init__(self._error_message)
+        super().__init__(self._error_message)
 
     @property
     def _error_message(self):
@@ -102,7 +100,7 @@ class ConfNotFound(RuntimeError):
         return msg.format(conf=self.conf)
 
 
-class Configurations(object):
+class Configurations:
     """
     wraps a Config object using Splunk REST connector
     """

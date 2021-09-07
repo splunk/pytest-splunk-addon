@@ -6,8 +6,6 @@
 from future import standard_library
 
 standard_library.install_aliases()
-from builtins import range
-from builtins import object
 from splunklib.client import HTTPError
 
 from pytest_splunk_addon.helmut.manager.confs.conf import Conf
@@ -29,7 +27,7 @@ class RESTConfWrapper(Conf):
     """
 
     def __init__(self, rest_connector, rest_conf):
-        super(RESTConfWrapper, self).__init__(rest_connector, rest_conf.name)
+        super().__init__(rest_connector, rest_conf.name)
         self._raw_rest_conf = rest_conf
 
     @property
@@ -61,9 +59,7 @@ class RESTConfWrapper(Conf):
     def _create_stanza(self, stanza_name, **values):
         if stanza_name in self:
             return RestStanza(self.connector, self._raw_rest_conf, stanza_name)
-        values = dict(
-            [normalize_to_str(k), normalize_to_str(v)] for k, v in values.items()
-        )
+        values = {normalize_to_str(k): normalize_to_str(v) for k, v in values.items()}
         stanza_name = normalize_to_str(stanza_name)
         url = PATH_PERFIX + self._raw_rest_conf.path
         user_args = {"name": stanza_name}
@@ -90,10 +86,9 @@ class RESTConfWrapper(Conf):
 
     def create_stanza(self, stanza_name, values=None):
         values = values or {}
-        values = dict(
-            [normalize_to_unicode(k), normalize_to_unicode(v)]
-            for k, v in values.items()
-        )
+        values = {
+            normalize_to_unicode(k): normalize_to_unicode(v) for k, v in values.items()
+        }
         stanza_name = normalize_to_unicode(stanza_name)
         try:
             self.logger.info(
@@ -114,7 +109,7 @@ class RESTConfWrapper(Conf):
         stanza_name = normalize_to_unicode(stanza_name)
         try:
             self.logger.info(
-                "Deleting stanza '%s' in %s.conf" % (stanza_name, self.name)
+                "Deleting stanza '{}' in {}.conf".format(stanza_name, self.name)
             )
             self._delete_stanza(stanza_name)
         except HTTPError as h:
@@ -123,7 +118,7 @@ class RESTConfWrapper(Conf):
             raise
 
 
-class RestStanza(object):
+class RestStanza:
     """
     wraps a Stanza object using Splunk REST connector
     """
@@ -153,9 +148,7 @@ class RestStanza(object):
         return parsed_content["entry"][0]["content"]
 
     def update(self, **values):
-        values = dict(
-            [normalize_to_str(k), normalize_to_str(v)] for k, v in values.items()
-        )
+        values = {normalize_to_str(k): normalize_to_str(v) for k, v in values.items()}
         name = urllib.parse.quote_plus(self._name)
         url = (
             PATH_PERFIX + self.rest_conf.path + "{stanza_name}".format(stanza_name=name)

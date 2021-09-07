@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Provides Data Model handling functionalities. Such as
 
@@ -15,7 +14,7 @@ from . import JSONSchema
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class DataModelHandler(object):
+class DataModelHandler:
     """
     Provides Data Model handling functionalities. Such as
 

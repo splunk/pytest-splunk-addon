@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Provides transforms.conf parsing mechanism
 """
@@ -13,7 +12,7 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 from . import convert_to_fields
 
 
-class TransformsParser(object):
+class TransformsParser:
     """
     Parses transforms.conf and extracts fields
 
@@ -126,14 +125,14 @@ class TransformsParser(object):
                     location = os.path.join(
                         self.splunk_app_path, "lookups", lookup_file
                     )
-                    with open(location, "r") as csv_file:
+                    with open(location) as csv_file:
                         reader = csv.DictReader(csv_file)
                         fieldnames = reader.fieldnames
                         for items in fieldnames:
                             yield items.strip()
                 # If there is an error. the test should fail with the current fields
                 # This makes sure the test doesn't exit prematurely
-                except (OSError, IOError, UnboundLocalError, TypeError) as e:
+                except (OSError, UnboundLocalError, TypeError) as e:
                     LOGGER.error(
                         "Could not read the lookup file, skipping test. error=%s",
                         str(e),

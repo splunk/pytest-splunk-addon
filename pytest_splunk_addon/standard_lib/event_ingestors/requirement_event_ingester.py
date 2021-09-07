@@ -12,7 +12,7 @@ from ..sample_generation.sample_event import SampleEvent
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class RequirementEventIngestor(object):
+class RequirementEventIngestor:
     def __init__(self, requirement_file_path):
         """
         app_path to drill down to requirement file folder in package/tests/requirement_files/

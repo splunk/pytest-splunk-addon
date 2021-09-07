@@ -5,7 +5,7 @@ class SearchFailure(RuntimeError):
 
     def __init__(self, search_message):
         self.search_message = search_message
-        super(SearchFailure, self).__init__(self._error_message)
+        super().__init__(self._error_message)
 
     @property
     def _error_message(self):

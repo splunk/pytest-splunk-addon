@@ -47,7 +47,7 @@ class SDKRolesWrapper(Roles):
             if not err.status == 409:
                 raise
             self.logger.warn(
-                "Role %s already existed. HTTPError: %s" % (role_name, err)
+                "Role {} already existed. HTTPError: {}".format(role_name, err)
             )
 
     def delete_role(self, role_name):
@@ -55,7 +55,7 @@ class SDKRolesWrapper(Roles):
         self._service.roles.delete(role_name)
 
     def update_role(self, role_name, **kwargs):
-        self.logger.info("Updating role %s with: %s" % (role_name, kwargs))
+        self.logger.info("Updating role {} with: {}".format(role_name, kwargs))
         self._service.roles[role_name].update(**kwargs).refresh()
 
     def __getitem__(self, role_name):

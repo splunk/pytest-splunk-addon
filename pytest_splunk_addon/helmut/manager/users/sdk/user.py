@@ -27,7 +27,7 @@ class SDKUserWrapper(User):
         """
         if username is None:
             username = sdk_user.name
-        super(SDKUserWrapper, self).__init__(username, sdk_connector)
+        super().__init__(username, sdk_connector)
         self._raw_sdk_user = sdk_user
 
     @property

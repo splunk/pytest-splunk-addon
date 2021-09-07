@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Module include class to generate the test cases
 to test the knowledge objects of an Add-on.
@@ -15,7 +14,7 @@ from . import FieldBank
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class FieldTestGenerator(object):
+class FieldTestGenerator:
     """
     Generates test cases to test the knowledge objects of an Add-on.
 

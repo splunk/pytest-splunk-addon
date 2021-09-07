@@ -24,7 +24,7 @@ class StanzaNotFound(RuntimeError):
         """
         self.conf = conf
         self.stanza = stanza
-        super(StanzaNotFound, self).__init__(self._error_message)
+        super().__init__(self._error_message)
 
     @property
     def _error_message(self):

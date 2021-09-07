@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Provides eventtypes.conf parsing mechanism
 """
@@ -7,7 +6,7 @@ import logging
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class EventTypeParser(object):
+class EventTypeParser:
     """
     Parses eventtypes.conf and extracts eventtypes
 

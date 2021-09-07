@@ -21,7 +21,7 @@ class RESTJobWrapper(Job):
         @param rest_job: The Job object from the Python REST.
         @type param: splunklib.client.Job
         """
-        super(RESTJobWrapper, self).__init__(rest_connector)
+        super().__init__(rest_connector)
         self._raw_rest_job = rest_job
 
     @property
@@ -117,7 +117,7 @@ class RESTJobWrapper(Job):
         return result["content"]["ttl"]
 
     def set_ttl(self, value):
-        self.logger.info("Setting job %s TTL to: %s" % (self.sid, value))
+        self.logger.info("Setting job {} TTL to: {}".format(self.sid, value))
         response = self.raw_rest_job.control_search(action="setttl", ttl=value)
         assert (
             "The ttl of the search job was changed to {value}".format(value=value)
@@ -259,7 +259,7 @@ class RESTJobWrapper(Job):
         return self.raw_rest_job.get_search_log(**kwargs)
 
     def set_priority(self, value):
-        self.logger.info("Setting priority of job %s to: %s" % (self.sid, value))
+        self.logger.info("Setting priority of job {} to: {}".format(self.sid, value))
         response = self.raw_rest_job.control_search(
             action="setpriority", priority=value
         )

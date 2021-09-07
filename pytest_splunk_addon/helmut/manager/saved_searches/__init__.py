@@ -59,7 +59,7 @@ class SavedSearches(Manager, Collection):
 class SavedSearchNotFound(RuntimeError):
     def __init__(self, saved_search_name):
         self.saved_search_name = saved_search_name
-        super(SavedSearchNotFound, self).__init__(self._error_message)
+        super().__init__(self._error_message)
 
     @property
     def _error_message(self):

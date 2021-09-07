@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from future import standard_library
 
 standard_library.install_aliases()
@@ -693,7 +691,7 @@ class SearchHelpers(threading.Thread):
 
         LOGGER.info("upload a lookup file")
         if acl == "sharing=global":
-            lookup_url = "/servicesNS/nobody/{0}/data/lookup-table-files".format(
+            lookup_url = "/servicesNS/nobody/{}/data/lookup-table-files".format(
                 appcontext
             )
         else:
@@ -705,7 +703,7 @@ class SearchHelpers(threading.Thread):
             "eai:data": lookup_path + os.sep + lookupfilename,
             "name": lookupfilename,
         }
-        cmd = 'cmd python -c "import os; os.makedirs(\\"{0}\\")"'.format(lookup_path)
+        cmd = 'cmd python -c "import os; os.makedirs(\\"{}\\")"'.format(lookup_path)
         (code, stdout, stderr) = splunk.execute(cmd)
         # copy lookup file to lookup_tmp folder in $splunk_home/var/run/splunk
         splunk._file_utils.send(lookupfilepath, lookup_path)
@@ -874,7 +872,7 @@ class SearchHelpers(threading.Thread):
         return response, content
 
     def check_geobin(self, nightlysplunk, statsfunc, geobin):
-        query = "search index=geo checkin.geolong>=%s checkin.geolong<%s checkin.geolat>=%s checkin.geolat<%s | stats %s" % (
+        query = "search index=geo checkin.geolong>={} checkin.geolong<{} checkin.geolat>={} checkin.geolat<{} | stats {}".format(
             geobin["_geo_bounds_west"],
             geobin["_geo_bounds_east"],
             geobin["_geo_bounds_south"],
@@ -913,7 +911,7 @@ class SearchHelpers(threading.Thread):
 
         except urllib.error.HTTPError as err:
             print(
-                "Http error code is ({0}): {1} : {2}".format(
+                "Http error code is ({}): {} : {}".format(
                     err.code, err.errno, err.strerror
                 )
             )

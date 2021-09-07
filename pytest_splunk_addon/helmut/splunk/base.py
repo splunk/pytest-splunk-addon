@@ -59,7 +59,7 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         self._connectors = {}
 
         self._name = name or id(self)
-        super(Splunk, self).__init__()
+        super().__init__()
         self.logger.debug("Helmut Splunk created:{splunk}".format(splunk=self))
 
     def __str__(self):
@@ -638,7 +638,7 @@ class InvalidStartListener(AttributeError):
 
     def __init__(self, message=None):
         message = message or "Start listeners must be callable"
-        super(InvalidStartListener, self).__init__(message)
+        super().__init__(message)
 
 
 class CouldNotRestartSplunk(CommandExecutionFailure):

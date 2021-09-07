@@ -29,7 +29,7 @@ class SDKIndexesWrapper(Indexes):
             if not err.status == 409:
                 raise
             self.logger.warn(
-                "Index '%s' already exists. HTTPError: %s" % (index_name, err)
+                "Index '{}' already exists. HTTPError: {}".format(index_name, err)
             )
         return self[index_name]
 

@@ -8,7 +8,7 @@ from ..sample_generation.sample_event import SampleEvent
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class IndexTimeTestGenerator(object):
+class IndexTimeTestGenerator:
     """
     Generates test cases to test the index time extraction of an Add-on.
 

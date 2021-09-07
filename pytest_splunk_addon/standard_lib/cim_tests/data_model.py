@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Includes DataModel class which handles the DataSets within a data model. 
 """
@@ -6,7 +5,7 @@ Includes DataModel class which handles the DataSets within a data model.
 from . import DataSet
 
 
-class DataModel(object):
+class DataModel:
     """
     Handles the DataSets within a data model.
 

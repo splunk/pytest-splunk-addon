@@ -18,7 +18,7 @@ class SDKSavedSearchWrapper(SavedSearch):
         @param sdk_saved_search: The name of the new saved search.
         @type sdk_saved_search: String
         """
-        super(SDKSavedSearchWrapper, self).__init__(sdk_connector)
+        super().__init__(sdk_connector)
         self._raw_sdk_saved_search = sdk_saved_search
 
     def run(self, **kwargs):

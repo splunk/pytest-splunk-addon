@@ -29,7 +29,7 @@ def docker_compose_files(request):
     return [docker_compose_path]
 
 
-class TASetup(object):
+class TASetup:
     def __init__(self, splunk):
         self.splunk = splunk
 

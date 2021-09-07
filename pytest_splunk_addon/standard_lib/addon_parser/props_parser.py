@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Provides props.conf parsing mechanism
 """
@@ -11,7 +10,7 @@ from . import TransformsParser
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class PropsParser(object):
+class PropsParser:
     """
     Parses props.conf and extracts the fields.
 
@@ -290,7 +289,7 @@ class PropsParser(object):
         )
         fields_tuples = re.findall(regex, props_property.value, re.IGNORECASE)
         # Convert list of tuples into list
-        return list(set([item for t in fields_tuples for item in t]))
+        return list({item for t in fields_tuples for item in t})
 
     def get_report_fields(self, props_property):
         """

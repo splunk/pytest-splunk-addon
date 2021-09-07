@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Define the TA_fiction add-on passed test case list.
 """

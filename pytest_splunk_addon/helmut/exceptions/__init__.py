@@ -16,7 +16,7 @@ class UnsupportedConnectorError(BaseException):
 
     def __init__(self, message=None):
         message = message or "The specified connector is not supported"
-        super(UnsupportedConnectorError, self).__init__(message)
+        super().__init__(message)
 
 
 class InvalidFileModeError(BaseException):
@@ -26,7 +26,7 @@ class InvalidFileModeError(BaseException):
     """
 
     def __init__(self, message="The specified file mode is invalid"):
-        super(InvalidFileModeError, self).__init__(message)
+        super().__init__(message)
 
 
 class RetrieveError(RuntimeError):
@@ -72,4 +72,4 @@ class ExpectedExceptionNotRaisedError(BaseException):
         :return:
         """
         message = "Expected exception not raised: %s" % err
-        super(ExpectedExceptionNotRaisedError, self).__init__(message)
+        super().__init__(message)

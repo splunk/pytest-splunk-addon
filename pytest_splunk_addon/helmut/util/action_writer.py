@@ -19,7 +19,6 @@ It's used to print actions that look like this::
 """
 
 import sys
-from builtins import range
 
 _LAST_OPENED = 0
 _LAST_CLOSED = 0

@@ -14,7 +14,7 @@ class SDKStanzaWrapper(Stanza):
     """
 
     def __init__(self, sdk_conf, sdk_stanza):
-        super(SDKStanzaWrapper, self).__init__(sdk_conf, sdk_stanza.name)
+        super().__init__(sdk_conf, sdk_stanza.name)
         self._raw_sdk_stanza = sdk_stanza
 
     @property

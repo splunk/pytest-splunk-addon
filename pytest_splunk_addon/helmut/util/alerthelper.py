@@ -1,10 +1,6 @@
-from __future__ import print_function
-
 from future import standard_library
 
 standard_library.install_aliases()
-from builtins import str
-from builtins import object
 import logging
 import json
 import os
@@ -22,7 +18,7 @@ LOGGER = logging.getLogger("alter helper log")
 import socket
 
 
-class AlertHelpers(object):
+class AlertHelpers:
     def __init__(self):
 
         global request_args
@@ -219,7 +215,7 @@ class AlertHelpers(object):
         REST endpoint
         """
         request_type = "POST"
-        print("user and context is {0} and {1}".format(user, context))
+        print("user and context is {} and {}".format(user, context))
         request_url = const.TestConstants["SAVED_SEARCH"].format(user, context)
         self.make_http_request(
             splunk,
@@ -317,7 +313,7 @@ class AlertHelpers(object):
         email_bcc_list, email format,adSearchResults to email,
         format in attachment, paper_size, paper_orientation,splunk logo
         """
-        conf = open(filename, "r")
+        conf = open(filename)
         f = conf.readlines()
         self.setup_mail_server(
             splunk, user, password, mail_server, mode=emailMode
@@ -348,11 +344,11 @@ class AlertHelpers(object):
                 splunk_logo=elements[10],
             )
 
-            print("Creating alert {0}".format(elements[0]))
-            print("file name is {0}".format(elements[13]))
+            print("Creating alert {}".format(elements[0]))
+            print("file name is {}".format(elements[13]))
 
             if elements[13].rstrip("\n") != "None":
-                with open(elements[13].rstrip("\n"), "r") as myfile:
+                with open(elements[13].rstrip("\n")) as myfile:
                     data = "".join(line for line in myfile)
                     self.addContentsToEmail(data)
 
@@ -466,7 +462,7 @@ class AlertHelpers(object):
 
         except urllib.error.HTTPError as err:
             LOGGER.error(
-                "Http error code is ({0}): {1} : {2}".format(
+                "Http error code is ({}): {} : {}".format(
                     err.code, err.errno, err.strerror
                 )
             )

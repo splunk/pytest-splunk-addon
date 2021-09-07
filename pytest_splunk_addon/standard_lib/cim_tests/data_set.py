@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 Includes DataSet class which handles a single data set
 """
 from ..addon_parser import Field
 
 
-class DataSet(object):
+class DataSet:
     """
     Handles a single data set
 

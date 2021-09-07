@@ -73,7 +73,7 @@ class Indexes(Manager, Collection):
 class IndexNotFound(RuntimeError):
     def __init__(self, index_name):
         self.index_name = index_name
-        super(IndexNotFound, self).__init__(self._error_message)
+        super().__init__(self._error_message)
 
     @property
     def _error_message(self):

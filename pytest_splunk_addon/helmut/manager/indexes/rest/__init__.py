@@ -6,9 +6,7 @@
 from future import standard_library
 
 standard_library.install_aliases()
-from builtins import range
 from future.utils import raise_
-from builtins import object
 from splunklib.client import HTTPError
 
 from pytest_splunk_addon.helmut.manager.indexes import Indexes
@@ -50,7 +48,7 @@ class RESTIndexesWrapper(Indexes):
             if not err.status == 409:
                 raise
             self.logger.warn(
-                "Index '%s' already exists. HTTPError: %s" % (index_name, err)
+                "Index '{}' already exists. HTTPError: {}".format(index_name, err)
             )
         return self[index_name]
 
@@ -93,7 +91,7 @@ class RESTIndexesWrapper(Indexes):
         return [RESTIndexWrapper(self.connector, index) for index in indexes]
 
 
-class RestIndex(object):
+class RestIndex:
     """
     wraps a Index object using Splunk REST connector
     """
@@ -161,9 +159,7 @@ class RestIndex(object):
 
     def update(self, **kwargs):
         name = self.encode_name()
-        kwargs = dict(
-            [normalize_to_str(k), normalize_to_str(v)] for k, v in kwargs.items()
-        )
+        kwargs = {normalize_to_str(k): normalize_to_str(v) for k, v in kwargs.items()}
         url = PATH_PERFIX + name
         req_args = {"output_mode": "json"}
         response, content = self.connector.make_request("POST", url, kwargs, req_args)
@@ -171,9 +167,7 @@ class RestIndex(object):
 
     def delete(self, **kwargs):
         name = self.encode_name()
-        kwargs = dict(
-            [normalize_to_str(k), normalize_to_str(v)] for k, v in kwargs.items()
-        )
+        kwargs = {normalize_to_str(k): normalize_to_str(v) for k, v in kwargs.items()}
         url = PATH_PERFIX + name
         response, content = self.connector.make_request("DELETE", url)
         assert response["status"] == "200"

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 To enhance the test cases while verifying the field extractions.
 """
@@ -8,7 +7,7 @@ from ..addon_parser import Field
 from ..addon_parser import PropsParser
 
 
-class FieldBank(object):
+class FieldBank:
     """
     Supports field_bank: List of fields with patterns and expected
         values which should be tested for the Add-on.

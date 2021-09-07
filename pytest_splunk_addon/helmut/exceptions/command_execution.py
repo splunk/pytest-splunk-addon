@@ -29,7 +29,7 @@ class CommandExecutionFailure(RuntimeError):
         self.stderr = stderr
         self.stdout = stdout
 
-        super(CommandExecutionFailure, self).__init__(self._error_message)
+        super().__init__(self._error_message)
 
     @property
     def _error_message(self):

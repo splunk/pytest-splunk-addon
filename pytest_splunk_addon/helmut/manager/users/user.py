@@ -25,7 +25,7 @@ class User(ItemFromManager):
         @type connector: _Connector
         """
         self._name = username
-        super(User, self).__init__(connector)
+        super().__init__(connector)
 
     @abstractmethod
     def full_name(self):

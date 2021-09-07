@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Generates test cases to verify the CIM compatibility . 
 """
@@ -13,7 +12,7 @@ from ..addon_parser import Field
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class CIMTestGenerator(object):
+class CIMTestGenerator:
     """
     Generates test cases to verify the CIM compatibility.
 
@@ -213,7 +212,7 @@ class CIMTestGenerator(object):
         """
         To obtain list object of common fields mentioned in COMMON_FIELDS_PATH
         """
-        with open(self.common_fields_path, "r") as cf_json:
+        with open(self.common_fields_path) as cf_json:
             common_fields_json = json.load(cf_json)
         common_fields_list = list(Field.parse_fields(common_fields_json["fields"]))
         return [

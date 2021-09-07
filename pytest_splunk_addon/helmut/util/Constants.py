@@ -1,7 +1,4 @@
-from builtins import object
-
-
-class Constants(object):
+class Constants:
     TestConstants = {
         # Email alerting constants
         "EMAIL_SETTINGS": "/servicesNS/admin/search/admin/alert_actions/email",

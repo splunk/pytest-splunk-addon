@@ -8,7 +8,6 @@ import datetime
 import logging
 import logging.config
 import os
-from builtins import object
 from logging import FileHandler, Formatter
 
 from future.utils import with_metaclass
@@ -54,7 +53,7 @@ from abc import ABCMeta
 class Logging(with_metaclass(ABCMeta, object)):
     def __init__(self):
         self._logger = self._get_logger()
-        super(Logging, self).__init__()
+        super().__init__()
 
     def _get_logger(self):
         """

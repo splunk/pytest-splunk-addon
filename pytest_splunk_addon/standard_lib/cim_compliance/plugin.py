@@ -7,7 +7,7 @@ import os
 from .cim_report_generator import CIMReportGenerator
 
 
-class CIMReportPlugin(object):
+class CIMReportPlugin:
     def __init__(self, config):
         self.data = []
         self.report_path = config.getoption("cim_report")

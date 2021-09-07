@@ -7,7 +7,7 @@ INTERVAL = 3
 RETRIES = 3
 
 
-class ReqsTestTemplates(object):
+class ReqsTestTemplates:
     """
     Test templates to test the log files in the event_analytics folder
     """

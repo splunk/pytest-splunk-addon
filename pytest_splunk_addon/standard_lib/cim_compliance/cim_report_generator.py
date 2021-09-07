@@ -38,7 +38,7 @@ NOT_SUPPORTED_DATAMODELS = [
 ]
 
 
-class CIMReportGenerator(object):
+class CIMReportGenerator:
     """
     Generate the Report
     data format::

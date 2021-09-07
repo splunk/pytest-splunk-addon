@@ -8,11 +8,11 @@ import logging
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-TIMEZONE_REX = "((\+1[0-2])|(-1[0-4])|[+|-][0][0-9])([0-5][0-9])"
+TIMEZONE_REX = r"((\+1[0-2])|(-1[0-4])|[+|-][0][0-9])([0-5][0-9])"
 BULK_EVENT_COUNT = 250
 
 
-class SampleStanza(object):
+class SampleStanza:
     """
     This class represents a stanza of the eventgen.conf.
     It contains all the parameters for the stanza such as:
@@ -75,7 +75,7 @@ class SampleStanza(object):
         bulk_event = []
         raw_event = []
         event_counter = 0
-        while (int(required_event_count)) > len((bulk_event)):
+        while (int(required_event_count)) > len(bulk_event):
             raw_event.insert(event_counter, list(self._get_raw_sample()))
             if not raw_event[-1]:
                 break
@@ -253,7 +253,7 @@ class SampleStanza(object):
                 "default"
             ]
         """
-        with open(self.sample_path, "r", encoding="utf-8") as sample_file:
+        with open(self.sample_path, encoding="utf-8") as sample_file:
             sample_raw = sample_file.read()
             if self.metadata.get("breaker"):
                 for each_event in self.break_events(sample_raw):

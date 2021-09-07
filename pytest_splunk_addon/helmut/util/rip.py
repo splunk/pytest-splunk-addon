@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# vim: set fileencoding=utf-8 :
 
 """
 Meta
@@ -13,7 +12,6 @@ Meta
 from future import standard_library
 
 standard_library.install_aliases()
-from builtins import object
 import urllib.request, urllib.parse, urllib.error
 import datetime
 import time
@@ -30,7 +28,7 @@ class TimeoutException(Exception):
     pass
 
 
-class RESTInPeace(object):
+class RESTInPeace:
     """
     Simple module to wrap REST endpoints into a consistent set of methods
     Everything is accessed through servicesNS.

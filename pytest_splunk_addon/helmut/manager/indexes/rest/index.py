@@ -26,7 +26,7 @@ class RESTIndexWrapper(Index):
         @param rest_index: The name of the new index.
         @type rest_index: String
         """
-        super(RESTIndexWrapper, self).__init__(rest_connector)
+        super().__init__(rest_connector)
         self._raw_rest_index = rest_index
 
     def get_total_event_count(self):
@@ -115,17 +115,15 @@ class RESTIndexWrapper(Index):
         self._raw_rest_index.enable()
 
     def edit(self, **kwargs):
-        kwargs = dict(
-            [normalize_to_unicode(k), normalize_to_unicode(v)]
-            for k, v in kwargs.items()
-        )
-        self.logger.info("Editing index %s with: %s" % (self.name, kwargs))
+        kwargs = {
+            normalize_to_unicode(k): normalize_to_unicode(v) for k, v in kwargs.items()
+        }
+        self.logger.info("Editing index {} with: {}".format(self.name, kwargs))
         self._raw_rest_index.update(**kwargs)
 
     def delete(self, **kwargs):
-        kwargs = dict(
-            [normalize_to_unicode(k), normalize_to_unicode(v)]
-            for k, v in kwargs.items()
-        )
-        self.logger.info("Deleting index %s with: %s" % (self.name, kwargs))
+        kwargs = {
+            normalize_to_unicode(k): normalize_to_unicode(v) for k, v in kwargs.items()
+        }
+        self.logger.info("Deleting index {} with: {}".format(self.name, kwargs))
         self._raw_rest_index.delete(**kwargs)

@@ -1,9 +1,6 @@
-from __future__ import absolute_import
-
 import sys
 import time
 import traceback
-from builtins import str
 
 from splunklib.binding import HTTPError
 
@@ -37,7 +34,7 @@ class CloudSplunk(Splunk):
         self._splunkd_scheme = splunkd_scheme or "https"
         self._splunkd_port = splunkd_port or "8089"
         self._splunkd_host = splunkd_host or "127.0.0.1"
-        super(CloudSplunk, self).__init__(name)
+        super().__init__(name)
         self.set_credentials_to_use(username=username, password=password)
 
         server_web_scheme = server_web_host = server_web_port = None
@@ -145,7 +142,7 @@ class CloudSplunk(Splunk):
             and password != self.password
         ):
             raise CloudSplunkConnectorException()
-        return super(CloudSplunk, self).create_connector(
+        return super().create_connector(
             contype=contype, username=username, password=password, *args, **kwargs
         )
 
@@ -159,7 +156,7 @@ class CloudSplunk(Splunk):
         """
         if username and username != self.username:
             raise CloudSplunkConnectorException()
-        return super(CloudSplunk, self).connector(contype=contype, username=username)
+        return super().connector(contype=contype, username=username)
 
     def get_host_os(self):
         raise NotImplementedError("Host os should not matter for CloudSplunk.")

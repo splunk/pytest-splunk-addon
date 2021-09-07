@@ -56,7 +56,7 @@ class time_parse:
                 monthnum = int(
                     (abs(monthnum) % 12) * -1
                     if sign == "-"
-                    else int((abs(monthnum) % 12))
+                    else int(abs(monthnum) % 12)
                 )
                 unittime = datetime(
                     unittime.year + yearnum,

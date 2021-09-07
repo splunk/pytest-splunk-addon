@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Module usage:
 - splunk_appinspect: To parse the configuration files from Add-on package
@@ -166,7 +165,7 @@ def pytest_addoption(parser):
             "Relative or absolute path can be provided."
             "Json files are expected in the directory."
             "Json files must follow the schema mentioned in DatamodelSchema.json"
-            "pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\DatamodelSchema.json"
+            r"pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\DatamodelSchema.json"
         ),
     )
     group.addoption(
@@ -388,14 +387,14 @@ def ignore_internal_errors(request):
     if request.config.getoption("ignore_addon_errors"):
         addon_error_file_path = request.config.getoption("ignore_addon_errors")
         if os.path.exists(addon_error_file_path):
-            with open(addon_error_file_path, "r") as addon_errors:
+            with open(addon_error_file_path) as addon_errors:
                 error_list.extend(
                     [each_error.strip() for each_error in addon_errors.readlines()]
                 )
     if request.config.getoption("ignore_errors_not_related_to_addon"):
         file_path = request.config.getoption("ignore_errors_not_related_to_addon")
         if os.path.exists(file_path):
-            with open(file_path, "r") as non_ta_errors:
+            with open(file_path) as non_ta_errors:
                 error_list.extend(
                     [each_error.strip() for each_error in non_ta_errors.readlines()]
                 )

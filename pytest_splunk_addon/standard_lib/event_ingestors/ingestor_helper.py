@@ -12,7 +12,7 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 from .requirement_event_ingester import RequirementEventIngestor
 
 
-class IngestorHelper(object):
+class IngestorHelper:
     """
     Module for helper methods for ingestors.
     """

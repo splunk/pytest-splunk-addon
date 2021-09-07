@@ -1,7 +1,5 @@
 import logging
 import os
-from builtins import object
-from builtins import str
 
 import yaml
 from pytest_splunk_addon.helmut.util.hosts import Host, Hosts
@@ -10,7 +8,7 @@ LOGGER = logging.getLogger("..util.ymlparser")
 YAML_HOLDER = {}
 
 
-class YMLParser(object):
+class YMLParser:
     """
     Returns the entire contents of the yml file as a dictionary
     """

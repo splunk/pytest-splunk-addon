@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 There are 2 utilities included:
 

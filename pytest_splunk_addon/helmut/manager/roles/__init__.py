@@ -89,7 +89,7 @@ class Roles(Manager, Collection):
 class RoleNotFound(RuntimeError):
     def __init__(self, role_name):
         self.role_name = role_name
-        super(RoleNotFound, self).__init__(self._error_message)
+        super().__init__(self._error_message)
 
     @property
     def _error_message(self):

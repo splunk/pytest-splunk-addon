@@ -6,12 +6,11 @@ A module which deals with a Splunk app
 
 import logging
 import os
-from builtins import object
 
 from pytest_splunk_addon.helmut.manager.confs import Confs
 
 
-class App(object):
+class App:
     """
     A representation of a Splunk Application
 
@@ -51,9 +50,9 @@ class App(object):
                         installed from
         @type package: str
         """
-        super(App, self).__init__()
+        super().__init__()
 
-        self.__logger = logging.getLogger("App-{0}".format(name))
+        self.__logger = logging.getLogger("App-{}".format(name))
 
         self._name = name
         self._splunk = splunk
@@ -195,5 +194,5 @@ class App(object):
 
 class AppHasNoPackage(RuntimeError):
     def __init__(self, app_name):
-        msg = "The app {0} has no package to install from".format(app_name)
-        super(AppHasNoPackage, self).__init__(msg)
+        msg = "The app {} has no package to install from".format(app_name)
+        super().__init__(msg)

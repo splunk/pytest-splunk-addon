@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 Provides savedsearches.conf parsing mechanism
 """
 
 
-class SavedSearchParser(object):
+class SavedSearchParser:
     """
     Parses savedsearches.conf and extracts savedsearches
 

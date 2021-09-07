@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from future import standard_library
 
 standard_library.install_aliases()
@@ -87,7 +85,7 @@ class RestUtils(threading.Thread):
 
         except urllib.error.HTTPError as err:
             print(
-                "Http error code is ({0}): {1} : {2}".format(
+                "Http error code is ({}): {} : {}".format(
                     err.code, err.errno, err.strerror
                 )
             )

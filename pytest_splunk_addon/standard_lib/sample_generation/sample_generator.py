@@ -6,7 +6,7 @@ from . import SampleStanza
 from itertools import cycle
 
 
-class SampleGenerator(object):
+class SampleGenerator:
     """
     Main Class
     Generate sample objects
@@ -54,4 +54,4 @@ class SampleGenerator(object):
     @classmethod
     def clean_samples(cls):
         cls.sample_stanzas = list()
-        cls.conf_name = str()
+        cls.conf_name = ""

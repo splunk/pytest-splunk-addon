@@ -81,7 +81,7 @@ class Users(Manager, Collection):
 class UserNotFound(RuntimeError):
     def __init__(self, user_name):
         self.user_name = user_name
-        super(UserNotFound, self).__init__(self._error_message)
+        super().__init__(self._error_message)
 
     @property
     def _error_message(self):

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Includes the test scenarios to check the CIM compatibility of an Add-on.
 """
@@ -7,7 +6,7 @@ import pytest
 from .field_test_helper import FieldTestHelper
 
 
-class CIMTestTemplates(object):
+class CIMTestTemplates:
     """
     Test scenarios to check the CIM compatibility of an Add-on
     Supported Test scenarios:
@@ -430,7 +429,7 @@ class CIMTestTemplates(object):
         for data_model in data_models:
             search += "| appendpipe [ | search "
             search += " OR ".join(
-                "({})".format((" ".join("tag={}".format(tag) for tag in tags_list)))
+                "({})".format(" ".join("tag={}".format(tag) for tag in tags_list))
                 for tags_list in data_model.get("tags")
             )
             search += f" | eval dm_type=\"{data_model.get('name')}\"]\n"

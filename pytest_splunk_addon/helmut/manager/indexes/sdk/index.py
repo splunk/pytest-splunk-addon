@@ -25,7 +25,7 @@ class SDKIndexWrapper(Index):
         @param sdk_index: The name of the new index.
         @type sdk_index: String
         """
-        super(SDKIndexWrapper, self).__init__(sdk_connector)
+        super().__init__(sdk_connector)
         self._raw_sdk_index = sdk_index
 
     def get_total_event_count(self):
@@ -120,9 +120,9 @@ class SDKIndexWrapper(Index):
         self._raw_sdk_index.enable()
 
     def edit(self, **kwargs):
-        self.logger.info("Editing index %s with: %s" % (self.name, kwargs))
+        self.logger.info("Editing index {} with: {}".format(self.name, kwargs))
         self._raw_sdk_index.update(**kwargs)
 
     def delete(self, **kwargs):
-        self.logger.info("Deleting index %s with: %s" % (self.name, kwargs))
+        self.logger.info("Deleting index {} with: {}".format(self.name, kwargs))
         self._raw_sdk_index.delete(**kwargs)

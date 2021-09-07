@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Base class for test cases. Provides test cases to verify
 field extractions and CIM compatibility.

@@ -89,7 +89,7 @@ class SDKConnector(Connector):
         @type app: str
         """
 
-        super(SDKConnector, self).__init__(
+        super().__init__(
             splunk, username=username, password=password, owner=owner, app=app
         )
         if namespace is not None and namespace != self.namespace:
@@ -210,12 +210,14 @@ class SDKConnector(Connector):
             # FAST-8222
         except AuthenticationError as err:
             self.logger.debug(
-                "SDKconnector %s:%s is NOT logged in" % (self.username, self.password)
+                "SDKconnector {}:{} is NOT logged in".format(
+                    self.username, self.password
+                )
             )
             return False
         else:
             self.logger.debug(
-                "SDKconnector %s:%s is logged in" % (self.username, self.password)
+                "SDKconnector {}:{} is logged in".format(self.username, self.password)
             )
             return True
 

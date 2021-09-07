@@ -5,7 +5,6 @@
 from future import standard_library
 
 standard_library.install_aliases()
-from builtins import str
 from .base import Connector
 import urllib.request, urllib.parse, urllib.error
 import httplib2
@@ -64,7 +63,7 @@ class RESTConnector(Connector):
         @type app: str
 
         """
-        super(RESTConnector, self).__init__(
+        super().__init__(
             splunk,
             username=username,
             password=password,
@@ -136,9 +135,9 @@ class RESTConnector(Connector):
         if type(urlparam) != str:
             urlparam = urllib.parse.urlencode(urlparam)
         if urlparam != "":
-            url = "%s%s?%s" % (self.uri_base, uri, urlparam)
+            url = "{}{}?{}".format(self.uri_base, uri, urlparam)
         else:
-            url = "%s%s" % (self.uri_base, uri)
+            url = "{}{}".format(self.uri_base, uri)
 
         if use_sessionkey:
             self._service.clear_credentials()
@@ -273,11 +272,11 @@ class RESTConnector(Connector):
         body = urllib.parse.urlencode(
             {"username": self._username, "password": self._password}
         )
-        url = "%s%s" % (self.uri_base, "/services/auth/login")
+        url = "{}{}".format(self.uri_base, "/services/auth/login")
         response, content = self._service.request(url, "POST", body=body)
         self._attempt_login_time = time.time()
         if response.status != 200:
-            msg = "Login failed... response status: %s content: %s" % (
+            msg = "Login failed... response status: {} content: {}".format(
                 response.status,
                 content,
             )
@@ -349,7 +348,7 @@ class RESTConnector(Connector):
 
         Hits an endpoint with that key and check response status is 401
         """
-        url = "%s%s" % (self.uri_base, "/services/data/outputs/tcp/default")
+        url = "{}{}".format(self.uri_base, "/services/data/outputs/tcp/default")
         self._service.clear_credentials()
         self.update_headers("Authorization", "Splunk %s" % self.sessionkey)
         response, content = self._service.request(url, "GET", headers=self.HEADERS)

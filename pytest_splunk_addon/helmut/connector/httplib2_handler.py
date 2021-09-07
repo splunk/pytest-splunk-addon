@@ -1,7 +1,6 @@
 from future import standard_library
 
 standard_library.install_aliases()
-from builtins import range
 import httplib2
 import logging
 import time

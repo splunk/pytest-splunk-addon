@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Includes JSON schema for data models
 """
@@ -40,10 +39,9 @@ class JSONSchema(BaseSchema):
         try:
             with open(
                 cls().schema_path,
-                "r",
             ) as schema_f:
                 json_schema = json.load(schema_f)
-            with open(file_path, "r") as json_f:
+            with open(file_path) as json_f:
                 json_data = json.load(json_f)
                 errors = Draft7Validator(json_schema).iter_errors(json_data)
                 error_location, exc = "", ""

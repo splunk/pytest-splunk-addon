@@ -1,10 +1,9 @@
 from future import standard_library
 
 standard_library.install_aliases()
-from builtins import object
 
 
-class RESTURIS(object):
+class RESTURIS:
     """
     Simple module to wrap REST endpoints into a consistent set of methods
     """

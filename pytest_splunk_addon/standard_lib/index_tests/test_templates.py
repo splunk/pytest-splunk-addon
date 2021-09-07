@@ -12,7 +12,7 @@ MAX_TIME_DIFFERENCE = 45
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class IndexTimeTestTemplate(object):
+class IndexTimeTestTemplate:
     """
     Test templates to test the index time fields of an App
     """

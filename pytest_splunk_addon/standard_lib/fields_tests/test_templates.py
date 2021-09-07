@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Includes the test scenarios to check the field extractions of an Add-on.
 """
@@ -12,7 +11,7 @@ TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART = " | dedup punct | head 5"
 COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART = " | stats count by sourcetype"
 
 
-class FieldTestTemplates(object):
+class FieldTestTemplates:
     """
     Test templates to test the knowledge objects of an App
     """
@@ -336,7 +335,7 @@ class FieldTestTemplates(object):
         latest_time = splunk_searchtime_fields_savedsearches["dispatch.latest_time"]
 
         temp_search_query = search_query.split("|")
-        temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(
+        temp_search_query[0] += " earliest_time = {} latest_time = {} ".format(
             earliest_time, latest_time
         )
         search_query = "|".join(temp_search_query)

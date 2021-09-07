@@ -37,7 +37,7 @@ output_to_build = {
         "FORMAT": 'comp::"$1"',
     },
     "fiction-tsc-regex-format": {
-        "REGEX": "(\w*)=(.*)",
+        "REGEX": r"(\w*)=(.*)",
         "FORMAT": "size1::$1 size2::$2",
     },
     "fiction-tsc-regex": {"REGEX": "group=(?<extractone>[^,]+)"},
@@ -45,7 +45,7 @@ output_to_build = {
         "REGEX": "(?:^| )(?<_KEY_1>XXXXXX[^=]*)=(?! )(?<_VAL_1>.+?)(?=(?: [^ ]*(?<!\\)=|$))"
     },
     "fiction-tsc-regex-key-complex-n": {
-        "REGEX": "c(c6a|f|n|s)(\d)Label=(?<_KEY_1>.+?)(?=(?: [^ ]*(?<!\\)=|$))(?=.*c\1\2=(?<_VAL_1>.+?)(?=(?: [^ ]*(?<!\\)=|$)))"
+        "REGEX": "c(c6a|f|n|s)(\\d)Label=(?<_KEY_1>.+?)(?=(?: [^ ]*(?<!\\)=|$))(?=.*c\1\2=(?<_VAL_1>.+?)(?=(?: [^ ]*(?<!\\)=|$)))"
     },
 }
 
