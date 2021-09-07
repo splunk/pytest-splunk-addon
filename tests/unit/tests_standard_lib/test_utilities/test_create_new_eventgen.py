@@ -1,6 +1,8 @@
-import pytest
-from unittest.mock import MagicMock, patch, PropertyMock, call
 from collections import namedtuple
+from unittest.mock import MagicMock, PropertyMock, call, patch
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.utilities.create_new_eventgen import (
     UpdateEventgen,
     main,

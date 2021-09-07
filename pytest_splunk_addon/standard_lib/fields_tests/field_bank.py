@@ -3,8 +3,7 @@ To enhance the test cases while verifying the field extractions.
 """
 import json
 
-from ..addon_parser import Field
-from ..addon_parser import PropsParser
+from ..addon_parser import Field, PropsParser
 
 
 class FieldBank:

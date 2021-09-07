@@ -6,6 +6,7 @@ from splunklib.binding import HTTPError
 
 from pytest_splunk_addon.helmut.connector.base import Connector
 from pytest_splunk_addon.helmut.manager.jobs import Jobs
+
 from .base import Splunk
 
 

@@ -7,8 +7,8 @@ This module handles connections through the public python SDK.
 """
 import time
 
-from splunklib.binding import _NoAuthenticationToken, AuthenticationError
-from splunklib.client import Service, Endpoint
+from splunklib.binding import AuthenticationError, _NoAuthenticationToken
+from splunklib.client import Endpoint, Service
 
 from .base import Connector
 

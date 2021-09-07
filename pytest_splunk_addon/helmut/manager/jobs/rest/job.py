@@ -6,9 +6,10 @@
 from future import standard_library
 
 standard_library.install_aliases()
-from pytest_splunk_addon.helmut.manager.jobs.results import Results
-from pytest_splunk_addon.helmut.manager.jobs.job import Job
 import json
+
+from pytest_splunk_addon.helmut.manager.jobs.job import Job
+from pytest_splunk_addon.helmut.manager.jobs.results import Results
 
 
 class RESTJobWrapper(Job):

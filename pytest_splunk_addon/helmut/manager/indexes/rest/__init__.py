@@ -6,30 +6,33 @@
 from future import standard_library
 
 standard_library.install_aliases()
+import json
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+from datetime import datetime, timedelta
+
 from future.utils import raise_
 from splunklib.client import HTTPError
 
-from pytest_splunk_addon.helmut.manager.indexes import Indexes
-from pytest_splunk_addon.helmut.manager.indexes.rest.index import RESTIndexWrapper
 from pytest_splunk_addon.helmut.manager.indexes import (
-    IndexNotFound,
-    PATH_PERFIX,
     COUNT_OFFSET,
     DISABLE,
-    SYSTEM_MESSAGE,
-    RESTART,
     ENABLE,
+    PATH_PERFIX,
+    RESTART,
     ROLL_HOT_BUCKETS,
+    SYSTEM_MESSAGE,
+    Indexes,
+    IndexNotFound,
     OperationError,
 )
+from pytest_splunk_addon.helmut.manager.indexes.rest.index import RESTIndexWrapper
 from pytest_splunk_addon.helmut.util.string_unicode_convert import (
     normalize_to_str,
     normalize_to_unicode,
 )
-import json
-import urllib.request, urllib.parse, urllib.error
-from datetime import datetime, timedelta
-import time
 
 
 class RESTIndexesWrapper(Indexes):

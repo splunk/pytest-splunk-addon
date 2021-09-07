@@ -4,12 +4,11 @@ Provides Data Model handling functionalities. Such as
 * Parse all the data model JSON files
 * Get Mapped data model for an eventtype 
 """
-import os
-import logging
-
 import json
-from . import DataModel
-from . import JSONSchema
+import logging
+import os
+
+from . import DataModel, JSONSchema
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

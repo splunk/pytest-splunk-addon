@@ -1,12 +1,13 @@
-from . import (
-    HECEventIngestor,
-    HECRawEventIngestor,
-    HECMetricEventIngestor,
-    SC4SEventIngestor,
-    FileMonitorEventIngestor,
-)
 import logging
+
 from ..sample_generation import SampleXdistGenerator
+from . import (
+    FileMonitorEventIngestor,
+    HECEventIngestor,
+    HECMetricEventIngestor,
+    HECRawEventIngestor,
+    SC4SEventIngestor,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 from .requirement_event_ingester import RequirementEventIngestor

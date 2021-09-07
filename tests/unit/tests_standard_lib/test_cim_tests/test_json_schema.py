@@ -1,8 +1,9 @@
-import pytest
-from unittest.mock import mock_open, MagicMock, patch
 from collections import namedtuple
-from pytest_splunk_addon.standard_lib.cim_tests.json_schema import JSONSchema
+from unittest.mock import MagicMock, mock_open, patch
 
+import pytest
+
+from pytest_splunk_addon.standard_lib.cim_tests.json_schema import JSONSchema
 
 error = namedtuple("ValidationError", ["path", "instance", "message"])
 

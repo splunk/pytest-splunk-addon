@@ -1,10 +1,11 @@
-import socket
-from time import sleep
+import concurrent.futures
+import logging
 import os
 import re
-import concurrent.futures
+import socket
+from time import sleep
+
 from .base_event_ingestor import EventIngestor
-import logging
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

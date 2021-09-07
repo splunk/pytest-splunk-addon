@@ -12,9 +12,11 @@ Meta
 from future import standard_library
 
 standard_library.install_aliases()
-import urllib.request, urllib.parse, urllib.error
 import datetime
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 
 TIMEOUT = 60
 POLL_FREQUENCY = 0.5

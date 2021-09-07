@@ -1,9 +1,8 @@
-import pytest
-from unittest.mock import patch, PropertyMock
-from pytest_splunk_addon.standard_lib.addon_parser.tags_parser import (
-    TagsParser,
-)
+from unittest.mock import PropertyMock, patch
 
+import pytest
+
+from pytest_splunk_addon.standard_lib.addon_parser.tags_parser import TagsParser
 
 output_to_build = {
     "eventtype=fiction_for_tags_positive": {

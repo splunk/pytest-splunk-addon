@@ -1,8 +1,10 @@
-import re
 import logging
-from ..index_tests import key_fields
-from faker import Faker
+import re
 from copy import deepcopy
+
+from faker import Faker
+
+from ..index_tests import key_fields
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 host_ipv4, dvc_ipv4 = 51, 0

@@ -1,10 +1,9 @@
+import copy
+import logging
 import os
 import re
-import copy
-from . import Rule
-from . import raise_warning
-from . import SampleEvent
-import logging
+
+from . import Rule, SampleEvent, raise_warning
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

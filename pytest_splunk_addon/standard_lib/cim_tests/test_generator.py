@@ -1,13 +1,14 @@
 """
 Generates test cases to verify the CIM compatibility . 
 """
-import logging
-import pytest
 import json
+import logging
 import os.path as op
+
+import pytest
+
+from ..addon_parser import AddonParser, Field
 from . import DataModelHandler
-from ..addon_parser import AddonParser
-from ..addon_parser import Field
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

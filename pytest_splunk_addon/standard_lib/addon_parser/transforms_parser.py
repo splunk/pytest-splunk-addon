@@ -1,10 +1,10 @@
 """
 Provides transforms.conf parsing mechanism
 """
-import logging
-import re
-import os
 import csv
+import logging
+import os
+import re
 from urllib.parse import unquote
 
 LOGGER = logging.getLogger("pytest-splunk-addon")

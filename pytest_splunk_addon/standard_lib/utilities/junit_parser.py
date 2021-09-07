@@ -1,13 +1,15 @@
 """
 Parse the Junit XML report and convert it to required format
 """
-from ..cim_compliance import CIMReportGenerator
 import argparse
 import errno
 import os
 import sys
 from html import escape, unescape
+
 from junitparser import JUnitXml, Properties
+
+from ..cim_compliance import CIMReportGenerator
 
 
 class JunitParser:

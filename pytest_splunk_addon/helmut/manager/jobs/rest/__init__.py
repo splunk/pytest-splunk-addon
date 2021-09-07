@@ -7,16 +7,16 @@
 import json
 
 from pytest_splunk_addon.helmut.manager.jobs import (
-    Jobs,
-    JobNotFound,
-    PATH_PERFIX,
     CONTROL,
     EVENTS,
+    PATH_PERFIX,
     RESULTS,
     RESULTS_PREVIEW,
     SEARCHLOG,
     SUMMARY,
     TIMELINE,
+    JobNotFound,
+    Jobs,
 )
 from pytest_splunk_addon.helmut.manager.jobs.rest.job import RESTJobWrapper
 from pytest_splunk_addon.helmut.util.string_unicode_convert import normalize_to_str

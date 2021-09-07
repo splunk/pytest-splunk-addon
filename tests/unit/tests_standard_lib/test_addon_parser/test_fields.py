@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock, call
+
+import pytest
 
 from pytest_splunk_addon.standard_lib.addon_parser.fields import (
     Field,

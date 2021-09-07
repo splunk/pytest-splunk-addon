@@ -1,9 +1,11 @@
-from . import SampleGenerator
+import json
 import os
 import pickle
-from filelock import FileLock
-import json
+
 import pytest
+from filelock import FileLock
+
+from . import SampleGenerator
 
 
 class SampleXdistGenerator:

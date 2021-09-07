@@ -2,6 +2,7 @@ import logging
 import os
 
 import yaml
+
 from pytest_splunk_addon.helmut.util.hosts import Host, Hosts
 
 LOGGER = logging.getLogger("..util.ymlparser")

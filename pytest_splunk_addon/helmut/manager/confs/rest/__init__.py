@@ -5,11 +5,11 @@
 """
 import json
 
-from pytest_splunk_addon.helmut.manager.confs import Confs
 from pytest_splunk_addon.helmut.manager.confs import (
-    PATH_PERFIX,
     PATH_CONF,
+    PATH_PERFIX,
     PATH_PROPERTIES,
+    Confs,
 )
 from pytest_splunk_addon.helmut.manager.confs.rest.conf import RESTConfWrapper
 from pytest_splunk_addon.helmut.util.string_unicode_convert import (

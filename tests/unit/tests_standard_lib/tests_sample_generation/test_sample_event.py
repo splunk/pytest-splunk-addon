@@ -1,7 +1,8 @@
 import importlib
-import pytest
 from collections import namedtuple
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 import pytest_splunk_addon.standard_lib.sample_generation.sample_event
 

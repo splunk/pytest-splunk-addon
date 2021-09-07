@@ -1,7 +1,9 @@
-import pytest
-from unittest.mock import patch, call
 from collections import namedtuple
 from copy import deepcopy
+from unittest.mock import call, patch
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.index_tests.test_generator import (
     IndexTimeTestGenerator,
 )

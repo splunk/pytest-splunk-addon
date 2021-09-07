@@ -1,7 +1,8 @@
 import os
-import pytest
 from collections import namedtuple
-from unittest.mock import MagicMock, patch, mock_open
+from unittest.mock import MagicMock, mock_open, patch
+
+import pytest
 
 from pytest_splunk_addon.standard_lib.sample_generation.sample_stanza import (
     SampleStanza,

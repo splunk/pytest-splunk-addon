@@ -1,10 +1,11 @@
 """
 Calculates the statistics of test cases and Creates a MarkDown Report
 """
+from collections import Counter
+from itertools import groupby
+
 from .markdown_report import MarkDownReport
 from .markdown_table import MarkdownTable
-from itertools import groupby
-from collections import Counter
 
 SUPPORTED_DATAMODELS = [
     "Alerts",

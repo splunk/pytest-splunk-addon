@@ -1,17 +1,17 @@
 from future import standard_library
 
 standard_library.install_aliases()
-import logging
-import json
-import os
 import http.client
-import urllib.request, urllib.parse, urllib.error
-import urllib.request, urllib.error, urllib.parse
+import json
+import logging
+import os
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 
-from pytest_splunk_addon.helmut.splunk_factory.splunkfactory import SplunkFactory
 from pytest_splunk_addon.helmut.connector.base import Connector
-
+from pytest_splunk_addon.helmut.splunk_factory.splunkfactory import SplunkFactory
 from pytest_splunk_addon.helmut.util.Constants import Constants as const
 
 LOGGER = logging.getLogger("alter helper log")

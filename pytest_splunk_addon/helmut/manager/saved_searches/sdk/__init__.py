@@ -1,8 +1,10 @@
 from future.utils import raise_
 from splunklib.client import HTTPError
 
-from pytest_splunk_addon.helmut.manager.saved_searches import SavedSearchNotFound
-from pytest_splunk_addon.helmut.manager.saved_searches import SavedSearches
+from pytest_splunk_addon.helmut.manager.saved_searches import (
+    SavedSearches,
+    SavedSearchNotFound,
+)
 from pytest_splunk_addon.helmut.manager.saved_searches.sdk.saved_search import (
     SDKSavedSearchWrapper,
 )

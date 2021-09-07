@@ -3,11 +3,12 @@ Base class for test cases. Provides test cases to verify
 field extractions and CIM compatibility.
 """
 
-from .fields_tests import FieldTestTemplates
+import pytest
+
 from .cim_tests import CIMTestTemplates, FieldTestHelper
+from .fields_tests import FieldTestTemplates
 from .index_tests import IndexTimeTestTemplate
 from .requirement_tests import ReqsTestTemplates
-import pytest
 
 
 class Basic(

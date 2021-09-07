@@ -1,6 +1,7 @@
-import pytest
-from unittest.mock import MagicMock, mock_open
 from collections import namedtuple
+from unittest.mock import MagicMock, mock_open
+
+import pytest
 
 
 @pytest.fixture()

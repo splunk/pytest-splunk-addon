@@ -1,11 +1,12 @@
-import pytest
-from unittest.mock import MagicMock, call, patch
 from dataclasses import dataclass
-from pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester import (
-    RequirementEventIngestor,
-    ET,
-)
+from unittest.mock import MagicMock, call, patch
 
+import pytest
+
+from pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester import (
+    ET,
+    RequirementEventIngestor,
+)
 
 module = "pytest_splunk_addon.standard_lib.event_ingestors.requirement_event_ingester"
 

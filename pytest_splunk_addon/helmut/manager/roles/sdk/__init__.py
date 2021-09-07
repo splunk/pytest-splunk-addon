@@ -6,8 +6,7 @@
 
 from splunklib.client import HTTPError
 
-from pytest_splunk_addon.helmut.manager.roles import RoleNotFound
-from pytest_splunk_addon.helmut.manager.roles import Roles
+from pytest_splunk_addon.helmut.manager.roles import RoleNotFound, Roles
 from pytest_splunk_addon.helmut.manager.roles.sdk.role import SDKRoleWrapper
 
 

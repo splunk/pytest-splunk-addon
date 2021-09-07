@@ -1,8 +1,8 @@
 """
 Provides tags.conf parsing mechanism
 """
-from urllib.parse import unquote
 import logging
+from urllib.parse import unquote
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

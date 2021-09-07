@@ -2,13 +2,13 @@
 Module include class to generate the test cases
 to test the knowledge objects of an Add-on.
 """
-import pytest
 import json
 import logging
 from itertools import chain
 
-from ..addon_parser import Field
-from ..addon_parser import AddonParser
+import pytest
+
+from ..addon_parser import AddonParser, Field
 from . import FieldBank
 
 LOGGER = logging.getLogger("pytest-splunk-addon")

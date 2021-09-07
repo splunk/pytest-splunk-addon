@@ -7,6 +7,7 @@
 import logging
 import os
 from xml.etree import cElementTree as ET
+
 from ..sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")

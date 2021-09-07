@@ -4,11 +4,13 @@ Generates test cases of Fields and CIM.
 """
 import logging
 import os
-from .fields_tests import FieldTestGenerator
+
+import pytest
+
 from .cim_tests import CIMTestGenerator
+from .fields_tests import FieldTestGenerator
 from .index_tests import IndexTimeTestGenerator
 from .requirement_tests import ReqsTestGenerator
-import pytest
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

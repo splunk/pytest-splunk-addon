@@ -1,9 +1,10 @@
+from unittest.mock import PropertyMock, patch
+
 import pytest
-from unittest.mock import patch, PropertyMock
+
 from pytest_splunk_addon.standard_lib.addon_parser.eventtype_parser import (
     EventTypeParser,
 )
-
 
 output_to_build = {
     "fiction_is_splunkd": {"search": "index=_internal sourcetype=splunkd"},

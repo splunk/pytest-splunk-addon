@@ -1,6 +1,8 @@
 import logging
-import pytest
 import re
+
+import pytest
+
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
 INTERVAL = 3

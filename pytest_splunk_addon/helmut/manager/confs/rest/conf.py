@@ -6,18 +6,21 @@
 from future import standard_library
 
 standard_library.install_aliases()
+import json
+import urllib.error
+import urllib.parse
+import urllib.request
+
 from splunklib.client import HTTPError
 
+from pytest_splunk_addon.helmut.exceptions.confs import StanzaNotFound
+from pytest_splunk_addon.helmut.manager.confs import COUNT_OFFSET, PATH_PERFIX
 from pytest_splunk_addon.helmut.manager.confs.conf import Conf
 from pytest_splunk_addon.helmut.manager.confs.rest.stanza import RESTStanzaWrapper
-from pytest_splunk_addon.helmut.exceptions.confs import StanzaNotFound
-from pytest_splunk_addon.helmut.manager.confs import PATH_PERFIX, COUNT_OFFSET
 from pytest_splunk_addon.helmut.util.string_unicode_convert import (
     normalize_to_str,
     normalize_to_unicode,
 )
-import json
-import urllib.request, urllib.parse, urllib.error
 
 
 class RESTConfWrapper(Conf):

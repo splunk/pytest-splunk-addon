@@ -1,6 +1,8 @@
-import pytest
-from unittest.mock import MagicMock, call
 from collections import namedtuple
+from unittest.mock import MagicMock, call
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.cim_compliance.plugin import CIMReportPlugin
 
 config = namedtuple("Config", ["getoption"])

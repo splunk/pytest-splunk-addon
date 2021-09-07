@@ -1,7 +1,8 @@
 import importlib
-import pytest
-from unittest.mock import patch, mock_open, PropertyMock
 from collections import namedtuple
+from unittest.mock import PropertyMock, mock_open, patch
+
+import pytest
 
 with patch(
     "pytest_splunk_addon.standard_lib.addon_parser.convert_to_fields",
@@ -15,7 +16,6 @@ with patch(
 from pytest_splunk_addon.standard_lib.addon_parser.transforms_parser import (
     TransformsParser,
 )
-
 
 output_to_build = {
     "ta_fiction_lookup": {

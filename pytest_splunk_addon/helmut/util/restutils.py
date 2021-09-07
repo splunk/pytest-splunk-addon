@@ -1,10 +1,11 @@
 from future import standard_library
 
 standard_library.install_aliases()
-import urllib.request, urllib.error, urllib.parse
 import logging
-import urllib.request, urllib.parse, urllib.error
 import threading
+import urllib.error
+import urllib.parse
+import urllib.request
 
 from pytest_splunk_addon.helmut.connector.base import Connector
 

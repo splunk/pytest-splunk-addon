@@ -1,7 +1,7 @@
-import unittest
-import pytest
 import os
+import unittest
 
+import pytest
 
 from pytest_splunk_addon.standard_lib.utilities import JunitParser
 

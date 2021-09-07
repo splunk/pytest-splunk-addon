@@ -1,11 +1,13 @@
 """
 Includes the test scenarios to check the field extractions of an Add-on.
 """
-import pprint
-import logging
-import pytest
-from ..addon_parser import Field
 import json
+import logging
+import pprint
+
+import pytest
+
+from ..addon_parser import Field
 
 TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART = " | dedup punct | head 5"
 COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART = " | stats count by sourcetype"

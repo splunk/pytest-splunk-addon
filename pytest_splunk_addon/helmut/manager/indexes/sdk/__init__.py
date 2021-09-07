@@ -5,8 +5,7 @@
 """
 from splunklib.client import HTTPError
 
-from pytest_splunk_addon.helmut.manager.indexes import IndexNotFound
-from pytest_splunk_addon.helmut.manager.indexes import Indexes
+from pytest_splunk_addon.helmut.manager.indexes import Indexes, IndexNotFound
 from pytest_splunk_addon.helmut.manager.indexes.sdk.index import SDKIndexWrapper
 
 

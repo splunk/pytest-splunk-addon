@@ -7,17 +7,18 @@ Supports: fields from props & transforms, tags, eventtypes
 Dependencies: 
     splunk_appinspect.App: To parse the configuration files 
 """
+import logging
 import os
 import re
-import logging
+
 from splunk_appinspect import App
 
-from .fields import convert_to_fields, Field
-from .transforms_parser import TransformsParser
-from .props_parser import PropsParser
-from .tags_parser import TagsParser
 from .eventtype_parser import EventTypeParser
+from .fields import Field, convert_to_fields
+from .props_parser import PropsParser
 from .savedsearches_parser import SavedSearchParser
+from .tags_parser import TagsParser
+from .transforms_parser import TransformsParser
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

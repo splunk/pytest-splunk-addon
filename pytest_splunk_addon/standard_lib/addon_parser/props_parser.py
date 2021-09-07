@@ -4,8 +4,8 @@ Provides props.conf parsing mechanism
 import logging
 import re
 from itertools import product
-from . import convert_to_fields, Field
-from . import TransformsParser
+
+from . import Field, TransformsParser, convert_to_fields
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

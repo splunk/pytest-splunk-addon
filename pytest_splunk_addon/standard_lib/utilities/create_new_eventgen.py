@@ -1,10 +1,11 @@
 import argparse
-import re
+import logging
 import os
+import re
 
 from splunk_appinspect import App
+
 from .mapping import FIELD_MAPPING, FILE_MAPPING
-import logging
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

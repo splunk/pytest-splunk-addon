@@ -1,9 +1,11 @@
+import logging
 import os
 import re
-import logging
+
 from splunk_appinspect import App
-from .rule import Rule, raise_warning
+
 from . import SampleStanza
+from .rule import Rule, raise_warning
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 import warnings

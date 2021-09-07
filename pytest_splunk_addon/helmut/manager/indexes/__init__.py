@@ -87,11 +87,12 @@ class OperationError(Exception):
     pass
 
 
+from pytest_splunk_addon.helmut.connector.rest import RESTConnector
+
 # We need to do this at the bottom to avoid import errors
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
-from pytest_splunk_addon.helmut.connector.rest import RESTConnector
-from pytest_splunk_addon.helmut.manager.indexes.sdk import SDKIndexesWrapper
 from pytest_splunk_addon.helmut.manager.indexes.rest import RESTIndexesWrapper
+from pytest_splunk_addon.helmut.manager.indexes.sdk import SDKIndexesWrapper
 
 _CONNECTOR_TO_WRAPPER_MAPPINGS = {
     SDKConnector: SDKIndexesWrapper,

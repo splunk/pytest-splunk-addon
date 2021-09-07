@@ -1,5 +1,7 @@
+from unittest.mock import PropertyMock, patch
+
 import pytest
-from unittest.mock import patch, PropertyMock
+
 from pytest_splunk_addon.standard_lib.addon_parser.savedsearches_parser import (
     SavedSearchParser,
 )

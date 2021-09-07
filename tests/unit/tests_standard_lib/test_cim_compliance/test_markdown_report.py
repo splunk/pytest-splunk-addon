@@ -1,9 +1,10 @@
-import pytest
 from unittest.mock import call
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.cim_compliance.markdown_report import (
     MarkDownReport,
 )
-
 
 MARKDOWN_STR = "init string"
 NOTE_STR = "init note"

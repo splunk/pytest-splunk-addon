@@ -1,6 +1,8 @@
-import pytest
-from unittest.mock import patch, MagicMock
 from collections import namedtuple
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.cim_tests.test_generator import CIMTestGenerator
 
 field = namedtuple("Field", ["type", "name"], defaults=["", ""])

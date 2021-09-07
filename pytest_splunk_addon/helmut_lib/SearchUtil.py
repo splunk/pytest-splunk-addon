@@ -1,15 +1,15 @@
 from future import standard_library
 
 standard_library.install_aliases()
+import csv
+import difflib
+import io
 import os
 import re
+import string
+import subprocess
 import sys
 import time
-import string
-import difflib
-import subprocess
-import csv
-import io
 
 try:
     import py

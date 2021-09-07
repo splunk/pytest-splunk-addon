@@ -1,15 +1,16 @@
 from future import standard_library
 
 standard_library.install_aliases()
-import urllib.request, urllib.error, urllib.parse
-import logging
-import urllib.request, urllib.parse, urllib.error
-import threading
 import json
-
+import logging
 import os
-from pytest_splunk_addon.helmut.util.Constants import Constants as const
+import threading
+import urllib.error
+import urllib.parse
+import urllib.request
+
 from pytest_splunk_addon.helmut.connector.base import Connector
+from pytest_splunk_addon.helmut.util.Constants import Constants as const
 
 LOGGER = logging.getLogger("search helper log")
 

@@ -1,9 +1,11 @@
-from .base_event_ingestor import EventIngestor
-import requests
-from time import time, mktime
 import concurrent.futures
 import logging
 import os
+from time import mktime, time
+
+import requests
+
+from .base_event_ingestor import EventIngestor
 
 requests.urllib3.disable_warnings()
 

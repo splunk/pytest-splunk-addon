@@ -1,7 +1,8 @@
 import importlib
-import pytest
 from collections import namedtuple
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, call, patch
+
+import pytest
 
 # helpers variables to make test input/outup easier to change
 FIELD = "field"

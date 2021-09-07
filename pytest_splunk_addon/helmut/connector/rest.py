@@ -5,15 +5,20 @@
 from future import standard_library
 
 standard_library.install_aliases()
-from .base import Connector
-import urllib.request, urllib.parse, urllib.error
-import httplib2
-from pytest_splunk_addon.helmut.exceptions import AuthenticationError
 import json
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
 import xml.etree.ElementTree as et
 from xml.dom.minidom import parseString
-import time
+
+import httplib2
 import six
+
+from pytest_splunk_addon.helmut.exceptions import AuthenticationError
+
+from .base import Connector
 
 
 class RESTConnector(Connector):

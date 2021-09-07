@@ -1,4 +1,5 @@
 import logging
+
 import pytest
 
 from ..sample_generation import SampleXdistGenerator
