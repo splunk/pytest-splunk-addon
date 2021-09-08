@@ -8,7 +8,7 @@ dict_datamodel_tag = {
     "Authentication_Default_Authentication": ["default", "authentication"],
     "Authentication_Insecure_Authentication": ["authentication", "insecure"],
     "Authentication_Insecure_Authentication.2": ["authentication", "cleartext"],
-    "Authentication_PrivilegedAuthentication": ["authentication", "privileged"],
+    "Authentication_Privileged_Authentication": ["authentication", "privileged"],
     "Certificates": ["certificate"],
     "Certificates_SSL": ["certificate", "ssl"],
     "Change": ["change"],
