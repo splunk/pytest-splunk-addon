@@ -20,7 +20,7 @@ from filelock import FileLock
 from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
-from .standard_lib.event_ingestors import IngestorHelper
+from .standard_lib.event_ingestors.ingestor_helper import IngestorHelper
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 

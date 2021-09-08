@@ -5,7 +5,8 @@ import logging
 import re
 from itertools import product
 
-from . import Field, TransformsParser, convert_to_fields
+from .fields import Field, convert_to_fields
+from .transforms_parser import TransformsParser
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

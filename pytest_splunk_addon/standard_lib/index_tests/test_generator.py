@@ -2,9 +2,9 @@ import logging
 
 import pytest
 
-from ..sample_generation import SampleXdistGenerator
 from ..sample_generation.rule import raise_warning
 from ..sample_generation.sample_event import SampleEvent
+from ..sample_generation.sample_xdist_generator import SampleXdistGenerator
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

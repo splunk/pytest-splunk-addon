@@ -7,7 +7,7 @@ from math import ceil
 
 import pytest
 
-from ..cim_tests import FieldTestHelper
+from ..cim_tests.field_test_helper import FieldTestHelper
 
 MAX_TIME_DIFFERENCE = 45
 LOGGER = logging.getLogger("pytest-splunk-addon")

@@ -16,7 +16,7 @@ from time import mktime
 
 from faker import Faker
 
-from . import SampleEvent
+from .sample_event import SampleEvent
 from .time_parser import time_parse
 
 LOGGER = logging.getLogger("pytest-splunk-addon")

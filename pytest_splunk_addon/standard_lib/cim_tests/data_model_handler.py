@@ -8,7 +8,8 @@ import json
 import logging
 import os
 
-from . import DataModel, JSONSchema
+from .data_model import DataModel
+from .json_schema import JSONSchema
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

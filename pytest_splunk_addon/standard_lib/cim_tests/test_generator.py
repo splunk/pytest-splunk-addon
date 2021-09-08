@@ -8,7 +8,7 @@ import os.path as op
 import pytest
 
 from ..addon_parser import AddonParser, Field
-from . import DataModelHandler
+from .data_model_handler import DataModelHandler
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

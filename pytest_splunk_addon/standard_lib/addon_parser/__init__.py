@@ -8,8 +8,6 @@ Dependencies:
     splunk_appinspect.App: To parse the configuration files 
 """
 import logging
-import os
-import re
 
 from splunk_appinspect import App
 

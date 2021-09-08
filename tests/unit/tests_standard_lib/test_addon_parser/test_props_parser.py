@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-# helpers variables to make test input/outup easier to change
+# helpers variables to make test input/output easier to change
 FIELD = "field"
 FIELDS = f"{FIELD}s"
 FIELD1 = f"{FIELD}1"
@@ -41,12 +41,12 @@ def transforms_parser():
 @pytest.fixture(scope="session")
 def pp(field_mock, transforms_parser):
     with patch(
-        "pytest_splunk_addon.standard_lib.addon_parser.Field", field_mock
+        "pytest_splunk_addon.standard_lib.addon_parser.fields.Field", field_mock
     ), patch(
-        "pytest_splunk_addon.standard_lib.addon_parser.convert_to_fields",
+        "pytest_splunk_addon.standard_lib.addon_parser.fields.convert_to_fields",
         lambda x: x,
     ), patch(
-        "pytest_splunk_addon.standard_lib.addon_parser.TransformsParser",
+        "pytest_splunk_addon.standard_lib.addon_parser.transforms_parser.TransformsParser",
         transforms_parser,
     ):
         import pytest_splunk_addon.standard_lib.addon_parser.props_parser

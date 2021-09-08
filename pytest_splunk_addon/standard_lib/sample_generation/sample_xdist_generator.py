@@ -5,7 +5,7 @@ import pickle
 import pytest
 from filelock import FileLock
 
-from . import SampleGenerator
+from .sample_generator import SampleGenerator
 
 
 class SampleXdistGenerator:

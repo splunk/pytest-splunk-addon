@@ -2,7 +2,8 @@ import time
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from itertools import cycle
 
-from . import EventgenParser, SampleStanza
+from .eventgen_parser import EventgenParser
+from .sample_stanza import SampleStanza
 
 
 class SampleGenerator:

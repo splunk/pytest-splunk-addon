@@ -3,7 +3,8 @@ import logging
 import os
 import re
 
-from . import Rule, SampleEvent, raise_warning
+from .rule import Rule, raise_warning
+from .sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

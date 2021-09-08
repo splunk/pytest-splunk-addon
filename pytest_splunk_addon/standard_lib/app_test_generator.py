@@ -7,10 +7,10 @@ import os
 
 import pytest
 
-from .cim_tests import CIMTestGenerator
-from .fields_tests import FieldTestGenerator
-from .index_tests import IndexTimeTestGenerator
-from .requirement_tests import ReqsTestGenerator
+from .cim_tests.test_generator import CIMTestGenerator
+from .fields_tests.test_generator import FieldTestGenerator
+from .index_tests.test_generator import IndexTimeTestGenerator
+from .requirement_tests.test_generator import ReqsTestGenerator
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

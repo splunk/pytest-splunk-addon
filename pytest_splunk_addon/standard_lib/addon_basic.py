@@ -5,7 +5,8 @@ field extractions and CIM compatibility.
 
 import pytest
 
-from .cim_tests import CIMTestTemplates, FieldTestHelper
+from .cim_tests.field_test_helper import FieldTestHelper
+from .cim_tests.test_templates import CIMTestTemplates
 from .fields_tests import FieldTestTemplates
 from .index_tests import IndexTimeTestTemplate
 from .requirement_tests import ReqsTestTemplates

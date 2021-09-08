@@ -4,8 +4,8 @@ import re
 
 from splunk_appinspect import App
 
-from . import SampleStanza
 from .rule import Rule, raise_warning
+from .sample_stanza import SampleStanza
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 import warnings

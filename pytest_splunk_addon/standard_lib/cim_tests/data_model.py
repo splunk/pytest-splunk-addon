@@ -2,7 +2,7 @@
 Includes DataModel class which handles the DataSets within a data model. 
 """
 
-from . import DataSet
+from .data_set import DataSet
 
 
 class DataModel:
