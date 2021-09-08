@@ -4,7 +4,10 @@ import shutil
 
 import pytest
 
-from pytest_splunk_addon.standard_lib.sample_generation import Rule, SampleGenerator
+from pytest_splunk_addon.standard_lib.sample_generation.rule import Rule
+from pytest_splunk_addon.standard_lib.sample_generation.sample_generator import (
+    SampleGenerator,
+)
 from tests import constants
 
 logger = logging.getLogger("test_pytest_splunk_addon")
