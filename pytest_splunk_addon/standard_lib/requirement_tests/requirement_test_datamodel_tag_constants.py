@@ -57,7 +57,7 @@ dict_datamodel_tag = {
     "JVM_Compilation": ["jvm", "compilation"],
     "Malware_Malware_Attacks": ["malware", "attack"],
     "Malware_Malware_Operations": ["malware", "operations"],
-    "Network_Resolution": ["network", "resolution", "dns"],
+    "Network_Resolution_DNS": ["network", "resolution", "dns"],
     "Network_Sessions": ["network", "session"],
     "Network_Sessions_Session_Start": ["network", "session", "start"],
     "Network_Sessions_Session_End": ["network", "session", "end"],
