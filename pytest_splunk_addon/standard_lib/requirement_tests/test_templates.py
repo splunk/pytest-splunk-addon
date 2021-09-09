@@ -106,7 +106,7 @@ class ReqsTestTemplates(object):
             lis_extra_extracted_splunkside,
             list_extra_datamodel_requirement_file,
         ) = self.compare_datamodel(requrement_file_model_list, datamodel_based_on_tag)
-        return list_extra_datamodel_requirement_file, lis_extra_extracted_splunkside
+        return list_extra_datamodel_requirement_file, lis_extra_extracted_splunkside, datamodel_based_on_tag
 
     def remove_empty_keys(self, event):
         event = re.sub(
@@ -160,21 +160,18 @@ class ReqsTestTemplates(object):
         (
             list_unmatched_datamodel_splunkside,
             list_unmatched_datamodel_requirement_file,
+            datamodel_based_on_tag,
         ) = self.datamodel_check_test(keyValue_dict_SPL, model_datalist)
         datamodel_check = not bool(
             list_unmatched_datamodel_splunkside
             or list_unmatched_datamodel_requirement_file
         )
         self.logger.info(f"Data model check: {datamodel_check}")
-        if not list_unmatched_datamodel_requirement_file:
-            list_unmatched_datamodel_requirement_file = "None"
-        if not list_unmatched_datamodel_splunkside:
-            list_unmatched_datamodel_splunkside = "None"
         sourcetype = keyValue_dict_SPL["_sourcetype"]
         assert datamodel_check, (
             f"data model check: {datamodel_check} \n"
-            f"data model in requirement file  {list_unmatched_datamodel_splunkside}\n "
-            f"data model extracted by TA {list_unmatched_datamodel_requirement_file}\n"
+            f"data model in requirement file  {model_datalist}\n "
+            f"data model extracted by TA {list(datamodel_based_on_tag.keys())}\n"
             f"sourcetype of ingested event: {sourcetype} \n"
         )
         field_extraction_check, missing_key_value = self.compare(
