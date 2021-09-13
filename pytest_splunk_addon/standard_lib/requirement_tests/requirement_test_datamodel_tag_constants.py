@@ -82,4 +82,5 @@ dict_datamodel_tag = {
     "Vulnerabilities": ["report", "vulnerability"],
     "Web": ["web"],
     "Web_Proxy": ["web", "proxy"],
+    "Data_Access":["data", "access"],
 }
