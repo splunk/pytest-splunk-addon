@@ -116,19 +116,27 @@ class RequirementEventIngestor(object):
                                     "hec_event",
                                 ):
                                     transport_type = "modinput"
-                                    LOGGER.info(
-                                        "sending data via HEC {}".format(filename)
-                                    )
                                     host, source, sourcetype = self.extract_params(
                                         event_tag
                                     )
                                     LOGGER.info(
-                                        f"sending data via HEC {host}, {source} {sourcetype}"
+                                        f"sending data transport_type:modinput filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
                                     )
                                 elif transport_type == "dbx":
                                     transport_type = "modinput"
+                                    host, source, sourcetype = self.extract_params(
+                                        event_tag
+                                    )
+                                    LOGGER.info(
+                                        f"sending data transport_type:dbx filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
+                                    )
                                 elif transport_type == "windows_input":
-                                    transport_type = "windows_input"
+                                    host, source, sourcetype = self.extract_params(
+                                        event_tag
+                                    )
+                                    LOGGER.info(
+                                        f"sending data transport_type:windows_input filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
+                                    )
                                 else:
                                     transport_type = "default"
                                 unescaped_event = self.extract_raw_events(event_tag)
