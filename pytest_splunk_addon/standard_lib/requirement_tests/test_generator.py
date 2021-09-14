@@ -169,7 +169,7 @@ class ReqsTestGenerator(object):
                                 "modinput_params": modinput_params,
                                 "transport_type": transport_type,
                             },
-                            id=f"{model_list}::{filename}::event_no::{event_no}::req_test_id::{req_test_id}",
+                            id=f"{(' '.join(model_list))}::{filename}::event_no::{event_no}",
                         )
 
     def get_models(self, root):
