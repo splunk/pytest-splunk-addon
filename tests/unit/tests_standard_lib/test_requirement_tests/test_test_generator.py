@@ -122,9 +122,8 @@ def test_extract_params():
                         "modinput_params": None,
                         "transport_type": "syslog",
                     },
-                    "['model_1:dataset_1',"
-                    " 'model_2:dataset_2']::fake_path/requirement.log"
-                    "::event_no::1::req_test_id::1",
+                    "model_1:dataset_1 "
+                    "model_2:dataset_2::fake_path/requirement.log::event_no::1",
                 ),
             ],
         ),
