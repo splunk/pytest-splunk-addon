@@ -25,7 +25,7 @@ LOGGER = logging.getLogger('cim-field-report')
 
 def get_config():
     """Defines and collects and validates script command arguments
-    Additionaly 
+    Additionally 
         set log level for script logging,
         calls sys.exit if --splunk-app folder does not exist
 
@@ -78,8 +78,8 @@ def collect_job_results(job, acc, fn):
     acc : any
         An accumulator object that collects job results
     fn : function
-        External function that recieves accumulator object and job results one by one. 
-        This function controls how results are transfromed and accumulated 
+        External function that receives accumulator object and job results one by one. 
+        This function controls how results are transformed and accumulated 
 
     Returns
     -------
