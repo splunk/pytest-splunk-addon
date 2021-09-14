@@ -23,7 +23,18 @@ logging.basicConfig(
 
 LOGGER = logging.getLogger('cim-field-report')
 
-def get_gonfig():
+def get_config():
+    """Defines and collects and validates script command arguments
+    Additionaly 
+        set log level for script logging,
+        calls sys.exit if --splunk-app folder does not exist
+
+    Returns
+    -------
+    argparse.Namespace
+        the populated namespace.
+    """    
+    
     parser = argparse.ArgumentParser(description='Python Script to test Splunk functionality')
 
     parser.add_argument('--splunk-index', dest='splunk_index', default='*', type=str,
@@ -58,6 +69,24 @@ def get_gonfig():
 
 
 def collect_job_results(job, acc, fn):
+    """Collects all job results by requesting pages of 1000 items
+
+    Parameters
+    ----------
+    job : pytest_splunk_addon.helmut.manager.jobs.job
+        Finished job ready to collect results
+    acc : any
+        An accumulator object that collects job results
+    fn : function
+        External function that recieves accumulator object and job results one by one. 
+        This function controls how results are transfromed and accumulated 
+
+    Returns
+    -------
+    any
+        The accumulator object passes as argument acc
+    """    
+
     offset, count = 0, 1000
     while True:
         records = job.get_results(offset=offset, count=count).as_list
@@ -71,6 +100,25 @@ def collect_job_results(job, acc, fn):
 
 
 def get_punct_by_eventtype(jobs, eventtypes, config):
+    """Runs SPL request to collect all unique  eventtype+punct pairs from splunk instance
+
+    Parameters
+    ----------
+    jobs : pytest_splunk_addon.helmut.manager.jobs.Jobs
+        Jobs object capable to create a new splunk search job
+    eventtypes : list
+        List of splunk eventtypes names taken from TA configurations
+    config : dict
+        configuration settings mainly collected from command arguments
+
+    Returns
+    -------
+    list
+        list of tuples of 2 elements, representing collected unique pairs of eventtype+punct 
+    None
+        if exception taks places during splunk search request
+    """    
+
     start = time.time()
     eventtypes_str = ",".join(['"{}"'.format(et) for et in eventtypes])
     query = 'search (index="{}") eventtype IN ({}) | dedup punct,eventtype | table punct,eventtype'.format(config.splunk_index, eventtypes_str)
@@ -88,6 +136,25 @@ def get_punct_by_eventtype(jobs, eventtypes, config):
 
 
 def get_field_names(jobs, eventtypes, config):
+    """Runs SPL request to collect all field names from events with specific eventtypes
+
+    Parameters
+    ----------
+    jobs : pytest_splunk_addon.helmut.manager.jobs.Jobs
+        Jobs object capable to create a new splunk search job
+    eventtypes : list
+        List of splunk eventtypes names taken from TA configurations
+    config : dict
+        configuration settings mainly collected from command arguments
+
+    Returns
+    -------
+    list
+        collected field names 
+    None
+        if exception taks places during splunk search request
+    """    
+
     start = time.time()
     eventtypes_str = ",".join(['"{}"'.format(et) for et in eventtypes])
     query = 'search (index="{}") eventtype IN ({}) | fieldsummary'.format(config.splunk_index, eventtypes_str)
@@ -104,6 +171,16 @@ def get_field_names(jobs, eventtypes, config):
 
 
 def update_summary(data, records):
+    """Accumulator function to be used with collect_job_results.
+
+    Parameters
+    ----------
+    data : [set(), {}]
+        Accumulator object to be updated (see collect_job_results acc argument)
+    records : list
+        SPL job result entries (result of job.get_results(...).as_list)
+    """    
+
     sourcetypes, summary = data
     for entry in records:
         if "sourcetype" in entry:
@@ -117,6 +194,23 @@ def update_summary(data, records):
 
 
 def get_fieldsummary(jobs, punct_by_eventtype, config):
+    """Runs SPL request to extract events for specific punct+eventtype values combinations.
+    Builds fieldsummary information for each collected event group
+
+    Parameters
+    ----------
+    jobs : pytest_splunk_addon.helmut.manager.jobs.Jobs
+        Jobs object capable to create a new splunk search job
+    punct_by_eventtype : list
+        List of tuples of 2 elements, representing collected unique pairs of eventtype+punct 
+    config : dict
+        configuration settings mainly collected from command arguments
+
+    Returns
+    -------
+    dict
+        dict key - eventtype, dict value - a list of fields summaries per punct 
+    """    
     start = time.time()
     
     result = {}    
@@ -147,6 +241,25 @@ def get_fieldsummary(jobs, punct_by_eventtype, config):
 
 
 def get_fieldsreport(jobs, eventtypes, fields, config):
+    """Runs SPL requests to prepare unique lists of extracted fields for each eventtype
+
+    Parameters
+    ----------
+    jobs : pytest_splunk_addon.helmut.manager.jobs.Jobs
+        Jobs object capable to create a new splunk search job
+    eventtypes : list
+        List of splunk eventtypes names taken from TA configurations
+    fields : list
+        List of expected field names
+    config : dict
+        configuration settings mainly collected from command arguments
+
+    Returns
+    -------
+    (dict, set)
+        Returns 2 values - extracted field lists per eventtype and set of unique sourcetypes collected in SPL requests
+    """    
+
     start = time.time()
     report, sourcetypes = {}, set()
     field_list = ",".join(['"{}"'.format(f) for f in fields])
@@ -171,6 +284,23 @@ def get_fieldsreport(jobs, eventtypes, fields, config):
 
 
 def read_ta_meta(config):
+    """Extracts TA's name and version from TA app.manifest file
+
+    Parameters
+    ----------
+    config : dict
+        configuration settings mainly collected from command arguments, 
+        required to locate TA configuration files
+
+    Returns
+    -------
+    dict
+        {
+            "name": "<TA's name>", 
+            "version": "<TA's version>"
+        }
+    """    
+
     app_manifest = os.path.join(config.splunk_app, "app.manifest")
     with open(app_manifest) as f:
         manifest = json.load(f)
@@ -180,6 +310,19 @@ def read_ta_meta(config):
 
 
 def build_report(jobs, eventtypes, config):
+    """Puts together all report sections (ta_name (meta), sourcetypes, 
+    fieldsreport, fieldsummary), saves report to file
+
+    Parameters
+    ----------
+    jobs : pytest_splunk_addon.helmut.manager.jobs.Jobs
+        Jobs object capable to create a new splunk search job
+    eventtypes : list
+        List of splunk eventtypes names taken from TA configurations
+    config : dict
+        configuration settings mainly collected from command arguments
+    """    
+
     start = time.time()
 
     fields = get_field_names(jobs, eventtypes, config)
@@ -208,6 +351,19 @@ def build_report(jobs, eventtypes, config):
 
 
 def get_addon_eventtypes(addon_path):
+    """Extracts TA specific eventtypes from the TA's conf files
+
+    Parameters
+    ----------
+    addon_path : str
+        path to TA package folder
+
+    Returns
+    -------
+    list
+        Eventtypes defined in the TA conf
+    """    
+
     parser = AddonParser(addon_path)
 
     eventtypes = {eventtype: None for eventtype in parser.eventtype_parser.eventtypes.sects}
@@ -226,7 +382,9 @@ def get_addon_eventtypes(addon_path):
 
 
 def main():
-    config = get_gonfig()
+    """Main script method and entry point"""
+    
+    config = get_config()
 
     splunk_cfg = {
         "splunkd_scheme": config.splunk_web_scheme,
