@@ -1,3 +1,4 @@
+# CIM 4.20.2
 # Defines tags associated with data models. Used to determine the DM's associated with tags returned by the Splunk
 # search for eg: 'tag': "['authentication', 'insecure', 'network', 'resolution', 'dns', 'success']" matches
 # 'Authentication': ['authentication'], 'Authentication_Insecure_Authentication': ['authentication', 'insecure'],
@@ -68,6 +69,7 @@ dict_datamodel_tag = {
     "Performance_Facilities": ["performance", "facilities"],
     "Performance_Memory": ["performance", "memory"],
     "Performance_Storage": ["performance", "storage"],
+    "Performance_Network": ["performance", "network"],
     "Performance_OS": ["performance", "os"],
     "Performance_OS_Timesync": ["performance", "os", "time", "synchronize"],
     "Performance_OS_Uptime": ["performance", "os", "uptime"],
@@ -82,5 +84,6 @@ dict_datamodel_tag = {
     "Vulnerabilities": ["report", "vulnerability"],
     "Web": ["web"],
     "Web_Proxy": ["web", "proxy"],
-    "Data_Access": ["data", "access"],
+    "Web_Storage": ["web", "storage"],
+    "Data_Access":["data", "access"],
 }
