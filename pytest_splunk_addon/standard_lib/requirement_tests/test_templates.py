@@ -106,7 +106,11 @@ class ReqsTestTemplates(object):
             lis_extra_extracted_splunkside,
             list_extra_datamodel_requirement_file,
         ) = self.compare_datamodel(requrement_file_model_list, datamodel_based_on_tag)
-        return list_extra_datamodel_requirement_file, lis_extra_extracted_splunkside, datamodel_based_on_tag
+        return (
+            list_extra_datamodel_requirement_file,
+            lis_extra_extracted_splunkside,
+            datamodel_based_on_tag,
+        )
 
     def remove_empty_keys(self, event):
         event = re.sub(
@@ -138,7 +142,7 @@ class ReqsTestTemplates(object):
             host = modinput_params["host"]
             source = modinput_params["source"]
             sourcetype = modinput_params["sourcetype"]
-            search = f"search index=* host={host} source={source} sourcetype={sourcetype} {escaped_event}|fields * "
+            search = f"search index=* host=\"{host}\" source=\"{source}\" sourcetype=\"{sourcetype}\" {escaped_event}|fields * "
         else:
             search = f"search index=* {escaped_event} |fields * "
         ingestion_check = splunk_search_util.checkQueryCountIsGreaterThanZero(

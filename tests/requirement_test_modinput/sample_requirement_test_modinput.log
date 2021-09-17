@@ -5,7 +5,7 @@
   <version id="13.21" />
   <event code="" name="EventID_19_WmiEvent_(WmiEventFilter_activity_detected)_Change_All_Changes" format="">
     <version id="" />
-    <transport type="modinput" host="sample_host" source="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" sourcetype="xmlwineventlog"/>
+    <transport type="modinput" host="sample_host=test" source="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" sourcetype="xmlwineventlog"/>
     <source>
       <jira id="ADDON-35818 , ADDON-35825" />
       <comment />
