@@ -336,12 +336,14 @@ class FieldTestTemplates(object):
         latest_time = splunk_searchtime_fields_savedsearches["dispatch.latest_time"]
 
         temp_search_query = search_query.split("|")
-        temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(
-            earliest_time, latest_time
-        )
-        search_query = "|".join(temp_search_query)
-
-        search = f"search {search_query}"
+        if temp_search_query[0].find("savedsearch") == -1 and (len(temp_search_query) < 2 or temp_search_query[1].find("savedsearch") == -1) :
+            temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(
+                earliest_time, latest_time
+            )
+            search_query = "|".join(temp_search_query)
+            search = f"search {search_query}"
+        else:
+            search = "|".join(temp_search_query)
 
         self.logger.info(f"Search: {search}")
 
