@@ -85,5 +85,5 @@ dict_datamodel_tag = {
     "Web": ["web"],
     "Web_Proxy": ["web", "proxy"],
     "Web_Storage": ["web", "storage"],
-    "Data_Access":["data", "access"],
+    "Data_Access": ["data", "access"],
 }
