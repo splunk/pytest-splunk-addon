@@ -69,25 +69,11 @@ class TestEventgenParser:
         ), patch("os.path.abspath", lambda x: x), patch("os.sep", "/"):
             assert ep.path_to_samples == path
 
-    @pytest.mark.parametrize(
-        "exist_path, expected, args, kwargs",
-        [
-            (
-                f"{CONFIG_PATH}/pytest-splunk-addon-data.conf",
-                DATA_CONFIG,
-                ("pytest-splunk-addon-data.conf",),
-                {"dir": "relpath_/config/path"},
-            ),
-            (
-                f"{CONFIG_PATH}/eventgen.conf",
-                DATA_CONFIG,
-                ("eventgen.conf",),
-                {"dir": "relpath_/config/path"},
-            ),
-            (f"{CONFIG_PATH}/other", DATA_CONFIG, ("eventgen.conf",), {}),
-        ],
-    )
-    def test_eventgen(self, eventgen_parser, exist_path, expected, args, kwargs):
+    def test_eventgen(self, eventgen_parser):
+        exist_path = f"{CONFIG_PATH}/pytest-splunk-addon-data.conf"
+        expected = DATA_CONFIG
+        args = ("pytest-splunk-addon-data.conf",)
+        kwargs = {"dir": "relpath_/config/path"}
         ep = eventgen_parser(ADDON_PATH, CONFIG_PATH)
         path = exist_path
         app_mock = MagicMock(spec=App)
@@ -104,7 +90,7 @@ class TestEventgenParser:
         with patch("os.path.exists", MagicMock(side_effect=OSError)):
             with pytest.raises(
                 FileNotFoundError,
-                match="pytest-splunk-addon-data.conf/eventgen.conf not Found",
+                match="pytest-splunk-addon-data.conf not found",
             ):
                 ep.eventgen
 

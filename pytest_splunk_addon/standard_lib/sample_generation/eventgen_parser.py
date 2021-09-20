@@ -17,11 +17,10 @@ import os
 import re
 import logging
 from splunk_appinspect import App
-from .rule import Rule, raise_warning
+from .rule import raise_warning
 from . import SampleStanza
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
-import warnings
 
 
 class EventgenParser:
@@ -29,12 +28,12 @@ class EventgenParser:
     This class represents the entire eventgen.conf file and handles parsing mechanism of eventgen and the rules.
 
     Args:
-        addon_path (str): Path to the Splunk App
+        addon_path: Path to the Splunk App
     """
 
     conf_name = " "
 
-    def __init__(self, addon_path, config_path=None):
+    def __init__(self, addon_path: str, config_path: str):
         self._app = App(addon_path, python_analyzer_enable=False)
         self.config_path = config_path
         self._eventgen = None
@@ -84,31 +83,14 @@ class EventgenParser:
                 path = self._app.get_filename(
                     relative_path, "pytest-splunk-addon-data.conf"
                 )
-
-            elif os.path.exists(os.path.join(self.config_path, "eventgen.conf")):
-
-                self._eventgen = self._app.get_config(
-                    "eventgen.conf", dir=relative_path
+                LOGGER.info(
+                    f"Using Eventgen path: {path}\nUsing Conf file name: {self.conf_name}"
                 )
-                self.conf_name = "eventgen"
-                path = self._app.get_filename(relative_path, "eventgen.conf")
-
-            else:
-                self._eventgen = self._app.get_config("eventgen.conf")
-                self.conf_name = "eventgen"
-                path = self._app.get_filename("default", "eventgen.conf")
-            LOGGER.info(
-                "Using Eventgen path: {e}\nUsing Conf file name: {c}".format(
-                    e=path, c=self.conf_name
-                )
-            )
             return self._eventgen
 
         except OSError:
-            LOGGER.warning("pytest-splunk-addon-data.conf/eventgen.conf not Found")
-            raise FileNotFoundError(
-                "pytest-splunk-addon-data.conf/eventgen.conf not Found"
-            )
+            LOGGER.warning("pytest-splunk-addon-data.conf not found")
+            raise FileNotFoundError("pytest-splunk-addon-data.conf not found")
 
     def get_sample_stanzas(self):
         """
