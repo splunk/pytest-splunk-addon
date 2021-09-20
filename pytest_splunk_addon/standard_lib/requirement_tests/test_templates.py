@@ -142,7 +142,7 @@ class ReqsTestTemplates(object):
             host = modinput_params["host"]
             source = modinput_params["source"]
             sourcetype = modinput_params["sourcetype"]
-            search = f"search index=* host=\"{host}\" source=\"{source}\" sourcetype=\"{sourcetype}\" {escaped_event}|fields * "
+            search = f'search index=* host="{host}" source="{source}" sourcetype="{sourcetype}" {escaped_event}|fields * '
         else:
             search = f"search index=* {escaped_event} |fields * "
         ingestion_check = splunk_search_util.checkQueryCountIsGreaterThanZero(
