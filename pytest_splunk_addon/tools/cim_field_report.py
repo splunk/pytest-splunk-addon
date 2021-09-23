@@ -4,7 +4,6 @@ import logging
 import json
 import argparse
 import re
-import glob
 import time
 import traceback
 
