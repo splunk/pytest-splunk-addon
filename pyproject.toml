@@ -36,6 +36,8 @@ docker = ['lovely-pytest-docker']
 
 [tool.poetry.dev-dependencies]
 poetry-dynamic-versioning = "*"
+sphinx_rtd_theme = "0.5.1"
+sphinx-panels = "*"
 lovely-pytest-docker = "*"
 pytest-mock = "^3.5.1"
 pytest-cov = "^2.11.1"
