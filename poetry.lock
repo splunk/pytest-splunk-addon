@@ -41,14 +41,14 @@ pytz = ">=2015.7"
 
 [[package]]
 name = "beautifulsoup4"
-version = "4.10.0"
+version = "4.8.1"
 description = "Screen-scraping library"
 category = "main"
 optional = false
-python-versions = ">3.0.0"
+python-versions = "*"
 
 [package.dependencies]
-soupsieve = ">1.2"
+soupsieve = ">=1.2"
 
 [package.extras]
 html5lib = ["html5lib"]
@@ -72,7 +72,7 @@ python-versions = "*"
 
 [[package]]
 name = "charset-normalizer"
-version = "2.0.6"
+version = "2.0.1"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
 category = "main"
 optional = false
@@ -83,11 +83,11 @@ unicode_backport = ["unicodedata2"]
 
 [[package]]
 name = "click"
-version = "7.1.2"
+version = "7.0"
 description = "Composable command line interface toolkit"
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
 name = "colorama"
@@ -129,7 +129,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "dunamai"
-version = "1.6.0"
+version = "1.5.5"
 description = "Dynamic version generation"
 category = "dev"
 optional = false
@@ -156,7 +156,7 @@ testing = ["pre-commit"]
 
 [[package]]
 name = "faker"
-version = "8.13.2"
+version = "8.12.1"
 description = "Faker is a Python package that generates fake data for you."
 category = "main"
 optional = false
@@ -241,7 +241,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
 name = "importlib-metadata"
-version = "4.8.1"
+version = "4.6.1"
 description = "Read metadata from Python packages"
 category = "main"
 optional = false
@@ -266,7 +266,7 @@ python-versions = "*"
 
 [[package]]
 name = "ipaddress"
-version = "1.0.23"
+version = "1.0.22"
 description = "IPv4/IPv6 manipulation library"
 category = "main"
 optional = false
@@ -274,17 +274,17 @@ python-versions = "*"
 
 [[package]]
 name = "jinja2"
-version = "3.0.1"
+version = "2.11.3"
 description = "A very fast and expressive template engine."
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [package.dependencies]
-MarkupSafe = ">=2.0"
+MarkupSafe = ">=0.23"
 
 [package.extras]
-i18n = ["Babel (>=2.7)"]
+i18n = ["Babel (>=0.8)"]
 
 [[package]]
 name = "jsoncomment"
@@ -317,7 +317,7 @@ format_nongpl = ["idna", "jsonpointer (>1.13)", "webcolors", "rfc3986-validator 
 
 [[package]]
 name = "junitparser"
-version = "2.1.1"
+version = "1.6.3"
 description = "Manipulates JUnit/xUnit Result XML files"
 category = "main"
 optional = false
@@ -328,7 +328,7 @@ future = "*"
 
 [[package]]
 name = "langdetect"
-version = "1.0.9"
+version = "1.0.7"
 description = "Language detection library ported from Google's language-detection."
 category = "main"
 optional = false
@@ -339,7 +339,7 @@ six = "*"
 
 [[package]]
 name = "lovely-pytest-docker"
-version = "0.2.1"
+version = "0.2.0"
 description = "Pytest testing utilities with docker containers."
 category = "main"
 optional = false
@@ -364,29 +364,22 @@ source = ["Cython (>=0.29.7)"]
 
 [[package]]
 name = "mako"
-version = "1.1.5"
+version = "1.0.12"
 description = "A super-fast templating language that borrows the  best ideas from the existing templating languages."
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+python-versions = ">=2.6"
 
 [package.dependencies]
 MarkupSafe = ">=0.9.2"
 
-[package.extras]
-babel = ["babel"]
-lingua = ["lingua"]
-
 [[package]]
 name = "markdown"
-version = "3.3.4"
+version = "3.1.1"
 description = "Python implementation of Markdown."
 category = "main"
 optional = false
-python-versions = ">=3.6"
-
-[package.dependencies]
-importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*"
 
 [package.extras]
 testing = ["coverage", "pyyaml"]
@@ -428,18 +421,17 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "pluggy"
-version = "1.0.0"
+version = "0.13.1"
 description = "plugin and hook calling mechanisms for python"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [package.dependencies]
 importlib-metadata = {version = ">=0.12", markers = "python_version < \"3.8\""}
 
 [package.extras]
 dev = ["pre-commit", "tox"]
-testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "poetry-dynamic-versioning"
@@ -488,7 +480,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "pytest"
-version = "6.2.5"
+version = "6.2.4"
 description = "pytest: simple powerful testing with Python"
 category = "main"
 optional = false
@@ -501,7 +493,7 @@ colorama = {version = "*", markers = "sys_platform == \"win32\""}
 importlib-metadata = {version = ">=0.12", markers = "python_version < \"3.8\""}
 iniconfig = "*"
 packaging = "*"
-pluggy = ">=0.12,<2.0"
+pluggy = ">=0.12,<1.0.0a1"
 py = ">=1.8.2"
 toml = "*"
 
@@ -563,7 +555,7 @@ pytest = "*"
 
 [[package]]
 name = "pytest-xdist"
-version = "2.4.0"
+version = "2.3.0"
 description = "pytest xdist plugin for distributed testing and loop-on-failing modes"
 category = "main"
 optional = false
@@ -576,7 +568,6 @@ pytest-forked = "*"
 
 [package.extras]
 psutil = ["psutil (>=3.0)"]
-setproctitle = ["setproctitle"]
 testing = ["filelock"]
 
 [[package]]
@@ -657,20 +648,12 @@ fixture = ["fixtures"]
 test = ["fixtures", "mock", "purl", "pytest", "sphinx", "testrepository (>=0.0.18)", "testtools"]
 
 [[package]]
-name = "semver"
-version = "2.13.0"
-description = "Python helper for Semantic Versioning (http://semver.org/)"
-category = "main"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-
-[[package]]
 name = "six"
-version = "1.16.0"
+version = "1.12.0"
 description = "Python 2 and 3 compatibility utilities"
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
+python-versions = ">=2.6, !=3.0.*, !=3.1.*"
 
 [[package]]
 name = "snowballstemmer"
@@ -690,7 +673,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "sphinx"
-version = "4.2.0"
+version = "4.1.2"
 description = "Python documentation generator"
 category = "dev"
 optional = false
@@ -824,7 +807,7 @@ test = ["pytest"]
 
 [[package]]
 name = "splunk-appinspect"
-version = "2.10.0"
+version = "2.9.1"
 description = "Automatic validation checks for Splunk Apps"
 category = "main"
 optional = false
@@ -850,7 +833,6 @@ pillow = "8.3.1"
 python-magic = "0.4.18"
 pyyaml = ">=5.4.0,<6.0.0"
 regex = "2019.6.8"
-semver = ">=2.13.0"
 six = ">=1.12.0,<2.0.0"
 
 [[package]]
@@ -887,7 +869,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "typing-extensions"
-version = "3.10.0.2"
+version = "3.10.0.0"
 description = "Backported and Experimental Type Hints for Python 3.5+"
 category = "main"
 optional = false
@@ -895,7 +877,7 @@ python-versions = "*"
 
 [[package]]
 name = "urllib3"
-version = "1.26.7"
+version = "1.26.6"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
 optional = false
@@ -924,7 +906,7 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "774c24d7bbf75fda34cbc0ad15741f4c35dbc03d046907d60f99b00116577300"
+content-hash = "5eaa73f6c0ee49aabc3d05bf58e62f8b72a9488e681798ae338a7e10fefb4a36"
 
 [metadata.files]
 alabaster = [
@@ -944,8 +926,9 @@ babel = [
     {file = "Babel-2.9.1.tar.gz", hash = "sha256:bc0c176f9f6a994582230df350aa6e05ba2ebe4b3ac317eab29d9be5d2768da0"},
 ]
 beautifulsoup4 = [
-    {file = "beautifulsoup4-4.10.0-py3-none-any.whl", hash = "sha256:9a315ce70049920ea4572a4055bc4bd700c940521d36fc858205ad4fcde149bf"},
-    {file = "beautifulsoup4-4.10.0.tar.gz", hash = "sha256:c23ad23c521d818955a4151a67d81580319d4bf548d3d49f4223ae041ff98891"},
+    {file = "beautifulsoup4-4.8.1-py2-none-any.whl", hash = "sha256:5279c36b4b2ec2cb4298d723791467e3000e5384a43ea0cdf5d45207c7e97169"},
+    {file = "beautifulsoup4-4.8.1-py3-none-any.whl", hash = "sha256:dcdef580e18a76d54002088602eba453eec38ebbcafafeaabd8cab12b6155d57"},
+    {file = "beautifulsoup4-4.8.1.tar.gz", hash = "sha256:6135db2ba678168c07950f9a16c4031822c6f4aec75a65e0a97bc5ca09789931"},
 ]
 certifi = [
     {file = "certifi-2021.5.30-py2.py3-none-any.whl", hash = "sha256:50b1e4f8446b06f41be7dd6338db18e0990601dce795c2b1686458aa7e8fa7d8"},
@@ -956,12 +939,12 @@ chardet = [
     {file = "chardet-3.0.4.tar.gz", hash = "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"},
 ]
 charset-normalizer = [
-    {file = "charset-normalizer-2.0.6.tar.gz", hash = "sha256:5ec46d183433dcbd0ab716f2d7f29d8dee50505b3fdb40c6b985c7c4f5a3591f"},
-    {file = "charset_normalizer-2.0.6-py3-none-any.whl", hash = "sha256:5d209c0a931f215cee683b6445e2d77677e7e75e159f78def0db09d68fafcaa6"},
+    {file = "charset-normalizer-2.0.1.tar.gz", hash = "sha256:ad0da505736fc7e716a8da15bf19a985db21ac6415c26b34d2fafd3beb3d927e"},
+    {file = "charset_normalizer-2.0.1-py3-none-any.whl", hash = "sha256:b68b38179052975093d71c1b5361bf64afd80484697c1f27056e50593e695ceb"},
 ]
 click = [
-    {file = "click-7.1.2-py2.py3-none-any.whl", hash = "sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc"},
-    {file = "click-7.1.2.tar.gz", hash = "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a"},
+    {file = "Click-7.0-py2.py3-none-any.whl", hash = "sha256:2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13"},
+    {file = "Click-7.0.tar.gz", hash = "sha256:5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"},
 ]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
@@ -1030,8 +1013,8 @@ docutils = [
     {file = "docutils-0.17.1.tar.gz", hash = "sha256:686577d2e4c32380bb50cbb22f575ed742d58168cee37e99117a854bcd88f125"},
 ]
 dunamai = [
-    {file = "dunamai-1.6.0-py3-none-any.whl", hash = "sha256:44a94a4edebb145bb6198a2f26de957b12b77d43b7c9c0646be814c60cf5d8df"},
-    {file = "dunamai-1.6.0.tar.gz", hash = "sha256:6f1111f47e869ed58d44a7d37f112e3e7c761dce3c71f2c5464526928d7e9896"},
+    {file = "dunamai-1.5.5-py3-none-any.whl", hash = "sha256:525ac30db6ca4f8e48b9f198c2e8fbc2a9ce3ea189768361c621ea635212ee49"},
+    {file = "dunamai-1.5.5.tar.gz", hash = "sha256:32f30db71e8fd1adeb42fac45c04433680e47a28298447cd30304e0bba95a7dd"},
 ]
 enum34 = [
     {file = "enum34-1.1.10-py2-none-any.whl", hash = "sha256:a98a201d6de3f2ab3db284e70a33b0f896fbf35f8086594e8c9e74b909058d53"},
@@ -1043,8 +1026,8 @@ execnet = [
     {file = "execnet-1.9.0.tar.gz", hash = "sha256:8f694f3ba9cc92cab508b152dcfe322153975c29bda272e2fd7f3f00f36e47c5"},
 ]
 faker = [
-    {file = "Faker-8.13.2-py3-none-any.whl", hash = "sha256:0e41f73deb8233210b728c98b926284d3a7f51c001793e8b61f4382561971011"},
-    {file = "Faker-8.13.2.tar.gz", hash = "sha256:d4492b0f84d67e76a86ce1712ec7d38ecb92f91c0ca0ac0a9f2a0c3227ab9eb2"},
+    {file = "Faker-8.12.1-py3-none-any.whl", hash = "sha256:6714c153433086681b26e5c95ee314ee0fcd45ec05f2426097543dd4c70789a6"},
+    {file = "Faker-8.12.1.tar.gz", hash = "sha256:810859626d19e62a2a13aa4a08d59ada131f0522431eec163b09b6df147a25b9"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
@@ -1078,20 +1061,20 @@ imagesize = [
     {file = "imagesize-1.2.0.tar.gz", hash = "sha256:b1f6b5a4eab1f73479a50fb79fcf729514a900c341d8503d62a62dbc4127a2b1"},
 ]
 importlib-metadata = [
-    {file = "importlib_metadata-4.8.1-py3-none-any.whl", hash = "sha256:b618b6d2d5ffa2f16add5697cf57a46c76a56229b0ed1c438322e4e95645bd15"},
-    {file = "importlib_metadata-4.8.1.tar.gz", hash = "sha256:f284b3e11256ad1e5d03ab86bb2ccd6f5339688ff17a4d797a0fe7df326f23b1"},
+    {file = "importlib_metadata-4.6.1-py3-none-any.whl", hash = "sha256:9f55f560e116f8643ecf2922d9cd3e1c7e8d52e683178fecd9d08f6aa357e11e"},
+    {file = "importlib_metadata-4.6.1.tar.gz", hash = "sha256:079ada16b7fc30dfbb5d13399a5113110dab1aa7c2bc62f66af75f0b717c8cac"},
 ]
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
 ipaddress = [
-    {file = "ipaddress-1.0.23-py2.py3-none-any.whl", hash = "sha256:6e0f4a39e66cb5bb9a137b00276a2eff74f93b71dcbdad6f10ff7df9d3557fcc"},
-    {file = "ipaddress-1.0.23.tar.gz", hash = "sha256:b7f8e0369580bb4a24d5ba1d7cc29660a4a6987763faf1d8a8046830e020e7e2"},
+    {file = "ipaddress-1.0.22-py2.py3-none-any.whl", hash = "sha256:64b28eec5e78e7510698f6d4da08800a5c575caa4a286c93d651c5d3ff7b6794"},
+    {file = "ipaddress-1.0.22.tar.gz", hash = "sha256:b146c751ea45cad6188dd6cf2d9b757f6f4f8d6ffb96a023e6f2e26eea02a72c"},
 ]
 jinja2 = [
-    {file = "Jinja2-3.0.1-py3-none-any.whl", hash = "sha256:1f06f2da51e7b56b8f238affdd6b4e2c61e39598a378cc49345bc1bd42a978a4"},
-    {file = "Jinja2-3.0.1.tar.gz", hash = "sha256:703f484b47a6af502e743c9122595cc812b0271f661722403114f71a79d0f5a4"},
+    {file = "Jinja2-2.11.3-py2.py3-none-any.whl", hash = "sha256:03e47ad063331dd6a3f04a43eddca8a966a26ba0c5b7207a9a9e4e08f1b29419"},
+    {file = "Jinja2-2.11.3.tar.gz", hash = "sha256:a6d58433de0ae800347cab1fa3043cebbabe8baa9d29e668f1c768cb87a333c6"},
 ]
 jsoncomment = [
     {file = "jsoncomment-0.3.3-py3-none-any.whl", hash = "sha256:ec5e16b609724f60b33b86509cad56aa1dd4ccdf30ebe936d2f0d0daa8c43151"},
@@ -1102,15 +1085,14 @@ jsonschema = [
     {file = "jsonschema-3.2.0.tar.gz", hash = "sha256:c8a85b28d377cc7737e46e2d9f2b4f44ee3c0e1deac6bf46ddefc7187d30797a"},
 ]
 junitparser = [
-    {file = "junitparser-2.1.1-py2.py3-none-any.whl", hash = "sha256:f98cb6d07aaaca6451f4f046b1d41e490758d40ecf65c14721edf52333252fe8"},
-    {file = "junitparser-2.1.1.tar.gz", hash = "sha256:d54d0eaa2b15ee2efab0220ce0ab31448d26dcb78170d5667453d7755b9f1480"},
+    {file = "junitparser-1.6.3-py2.py3-none-any.whl", hash = "sha256:56d6dceda8eaac8b13dbad5150e94011ffffd0fb62032bd734757ccb5e956c3f"},
+    {file = "junitparser-1.6.3.tar.gz", hash = "sha256:0ba24b5897a34e9182e043e92ecc30dbe6dbbf537ce1dfdc50eb78f0ee6173d8"},
 ]
 langdetect = [
-    {file = "langdetect-1.0.9-py2-none-any.whl", hash = "sha256:7cbc0746252f19e76f77c0b1690aadf01963be835ef0cd4b56dddf2a8f1dfc2a"},
-    {file = "langdetect-1.0.9.tar.gz", hash = "sha256:cbc1fef89f8d062739774bd51eda3da3274006b3661d199c2655f6b3f6d605a0"},
+    {file = "langdetect-1.0.7.zip", hash = "sha256:91a170d5f0ade380db809b3ba67f08e95fe6c6c8641f96d67a51ff7e98a9bf30"},
 ]
 lovely-pytest-docker = [
-    {file = "lovely-pytest-docker-0.2.1.tar.gz", hash = "sha256:944ecf259c2144e1857e9ff1ac79cfaef88bd6aabf4e99cc16d64783345826f0"},
+    {file = "lovely-pytest-docker-0.2.0.tar.gz", hash = "sha256:665d85166fe67777efb1c85cbbdd19dea279c53fd464598adb33257664eca96c"},
 ]
 lxml = [
     {file = "lxml-4.6.3-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:df7c53783a46febb0e70f6b05df2ba104610f2fb0d27023409734a3ecbb78fb2"},
@@ -1163,12 +1145,11 @@ lxml = [
     {file = "lxml-4.6.3.tar.gz", hash = "sha256:39b78571b3b30645ac77b95f7c69d1bffc4cf8c3b157c435a34da72e78c82468"},
 ]
 mako = [
-    {file = "Mako-1.1.5-py2.py3-none-any.whl", hash = "sha256:6804ee66a7f6a6416910463b00d76a7b25194cd27f1918500c5bd7be2a088a23"},
-    {file = "Mako-1.1.5.tar.gz", hash = "sha256:169fa52af22a91900d852e937400e79f535496191c63712e3b9fda5a9bed6fc3"},
+    {file = "Mako-1.0.12.tar.gz", hash = "sha256:0cfa65de3a835e87eeca6ac856b3013aade55f49e32515f65d999f91a2324162"},
 ]
 markdown = [
-    {file = "Markdown-3.3.4-py3-none-any.whl", hash = "sha256:96c3ba1261de2f7547b46a00ea8463832c921d3f9d6aba3f255a6f71386db20c"},
-    {file = "Markdown-3.3.4.tar.gz", hash = "sha256:31b5b491868dcc87d6c24b7e3d19a0d730d59d3e46f4eea6430a321bed387a49"},
+    {file = "Markdown-3.1.1-py2.py3-none-any.whl", hash = "sha256:56a46ac655704b91e5b7e6326ce43d5ef72411376588afa1dd90e881b83c7e8c"},
+    {file = "Markdown-3.1.1.tar.gz", hash = "sha256:2e50876bcdd74517e7b71f3e7a76102050edec255b3983403f1a63e7c8a41e7a"},
 ]
 markupsafe = [
     {file = "MarkupSafe-2.0.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:d8446c54dc28c01e5a2dbac5a25f071f6653e6e40f3a8818e8b45d790fe6ef53"},
@@ -1275,8 +1256,8 @@ pillow = [
     {file = "Pillow-8.3.1.tar.gz", hash = "sha256:2cac53839bfc5cece8fdbe7f084d5e3ee61e1303cccc86511d351adcb9e2c792"},
 ]
 pluggy = [
-    {file = "pluggy-1.0.0-py2.py3-none-any.whl", hash = "sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3"},
-    {file = "pluggy-1.0.0.tar.gz", hash = "sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159"},
+    {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
+    {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
 ]
 poetry-dynamic-versioning = [
     {file = "poetry-dynamic-versioning-0.13.1.tar.gz", hash = "sha256:5c0e7b22560db76812057ef95dadad662ecc63eb270145787eabe73da7c222f9"},
@@ -1318,8 +1299,8 @@ pyrsistent = [
     {file = "pyrsistent-0.18.0.tar.gz", hash = "sha256:773c781216f8c2900b42a7b638d5b517bb134ae1acbebe4d1e8f1f41ea60eb4b"},
 ]
 pytest = [
-    {file = "pytest-6.2.5-py3-none-any.whl", hash = "sha256:7310f8d27bc79ced999e760ca304d69f6ba6c6649c0b60fb0e04a4a77cacc134"},
-    {file = "pytest-6.2.5.tar.gz", hash = "sha256:131b36680866a76e6781d13f101efb86cf674ebb9762eb70d3082b6f29889e89"},
+    {file = "pytest-6.2.4-py3-none-any.whl", hash = "sha256:91ef2131a9bd6be8f76f1f08eac5c5317221d6ad1e143ae03894b862e8976890"},
+    {file = "pytest-6.2.4.tar.gz", hash = "sha256:50bcad0a0b9c5a72c8e4e7c9855a3ad496ca6a881a3641b4260605450772c54b"},
 ]
 pytest-cov = [
     {file = "pytest-cov-2.12.1.tar.gz", hash = "sha256:261ceeb8c227b726249b376b8526b600f38667ee314f910353fa318caa01f4d7"},
@@ -1339,8 +1320,8 @@ pytest-ordering = [
     {file = "pytest_ordering-0.6-py3-none-any.whl", hash = "sha256:3f314a178dbeb6777509548727dc69edf22d6d9a2867bf2d310ab85c403380b6"},
 ]
 pytest-xdist = [
-    {file = "pytest-xdist-2.4.0.tar.gz", hash = "sha256:89b330316f7fc475f999c81b577c2b926c9569f3d397ae432c0c2e2496d61ff9"},
-    {file = "pytest_xdist-2.4.0-py3-none-any.whl", hash = "sha256:7b61ebb46997a0820a263553179d6d1e25a8c50d8a8620cd1aa1e20e3be99168"},
+    {file = "pytest-xdist-2.3.0.tar.gz", hash = "sha256:e8ecde2f85d88fbcadb7d28cb33da0fa29bca5cf7d5967fa89fc0e97e5299ea5"},
+    {file = "pytest_xdist-2.3.0-py3-none-any.whl", hash = "sha256:ed3d7da961070fce2a01818b51f6888327fb88df4379edeb6b9d990e789d9c8d"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
@@ -1406,13 +1387,9 @@ requests-mock = [
     {file = "requests-mock-1.9.3.tar.gz", hash = "sha256:8d72abe54546c1fc9696fa1516672f1031d72a55a1d66c85184f972a24ba0eba"},
     {file = "requests_mock-1.9.3-py2.py3-none-any.whl", hash = "sha256:0a2d38a117c08bb78939ec163522976ad59a6b7fdd82b709e23bb98004a44970"},
 ]
-semver = [
-    {file = "semver-2.13.0-py2.py3-none-any.whl", hash = "sha256:ced8b23dceb22134307c1b8abfa523da14198793d9787ac838e70e29e77458d4"},
-    {file = "semver-2.13.0.tar.gz", hash = "sha256:fa0fe2722ee1c3f57eac478820c3a5ae2f624af8264cbdf9000c980ff7f75e3f"},
-]
 six = [
-    {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
-    {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
+    {file = "six-1.12.0-py2.py3-none-any.whl", hash = "sha256:3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c"},
+    {file = "six-1.12.0.tar.gz", hash = "sha256:d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"},
 ]
 snowballstemmer = [
     {file = "snowballstemmer-2.1.0-py2.py3-none-any.whl", hash = "sha256:b51b447bea85f9968c13b650126a888aabd4cb4463fca868ec596826325dedc2"},
@@ -1423,8 +1400,8 @@ soupsieve = [
     {file = "soupsieve-2.2.1.tar.gz", hash = "sha256:052774848f448cf19c7e959adf5566904d525f33a3f8b6ba6f6f8f26ec7de0cc"},
 ]
 sphinx = [
-    {file = "Sphinx-4.2.0-py3-none-any.whl", hash = "sha256:98a535c62a4fcfcc362528592f69b26f7caec587d32cd55688db580be0287ae0"},
-    {file = "Sphinx-4.2.0.tar.gz", hash = "sha256:94078db9184491e15bce0a56d9186e0aec95f16ac20b12d00e06d4e36f1058a6"},
+    {file = "Sphinx-4.1.2-py3-none-any.whl", hash = "sha256:46d52c6cee13fec44744b8c01ed692c18a640f6910a725cbb938bc36e8d64544"},
+    {file = "Sphinx-4.1.2.tar.gz", hash = "sha256:3092d929cd807926d846018f2ace47ba2f3b671b309c7a89cd3306e80c826b13"},
 ]
 sphinx-panels = [
     {file = "sphinx-panels-0.6.0.tar.gz", hash = "sha256:d36dcd26358117e11888f7143db4ac2301ebe90873ac00627bf1fe526bf0f058"},
@@ -1459,7 +1436,7 @@ sphinxcontrib-serializinghtml = [
     {file = "sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl", hash = "sha256:352a9a00ae864471d3a7ead8d7d79f5fc0b57e8b3f95e9867eb9eb28999b92fd"},
 ]
 splunk-appinspect = [
-    {file = "splunk-appinspect-2.10.0.tar.gz", hash = "sha256:c4283df42707a09ba2c87dc46679adb44c52752d635e6ea954e901477918a8d3"},
+    {file = "splunk-appinspect-2.9.1.tar.gz", hash = "sha256:8fddb2cf5790acdc3e7cc478806c54bd1a03b88a2f89f6d04bd859bec6d8e9fe"},
 ]
 splunk-sdk = [
     {file = "splunk-sdk-1.6.16.tar.gz", hash = "sha256:b4963a983f1538686cf3f83f9e5ee5e48419cc71744fc8bc0f60f8b8576efb98"},
@@ -1477,13 +1454,13 @@ tomlkit = [
     {file = "tomlkit-0.7.2.tar.gz", hash = "sha256:d7a454f319a7e9bd2e249f239168729327e4dd2d27b17dc68be264ad1ce36754"},
 ]
 typing-extensions = [
-    {file = "typing_extensions-3.10.0.2-py2-none-any.whl", hash = "sha256:d8226d10bc02a29bcc81df19a26e56a9647f8b0a6d4a83924139f4a8b01f17b7"},
-    {file = "typing_extensions-3.10.0.2-py3-none-any.whl", hash = "sha256:f1d25edafde516b146ecd0613dabcc61409817af4766fbbcfb8d1ad4ec441a34"},
-    {file = "typing_extensions-3.10.0.2.tar.gz", hash = "sha256:49f75d16ff11f1cd258e1b988ccff82a3ca5570217d7ad8c5f48205dd99a677e"},
+    {file = "typing_extensions-3.10.0.0-py2-none-any.whl", hash = "sha256:0ac0f89795dd19de6b97debb0c6af1c70987fd80a2d62d1958f7e56fcc31b497"},
+    {file = "typing_extensions-3.10.0.0-py3-none-any.whl", hash = "sha256:779383f6086d90c99ae41cf0ff39aac8a7937a9283ce0a414e5dd782f4c94a84"},
+    {file = "typing_extensions-3.10.0.0.tar.gz", hash = "sha256:50b6f157849174217d0656f99dc82fe932884fb250826c18350e159ec6cdf342"},
 ]
 urllib3 = [
-    {file = "urllib3-1.26.7-py2.py3-none-any.whl", hash = "sha256:c4fdf4019605b6e5423637e01bc9fe4daef873709a7973e195ceba0a62bbc844"},
-    {file = "urllib3-1.26.7.tar.gz", hash = "sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece"},
+    {file = "urllib3-1.26.6-py2.py3-none-any.whl", hash = "sha256:39fb8672126159acb139a7718dd10806104dec1e2f0f6c88aab05d17df10c8d4"},
+    {file = "urllib3-1.26.6.tar.gz", hash = "sha256:f57b4c16c62fa2760b7e3d97c35b255512fb6b59a259730f36ba32ce9f8e342f"},
 ]
 zipp = [
     {file = "zipp-3.5.0-py3-none-any.whl", hash = "sha256:957cfda87797e389580cb8b9e3870841ca991e2125350677b2ca83a0e99390a3"},
