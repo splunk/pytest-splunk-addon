@@ -224,6 +224,42 @@ The following optional arguments are available to modify the default settings in
         .. code-block:: console
 
             11-04-2020 13:26:01.026 +0000 ERROR SearchMessages - orig_component="SearchStatusEnforcer" app="search" sid="ta_1604496283.232" peer_name="" message_key="" message=NOT requires an argument
+
+    6. Options to separate event generation, event ingestion and test execution stage
+        .. code-block:: console
+
+            --tokenized-event-source=new|store_new|pregenerated
+
+        - new: Generate new events
+        - store_new: Generate new events and store it in file
+        - pregenerated: Use pregenerated events from file
+        - Default value for this parameter is *store_new*
+
+        |
+
+        .. code-block:: console
+
+            --event-file-path=<path_to_file>
+
+        - Path to tokenized events file
+        - If –tokenized-event-source=store_new, then it will store tokenized event file on given path
+        - If –tokenized-event-source=pregenerated, then it will fetch tokenized events from given path
+
+        |
+
+        .. code-block:: console
+
+            --ingest-events=true|false
+
+        - Select false to disable event ingestion on splunk instance, default value is true
+
+        |
+
+        .. code-block:: console
+
+            --execute-test=true|false
+
+        - Select false to disable test execution, default value is true
         
     
 

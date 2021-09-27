@@ -1,5 +1,6 @@
 import logging
 import pytest
+import re
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
 INTERVAL = 3
@@ -10,6 +11,7 @@ class ReqsTestTemplates(object):
     """
     Test templates to test the log files in the event_analytics folder
     """
+
     logger = logging.getLogger()
 
     # Function to remove the data model subset concatenated to fields from the dictionary
@@ -18,7 +20,7 @@ class ReqsTestTemplates(object):
         new_dict = {}
         for k, v in in_str.items():
             # self.logger.info(k, v)
-            b = k.split('.', 1)
+            b = k.split(".", 1)
             if len(b) == 1:
                 new_dict.update({b[0]: v})
             else:
@@ -43,8 +45,8 @@ class ReqsTestTemplates(object):
             if key == "tag":
                 # Converting string to list
                 self.logger.info(value)
-                list_of_extracted_tags = value.strip('][').split(', ')
-                c=[]
+                list_of_extracted_tags = value.strip("][").split(", ")
+                c = []
                 for item in list_of_extracted_tags:
                     item = item.replace("'", "")
                     c.append(item)
@@ -61,8 +63,16 @@ class ReqsTestTemplates(object):
 
     # Function to remove subset datamodels from the list
     def remove_subset_datamodel(self, datamodel_dict):
-        return (dict([i for i in datamodel_dict.items() if
-                      not any(set(j).issuperset(set(i[1])) and j != i[1] for j in datamodel_dict.values())]))
+        return dict(
+            [
+                i
+                for i in datamodel_dict.items()
+                if not any(
+                    set(j).issuperset(set(i[1])) and j != i[1]
+                    for j in datamodel_dict.values()
+                )
+            ]
+        )
 
     # Function to compare datamodel from tags returned in splunk search and requirement file
     def compare_datamodel(self, requirementfile_datamodels, datamodel_based_on_tag):
@@ -96,7 +106,17 @@ class ReqsTestTemplates(object):
             lis_extra_extracted_splunkside,
             list_extra_datamodel_requirement_file,
         ) = self.compare_datamodel(requrement_file_model_list, datamodel_based_on_tag)
-        return list_extra_datamodel_requirement_file, lis_extra_extracted_splunkside
+        return (
+            list_extra_datamodel_requirement_file,
+            lis_extra_extracted_splunkside,
+            datamodel_based_on_tag,
+        )
+
+    def remove_empty_keys(self, event):
+        event = re.sub(
+            r"(\s[a-zA-Z0-9_]*(\\=|\\:)(\\\"\\\"|\\'\\'|\\-))", "", str(event)
+        )
+        return event
 
     @pytest.mark.splunk_searchtime_requirements
     def test_requirement_params(
@@ -105,15 +125,38 @@ class ReqsTestTemplates(object):
         model_datalist = splunk_searchtime_requirement_param["model_list"]
         escaped_event = splunk_searchtime_requirement_param["escaped_event"]
         key_values_xml = splunk_searchtime_requirement_param["Key_value_dict"]
+        modinput_params = splunk_searchtime_requirement_param["modinput_params"]
+        transport_type = splunk_searchtime_requirement_param["transport_type"]
         # search = f" search source= pytest_splunk_addon:hec:raw sourcetype={sourcetype} {escaped_event} |fields * "
         # removed source and sourcetype as sc4s assigns it based on event
-        search = f"search index=* {escaped_event} |fields * "
+        if transport_type in (
+            "modinput",
+            "Modinput",
+            "Mod input",
+            "Modular Input",
+            "Modular input",
+            "modular input",
+            "modular_input",
+            "Mod Input",
+        ):
+            host = modinput_params["host"]
+            source = modinput_params["source"]
+            sourcetype = modinput_params["sourcetype"]
+            search = f'search index=* host="{host}" source="{source}" sourcetype="{sourcetype}" {escaped_event}|fields * '
+        else:
+            search = f"search index=* {escaped_event} |fields * "
         ingestion_check = splunk_search_util.checkQueryCountIsGreaterThanZero(
             search, interval=INTERVAL, retries=RETRIES
         )
-        assert ingestion_check, (
-            f"ingestion failure \nsearch={search}\n"
-        )
+
+        if not ingestion_check and transport_type.lower() == "syslog":
+            empty_field_removed = self.remove_empty_keys(escaped_event)
+            search = f"search index=* {empty_field_removed} |fields * "
+            ingestion_check = splunk_search_util.checkQueryCountIsGreaterThanZero(
+                search, interval=INTERVAL, retries=RETRIES
+            )
+
+        assert ingestion_check, f"ingestion failure \nsearch={search}\n"
         self.logger.info(f"ingestion_check: {ingestion_check}")
         keyValue_dict_SPL = splunk_search_util.getFieldValuesDict(
             search, interval=INTERVAL, retries=RETRIES
@@ -121,22 +164,19 @@ class ReqsTestTemplates(object):
         (
             list_unmatched_datamodel_splunkside,
             list_unmatched_datamodel_requirement_file,
+            datamodel_based_on_tag,
         ) = self.datamodel_check_test(keyValue_dict_SPL, model_datalist)
         datamodel_check = not bool(
             list_unmatched_datamodel_splunkside
             or list_unmatched_datamodel_requirement_file
         )
         self.logger.info(f"Data model check: {datamodel_check}")
-        if not list_unmatched_datamodel_requirement_file:
-            list_unmatched_datamodel_requirement_file = "None"
-        if not list_unmatched_datamodel_splunkside:
-            list_unmatched_datamodel_splunkside = "None"
         sourcetype = keyValue_dict_SPL["_sourcetype"]
         assert datamodel_check, (
             f"data model check: {datamodel_check} \n"
-            f"data model in requirement file not in Splunk ingested event/ missing dataset {list_unmatched_datamodel_splunkside}\n "
-            f"data model extracted on Splunk side not in requirement file {list_unmatched_datamodel_requirement_file}\n"
-            f"source type of ingested event: {sourcetype} \n"
+            f"data model in requirement file  {model_datalist}\n "
+            f"data model extracted by TA {list(datamodel_based_on_tag.keys())}\n"
+            f"sourcetype of ingested event: {sourcetype} \n"
         )
         field_extraction_check, missing_key_value = self.compare(
             keyValue_dict_SPL, key_values_xml
@@ -151,7 +191,7 @@ class ReqsTestTemplates(object):
         assert field_extraction_check, (
             f"Issue with the field extraction.\nsearch={search}\n"
             f" Field_extraction_check: {field_extraction_check} \n"
-            f" Key value not extracted in splunk event: {missing_key_value} \n"
+            f" Key value not extracted by TA: {missing_key_value} \n"
             f" Mismatched key value: {mismapped_key_value_pair}\n"
-            f" source type of ingested event: {sourcetype} \n"
+            f" sourcetype of ingested event: {sourcetype} \n"
         )

@@ -1,5 +1,6 @@
 from ..addon_parser import Field
 
+
 class FieldTestAdapater(Field):
     """
     Field adapter to include the testing related properties on top of Field
@@ -11,6 +12,7 @@ class FieldTestAdapater(Field):
     * validity_query (str): The query which extracts the valid_field out of the field
 
     """
+
     VALID_FIELD = "{}_valid"
     INVALID_FIELD = "{}_invalid"
     FIELD_COUNT = "{}_count"
@@ -32,8 +34,8 @@ class FieldTestAdapater(Field):
             ["a", "b"] to '\"a\", \"b\"'
 
         Args:
-            values (list): List of str values 
-        
+            values (list): List of str values
+
         Returns:
             str: SPL query list
         """
@@ -55,26 +57,22 @@ class FieldTestAdapater(Field):
         else:
             self.validity_query = ""
             if self.multi_value:
-                self.validity_query += ("\n"
-                    f"| nomv {self.name}")
-            self.validity_query += ("\n"
-                f"| eval {self.valid_field}={self.validity}")
+                self.validity_query += "\n" f"| nomv {self.name}"
+            self.validity_query += "\n" f"| eval {self.valid_field}={self.validity}"
             if self.expected_values:
-                self.validity_query += ("\n"
-                     "| eval {valid_field}=if(searchmatch(\"{valid_field} IN ({values})\"), {valid_field}, null())".format(
-                         valid_field=self.valid_field,
-                         values=self.get_query_from_values(self.expected_values)
-                     )
+                self.validity_query += "\n" '| eval {valid_field}=if(searchmatch("{valid_field} IN ({values})"), {valid_field}, null())'.format(
+                    valid_field=self.valid_field,
+                    values=self.get_query_from_values(self.expected_values),
                 )
             if self.negative_values:
-                self.validity_query += ("\n"
-                     "| eval {valid_field}=if(searchmatch(\"{valid_field} IN ({values})\"), null(), {valid_field})".format(
-                         valid_field=self.valid_field,
-                         values=self.get_query_from_values(self.negative_values)
-                     )
+                self.validity_query += "\n" '| eval {valid_field}=if(searchmatch("{valid_field} IN ({values})"), null(), {valid_field})'.format(
+                    valid_field=self.valid_field,
+                    values=self.get_query_from_values(self.negative_values),
                 )
-            self.validity_query += ("\n"
-                f"| eval {self.invalid_field}=if(isnull({self.valid_field}), {self.name}, null())")
+            self.validity_query += (
+                "\n"
+                f"| eval {self.invalid_field}=if(isnull({self.valid_field}), {self.name}, null())"
+            )
             return self.validity_query
 
     def get_stats_query(self):

@@ -77,6 +77,23 @@ def test_extract_transport_tag():
     event.iter.assert_called_once_with("transport")
 
 
+def test_extract_params():
+    event = MagicMock()
+    event.iter.side_effect = lambda x: (
+        d
+        for d in [
+            {"type": "modinput"},
+            {"host": "sample_host"},
+            {"source": "sample_source"},
+            {"sourcetype": "sample_sourcetype"},
+        ]
+    )
+    rtg = ReqsTestGenerator("fake_path")
+    out = rtg.extract_params(event)
+    assert out == ("sample_host", "sample_source", "sample_sourcetype")
+    event.iter.assert_called_once_with("transport")
+
+
 @pytest.mark.parametrize(
     "listdir_return_value, "
     "check_xml_format_return_value, "
@@ -102,10 +119,11 @@ def test_extract_transport_tag():
                         ],
                         "escaped_event": "event_1",
                         "Key_value_dict": {"field1": "value1", "field2": "value2"},
+                        "modinput_params": None,
+                        "transport_type": "syslog",
                     },
-                    "['model_1:dataset_1',"
-                    " 'model_2:dataset_2']::fake_path/requirement.log"
-                    "::event_no::1::req_test_id::1",
+                    "model_1:dataset_1 "
+                    "model_2:dataset_2::fake_path/requirement.log::event_no::1",
                 ),
             ],
         ),
@@ -224,7 +242,6 @@ def test_check_xml_format(et_parse_mock, is_xml_valid, expected_output):
         ("%", "SESSION \\% CREATED"),
         ("^", "SESSION \\^ CREATED"),
         ("&", "SESSION \\& CREATED"),
-        ("*", "SESSION \\* CREATED"),
         ("(", "SESSION \\( CREATED"),
         (")", "SESSION \\) CREATED"),
         ("-", "SESSION \\- CREATED"),

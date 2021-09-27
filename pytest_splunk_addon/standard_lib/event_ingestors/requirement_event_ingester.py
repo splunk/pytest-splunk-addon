@@ -11,8 +11,8 @@ from ..sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-class RequirementEventIngestor(object):
 
+class RequirementEventIngestor(object):
     def __init__(self, requirement_file_path):
         """
         app_path to drill down to requirement file folder in package/tests/requirement_files/
@@ -43,7 +43,7 @@ class RequirementEventIngestor(object):
         Function to return raw event string
         """
         event = None
-        for raw in root.iter('raw'):
+        for raw in root.iter("raw"):
             event = raw.text
         return event
 
@@ -59,8 +59,8 @@ class RequirementEventIngestor(object):
 
     # extract transport tag
     def extract_transport_tag(self, event):
-        for transport in event.iter('transport'):
-            return transport.get('type')
+        for transport in event.iter("transport"):
+            return transport.get("type")
 
     # to get models tag in an event
     def get_models(self, root):
@@ -69,40 +69,113 @@ class RequirementEventIngestor(object):
         Function to return list of models in each event of the log file
         """
         model_list = []
-        for model in root.iter('model'):
+        for model in root.iter("model"):
             model_list.append(str(model.text))
         return model_list
+
+    # extract_params_transport
+    def extract_params(self, event):
+        host, source, source_type = "", "", ""
+        for transport in event.iter("transport"):
+            if transport.get("host"):
+                host = transport.get("host")
+            if transport.get("source"):
+                source = transport.get("source")
+            if transport.get("sourcetype"):
+                source_type = transport.get("sourcetype")
+        return host, source, source_type
 
     def get_events(self):
         req_file_path = self.requirement_file_path
         events = []
+        host, source, sourcetype = "", "", ""
         if os.path.isdir(req_file_path):
             for file1 in os.listdir(req_file_path):
                 filename = os.path.join(req_file_path, file1)
                 if filename.endswith(".log"):
                     if self.check_xml_format(filename):
                         root = self.get_root(filename)
-                        for event_tag in root.iter('event'):
+                        for event_tag in root.iter("event"):
                             model_list = self.get_models(event_tag)
                             if len(model_list) != 0:
                                 transport_type = self.extract_transport_tag(event_tag)
                                 if transport_type == "syslog":
-                                    LOGGER.info("sending data using sc4s {}".format(filename))
+                                    transport_type = "syslog_tcp"
+                                    LOGGER.info(
+                                        "sending data using sc4s {}".format(filename)
+                                    )
+                                elif transport_type in (
+                                    "modinput",
+                                    "Modinput",
+                                    "Mod input",
+                                    "Modular Input",
+                                    "Modular input",
+                                    "modular input",
+                                    "modular_input",
+                                    "Mod Input",
+                                    "hec_event",
+                                ):
+                                    transport_type = "modinput"
+                                    host, source, sourcetype = self.extract_params(
+                                        event_tag
+                                    )
+                                    LOGGER.info(
+                                        f"sending data transport_type:modinput filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
+                                    )
+                                elif transport_type == "dbx":
+                                    transport_type = "modinput"
+                                    host, source, sourcetype = self.extract_params(
+                                        event_tag
+                                    )
+                                    LOGGER.info(
+                                        f"sending data transport_type:dbx filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
+                                    )
+                                elif transport_type == "windows_input":
+                                    host, source, sourcetype = self.extract_params(
+                                        event_tag
+                                    )
+                                    LOGGER.info(
+                                        f"sending data transport_type:windows_input filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
+                                    )
                                 else:
                                     transport_type = "default"
                                 unescaped_event = self.extract_raw_events(event_tag)
-                                escaped_ingest = self.escape_before_ingest(unescaped_event)
-                                metadata = {'input_type': transport_type,
-                                            'index': 'main'
-                                            }
-                                events.append(SampleEvent(escaped_ingest, metadata, "requirement_test"))
+                                escaped_ingest = self.escape_before_ingest(
+                                    unescaped_event
+                                )
+                                metadata = {
+                                    "input_type": transport_type,
+                                    "index": "main",
+                                    "source": source,
+                                    "host": host,
+                                    "sourcetype": sourcetype,
+                                    "timestamp_type": "event",
+                                }
+                                events.append(
+                                    SampleEvent(
+                                        escaped_ingest, metadata, "requirement_test"
+                                    )
+                                )
+
                             else:
                                 # if there is no model in event do not ingest that event
                                 continue
                     else:
-                        LOGGER.error("Requirement event ingestion failure: Invalid XML {}".format(filename))
+                        LOGGER.error(
+                            "Requirement event ingestion failure: Invalid XML {}".format(
+                                filename
+                            )
+                        )
                 else:
-                    LOGGER.error("Requirement event ingestion failure: Invalid file format not .log {}".format(filename))
+                    LOGGER.error(
+                        "Requirement event ingestion failure: Invalid file format not .log {}".format(
+                            filename
+                        )
+                    )
         else:
-            LOGGER.error("Requirement event ingestion failure: Invalid requirement file path {}".format(req_file_path))
+            LOGGER.error(
+                "Requirement event ingestion failure: Invalid requirement file path {}".format(
+                    req_file_path
+                )
+            )
         return events

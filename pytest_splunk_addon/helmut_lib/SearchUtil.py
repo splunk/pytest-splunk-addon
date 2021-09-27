@@ -111,7 +111,7 @@ class SearchUtil(object):
         return False
 
     def checkQueryCountIsGreaterThanZero(
-            self, query, interval=15, retries=4, max_time=120
+        self, query, interval=15, retries=4, max_time=120
     ):
         self.logger.debug("query is %s", query)
         tryNum = 0
@@ -192,8 +192,8 @@ class SearchUtil(object):
     ):
 
         """Execute a query and check for a matching set (not necessarily
-           complete) of output fields, and secondarily for a minimum
-           number of results.
+        complete) of output fields, and secondarily for a minimum
+        number of results.
         """
 
         tryNum = 0
@@ -242,8 +242,8 @@ class SearchUtil(object):
 
     def wrapLogOutput(self, msg, actual, expected, errors, level="debug"):
         """Simple wrapper method for showing expected and actual output
-           in the debug log. Pass in level to adjust level from default (debug)
-           to error or warning.
+        in the debug log. Pass in level to adjust level from default (debug)
+        to error or warning.
         """
 
         errOutput = string.Template(
@@ -373,16 +373,16 @@ class SearchUtil(object):
     ):
 
         """Check for exact content in a specific search result.
-           Script will issue failure IF no results are obtained
-           ( len(result) == 0 ) OR if the expected text does not exist
-           in the raw result text.
+        Script will issue failure IF no results are obtained
+        ( len(result) == 0 ) OR if the expected text does not exist
+        in the raw result text.
 
-           If reformat is True, expected can be one of the following:
-           1. a csv file name in ./data/ ; the csv can be exported by splunk web
-           2. a list of list whose first row is header like a csv
+        If reformat is True, expected can be one of the following:
+        1. a csv file name in ./data/ ; the csv can be exported by splunk web
+        2. a list of list whose first row is header like a csv
 
-           This function is for use only by tests which do NOT
-           require passing input to Splunk on STDIN.
+        This function is for use only by tests which do NOT
+        require passing input to Splunk on STDIN.
         """
 
         tryNum = 0
@@ -455,32 +455,32 @@ class SearchUtil(object):
     ):
 
         """
-            Execute a gap detection search to check that a certain number or less of
-            gaps exist. Start by checking for gaps in a warning range. Issue Error for gaps longer
-            than the warning range. Or if the number of gaps in the warning range is greater than a
-            set threshold.
-            INPUTS:
-            query - gap detection search
-            warningGapSizeLimit - max size for a gap to be considered a warning (in seconds)
-            warningGapCountLimit - number warning sized gaps allowed before error is raised
-            interval - wait period (in seconds) if no data returned before retrying (default 1)
-            retries - number of times a gap search is rerun if it returns no results (default 0)
-            namespace - the app namespace in which to run the search (default splunk_for_vmware)
-            OUTPUTS:
-            status - boolean true for no errors, false for errors
-            LOGGING OUTPUT:
-            Logs the number of warning gaps.
-            Logs the number of error gaps.
-            GAP DETECTION SEARCHES:
-            A gap detection search is any search in which the result rows are gaps with a field delta
-            that is valued as their duration in seconds.
-            Typical Structure:
-            search [Event Gathering Search Command]
-            | streamstats first(_time) as prev_endtime window=1 current=f global=false by [Identifier]
-            | eval delta = (prev_endtime - _time)
-            | search delta>[Expected time between events of the same identifier]
-            | fields delta
-            """
+        Execute a gap detection search to check that a certain number or less of
+        gaps exist. Start by checking for gaps in a warning range. Issue Error for gaps longer
+        than the warning range. Or if the number of gaps in the warning range is greater than a
+        set threshold.
+        INPUTS:
+        query - gap detection search
+        warningGapSizeLimit - max size for a gap to be considered a warning (in seconds)
+        warningGapCountLimit - number warning sized gaps allowed before error is raised
+        interval - wait period (in seconds) if no data returned before retrying (default 1)
+        retries - number of times a gap search is rerun if it returns no results (default 0)
+        namespace - the app namespace in which to run the search (default splunk_for_vmware)
+        OUTPUTS:
+        status - boolean true for no errors, false for errors
+        LOGGING OUTPUT:
+        Logs the number of warning gaps.
+        Logs the number of error gaps.
+        GAP DETECTION SEARCHES:
+        A gap detection search is any search in which the result rows are gaps with a field delta
+        that is valued as their duration in seconds.
+        Typical Structure:
+        search [Event Gathering Search Command]
+        | streamstats first(_time) as prev_endtime window=1 current=f global=false by [Identifier]
+        | eval delta = (prev_endtime - _time)
+        | search delta>[Expected time between events of the same identifier]
+        | fields delta
+        """
 
         tryNum = 0
         warningCount = 0
@@ -522,7 +522,7 @@ class SearchUtil(object):
                             msg="Error Sized Gap detected with detection search",
                             actual="gapSize=" + str(result["delta"]),
                             expected="no gaps, or at least gaps shorter than "
-                                     + str(warningGapSizeLimit),
+                            + str(warningGapSizeLimit),
                             errors="Error sized gap detected.",
                             level="error",
                         )
@@ -581,24 +581,24 @@ class SearchUtil(object):
         self, query, field, canon, interval=30, retries=4, namespace="splunk_for_vmware"
     ):
         """
-            Execute a search that returns results containing a particular field. Then
-            check that every value of that field from every result is included in the
-            canon. Also check that every value in canon is represented in results.
-            Duplicates in the results set of values that exist in the canon are a pass.
-            Please note neither set can be empty and still pass (result nor canon)
-            INPUTS:
-            query - search
-            field - name of the field you are checking (string)
-            canon - set of values that should be contained in the results for the field (set)
-            interval - wait period (in seconds) if no data returned before retrying (default 30)
-            retries - number of times a gap search is rerun if it returns no results (default 4)
-            namespace - the app namespace in which to run the search (default splunk_for_vmware)
-            OUTPUTS:
-            status - boolean true for no errors, false for errors
-            LOGGING OUTPUT:
-            Logs the values in canon and not in results.
-            Logs the values in results and not in canon.
-            """
+        Execute a search that returns results containing a particular field. Then
+        check that every value of that field from every result is included in the
+        canon. Also check that every value in canon is represented in results.
+        Duplicates in the results set of values that exist in the canon are a pass.
+        Please note neither set can be empty and still pass (result nor canon)
+        INPUTS:
+        query - search
+        field - name of the field you are checking (string)
+        canon - set of values that should be contained in the results for the field (set)
+        interval - wait period (in seconds) if no data returned before retrying (default 30)
+        retries - number of times a gap search is rerun if it returns no results (default 4)
+        namespace - the app namespace in which to run the search (default splunk_for_vmware)
+        OUTPUTS:
+        status - boolean true for no errors, false for errors
+        LOGGING OUTPUT:
+        Logs the values in canon and not in results.
+        Logs the values in results and not in canon.
+        """
         status = False
         tryNum = 0
 
@@ -654,12 +654,12 @@ class SearchUtil(object):
         return status
 
     def checkQueryErrorMessage(
-            self, query, expected, namespace="SA-ThreatIntelligence"
+        self, query, expected, namespace="SA-ThreatIntelligence"
     ):
 
         """Check for specific error text from a search.
-            Unlike checkQueryContent(), it is typically not necessary
-            to repeat a test we expect to fail, so we do not retry.
+        Unlike checkQueryContent(), it is typically not necessary
+        to repeat a test we expect to fail, so we do not retry.
         """
         status = False
         job = self.jobs.create(query, max_time=60)
@@ -696,18 +696,18 @@ class SearchUtil(object):
         return status
 
     def checkQueryFieldValues(
-            self,
-            query,
-            expected_values,  # can be list, set, tuple, or string
-            expectedMinRow=0,
-            interval=15,
-            retries=4,
-            namespace="SA-ThreatIntelligence",
+        self,
+        query,
+        expected_values,  # can be list, set, tuple, or string
+        expectedMinRow=0,
+        interval=15,
+        retries=4,
+        namespace="SA-ThreatIntelligence",
     ):
 
         """Execute a query and check for a matching set (not necessarily
-           complete) of output fields, and secondarily for a minimum
-           number of results.
+        complete) of output fields, and secondarily for a minimum
+        number of results.
         """
 
         tryNum = 0
@@ -767,9 +767,9 @@ class SearchUtil(object):
     ):
 
         """Check for specific content in a specific search result row.
-           Script will issue failure IF no results are obtained
-           ( len(result) == 0 ) OR if the expected text does not exist
-           in the raw result text.
+        Script will issue failure IF no results are obtained
+        ( len(result) == 0 ) OR if the expected text does not exist
+        in the raw result text.
         """
 
         tryNum = 0
@@ -887,10 +887,10 @@ class SearchUtil(object):
 
     def gen_table(self, table):
         """Return search query string that generates a table.
-            The columns are sorted by field name
+        The columns are sorted by field name
 
-            Parameters:
-            table = a list of dictionary
+        Parameters:
+        table = a list of dictionary
         """
 
         def _rows(t):
@@ -934,8 +934,8 @@ class SearchUtil(object):
     ):
 
         """Execute a query and check for a matching set (not necessarily
-           complete) of output fields, and secondarily for a minimum
-           number of results.
+        complete) of output fields, and secondarily for a minimum
+        number of results.
         """
 
         tryNum = 0
@@ -989,8 +989,8 @@ class SearchUtil(object):
     def getFieldValuesDict(self, query, interval=15, retries=4):
 
         """Execute a query and check for a matching set (not necessarily
-           complete) of output fields, and secondarily for a minimum
-           number of results.
+        complete) of output fields, and secondarily for a minimum
+        number of results.
         """
 
         tryNum = 0
@@ -1031,7 +1031,7 @@ class SearchUtil(object):
     def getFieldValuesList(self, query, interval=15, retries=4):
         """
         Get list of results from the query. Where each result will be
-        a dictionary. The search job will retry at given interval if 
+        a dictionary. The search job will retry at given interval if
         no results found.
 
         Args:

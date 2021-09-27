@@ -8,10 +8,11 @@ from requests.exceptions import ConnectionError
 LOGGER = logging.getLogger("pytest-splunk-addon")
 MONITOR_DIR = "uf_files"
 
+
 class FileMonitorEventIngestor(EventIngestor):
     """
     Class to ingest event via File monitor
-    This ingestor will only work if splunk_type is docker and container of universal forwarder is linked with container 
+    This ingestor will only work if splunk_type is docker and container of universal forwarder is linked with container
     of splunk instance as 'splunk' service.
 
     The format for required_configs is::
@@ -27,6 +28,7 @@ class FileMonitorEventIngestor(EventIngestor):
         required_configs (dict): Dictionary containing information about universal forwarder
 
     """
+
     def __init__(self, required_configs):
         self.uf_host = required_configs.get("uf_host")
         self.uf_port = required_configs.get("uf_port")
@@ -37,8 +39,12 @@ class FileMonitorEventIngestor(EventIngestor):
         self.splunk_host = "splunk"
         self.splunk_s2s_port = "9997"
         self.uf_rest_uri = "https://{}:{}".format(self.uf_host, self.uf_port)
-        self.outputs_endpoint = "{}/services/data/outputs/tcp/group".format(self.uf_rest_uri)
-        self.inputs_endpoint = "{}/servicesNS/nobody/search/data/inputs/monitor".format(self.uf_rest_uri)
+        self.outputs_endpoint = "{}/services/data/outputs/tcp/group".format(
+            self.uf_rest_uri
+        )
+        self.inputs_endpoint = "{}/servicesNS/nobody/search/data/inputs/monitor".format(
+            self.uf_rest_uri
+        )
 
     def ingest(self, events, thread_count):
         """
@@ -54,15 +60,33 @@ class FileMonitorEventIngestor(EventIngestor):
 
     def create_output_conf(self):
         """
-        Create stanza in outputs.conf file of universal forwarder to send on splunk(indexer).  
+        Create stanza in outputs.conf file of universal forwarder to send on splunk(indexer).
         """
-        tcp_out_dict = {"name":"uf_monitor", "servers":"{}:{}".format(self.splunk_host, self.splunk_s2s_port)}
-        LOGGER.info("Making rest call to create stanza in outputs.conf file with following endpoint : {}".format(self.outputs_endpoint))
-        LOGGER.debug("Creating following stanza in output.conf : {}".format(tcp_out_dict))
+        tcp_out_dict = {
+            "name": "uf_monitor",
+            "servers": "{}:{}".format(self.splunk_host, self.splunk_s2s_port),
+        }
+        LOGGER.info(
+            "Making rest call to create stanza in outputs.conf file with following endpoint : {}".format(
+                self.outputs_endpoint
+            )
+        )
+        LOGGER.debug(
+            "Creating following stanza in output.conf : {}".format(tcp_out_dict)
+        )
         try:
-            response = requests.post(self.outputs_endpoint, tcp_out_dict, auth=(self.uf_username, self.uf_password), verify=False)
+            response = requests.post(
+                self.outputs_endpoint,
+                tcp_out_dict,
+                auth=(self.uf_username, self.uf_password),
+                verify=False,
+            )
             if response.status_code not in (200, 201):
-                LOGGER.warning("Unable to create stanza in outputs.conf\nStatus code: {} \nReason: {} \ntext:{}".format(response.status_code, response.reason, response.text))
+                LOGGER.warning(
+                    "Unable to create stanza in outputs.conf\nStatus code: {} \nReason: {} \ntext:{}".format(
+                        response.status_code, response.reason, response.text
+                    )
+                )
         except ConnectionError as e:
             LOGGER.error("Unable to connect to Universal forwarder, {}".format(e))
 
@@ -75,11 +99,21 @@ class FileMonitorEventIngestor(EventIngestor):
         """
         try:
             with open(self.get_file_path(event), "w+") as fp:
-                LOGGER.info("Writing events file for host={}".format(event.metadata.get("host")))
+                LOGGER.info(
+                    "Writing events file for host={}".format(event.metadata.get("host"))
+                )
                 fp.write(event.event)
-                LOGGER.debug("Wrote tokenized events file on path : {}".format(self.get_file_path(event)))
+                LOGGER.debug(
+                    "Wrote tokenized events file on path : {}".format(
+                        self.get_file_path(event)
+                    )
+                )
         except Exception as e:
-            LOGGER.warning("Unable to create event file for host : {}, Reason : {}".format(event.metadata.get("host"), e))
+            LOGGER.warning(
+                "Unable to create event file for host : {}, Reason : {}".format(
+                    event.metadata.get("host"), e
+                )
+            )
 
     def create_inputs_stanza(self, event):
         """
@@ -89,27 +123,42 @@ class FileMonitorEventIngestor(EventIngestor):
             event (SampleEvent): Instance containing event info
         """
         file_path = self.get_file_path(event)
-        host_segment = len(file_path.split(os.sep)) - 2 
+        host_segment = len(file_path.split(os.sep)) - 2
         # If file path is /home/uf_files/host_name/sample_name
         # Then split will return ['', home, 'uf_files', 'host_name', 'sample_name']
         sourcetype = event.metadata.get("sourcetype")
         if not sourcetype:
-            sourcetype = event.metadata.get("sourcetype_to_search", "pytest_splunk_addon")
+            sourcetype = event.metadata.get(
+                "sourcetype_to_search", "pytest_splunk_addon"
+            )
         stanza = {
             "name": file_path,
             "sourcetype": sourcetype,
             "index": event.metadata.get("index", "main"),
             "disabled": False,
-            "crc-salt": "<SOURCE>"
+            "crc-salt": "<SOURCE>",
         }
         if event.metadata.get("host_type") in ("plugin"):
             stanza["host_segment"] = host_segment
-        LOGGER.info("Making rest call to create stanza in inputs.conf file with following endpoint : {}".format(self.inputs_endpoint))
+        LOGGER.info(
+            "Making rest call to create stanza in inputs.conf file with following endpoint : {}".format(
+                self.inputs_endpoint
+            )
+        )
         LOGGER.debug("Creating following stanza in inputs.conf : {}".format(stanza))
         try:
-            response = requests.post(self.inputs_endpoint, stanza, auth=(self.uf_username, self.uf_password), verify=False)
+            response = requests.post(
+                self.inputs_endpoint,
+                stanza,
+                auth=(self.uf_username, self.uf_password),
+                verify=False,
+            )
             if response.status_code not in (200, 201):
-                LOGGER.warning("Unable to add stanza in inputs.conf for Path : {} \nStatus code: {} \nReason: {} \ntext:{}".format(file_path, response.status_code, response.reason, response.text))
+                LOGGER.warning(
+                    "Unable to add stanza in inputs.conf for Path : {} \nStatus code: {} \nReason: {} \ntext:{}".format(
+                        file_path, response.status_code, response.reason, response.text
+                    )
+                )
         except ConnectionError as e:
             LOGGER.error("Unable to connect to Universal forwarder, {}".format(e))
 

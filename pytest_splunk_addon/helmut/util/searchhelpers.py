@@ -70,7 +70,7 @@ class SearchHelpers(threading.Thread):
         acl=None,
     ):
         """
-            usercontext:applicationcontext namespace
+        usercontext:applicationcontext namespace
         """
         LOGGER.info("Creating edit a saved search")
         request_url = const.TestConstants["EDIT_SAVED_SEARCH_USRCTX"].format(
@@ -225,8 +225,7 @@ class SearchHelpers(threading.Thread):
         splunk_pwd="changeme",
         acl=None,
     ):
-        """
-        """
+        """ """
         LOGGER.info("create new eventtype")
 
         eventtype_url = const.TestConstants["EDIT_EVENTTYPE"].format(appcontext)
@@ -266,8 +265,7 @@ class SearchHelpers(threading.Thread):
         splunk_pwd="changeme",
         acl=None,
     ):
-        """
-        """
+        """ """
         LOGGER.info("create field transform using interactive field extractor")
 
         ifx_url = const.TestConstants["EDIT_IFX"].format(appcontext)
@@ -311,8 +309,7 @@ class SearchHelpers(threading.Thread):
         splunk_pwd="changeme",
         acl=None,
     ):
-        """
-        """
+        """ """
         LOGGER.info("create field transform using interactive field extractor")
 
         ifx_url = const.TestConstants["EDIT_IFX_USRCTX"].format(usercontext, appcontext)
@@ -353,8 +350,7 @@ class SearchHelpers(threading.Thread):
         splunk_pwd="changeme",
         acl=None,
     ):
-        """
-        """
+        """ """
         source_url = const.TestConstants["SOURCE_TYPE_RENAME"].format(appcontext)
 
         if request_type == "POST":
@@ -389,8 +385,7 @@ class SearchHelpers(threading.Thread):
         splunk_pwd="changeme",
         acl=None,
     ):
-        """
-        """
+        """ """
         source_url = const.TestConstants["SOURCE_TYPE_RENAME_USRCXT"].format(
             usercontext, appcontext
         )
@@ -879,15 +874,12 @@ class SearchHelpers(threading.Thread):
         return response, content
 
     def check_geobin(self, nightlysplunk, statsfunc, geobin):
-        query = (
-            "search index=geo checkin.geolong>=%s checkin.geolong<%s checkin.geolat>=%s checkin.geolat<%s | stats %s"
-            % (
-                geobin["_geo_bounds_west"],
-                geobin["_geo_bounds_east"],
-                geobin["_geo_bounds_south"],
-                geobin["_geo_bounds_north"],
-                statsfunc,
-            )
+        query = "search index=geo checkin.geolong>=%s checkin.geolong<%s checkin.geolat>=%s checkin.geolat<%s | stats %s" % (
+            geobin["_geo_bounds_west"],
+            geobin["_geo_bounds_east"],
+            geobin["_geo_bounds_south"],
+            geobin["_geo_bounds_north"],
+            statsfunc,
         )
         job = nightlysplunk.jobs().create(query)
         job.wait()

@@ -169,7 +169,8 @@ class Rule:
                             event_host_count,
                         )
                         new_event.metadata["id"] = "{}_{}".format(
-                            each_event.sample_name, event_host_count,
+                            each_event.sample_name,
+                            event_host_count,
                         )
                         new_event.replace_token(self.token, each_token_value.value)
                         new_event.register_field_value(self.field, each_token_value)
@@ -250,7 +251,7 @@ class Rule:
 
 class IntRule(Rule):
     """
-    IntRule 
+    IntRule
     """
 
     def replace(self, sample, token_count):
@@ -791,7 +792,10 @@ class UserRule(Rule):
                     yield self.token_value(*([csv_rows[i][choice(index_list)]] * 2))
                 else:
                     index_list, csv_row = self.get_lookup_value(
-                        sample, "user", self.user_header, value_list,
+                        sample,
+                        "user",
+                        self.user_header,
+                        value_list,
                     )
                     if index_list:
                         yield self.token_value(*([csv_row[choice(index_list)]] * 2))
@@ -835,7 +839,10 @@ class EmailRule(Rule):
                 )
             else:
                 index_list, csv_row = self.get_lookup_value(
-                    sample, "email", self.user_header, ["email"],
+                    sample,
+                    "email",
+                    self.user_header,
+                    ["email"],
                 )
                 yield self.token_value(
                     *([csv_row[self.user_header.index("email")]] * 2)
@@ -920,7 +927,7 @@ class UrlRule(Rule):
     def generate_url_query_params(self):
         """
         Generates random query params for url
-    
+
         Returns:
             Return the query param string
         """
@@ -1196,4 +1203,3 @@ class HexRule(Rule):
                     self.replacement, sample.sample_name
                 )
             )
-

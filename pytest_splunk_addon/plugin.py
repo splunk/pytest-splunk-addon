@@ -1,6 +1,6 @@
 import logging
 import pytest
-import sys
+from .standard_lib.sample_generation.sample_xdist_generator import SampleXdistGenerator
 import traceback
 from .standard_lib import AppTestGenerator
 from .standard_lib.cim_compliance import CIMReportPlugin
@@ -38,7 +38,8 @@ def pytest_configure(config):
         "splunk_searchtime_fields_eventtypes: Test search time eventtypes only",
     )
     config.addinivalue_line(
-        "markers", "splunk_searchtime_fields_savedsearches: Test search time savedsearches only"
+        "markers",
+        "splunk_searchtime_fields_savedsearches: Test search time savedsearches only",
     )
     config.addinivalue_line(
         "markers", "splunk_searchtime_cim: Test CIM compatibility only"
@@ -79,10 +80,33 @@ def pytest_unconfigure(config):
         config.pluginmanager.unregister(markdown)
 
 
+def pytest_sessionstart(session):
+
+    SampleXdistGenerator.event_path = session.config.getoption("event_path")
+    SampleXdistGenerator.event_stored = False
+    SampleXdistGenerator.tokenized_event_source = session.config.getoption(
+        "tokenized_event_source"
+    ).lower()
+    if (
+        SampleXdistGenerator.tokenized_event_source == "store_new"
+        and session.config.getoption("ingest_events").lower()
+        in ["no", "n", "false", "f"]
+        and session.config.getoption("execute_test").lower()
+        in ["no", "n", "false", "f"]
+    ):
+        app_path = session.config.getoption("splunk_app")
+        config_path = session.config.getoption("splunk_data_generator")
+        store_events = session.config.getoption("store_events")
+        sample_generator = SampleXdistGenerator(app_path, config_path)
+        sample_generator.get_samples(store_events)
+
+
 def pytest_generate_tests(metafunc):
     """
     Parse the fixture dynamically.
     """
+    if metafunc.config.getoption("execute_test").lower() in ["no", "n", "false", "f"]:
+        return
     global test_generator
     for fixture in metafunc.fixturenames:
         if fixture.startswith("splunk_searchtime") or fixture.startswith(
@@ -110,6 +134,21 @@ def pytest_generate_tests(metafunc):
                     f"{e}.\nStacktrace:\n{traceback.format_exc()}"
                     f"\nLogs:\n{log_message}"
                 )
+
+
+def pytest_collection_modifyitems(config, items):
+    ingest_events_flag = config.getoption("ingest_events")
+    is_ingest_false = ingest_events_flag.lower() in ["no", "n", "false", "f"]
+    execute_test_flag = config.getoption("execute_test")
+    if execute_test_flag.lower() in ["no", "n", "false", "f"]:
+        for item in items.copy():
+            item.add_marker(
+                pytest.mark.skipif(
+                    item.name != "test_events_with_untokenised_values"
+                    or is_ingest_false,
+                    reason=f"--execute-test={execute_test_flag} provided",
+                )
+            )
 
 
 def init_pytest_splunk_addon_logger():

@@ -28,7 +28,7 @@ pytest-xdist = "*"
 filelock = "^3.0"
 pytest-ordering = "*"
 lovely-pytest-docker = { version="^0", optional = true }
-junitparser = "<3.0.0"
+junitparser = "<2.0.0"
 
 
 [tool.poetry.extras]
