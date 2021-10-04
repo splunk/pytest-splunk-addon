@@ -172,12 +172,6 @@ class ReqsTestTemplates(object):
         )
         self.logger.info(f"Data model check: {datamodel_check}")
         sourcetype = keyValue_dict_SPL["_sourcetype"]
-        assert datamodel_check, (
-            f"data model check: {datamodel_check} \n"
-            f"data model in requirement file  {model_datalist}\n "
-            f"data model extracted by TA {list(datamodel_based_on_tag.keys())}\n"
-            f"sourcetype of ingested event: {sourcetype} \n"
-        )
         field_extraction_check, missing_key_value = self.compare(
             keyValue_dict_SPL, key_values_xml
         )
@@ -188,8 +182,11 @@ class ReqsTestTemplates(object):
                 valueInSplunk = keyValue_dict_SPL[key]
                 mismapped_key_value_pair.update({key: valueInSplunk})
 
-        assert field_extraction_check, (
-            f"Issue with the field extraction.\nsearch={search}\n"
+        assert datamodel_check and field_extraction_check, (
+            f" Issue with either field extraction or data model.\nsearch={search}\n"
+            f" data model check: {datamodel_check} \n"
+            f" data model in requirement file  {model_datalist}\n "
+            f" data model extracted by TA {list(datamodel_based_on_tag.keys())}\n"
             f" Field_extraction_check: {field_extraction_check} \n"
             f" Key value not extracted by TA: {missing_key_value} \n"
             f" Mismatched key value: {mismapped_key_value_pair}\n"
