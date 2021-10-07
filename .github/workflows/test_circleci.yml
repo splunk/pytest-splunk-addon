@@ -17,24 +17,35 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - name: Build image
+      - name: Result Directory
+        run: mkdir test-results
+      - name: Build Image
         run: |
           export SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction
           export SPLUNK_ADDON=TA_fiction
           export SPLUNK_APP_ID=TA_fiction
           export SPLUNK_VERSION=${{ matrix.SPLUNK_VERSION }}
           docker-compose -f "docker-compose-ci.yml" build
-      - name: List of images
+      - name: List of Images
         run: docker images
-      - name: Up splunk
+      - name: Splunk Up
         run: |
           SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up -d splunk
           sleep 90
-      - name: Test
+      - name: Splunk Test
         run: |
           SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
-      - name: List of images
-        run: docker images
+          docker volume ls
+      - name: Fetch results
+        run: |
+          docker volume ls
+          docker container create --name dummy \
+                              -v project_results:/work/test-results \
+                              registry.access.redhat.com/ubi7/ubi
+          docker cp dummy:/work/test-results/test.xml test-results/
+      - name: Get results
+        run: |
+          ls -al test-results/
 
       # - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}::Splunk=${{ matrix.splunk-version }}
       #   uses: actions/setup-python@v1
