@@ -1,0 +1,84 @@
+name: Test migration
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Deploy splunk
+    strategy:
+      fail-fast: false
+      matrix:
+        # os: [ubuntu-latest]
+        # python-version: [3.7]
+        SPLUNK_VERSION: [8.0]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Build image
+        run: |
+          SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction SPLUNK_ADDON=TA_fiction SPLUNK_APP_ID=TA_fiction SPLUNK_VERSION=${{ matrix.splunk-version }} docker-compose -f docker-compose-ci.yml build
+      - name: List of images
+        run: docker images
+      - name: Up splunk
+        run: |
+          SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up -d splunk
+          sleep 90
+      - name: Test
+        run: |
+          SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
+      - name: List of images
+        run: docker images
+
+      # - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}::Splunk=${{ matrix.splunk-version }}
+      #   uses: actions/setup-python@v1
+      #   with:
+      #     python-version: ${{ matrix.python-version }}
+      # - name: Install dependencies
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y --no-install-recommends apt-utils
+      #     sudo apt-get install locales
+      #     sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+      #     curl https://pyenv.run | bash
+      #     export PATH="~/.pyenv/bin:$PATH"
+      #     eval "$(pyenv init -)"
+      #     pyenv install 3.7.8
+      #     pyenv local 3.7.8
+      #     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+      #     source ~/.poetry/env
+      # - name: Test with pytest
+      #   run: |
+      #     export PATH="~/.pyenv/bin:$PATH"
+      #     eval "$(pyenv init -)"
+      #     source ~/.poetry/env
+      #     poetry install -E docker
+      #     poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m external
+
+      # KUBERNETES
+      # - name: Check files
+      #   run: |
+      #     ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
+      # - name: Start minikube
+      #   uses: medyagh/setup-minikube@master
+      # - name: Try the cluster !
+      #   run: kubectl get pods -A
+      # - name: Build image
+      #   run: |
+      #     export SHELL=/bin/bash
+      #     export SPLUNK_APP_PACKAGE=tests/addons/TA_fiction
+      #     eval $(minikube -p minikube docker-env)
+      #     docker build --build-arg SPLUNK_APP_PACKAGE=tests/addons/TA_fiction --build-arg SPLUNK_ADDON=TA_fiction -f ./Dockerfile.splunk -t splunk_image .
+      #     echo -n "verifying images:"
+      #     docker images
+      # - name: Create a namespace
+      #   run:
+      #     kubectl create namespace splunk-ns
+      # - name: Deploy to minikube
+      #   run:
+      #     kubectl apply -f ./kubernetes_manifests/deployment.yaml
+      # - name: Get deployment
+      #   run: |
+      #     kubectl get deploy -n splunk-ns
