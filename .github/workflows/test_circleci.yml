@@ -47,7 +47,7 @@ jobs:
         run: |
           docker volume ls
           docker container create --name dummy \
-                              -v project_results:/work/test-results \
+                              -v pytest-splunk-addon_results:/work/test-results \
                               registry.access.redhat.com/ubi7/ubi
           docker cp dummy:/work/test-results/test.xml test-results/
       - name: Get results
