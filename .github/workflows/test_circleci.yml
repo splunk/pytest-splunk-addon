@@ -19,7 +19,7 @@ jobs:
           submodules: true
       - name: Build image
         run: |
-          docker-compose --build-arg SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction --build-arg SPLUNK_ADDON=TA_fiction SPLUNK_APP_ID=TA_fiction --build-arg SPLUNK_VERSION=${{ matrix.splunk-version }} -f "docker-compose-ci.yml" build
+          docker-compose -f "docker-compose-ci.yml" build --build-arg SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction --build-arg SPLUNK_ADDON=TA_fiction SPLUNK_APP_ID=TA_fiction --build-arg SPLUNK_VERSION=${{ matrix.splunk-version }}
       - name: List of images
         run: docker images
       - name: Up splunk
