@@ -136,11 +136,15 @@ class ReqsTestGenerator(object):
                             "hec_event",
                         ):
                             host, source, sourcetype = self.extract_params(event_tag)
+                            host, source, sourcetype = self.escape_host_src_srctype(
+                                host, source, sourcetype
+                            )
                             modinput_params = {
                                 "host": host,
                                 "source": source,
                                 "sourcetype": sourcetype,
                             }
+
                         else:
                             # todo: non syslog/modinput events are skipped currently until we support it
                             continue
@@ -243,6 +247,12 @@ class ReqsTestGenerator(object):
                 source_type = transport.get("sourcetype")
         return host, source, source_type
 
+    def escape_host_src_srctype(self, host, source, sourcetype):
+        escaped_host = host.replace('"', '\\"')
+        escaped_source = source.replace('"', '\\"')
+        escaped_sourcetype = sourcetype.replace('"', '\\"')
+        return escaped_host, escaped_source, escaped_sourcetype
+
     def escape_char_event(self, event):
         """
         Input: Event getting parsed
@@ -259,7 +269,6 @@ class ReqsTestGenerator(object):
             "%",
             "^",
             "&",
-            "*",
             "(",
             ")",
             "-",
