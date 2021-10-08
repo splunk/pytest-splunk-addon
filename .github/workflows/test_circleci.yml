@@ -18,7 +18,7 @@ jobs:
         with:
           submodules: true
       - name: Result Directory
-        run: mkdir test-results
+        run: mkdir test-results-${{ matrix.SPLUNK_VERSION }}
       - run: docker-compose pull
       # In this step, this action saves a list of existing images,
       # the cache is created without them in the post run.
@@ -49,10 +49,20 @@ jobs:
           docker container create --name dummy \
                               -v pytest-splunk-addon_results:/work/test-results \
                               registry.access.redhat.com/ubi7/ubi
-          docker cp dummy:/work/test-results/test.xml test-results/
+          docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.SPLUNK_VERSION }}
       - name: Get results
         run: |
-          ls -al test-results/
+          ls -al test-results-${{ matrix.SPLUNK_VERSION }}/
+      - uses: actions/upload-artifact@v2.2.4
+        if: always()
+        with:
+          name: archive splunk ${{ matrix.SPLUNK_VERSION }} tests artifacts
+          path: |
+            test-results-${{ matrix.SPLUNK_VERSION }}
+      - uses: actions/download-artifact@v2
+        with:
+          name: splunk ${{ matrix.SPLUNK_VERSION }} test results
+          path: test-results-${{ matrix.SPLUNK_VERSION }}
 
       # - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}::Splunk=${{ matrix.splunk-version }}
       #   uses: actions/setup-python@v1
