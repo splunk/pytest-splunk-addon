@@ -28,7 +28,7 @@ jobs:
           export SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction
           export SPLUNK_ADDON=TA_fiction
           export SPLUNK_APP_ID=TA_fiction
-          export SPLUNK_VERSION=$SPLUNK_VERSION
+          echo $SPLUNK_VERSION
           docker-compose -f "docker-compose-ci.yml" build
       - name: List of Images
         run: docker images
