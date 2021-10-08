@@ -22,6 +22,7 @@ jobs:
         run: |
           ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
           export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf ${{ matrix.splunk-version }} VERSION)
+          echo $SPLUNK_VERSION
       - name: Build Image
         run: |
           export SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction
