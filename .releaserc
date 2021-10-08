@@ -28,12 +28,12 @@
         {
           "replacements": [
             {
-              "files": ["splunktaucclib/__init__.py"],
+              "files": ["pytest_splunk_addon/__init__.py"],
               "from": "__version__ ?=.*",
               "to": "__version__ = \"${nextRelease.version}\"",
               "results": [
                 {
-                  "file": "splunktaucclib/__init__.py",
+                  "file": "pytest_splunk_addon/__init__.py",
                   "hasChanged": true,
                   "numMatches": 1,
                   "numReplacements": 1
@@ -70,7 +70,7 @@
       [
         "@semantic-release/git",
         {
-          "assets": ["NOTICE", "pyproject.toml", "splunktaucclib/__init__.py"],
+          "assets": ["NOTICE", "pyproject.toml", "pytest_splunk_addon/__init__.py"],
           "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}",
         },
       ],
