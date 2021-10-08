@@ -1,37 +1,32 @@
-name: Test migration
+name: Test External Splunk
 
 on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Deploy splunk
+    name: Test External Splunk
     strategy:
       fail-fast: false
       matrix:
-        # os: [ubuntu-latest]
-        # python-version: [3.7]
-        SPLUNK_VERSION: ["8.0"]
-
+        splunk-version: ["8.0","8.1","8.2"]
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
       - name: Result Directory
-        run: mkdir test-results-${{ matrix.SPLUNK_VERSION }}
-      - run: docker-compose pull
-      # In this step, this action saves a list of existing images,
-      # the cache is created without them in the post run.
-      # It also restores the cache if it exists.
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        # Ignore the failure of a step and avoid terminating the job.
-        continue-on-error: true
+        run: mkdir test-results-${{ matrix.splunk-version }}
+      - name: Setup for testing
+        run: pip install git+https://github.com/pixelb/crudini
+      - name: Fetch Splunk Version
+        run: |
+          ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
+          export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf ${{ matrix.splunk-version }} VERSION)
       - name: Build Image
         run: |
           export SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction
           export SPLUNK_ADDON=TA_fiction
           export SPLUNK_APP_ID=TA_fiction
-          export SPLUNK_VERSION=${{ matrix.SPLUNK_VERSION }}
           docker-compose -f "docker-compose-ci.yml" build
       - name: List of Images
         run: docker images
@@ -49,68 +44,37 @@ jobs:
           docker container create --name dummy \
                               -v pytest-splunk-addon_results:/work/test-results \
                               registry.access.redhat.com/ubi7/ubi
-          docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.SPLUNK_VERSION }}
+          docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.splunk-version }}
       - name: Get results
         run: |
-          ls -al test-results-${{ matrix.SPLUNK_VERSION }}/
+          ls -al test-results-${{ matrix.splunk-version }}/
       - uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
-          name: splunk ${{ matrix.SPLUNK_VERSION }} tests artifacts
+          name: splunk ${{ matrix.splunk-version }} external test artifacts
           path: |
-            test-results-${{ matrix.SPLUNK_VERSION }}
-      - uses: actions/download-artifact@v2
+            test-results-${{ matrix.splunk-version }}
+  
+  semgrep:
+    runs-on: ubuntu-latest
+    name: security-sast-semgrep
+    steps:
+      - uses: actions/checkout@v2
+      - name: Semgrep
+        id: semgrep
+        uses: returntocorp/semgrep-action@v1
         with:
-          name: splunk ${{ matrix.SPLUNK_VERSION }} tests artifacts
-          path: test-results-${{ matrix.SPLUNK_VERSION }}
+          publishDeployment: ${{ secrets.SEMGREP_DEPLOYMENT_ID }}
+          publishToken: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
 
-      # - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}::Splunk=${{ matrix.splunk-version }}
-      #   uses: actions/setup-python@v1
-      #   with:
-      #     python-version: ${{ matrix.python-version }}
-      # - name: Install dependencies
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y --no-install-recommends apt-utils
-      #     sudo apt-get install locales
-      #     sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
-      #     curl https://pyenv.run | bash
-      #     export PATH="~/.pyenv/bin:$PATH"
-      #     eval "$(pyenv init -)"
-      #     pyenv install 3.7.8
-      #     pyenv local 3.7.8
-      #     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-      #     source ~/.poetry/env
-      # - name: Test with pytest
-      #   run: |
-      #     export PATH="~/.pyenv/bin:$PATH"
-      #     eval "$(pyenv init -)"
-      #     source ~/.poetry/env
-      #     poetry install -E docker
-      #     poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m external
-
-      # KUBERNETES
-      # - name: Check files
-      #   run: |
-      #     ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
-      # - name: Start minikube
-      #   uses: medyagh/setup-minikube@master
-      # - name: Try the cluster !
-      #   run: kubectl get pods -A
-      # - name: Build image
-      #   run: |
-      #     export SHELL=/bin/bash
-      #     export SPLUNK_APP_PACKAGE=tests/addons/TA_fiction
-      #     eval $(minikube -p minikube docker-env)
-      #     docker build --build-arg SPLUNK_APP_PACKAGE=tests/addons/TA_fiction --build-arg SPLUNK_ADDON=TA_fiction -f ./Dockerfile.splunk -t splunk_image .
-      #     echo -n "verifying images:"
-      #     docker images
-      # - name: Create a namespace
-      #   run:
-      #     kubectl create namespace splunk-ns
-      # - name: Deploy to minikube
-      #   run:
-      #     kubectl apply -f ./kubernetes_manifests/deployment.yaml
-      # - name: Get deployment
-      #   run: |
-      #     kubectl get deploy -n splunk-ns
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    name: release
+    container: node:14
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - run: echo "Execute release"
