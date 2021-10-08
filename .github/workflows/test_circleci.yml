@@ -18,7 +18,7 @@ jobs:
         run: mkdir test-results-${{ matrix.splunk-version }}
       - name: Setup for testing
         run: pip install git+https://github.com/pixelb/crudini
-      - name: Build Image
+      - name: Splunk Up
         run: |
           export SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction
           export SPLUNK_ADDON=TA_fiction
@@ -27,10 +27,6 @@ jobs:
           export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf ${{ matrix.splunk-version }} VERSION)
           echo $SPLUNK_VERSION
           docker-compose -f "docker-compose-ci.yml" build
-      - name: List of Images
-        run: docker images
-      - name: Splunk Up
-        run: |
           SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up -d splunk
           sleep 90
       - name: Splunk Test
