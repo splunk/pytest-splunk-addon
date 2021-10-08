@@ -56,12 +56,12 @@ jobs:
       - uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
-          name: archive splunk ${{ matrix.SPLUNK_VERSION }} tests artifacts
+          name: splunk ${{ matrix.SPLUNK_VERSION }} tests artifacts
           path: |
             test-results-${{ matrix.SPLUNK_VERSION }}
       - uses: actions/download-artifact@v2
         with:
-          name: splunk ${{ matrix.SPLUNK_VERSION }} test results
+          name: splunk ${{ matrix.SPLUNK_VERSION }} tests artifacts
           path: test-results-${{ matrix.SPLUNK_VERSION }}
 
       # - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}::Splunk=${{ matrix.splunk-version }}
