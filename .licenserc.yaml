@@ -32,5 +32,10 @@ header:
     - "docs/**"
     - "tests/**"
     - ".*"
+    - "pytest_splunk_addon/standard_lib/**/*.json"
+    - "pytest_splunk_addon/helmut/**/*.bak"
+    - "MANIFEST.in"
+    - "entrypoint.sh"
+    - "pytest_splunk_addon/.ignore_splunk_internal_errors"
 
   comment: on-failure
