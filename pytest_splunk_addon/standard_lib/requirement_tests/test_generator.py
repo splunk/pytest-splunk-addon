@@ -49,13 +49,14 @@ class ReqsTestGenerator(object):
             yield from self.generate_cim_req_params()
 
     # Extract key values pair XML
-    def extract_key_value_xml(self, event):
+    def extract_key_value_xml(self, event, type):
         key_value_dict = keyValue()
-        for fields in event.iter("field"):
-            if fields.get("name"):
-                field_name = fields.get("name")
-                field_value = fields.get("value")
-                key_value_dict.add(field_name, field_value)
+        for type_fields in event.iter(type):
+            for fields in type_fields.iter("field"):
+                if fields.get("name"):
+                    field_name = fields.get("name")
+                    field_value = fields.get("value")
+                    key_value_dict.add(field_name, field_value)
         # self.logger.info(key_value_dict)
         return key_value_dict
 
@@ -152,8 +153,14 @@ class ReqsTestGenerator(object):
                         escaped_event = self.escape_char_event(unescaped_event)
                         model_list = self.get_models(event_tag)
                         # Fetching kay value pair from XML
-                        key_value_dict = self.extract_key_value_xml(event_tag)
-                        # self.logger.info(key_value_dict)
+                        key_value_dict = self.extract_key_value_xml(
+                            event_tag, "cim_fields"
+                        )
+                        exceptions_dict = self.extract_key_value_xml(
+                            event_tag, "exceptions"
+                        )
+                        self.logger.info(key_value_dict)
+                        self.logger.info(exceptions_dict)
                         if len(model_list) == 0:
                             LOGGER.info("No model in this event")
                             continue
@@ -172,6 +179,7 @@ class ReqsTestGenerator(object):
                                 "Key_value_dict": key_value_dict,
                                 "modinput_params": modinput_params,
                                 "transport_type": transport_type,
+                                "exceptions_dict": exceptions_dict,
                             },
                             id=f"{(' '.join(model_list))}::{filename}::event_no::{event_no}",
                         )

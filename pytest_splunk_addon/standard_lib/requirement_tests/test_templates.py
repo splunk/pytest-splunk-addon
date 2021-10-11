@@ -28,13 +28,13 @@ class ReqsTestTemplates(object):
         return new_dict
 
     # Function to compare the fields extracted from XML and the fields extracted from Splunk search
-    def compare(self, keyValueSPL, keyValueXML):
+    def compare(self, keyValueSPL, keyValueXML, escapedKeyValue):
         dict_missing_key_value = {}
         keyValueprocessedSPL = self.process_str(keyValueSPL)
         flag = True
         for key, value in keyValueXML.items():
             res = key in keyValueprocessedSPL and value == keyValueprocessedSPL[key]
-            if not res:
+            if (not res) and (key not in escapedKeyValue):
                 dict_missing_key_value.update({key: value})
                 flag = False
         return flag, dict_missing_key_value
@@ -125,8 +125,10 @@ class ReqsTestTemplates(object):
         model_datalist = splunk_searchtime_requirement_param["model_list"]
         escaped_event = splunk_searchtime_requirement_param["escaped_event"]
         key_values_xml = splunk_searchtime_requirement_param["Key_value_dict"]
+        exceptions_dict = splunk_searchtime_requirement_param["exceptions_dict"]
         modinput_params = splunk_searchtime_requirement_param["modinput_params"]
         transport_type = splunk_searchtime_requirement_param["transport_type"]
+        logging.info(exceptions_dict)
         # search = f" search source= pytest_splunk_addon:hec:raw sourcetype={sourcetype} {escaped_event} |fields * "
         # removed source and sourcetype as sc4s assigns it based on event
         if transport_type in (
@@ -173,7 +175,7 @@ class ReqsTestTemplates(object):
         self.logger.info(f"Data model check: {datamodel_check}")
         sourcetype = keyValue_dict_SPL["_sourcetype"]
         field_extraction_check, missing_key_value = self.compare(
-            keyValue_dict_SPL, key_values_xml
+            keyValue_dict_SPL, key_values_xml, exceptions_dict
         )
         self.logger.info(f"Field mapping check: {field_extraction_check}")
         mismapped_key_value_pair = {}
