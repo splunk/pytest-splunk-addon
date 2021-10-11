@@ -12,6 +12,7 @@ on:
 
 jobs:
   compliance-dependencies:
+    name: Compliance Dependencies
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -38,6 +39,7 @@ jobs:
         if: always()
   
   compliance-copyrights:
+    name: Compliance Copyright Headers
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -73,16 +75,55 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/python-3.8@master
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - uses: snyk/actions/setup@master
+      - uses: actions/setup-go@v2.1.3
+        with:
+          go-version: "1.13"
+      - name: Snyk monitor
+        run: snyk test --sarif-file-output=snyk-scan_requirements.sarif --all-projects --print-deps --severity-threshold=high
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - uses: actions/upload-artifact@v2
+        if: always() 
         with:
-          args: --sarif-file-output=snyk.sarif
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v1
+          name: snyk-results
+          path: snyk-scan_requirements.sarif
+  
+  review_secrets:
+    name: security-detect-secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
-          sarif_file: snyk.sarif
+          submodules: false
+          fetch-depth: "0"
+      - name: Trufflehog Actions Scan
+        uses: edplato/trufflehog-actions-scan@v0.9j-beta
+        with:
+          scanArguments: "--max_dept 50 -x .github/workflows/exclude-patterns.txt"
+  
+  review-dog-misspell:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run misspell with reviewdog
+      uses: reviewdog/action-misspell@v1.0.0
+      with:
+        # GITHUB_TOKEN.
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  review_secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Trufflehog Actions Scan
+        uses: edplato/trufflehog-actions-scan@v0.9f-beta
   
   test-splunk-external:
     runs-on: ubuntu-latest
@@ -129,7 +170,7 @@ jobs:
             test-results-${{ matrix.splunk-version }}
   
   test-splunk-doc:
-    name: Test splunk doc
+    name: Test Docs
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -162,8 +203,8 @@ jobs:
           poetry install -E docker
           poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc
 
-  test-splunk-docker:
-    name: Test splunk docker
+  test-splunk-matrix:
+    name: Test Matrix
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -198,7 +239,7 @@ jobs:
           poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker
 
   test-splunk-unit:
-    name: Test splunk unit
+    name: Unit tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -240,11 +281,11 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs:
-      - compliance-copyrights
       - compliance-dependencies
+      - compliance-copyrights
       - test-splunk-external
       - test-splunk-doc
-      - test-splunk-docker
+      - test-splunk-matrix
       - test-splunk-unit
     steps:
       - uses: actions/checkout@v2
@@ -273,7 +314,11 @@ jobs:
     name: publish
     if: always()
     needs:
-      - test-splunk
+      - pre-commit
+      - semgrep
+      - snyk
+      - build
+      - review_secrets
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

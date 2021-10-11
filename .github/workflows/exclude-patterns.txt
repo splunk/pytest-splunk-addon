@@ -1,0 +1,5 @@
+.github/workflows/
+.circleci/
+deps/.*
+.*\.lock
+tests/
