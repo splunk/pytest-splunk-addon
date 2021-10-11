@@ -265,41 +265,6 @@ jobs:
           name: code-coverage-report-unit-tests
           path: htmlcov
 
-  
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    needs:
-      - compliance-dependencies
-      - compliance-copyrights
-      - test-splunk-external
-      - test-splunk-doc
-      - test-splunk-matrix
-      - test-splunk-unit
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          # Very Important semantic-release won't trigger a tagged
-          # build if this is not set false
-          persist-credentials: false
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.7"
-      - name: Install Poetry
-        run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
-      - name: Build
-        run: |
-          # shellcheck disable=SC1090
-          source "$HOME/.poetry/env"
-          poetry build
-      - uses: actions/upload-artifact@v2
-        if: always() 
-        with:
-          name: Package
-          path: dist/
-
   publish:
     name: publish
     if: github.event_name != 'pull_request'
@@ -307,8 +272,14 @@ jobs:
       - pre-commit
       - semgrep
       - snyk
-      - build
+      - compliance-dependencies
+      - compliance-copyrights
+      - test-splunk-external
+      - test-splunk-doc
+      - test-splunk-matrix
+      - test-splunk-unit
       - review_secrets
+      - review-dog-misspell
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -334,6 +305,7 @@ jobs:
           name: Package
           path: dist/
       - name: Semantic Release
+        if: ${{ github.event_name != 'pull_request' }}
         uses: cycjimmy/semantic-release-action@v2.5.4
         with:
           semantic_version: 17
