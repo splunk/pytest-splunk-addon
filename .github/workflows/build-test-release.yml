@@ -116,14 +116,6 @@ jobs:
       with:
         # GITHUB_TOKEN.
         github_token: ${{ secrets.GITHUB_TOKEN }}
-
-  review_secrets:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Trufflehog Actions Scan
-        uses: edplato/trufflehog-actions-scan@v0.9f-beta
   
   test-splunk-external:
     runs-on: ubuntu-latest
