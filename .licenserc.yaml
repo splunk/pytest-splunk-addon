@@ -13,7 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from .markdown_report import MarkDownReport
-from .markdown_table import MarkdownTable
-from .plugin import CIMReportPlugin
-from .cim_report_generator import CIMReportGenerator
+header:
+  license:
+    spdx-id: Apache-2.0
+    copyright-owner: Splunk Inc.
+
+  paths-ignore:
+    - ".circleci/"
+    - ".github/"
+    - ".vscode/"
+    - "dist"
+    - "licenses"
+    - "**/*.md"
+    - "**/*.rst"
+    - "LICENSE"
+    - "NOTICE"
+    - "*.lock"
+    - "docs/**"
+    - "tests/**"
+    - ".*"
+
+  comment: on-failure
