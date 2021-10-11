@@ -267,7 +267,6 @@ jobs:
 
   publish:
     name: publish
-    if: github.event_name != 'pull_request'
     needs:
       - compliance-dependencies
       - compliance-copyrights
