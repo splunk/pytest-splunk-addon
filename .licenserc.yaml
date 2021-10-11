@@ -19,11 +19,9 @@ header:
     copyright-owner: Splunk Inc.
 
   paths-ignore:
-    - ".circleci/"
     - ".github/"
     - ".vscode/"
     - "dist"
-    - "licenses"
     - "**/*.md"
     - "**/*.rst"
     - "LICENSE"
@@ -37,5 +35,6 @@ header:
     - "MANIFEST.in"
     - "entrypoint.sh"
     - "pytest_splunk_addon/.ignore_splunk_internal_errors"
+    - "pytest_splunk_addon/helmut/log/logging.conf"
 
   comment: on-failure
