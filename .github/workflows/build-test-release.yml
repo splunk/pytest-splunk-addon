@@ -269,9 +269,6 @@ jobs:
     name: publish
     if: github.event_name != 'pull_request'
     needs:
-      - pre-commit
-      - semgrep
-      - snyk
       - compliance-dependencies
       - compliance-copyrights
       - test-splunk-external
