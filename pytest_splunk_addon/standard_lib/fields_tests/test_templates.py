@@ -353,7 +353,7 @@ class FieldTestTemplates(object):
         temp_search_query = search_query.split("|")
         if temp_search_query[0].find("savedsearch") == -1 and (
             len(temp_search_query) < 2 or temp_search_query[1].find("savedsearch") == -1
-        ) :
+        ):
             temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(
                 earliest_time, latest_time
             )
