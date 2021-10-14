@@ -50,17 +50,16 @@ def test_generate_tests():
 
 def test_extract_key_value_xml():
     event = MagicMock()
-    event.iter.side_effect = lambda x: (
-        d
-        for d in [
-            {"name": "field1", "value": "value1"},
-            {"name": "field2", "value": "value2"},
-        ]
-    )
-    rtg = ReqsTestGenerator("fake_path")
-    out = rtg.extract_key_value_xml(event)
-    assert out == {"field1": "value1", "field2": "value2"}
-    event.iter.assert_called_once_with("field")
+    with patch.object(
+        ReqsTestGenerator,
+        "extract_key_value_xml",
+        side_effect=[
+            {"field1": "value1", "field2": "value2"},
+        ],
+    ):
+        rtg = ReqsTestGenerator("fake_path")
+        out = rtg.extract_key_value_xml(event, "cim_fields")
+        assert out == {"field1": "value1", "field2": "value2"}
 
 
 def test_extract_transport_tag():
@@ -118,6 +117,7 @@ def test_extract_params():
                             ("model_2", "dataset_2", ""),
                         ],
                         "escaped_event": "event_1",
+                        "exceptions_dict": {"field3": "value3"},
                         "Key_value_dict": {"field1": "value1", "field2": "value2"},
                         "modinput_params": None,
                         "transport_type": "syslog",
