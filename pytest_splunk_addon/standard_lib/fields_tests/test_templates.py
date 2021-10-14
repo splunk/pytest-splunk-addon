@@ -1,3 +1,18 @@
+#
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 # -*- coding: utf-8 -*-
 """
 Includes the test scenarios to check the field extractions of an Add-on.
@@ -336,7 +351,9 @@ class FieldTestTemplates(object):
         latest_time = splunk_searchtime_fields_savedsearches["dispatch.latest_time"]
 
         temp_search_query = search_query.split("|")
-        if temp_search_query[0].find("savedsearch") == -1 and (len(temp_search_query) < 2 or temp_search_query[1].find("savedsearch") == -1) :
+        if temp_search_query[0].find("savedsearch") == -1 and (
+            len(temp_search_query) < 2 or temp_search_query[1].find("savedsearch") == -1
+        ):
             temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(
                 earliest_time, latest_time
             )

@@ -13,7 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from .markdown_report import MarkDownReport
-from .markdown_table import MarkdownTable
-from .plugin import CIMReportPlugin
-from .cim_report_generator import CIMReportGenerator
+header:
+  license:
+    spdx-id: Apache-2.0
+    copyright-owner: Splunk Inc.
+
+  paths-ignore:
+    - ".github/"
+    - ".vscode/"
+    - "dist"
+    - "**/*.md"
+    - "**/*.rst"
+    - "LICENSE"
+    - "NOTICE"
+    - "*.lock"
+    - "docs/**"
+    - "tests/**"
+    - ".*"
+    - "pytest_splunk_addon/standard_lib/**/*.json"
+    - "MANIFEST.in"
+    - "entrypoint.sh"
+    - "pytest_splunk_addon/.ignore_splunk_internal_errors"
+
+  comment: on-failure
