@@ -318,7 +318,11 @@ class ReqsTestGenerator(object):
             "LIKE",
         ]
         event = event.replace("\\", "\\\\")
+        bounded_asterisk = re.search(r'\"[\s*\w*\.\-\,\\\?\_\]\[\']*\*+[\s*\w*\.\-\,\\\?\_\[\]\']*\"', event)
+        if bounded_asterisk:
+            event = event.replace("*", "\\*")
+        else:
+            event = event.replace("*", " ")
         for character in escape_splunk_chars:
             event = event.replace(character, "\\" + character)
-        event = event.replace("*", " ")
         return event
