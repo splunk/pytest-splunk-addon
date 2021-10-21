@@ -1,0 +1,8 @@
+sourcetype,range
+AIX:Version,aix
+FreeBSD:Version,freebsd
+HPUX:Version,hpux
+Linux:Version,linux
+OSX:Version,osx
+Solaris:Version,solaris
+Unix:Version,unix

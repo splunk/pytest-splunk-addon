@@ -1,0 +1,12 @@
+op,action,object_category
+add-user,created,user
+add-home-dir,created,user
+add-group,created,group
+add-shadow-group,created,group
+delete-user,deleted,user
+deleting-user-from-group,modified,user
+deleting-user-from-shadow-group,modified,user
+delete-shadow-group,deleted,group
+delete-group,deleted,group
+success,success,user
+failed,failure,user
