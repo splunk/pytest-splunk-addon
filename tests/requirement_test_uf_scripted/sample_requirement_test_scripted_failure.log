@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<device>
+	<vendor>Nix</vendor>
+	<product>Nix</product>
+	<version id="6,7" os="CentOS"/>
+	<version id="6.9,7.4,8.0" os="RHEL"/>
+	<version id="14.04,16.04" os="Ubuntu"/>
+	<event code="" name="nfsiostat" format="">
+		<transport type="scripted input" host="sample_host" source="sample_source" sourcetype ="nfsiostat" />
+		<source>
+			<comment> This event has been collected from sample data.It gives details as Mount 		  Path		  r_op/s    w_op/s    r_KB/s    w_KB/s    rpc_backlog    r_avg_RTT    w_avg_RTT    r_avg_exe    w_avg_exe </comment>
+		</source>
+		<raw>
+		<![CDATA[11.99.3.49:/opt     /nfs/mount/home     412.284     934.926     696.748     519.28     59.93     456.262     2771.885    1878.071    1023.817]]>
+		</raw>
+		<cim>
+			<models>
+				<model>Performance:Storage</model>
+			</models>
+			<cim_fields>
+				<field name="mount" value="11.99.3.49:/opt"/>
+                <field name="read_latency" value="1878.071"/>
+                <field name="write_latency" value="1023.817"/>
+                <field name="read_ops" value="412.284"/>
+                <field name="write_ops" value="934.926"/>
+                <field name="vendor_product" value="nix"/>
+			</cim_fields>
+			<missing_recommended_fields>
+				<field>dest</field>
+				<field>storage_free</field>
+				<field>storage_free_percent</field>
+				<field>storage_used</field>
+				<field>storage_used_percent</field>
+			</missing_recommended_fields>
+		</cim>
+		<test></test>
+	</event>
+</device>
