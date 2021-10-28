@@ -192,9 +192,13 @@ def collect_punct_and_eventtype(data, records):
         punct = record["punct"]
         if isinstance(eventtype, list):
             for entry in eventtype:
-                data.append((entry, punct))
+                new_val = (entry, punct)
+                if new_val not in data:
+                    data.append(new_val)
         else:
-            data.append((eventtype, punct))
+            new_val = (eventtype, punct)
+            if new_val not in data:
+                data.append(new_val)
 
 
 def get_punct_by_eventtype(jobs, eventtypes, config):
