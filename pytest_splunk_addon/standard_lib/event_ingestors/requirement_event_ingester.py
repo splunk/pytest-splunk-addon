@@ -162,10 +162,10 @@ class RequirementEventIngestor(object):
                                     LOGGER.info(
                                         f"sending data transport_type:forwarder/uf_file_monitor filename:{filename} "
                                     )
-                                elif transport_type in(
-                                        "scripted_input",
-                                        "scripted input",
-                                        "hec_raw",
+                                elif transport_type in (
+                                    "scripted_input",
+                                    "scripted input",
+                                    "hec_raw",
                                 ):
                                     transport_type = "scripted_input"
                                     host, source, sourcetype = self.extract_params(

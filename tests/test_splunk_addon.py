@@ -643,11 +643,10 @@ def test_splunk_app_requirements_uf(testdir):
     result.stdout.fnmatch_lines_random(
         constants.TA_REQUIREMENTS_UF_PASSED + constants.TA_REQUIREMENTS_UF_FAILED
     )
-    result.assert_outcomes(
-        passed=len(constants.TA_REQUIREMENTS_UF_PASSED), failed=1
-    )
+    result.assert_outcomes(passed=len(constants.TA_REQUIREMENTS_UF_PASSED), failed=1)
     # make sure that that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0
+
 
 @pytest.mark.docker
 def test_splunk_app_requirements_scripted(testdir):
@@ -685,7 +684,8 @@ def test_splunk_app_requirements_scripted(testdir):
     logger.info(len(constants.TA_REQUIREMENTS_SCRIPTED_PASSED))
     logger.info(len(constants.TA_REQUIREMENTS_SCRIPTED_FAILED))
     result.stdout.fnmatch_lines_random(
-        constants.TA_REQUIREMENTS_SCRIPTED_PASSED + constants.TA_REQUIREMENTS_SCRIPTED_FAILED
+        constants.TA_REQUIREMENTS_SCRIPTED_PASSED
+        + constants.TA_REQUIREMENTS_SCRIPTED_FAILED
     )
     result.assert_outcomes(
         passed=len(constants.TA_REQUIREMENTS_SCRIPTED_PASSED), failed=1

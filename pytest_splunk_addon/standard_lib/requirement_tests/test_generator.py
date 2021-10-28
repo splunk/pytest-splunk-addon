@@ -161,9 +161,9 @@ class ReqsTestGenerator(object):
                                 "sourcetype": sourcetype,
                             }
                         elif transport_type in (
-                                "scripted_input",
-                                "scripted input",
-                                "hec_raw",
+                            "scripted_input",
+                            "scripted input",
+                            "hec_raw",
                         ):
                             host, source, sourcetype = self.extract_params(event_tag)
                             host, source, sourcetype = self.escape_host_src_srctype(
