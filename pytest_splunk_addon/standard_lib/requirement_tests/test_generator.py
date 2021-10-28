@@ -318,7 +318,9 @@ class ReqsTestGenerator(object):
             "LIKE",
         ]
         event = event.replace("\\", "\\\\")
-        bounded_asterisk = re.search(r'\"[\s*\w*\.\-\,\\\?\_\]\[\']*\*+[\s*\w*\.\-\,\\\?\_\[\]\']*\"', event)
+        bounded_asterisk = re.search(
+            r"\"[\s*\w*\.\-\,\\\?\_\]\[\']*\*+[\s*\w*\.\-\,\\\?\_\[\]\']*\"", event
+        )
         if bounded_asterisk:
             event = event.replace("*", "\\*")
         else:
