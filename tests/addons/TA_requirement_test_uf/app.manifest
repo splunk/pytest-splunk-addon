@@ -1,0 +1,66 @@
+{
+  "dependencies": null,
+  "incompatibleApps": null,
+  "info": {
+    "author": [
+      {
+        "name": "Splunk",
+        "email": null,
+        "company": null
+      }
+    ],
+    "classification": {
+      "categories": [
+        "IT Operations",
+        "Utilities"
+      ],
+      "developmentStatus": "Production/Stable",
+      "intendedAudience": "IT"
+    },
+    "commonInformationModels": {
+      "Authentication": "==4.18.0",
+      "Change": "==4.18.0",
+      "Endpoint": "==4.18.0",
+      "Inventory": "==4.18.0",
+      "Network Sessions": "==4.18.0",
+      "Performance": "==4.18.0"
+    },
+    "description": "Splunk Add-on for Unix and Linux",
+    "id": {
+      "group": null,
+      "name": "Splunk_TA_nix",
+      "version": "8.3.1"
+    },
+    "license": {
+      "name": "Splunk Software License Agreement",
+      "text": "LICENSES/LicenseRef-Splunk-1-2020.txt",
+      "uri": "http://www.splunk.com/en_us/legal/splunk-software-license-agreement.html"
+    },
+    "privacyPolicy": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "releaseDate": null,
+    "releaseNotes": {
+      "name": "README",
+      "text": "./README.txt",
+      "uri": "http://docs.splunk.com/Documentation/AddOns/released/UnixLinux/About"
+    },
+    "title": "Splunk Add-on for Unix and Linux"
+  },
+  "inputGroups": null,
+  "platformRequirements": null,
+  "schemaVersion": "2.0.0",
+  "supportedDeployments": [
+    "_standalone",
+    "_distributed",
+    "_search_head_clustering"
+  ],
+  "targetWorkloads": [
+    "_search_heads",
+    "_forwarders",
+    "_indexers"
+  ],
+  "tasks": null
+}

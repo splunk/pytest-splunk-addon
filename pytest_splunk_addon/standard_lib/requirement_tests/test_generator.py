@@ -113,7 +113,7 @@ class ReqsTestGenerator(object):
         """
         req_file_path = self.folder_path
         req_test_id = 0
-        modinput_params = None
+        transport_type_params = None
         if os.path.isdir(req_file_path):
             for file1 in os.listdir(req_file_path):
                 filename = os.path.join(req_file_path, file1)
@@ -155,12 +155,21 @@ class ReqsTestGenerator(object):
                             host, source, sourcetype = self.escape_host_src_srctype(
                                 host, source, sourcetype
                             )
-                            modinput_params = {
+                            transport_type_params = {
                                 "host": host,
                                 "source": source,
                                 "sourcetype": sourcetype,
                             }
-
+                        elif transport_type.lower() == "forwarder":
+                            host, source, sourcetype = self.extract_params(event_tag)
+                            host, source, sourcetype = self.escape_host_src_srctype(
+                                host, source, sourcetype
+                            )
+                            transport_type_params = {
+                                "host": host,
+                                "source": source,
+                                "sourcetype": sourcetype,
+                            }
                         else:
                             # todo: non syslog/modinput events are skipped currently until we support it
                             continue
@@ -192,7 +201,7 @@ class ReqsTestGenerator(object):
                                 "model_list": list_model_dataset_subdataset,
                                 "escaped_event": escaped_event,
                                 "Key_value_dict": key_value_dict,
-                                "modinput_params": modinput_params,
+                                "modinput_params": transport_type_params,
                                 "transport_type": transport_type,
                                 "exceptions_dict": exceptions_dict,
                             },

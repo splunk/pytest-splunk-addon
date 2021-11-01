@@ -103,6 +103,7 @@ class RequirementEventIngestor(object):
     def get_events(self):
         req_file_path = self.requirement_file_path
         events = []
+        host_type = None
         host, source, sourcetype = "", "", ""
         if os.path.isdir(req_file_path):
             for file1 in os.listdir(req_file_path):
@@ -152,6 +153,15 @@ class RequirementEventIngestor(object):
                                     LOGGER.info(
                                         f"sending data transport_type:windows_input filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
                                     )
+                                elif transport_type == "forwarder":
+                                    transport_type = "uf_file_monitor"
+                                    host, source, sourcetype = self.extract_params(
+                                        event_tag
+                                    )
+                                    host_type = "plugin"
+                                    LOGGER.info(
+                                        f"sending data transport_type:forwarder/uf_file_monitor filename:{filename} "
+                                    )
                                 else:
                                     transport_type = "default"
                                 unescaped_event = self.extract_raw_events(event_tag)
@@ -165,6 +175,7 @@ class RequirementEventIngestor(object):
                                     "host": host,
                                     "sourcetype": sourcetype,
                                     "timestamp_type": "event",
+                                    "host_type": host_type,
                                 }
                                 events.append(
                                     SampleEvent(

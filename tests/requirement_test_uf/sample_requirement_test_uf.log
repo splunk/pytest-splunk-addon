@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<device>
+  <vendor>Nix</vendor>
+  <product>Nix</product>
+  <version id="13.21" />
+    <event code="" name="failed_login1,sshd_authentication1" format="syslog">
+        <version id="7.2"/>
+        <transport type="forwarder" host="sample_host" source="sample_source" sourcetype = "aix_secure" />
+        <source>
+            <comment>Logs for Failed login attempt.(Live Sample)</comment>
+        </source>
+        <raw>
+            <![CDATA[Jan  8 03:56:24 crest-aix-dev auth|security:info sshd[7340318]: Failed password for invalid user poojan from 10.64.250.210 port 62110 ssh2]]>
+        </raw>
+        <cim>
+            <models>
+                <model>Authentication</model>
+            </models>
+            <cim_fields>
+                <field name="action" value="failure"/>
+                <field name="app" value="ssh"/>
+                <field name="dest" value="crest-aix-dev"/>
+                <field name="src" value="10.64.250.210"/>
+                <field name="user" value="poojan"/>
+                <field name="reason" value="Failed password"/>
+            </cim_fields>
+            <missing_recommended_fields>
+                <field>src_user</field>
+            </missing_recommended_fields>
+        </cim>
+        <test></test>
+    </event>
+</device>
