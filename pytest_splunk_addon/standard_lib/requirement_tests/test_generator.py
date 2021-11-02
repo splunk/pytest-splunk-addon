@@ -174,6 +174,7 @@ class ReqsTestGenerator(object):
                                 "source": source,
                                 "sourcetype": sourcetype,
                             }
+
                         elif transport_type.lower() == "forwarder":
                             host, source, sourcetype = self.extract_params(event_tag)
                             host, source, sourcetype = self.escape_host_src_srctype(

@@ -638,8 +638,6 @@ def test_splunk_app_requirements_uf(testdir):
         "--requirement-test=tests/requirement_test_uf",
     )
     logger.info(result.outlines)
-    logger.info(len(constants.TA_REQUIREMENTS_UF_PASSED))
-    logger.info(len(constants.TA_REQUIREMENTS_UF_FAILED))
     result.stdout.fnmatch_lines_random(
         constants.TA_REQUIREMENTS_UF_PASSED + constants.TA_REQUIREMENTS_UF_FAILED
     )

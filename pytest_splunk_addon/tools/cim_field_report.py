@@ -174,6 +174,33 @@ def collect_job_results(job, acc, fn):
     return acc
 
 
+def collect_punct_and_eventtype(data, records):
+    """Accumulator function to be used with collect_job_results.
+
+    Accumulates punct and eventtype values, used in get_punct_by_eventtype
+
+    Parameters
+    ----------
+    data : [set(), {}]
+        Accumulator object to be updated (see collect_job_results acc argument)
+    records : list
+        SPL job result entries (result of job.get_results(...).as_list)
+    """
+
+    for record in records:
+        eventtype = record["eventtype"]
+        punct = record["punct"]
+        if isinstance(eventtype, list):
+            for entry in eventtype:
+                new_val = (entry, punct)
+                if new_val not in data:
+                    data.append(new_val)
+        else:
+            new_val = (eventtype, punct)
+            if new_val not in data:
+                data.append(new_val)
+
+
 def get_punct_by_eventtype(jobs, eventtypes, config):
     """Runs SPL request to collect all unique  eventtype+punct pairs from splunk instance
 
@@ -203,8 +230,7 @@ def get_punct_by_eventtype(jobs, eventtypes, config):
     try:
         job = jobs.create(query, auto_finalize_ec=120, max_time=config.splunk_max_time)
         job.wait(config.splunk_max_time)
-        LOGGER.debug(job.get_results().as_list)
-        result = [(v["eventtype"], v["punct"]) for v in job.get_results().as_list]
+        result = collect_job_results(job, [], collect_punct_and_eventtype)
         LOGGER.info(
             "Time taken to collect eventtype & punct combinations: {} s".format(
                 time.time() - start
@@ -315,7 +341,7 @@ def get_fieldsummary(jobs, punct_by_eventtype, config):
                 query, auto_finalize_ec=120, max_time=config.splunk_max_time
             )
             job.wait(config.splunk_max_time)
-            summary = job.get_results().as_list
+            summary = collect_job_results(job, [], lambda acc, recs: acc.extend(recs))
         except Exception as e:
             LOGGER.error("Errors executing search: {}".format(e))
             LOGGER.debug(traceback.format_exc())
