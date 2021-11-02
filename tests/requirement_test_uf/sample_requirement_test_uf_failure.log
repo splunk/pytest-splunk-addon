@@ -5,7 +5,7 @@
   <version id="13.21" />
     <event code="" name="failed_login1,sshd_authentication1" format="syslog">
         <version id="7.2"/>
-        <transport type="forwarder" host="sample_host" source="sample_source" sourcetype = "aix_secure" />
+        <transport type="forwarder" host="sample_host2" source="sample_source2" sourcetype = "aix_secure" />
         <source>
             <comment>Logs for Failed login attempt.(Live Sample)</comment>
         </source>

@@ -170,8 +170,22 @@ class ReqsTestGenerator(object):
                                 "source": source,
                                 "sourcetype": sourcetype,
                             }
+                        elif transport_type in (
+                            "scripted_input",
+                            "scripted input",
+                            "hec_raw",
+                        ):
+                            host, source, sourcetype = self.extract_params(event_tag)
+                            host, source, sourcetype = self.escape_host_src_srctype(
+                                host, source, sourcetype
+                            )
+                            transport_type_params = {
+                                "host": host,
+                                "source": source,
+                                "sourcetype": sourcetype,
+                            }
                         else:
-                            # todo: non syslog/modinput events are skipped currently until we support it
+                            # todo: non syslog/modinput/non forwarder/scripted_input events are skipped currently until we support it
                             continue
 
                         escaped_event = self.escape_char_event(unescaped_event)

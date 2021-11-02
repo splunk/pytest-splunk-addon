@@ -770,3 +770,12 @@ TA_REQUIREMENTS_UF_PASSED = [
 TA_REQUIREMENTS_UF_FAILED = [
     "*test_splunk_app_requirements_uf.py::Test_App::test_requirement_params* FAILED*",
 ]
+
+TA_REQUIREMENTS_SCRIPTED_PASSED = [
+    "*test_splunk_app_requirements_scripted.py::Test_App::test_events_with_untokenised_values* PASSED*",
+    "*test_splunk_app_requirements_scripted.py::Test_App::test_requirement_params* PASSED*",
+]
+
+TA_REQUIREMENTS_SCRIPTED_FAILED = [
+    "*test_splunk_app_requirements_scripted.py::Test_App::test_requirement_params* FAILED*",
+]
