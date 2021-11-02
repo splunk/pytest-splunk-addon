@@ -1,0 +1,8 @@
+sourcetype,status
+AIX:Update,available
+FreeBSD:Update,available
+HPUX:Update,available
+Linux:Update,available
+OSX:Update,available
+Solaris:Update,available
+Unix:Update,available

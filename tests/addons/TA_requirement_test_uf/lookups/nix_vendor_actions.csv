@@ -1,0 +1,22 @@
+vendor_action,action
+accepted,success
+add,created
+added,created
+create,created
+authenticated,success
+"authentication failed",failure
+"authentication refused",failure
+"authentication tried",failure
+"authorized to",success
+"could not identify password",failure
+delete,deleted
+failed,failure
+"ftp login",success
+"handling telnet call",success
+"invalid user",failure
+"login restricted",failure
+remove,deleted
+"session opened",success
+succeeded,success
+successful,success
+"account added to group",modified

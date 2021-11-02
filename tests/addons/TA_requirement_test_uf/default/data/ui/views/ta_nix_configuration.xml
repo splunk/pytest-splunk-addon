@@ -1,0 +1,96 @@
+<!--
+  SPDX-FileCopyrightText: 2021 Splunk, Inc. <sales@splunk.com>
+  SPDX-License-Identifier: LicenseRef-Splunk-1-2020
+ 
+  -->
+<!--
+  || NOTE: The `isVisible` property is a special Splunk Light only property
+  ||       that prevents this dashboard from appearing on the page:
+  ||       http://localhost:8000/en-US/app/search/dashboards .
+  ||       It has no effect on Splunk Enterprise.
+  -->
+<dashboard script="setup.js" stylesheet="setup.css" isVisible="false" version="1.1">
+    <label>Splunk Add-on for Unix and Linux: Setup</label>
+    <row>
+        <html>
+            <p id="overview">
+                The Splunk Add-on for Unix and Linux provides pre-built data inputs to facilitate
+                Linux and Unix system monitoring using Splunk.  Check out the 
+                <a href="http://apps.splunk.com/app/833/" target="_blank">
+                    Splunk for Unix Technical Add-on
+                </a> page on <a href="http://apps.splunk.com/" target="_blank">Splunkbase</a>
+                for support information, the latest updates, and more.
+            </p>
+            
+            <div id="not-unix-error" class="error-box">
+                This server is not running a known Unix or Linux operating system.
+                Install this add-on on Unix or Linux systems only.
+            </div>
+            
+            <div>
+                <h2>File and Directory Inputs:</h2>
+                <table id="monitor-input-table" class="input-table">
+                    <tr>
+                        <th class="table-header">Name</th>
+                        <th>Enable
+                            <a href="#" class="enable-all-btn">(All)</a>
+                        </th>
+                        <th>Disable
+                            <a href="#" class="disable-all-btn">(All)</a>
+                        </th>
+                    </tr>
+                    <!-- Rows will be inserted here -->
+                </table>
+            </div>
+            
+            <div>
+                <h2>Scripted Metric Inputs:</h2>
+                <table id="scripted-metric-input-table" class="input-table">
+                    <tr>
+                        <th class="table-header">Name</th>
+                        <th>Enable
+                            <a href="#" class="enable-all-btn">(All)</a>
+                        </th>
+                        <th>Disable
+                            <a href="#" class="disable-all-btn">(All)</a>
+                        </th>
+                        <th>Interval (sec)</th>
+                        <th>Index</th>
+                    </tr>
+                    <!-- Rows will be inserted here -->
+                </table>
+                <h2>Scripted Event Inputs:</h2>
+                <table id="scripted-event-input-table" class="input-table">
+                    <tr>
+                        <th class="table-header">Name</th>
+                        <th>Enable
+                            <a href="#" class="enable-all-btn">(All)</a>
+                        </th>
+                        <th>Disable
+                            <a href="#" class="disable-all-btn">(All)</a>
+                        </th>
+                        <th>Interval (sec)</th>
+                    </tr>
+                    <!-- Rows will be inserted here -->
+                </table>
+            </div>
+            
+            <div id="generic-save-error" class="error-box">
+                There was an unexpected problem while saving the inputs.
+                Please reload the page and try again.
+            </div>
+
+            <div id="index-not-selected-error" class="error-box">
+                Field 'Index' is empty or invalid for the metric inputs. Change the index or disable the input. 
+            </div>
+
+            <div id="invalid-interval-error" class="error-box">
+                Field 'Interval' must be a positive integer value.
+            </div>
+            
+            <div id="btn-bar">
+                <input id="save-btn" class="btn btn-primary" type="submit" value="Save" />
+            </div>
+        </html>
+    </row>
+</dashboard>
