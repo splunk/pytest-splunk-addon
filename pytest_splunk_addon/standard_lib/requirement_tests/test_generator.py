@@ -150,30 +150,11 @@ class ReqsTestGenerator(object):
                             "dbx",
                             "windows_input",
                             "hec_event",
-                        ):
-                            host, source, sourcetype = self.extract_params(event_tag)
-                            host, source, sourcetype = self.escape_host_src_srctype(
-                                host, source, sourcetype
-                            )
-                            transport_type_params = {
-                                "host": host,
-                                "source": source,
-                                "sourcetype": sourcetype,
-                            }
-                        elif transport_type.lower() == "forwarder":
-                            host, source, sourcetype = self.extract_params(event_tag)
-                            host, source, sourcetype = self.escape_host_src_srctype(
-                                host, source, sourcetype
-                            )
-                            transport_type_params = {
-                                "host": host,
-                                "source": source,
-                                "sourcetype": sourcetype,
-                            }
-                        elif transport_type in (
                             "scripted_input",
                             "scripted input",
                             "hec_raw",
+                            "file_monitor",
+                            "forwarder",
                         ):
                             host, source, sourcetype = self.extract_params(event_tag)
                             host, source, sourcetype = self.escape_host_src_srctype(
