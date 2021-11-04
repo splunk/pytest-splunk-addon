@@ -18,4 +18,4 @@
 
 __author__ = """Splunk Inc."""
 __email__ = "rfaircloth@splunk.com"
-__version__ = "1.9.6"
+__version__ = "1.10.0"
