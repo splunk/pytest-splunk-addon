@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import json
 import logging
 import pytest
 import re
@@ -50,7 +51,15 @@ class ReqsTestTemplates(object):
         for key, value in keyValueXML.items():
             res = key in keyValueprocessedSPL and value == keyValueprocessedSPL[key]
             if (not res) and (key not in escapedKeyValue):
-                dict_missing_key_value.update({key: value})
+                valueinsplunk = None
+                if key in keyValueSPL.keys():
+                    valueinsplunk = keyValueSPL[key]
+                dict_missing_key_value.update(
+                    {
+                        "Key value in requirement file: " + key: value,
+                        "Key value extracted by Splunk: " + key: valueinsplunk,
+                    }
+                )
                 flag = False
         return flag, dict_missing_key_value
 
@@ -193,11 +202,6 @@ class ReqsTestTemplates(object):
             keyValue_dict_SPL, key_values_xml, exceptions_dict
         )
         self.logger.info(f"Field mapping check: {field_extraction_check}")
-        mismapped_key_value_pair = {}
-        for key, value in missing_key_value.items():
-            if key in keyValue_dict_SPL.keys():
-                valueInSplunk = keyValue_dict_SPL[key]
-                mismapped_key_value_pair.update({key: valueInSplunk})
 
         assert datamodel_check and field_extraction_check, (
             f" Issue with either field extraction or data model.\nsearch={search}\n"
@@ -205,7 +209,6 @@ class ReqsTestTemplates(object):
             f" data model in requirement file  {model_datalist}\n "
             f" data model extracted by TA {list(datamodel_based_on_tag.keys())}\n"
             f" Field_extraction_check: {field_extraction_check} \n"
-            f" Key value not extracted by TA: {missing_key_value} \n"
-            f" Mismatched key value: {mismapped_key_value_pair}\n"
+            f" Field extraction errors: {json.dumps(missing_key_value, indent=4)} \n"
             f" sourcetype of ingested event: {sourcetype} \n"
         )
