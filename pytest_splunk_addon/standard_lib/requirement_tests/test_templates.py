@@ -46,10 +46,10 @@ class ReqsTestTemplates(object):
     # Function to compare the fields extracted from XML and the fields extracted from Splunk search
     def compare(self, keyValueSPL, keyValueXML, escapedKeyValue):
         dict_missing_key_value = {}
-        keyValueprocessedSPL = self.process_str(keyValueSPL)
+        # keyValueprocessedSPL = self.process_str(keyValueSPL)
         flag = True
         for key, value in keyValueXML.items():
-            res = key in keyValueprocessedSPL and value == keyValueprocessedSPL[key]
+            res = key in keyValueSPL and value == keyValueSPL[key]
             if (not res) and (key not in escapedKeyValue):
                 valueinsplunk = None
                 if key in keyValueSPL.keys():
