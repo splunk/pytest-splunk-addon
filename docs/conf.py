@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath("../pytest_splunk_addon"))
 # -- Project information -----------------------------------------------------
 
 project = u"pytest-splunk-addon"
-copyright = u"2020, Splunk, Inc."
+copyright = u"2021, Splunk, Inc."
 author = u"Splunk, Inc."
 
 # The short X.Y version
