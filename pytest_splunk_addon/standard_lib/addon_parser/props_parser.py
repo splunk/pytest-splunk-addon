@@ -39,7 +39,7 @@ class PropsParser(object):
         self.app = app
         self.splunk_app_path = splunk_app_path
         self._props = None
-        self.transforms_parser = TransformsParser(self.splunk_app_path, self.app)
+        self.transforms_parser = TransformsParser(self.splunk_app_path)
 
     @property
     def props(self):
