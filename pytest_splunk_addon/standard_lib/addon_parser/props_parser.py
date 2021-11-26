@@ -180,12 +180,8 @@ class PropsParser(object):
             EXTRACT-one = regex with (?<capturing_group>.*)
 
         Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
-                The configuration setting object of EXTRACT.
-                properties used:
-
-                * name : key in the configuration settings
-                * value : value of the respective name in the configuration
+            name: key in the configuration settings
+            value: value of the respective name in the configuration
 
         Regex:
             Parse the fields from a regex. Examples,
@@ -222,12 +218,8 @@ class PropsParser(object):
             EVAL-action = if(isnull(action), "unknown", action)
 
         Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
-                The configuration setting object of eval
-                properties used:
-
-                * name : key in the configuration settings
-                * value : value of the respective name in the configuration
+            name: key in the configuration settings
+            value: value of the respective name in the configuration
 
         Yields:
             generator of fields
@@ -246,12 +238,8 @@ class PropsParser(object):
             FIELDALIAS-class = source AS dest, sc2 AS dest2
 
         Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
-                The configuration setting object of FIELDALIAS
-                properties used:
-
-                * name : key in the configuration settings
-                * value : value of the respective name in the configuration
+            name: key in the configuration settings
+            value: value of the respective name in the configuration
 
         Regex:
             Description:
@@ -284,13 +272,8 @@ class PropsParser(object):
         transforms.conf and returns the list
 
         Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
-
-                The configuration setting object of REPORT.
-                properties used:
-
-                * name : key in the configuration settings
-                * value : value of the respective name in the configuration
+            name: key in the configuration settings
+            value: value of the respective name in the configuration
 
         Yields:
             generator of (transform_stanza ,fields) parsed from transforms.conf
@@ -309,12 +292,8 @@ class PropsParser(object):
         Extracts the lookup fields
 
         Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
-                The configuration setting object of eval
-                properties used:
-
-                * name : key in the configuration settings
-                * value : value of the respective name in the configuration
+            name: key in the configuration settings
+            value: value of the respective name in the configuration
 
         Returns:
             List of lookup fields
