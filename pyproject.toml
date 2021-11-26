@@ -52,7 +52,6 @@ addonfactory-splunk-conf-parser-lib = "^0.3.3"
 docker = ['lovely-pytest-docker']
 
 [tool.poetry.dev-dependencies]
-poetry-dynamic-versioning = "*"
 lovely-pytest-docker = "*"
 pytest-mock = "^3.5.1"
 pytest-cov = "^3.0.0"
@@ -70,9 +69,6 @@ cim-report = 'pytest_splunk_addon.standard_lib.utilities.junit_parser:main'
 generate-indextime-conf = 'pytest_splunk_addon.standard_lib.utilities.create_new_eventgen:main'
 cim-field-report = 'pytest_splunk_addon.tools.cim_field_report:main'
 
-[tool.poetry-dynamic-versioning]
-enable = true
-
 [build-system]
-requires = ["poetry>=1.0.2", "poetry-dynamic-versioning"]
+requires = ["poetry>=1.0.2"]
 build-backend = "poetry.masonry.api"
