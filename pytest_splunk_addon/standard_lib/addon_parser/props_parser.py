@@ -13,15 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# -*- coding: utf-8 -*-
 """
 Provides props.conf parsing mechanism
 """
+from typing import Dict
+from typing import Generator
+from typing import Optional
 import logging
+import os
 import re
 from itertools import product
-from . import convert_to_fields, Field
-from . import TransformsParser
+
+import addonfactory_splunk_conf_parser_lib as conf_parser
+
+from .fields import convert_to_fields
+from .transforms_parser import TransformsParser
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -32,25 +38,23 @@ class PropsParser(object):
 
     Args:
         splunk_app_path (str): Path of the Splunk app
-        app (splunk_appinspect.App): Object of Splunk app
     """
 
-    def __init__(self, splunk_app_path, app):
-        self.app = app
+    def __init__(self, splunk_app_path: str):
+        self._conf_parser = conf_parser.TABConfigParser()
         self.splunk_app_path = splunk_app_path
         self._props = None
         self.transforms_parser = TransformsParser(self.splunk_app_path)
 
     @property
-    def props(self):
-        try:
-            if not self._props:
-                LOGGER.info("Parsing props.conf")
-                self._props = self.app.props_conf()
+    def props(self) -> Optional[Dict]:
+        if self._props is not None:
             return self._props
-        except OSError:
-            LOGGER.warning("props.conf not found.")
-            return None
+        props_conf_path = os.path.join(self.splunk_app_path, "default", "props.conf")
+        LOGGER.info("Parsing props.conf")
+        self._conf_parser.read(props_conf_path)
+        self._props = self._conf_parser.item_dict()
+        return self._props if self._props else None
 
     def get_props_fields(self):
         """
@@ -59,40 +63,33 @@ class PropsParser(object):
         Yields:
             generator of all the supported fields
         """
-        for stanza_type, stanza_name, stanza in self.get_props_stanzas():
-            for classname in stanza.options:
-                LOGGER.info(
-                    "Parsing parameter=%s of stanza=%s",
-                    classname,
-                    stanza_name,
-                )
-                props_property = stanza.options[classname]
-                if not re.match("REPORT", classname, re.IGNORECASE):
-                    LOGGER.info("Trying to parse classname=%s", classname)
-                    parsing_method = self.get_props_method(classname)
+        for stanza_type, stanza_name, stanza_values in self._get_props_stanzas():
+            for key, value in stanza_values.items():
+                LOGGER.info(f"Parsing parameter={key} of stanza={stanza_name}")
+                if not re.match("REPORT", key, re.IGNORECASE):
+                    LOGGER.info(f"Trying to parse classname={key}")
+                    parsing_method = self._get_props_method(key)
                     if parsing_method:
-                        field_list = list(parsing_method(props_property))
+                        field_list = list(parsing_method(key, value))
                         if field_list:
                             yield {
                                 "stanza": stanza_name,
                                 "stanza_type": stanza_type,
-                                "classname": classname,
+                                "classname": key,
                                 "fields": field_list,
                             }
                 else:
-                    for transform_stanza, fields in self.get_report_fields(
-                        props_property
-                    ):
+                    for transform_stanza, fields in self._get_report_fields(key, value):
                         field_list = list(fields)
                         if field_list:
                             yield {
                                 "stanza": stanza_name,
                                 "stanza_type": stanza_type,
-                                "classname": f"{classname}::{transform_stanza}",
+                                "classname": f"{key}::{transform_stanza}",
                                 "fields": field_list,
                             }
 
-    def get_props_method(self, class_name):
+    def _get_props_method(self, class_name: str):
         """
         Get the parsing method depending on classname
 
@@ -103,19 +100,19 @@ class PropsParser(object):
             instance method to parse the property
         """
         method_mapping = {
-            "EXTRACT": self.get_extract_fields,
-            "EVAL": self.get_eval_fields,
-            "FIELDALIAS": self.get_fieldalias_fields,
-            "LOOKUP": self.get_lookup_fields,
+            "EXTRACT": self._get_extract_fields,
+            "EVAL": self._get_eval_fields,
+            "FIELDALIAS": self._get_fieldalias_fields,
+            "LOOKUP": self._get_lookup_fields,
         }
         for each_type in method_mapping:
             if re.match(each_type, class_name, re.IGNORECASE):
-                LOGGER.info("Matched method of type=%s", each_type)
+                LOGGER.info(f"Matched method of type={each_type}")
                 return method_mapping[each_type]
         else:
-            LOGGER.warning("No parser available for %s. Skipping...", class_name)
+            LOGGER.warning(f"No parser available for {class_name}. Skipping...")
 
-    def get_props_stanzas(self):
+    def _get_props_stanzas(self) -> Optional[Generator]:
         """
         Parse the props.conf of the App & yield stanzas.
         For source with | (OR), it will return all combinations
@@ -125,21 +122,20 @@ class PropsParser(object):
         """
         if not self.props:
             return
-        for stanza_name in self.props.sects:
-            stanza = self.props.sects[stanza_name]
-            if stanza.name.startswith("host::"):
+        for stanza_name, stanza_values in self.props.items():
+            if stanza_name.startswith("host::"):
                 LOGGER.warning("Host stanza is not supported. Skipping..")
                 continue
-            if stanza.name.startswith("source::"):
-                LOGGER.info("Parsing Source based stanza: %s", stanza.name)
+            if stanza_name.startswith("source::"):
+                LOGGER.info(f"Parsing Source based stanza: {stanza_name}")
                 for each_source in self.get_list_of_sources(stanza_name):
-                    yield "source", each_source, stanza
+                    yield "source", each_source, stanza_values
             else:
-                LOGGER.info("Parsing Sourcetype based stanza: %s", stanza.name)
-                yield "sourcetype", stanza.name, stanza
+                LOGGER.info(f"Parsing Sourcetype based stanza: {stanza_name}")
+                yield "sourcetype", stanza_name, stanza_values
 
     @staticmethod
-    def get_list_of_sources(source):
+    def get_list_of_sources(source: str) -> Generator:
         """
         For source with | (OR), it will return all combinations.
         Uses itertools.product to list the combinations
@@ -174,32 +170,8 @@ class PropsParser(object):
             yield template.format(*each_permutation)
         LOGGER.debug("Found %d combinations", count)
 
-    def get_sourcetype_assignments(self, props_property):
-        """
-        Get the sourcetype assigned for the source
-
-        Example::
-
-            [source::/splunk/var/log/splunkd.log]
-            sourcetype = splunkd
-
-        Args:
-            props_property (splunk_appinspect.configuration_file.ConfigurationSetting):
-                The configuration setting object of REPORT.
-                properties used:
-
-                * name : key in the configuration settings
-                * value : value of the respective name in the configuration
-
-        Yields:
-            the sourcetype field with possible value
-        """
-        yield Field(
-            {"name": props_property.name, "expected_values": [props_property.value]}
-        )
-
     @convert_to_fields
-    def get_extract_fields(self, props_property):
+    def _get_extract_fields(self, name: str, value: str):
         """
         Returns the fields parsed from EXTRACT
 
@@ -227,23 +199,21 @@ class PropsParser(object):
         """
         regex = r"\(\?P?(?:[<'])([^\>'\s]+)[\>']"
         fields_group = []
-        for field in re.findall(regex, props_property.value):
+        for field in re.findall(regex, value):
             if not field.startswith(("_KEY_", "_VAL_")):
                 fields_group.append(field)
                 yield field
 
         # If SOURCE_KEY is used in EXTRACT, generate the test for the same.
         regex_for_source_key = r"(?:(?i)in\s+(\w+))\s*$"
-        extract_source_key = re.search(
-            regex_for_source_key, props_property.value, re.MULTILINE
-        )
+        extract_source_key = re.search(regex_for_source_key, value, re.MULTILINE)
         if extract_source_key:
-            LOGGER.info("Found a source key in %s", props_property.name)
+            LOGGER.info(f"Found a source key in {name}")
             yield extract_source_key.group(1)
             fields_group.insert(0, extract_source_key.group(1))
 
     @convert_to_fields
-    def get_eval_fields(self, props_property):
+    def _get_eval_fields(self, name, value):
         """
         Return the fields parsed from EVAL
 
@@ -263,11 +233,11 @@ class PropsParser(object):
             generator of fields
         """
         regex = r"EVAL-(?P<FIELD>.*)"
-        if not props_property.value == "null()":
-            yield from re.findall(regex, props_property.name, re.IGNORECASE)
+        if not value == "null()":
+            yield from re.findall(regex, name, re.IGNORECASE)
 
     @convert_to_fields
-    def get_fieldalias_fields(self, props_property):
+    def _get_fieldalias_fields(self, name: str, value: str):
         """
         Return the fields parsed from FIELDALIAS
 
@@ -303,11 +273,10 @@ class PropsParser(object):
             r"\s+(?i)(?:as(?:new)?)\s+"
             r"(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+)"
         )
-        fields_tuples = re.findall(regex, props_property.value, re.IGNORECASE)
-        # Convert list of tuples into list
+        fields_tuples = re.findall(regex, value, re.IGNORECASE)
         return list(set([item for t in fields_tuples for item in t]))
 
-    def get_report_fields(self, props_property):
+    def _get_report_fields(self, name: str, value: str):
         """
         Returns the fields parsed from REPORT
 
@@ -327,9 +296,7 @@ class PropsParser(object):
             generator of (transform_stanza ,fields) parsed from transforms.conf
         """
 
-        transforms_itr = (
-            each_stanza.strip() for each_stanza in props_property.value.split(",")
-        )
+        transforms_itr = (each_stanza.strip() for each_stanza in value.split(","))
         for transforms_section in transforms_itr:
             yield (
                 transforms_section,
@@ -337,7 +304,7 @@ class PropsParser(object):
             )
 
     @convert_to_fields
-    def get_lookup_fields(self, props_property):
+    def _get_lookup_fields(self, name: str, value: str):
         """
         Extracts the lookup fields
 
@@ -352,7 +319,7 @@ class PropsParser(object):
         Returns:
             List of lookup fields
         """
-        parsed_fields = self.parse_lookup_str(props_property.value)
+        parsed_fields = self._parse_lookup(value)
         lookup_field_list = (
             parsed_fields["input_fields"] + parsed_fields["output_fields"]
         )
@@ -361,7 +328,7 @@ class PropsParser(object):
         if not parsed_fields["output_fields"]:
             LOGGER.info(
                 "OUTPUT fields not found classname=%s. Parsing the lookup csv file",
-                props_property.name,
+                name,
             )
             lookup_field_list += list(
                 self.transforms_parser.get_lookup_csv_fields(
@@ -370,7 +337,7 @@ class PropsParser(object):
             )
         return list(set(lookup_field_list))
 
-    def parse_lookup_str(self, lookup_str):
+    def _parse_lookup(self, lookup: str):
         """
         Get list of lookup fields by parsing the lookup string.
         If a field is aliased to another field, take the aliased field into consideration
@@ -395,8 +362,8 @@ class PropsParser(object):
         """
 
         input_output_field_list = []
-        lookup_stanza = lookup_str.split(" ")[0]
-        lookup_str = " ".join(lookup_str.split(" ")[1:])
+        lookup_stanza = lookup.split(" ")[0]
+        lookup_str = " ".join(lookup.split(" ")[1:])
 
         # 0: Take the left side of the OUTPUT as input fields
         # -1: Take the right side of the OUTPUT as output fields

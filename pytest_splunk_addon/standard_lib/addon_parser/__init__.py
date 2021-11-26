@@ -67,7 +67,7 @@ class AddonParser(object):
     @property
     def props_parser(self):
         if not self._props_parser:
-            self._props_parser = PropsParser(self.splunk_app_path, self.app)
+            self._props_parser = PropsParser(self.splunk_app_path)
         return self._props_parser
 
     @property
