@@ -85,7 +85,7 @@ class AddonParser(object):
     @property
     def savedsearch_parser(self):
         if not self._savedsearch_parser:
-            self._savedsearch_parser = SavedSearchParser(self.splunk_app_path, self.app)
+            self._savedsearch_parser = SavedSearchParser(self.splunk_app_path)
         return self._savedsearch_parser
 
     def get_props_fields(self):
