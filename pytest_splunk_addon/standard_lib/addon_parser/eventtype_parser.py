@@ -13,11 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# -*- coding: utf-8 -*-
 """
 Provides eventtypes.conf parsing mechanism
 """
+from typing import Dict
+from typing import Generator
+from typing import Optional
 import logging
+import os
+
+import addonfactory_splunk_conf_parser_lib as conf_parser
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -28,26 +33,24 @@ class EventTypeParser(object):
 
     Args:
         splunk_app_path (str): Path of the Splunk app
-        app (splunk_appinspect.App): Object of Splunk app
     """
 
-    def __init__(self, splunk_app_path, app):
-        self.app = app
+    def __init__(self, splunk_app_path: str):
+        self._conf_parser = conf_parser.TABConfigParser()
         self.splunk_app_path = splunk_app_path
         self._eventtypes = None
 
     @property
-    def eventtypes(self):
-        try:
-            if not self._eventtypes:
-                LOGGER.info("Parsing eventtypes.conf")
-                self._eventtypes = self.app.eventtypes_conf()
-            return self._eventtypes
-        except OSError:
-            LOGGER.warning("eventtypes.conf not found.")
-            return None
+    def eventtypes(self) -> Optional[Dict]:
+        eventtypes_conf_path = os.path.join(
+            self.splunk_app_path, "default", "eventtypes.conf"
+        )
+        LOGGER.info("Parsing eventtypes.conf")
+        self._conf_parser.read(eventtypes_conf_path)
+        result = self._conf_parser.item_dict()
+        return result if result else None
 
-    def get_eventtypes(self):
+    def get_eventtypes(self) -> Optional[Generator]:
         """
         Parse the App configuration files & yield eventtypes
 
@@ -56,6 +59,6 @@ class EventTypeParser(object):
         """
         if not self.eventtypes:
             return None
-        for eventtype_section in self.eventtypes.sects:
-            LOGGER.info("Parsing eventtype stanza=%s", eventtype_section)
-            yield {"stanza": eventtype_section}
+        for stanza_key in self.eventtypes.keys():
+            LOGGER.info("Parsing eventtype stanza=%s", stanza_key)
+            yield {"stanza": stanza_key}

@@ -79,7 +79,7 @@ class AddonParser(object):
     @property
     def eventtype_parser(self):
         if not self._eventtype_parser:
-            self._eventtype_parser = EventTypeParser(self.splunk_app_path, self.app)
+            self._eventtype_parser = EventTypeParser(self.splunk_app_path)
         return self._eventtype_parser
 
     @property
