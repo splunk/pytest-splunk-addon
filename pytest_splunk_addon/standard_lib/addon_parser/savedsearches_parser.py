@@ -42,13 +42,15 @@ class SavedSearchParser(object):
 
     @property
     def savedsearches(self) -> Optional[Dict]:
+        if self._savedsearches is not None:
+            return self._savedsearches
         savedsearches_conf_path = os.path.join(
             self.splunk_app_path, "default", "savedsearches.conf"
         )
         LOGGER.info("Parsing savedsearches.conf")
         self._conf_parser.read(savedsearches_conf_path)
-        result = self._conf_parser.item_dict()
-        return result if result else None
+        self._savedsearches = self._conf_parser.item_dict()
+        return self._savedsearches if self._savedsearches else None
 
     def get_savedsearches(self) -> Optional[Generator]:
         """

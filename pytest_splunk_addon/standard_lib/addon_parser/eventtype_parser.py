@@ -42,13 +42,15 @@ class EventTypeParser(object):
 
     @property
     def eventtypes(self) -> Optional[Dict]:
+        if self._eventtypes is not None:
+            return self._eventtypes
         eventtypes_conf_path = os.path.join(
             self.splunk_app_path, "default", "eventtypes.conf"
         )
         LOGGER.info("Parsing eventtypes.conf")
         self._conf_parser.read(eventtypes_conf_path)
-        result = self._conf_parser.item_dict()
-        return result if result else None
+        self._eventtypes = self._conf_parser.item_dict()
+        return self._eventtypes if self._eventtypes else None
 
     def get_eventtypes(self) -> Optional[Generator]:
         """
