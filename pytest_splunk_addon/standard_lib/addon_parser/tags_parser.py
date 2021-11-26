@@ -13,42 +13,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# -*- coding: utf-8 -*-
 """
 Provides tags.conf parsing mechanism
 """
+import os
+from typing import Optional, Dict, Generator
 from urllib.parse import unquote
 import logging
+
+import addonfactory_splunk_conf_parser_lib as conf_parser
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class TagsParser(object):
+class TagsParser:
     """
     Parses tags.conf and extracts tags
 
     Args:
         splunk_app_path (str): Path of the Splunk app
-        app (splunk_appinspect.App): Object of Splunk app
     """
 
-    def __init__(self, splunk_app_path, app):
-        self.app = app
+    def __init__(self, splunk_app_path: str):
+        self._conf_parser = conf_parser.TABConfigParser()
         self.splunk_app_path = splunk_app_path
         self._tags = None
 
     @property
-    def tags(self):
-        try:
-            if not self._tags:
-                LOGGER.info("Parsing tags.conf")
-                self._tags = self.app.get_config("tags.conf")
+    def tags(self) -> Optional[Dict]:
+        if self._tags is not None:
             return self._tags
-        except OSError:
-            LOGGER.warning("tags.conf not found.")
-            return None
+        LOGGER.info("Parsing tags.conf")
+        tags_conf_path = os.path.join(self.splunk_app_path, "default", "tags.conf")
+        self._conf_parser.read(tags_conf_path)
+        self._tags = self._conf_parser.item_dict()
+        return self._tags if self._tags else None
 
-    def get_tags(self):
+    def get_tags(self) -> Optional[Generator]:
         """
         Parse the tags.conf of the App & yield stanzas
 
@@ -57,27 +58,16 @@ class TagsParser(object):
         """
         if not self.tags:
             return
-        for stanza in self.tags.sects:
-            LOGGER.info(f"Parsing tags of stanza={stanza}")
-            tag_sections = self.tags.sects[stanza]
-            stanza = stanza.replace("=", '="') + '"'
-            stanza = unquote(stanza)
-            LOGGER.debug(f"Parsed tags-stanza={stanza}")
-            for key in tag_sections.options:
-                tags_property = tag_sections.options[key]
-                LOGGER.info(
-                    "Parsing tag=%s enabled=%s of stanza=%s ",
-                    tags_property.name,
-                    tags_property.value,
-                    stanza,
-                )
+        for stanza_key, stanza_values in self.tags.items():
+            LOGGER.info(f"Parsing tags of stanza={stanza_key}")
+            stanza_key = stanza_key.replace("=", '="') + '"'
+            stanza_key = unquote(stanza_key)
+            LOGGER.debug(f"Parsed tags-stanza={stanza_key}")
+            for key, value in stanza_values.items():
+                LOGGER.info(f"Parsing tag={key} enabled={value} of stanza={stanza_key}")
                 tag_container = {
-                    "stanza": stanza,
-                    "tag": tags_property.name,
-                    # "enabled": True or False
+                    "stanza": stanza_key,
+                    "tag": key,
+                    "enabled": True if value == "enabled" else False,
                 }
-                if tags_property.value == "enabled":
-                    tag_container["enabled"] = True
-                else:
-                    tag_container["enabled"] = False
                 yield tag_container

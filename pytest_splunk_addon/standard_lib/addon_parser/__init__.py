@@ -73,7 +73,7 @@ class AddonParser(object):
     @property
     def tags_parser(self):
         if not self._tags_parser:
-            self._tags_parser = TagsParser(self.splunk_app_path, self.app)
+            self._tags_parser = TagsParser(self.splunk_app_path)
         return self._tags_parser
 
     @property
