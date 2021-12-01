@@ -13,6 +13,8 @@ dispatch.earliest_time = -4d
 [empty_search_latest_time]
 search = 
 dispatch.latest_time = -1s
+
+[empty_search]
 """
 
 
@@ -35,6 +37,12 @@ def test_get_savedsearches():
             "search": 'index = "main"',
             "dispatch.earliest_time": "0",
             "dispatch.latest_time": "-1s",
+        },
+        {
+            "stanza": "empty_search",
+            "search": 'index = "main"',
+            "dispatch.earliest_time": "0",
+            "dispatch.latest_time": "now",
         },
     ]
     savedsearches_parser = SavedSearchParser("unused_path")
