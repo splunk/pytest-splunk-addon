@@ -352,7 +352,7 @@ format_nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-
 
 [[package]]
 name = "junitparser"
-version = "1.6.3"
+version = "2.2.0"
 description = "Manipulates JUnit/xUnit Result XML files"
 category = "main"
 optional = false
@@ -970,7 +970,7 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "5d9d03edc7c8a5f734162a686bf8d33503b93ea3dcf80b251d6f1aa6bc18d326"
+content-hash = "93bf594770e14f981d40e85498231445c41d58f19d702f05480844e063feea76"
 
 [metadata.files]
 addonfactory-splunk-conf-parser-lib = [
@@ -1151,8 +1151,8 @@ jsonschema = [
     {file = "jsonschema-4.2.1.tar.gz", hash = "sha256:390713469ae64b8a58698bb3cbc3859abe6925b565a973f87323ef21b09a27a8"},
 ]
 junitparser = [
-    {file = "junitparser-1.6.3-py2.py3-none-any.whl", hash = "sha256:56d6dceda8eaac8b13dbad5150e94011ffffd0fb62032bd734757ccb5e956c3f"},
-    {file = "junitparser-1.6.3.tar.gz", hash = "sha256:0ba24b5897a34e9182e043e92ecc30dbe6dbbf537ce1dfdc50eb78f0ee6173d8"},
+    {file = "junitparser-2.2.0-py2.py3-none-any.whl", hash = "sha256:81479565605cc5605710bf9a990bc134b0ede43de3bc4cbd5acba97b5318c507"},
+    {file = "junitparser-2.2.0.tar.gz", hash = "sha256:58e5b50f4018e20d6cb307c971ad4a8bf81f683d41ec701687d81a6f66c1fc9b"},
 ]
 langdetect = [
     {file = "langdetect-1.0.9-py2-none-any.whl", hash = "sha256:7cbc0746252f19e76f77c0b1690aadf01963be835ef0cd4b56dddf2a8f1dfc2a"},
