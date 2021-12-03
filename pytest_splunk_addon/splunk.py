@@ -543,7 +543,7 @@ def uf_external(request):
 
 @pytest.fixture(scope="session")
 def splunk_docker(
-    request, docker_services, docker_compose_files, tmp_path_factory, worker_id
+    request
 ):
     """
     Splunk docker depends on lovely-pytest-docker to create the docker instance
@@ -555,12 +555,12 @@ def splunk_docker(
         dict: Details of the splunk instance including host, port, username & password.
     """
     LOGGER.info("Starting docker_service=splunk")
-    if worker_id:
-        # get the temp directory shared by all workers
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "pytest_docker"
-        with FileLock(str(fn) + ".lock"):
-            docker_services.start("splunk")
+    # if worker_id:
+    #     # get the temp directory shared by all workers
+    #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
+    #     fn = root_tmp_dir / "pytest_docker"
+    #     with FileLock(str(fn) + ".lock"):
+    #         docker_services.start("splunk")
 
     splunk_info = {
         "host": "spl-service.splunk-deployment.svc.cluster.local",
