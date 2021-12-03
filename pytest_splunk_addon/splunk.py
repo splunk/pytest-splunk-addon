@@ -502,28 +502,34 @@ def uf(request):
 
 
 @pytest.fixture(scope="session")
-def uf_docker(docker_services, tmp_path_factory, worker_id, request):
+def uf_docker(request):
     """
     Provides IP of the uf server and management port based on pytest-args(splunk_type)
     """
     LOGGER.info("Starting docker_service=uf")
-    os.environ["CURRENT_DIR"] = os.getcwd()
-    if worker_id:
-        # get the temp directory shared by all workers
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "pytest_docker"
-        with FileLock(str(fn) + ".lock"):
-            docker_services.start("uf")
+    # os.environ["CURRENT_DIR"] = os.getcwd()
+    # if worker_id:
+    #     # get the temp directory shared by all workers
+    #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
+    #     fn = root_tmp_dir / "pytest_docker"
+    #     with FileLock(str(fn) + ".lock"):
+    #         docker_services.start("uf")
+    # uf_info = {
+    #     "uf_host": docker_services.docker_ip,
+    #     "uf_port": docker_services.port_for("uf", 8089),
+    #     "uf_username": request.config.getoption("splunk_uf_user"),
+    #     "uf_password": request.config.getoption("splunk_uf_password"),
+    # }
+    # for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
+    #     if is_responsive_uf(uf_info):
+    #         break
+    #     sleep(1)
     uf_info = {
-        "uf_host": docker_services.docker_ip,
-        "uf_port": docker_services.port_for("uf", 8089),
+        "uf_host": request.config.getoption("splunk_uf_host"),
+        "uf_port": request.config.getoption("splunk_uf_port"),
         "uf_username": request.config.getoption("splunk_uf_user"),
         "uf_password": request.config.getoption("splunk_uf_password"),
     }
-    for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
-        if is_responsive_uf(uf_info):
-            break
-        sleep(1)
     return uf_info
 
 
@@ -637,22 +643,22 @@ def splunk_external(request):
 
 
 @pytest.fixture(scope="session")
-def sc4s_docker(docker_services, tmp_path_factory, worker_id):
+def sc4s_docker():
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
     """
-    if worker_id:
-        # get the temp directory shared by all workers
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "pytest_docker"
-        with FileLock(str(fn) + ".lock"):
-            docker_services.start("sc4s")
+    # if worker_id:
+    #     # get the temp directory shared by all workers
+    #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
+    #     fn = root_tmp_dir / "pytest_docker"
+    #     with FileLock(str(fn) + ".lock"):
+    #         docker_services.start("sc4s")
 
-    ports = {514: docker_services.port_for("sc4s", 514)}
+    ports = {514: 514}
     for x in range(5000, 5007):
-        ports.update({x: docker_services.port_for("sc4s", x)})
+        ports.update({x: x})
 
-    return docker_services.docker_ip, ports
+    return "sc4s-service.splunk-deployment.svc.cluster.local", ports
 
 
 @pytest.fixture(scope="session")
