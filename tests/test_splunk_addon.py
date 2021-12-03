@@ -133,7 +133,9 @@ def test_splunk_connection_docker(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "--splunk-web-scheme=https",
+        "-vv",
+        "-s"
     )
 
     # fnmatch_lines does an assertion internally
@@ -169,7 +171,9 @@ def test_splunk_app_fiction(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "--splunk-web-scheme=https",
+        "-vv",
+        "-s",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
         "--search-retry=4",
@@ -214,7 +218,9 @@ def test_splunk_app_broken(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "--splunk-web-scheme=https",
+        "-vv",
+        "-s",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
         "--search-retry=4",
@@ -266,8 +272,10 @@ def test_splunk_app_cim_fiction(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
+        "--splunk-web-scheme=https",
         "--splunk-dm-path=tests/data_models",
-        "-v",
+        "-vv",
+        "-s",
         "-m splunk_searchtime_cim",
         "--search-interval=4",
         "--search-retry=4",
@@ -312,8 +320,10 @@ def test_splunk_app_cim_broken(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
+        "--splunk-web-scheme=https",
         "--splunk-dm-path=tests/data_models",
-        "-v",
+        "-vv",
+        "-s",
         "-m splunk_searchtime_cim",
         "--search-interval=4",
         "--search-retry=4",
@@ -364,7 +374,9 @@ def test_splunk_fiction_indextime(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "--splunk-web-scheme=https",
+        "-vv",
+        "-s",
         "--search-interval=0",
         "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime/default",
@@ -418,7 +430,9 @@ def test_splunk_fiction_indextime_broken(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "--splunk-web-scheme=https",
+        "-vv",
+        "-s",
         "--search-interval=0",
         "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime_broken/default",
@@ -467,7 +481,9 @@ def test_splunk_setup_fixture(testdir):
 
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "--splunk-web-scheme=https",
+        "-vv",
+        "-s",
         "-k saved_search_lookup",
         "--search-interval=4",
         "--search-retry=4",
@@ -539,7 +555,9 @@ def test_splunk_app_requirements(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "--splunk-web-scheme=https",
+        "-vv",
+        "-s",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
         "--search-retry=4",
@@ -584,7 +602,9 @@ def test_splunk_app_requirements_modinput(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "--splunk-web-scheme=https",
+        "-vv",
+        "-s",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
         "--search-retry=4",
@@ -630,7 +650,9 @@ def test_splunk_app_requirements_uf(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "--splunk-web-scheme=https",
+        "-vv",
+        "-s",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
         "--search-retry=4",
@@ -673,7 +695,9 @@ def test_splunk_app_requirements_scripted(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "--splunk-web-scheme=https",
+        "-vv",
+        "-s",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
         "--search-retry=4",

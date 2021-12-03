@@ -563,11 +563,11 @@ def splunk_docker(
             docker_services.start("splunk")
 
     splunk_info = {
-        "host": docker_services.docker_ip,
-        "port": docker_services.port_for("splunk", 8089),
-        "port_hec": docker_services.port_for("splunk", 8088),
-        "port_s2s": docker_services.port_for("splunk", 9997),
-        "port_web": docker_services.port_for("splunk", 8000),
+        "host": "spl-service.splunk-deployment.svc.cluster.local",
+        "port": "8089",
+        "port_hec": "8088",
+        "port_s2s": "9997",
+        "port_web": "8000",
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
     }
@@ -576,18 +576,18 @@ def splunk_docker(
 
     LOGGER.info(
         "Docker container splunk info. host=%s, port=%s, port_web=%s port_hec=%s port_s2s=%s",
-        docker_services.docker_ip,
-        docker_services.port_for("splunk", 8089),
-        docker_services.port_for("splunk", 8088),
-        docker_services.port_for("splunk", 8000),
-        docker_services.port_for("splunk", 9997),
+        splunk_info.get("host"),
+        splunk_info.get("port"),
+        splunk_info.get("port_hec"),
+        splunk_info.get("port_web"),
+        splunk_info.get("port_s2s"),
     )
 
-    docker_services.wait_until_responsive(
-        timeout=180.0,
-        pause=0.5,
-        check=lambda: is_responsive_splunk(splunk_info),
-    )
+    # docker_services.wait_until_responsive(
+    #     timeout=180.0,
+    #     pause=0.5,
+    #     check=lambda: is_responsive_splunk(splunk_info),
+    # )
 
     return splunk_info
 
