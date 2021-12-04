@@ -67,7 +67,6 @@ jobs:
         id: semgrep
         uses: returntocorp/semgrep-action@v1
         with:
-          publishDeployment: ${{ secrets.SEMGREP_DEPLOYMENT_ID }}
           publishToken: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
   
   snyk:
