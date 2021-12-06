@@ -1,0 +1,29 @@
+##
+## SPDX-FileCopyrightText: 2021 Splunk, Inc. <sales@splunk.com>
+## SPDX-License-Identifier: LicenseRef-Splunk-1-2020
+##
+##
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: spl
+  name: spl-service
+  namespace: splunk-deployment
+spec:
+  # type: NodePort
+  ports:
+    - name: "8000"
+      port: 8000
+      targetPort: 8000
+    - name: "8088"
+      port: 8088
+      targetPort: 8088
+    - name: http-web # reason for naming this port https://github.com/istio/istio/issues/19966
+      port: 8089
+      targetPort: 8089
+    - name: "9997"
+      port: 9997
+      targetPort: 9997
+  selector:
+    app: spl

@@ -684,7 +684,8 @@ def sc4s_docker():
     #     fn = root_tmp_dir / "pytest_docker"
     #     with FileLock(str(fn) + ".lock"):
     #         docker_services.start("sc4s")
-
+    config.load_kube_config(context="minikube")
+    
     with open(path.join(path.dirname(__file__), "k8s_manifests/sc4s_deployment.yaml")) as f:
         dep = yaml.safe_load(f)
         k8s_apps_v1 = client.AppsV1Api()
