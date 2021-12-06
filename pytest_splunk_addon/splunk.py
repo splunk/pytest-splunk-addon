@@ -35,6 +35,7 @@ from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
 import configparser
 from filelock import FileLock
+import yaml
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
@@ -549,7 +550,7 @@ def uf_external(request):
 
 @pytest.fixture(scope="session")
 def splunk_docker(
-    request
+    request, kube
 ):
     """
     Splunk docker depends on lovely-pytest-docker to create the docker instance
@@ -561,6 +562,57 @@ def splunk_docker(
         dict: Details of the splunk instance including host, port, username & password.
     """
     LOGGER.info("Starting docker_service=splunk")
+    addon_package = os.getenv("SPLUNK_APP_PACKAGE")
+    deployment_file = "k8s_manifests/deployment.yaml"
+    splunk_deployment_file = "k8s_manifests/deployment_out.yaml"
+
+    stream = open(deployment_file, 'r')
+    data = yaml.load(stream)
+    data['spec']['template']['spec']['initContainers'][0]['env'][0]['value'] = addon_package
+    with open(splunk_deployment_file, 'w') as yaml_file:
+        yaml_file.write( yaml.dump(data, default_flow_style=False))
+    
+    deployment_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "deployment_out.yaml")
+   
+    # Load and create a deployment
+    deployment = kube.load_deployment(deployment_manifest,set_namespace=False)
+    print(deployment)
+    deployment.create()
+
+    # Wait until the deployment is in the ready state and then
+    # refresh its underlying object data 
+    deployment.wait_until_ready(fail_on_api_error=True)
+
+    service_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "service.yaml")
+    svc = kube.load_service(service_manifest,set_namespace=False)
+    svc.create()
+
+    svc.wait_until_ready(fail_on_api_error=True)
+
+    test_deployment_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "test_runner_deployment.yaml")
+
+    test_deployment = kube.load_deployment(test_deployment_manifest,set_namespace=False)
+    test_deployment.create()
+
+    # Wait until the deployment is in the ready state and then
+    # refresh its underlying object data 
+    test_deployment.wait_until_ready(fail_on_api_error=True)
+
+    sc4s_deployment_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "sc4s_deployment.yaml")
+
+    sc4s_deployment = kube.load_deployment(sc4s_deployment_manifest,set_namespace=False)
+    sc4s_deployment.create()
+
+    # Wait until the deployment is in the ready state and then
+    # refresh its underlying object data 
+    sc4s_deployment.wait_until_ready(fail_on_api_error=True)
+
+
+    sc4s_service_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "sc4s_service.yaml")
+    sc4s_svc = kube.load_service(sc4s_service_manifest,set_namespace=False)
+    sc4s_svc.create()
+
+    sc4s_svc.wait_until_ready(fail_on_api_error=True)
     # if worker_id:
     #     # get the temp directory shared by all workers
     #     root_tmp_dir = tmp_path_factory.getbasetemp().parent

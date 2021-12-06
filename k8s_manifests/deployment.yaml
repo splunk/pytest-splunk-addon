@@ -1,0 +1,98 @@
+##
+## SPDX-FileCopyrightText: 2021 Splunk, Inc. <sales@splunk.com>
+## SPDX-License-Identifier: LicenseRef-Splunk-1-2020
+##
+##
+## Deployment File which creates Splunk Container
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: spl
+  name: spl
+  namespace: splunk-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spl
+  template:
+    metadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+      labels:
+        app: spl
+    spec:
+      volumes:
+      - name: "add-on"
+        emptyDir: {}
+      initContainers:
+      - name: addon-download
+        image: ubuntu:latest
+        env:
+          - name: ADDON_NAME
+            value: ''
+        volumeMounts:
+          - mountPath: /addon
+            name: "add-on"
+        command: [ "/bin/sh" ]
+        args: 
+          - "-c"
+          - |
+            echo $(ADDON_NAME);
+            apt-get -y update ;
+            apt-get install -y git ;
+            mkdir -p ~/.ssh && ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts ;
+            git clone https://github.com/splunk/pytest-splunk-addon.git -b test/poc-k8s-migration pytest-splunk-addon ;
+            cp -r pytest-splunk-addon/tests/$(ADDON_NAME) addon/ ;
+      - name: create-sc4s-indexes
+        image: ubuntu:latest
+        volumeMounts:
+          - mountPath: /addon
+            name: "add-on"
+        command: [ "/bin/sh" ]
+        args: 
+          - "-c"
+          - |
+            apt-get -y update ;
+            apt-get install -y git ;
+            mkdir -p ~/.ssh && ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts ;
+            git clone https://github.com/splunk/addonfactory-splunk_env_indexer.git indexes
+            cp -r indexes addon/
+      containers:
+      - name: spl
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - cat /opt/container_artifact/ansible.log | grep "PLAY RECAP"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        env:
+          - name: SPLUNK_HEC_TOKEN
+            value: 9b741d03-43e9-4164-908b-e09102327d22
+          - name: SPLUNK_PASSWORD
+            value: Chang3d!
+          - name: SPLUNK_START_ARGS
+            value: --accept-license
+          - name: SPLUNKD_SSL_ENABLE
+            value: "True"
+          - name: SPLUNK_HTTP_ENABLESSL
+            value: "True"
+        volumeMounts:
+          - mountPath: /opt/splunk/etc/apps/
+            name: "add-on"
+        image: splunk/splunk:8.0.0
+        ports:
+          - containerPort: 8000
+          - containerPort: 8088
+          - containerPort: 8089
+          - containerPort: 9997
+        resources:
+          limits:
+            cpu: "1"
+            memory: "4Gi"
+          requests:
+            cpu: "0.75"
+            memory: "4Gi"
