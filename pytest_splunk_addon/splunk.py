@@ -552,9 +552,7 @@ def uf_external(request):
 
 
 @pytest.fixture(scope="session")
-def splunk_docker(
-    request, kube
-):
+def splunk_docker(request):
     """
     Splunk docker depends on lovely-pytest-docker to create the docker instance
     of Splunk this may be changed in the future.
@@ -673,7 +671,7 @@ def splunk_external(request):
 
 
 @pytest.fixture(scope="session")
-def sc4s_docker(kube):
+def sc4s_docker():
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
     """
