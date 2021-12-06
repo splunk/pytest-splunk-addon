@@ -564,13 +564,13 @@ def splunk_docker(request):
     """
     LOGGER.info("Starting docker_service=splunk")
     addon_package = os.getenv("SPLUNK_APP_PACKAGE")
-    deployment_file = "k8s_manifests/deployment.yaml"
-    splunk_deployment_file = "k8s_manifests/deployment_out.yaml"
+    # deployment_file = "k8s_manifests/deployment.yaml"
+    # splunk_deployment_file = "k8s_manifests/deployment_out.yaml"
 
-    stream = open(deployment_file, 'r')
+    stream = open("k8s_manifests/deployment.yaml", 'r')
     data = yaml.load(stream)
     data['spec']['template']['spec']['initContainers'][0]['env'][0]['value'] = addon_package
-    with open(splunk_deployment_file, 'w') as yaml_file:
+    with open("k8s_manifests/deployment_out.yaml", 'w') as yaml_file:
         yaml_file.write( yaml.dump(data, default_flow_style=False))
     
     config.load_kube_config(context="minikube")
