@@ -217,7 +217,8 @@ def test_splunk_app_broken(testdir):
     result = testdir.runpytest(
         "--splunk-type=docker",
         "--splunk-web-scheme=https",
-        "-v",
+        "-vv",
+        "-s",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
         "--search-retry=4",
