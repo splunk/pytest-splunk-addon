@@ -581,14 +581,14 @@ def splunk_docker(request):
     with open(path.join(path.dirname(__file__), "/pytest-splunk-addon/k8s_manifests/deployment_out.yaml")) as f:
         dep = yaml.safe_load(f)
         k8s_apps_v1 = client.AppsV1Api()
-        resp = k8s_apps_v1.create_namespaced_deployment(
+        resp = k8s_apps_v1.create_namespaced_deployment(namespace="splunk-deployment",
             body=dep)
         print("Deployment created. status='%s'" % resp.metadata.name)
     
     with open(path.join(path.dirname(__file__), "/pytest-splunk-addon/k8s_manifests/service.yaml")) as f:
         svc = yaml.safe_load(f)
         api_instance = client.CoreV1Api()
-        resp = api_instance.create_namespaced_service(
+        resp = api_instance.create_namespaced_service(namespace="splunk-deployment",
             body=svc)
         print("Service created. status='%s'" % resp.metadata.name)
 
@@ -689,14 +689,14 @@ def sc4s_docker():
     with open(path.join(path.dirname(__file__), "/pytest-splunk-addon/k8s_manifests/sc4s_deployment.yaml")) as f:
         dep = yaml.safe_load(f)
         k8s_apps_v1 = client.AppsV1Api()
-        resp = k8s_apps_v1.create_namespaced_deployment(
+        resp = k8s_apps_v1.create_namespaced_deployment(namespace="splunk-deployment",
             body=dep)
         print("Deployment created. status='%s'" % resp.metadata.name)
     
     with open(path.join(path.dirname(__file__), "/pytest-splunk-addon/k8s_manifests/sc4s_service.yaml")) as f:
         svc = yaml.safe_load(f)
         api_instance = client.CoreV1Api()
-        resp = api_instance.create_namespaced_service(
+        resp = api_instance.create_namespaced_service(namespace="splunk-deployment",
             body=svc)
         print("Service created. status='%s'" % resp.metadata.name)
 
