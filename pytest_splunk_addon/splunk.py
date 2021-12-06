@@ -36,6 +36,8 @@ from .standard_lib.event_ingestors import IngestorHelper
 import configparser
 from filelock import FileLock
 import yaml
+from kubernetes import client, config
+from os import path
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
@@ -447,7 +449,7 @@ def splunk(request, file_system_prerequisite):
             )
             os.environ["SPLUNK_APP_ID"] = config["package"]["id"]
         except Exception as e:
-            pass
+            print(e)
             os.environ["SPLUNK_APP_ID"] = "TA_package"
         os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
@@ -573,22 +575,21 @@ def splunk_docker(
     with open(splunk_deployment_file, 'w') as yaml_file:
         yaml_file.write( yaml.dump(data, default_flow_style=False))
     
-    deployment_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "deployment_out.yaml")
-   
-    # Load and create a deployment
-    deployment = kube.load_deployment(deployment_manifest,set_namespace=False)
-    print(deployment)
-    deployment.create()
+    config.load_kube_config(context="minikube")
 
-    # Wait until the deployment is in the ready state and then
-    # refresh its underlying object data 
-    deployment.wait_until_ready(fail_on_api_error=True)
-
-    service_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "service.yaml")
-    svc = kube.load_service(service_manifest,set_namespace=False)
-    svc.create()
-
-    svc.wait_until_ready(fail_on_api_error=True)
+    with open(path.join(path.dirname(__file__), "k8s_manifests/deployment.yaml")) as f:
+        dep = yaml.safe_load(f)
+        k8s_apps_v1 = client.AppsV1Api()
+        resp = k8s_apps_v1.create_namespaced_deployment(
+            body=dep)
+        print("Deployment created. status='%s'" % resp.metadata.name)
+    
+    with open(path.join(path.dirname(__file__), "k8s_manifests/service.yaml")) as f:
+        svc = yaml.safe_load(f)
+        api_instance = client.CoreV1Api()
+        resp = api_instance.create_namespaced_service(
+            body=svc)
+        print("Service created. status='%s'" % resp.metadata.name)
 
     # if worker_id:
     #     # get the temp directory shared by all workers
@@ -682,21 +683,20 @@ def sc4s_docker(kube):
     #     fn = root_tmp_dir / "pytest_docker"
     #     with FileLock(str(fn) + ".lock"):
     #         docker_services.start("sc4s")
-    sc4s_deployment_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "sc4s_deployment.yaml")
 
-    sc4s_deployment = kube.load_deployment(sc4s_deployment_manifest,set_namespace=False)
-    sc4s_deployment.create()
-
-    # Wait until the deployment is in the ready state and then
-    # refresh its underlying object data 
-    sc4s_deployment.wait_until_ready(fail_on_api_error=True)
-
-
-    sc4s_service_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "sc4s_service.yaml")
-    sc4s_svc = kube.load_service(sc4s_service_manifest,set_namespace=False)
-    sc4s_svc.create()
-
-    sc4s_svc.wait_until_ready(fail_on_api_error=True)
+    with open(path.join(path.dirname(__file__), "k8s_manifests/sc4s_deployment.yaml")) as f:
+        dep = yaml.safe_load(f)
+        k8s_apps_v1 = client.AppsV1Api()
+        resp = k8s_apps_v1.create_namespaced_deployment(
+            body=dep)
+        print("Deployment created. status='%s'" % resp.metadata.name)
+    
+    with open(path.join(path.dirname(__file__), "k8s_manifests/sc4s_service.yaml")) as f:
+        svc = yaml.safe_load(f)
+        api_instance = client.CoreV1Api()
+        resp = api_instance.create_namespaced_service(
+            body=svc)
+        print("Service created. status='%s'" % resp.metadata.name)
 
     ports = {514: 514}
     for x in range(5000, 5007):
