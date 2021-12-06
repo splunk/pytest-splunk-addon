@@ -564,28 +564,28 @@ def splunk_docker(request):
     """
     LOGGER.info("Starting docker_service=splunk")
     addon_package = os.getenv("SPLUNK_APP_PACKAGE")
-    # deployment_file = "k8s_manifests/deployment.yaml"
-    # splunk_deployment_file = "k8s_manifests/deployment_out.yaml"
+    deployment_file = "/pytest-splunk-addon/k8s_manifests/deployment.yaml"
+    splunk_deployment_file = "/pytest-splunk-addon/k8s_manifests/deployment_out.yaml"
     print('----------------------------------------------------------------')
     print(os.getcwd())
     LOGGER.info('============================================================')
     LOGGER.info(os.getcwd())
-    stream = open("k8s_manifests/deployment.yaml", 'r')
+    stream = open(deployment_file, 'r')
     data = yaml.load(stream)
     data['spec']['template']['spec']['initContainers'][0]['env'][0]['value'] = addon_package
-    with open("k8s_manifests/deployment_out.yaml", 'w') as yaml_file:
+    with open(splunk_deployment_file, 'w') as yaml_file:
         yaml_file.write( yaml.dump(data, default_flow_style=False))
     
     config.load_kube_config(context="minikube")
 
-    with open(path.join(path.dirname(__file__), "k8s_manifests/deployment_out.yaml")) as f:
+    with open(path.join(path.dirname(__file__), "/pytest-splunk-addon/k8s_manifests/deployment_out.yaml")) as f:
         dep = yaml.safe_load(f)
         k8s_apps_v1 = client.AppsV1Api()
         resp = k8s_apps_v1.create_namespaced_deployment(
             body=dep)
         print("Deployment created. status='%s'" % resp.metadata.name)
     
-    with open(path.join(path.dirname(__file__), "k8s_manifests/service.yaml")) as f:
+    with open(path.join(path.dirname(__file__), "/pytest-splunk-addon/k8s_manifests/service.yaml")) as f:
         svc = yaml.safe_load(f)
         api_instance = client.CoreV1Api()
         resp = api_instance.create_namespaced_service(
@@ -685,15 +685,15 @@ def sc4s_docker():
     #     with FileLock(str(fn) + ".lock"):
     #         docker_services.start("sc4s")
     config.load_kube_config(context="minikube")
-    
-    with open(path.join(path.dirname(__file__), "k8s_manifests/sc4s_deployment.yaml")) as f:
+
+    with open(path.join(path.dirname(__file__), "/pytest-splunk-addon/k8s_manifests/sc4s_deployment.yaml")) as f:
         dep = yaml.safe_load(f)
         k8s_apps_v1 = client.AppsV1Api()
         resp = k8s_apps_v1.create_namespaced_deployment(
             body=dep)
         print("Deployment created. status='%s'" % resp.metadata.name)
     
-    with open(path.join(path.dirname(__file__), "k8s_manifests/sc4s_service.yaml")) as f:
+    with open(path.join(path.dirname(__file__), "/pytest-splunk-addon/k8s_manifests/sc4s_service.yaml")) as f:
         svc = yaml.safe_load(f)
         api_instance = client.CoreV1Api()
         resp = api_instance.create_namespaced_service(
