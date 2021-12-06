@@ -287,6 +287,9 @@ jobs:
           # build if this is not set false
           submodules: false
           persist-credentials: false
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
       - name: Setup python
         uses: actions/setup-python@v2
         with:
