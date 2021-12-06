@@ -428,6 +428,7 @@ def splunk(request, file_system_prerequisite):
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
+    LOGGER.info('------------------------------')
     splunk_type = request.config.getoption("splunk_type")
     LOGGER.info("Get the Splunk instance of splunk_type=%s", splunk_type)
     if splunk_type == "external":
@@ -589,30 +590,6 @@ def splunk_docker(
 
     svc.wait_until_ready(fail_on_api_error=True)
 
-    test_deployment_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "test_runner_deployment.yaml")
-
-    test_deployment = kube.load_deployment(test_deployment_manifest,set_namespace=False)
-    test_deployment.create()
-
-    # Wait until the deployment is in the ready state and then
-    # refresh its underlying object data 
-    test_deployment.wait_until_ready(fail_on_api_error=True)
-
-    sc4s_deployment_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "sc4s_deployment.yaml")
-
-    sc4s_deployment = kube.load_deployment(sc4s_deployment_manifest,set_namespace=False)
-    sc4s_deployment.create()
-
-    # Wait until the deployment is in the ready state and then
-    # refresh its underlying object data 
-    sc4s_deployment.wait_until_ready(fail_on_api_error=True)
-
-
-    sc4s_service_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "sc4s_service.yaml")
-    sc4s_svc = kube.load_service(sc4s_service_manifest,set_namespace=False)
-    sc4s_svc.create()
-
-    sc4s_svc.wait_until_ready(fail_on_api_error=True)
     # if worker_id:
     #     # get the temp directory shared by all workers
     #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
@@ -695,7 +672,7 @@ def splunk_external(request):
 
 
 @pytest.fixture(scope="session")
-def sc4s_docker():
+def sc4s_docker(kube):
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
     """
@@ -705,6 +682,21 @@ def sc4s_docker():
     #     fn = root_tmp_dir / "pytest_docker"
     #     with FileLock(str(fn) + ".lock"):
     #         docker_services.start("sc4s")
+    sc4s_deployment_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "sc4s_deployment.yaml")
+
+    sc4s_deployment = kube.load_deployment(sc4s_deployment_manifest,set_namespace=False)
+    sc4s_deployment.create()
+
+    # Wait until the deployment is in the ready state and then
+    # refresh its underlying object data 
+    sc4s_deployment.wait_until_ready(fail_on_api_error=True)
+
+
+    sc4s_service_manifest = os.path.join(os.path.dirname(os.path.realpath(__file__)), "k8s_manifests", "sc4s_service.yaml")
+    sc4s_svc = kube.load_service(sc4s_service_manifest,set_namespace=False)
+    sc4s_svc.create()
+
+    sc4s_svc.wait_until_ready(fail_on_api_error=True)
 
     ports = {514: 514}
     for x in range(5000, 5007):
