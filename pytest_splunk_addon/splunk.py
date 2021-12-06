@@ -566,7 +566,10 @@ def splunk_docker(request):
     addon_package = os.getenv("SPLUNK_APP_PACKAGE")
     # deployment_file = "k8s_manifests/deployment.yaml"
     # splunk_deployment_file = "k8s_manifests/deployment_out.yaml"
-
+    print('----------------------------------------------------------------')
+    print(os.getcwd())
+    LOGGER.info('============================================================')
+    LOGGER.info(os.getcwd())
     stream = open("k8s_manifests/deployment.yaml", 'r')
     data = yaml.load(stream)
     data['spec']['template']['spec']['initContainers'][0]['env'][0]['value'] = addon_package
