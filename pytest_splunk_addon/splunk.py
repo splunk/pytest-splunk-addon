@@ -567,7 +567,7 @@ def splunk_docker(request):
     deployment_file = "k8s_manifests/deployment.yaml"
     splunk_deployment_file = "k8s_manifests/deployment_out.yaml"
 
-    stream = open(splunk_deployment_file, 'r')
+    stream = open(deployment_file, 'r')
     data = yaml.load(stream)
     data['spec']['template']['spec']['initContainers'][0]['env'][0]['value'] = addon_package
     with open(splunk_deployment_file, 'w') as yaml_file:
@@ -575,7 +575,7 @@ def splunk_docker(request):
     
     config.load_kube_config(context="minikube")
 
-    with open(path.join(path.dirname(__file__), "k8s_manifests/deployment.yaml")) as f:
+    with open(path.join(path.dirname(__file__), "k8s_manifests/deployment_out.yaml")) as f:
         dep = yaml.safe_load(f)
         k8s_apps_v1 = client.AppsV1Api()
         resp = k8s_apps_v1.create_namespaced_deployment(
