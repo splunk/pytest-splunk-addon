@@ -1,10 +1,12 @@
+import os
+
 import pytest
 from unittest.mock import MagicMock, patch, PropertyMock, call
 from collections import namedtuple
 from splunk_appinspect import App
 
 from pytest_splunk_addon.standard_lib.sample_generation.eventgen_parser import (
-    EventgenParser,
+    PytestSplunkAddonDataParser,
 )
 
 ADDON_PATH = "/add/on/path"
@@ -20,6 +22,15 @@ SAMPLE_STANZA = "sample_stanza"
 PTS = "pts"
 
 sects = namedtuple("Sects", ["sects"])
+
+
+def test_path_to_samples():
+    path = os.path.join(os.path.dirname(__file__), "test_data")
+    psa_data_parser = PytestSplunkAddonDataParser(
+        path,
+        path,
+    )
+    assert os.path.join(path, "samples") == psa_data_parser.path_to_samples
 
 
 def get_exists_mock_func(path):
@@ -42,8 +53,8 @@ class TestEventgenParser:
     def eventgen_parser(self):
         def func(*args):
             if not args:
-                return EventgenParser("path")
-            return EventgenParser(*args)
+                return PytestSplunkAddonDataParser("path")
+            return PytestSplunkAddonDataParser(*args)
 
         return func
 
@@ -96,11 +107,11 @@ class TestEventgenParser:
 
     def test_get_sample_stanzas(self):
         with patch.object(
-            EventgenParser,
+            PytestSplunkAddonDataParser,
             "get_eventgen_stanzas",
             MagicMock(return_value=AttrDict(file_1=VALUE_1, file_2=VALUE_2)),
         ), patch("os.sep", "/"), patch.object(
-            EventgenParser,
+            PytestSplunkAddonDataParser,
             "path_to_samples",
             new_callable=PropertyMock(return_value=PTS),
         ), patch(
@@ -108,7 +119,9 @@ class TestEventgenParser:
             MagicMock(return_value=SAMPLE_STANZA),
         ) as sample_stanza_mock:
             assert list(
-                EventgenParser(ADDON_PATH, CONFIG_PATH).get_sample_stanzas()
+                PytestSplunkAddonDataParser(
+                    ADDON_PATH, CONFIG_PATH
+                ).get_sample_stanzas()
             ) == [SAMPLE_STANZA, SAMPLE_STANZA]
             sample_stanza_mock.assert_has_calls(
                 [call("pts/file_1", "value_1"), call("pts/file_2", "value_2")]
@@ -116,11 +129,11 @@ class TestEventgenParser:
 
     def test_get_eventgen_stanzas(self):
         with patch.object(
-            EventgenParser,
+            PytestSplunkAddonDataParser,
             "path_to_samples",
             new_callable=PropertyMock(return_value=""),
         ), patch.object(
-            EventgenParser,
+            PytestSplunkAddonDataParser,
             "eventgen",
             new_callable=PropertyMock(
                 return_value=sects(
@@ -143,22 +156,27 @@ class TestEventgenParser:
         ), patch(
             "os.listdir", MagicMock(return_value=[FILE_1, FILE_2, "file_3"])
         ):
-            assert EventgenParser(ADDON_PATH, CONFIG_PATH).get_eventgen_stanzas() == {
+            assert PytestSplunkAddonDataParser(
+                ADDON_PATH, CONFIG_PATH
+            ).get_eventgen_stanzas() == {
                 FILE_1: {"tokens": {"file_1_option": {"1": VALUE_1}}},
                 FILE_2: {OPTION_1: VALUE_2, "tokens": {}},
             }
 
     def test_check_samples(self, caplog):
         with patch.object(
-            EventgenParser,
+            PytestSplunkAddonDataParser,
             "path_to_samples",
             new_callable=PropertyMock(return_value=""),
         ), patch("os.path.exists", MagicMock(return_value=True)), patch.object(
-            EventgenParser,
+            PytestSplunkAddonDataParser,
             "eventgen",
             new_callable=PropertyMock(return_value=sects([FILE_1, FILE_2])),
         ):
-            assert EventgenParser(ADDON_PATH, CONFIG_PATH).check_samples() is None
+            assert (
+                PytestSplunkAddonDataParser(ADDON_PATH, CONFIG_PATH).check_samples()
+                is None
+            )
             assert all(
                 message in caplog.messages
                 for message in [

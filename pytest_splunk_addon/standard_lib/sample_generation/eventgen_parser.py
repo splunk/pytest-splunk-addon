@@ -23,9 +23,9 @@ from . import SampleStanza
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class EventgenParser:
+class PytestSplunkAddonDataParser:
     """
-    This class represents the entire eventgen.conf file and handles parsing mechanism of eventgen and the rules.
+    This class parses pytest-splunk-addon-data.conf file.
 
     Args:
         addon_path: Path to the Splunk App
@@ -94,7 +94,7 @@ class EventgenParser:
 
     def get_sample_stanzas(self):
         """
-        Converts a stanza in eventgen.conf to an object of SampleStanza.
+        Converts a stanza in pytest-splunk-addon-data.conf to an object of SampleStanza.
 
         Yields:
             SampleStanza Object

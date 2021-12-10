@@ -16,7 +16,7 @@
 import time
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
-from . import EventgenParser
+from . import PytestSplunkAddonDataParser
 from . import SampleStanza
 from itertools import cycle
 
@@ -47,7 +47,7 @@ class SampleGenerator(object):
         Generate SampleEvent object
         """
         if not SampleGenerator.sample_stanzas:
-            eventgen_parser = EventgenParser(
+            eventgen_parser = PytestSplunkAddonDataParser(
                 self.addon_path, config_path=self.config_path
             )
             sample_stanzas = list(eventgen_parser.get_sample_stanzas())
