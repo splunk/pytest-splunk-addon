@@ -501,18 +501,14 @@ def get_addon_eventtypes(addon_path):
         eventtype: None for eventtype in parser.eventtype_parser.eventtypes.sects
     }
 
-    stanza_pattern = re.compile("eventtype\s*=\s*(\w+)")
-    for stanza, section in parser.tags_parser.tags.sects.items():
-        match = stanza_pattern.match(stanza)
-        if match and match.groups():
-            eventtype = match.groups()[0]
+    for stanza, section in parser.tags_parser.tags.items():
+        parts = [s.strip() for s in stanza.split("=", 1)]
+        if len(parts) > 1 and parts[0] == "eventtype":
+            eventtype = parts[1]
             if eventtype in eventtypes:
-                tags = [
-                    key
-                    for key, option in section.options.items()
-                    if option.value.strip() == "enabled"
+                eventtypes[eventtype] = [
+                    key for key, value in section.items() if value.strip() == "enabled"
                 ]
-                eventtypes[eventtype] = tags
 
     return eventtypes
 
