@@ -2,7 +2,7 @@ DataGenerator
 ------------------
 
 PytestSplunkAddonDataParser
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automodule:: standard_lib.sample_generation.pytest_splunk_addon_data_parser
    :members:
    :show-inheritance:
