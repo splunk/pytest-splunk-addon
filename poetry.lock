@@ -837,7 +837,7 @@ test = ["pytest"]
 
 [[package]]
 name = "splunk-appinspect"
-version = "2.12.0"
+version = "2.13.0"
 description = "Automatic validation checks for Splunk Apps"
 category = "main"
 optional = false
@@ -1508,7 +1508,7 @@ sphinxcontrib-serializinghtml = [
     {file = "sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl", hash = "sha256:352a9a00ae864471d3a7ead8d7d79f5fc0b57e8b3f95e9867eb9eb28999b92fd"},
 ]
 splunk-appinspect = [
-    {file = "splunk-appinspect-2.12.0.tar.gz", hash = "sha256:9f5f88cbe62fccc946a932484d45f1ed22f8a18420624568177f039121f5d2d9"},
+    {file = "splunk-appinspect-2.13.0.tar.gz", hash = "sha256:fe407c6d85a7a57e62733ce6f292b61e2e99072639994d0b39ba9f1db45acae5"},
 ]
 splunk-sdk = [
     {file = "splunk-sdk-1.6.18.tar.gz", hash = "sha256:edc0959786f5dcab225ba98633c310dbf7584977849f6c2152a0e5090b5e2561"},
