@@ -1,9 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch, PropertyMock, call
-from collections import namedtuple
 from pytest_splunk_addon.standard_lib.utilities.create_new_eventgen import (
     UpdateEventgen,
-    main,
 )
 
 output_to_build = {
@@ -56,16 +54,6 @@ def os_listdir_mock(monkeypatch):
     listdir = MagicMock()
     monkeypatch.setattr("os.listdir", listdir)
     return listdir
-
-
-@pytest.fixture()
-def update_eventgen_mock(monkeypatch):
-    ue = MagicMock()
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.utilities.create_new_eventgen.UpdateEventgen",
-        ue,
-    )
-    return ue
 
 
 def test_update_eventgen_instantiation(app_mock):
@@ -343,24 +331,5 @@ def test_create_new_eventgen(
             call.write("token.102.field = dest\n"),
             call.write("\n"),
             call.__exit__(None, None, None),
-        ]
-    )
-
-
-def test_main(argparse_mock, update_eventgen_mock):
-    update_eventgen_mock.return_value = update_eventgen_mock
-    update_eventgen_mock.get_eventgen_stanzas.return_value = {"fake": "init"}
-    update_eventgen_mock.update_eventgen_stanzas.return_value = {"fake": "updated"}
-    args = namedtuple("Namespace", ["addon_path", "new_conf_path"])
-    argparse_mock.parse_args.return_value = args(
-        "fake_addon_path", "fake_new_conf_path"
-    )
-    main()
-    update_eventgen_mock.assert_has_calls(
-        [
-            call("fake_addon_path"),
-            call.get_eventgen_stanzas(),
-            call.update_eventgen_stanzas({"fake": "init"}),
-            call.create_new_eventgen({"fake": "updated"}, "fake_new_conf_path"),
         ]
     )
