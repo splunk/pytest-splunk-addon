@@ -44,8 +44,7 @@ class PytestSplunkAddonDataParser:
         self.addon_path = addon_path
         self.match_stanzas = set()
 
-    @property
-    def path_to_samples(self):
+    def _path_to_samples(self):
         if os.path.exists(os.path.join(self.config_path, "samples")):
             LOGGER.info(
                 "Samples path is: {}".format(os.path.join(self.config_path, "samples"))
@@ -75,9 +74,9 @@ class PytestSplunkAddonDataParser:
 
     @property
     def psa_data(self):
-        path = os.path.join(self.config_path, PSA_DATA_CONFIG_FILE)
-        if os.path.exists(path):
-            self._conf_parser.read(path)
+        psa_data_path = os.path.join(self.config_path, PSA_DATA_CONFIG_FILE)
+        if os.path.exists(psa_data_path):
+            self._conf_parser.read(psa_data_path)
             self.conf_name = "psa-data-gen"
             self._psa_data = self._conf_parser.item_dict()
             return self._psa_data
@@ -89,19 +88,18 @@ class PytestSplunkAddonDataParser:
         """
         Converts a stanza in pytest-splunk-addon-data.conf to an object of SampleStanza.
 
-        Yields:
-            SampleStanza Object
+        Returns:
+            List of SampleStanza objects.
         """
-        _psa_data = self.get_psa_data_stanzas()
-        self.check_samples()
+        _psa_data = self._get_psa_data_stanzas()
+        self._check_samples()
+        results = []
         for sample_name, stanza_params in sorted(_psa_data.items()):
-            sample_path = os.path.join(self.path_to_samples, sample_name)
-            yield SampleStanza(
-                sample_path,
-                stanza_params,
-            )
+            sample_path = os.path.join(self._path_to_samples(), sample_name)
+            results.append(SampleStanza(sample_path, stanza_params))
+        return results
 
-    def get_psa_data_stanzas(self):
+    def _get_psa_data_stanzas(self):
         """
         Parses the pytest-splunk-addon-data.conf file and converts it into a dictionary.
 
@@ -127,8 +125,8 @@ class PytestSplunkAddonDataParser:
             Dictionary representing pytest-splunk-addon-data.conf in the above format.
         """
         psa_data_dict = {}
-        if os.path.exists(self.path_to_samples):
-            for sample_file in os.listdir(self.path_to_samples):
+        if os.path.exists(self._path_to_samples()):
+            for sample_file in os.listdir(self._path_to_samples()):
                 for stanza, fields in sorted(self.psa_data.items()):
                     stanza_match_obj = re.search(stanza, sample_file)
                     if stanza_match_obj and stanza_match_obj.group(0) == sample_file:
@@ -150,13 +148,13 @@ class PytestSplunkAddonDataParser:
                                 psa_data_dict[sample_file][key] = value
         return psa_data_dict
 
-    def check_samples(self):
+    def _check_samples(self):
         """
         Gives a user warning when sample file is not found for the stanza
         present in the configuration file.
         """
-        if os.path.exists(self.path_to_samples):
+        if os.path.exists(self._path_to_samples()):
             for stanza in self.psa_data.keys():
                 if stanza not in self.match_stanzas:
-                    raise_warning("No sample file found for stanza : {}".format(stanza))
-                LOGGER.info("Sample file found for stanza : {}".format(stanza))
+                    raise_warning(f"No sample file found for stanza : {stanza}")
+                LOGGER.info(f"Sample file found for stanza : {stanza}")

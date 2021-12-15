@@ -21,7 +21,7 @@ def test_path_to_samples():
         path,
         path,
     )
-    assert os.path.join(path, "samples") == psa_data_parser.path_to_samples
+    assert os.path.join(path, "samples") == psa_data_parser._path_to_samples()
 
 
 def test_get_psa_data_stanzas_with_samples():
@@ -87,16 +87,21 @@ def test_get_psa_data_stanzas_with_samples():
             },
         },
     }
-    result = psa_data_parser.get_psa_data_stanzas()
+    result = psa_data_parser._get_psa_data_stanzas()
     assert expected_result == result
 
 
-def test_check_samples_without_samples(caplog):
-    path = os.path.join(os.path.dirname(__file__), "test_data", "without_samples")
-    psa_data_parser = PytestSplunkAddonDataParser(
-        path,
-        path,
-    )
-    psa_data_parser.check_samples()
-    assert "No sample file found for stanza : test1.samples" in caplog.messages
-    assert "No sample file found for stanza : test2.samples" in caplog.messages
+def test_get_sample_stanzas_without_samples(caplog):
+    with tempfile.TemporaryDirectory() as tempdir:
+        samples_path = os.path.join(tempdir, "samples")
+        os.mkdir(samples_path)
+        config_path = os.path.join(
+            os.path.dirname(__file__), "test_data", "without_samples"
+        )
+        parser = PytestSplunkAddonDataParser(
+            tempdir,
+            config_path,
+        )
+        parser.get_sample_stanzas()
+        assert "No sample file found for stanza : test1.samples" in caplog.messages
+        assert "No sample file found for stanza : test2.samples" in caplog.messages
