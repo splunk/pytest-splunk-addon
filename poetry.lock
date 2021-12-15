@@ -322,7 +322,7 @@ ujson = ["ujson (>=1.30)"]
 
 [[package]]
 name = "jsonschema"
-version = "4.2.1"
+version = "4.3.0"
 description = "An implementation of JSON Schema validation for Python"
 category = "main"
 optional = false
@@ -333,6 +333,7 @@ attrs = ">=17.4.0"
 importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 importlib-resources = {version = ">=1.4.0", markers = "python_version < \"3.9\""}
 pyrsistent = ">=0.14.0,<0.17.0 || >0.17.0,<0.17.1 || >0.17.1,<0.17.2 || >0.17.2"
+typing-extensions = {version = "*", markers = "python_version < \"3.8\""}
 
 [package.extras]
 format = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3987", "uri-template", "webcolors (>=1.11)"]
@@ -1110,8 +1111,8 @@ jsoncomment = [
     {file = "jsoncomment-0.3.3.tar.gz", hash = "sha256:98093db601c735804b8da6d999f117727fa4cd31c0fa18cfde3cc993d27e5a1e"},
 ]
 jsonschema = [
-    {file = "jsonschema-4.2.1-py3-none-any.whl", hash = "sha256:2a0f162822a64d95287990481b45d82f096e99721c86534f48201b64ebca6e8c"},
-    {file = "jsonschema-4.2.1.tar.gz", hash = "sha256:390713469ae64b8a58698bb3cbc3859abe6925b565a973f87323ef21b09a27a8"},
+    {file = "jsonschema-4.3.0-py3-none-any.whl", hash = "sha256:ab7069946a3ad2037e79a5cdc8d0e9a74cd00721d426d75c5d69a6707c778218"},
+    {file = "jsonschema-4.3.0.tar.gz", hash = "sha256:cb7f57b40f870409d7571844d0623f66d8078c90a9c255d9a4d4314b5ec3fc7c"},
 ]
 junitparser = [
     {file = "junitparser-2.2.0-py2.py3-none-any.whl", hash = "sha256:81479565605cc5605710bf9a990bc134b0ede43de3bc4cbd5acba97b5318c507"},
