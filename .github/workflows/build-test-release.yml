@@ -125,7 +125,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: ["8.0","8.1","8.2"]
+        splunk-version: ["8.1","8.2"]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -199,13 +199,22 @@ jobs:
 
   test-splunk-matrix:
     name: Test Matrix
+    needs:
+      - pre-commit
+      - compliance-dependencies
+      - compliance-copyrights
+      - test-splunk-external
+      - test-splunk-doc
+      - test-splunk-unit
+      - review_secrets
+      - review-dog-misspell
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.7]
-        splunk-version: [8.0, 8.1, 8.2]
+        splunk-version: [8.1, 8.2]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -271,15 +280,7 @@ jobs:
   publish:
     name: publish
     needs:
-      - pre-commit
-      - compliance-dependencies
-      - compliance-copyrights
-      - test-splunk-external
-      - test-splunk-doc
       - test-splunk-matrix
-      - test-splunk-unit
-      - review_secrets
-      - review-dog-misspell
     runs-on: ubuntu-latest
     env:
       NEEDS: ${{ toJson(needs) }}
