@@ -49,11 +49,12 @@ class IndexTimeTestGenerator(object):
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         if not store_sample.get("conf_name") == "psa-data-gen":
-            LOGGER.warning(
-                "Index Time tests cannot be executed using eventgen.conf, pytest-splunk-addon-data.conf is required."
+            msg = (
+                "Index time tests cannot be executed without "
+                "pytest-splunk-addon-data.conf"
             )
-            return " Index Time tests cannot be executed using eventgen.conf,\
-                 pytest-splunk-addon-data.conf is required."
+            LOGGER.warning(msg)
+            return msg
 
         if test_type == "line_breaker":
             LOGGER.info("Generating line breaker test")

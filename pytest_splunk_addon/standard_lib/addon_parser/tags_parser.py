@@ -43,8 +43,8 @@ class TagsParser:
     def tags(self) -> Optional[Dict]:
         if self._tags is not None:
             return self._tags
-        LOGGER.info("Parsing tags.conf")
         tags_conf_path = os.path.join(self.splunk_app_path, "default", "tags.conf")
+        LOGGER.info("Parsing tags.conf")
         self._conf_parser.read(tags_conf_path)
         self._tags = self._conf_parser.item_dict()
         return self._tags if self._tags else None

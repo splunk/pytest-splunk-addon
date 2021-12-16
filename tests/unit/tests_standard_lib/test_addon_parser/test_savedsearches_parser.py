@@ -1,51 +1,25 @@
-import pytest
-from unittest.mock import patch, PropertyMock
+from unittest.mock import patch, mock_open
 from pytest_splunk_addon.standard_lib.addon_parser.savedsearches_parser import (
     SavedSearchParser,
 )
 
-output_to_build = {
-    "basic_search": {
-        "search": "_internal | stats count by sourcetype",
-    },
-    "search_earliest_time": {
-        "search": "index = _internal | stats count by sourcetype | outputlookup saved_search_data.csv",
-        "dispatch.earliest_time": "-4d",
-    },
-    "empty_search_latest_time": {
-        "search": "",
-        "dispatch.latest_time": "-1s",
-    },
-}
+TEST_SAVEDSEARCHES = """[basic_search]
+search = _internal | stats count by sourcetype
+
+[search_earliest_time]
+search = index = _internal | stats count by sourcetype | outputlookup saved_search_data.csv
+dispatch.earliest_time = -4d
+
+[empty_search_latest_time]
+search = 
+dispatch.latest_time = -1s
+
+[empty_search]
+"""
 
 
-@pytest.fixture(scope="module")
-def parsed_output(build_parsed_output):
-    return build_parsed_output(output_to_build)
-
-
-@pytest.fixture()
-def parser_instance(parsed_output, parser):
-    return parser(SavedSearchParser, "get_config", parsed_output)
-
-
-def test_savedsearches(parser_instance):
-    assert list(parser_instance.savedsearches.sects.keys()) == [
-        "basic_search",
-        "search_earliest_time",
-        "empty_search_latest_time",
-    ]
-    parser_instance.app.get_config.assert_called_once_with("savedsearches.conf")
-
-
-def test_no_savedsearches_config_file(parser_instance):
-    parser_instance.app.get_config.side_effect = OSError
-    assert parser_instance.savedsearches is None
-
-
-def test_get_savedsearches(parser_instance):
-    out = list(parser_instance.get_savedsearches())
-    assert out == [
+def test_get_savedsearches():
+    expected_outputs = [
         {
             "stanza": "basic_search",
             "search": "_internal | stats count by sourcetype",
@@ -64,14 +38,21 @@ def test_get_savedsearches(parser_instance):
             "dispatch.earliest_time": "0",
             "dispatch.latest_time": "-1s",
         },
+        {
+            "stanza": "empty_search",
+            "search": 'index = "main"',
+            "dispatch.earliest_time": "0",
+            "dispatch.latest_time": "now",
+        },
     ]
+    savedsearches_parser = SavedSearchParser("unused_path")
+    with patch("builtins.open", new_callable=mock_open, read_data=TEST_SAVEDSEARCHES):
+        output = savedsearches_parser.get_savedsearches()
+        assert expected_outputs == list(output)
 
 
-def test_get_savedsearches_without_config_file(parser):
-    with patch.object(
-        SavedSearchParser, "savedsearches", new_callable=PropertyMock
-    ) as savedsearches_mock:
-        savedsearches_mock.return_value = None
-        parser_instance = parser(SavedSearchParser, "get_config", {})
-        output = [search for search in parser_instance.get_savedsearches() if search]
-        assert output == [], "savedsearches returned when no config file exists"
+def test_no_savedsearches_config_file():
+    savedsearches_parser = SavedSearchParser("unused_path")
+    with patch("builtins.open", mock_open()) as mock_file:
+        mock_file.side_effect = OSError()
+        assert savedsearches_parser.savedsearches is None

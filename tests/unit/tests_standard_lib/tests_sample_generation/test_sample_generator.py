@@ -30,7 +30,8 @@ class TestSampleGenerator:
             return_value=[sample_mock, sample_mock]
         )
         with patch(
-            f"{MODULE_PATH}.EventgenParser", MagicMock(return_value=eventgen_mock)
+            f"{MODULE_PATH}.PytestSplunkAddonDataParser",
+            MagicMock(return_value=eventgen_mock),
         ), patch(f"{MODULE_PATH}.SampleStanza", MagicMock()) as sample_stanza_mock:
             sample_stanza_mock.get_raw_events = ["event_1", "event_2"]
             sample_stanza_mock.tokenize = lambda x, y: (x, y)

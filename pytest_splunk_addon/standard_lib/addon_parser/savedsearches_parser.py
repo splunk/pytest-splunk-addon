@@ -13,10 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# -*- coding: utf-8 -*-
 """
 Provides savedsearches.conf parsing mechanism
 """
+from typing import Dict
+from typing import Generator
+from typing import Optional
+import logging
+import os
+
+import addonfactory_splunk_conf_parser_lib as conf_parser
+
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class SavedSearchParser(object):
@@ -25,24 +33,26 @@ class SavedSearchParser(object):
 
     Args:
         splunk_app_path (str): Path of the Splunk app
-        app (splunk_appinspect.App): Object of Splunk app
     """
 
-    def __init__(self, splunk_app_path, app):
-        self.app = app
+    def __init__(self, splunk_app_path: str):
+        self._conf_parser = conf_parser.TABConfigParser()
         self.splunk_app_path = splunk_app_path
         self._savedsearches = None
 
     @property
-    def savedsearches(self):
-        try:
-            if not self._savedsearches:
-                self._savedsearches = self.app.get_config("savedsearches.conf")
+    def savedsearches(self) -> Optional[Dict]:
+        if self._savedsearches is not None:
             return self._savedsearches
-        except OSError:
-            return None
+        savedsearches_conf_path = os.path.join(
+            self.splunk_app_path, "default", "savedsearches.conf"
+        )
+        LOGGER.info("Parsing savedsearches.conf")
+        self._conf_parser.read(savedsearches_conf_path)
+        self._savedsearches = self._conf_parser.item_dict()
+        return self._savedsearches if self._savedsearches else None
 
-    def get_savedsearches(self):
+    def get_savedsearches(self) -> Optional[Generator]:
         """
         Parse the App configuration files & yield savedsearches
 
@@ -51,29 +61,17 @@ class SavedSearchParser(object):
         """
         if not self.savedsearches:
             return None
-        for stanza in self.savedsearches.sects:
-            savedsearch_sections = self.savedsearches.sects[stanza]
+        for stanza_key, stanza_values in self.savedsearches.items():
+            LOGGER.info(f"Parsing savedsearches of stanza={stanza_key}")
             savedsearch_container = {
-                "stanza": stanza,
+                "stanza": stanza_key,
                 "search": 'index = "main"',
                 "dispatch.earliest_time": "0",
                 "dispatch.latest_time": "now",
             }
-            for key in savedsearch_sections.options:
-                empty_value = ["None", "", " "]
-                if (
-                    key == "search"
-                    and savedsearch_sections.options[key].value not in empty_value
-                ):
-                    savedsearch_container[key] = savedsearch_sections.options[key].value
-                elif (
-                    key == "dispatch.earliest_time"
-                    and savedsearch_sections.options[key].value not in empty_value
-                ):
-                    savedsearch_container[key] = savedsearch_sections.options[key].value
-                elif (
-                    key == "dispatch.latest_time"
-                    and savedsearch_sections.options[key].value not in empty_value
-                ):
-                    savedsearch_container[key] = savedsearch_sections.options[key].value
+            empty_value = ["None", "", " "]
+            for key, value in stanza_values.items():
+                if key in ("search", "dispatch.earliest_time", "dispatch.latest_time"):
+                    if value not in empty_value:
+                        savedsearch_container[key] = value
             yield savedsearch_container
