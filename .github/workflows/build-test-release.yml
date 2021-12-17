@@ -270,13 +270,16 @@ jobs:
           source ~/.poetry/env
           poetry install
           poetry run coverage run --source=./pytest_splunk_addon/standard_lib -m pytest -v tests/unit
-          poetry run coverage html
-      - name: Archive test coverage results
-        uses: actions/upload-artifact@v2
+          poetry run coverage xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
         with:
-          name: code-coverage-report-unit-tests
-          path: htmlcov
-
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          directory: ./coverage/reports/
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          verbose: true
   publish:
     name: publish
     needs:
@@ -339,7 +342,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
           PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-  
+
   update-semver:
     name: Move Repository semver tags
     if: startsWith(github.ref, 'refs/tags/v')
