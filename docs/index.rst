@@ -19,7 +19,6 @@ pytest-splunk-addon documentation
    index_time_tests
    sample_generator
    generate_conf
-   release_history
    api_reference/api_reference
    troubleshoot
 
