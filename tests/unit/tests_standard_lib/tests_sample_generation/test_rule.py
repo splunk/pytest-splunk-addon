@@ -9,7 +9,7 @@ import pytest_splunk_addon.standard_lib.sample_generation.rule
 
 TOKEN_DATA = "token_data"
 FIELD = "Field"
-EVENTGEN_PARAMS = {"eventgen_params": "eventgen_params_value"}
+PSA_DATA_PARAMS = {"psa_data_params": "psa_data_params_value"}
 SAMPLE_PATH = "sample_path"
 SAMPLE_NAME = "Sample_name"
 RETURN_VALUE = "Return_value"
@@ -138,7 +138,7 @@ class TestRule:
             (
                 "TimeRule",
                 token(replacement_type="timestamp"),
-                [token(replacement_type="timestamp"), EVENTGEN_PARAMS],
+                [token(replacement_type="timestamp"), PSA_DATA_PARAMS],
                 {},
             ),
             (
@@ -175,14 +175,14 @@ class TestRule:
     )
     def test_parse_rule(self, rule, mock_class, rule_name, _token, params, params_dict):
         static_mock = mock_class(rule_name)
-        assert rule.parse_rule(_token, EVENTGEN_PARAMS, SAMPLE_PATH) == RETURN_VALUE
+        assert rule.parse_rule(_token, PSA_DATA_PARAMS, SAMPLE_PATH) == RETURN_VALUE
         static_mock.assert_called_once_with(*params, **params_dict)
 
     def test_parse_rule_other_repl_type(self, rule):
         assert (
             rule.parse_rule(
                 token(replacement_type="other", replacement=DEST),
-                EVENTGEN_PARAMS,
+                PSA_DATA_PARAMS,
                 SAMPLE_PATH,
             )
             is None
@@ -707,7 +707,7 @@ class TestTimeRule:
     def test_replace(self, event, earliest, latest, expected):
         eve = event()
         rule = get_rule_class(TIME)(
-            token(), eventgen_params={"earliest": earliest, "latest": latest}
+            token(), psa_data_params={"earliest": earliest, "latest": latest}
         )
         with get_patch("time_parse.convert_to_time", mocked_datetime), get_patch(
             "randint", 1439905910
@@ -743,7 +743,7 @@ class TestTimeRule:
         eve = event()
         rule = get_rule_class(TIME)(
             token(replacement=replacement),
-            eventgen_params={"earliest": "24h", "latest": "6h", "timezone": timezone},
+            psa_data_params={"earliest": "24h", "latest": "6h", "timezone": timezone},
         )
         with get_patch("time_parse.convert_to_time", mocked_datetime), get_patch(
             "randint", 1616801099

@@ -29,25 +29,25 @@ BULK_EVENT_COUNT = 250
 
 class SampleStanza(object):
     """
-    This class represents a stanza of the eventgen.conf.
+    This class represents a stanza of the pytest-splunk-addon-data.conf.
     It contains all the parameters for the stanza such as:
 
         * Sample Name
         * Tokens
         * Sample file's raw data
-        * Tokenised events
+        * Tokenized events
         * Sample ingestion type
 
     Args:
         sample_path (str): Path to the sample file
-        eventgen_params (dict): Dictionary representing eventgen.conf
+        psa_data_params (dict): Dictionary representing pytest-splunk-addon-data.conf
     """
 
-    def __init__(self, sample_path, eventgen_params):
+    def __init__(self, sample_path, psa_data_params):
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
-        self.metadata = self._parse_meta(eventgen_params)
-        self.sample_rules = list(self._parse_rules(eventgen_params, self.sample_path))
+        self.metadata = self._parse_meta(psa_data_params)
+        self.sample_rules = list(self._parse_rules(psa_data_params, self.sample_path))
         self.input_type = self.metadata.get("input_type", "default")
         self.host_count = 0
 
@@ -73,7 +73,7 @@ class SampleStanza(object):
         Tokenizes the raw events by replacing all the tokens in it.
 
         Args:
-            conf_name (str): Name of the conf file, "eventgen" or "psa-data-gen"
+            conf_name (str): Name of the conf file, "psa-data-gen"
         """
         if conf_name == "eventgen":
             required_event_count = self.metadata.get("count")
@@ -116,19 +116,19 @@ class SampleStanza(object):
 
         self.tokenized_events = bulk_event
 
-    def _parse_rules(self, eventgen_params, sample_path):
+    def _parse_rules(self, psa_data_params, sample_path):
         """
         Yield the rule instance based token replacement type.
 
         Args:
-            eventgen_params (dict): Eventgen stanzas dictionary
+            psa_data_params (dict): PSA data stanzas dictionary
             sample_path (str): Path to the sample file
         """
         token_list = self._sort_tokens_by_replacement_type_all(
-            eventgen_params["tokens"]
+            psa_data_params["tokens"]
         )
         for each_token, token_value in token_list:
-            applied_rule = Rule.parse_rule(token_value, eventgen_params, sample_path)
+            applied_rule = Rule.parse_rule(token_value, psa_data_params, sample_path)
             if not applied_rule:
                 raise_warning(
                     "Unidentified Rule: '{}' for token '{}'".format(
@@ -138,15 +138,15 @@ class SampleStanza(object):
             else:
                 yield applied_rule
 
-    def _parse_meta(self, eventgen_params):
+    def _parse_meta(self, psa_data_params):
         """
-        Return the metadata from eventgen stanzas.
+        Return the metadata from PSA data stanzas.
 
         Args:
-            eventgen_params (dict): Eventgen stanzas dictionary
+            psa_data_params (dict): PSA data stanzas dictionary
         """
         metadata = {
-            key: eventgen_params[key] for key in eventgen_params if key != "tokens"
+            key: psa_data_params[key] for key in psa_data_params if key != "tokens"
         }
         metadata.update(host=self.sample_name)
         if (
@@ -192,7 +192,7 @@ class SampleStanza(object):
                 )
             )
             metadata.update(timezone="0000")
-            eventgen_params.update(timezone="0000")
+            psa_data_params.update(timezone="0000")
         if metadata.get("timestamp_type") not in ["event", "plugin", None]:
             raise_warning(
                 "Invalid value for timestamp_type: '{}' using timestamp_type = plugin.".format(

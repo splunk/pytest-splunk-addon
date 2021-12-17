@@ -46,11 +46,11 @@ class SampleGenerator(object):
         Generate SampleEvent object
         """
         if not SampleGenerator.sample_stanzas:
-            eventgen_parser = PytestSplunkAddonDataParser(
+            psa_data_parser = PytestSplunkAddonDataParser(
                 self.addon_path, config_path=self.config_path
             )
-            sample_stanzas = eventgen_parser.get_sample_stanzas()
-            SampleGenerator.conf_name = eventgen_parser.conf_name
+            sample_stanzas = psa_data_parser.get_sample_stanzas()
+            SampleGenerator.conf_name = psa_data_parser.conf_name
             with ThreadPoolExecutor(min(20, max(len(sample_stanzas), 1))) as t:
                 t.map(SampleStanza.get_raw_events, sample_stanzas)
             _ = list(
