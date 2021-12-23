@@ -4,7 +4,6 @@ metadata:
   labels:
     app: sc4s
   name: sc4s-service
-  namespace: splunk-deployment
 spec:
   ports:
   - name: port-1

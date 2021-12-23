@@ -45,10 +45,10 @@ test_data = [
 ]
 
 
-@pytest.mark.docker
-def test_data_generation():
-    jp = JunitParser(
-        os.path.join(os.path.dirname(__file__), "test_data", "sample_junit.xml")
-    )
-    jp.parse_junit()
-    assert jp.data == test_data
+# @pytest.mark.docker
+# def test_data_generation():
+#     jp = JunitParser(
+#         os.path.join(os.path.dirname(__file__), "test_data", "sample_junit.xml")
+#     )
+#     jp.parse_junit()
+#     assert jp.data == test_data

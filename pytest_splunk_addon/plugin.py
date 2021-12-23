@@ -20,6 +20,8 @@ import traceback
 from .standard_lib import AppTestGenerator
 from .standard_lib.cim_compliance import CIMReportPlugin
 from filelock import FileLock
+import os
+from time import sleep
 
 LOG_FILE = "pytest_splunk_addon.log"
 
@@ -115,7 +117,33 @@ def pytest_sessionstart(session):
         sample_generator = SampleXdistGenerator(app_path, config_path)
         sample_generator.get_samples(store_events)
 
-
+def pytest_sessionfinish(session,exitstatus):
+    LOGGER.info('-----------------SessionFinish------------------')
+    os.system('kubectl delete -f k8s_manifests/sc4s_deployment.yml -n temp-addon-new')
+    sleep(15)
+    os.system('kubectl delete -f k8s_manifests/sc4s_service.yml -n temp-addon-new')
+    sleep(15)
+    os.system('kubectl delete -f k8s_manifests/uf_updated_deployment.yml -n temp-addon-new')
+    sleep(15)
+    os.system('kubectl delete -f k8s_manifests/uf_service.yml -n temp-addon-new')
+    sleep(15)
+    os.system('kubectl delete -f k8s_manifests/splunk_standalone_new.yml -n temp-addon-new')
+    sleep(15)
+    os.system('kubectl delete standalone s1 -n temp-addon-new')
+    sleep(15)
+    os.system('kubectl delete configmap splunk-apps -n temp-addon-new')
+    sleep(15)
+    os.system('kubectl delete configmap splunk-licenses -n temp-addon-new')
+    sleep(15)
+    os.system('kubectl delete secret splunk-temp-addon-new-secret -n temp-addon-new')
+    sleep(15)
+    os.system('kubectl delete configmap splunk-apps temp-addon-new')
+    sleep(15)
+    os.system('kubectl delete -f k8s_manifests/splunk-operator-install.yml -n temp-addon-new')
+    sleep(60)
+    os.system('kubectl delete -n temp-addon-new')
+    sleep(60)
+    
 def pytest_generate_tests(metafunc):
     """
     Parse the fixture dynamically.
