@@ -36,10 +36,10 @@ from .standard_lib.event_ingestors import IngestorHelper
 import configparser
 from filelock import FileLock
 import subprocess
-from kubernetes import client, config
+# from kubernetes import client, config
 import sys
 
-config.load_kube_config()
+# config.load_kube_config()
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
@@ -513,71 +513,78 @@ def uf_docker(request):
     """
     Provides IP of the uf server and management port based on pytest-args(splunk_type)
     """
-    LOGGER.info("Starting docker_service=uf")
-    SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
-    LOGGER.info('(((((((((((((((())))))))))))))))))))))))')
-    LOGGER.info(SPLUNK_ADDON)
-
-    cwd = os.getcwd()
-    LOGGER.info("%s is current working directory",cwd)
-    # LOGGER.info("mounting directory to minikube")
-    # os.system("minikube mount {}:{} 2>&1 &".format(cwd,cwd))
-
-    os.environ["SPLUNK_ADDON"]=SPLUNK_ADDON
-    os.system('envsubst < k8s_manifests/uf_deployment.yml > k8s_manifests/uf_updated_deployment.yml')
-    LOGGER.info('creating UF deployment')
-    os.system('kubectl apply -f k8s_manifests/uf_updated_deployment.yml -n temp-addon-new')
-    sleep(30)
-    os.system("kubectl wait deployment -n temp-addon-new --for=condition=available --timeout=900s -l='app=uf'")
-    os.system("kubectl wait pod -n temp-addon-new --for=condition=ready --timeout=300s -l='app=uf'")
-    # sleep(60)
-    LOGGER.info('UF Service.............................')
-    os.system("kubectl apply -f k8s_manifests/uf_service.yml -n temp-addon-new")
-    sleep(30)
-    LOGGER.info('exposing UF service...')
-    os.system('kubectl port-forward svc/uf-service -n temp-addon-new :8089 > ./exposed_uf_ports.log 2>&1 &')
-    sleep(30)
-    try:
-        f = open('./exposed_uf_ports.log','r')
-        lines = f.readlines()
-        count = 0
-        for line in lines:
-            count+=1
-            if count%2==0:
-                print(line.strip())
-                service_port = str(line[-5:-1])
-                exposed_port = str(line[-14:-9])
-                if service_port == "8089":
-                    os.environ['splunk_uf_port']=exposed_port
-    except Exception as e:
-        LOGGER.error("Exception occured while port-forwarding")
-
-    # os.environ["CURRENT_DIR"] = os.getcwd()
-    # if worker_id:
-    #     # get the temp directory shared by all workers
-    #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
-    #     fn = root_tmp_dir / "pytest_docker"
-    #     with FileLock(str(fn) + ".lock"):
-    #         docker_services.start("uf")
-    # uf_info = {
-    #     "uf_host": docker_services.docker_ip,
-    #     "uf_port": docker_services.port_for("uf", 8089),
-    #     "uf_username": request.config.getoption("splunk_uf_user"),
-    #     "uf_password": request.config.getoption("splunk_uf_password"),
-    # }
-    # for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
-    #     if is_responsive_uf(uf_info):
-    #         break
-    #     sleep(1)
     uf_info = {
-        "uf_host": "localhost",
-        "uf_port": int(os.getenv('splunk_uf_port')),
+        "uf_host": request.config.getoption("splunk_uf_host"),
+        "uf_port": request.config.getoption("splunk_uf_port"),
         "uf_username": request.config.getoption("splunk_uf_user"),
         "uf_password": request.config.getoption("splunk_uf_password"),
     }
-    LOGGER.info("UF_INFO.........")
-    LOGGER.info(uf_info)
     return uf_info
+    # LOGGER.info("Starting docker_service=uf")
+    # SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
+    # LOGGER.info('(((((((((((((((())))))))))))))))))))))))')
+    # LOGGER.info(SPLUNK_ADDON)
+
+    # cwd = os.getcwd()
+    # LOGGER.info("%s is current working directory",cwd)
+    # # LOGGER.info("mounting directory to minikube")
+    # # os.system("minikube mount {}:{} 2>&1 &".format(cwd,cwd))
+
+    # os.environ["SPLUNK_ADDON"]=SPLUNK_ADDON
+    # os.system('envsubst < k8s_manifests/uf_deployment.yml > k8s_manifests/uf_updated_deployment.yml')
+    # LOGGER.info('creating UF deployment')
+    # os.system('kubectl apply -f k8s_manifests/uf_updated_deployment.yml -n temp-addon-new')
+    # sleep(30)
+    # os.system("kubectl wait deployment -n temp-addon-new --for=condition=available --timeout=900s -l='app=uf'")
+    # os.system("kubectl wait pod -n temp-addon-new --for=condition=ready --timeout=300s -l='app=uf'")
+    # # sleep(60)
+    # LOGGER.info('UF Service.............................')
+    # os.system("kubectl apply -f k8s_manifests/uf_service.yml -n temp-addon-new")
+    # sleep(30)
+    # LOGGER.info('exposing UF service...')
+    # os.system('kubectl port-forward svc/uf-service -n temp-addon-new :8089 > ./exposed_uf_ports.log 2>&1 &')
+    # sleep(30)
+    # try:
+    #     f = open('./exposed_uf_ports.log','r')
+    #     lines = f.readlines()
+    #     count = 0
+    #     for line in lines:
+    #         count+=1
+    #         if count%2==0:
+    #             print(line.strip())
+    #             service_port = str(line[-5:-1])
+    #             exposed_port = str(line[-14:-9])
+    #             if service_port == "8089":
+    #                 os.environ['splunk_uf_port']=exposed_port
+    # except Exception as e:
+    #     LOGGER.error("Exception occured while port-forwarding")
+
+    # # os.environ["CURRENT_DIR"] = os.getcwd()
+    # # if worker_id:
+    # #     # get the temp directory shared by all workers
+    # #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
+    # #     fn = root_tmp_dir / "pytest_docker"
+    # #     with FileLock(str(fn) + ".lock"):
+    # #         docker_services.start("uf")
+    # # uf_info = {
+    # #     "uf_host": docker_services.docker_ip,
+    # #     "uf_port": docker_services.port_for("uf", 8089),
+    # #     "uf_username": request.config.getoption("splunk_uf_user"),
+    # #     "uf_password": request.config.getoption("splunk_uf_password"),
+    # # }
+    # # for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
+    # #     if is_responsive_uf(uf_info):
+    # #         break
+    # #     sleep(1)
+    # uf_info = {
+    #     "uf_host": "localhost",
+    #     "uf_port": int(os.getenv('splunk_uf_port')),
+    #     "uf_username": request.config.getoption("splunk_uf_user"),
+    #     "uf_password": request.config.getoption("splunk_uf_password"),
+    # }
+    # LOGGER.info("UF_INFO.........")
+    # LOGGER.info(uf_info)
+    # return uf_info
 
 
 @pytest.fixture(scope="session")
@@ -630,9 +637,9 @@ def splunk_docker(request):
     sleep(30)
     os.system('kubectl apply -f k8s_manifests/splunk-operator-install.yml -n temp-addon-new')
     sleep(60)
-    os.system('kubectl create configmap splunk-apps --from-file=tests/addons/$SPLUNK_ADDON.tgz --from-file=tests/addons/indexes.tgz -n temp-addon-new')
+    os.system('kubectl create configmap splunk-apps --from-file=tests/src/$SPLUNK_ADDON.tgz --from-file=tests/src/indexes.tgz -n temp-addon-new')
     sleep(30)
-    os.system('kubectl create configmap splunk-licenses --from-file=tests/addons/enterprise.lic -n temp-addon-new')
+    os.system('kubectl create configmap splunk-licenses --from-file=tests/src/enterprise.lic -n temp-addon-new')
     sleep(30)
     os.system('kubectl create secret generic splunk-temp-addon-new-secret --from-literal=\'password=Chang3d!\' --from-literal=\'hec_token=9b741d03-43e9-4164-908b-e09102327d22\' -n temp-addon-new')
     sleep(30)

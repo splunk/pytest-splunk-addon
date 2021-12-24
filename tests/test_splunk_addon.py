@@ -84,6 +84,11 @@ def setup_test_dir(testdir):
         os.path.join(testdir.tmpdir, "k8s_manifests"),
     )
 
+    shutil.copytree(
+        os.path.join(testdir.request.config.invocation_dir, "tests/src"),
+        os.path.join(testdir.tmpdir, "tests/src"),
+    )
+
 
 @pytest.mark.external
 def test_splunk_connection_external(testdir):
