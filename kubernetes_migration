@@ -51,9 +51,6 @@ Compress file to .tgz
 https://stackoverflow.com/questions/52369247/namespace-stuck-as-terminating-how-i-removed-it
 
 
-
-
-
 Create secrets to use during splunk spin up
     kubectl create secret generic splunk-default-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22'
     

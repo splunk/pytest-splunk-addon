@@ -613,7 +613,6 @@ def splunk_docker(request):
         dict: Details of the splunk instance including host, port, username & password.
     """
     LOGGER.info("Starting docker_service=splunk")
-    # SPLUNK_APP_PACKAGE = os.getenv("SPLUNK_APP_PACKAGE")
     LOGGER.info('********************************')
     cwd = os.getcwd()
     LOGGER.info(cwd)
@@ -622,25 +621,16 @@ def splunk_docker(request):
     LOGGER.info(SPLUNK_ADDON)
 
     os.environ["SPLUNK_ADDON"]=SPLUNK_ADDON
-    # list_files = subprocess.check_output("kubectl get ns",shell=True)
-    # LOGGER.info(list_files)
-    # output=os.system("ls -al tests/addons")
-
-    # LOGGER.info(output)
-
-    # os.system("kubectl create secret generic splunk-default-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22'")
-    # sleep(30)
-    # context=subprocess.check_output('kubectl config use-context minikube',shell=True)
-    # context=subprocess.check_output('kubectl config --kubeconfig=/.kube/config use-context minikube', shell=True)
-    # LOGGER.info(context)
     os.system('kubectl create ns temp-addon-new')
     sleep(30)
+    os.system('kubectl run nginx -n temp-addon-new --image=nginx --port=80 --expose || exit 1')
+    sleep(15)
+    os.system('find ./tests/src -iname "*.tgz" -exec kubectl cp {} nginx:/usr/share/nginx/html -n temp-addon-new \;')
+    sleep(15)
+    os.system('find ./tests/src -iname "*.lic" -exec kubectl cp {} nginx:/usr/share/nginx/html -n temp-addon-new \;')
+    sleep(15)
     os.system('kubectl apply -f k8s_manifests/splunk-operator-install.yml -n temp-addon-new')
     sleep(60)
-    os.system('kubectl create configmap splunk-apps --from-file=tests/src/$SPLUNK_ADDON.tgz --from-file=tests/src/indexes.tgz -n temp-addon-new')
-    sleep(30)
-    os.system('kubectl create configmap splunk-licenses --from-file=tests/src/enterprise.lic -n temp-addon-new')
-    sleep(30)
     os.system('kubectl create secret generic splunk-temp-addon-new-secret --from-literal=\'password=Chang3d!\' --from-literal=\'hec_token=9b741d03-43e9-4164-908b-e09102327d22\' -n temp-addon-new')
     sleep(30)
     os.system('envsubst < k8s_manifests/splunk.yml > k8s_manifests/splunk_standalone_new.yml')
@@ -648,7 +638,6 @@ def splunk_docker(request):
     os.system('kubectl apply -f k8s_manifests/splunk_standalone_new.yml -n temp-addon-new')
     sleep(30)
     os.system('kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=300s -n temp-addon-new')
-    # sleep(30)
     LOGGER.info('exposing service...')
     os.system('kubectl port-forward svc/splunk-s1-standalone-service -n temp-addon-new :8000 :8088 :8089 > ./exposed_ports.log 2>&1 &')
     sleep(30)
@@ -670,20 +659,7 @@ def splunk_docker(request):
                     os.environ['port']=exposed_port
     except Exception as e:
         LOGGER.error("Exception occured while port-forwarding")
-    # os.system('kubectl create configmap splunk-apps --from-file=$SPLUNK_APP_PACKAGE.tgz --from-file=indexes.tgz')
-    # sleep(30)
 
-    # ##########################################################
-    # os.system('envsubst < k8s_manifests/splunk.yml > k8s_manifests/splunk_standalone.yml')
-    # os.system('kubectl apply -f k8s_manifests/splunk_standalone.yml')
-
-    # sleep(30)
-
-    # os.system('kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=300s')
-
-    # sleep(60)
-
-    # os.system('kubectl port-forward svc/splunk-s1-standalone-service 8000:8000 8088:8088 8089:8089 &')
     # ##########################################################
     # if worker_id:
     #     # get the temp directory shared by all workers
@@ -712,12 +688,6 @@ def splunk_docker(request):
         splunk_info.get("port_hec"),
         splunk_info.get("port_s2s"),
     )
-
-    # docker_services.wait_until_responsive(
-    #     timeout=180.0,
-    #     pause=0.5,
-    #     check=lambda: is_responsive_splunk(splunk_info),
-    # )
 
     return splunk_info
 
@@ -789,7 +759,6 @@ def sc4s_docker():
     LOGGER.info('SC4S wait for pod.............................')
     os.system("kubectl wait deployment -n temp-addon-new --for=condition=available --timeout=900s -l='app=sc4s'")
     os.system("kubectl wait pod -n temp-addon-new --for=condition=ready --timeout=300s -l='app=sc4s'")
-    sleep(60)
     LOGGER.info('SC4S Service.............................')
     os.system("kubectl apply -f k8s_manifests/sc4s_service.yml -n temp-addon-new")
     sleep(30)

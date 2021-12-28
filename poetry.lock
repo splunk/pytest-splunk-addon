@@ -435,14 +435,15 @@ six = "*"
 
 [[package]]
 name = "lovely-pytest-docker"
-version = "0.2.1"
+version = "0.3.0"
 description = "Pytest testing utilities with docker containers."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
 pytest = "*"
+six = "*"
 
 [[package]]
 name = "lxml"
@@ -1096,12 +1097,12 @@ docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [extras]
-docker = ["lovely-pytest-docker"]
+docker = []
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "9251a5beefdafe502d41b2fad83b030ae40df0622a0601661ba50f296556b7dc"
+content-hash = "8b3929b24b7118bc43ad31640e42a2005149270976d7e41aa9c9077537009ed4"
 
 [metadata.files]
 addonfactory-splunk-conf-parser-lib = [
@@ -1306,7 +1307,7 @@ langdetect = [
     {file = "langdetect-1.0.9.tar.gz", hash = "sha256:cbc1fef89f8d062739774bd51eda3da3274006b3661d199c2655f6b3f6d605a0"},
 ]
 lovely-pytest-docker = [
-    {file = "lovely-pytest-docker-0.2.1.tar.gz", hash = "sha256:944ecf259c2144e1857e9ff1ac79cfaef88bd6aabf4e99cc16d64783345826f0"},
+    {file = "lovely-pytest-docker-0.3.0.tar.gz", hash = "sha256:b8333ae52faefc92ffaeed3e02d7664b7b02df999f621f1635cb6e3fbb7e145c"},
 ]
 lxml = [
     {file = "lxml-4.6.4-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:bbf2dc330bd44bfc0254ab37677ec60f7c7ecea55ad8ba1b8b2ea7bf20c265f5"},

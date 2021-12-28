@@ -5,16 +5,9 @@ metadata:
   finalizers:
   - enterprise.splunk.com/delete-pvc
 spec:
-  volumes:
-    - name: licenses
-      configMap:
-        name: splunk-licenses
-    - name: apps
-      configMap:
-        name: splunk-apps
   defaults: |-
     splunk:
       apps_location:
-        - "/mnt/apps/$SPLUNK_ADDON.tgz"
-        - "/mnt/apps/indexes.tgz"
-  licenseUrl: /mnt/licenses/enterprise.lic
+        - http://nginx/$SPLUNK_ADDON.tgz
+        - http://nginx/indexes.tgz
+  licenseUrl: http://nginx/enterprise.lic
