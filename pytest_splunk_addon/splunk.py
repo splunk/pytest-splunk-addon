@@ -602,7 +602,7 @@ def uf_external(request):
 
 
 @pytest.fixture(scope="session")
-def splunk_docker(request):
+def splunk_docker(request,worker_id,tmp_path_factory):
     """
     Splunk docker depends on lovely-pytest-docker to create the docker instance
     of Splunk this may be changed in the future.
@@ -612,35 +612,45 @@ def splunk_docker(request):
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
-    LOGGER.info("Starting docker_service=splunk")
-    LOGGER.info('********************************')
-    cwd = os.getcwd()
-    LOGGER.info(cwd)
-    SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
-    LOGGER.info('(((((((((((((((())))))))))))))))))))))))')
-    LOGGER.info(SPLUNK_ADDON)
+    LOGGER.info(os.environ.get("PYTEST_XDIST_WORKER"))
+    if ( "PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
+        LOGGER.info('PYTEST_XDIST_WORKER {} and worker_id is {}'.format(os.environ.get("PYTEST_XDIST_WORKER"),worker_id))
+        LOGGER.info("Starting docker_service=splunk for worker id {}".format(str(os.environ.get("PYTEST_XDIST_WORKER"))))
+        LOGGER.info('********************************')
+        cwd = os.getcwd()
+        LOGGER.info(cwd)
+        SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
+        LOGGER.info('(((((((((((((((())))))))))))))))))))))))')
+        LOGGER.info(SPLUNK_ADDON)
 
-    os.environ["SPLUNK_ADDON"]=SPLUNK_ADDON
-    os.system('kubectl create ns temp-addon-new')
-    sleep(30)
-    os.system('kubectl run nginx -n temp-addon-new --image=nginx --port=80 --expose || exit 1')
-    sleep(15)
-    os.system('find ./tests/src -iname "*.tgz" -exec kubectl cp {} nginx:/usr/share/nginx/html -n temp-addon-new \;')
-    sleep(15)
-    os.system('find ./tests/src -iname "*.lic" -exec kubectl cp {} nginx:/usr/share/nginx/html -n temp-addon-new \;')
-    sleep(15)
-    os.system('kubectl apply -f k8s_manifests/splunk-operator-install.yml -n temp-addon-new')
-    sleep(60)
-    os.system('kubectl create secret generic splunk-temp-addon-new-secret --from-literal=\'password=Chang3d!\' --from-literal=\'hec_token=9b741d03-43e9-4164-908b-e09102327d22\' -n temp-addon-new')
-    sleep(30)
-    os.system('envsubst < k8s_manifests/splunk.yml > k8s_manifests/splunk_standalone_new.yml')
-    LOGGER.info('creating splunk deployment')
-    os.system('kubectl apply -f k8s_manifests/splunk_standalone_new.yml -n temp-addon-new')
-    sleep(30)
-    os.system('kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=300s -n temp-addon-new')
-    LOGGER.info('exposing service...')
-    os.system('kubectl port-forward svc/splunk-s1-standalone-service -n temp-addon-new :8000 :8088 :8089 > ./exposed_ports.log 2>&1 &')
-    sleep(30)
+        os.environ["SPLUNK_ADDON"]=SPLUNK_ADDON
+        os.system('kubectl create ns temp-addon-new')
+        sleep(30)
+        os.system('kubectl run nginx -n temp-addon-new --image=nginx --port=80 --expose || exit 1')
+        sleep(15)
+        os.system('find ./tests/src -iname "*.tgz" -exec kubectl cp {} nginx:/usr/share/nginx/html -n temp-addon-new \;')
+        sleep(15)
+        os.system('find ./tests/src -iname "*.lic" -exec kubectl cp {} nginx:/usr/share/nginx/html -n temp-addon-new \;')
+        sleep(15)
+        os.system('kubectl apply -f k8s_manifests/splunk-operator-install.yml -n temp-addon-new')
+        sleep(60)
+        os.system('kubectl create secret generic splunk-temp-addon-new-secret --from-literal=\'password=Chang3d!\' --from-literal=\'hec_token=9b741d03-43e9-4164-908b-e09102327d22\' -n temp-addon-new')
+        sleep(30)
+        os.system('envsubst < k8s_manifests/splunk.yml > k8s_manifests/splunk_standalone_new.yml')
+        LOGGER.info('creating splunk deployment')
+        os.system('kubectl apply -f k8s_manifests/splunk_standalone_new.yml -n temp-addon-new')
+        sleep(30)
+        os.system('kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=300s -n temp-addon-new')
+        LOGGER.info('exposing service...')
+        os.system('kubectl port-forward svc/splunk-s1-standalone-service -n temp-addon-new :8000 :8088 :8089 > ./exposed_ports.log 2>&1 &')
+        sleep(30)
+        LOGGER.info('splunk PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
+        if "PYTEST_XDIST_WORKER" in os.environ:
+            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_splunk", "w+"):
+                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
+    else:
+        while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_splunk"):
+            sleep(1)
     try:
         f = open('./exposed_ports.log','r')
         lines = f.readlines()
@@ -659,6 +669,16 @@ def splunk_docker(request):
                     os.environ['port']=exposed_port
     except Exception as e:
         LOGGER.error("Exception occured while port-forwarding")
+    # if worker_id:
+    #     # get the temp directory shared by all workers
+    #     LOGGER.info('worker id')
+    #     LOGGER.info(worker_id)
+    #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
+    #     LOGGER.info(root_tmp_dir)
+    #     fn = root_tmp_dir / "pytest_kubernetes"
+    #     LOGGER.info(fn)
+    #     with FileLock(str(fn) + ".lock"):
+    #         LOGGER.info('file_lock')
 
     # ##########################################################
     # if worker_id:
@@ -735,36 +755,54 @@ def splunk_external(request):
         )
     return splunk_info
 
+# def get_sc4s_port():
+#     try:
+#         f = open('./exposed_sc4s_ports.log','r')
+#         lines = f.readlines()
+#         count = 0
+#         for line in lines:
+#             count+=1
+#             if count%2==0:
+#                 print(line.strip())
+#                 service_port = str(line[-4:-1])
+#                 exposed_port = (str(line[-13:-8]))
+#                 if service_port == "514":
+#                     os.environ['sc4s_port']=exposed_port
+#     except Exception as e:
+#         LOGGER.error("Exception occured while port-forwarding")
 
 @pytest.fixture(scope="session")
 def sc4s_docker():
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
     """
-    # if worker_id:
-    #     # get the temp directory shared by all workers
-    #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
-    #     fn = root_tmp_dir / "pytest_docker"
-    #     with FileLock(str(fn) + ".lock"):
-    #         docker_services.start("sc4s")
-    # config.load_kube_config(context="minikube")
-    LOGGER.info('SC4S.............................')
-    cwd = os.getcwd()
-    LOGGER.info(cwd)
-    list_files = subprocess.check_output("kubectl get ns",shell=True)
-    LOGGER.info(list_files)
-    LOGGER.info('SC4S Deployment.............................')
-    os.system("kubectl apply -f k8s_manifests/sc4s_deployment.yml -n temp-addon-new")
-    sleep(60)
-    LOGGER.info('SC4S wait for pod.............................')
-    os.system("kubectl wait deployment -n temp-addon-new --for=condition=available --timeout=900s -l='app=sc4s'")
-    os.system("kubectl wait pod -n temp-addon-new --for=condition=ready --timeout=300s -l='app=sc4s'")
-    LOGGER.info('SC4S Service.............................')
-    os.system("kubectl apply -f k8s_manifests/sc4s_service.yml -n temp-addon-new")
-    sleep(30)
-    LOGGER.info('exposing service...')
-    os.system('kubectl port-forward svc/sc4s-service -n temp-addon-new :514 > ./exposed_sc4s_ports.log 2>&1 &')
-    sleep(30)
+    LOGGER.info('in sc4s {}'.format(os.environ.get("PYTEST_XDIST_WORKER")))
+    if ( "PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
+        LOGGER.info('PYTEST_XDIST_WORKER for sc4s is {}'.format(os.environ.get("PYTEST_XDIST_WORKER")))
+        LOGGER.info("Starting docker_service=sc4s for worker id {}".format(str(os.environ.get("PYTEST_XDIST_WORKER"))))
+        LOGGER.info('SC4S.............................')
+        cwd = os.getcwd()
+        LOGGER.info(cwd)
+        LOGGER.info('SC4S Deployment.............................')
+        os.system("kubectl apply -f k8s_manifests/sc4s_deployment.yml -n temp-addon-new")
+        sleep(60)
+        LOGGER.info('SC4S wait for pod.............................')
+        os.system("kubectl wait deployment -n temp-addon-new --for=condition=available --timeout=900s -l='app=sc4s'")
+        os.system("kubectl wait pod -n temp-addon-new --for=condition=ready --timeout=300s -l='app=sc4s'")
+        LOGGER.info('SC4S Service.............................')
+        os.system("kubectl apply -f k8s_manifests/sc4s_service.yml -n temp-addon-new")
+        sleep(30)
+        LOGGER.info('exposing service...')
+        os.system('kubectl port-forward svc/sc4s-service -n temp-addon-new :514 > ./exposed_sc4s_ports.log 2>&1 &')
+        sleep(30)
+        LOGGER.info('sc4s PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
+        if "PYTEST_XDIST_WORKER" in os.environ:
+            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_sc4s", "w+"):
+                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
+    else:
+        while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_sc4s"):
+            sleep(1)
+
     try:
         f = open('./exposed_sc4s_ports.log','r')
         lines = f.readlines()
@@ -778,8 +816,8 @@ def sc4s_docker():
                 if service_port == "514":
                     os.environ['sc4s_port']=exposed_port
     except Exception as e:
-        LOGGER.error("Exception occured while port-forwarding")
-
+        LOGGER.error("Exception occured while port-forwarding {}".format(e))
+    
     ports = {514: int(os.getenv('sc4s_port'))}
     for x in range(5000, 5007):
         ports.update({x: x})
