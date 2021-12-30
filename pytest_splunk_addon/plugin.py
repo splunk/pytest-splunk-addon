@@ -143,11 +143,13 @@ def pytest_sessionfinish(session,exitstatus):
         SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
         LOGGER.info(SPLUNK_ADDON)
         namespace_name=str(SPLUNK_ADDON.replace("_","-").lower())
-        os.system('kubectl delete -f k8s_manifests/sc4s_deployment_new.yml -n {}'.format(namespace_name))
+        os.system('kubectl delete -f k8s_manifests/sc4s_deployment_updated.yml -n {}'.format(namespace_name))
         sleep(15)
         os.system('kubectl delete -f k8s_manifests/sc4s_service.yml -n {}'.format(namespace_name))
         sleep(15)
-        os.system('kubectl delete -f k8s_manifests/splunk_standalone_new.yml -n {}'.format(namespace_name))
+        os.system('kubectl delete -f k8s_manifests/splunk_standalone_updated.yml -n {}'.format(namespace_name))
+        sleep(15)
+        os.system('kubectl delete standalone s1 -n {}'.format(namespace_name))
         sleep(15)
         os.system('kubectl delete svc nginx -n {}'.format(namespace_name))
         sleep(15)
@@ -155,18 +157,22 @@ def pytest_sessionfinish(session,exitstatus):
         sleep(15)
         os.system('kubectl delete secret splunk-{0}-secret -n {1}'.format(namespace_name,namespace_name))
         sleep(15)
-        os.system('kubectl delete -f k8s_manifests/splunk-operator-install.yml -n {}'.format(namespace_name))
+        os.system('kubectl delete -f k8s_manifests/splunk_operator_install_updated.yml -n {}'.format(namespace_name))
         sleep(60)
         os.system('kubectl delete ns {}'.format(namespace_name))
         sleep(60)
-        if os.path.exists('k8s_manifests/sc4s_deployment_new.yml'):
-            os.remove('k8s_manifests/sc4s_deployment_new.yml')
+        if os.path.exists('k8s_manifests/sc4s_deployment_updated.yml'):
+            os.remove('k8s_manifests/sc4s_deployment_updated.yml')
         else:
-            LOGGER.error('k8s_manifests/sc4s_deployment_new.yml not found')
-        if os.path.exists('k8s_manifests/splunk_standalone_new.yml'):
-            os.remove('k8s_manifests/splunk_standalone_new.yml')
+            LOGGER.error('k8s_manifests/sc4s_deployment_updated.yml not found')
+        if os.path.exists('k8s_manifests/splunk_standalone_updated.yml'):
+            os.remove('k8s_manifests/splunk_standalone_updated.yml')
         else:
-            LOGGER.error('k8s_manifests/splunk_standalone_new.yml not found')
+            LOGGER.error('k8s_manifests/splunk_standalone_updated.yml not found')
+        if os.path.exists('k8s_manifests/splunk_operator_install_updated.yml'):
+            os.remove('k8s_manifests/splunk_operator_install_updated.yml')
+        else:
+            LOGGER.error('k8s_manifests/splunk_operator_install_updated.yml not found')
     
 def pytest_generate_tests(metafunc):
     """
