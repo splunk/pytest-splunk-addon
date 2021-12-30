@@ -434,18 +434,6 @@ python-versions = "*"
 six = "*"
 
 [[package]]
-name = "lovely-pytest-docker"
-version = "0.3.0"
-description = "Pytest testing utilities with docker containers."
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-pytest = "*"
-six = "*"
-
-[[package]]
 name = "lxml"
 version = "4.6.4"
 description = "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
@@ -1102,7 +1090,7 @@ docker = []
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "8b3929b24b7118bc43ad31640e42a2005149270976d7e41aa9c9077537009ed4"
+content-hash = "2631142522c2035b79d08ba6e6f86ba6f9e9e55b71ee93aec53755a386480e2d"
 
 [metadata.files]
 addonfactory-splunk-conf-parser-lib = [
@@ -1305,9 +1293,6 @@ kubetest = [
 langdetect = [
     {file = "langdetect-1.0.9-py2-none-any.whl", hash = "sha256:7cbc0746252f19e76f77c0b1690aadf01963be835ef0cd4b56dddf2a8f1dfc2a"},
     {file = "langdetect-1.0.9.tar.gz", hash = "sha256:cbc1fef89f8d062739774bd51eda3da3274006b3661d199c2655f6b3f6d605a0"},
-]
-lovely-pytest-docker = [
-    {file = "lovely-pytest-docker-0.3.0.tar.gz", hash = "sha256:b8333ae52faefc92ffaeed3e02d7664b7b02df999f621f1635cb6e3fbb7e145c"},
 ]
 lxml = [
     {file = "lxml-4.6.4-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:bbf2dc330bd44bfc0254ab37677ec60f7c7ecea55ad8ba1b8b2ea7bf20c265f5"},
