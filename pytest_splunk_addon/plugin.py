@@ -21,6 +21,8 @@ from .standard_lib import AppTestGenerator
 from .standard_lib.cim_compliance import CIMReportPlugin
 from filelock import FileLock
 import os
+import subprocess
+import sys
 from time import sleep
 
 LOG_FILE = "pytest_splunk_addon.log"
@@ -119,25 +121,52 @@ def pytest_sessionstart(session):
 
 def pytest_sessionfinish(session,exitstatus):
     LOGGER.info('-----------------SessionFinish------------------ {}'.format(os.environ.get("PYTEST_XDIST_WORKER")))
-    if os.environ.get("PYTEST_XDIST_WORKER") == None:
-        os.system('kubectl delete -f k8s_manifests/sc4s_deployment.yml -n temp-addon-new')
+    try:
+        f = open("./splunk_type.txt","r")
+        splunk_type = f.read()
+        f.close()
+    except Exception as e:
+        LOGGER.error('splunk_type.txt not found')
+    if (os.environ.get("PYTEST_XDIST_WORKER")==None) and (splunk_type=="docker"):
+        if os.path.exists('./exposed_splunk_ports.log'):
+            os.remove('./exposed_splunk_ports.log')
+        else:
+            LOGGER.error('exposed_splunk_ports.log not found')
+        if os.path.exists('./exposed_sc4s_ports.log'):
+            os.remove('./exposed_sc4s_ports.log')
+        else:
+            LOGGER.error('exposed_sc4s_ports.log not found')
+        if os.path.exists('./splunk_type.txt'):
+            os.remove('./splunk_type.txt')
+        else:
+            LOGGER.error('splunk_type.txt not found')
+        SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
+        LOGGER.info(SPLUNK_ADDON)
+        namespace_name=str(SPLUNK_ADDON.replace("_","-").lower())
+        os.system('kubectl delete -f k8s_manifests/sc4s_deployment_new.yml -n {}'.format(namespace_name))
         sleep(15)
-        os.system('kubectl delete -f k8s_manifests/sc4s_service.yml -n temp-addon-new')
+        os.system('kubectl delete -f k8s_manifests/sc4s_service.yml -n {}'.format(namespace_name))
         sleep(15)
-        os.system('kubectl delete -f k8s_manifests/splunk_standalone_new.yml -n temp-addon-new')
+        os.system('kubectl delete -f k8s_manifests/splunk_standalone_new.yml -n {}'.format(namespace_name))
         sleep(15)
-        os.system('kubectl delete standalone s1 -n temp-addon-new')
+        os.system('kubectl delete svc nginx -n {}'.format(namespace_name))
         sleep(15)
-        os.system('kubectl delete svc nginx -n temp-addon-new')
+        os.system('kubectl delete pod nginx -n {}'.format(namespace_name))
         sleep(15)
-        os.system('kubectl delete pod nginx -n temp-addon-new')
+        os.system('kubectl delete secret splunk-{0}-secret -n {1}'.format(namespace_name,namespace_name))
         sleep(15)
-        os.system('kubectl delete secret splunk-temp-addon-new-secret -n temp-addon-new')
-        sleep(15)
-        os.system('kubectl delete -f k8s_manifests/splunk-operator-install.yml -n temp-addon-new')
+        os.system('kubectl delete -f k8s_manifests/splunk-operator-install.yml -n {}'.format(namespace_name))
         sleep(60)
-        os.system('kubectl delete ns temp-addon-new')
+        os.system('kubectl delete ns {}'.format(namespace_name))
         sleep(60)
+        if os.path.exists('k8s_manifests/sc4s_deployment_new.yml'):
+            os.remove('k8s_manifests/sc4s_deployment_new.yml')
+        else:
+            LOGGER.error('k8s_manifests/sc4s_deployment_new.yml not found')
+        if os.path.exists('k8s_manifests/splunk_standalone_new.yml'):
+            os.remove('k8s_manifests/splunk_standalone_new.yml')
+        else:
+            LOGGER.error('k8s_manifests/splunk_standalone_new.yml not found')
     
 def pytest_generate_tests(metafunc):
     """
