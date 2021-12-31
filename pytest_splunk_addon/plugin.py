@@ -122,58 +122,58 @@ def pytest_sessionstart(session):
 def pytest_sessionfinish(session,exitstatus):
     LOGGER.info('-----------------SessionFinish------------------ {}'.format(os.environ.get("PYTEST_XDIST_WORKER")))
     try:
-        f = open("./splunk_type.txt","r")
-        splunk_type = f.read()
-        f.close()
+        with open('./splunk_type.txt', 'r') as splunk_type_file:
+            for line in splunk_type_file:
+                splunk_type = line
+        if (os.environ.get("PYTEST_XDIST_WORKER")==None) and (splunk_type=="docker"):
+            if os.path.exists('./exposed_splunk_ports.log'):
+                os.remove('./exposed_splunk_ports.log')
+            else:
+                LOGGER.error('exposed_splunk_ports.log not found')
+            if os.path.exists('./exposed_sc4s_ports.log'):
+                os.remove('./exposed_sc4s_ports.log')
+            else:
+                LOGGER.error('exposed_sc4s_ports.log not found')
+            if os.path.exists('./splunk_type.txt'):
+                os.remove('./splunk_type.txt')
+            else:
+                LOGGER.error('splunk_type.txt not found')
+            SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
+            LOGGER.info(SPLUNK_ADDON)
+            namespace_name=str(SPLUNK_ADDON.replace("_","-").lower())
+            os.system('kubectl delete -f k8s_manifests/sc4s_deployment_updated.yml -n {}'.format(namespace_name))
+            sleep(15)
+            os.system('kubectl delete -f k8s_manifests/sc4s_service.yml -n {}'.format(namespace_name))
+            sleep(15)
+            os.system('kubectl delete -f k8s_manifests/splunk_standalone_updated.yml -n {}'.format(namespace_name))
+            sleep(15)
+            os.system('kubectl delete standalone s1 -n {}'.format(namespace_name))
+            sleep(15)
+            os.system('kubectl delete svc nginx -n {}'.format(namespace_name))
+            sleep(15)
+            os.system('kubectl delete pod nginx -n {}'.format(namespace_name))
+            sleep(15)
+            os.system('kubectl delete secret splunk-{0}-secret -n {1}'.format(namespace_name,namespace_name))
+            sleep(15)
+            os.system('kubectl delete -f k8s_manifests/splunk_operator_install_updated.yml -n {}'.format(namespace_name))
+            sleep(60)
+            os.system('kubectl delete ns {}'.format(namespace_name))
+            sleep(60)
+            if os.path.exists('k8s_manifests/sc4s_deployment_updated.yml'):
+                os.remove('k8s_manifests/sc4s_deployment_updated.yml')
+            else:
+                LOGGER.error('k8s_manifests/sc4s_deployment_updated.yml not found')
+            if os.path.exists('k8s_manifests/splunk_standalone_updated.yml'):
+                os.remove('k8s_manifests/splunk_standalone_updated.yml')
+            else:
+                LOGGER.error('k8s_manifests/splunk_standalone_updated.yml not found')
+            if os.path.exists('k8s_manifests/splunk_operator_install_updated.yml'):
+                os.remove('k8s_manifests/splunk_operator_install_updated.yml')
+            else:
+                LOGGER.error('k8s_manifests/splunk_operator_install_updated.yml not found')
     except Exception as e:
         LOGGER.error('splunk_type.txt not found')
     #modify if condition in try except..
-    if (os.environ.get("PYTEST_XDIST_WORKER")==None) and (splunk_type=="docker"):
-        if os.path.exists('./exposed_splunk_ports.log'):
-            os.remove('./exposed_splunk_ports.log')
-        else:
-            LOGGER.error('exposed_splunk_ports.log not found')
-        if os.path.exists('./exposed_sc4s_ports.log'):
-            os.remove('./exposed_sc4s_ports.log')
-        else:
-            LOGGER.error('exposed_sc4s_ports.log not found')
-        if os.path.exists('./splunk_type.txt'):
-            os.remove('./splunk_type.txt')
-        else:
-            LOGGER.error('splunk_type.txt not found')
-        SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
-        LOGGER.info(SPLUNK_ADDON)
-        namespace_name=str(SPLUNK_ADDON.replace("_","-").lower())
-        os.system('kubectl delete -f k8s_manifests/sc4s_deployment_updated.yml -n {}'.format(namespace_name))
-        sleep(15)
-        os.system('kubectl delete -f k8s_manifests/sc4s_service.yml -n {}'.format(namespace_name))
-        sleep(15)
-        os.system('kubectl delete -f k8s_manifests/splunk_standalone_updated.yml -n {}'.format(namespace_name))
-        sleep(15)
-        os.system('kubectl delete standalone s1 -n {}'.format(namespace_name))
-        sleep(15)
-        os.system('kubectl delete svc nginx -n {}'.format(namespace_name))
-        sleep(15)
-        os.system('kubectl delete pod nginx -n {}'.format(namespace_name))
-        sleep(15)
-        os.system('kubectl delete secret splunk-{0}-secret -n {1}'.format(namespace_name,namespace_name))
-        sleep(15)
-        os.system('kubectl delete -f k8s_manifests/splunk_operator_install_updated.yml -n {}'.format(namespace_name))
-        sleep(60)
-        os.system('kubectl delete ns {}'.format(namespace_name))
-        sleep(60)
-        if os.path.exists('k8s_manifests/sc4s_deployment_updated.yml'):
-            os.remove('k8s_manifests/sc4s_deployment_updated.yml')
-        else:
-            LOGGER.error('k8s_manifests/sc4s_deployment_updated.yml not found')
-        if os.path.exists('k8s_manifests/splunk_standalone_updated.yml'):
-            os.remove('k8s_manifests/splunk_standalone_updated.yml')
-        else:
-            LOGGER.error('k8s_manifests/splunk_standalone_updated.yml not found')
-        if os.path.exists('k8s_manifests/splunk_operator_install_updated.yml'):
-            os.remove('k8s_manifests/splunk_operator_install_updated.yml')
-        else:
-            LOGGER.error('k8s_manifests/splunk_operator_install_updated.yml not found')
     
 def pytest_generate_tests(metafunc):
     """

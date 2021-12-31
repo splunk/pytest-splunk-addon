@@ -437,9 +437,8 @@ def splunk(request, file_system_prerequisite):
     splunk_type = request.config.getoption("splunk_type")
     LOGGER.info("Get the Splunk instance of splunk_type=%s", splunk_type)
     #withopen file...
-    f = open("./splunk_type.txt","w")
-    f.write(splunk_type)
-    f.close()
+    with open("./splunk_type.txt","w") as splunk_type_file:
+        splunk_type_file.write(splunk_type)
     if splunk_type == "external":
         request.fixturenames.append("splunk_external")
         splunk_info = request.getfixturevalue("splunk_external")
@@ -609,27 +608,26 @@ def expose_ports_splunk_sc4s(file):
     #with open to open files
     #todo find a better way to expose ports
     try:
-        f = open(file,'r')
-        lines = f.readlines()
-        count = 0
-        for line in lines:
-            count+=1
-            if count%2==0:
-                print(line.strip())
-                service_port = re.search('[0-9]{3,4}$',line)
-                exposed_port = re.search('^Forwarding from \[\:\:1\]\:([0-9]{0,5})', line)
-                if service_port:
-                    service_port = service_port.group(0)
-                if exposed_port:
-                    exposed_port = exposed_port.group(1)
-                if service_port == "8000":
-                    os.environ['port_web']=exposed_port
-                if service_port == "8088":
-                    os.environ['port_hec']=exposed_port
-                if service_port == "8089":
-                    os.environ['port']=exposed_port
-                if service_port == "514":
-                    os.environ['sc4s_port']=exposed_port
+        with open(file, 'r') as exposed_ports_file:
+            count = 0
+            for line in exposed_ports_file:
+                count+=1
+                if count%2==0:
+                    print(line.strip())
+                    service_port = re.search('[0-9]{3,4}$',line)
+                    exposed_port = re.search('^Forwarding from \[\:\:1\]\:([0-9]{0,5})', line)
+                    if service_port:
+                        service_port = service_port.group(0)
+                    if exposed_port:
+                        exposed_port = exposed_port.group(1)
+                    if service_port == "8000":
+                        os.environ['port_web']=exposed_port
+                    if service_port == "8088":
+                        os.environ['port_hec']=exposed_port
+                    if service_port == "8089":
+                        os.environ['port']=exposed_port
+                    if service_port == "514":
+                        os.environ['sc4s_port']=exposed_port
     except Exception as e:
         LOGGER.error("Exception occured while port-forwarding")
 
