@@ -127,6 +127,7 @@ def pytest_sessionfinish(session,exitstatus):
         f.close()
     except Exception as e:
         LOGGER.error('splunk_type.txt not found')
+    #modify if condition in try except..
     if (os.environ.get("PYTEST_XDIST_WORKER")==None) and (splunk_type=="docker"):
         if os.path.exists('./exposed_splunk_ports.log'):
             os.remove('./exposed_splunk_ports.log')

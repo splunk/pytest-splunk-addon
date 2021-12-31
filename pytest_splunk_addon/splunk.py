@@ -436,6 +436,7 @@ def splunk(request, file_system_prerequisite):
     LOGGER.info('------------------------------')
     splunk_type = request.config.getoption("splunk_type")
     LOGGER.info("Get the Splunk instance of splunk_type=%s", splunk_type)
+    #withopen file...
     f = open("./splunk_type.txt","w")
     f.write(splunk_type)
     f.close()
@@ -605,6 +606,8 @@ def uf_external(request):
     return uf_info
 
 def expose_ports_splunk_sc4s(file):
+    #with open to open files
+    #todo find a better way to expose ports
     try:
         f = open(file,'r')
         lines = f.readlines()
@@ -661,11 +664,11 @@ def splunk_docker(request):
         os.system('kubectl wait pod nginx --for=condition=ready --timeout=300s -n {}'.format(namespace_name))
         os.system('find ./tests/src -iname "*.tgz" -exec kubectl cp {0} nginx:/usr/share/nginx/html -n {1} \;'.format('{}',namespace_name))
         sleep(15)
-        os.system('find ./tests/src -iname "*.lic" -exec kubectl cp {0} nginx:/usr/share/nginx/html -n {1} \;'.format('{}',namespace_name))
-        sleep(15)
+        #python method to replace env variables in yml
         os.system('envsubst < k8s_manifests/splunk_operator_install.yml > k8s_manifests/splunk_operator_install_updated.yml')
         os.system('kubectl apply -f k8s_manifests/splunk_operator_install_updated.yml -n {}'.format(namespace_name))
         sleep(60)
+        #random secrets for splunk
         os.system('kubectl create secret generic splunk-{0}-secret --from-literal=\'password=Chang3d!\' --from-literal=\'hec_token=9b741d03-43e9-4164-908b-e09102327d22\' -n {1}'.format(namespace_name,namespace_name))
         sleep(30)
         os.system('envsubst < k8s_manifests/splunk_standalone.yml > k8s_manifests/splunk_standalone_updated.yml')
@@ -688,7 +691,7 @@ def splunk_docker(request):
         "host": "localhost",
         "port": os.getenv('port'),
         "port_hec": os.getenv('port_hec'),
-        "port_s2s": "9997",
+        "port_s2s": "9997", #todo make dynamic while implementing uf
         "port_web": os.getenv('port_web'),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),

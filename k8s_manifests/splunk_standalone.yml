@@ -10,4 +10,3 @@ spec:
       apps_location:
         - http://nginx/$SPLUNK_ADDON.tgz
         - http://nginx/indexes.tgz
-  licenseUrl: http://nginx/enterprise.lic

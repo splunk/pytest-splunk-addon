@@ -9,18 +9,8 @@ Start Minikube in docker desktop with specified cpu, memory and kubernetes-versi
 Change context to use minikube
     kubectl config use-context minikube
 
-Convert addons in .tgz and copy them on minikube node
-    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/TA_broken_sourcetype.tgz /TA_broken_sourcetype.tgz
-    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/TA_broken.tgz /TA_broken.tgz
-    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/TA_CIM_Broken.tgz /TA_CIM_Broken.tgz
-    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/TA_CIM_Fiction.tgz /TA_CIM_Fiction.tgz
-    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/TA_fiction_indextime.tgz /TA_fiction_indextime.tgz
-    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/TA_fiction_indextime_broken.tgz /TA_fiction_indextime_broken.tgz
-    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/TA_fiction.tgz /TA_fiction.tgz
-    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/TA_requirement_test_modinput.tgz /TA_requirement_test_modinput.tgz
-    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/TA_requirement_test_uf.tgz /TA_requirement_test_uf.tgz
-    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/TA_requirement_test.tgz /TA_requirement_test.tgz
-    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/TA_SavedSearch.tgz /TA_SavedSearch.tgz
+Convert addons in .tgz and copy them in tests/src folder make sure to name the .tgz file with the specific name.
+    
 
 Get indexes in .tgz and copy them on minikube node
     git clone git@github.com:splunk/addonfactory-splunk_env_indexer.git
