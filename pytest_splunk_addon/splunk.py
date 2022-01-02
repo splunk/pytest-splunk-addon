@@ -38,6 +38,7 @@ from filelock import FileLock
 import subprocess
 import re
 import sys
+import yaml
 
 # config.load_kube_config()
 
@@ -631,6 +632,39 @@ def expose_ports_splunk_sc4s(file):
     except Exception as e:
         LOGGER.error("Exception occured while port-forwarding")
 
+def update_splunk_operator_version(folder,file):
+    try:
+        with open("{0}/{1}.yaml".format(folder,file), 'r') as splunk_operator_file:
+            docs = yaml.load_all(splunk_operator_file,Loader=yaml.FullLoader)
+            temp_list = []
+            for doc in docs:
+                if doc['kind'] == 'Deployment' and doc['metadata']['name'] == 'splunk-operator':
+                    # print(doc['spec']['template']['spec']['containers'])
+                    # print(doc['spec']['template']['spec']['containers'][0]['env'])
+                    for splunk_image in doc['spec']['template']['spec']['containers'][0]['env']:
+                        if splunk_image['name']=='RELATED_IMAGE_SPLUNK_ENTERPRISE':
+                            # print(splunk_image['value'])
+                            splunk_image['value'] = "docker.io/splunk/splunk:{}".format(os.getenv('SPLUNK_VERSION'))
+                temp_list.append(doc)
+            if not os.path.exists("{0}_updated".format(folder)):
+                os.makedirs("{0}_updated".format(folder))
+            with open("{0}_updated/{1}_updated.yaml".format(folder,file), 'w') as splunk_operator_file_updated:
+                splunk_operator_file_updated.write(yaml.dump_all(temp_list))
+    except Exception as e:
+        LOGGER.error("Error occured while updating {0}/{1}.yaml : {2}".format(folder,file,e))
+
+def update_splunk_sc4s_deployments(folder,file):
+    try:
+        with open("{0}/{1}.yaml".format(folder,file), 'r') as deployment_file:
+            # splunk_sc4s_deployment_file = deployment_file.read()
+            file_updated=os.path.expandvars(deployment_file.read())
+        if not os.path.exists("{0}_updated".format(folder)):
+            os.makedirs("{0}_updated".format(folder))
+        with open("{0}_updated/{1}_updated.yaml".format(folder,file),'w') as write_file:
+            write_file.write(file_updated)
+    except Exception as e:
+        LOGGER.error("Error occured while updating {0}/{1}.yaml : {2}".format(folder,file,e))
+
 @pytest.fixture(scope="session")
 def splunk_docker(request):
     """
@@ -655,27 +689,28 @@ def splunk_docker(request):
         os.environ['namespace_name']=namespace_name
 
         os.environ["SPLUNK_ADDON"]=SPLUNK_ADDON
-        os.system('kubectl create ns {}'.format(namespace_name))
+        subprocess.run('kubectl create ns {}'.format(namespace_name),shell=True)
         sleep(30)
-        os.system('kubectl run nginx -n {} --image=nginx --port=80 --expose || exit 1'.format(namespace_name))
+        subprocess.run('kubectl run nginx -n {} --image=nginx --port=80 --expose || exit 1'.format(namespace_name),shell=True)
         sleep(60)
-        os.system('kubectl wait pod nginx --for=condition=ready --timeout=300s -n {}'.format(namespace_name))
-        os.system('find ./tests/src -iname "*.tgz" -exec kubectl cp {0} nginx:/usr/share/nginx/html -n {1} \;'.format('{}',namespace_name))
+        subprocess.run('kubectl wait pod nginx --for=condition=ready --timeout=300s -n {}'.format(namespace_name),shell=True)
+        subprocess.run('find ./tests/src -iname "*.tgz" -exec kubectl cp {0} nginx:/usr/share/nginx/html -n {1} \;'.format('{}',namespace_name),shell=True)
         sleep(15)
         #python method to replace env variables in yml
-        os.system('envsubst < k8s_manifests/splunk_operator_install.yml > k8s_manifests/splunk_operator_install_updated.yml')
-        os.system('kubectl apply -f k8s_manifests/splunk_operator_install_updated.yml -n {}'.format(namespace_name))
-        sleep(60)
+        update_splunk_operator_version(folder="k8s_manifests",file="splunk-operator-install")
+        # os.system('envsubst < k8s_manifests/splunk_operator_install.yml > k8s_manifests/splunk_operator_install_updated.yml')
+        subprocess.run('kubectl apply -f k8s_manifests/splunk-operator-install-updated.yaml -n {}'.format(namespace_name),shell=True)
+        subprocess.run('kubectl wait deployment splunk-operator -n {} --for=condition=available --timeout=240s'.format(namespace_name),shell=True)
         #random secrets for splunk
-        os.system('kubectl create secret generic splunk-{0}-secret --from-literal=\'password=Chang3d!\' --from-literal=\'hec_token=9b741d03-43e9-4164-908b-e09102327d22\' -n {1}'.format(namespace_name,namespace_name))
+        subprocess.run('kubectl create secret generic splunk-{0}-secret --from-literal=\'password=Chang3d!\' --from-literal=\'hec_token=9b741d03-43e9-4164-908b-e09102327d22\' -n {1}'.format(namespace_name,namespace_name),shell=True)
         sleep(30)
-        os.system('envsubst < k8s_manifests/splunk_standalone.yml > k8s_manifests/splunk_standalone_updated.yml')
+        update_splunk_sc4s_deployments("k8s_manifests/splunk_standalone.yml")
         LOGGER.info('creating splunk deployment')
-        os.system('kubectl apply -f k8s_manifests/splunk_standalone_updated.yml -n {0}'.format(namespace_name))
+        subprocess.run('kubectl apply -f k8s_manifests/splunk_standalone_updated.yml -n {0}'.format(namespace_name),shell=True)
         sleep(30)
-        os.system('kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=300s -n {}'.format(namespace_name))
+        subprocess.run('kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=300s -n {}'.format(namespace_name),shell=True)
         LOGGER.info('exposing service...')
-        os.system('kubectl port-forward svc/splunk-s1-standalone-service -n {0} :8000 :8088 :8089 > ./exposed_splunk_ports.log 2>&1 &'.format(namespace_name))
+        subprocess.run('kubectl port-forward svc/splunk-s1-standalone-service -n {0} :8000 :8088 :8089 > ./exposed_splunk_ports.log 2>&1 &'.format(namespace_name),shell=True)
         sleep(30)
         LOGGER.info('splunk PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
         if "PYTEST_XDIST_WORKER" in os.environ:
