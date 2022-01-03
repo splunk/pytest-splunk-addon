@@ -45,6 +45,8 @@ filelock = "^3.0"
 pytest-ordering = "*"
 junitparser = "<2.0.0"
 addonfactory-splunk-conf-parser-lib = "^0.3.3"
+PyYAML = "^6.0"
+crudini = "0.9.3"
 
 [tool.poetry.dev-dependencies]
 poetry-dynamic-versioning = "*"
@@ -55,7 +57,6 @@ freezegun = "^1.1.0"
 pytz = "^2021.1"
 sphinx-rtd-theme = "^1.0.0"
 sphinx-panels = "^0.6.0"
-crudini = "0.9.3"
 
 [tool.poetry.plugins]
 pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_addon.splunk" }

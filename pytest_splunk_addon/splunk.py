@@ -646,9 +646,7 @@ def update_splunk_operator_version(folder,file):
                             # print(splunk_image['value'])
                             splunk_image['value'] = "docker.io/splunk/splunk:{}".format(os.getenv('SPLUNK_VERSION'))
                 temp_list.append(doc)
-            if not os.path.exists("{0}_updated".format(folder)):
-                os.makedirs("{0}_updated".format(folder))
-            with open("{0}_updated/{1}_updated.yaml".format(folder,file), 'w') as splunk_operator_file_updated:
+            with open("{0}/{1}_updated.yaml".format(folder,file), 'w') as splunk_operator_file_updated:
                 splunk_operator_file_updated.write(yaml.dump_all(temp_list))
     except Exception as e:
         LOGGER.error("Error occured while updating {0}/{1}.yaml : {2}".format(folder,file,e))
@@ -658,9 +656,7 @@ def update_splunk_sc4s_deployments(folder,file):
         with open("{0}/{1}.yaml".format(folder,file), 'r') as deployment_file:
             # splunk_sc4s_deployment_file = deployment_file.read()
             file_updated=os.path.expandvars(deployment_file.read())
-        if not os.path.exists("{0}_updated".format(folder)):
-            os.makedirs("{0}_updated".format(folder))
-        with open("{0}_updated/{1}_updated.yaml".format(folder,file),'w') as write_file:
+        with open("{0}/{1}_updated.yaml".format(folder,file),'w') as write_file:
             write_file.write(file_updated)
     except Exception as e:
         LOGGER.error("Error occured while updating {0}/{1}.yaml : {2}".format(folder,file,e))
@@ -689,29 +685,29 @@ def splunk_docker(request):
         os.environ['namespace_name']=namespace_name
 
         os.environ["SPLUNK_ADDON"]=SPLUNK_ADDON
-        subprocess.run('kubectl create ns {}'.format(namespace_name),shell=True)
-        sleep(30)
-        subprocess.run('kubectl run nginx -n {} --image=nginx --port=80 --expose || exit 1'.format(namespace_name),shell=True)
-        sleep(60)
-        subprocess.run('kubectl wait pod nginx --for=condition=ready --timeout=300s -n {}'.format(namespace_name),shell=True)
-        subprocess.run('find ./tests/src -iname "*.tgz" -exec kubectl cp {0} nginx:/usr/share/nginx/html -n {1} \;'.format('{}',namespace_name),shell=True)
-        sleep(15)
+        # subprocess.run('kubectl create ns {}'.format(namespace_name),shell=True)
+        # sleep(30)
+        # subprocess.run('kubectl run nginx -n {} --image=nginx --port=80 --expose || exit 1'.format(namespace_name),shell=True)
+        # sleep(60)
+        # subprocess.run('kubectl wait pod nginx --for=condition=ready --timeout=300s -n {}'.format(namespace_name),shell=True)
+        # subprocess.run('find ./tests/src -iname "*.tgz" -exec kubectl cp {0} nginx:/usr/share/nginx/html -n {1} \;'.format('{}',namespace_name),shell=True)
+        # sleep(15)
         #python method to replace env variables in yml
-        update_splunk_operator_version(folder="k8s_manifests",file="splunk-operator-install")
-        # os.system('envsubst < k8s_manifests/splunk_operator_install.yml > k8s_manifests/splunk_operator_install_updated.yml')
-        subprocess.run('kubectl apply -f k8s_manifests/splunk-operator-install-updated.yaml -n {}'.format(namespace_name),shell=True)
-        subprocess.run('kubectl wait deployment splunk-operator -n {} --for=condition=available --timeout=240s'.format(namespace_name),shell=True)
+        update_splunk_operator_version(folder="k8s_manifests/splunk_standalone",file="splunk-operator-install")
         #random secrets for splunk
-        subprocess.run('kubectl create secret generic splunk-{0}-secret --from-literal=\'password=Chang3d!\' --from-literal=\'hec_token=9b741d03-43e9-4164-908b-e09102327d22\' -n {1}'.format(namespace_name,namespace_name),shell=True)
-        sleep(30)
-        update_splunk_sc4s_deployments("k8s_manifests/splunk_standalone.yml")
-        LOGGER.info('creating splunk deployment')
-        subprocess.run('kubectl apply -f k8s_manifests/splunk_standalone_updated.yml -n {0}'.format(namespace_name),shell=True)
-        sleep(30)
-        subprocess.run('kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=300s -n {}'.format(namespace_name),shell=True)
-        LOGGER.info('exposing service...')
-        subprocess.run('kubectl port-forward svc/splunk-s1-standalone-service -n {0} :8000 :8088 :8089 > ./exposed_splunk_ports.log 2>&1 &'.format(namespace_name),shell=True)
-        sleep(30)
+        # subprocess.run('kubectl create secret generic splunk-{0}-secret --from-literal=\'password=Chang3d!\' --from-literal=\'hec_token=9b741d03-43e9-4164-908b-e09102327d22\' -n {1}'.format(namespace_name,namespace_name),shell=True)
+        # sleep(30)
+        update_splunk_sc4s_deployments(folder="k8s_manifests/splunk_standalone",file="splunk_standalone")
+        LOGGER.info("Setting up Splunk")
+        subprocess.run('sh k8s_manifests/splunk_standalone/splunk_setup.sh >> pytest_splunk_addon.log',shell=True)
+        # subprocess.call(['sh','k8s_manifests/splunk_standalone/splunk_setup.sh'])
+        # subprocess.run('kubectl apply -k k8s_manifests/splunk_manifests -n {}'.format(namespace_name),shell=True)
+        # subprocess.run('kubectl wait deployment splunk-operator -n {} --for=condition=available --timeout=240s'.format(namespace_name),shell=True)
+        # sleep(30)
+        # subprocess.run('kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=300s -n {}'.format(namespace_name),shell=True)
+        # LOGGER.info('Exposing Splunk Service...')
+        # subprocess.run('kubectl port-forward svc/splunk-s1-standalone-service -n {0} :8000 :8088 :8089 > ./exposed_splunk_ports.log 2>&1 &'.format(namespace_name),shell=True)
+        # sleep(30)
         LOGGER.info('splunk PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
         if "PYTEST_XDIST_WORKER" in os.environ:
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_splunk", "w+"):
@@ -816,19 +812,23 @@ def sc4s_docker():
         cwd = os.getcwd()
         LOGGER.info(cwd)
         namespace_name=os.getenv('namespace_name')
-        LOGGER.info('SC4S Deployment.............................')
-        os.system('envsubst < k8s_manifests/sc4s_deployment.yml > k8s_manifests/sc4s_deployment_updated.yml')
-        os.system("kubectl apply -f k8s_manifests/sc4s_deployment_updated.yml -n {}".format(namespace_name))
-        sleep(60)
-        LOGGER.info('SC4S wait for pod.............................')
-        os.system("kubectl wait deployment -n {} --for=condition=available --timeout=900s -l='app=sc4s'".format(namespace_name))
-        os.system("kubectl wait pod -n {} --for=condition=ready --timeout=300s -l='app=sc4s'".format(namespace_name))
-        LOGGER.info('SC4S Service.............................')
-        os.system("kubectl apply -f k8s_manifests/sc4s_service.yml -n {}".format(namespace_name))
-        sleep(30)
-        LOGGER.info('exposing service...')
-        os.system('kubectl port-forward svc/sc4s-service -n {} :514 > ./exposed_sc4s_ports.log 2>&1 &'.format(namespace_name))
-        sleep(30)
+        update_splunk_sc4s_deployments(folder="k8s_manifests/sc4s",file="sc4s_deployment")
+        LOGGER.info("Setting up SC4S")
+        subprocess.run('sh k8s_manifests/sc4s/sc4s_setup.sh >> pytest_splunk_addon.log',shell=True)
+        # subprocess.call(['sh','k8s_manifests/sc4s/sc4s_setup.sh'])
+        # LOGGER.info('SC4S Deployment.............................')
+        # os.system('envsubst < k8s_manifests/sc4s_deployment.yml > k8s_manifests/sc4s_deployment_updated.yml')
+        # os.system("kubectl apply -f k8s_manifests/sc4s_deployment_updated.yml -n {}".format(namespace_name))
+        # sleep(60)
+        # LOGGER.info('SC4S wait for pod.............................')
+        # os.system("kubectl wait deployment -n {} --for=condition=available --timeout=900s -l='app=sc4s'".format(namespace_name))
+        # os.system("kubectl wait pod -n {} --for=condition=ready --timeout=300s -l='app=sc4s'".format(namespace_name))
+        # LOGGER.info('SC4S Service.............................')
+        # os.system("kubectl apply -f k8s_manifests/sc4s_service.yml -n {}".format(namespace_name))
+        # sleep(30)
+        # LOGGER.info('exposing service...')
+        # os.system('kubectl port-forward svc/sc4s-service -n {} :514 > ./exposed_sc4s_ports.log 2>&1 &'.format(namespace_name))
+        # sleep(30)
         LOGGER.info('sc4s PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
         if "PYTEST_XDIST_WORKER" in os.environ:
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_sc4s", "w+"):
