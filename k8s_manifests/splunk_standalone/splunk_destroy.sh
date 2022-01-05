@@ -9,4 +9,4 @@ kubectl delete secret splunk-$namespace_name-secret -n $namespace_name
 kubectl delete -f ./k8s_manifests/splunk_standalone/splunk-operator-install_updated.yaml -n $namespace_name
 sleep 60
 kubectl delete ns $namespace_name
-sleep 120
+sleep 60

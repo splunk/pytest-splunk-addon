@@ -140,36 +140,6 @@ def pytest_sessionfinish(session,exitstatus):
                     os.remove(file)
                 else:
                     LOGGER.error('{} not found'.format(file))
-            # os.system('kubectl delete -f k8s_manifests/sc4s_deployment_updated.yml -n {}'.format(namespace_name))
-            # sleep(15)
-            # os.system('kubectl delete -f k8s_manifests/sc4s_service.yml -n {}'.format(namespace_name))
-            # sleep(15)
-            # os.system('kubectl delete -f k8s_manifests/splunk_standalone_updated.yml -n {}'.format(namespace_name))
-            # sleep(15)
-            # os.system('kubectl delete standalone s1 -n {}'.format(namespace_name))
-            # sleep(15)
-            # os.system('kubectl delete svc nginx -n {}'.format(namespace_name))
-            # sleep(15)
-            # os.system('kubectl delete pod nginx -n {}'.format(namespace_name))
-            # sleep(15)
-            # os.system('kubectl delete secret splunk-{0}-secret -n {1}'.format(namespace_name,namespace_name))
-            # sleep(15)
-            # os.system('kubectl delete -f k8s_manifests/splunk_operator_install_updated.yml -n {}'.format(namespace_name))
-            # sleep(60)
-            # os.system('kubectl delete ns {}'.format(namespace_name))
-            # sleep(60)
-            # if os.path.exists('k8s_manifests/sc4s_deployment_updated.yml'):
-            #     os.remove('k8s_manifests/sc4s_deployment_updated.yml')
-            # else:
-            #     LOGGER.error('k8s_manifests/sc4s_deployment_updated.yml not found')
-            # if os.path.exists('k8s_manifests/splunk_standalone_updated.yml'):
-            #     os.remove('k8s_manifests/splunk_standalone_updated.yml')
-            # else:
-            #     LOGGER.error('k8s_manifests/splunk_standalone_updated.yml not found')
-            # if os.path.exists('k8s_manifests/splunk_operator_install_updated.yml'):
-            #     os.remove('k8s_manifests/splunk_operator_install_updated.yml')
-            # else:
-            #     LOGGER.error('k8s_manifests/splunk_operator_install_updated.yml not found')
     except Exception as e:
         LOGGER.error('Exception occured in pytest_sessionfinish : {}'.format(e))
     #modify if condition in try except..
