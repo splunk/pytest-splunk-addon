@@ -274,10 +274,10 @@ jobs:
       - pre-commit
       - compliance-dependencies
       - compliance-copyrights
-      - test-splunk-external
-      - test-splunk-doc
+      # - test-splunk-external
+      # - test-splunk-doc
       - test-splunk-matrix
-      - test-splunk-unit
+      # - test-splunk-unit
       - review_secrets
       - review-dog-misspell
     runs-on: ubuntu-latest
