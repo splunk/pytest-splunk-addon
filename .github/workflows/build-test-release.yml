@@ -119,83 +119,83 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
   
-  test-splunk-external:
-    runs-on: ubuntu-latest
-    name: Test splunk external
-    strategy:
-      fail-fast: false
-      matrix:
-        splunk-version: ["8.0","8.1","8.2"]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Setup for testing
-        run: |
-          pip install git+https://github.com/pixelb/crudini
-          mkdir test-results-${{ matrix.splunk-version }}
-      - name: Splunk Up
-        run: |
-          export SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction
-          export SPLUNK_ADDON=TA_fiction
-          export SPLUNK_APP_ID=TA_fiction
-          ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
-          export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf ${{ matrix.splunk-version }} VERSION)
-          echo $SPLUNK_VERSION
-          docker-compose -f "docker-compose-ci.yml" build
-          SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up -d splunk
-          sleep 90
-      - name: Test
-        run: |
-          SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
-          docker volume ls
-      - name: Collect Results
-        run: |
-          docker volume ls
-          docker container create --name dummy \
-                              -v pytest-splunk-addon_results:/work/test-results \
-                              registry.access.redhat.com/ubi7/ubi
-          docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.splunk-version }}
-      - uses: actions/upload-artifact@v2.2.4
-        if: always()
-        with:
-          name: splunk ${{ matrix.splunk-version }} external test artifacts
-          path: |
-            test-results-${{ matrix.splunk-version }}
+  # test-splunk-external:
+  #   runs-on: ubuntu-latest
+  #   name: Test splunk external
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       splunk-version: ["8.0","8.1","8.2"]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: true
+  #     - name: Setup for testing
+  #       run: |
+  #         pip install git+https://github.com/pixelb/crudini
+  #         mkdir test-results-${{ matrix.splunk-version }}
+  #     - name: Splunk Up
+  #       run: |
+  #         export SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction
+  #         export SPLUNK_ADDON=TA_fiction
+  #         export SPLUNK_APP_ID=TA_fiction
+  #         ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
+  #         export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf ${{ matrix.splunk-version }} VERSION)
+  #         echo $SPLUNK_VERSION
+  #         docker-compose -f "docker-compose-ci.yml" build
+  #         SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up -d splunk
+  #         sleep 90
+  #     - name: Test
+  #       run: |
+  #         SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
+  #         docker volume ls
+  #     - name: Collect Results
+  #       run: |
+  #         docker volume ls
+  #         docker container create --name dummy \
+  #                             -v pytest-splunk-addon_results:/work/test-results \
+  #                             registry.access.redhat.com/ubi7/ubi
+  #         docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.splunk-version }}
+  #     - uses: actions/upload-artifact@v2.2.4
+  #       if: always()
+  #       with:
+  #         name: splunk ${{ matrix.splunk-version }} external test artifacts
+  #         path: |
+  #           test-results-${{ matrix.splunk-version }}
   
-  test-splunk-doc:
-    name: Test Docs
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        python-version: [3.7]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
-          curl https://pyenv.run | bash
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          pyenv install 3.7.8
-          pyenv local 3.7.8
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-          source ~/.poetry/env
-      - name: Test with pytest
-        run: |
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"          
-          source ~/.poetry/env
-          poetry install -E docker
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc
+  # test-splunk-doc:
+  #   name: Test Docs
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       python-version: [3.7]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: true
+  #     - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}
+  #       uses: actions/setup-python@v1
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
+  #     - name: Install dependencies
+  #       run: |
+  #         sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+  #         curl https://pyenv.run | bash
+  #         export PATH="~/.pyenv/bin:$PATH"
+  #         eval "$(pyenv init -)"
+  #         pyenv install 3.7.8
+  #         pyenv local 3.7.8
+  #         curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+  #         source ~/.poetry/env
+  #     - name: Test with pytest
+  #       run: |
+  #         export PATH="~/.pyenv/bin:$PATH"
+  #         eval "$(pyenv init -)"          
+  #         source ~/.poetry/env
+  #         poetry install -E docker
+  #         poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc
 
   test-splunk-matrix:
     name: Test Matrix
@@ -230,43 +230,43 @@ jobs:
           eval "$(pyenv init -)"
           source ~/.poetry/env
           poetry install -E docker
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker
+          poetry run pytest -vv --splunk-version=${{ matrix.splunk-version }} -m docker
 
-  test-splunk-unit:
-    name: Unit tests
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        python-version: [3.7]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Install dependencies
-        run: |
-          sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
-          curl https://pyenv.run | bash
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          pyenv install 3.7.8
-          pyenv local 3.7.8
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-          source ~/.poetry/env
-      - name: Test with pytest
-        run: |
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          source ~/.poetry/env
-          poetry install
-          poetry run coverage run --source=./pytest_splunk_addon/standard_lib -m pytest -v tests/unit
-          poetry run coverage html
-      - name: Archive test coverage results
-        uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report-unit-tests
-          path: htmlcov
+  # test-splunk-unit:
+  #   name: Unit tests
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       python-version: [3.7]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: true
+  #     - name: Install dependencies
+  #       run: |
+  #         sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+  #         curl https://pyenv.run | bash
+  #         export PATH="~/.pyenv/bin:$PATH"
+  #         eval "$(pyenv init -)"
+  #         pyenv install 3.7.8
+  #         pyenv local 3.7.8
+  #         curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+  #         source ~/.poetry/env
+  #     - name: Test with pytest
+  #       run: |
+  #         export PATH="~/.pyenv/bin:$PATH"
+  #         eval "$(pyenv init -)"
+  #         source ~/.poetry/env
+  #         poetry install
+  #         poetry run coverage run --source=./pytest_splunk_addon/standard_lib -m pytest -v tests/unit
+  #         poetry run coverage html
+  #     - name: Archive test coverage results
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: code-coverage-report-unit-tests
+  #         path: htmlcov
 
   publish:
     name: publish
