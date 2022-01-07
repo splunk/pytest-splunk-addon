@@ -25,13 +25,12 @@ spec:
         - -c
         - |
           ls -al;
-          ls -al /addon/;
-          tar -xzf /addon/$SPLUNK_ADDON.tgz $SPLUNK_ADDON;
-          cp -r $SPLUNK_ADDON /ufaddon/;
+          apt update && apt upgrade -y;
+          apt install wget -y;
+          wget "http://nginx:80/$SPLUNK_ADDON.tgz";
+          tar xzvf $SPLUNK_ADDON.tgz --directory /ufaddon/;
           ls -al /ufaddon/;
         volumeMounts:
-        - mountPath: /addon
-          name: addon
         - mountPath: /ufaddon
           name: ufaddon
       containers:
@@ -69,9 +68,5 @@ spec:
         - mountPath: /opt/splunkforwarder/etc/apps/
           name: ufaddon
       volumes:
-      - hostPath:
-          path: /
-          type: Directory
-        name: addon
       - emptyDir: {}
         name: ufaddon

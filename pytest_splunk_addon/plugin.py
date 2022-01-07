@@ -126,13 +126,25 @@ def pytest_sessionfinish(session,exitstatus):
         with open('./splunk_type.txt', 'r') as splunk_type_file:
             for line in splunk_type_file:
                 splunk_type = line
-        if (os.environ.get("PYTEST_XDIST_WORKER")==None) and (splunk_type=="docker"):
+        if (os.environ.get("PYTEST_XDIST_WORKER")==None) and (splunk_type=="kubernetes"):
             SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
             LOGGER.info(SPLUNK_ADDON)
             os.environ['namespace_name']=str(SPLUNK_ADDON.replace("_","-").lower())
-            subprocess.call(['sh','k8s_manifests/sc4s/sc4s_destroy.sh'])
-            subprocess.call(['sh','k8s_manifests/splunk_standalone/splunk_destroy.sh'])
-            files = ['./exposed_sc4s_ports.log','./exposed_splunk_ports.log','./splunk_type.txt']
+            files = ['./exposed_splunk_ports.log','./splunk_type.txt']
+            if os.path.exists('./exposed_sc4s_ports.log'):
+                sc4s_destroy = subprocess.run('sh k8s_manifests/sc4s/sc4s_destroy.sh',capture_output=True,shell=True)
+                files.append('./exposed_sc4s_ports.log')
+                LOGGER.info("SC4S Destroy Logs")
+                LOGGER.info(sc4s_destroy.stdout.decode())
+                if sc4s_destroy.stderr:
+                    LOGGER.error("SC4S Destroy Error Logs")
+                    LOGGER.error(sc4s_destroy.stderr.decode())
+            splunk_destroy = subprocess.run('sh k8s_manifests/splunk_standalone/splunk_destroy.sh',capture_output=True,shell=True)
+            LOGGER.info("Splunk Destroy Logs")
+            LOGGER.info(splunk_destroy.stdout.decode())
+            if splunk_destroy.stderr:
+                LOGGER.error("Splunk Destroy Error Logs")
+                LOGGER.error(splunk_destroy.stderr.decode())
             for file in glob.glob("*/*/*_updated.yaml" ):
                 files.append(file)
             for file in files:

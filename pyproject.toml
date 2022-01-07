@@ -45,8 +45,8 @@ filelock = "^3.0"
 pytest-ordering = "*"
 junitparser = "<2.0.0"
 addonfactory-splunk-conf-parser-lib = "^0.3.3"
-PyYAML = "^6.0"
 crudini = "0.9.3"
+PyYAML = "5.4.1"
 
 [tool.poetry.dev-dependencies]
 poetry-dynamic-versioning = "*"
