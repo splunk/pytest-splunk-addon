@@ -341,7 +341,7 @@ format_nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-
 
 [[package]]
 name = "junitparser"
-version = "2.3.0"
+version = "2.4.2"
 description = "Manipulates JUnit/xUnit Result XML files"
 category = "main"
 optional = false
@@ -1115,8 +1115,8 @@ jsonschema = [
     {file = "jsonschema-4.3.3.tar.gz", hash = "sha256:f210d4ce095ed1e8af635d15c8ee79b586f656ab54399ba87b8ab87e5bff0ade"},
 ]
 junitparser = [
-    {file = "junitparser-2.3.0-py2.py3-none-any.whl", hash = "sha256:e8c558e8de0e2a4542f73821e2f84a8a5c102c6f07645f4dbe8f53dc05c8d94c"},
-    {file = "junitparser-2.3.0.tar.gz", hash = "sha256:604f58a47dfe3a6da26fa0136461eec7730a3abb31d05c38fa20763154828c67"},
+    {file = "junitparser-2.4.2-py2.py3-none-any.whl", hash = "sha256:c2d9c83bef4712da18090935cbed430e6041915986c097f7a58f35797ddf6065"},
+    {file = "junitparser-2.4.2.tar.gz", hash = "sha256:35f8f5df8fe988435c3d378befff98fa8b44724427f1ad11c7f510fa3830f50f"},
 ]
 langdetect = [
     {file = "langdetect-1.0.9-py2-none-any.whl", hash = "sha256:7cbc0746252f19e76f77c0b1690aadf01963be835ef0cd4b56dddf2a8f1dfc2a"},
