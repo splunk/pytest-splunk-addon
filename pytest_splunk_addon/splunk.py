@@ -568,7 +568,7 @@ def update_splunk_operator_version(folder,file):
     except Exception as e:
         LOGGER.info("Error occured while updating {0}/{1}.yaml : {2}".format(folder,file,e))
 
-def update_splunk_sc4s_deployments(folder,file):
+def update_sc4s_deployments(folder,file):
     try:
         with open("{0}/{1}.yaml".format(folder,file), 'r') as deployment_file:
             # splunk_sc4s_deployment_file = deployment_file.read()
@@ -604,7 +604,7 @@ def splunk_kubernetes(request):
         os.environ["SPLUNK_ADDON"]=SPLUNK_ADDON
         update_splunk_operator_version(folder="k8s_manifests/splunk_standalone",file="splunk-operator-install")
         #random secrets for splunk
-        update_splunk_sc4s_deployments(folder="k8s_manifests/splunk_standalone",file="splunk_standalone")
+        # update_splunk_sc4s_deployments(folder="k8s_manifests/splunk_standalone",file="splunk_standalone")
         LOGGER.info("Setting up Splunk")
         splunk_setup = subprocess.run('sh k8s_manifests/splunk_standalone/splunk_setup.sh',capture_output=True,shell=True)
         LOGGER.info("Splunk Setup Logs")
@@ -694,7 +694,7 @@ def sc4s_kubernetes():
     """
     if ( "PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
         LOGGER.info("Starting kubernetes_service=sc4s for worker id {}".format(str(os.environ.get("PYTEST_XDIST_WORKER"))))
-        update_splunk_sc4s_deployments(folder="k8s_manifests/sc4s",file="sc4s_deployment")
+        update_sc4s_deployments(folder="k8s_manifests/sc4s",file="sc4s_deployment")
         LOGGER.info("Setting up SC4S")
         sc4s_setup = subprocess.run('sh k8s_manifests/sc4s/sc4s_setup.sh',capture_output=True,shell=True)
         LOGGER.info("SC4S Setup Logs")

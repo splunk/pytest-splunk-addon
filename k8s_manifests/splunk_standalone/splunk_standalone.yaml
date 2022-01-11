@@ -6,7 +6,3 @@ metadata:
   - enterprise.splunk.com/delete-pvc
 spec:
   defaults: |-
-    splunk:
-      apps_location:
-        - http://nginx/$SPLUNK_ADDON.tgz
-        - http://nginx/indexes.tgz
