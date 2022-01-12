@@ -106,7 +106,7 @@ def test_extract_params():
             ["requirement.log"],
             [True],
             ["syslog"],
-            {"event": ["<34>Oct 11 22:14:15 machine1 pr1:event_1"]},
+            {"event": ["<34>Oct 11 22:14:15 machine1 event_1"]},
             [["model_1:dataset_1", "model_2:dataset_2"]],
             [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
             [

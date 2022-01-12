@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sc4s
+  name: sc4s-service
+spec:
+  ports:
+  - name: port-1
+    port: 514
+    protocol: TCP
+    targetPort: 514
+  - name: port-2
+    port: 601
+    protocol: TCP
+    targetPort: 601
+  - name: port-3
+    port: 6514
+    protocol: TCP
+    targetPort: 6514
+  - name: port-4
+    port: 5425
+    protocol: TCP
+    targetPort: 5425
+  selector:
+    app: sc4s
+  type: ClusterIP

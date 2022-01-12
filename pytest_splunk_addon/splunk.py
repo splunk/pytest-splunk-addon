@@ -35,6 +35,12 @@ from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
 import configparser
 from filelock import FileLock
+import subprocess
+import re
+import sys
+import yaml
+
+# config.load_kube_config()
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
@@ -44,7 +50,7 @@ PYTEST_XDIST_TESTRUNUID = ""
 
 def pytest_addoption(parser):
     """Add options for interaction with Splunk this allows the tool to work in two modes
-    1) docker mode which is typically used by developers on their workstation
+    1) kubernetes mode which is typically used by developers on their workstation
         manages a single instance of splunk
     2) external interacts with a single instance of splunk that is lifecycle managed
         by another process such as a ci/cd pipeline
@@ -67,7 +73,7 @@ def pytest_addoption(parser):
         dest="splunk_type",
         default="external",
         help=(
-            "Type of the Splunk instance. supports external & docker "
+            "Type of the Splunk instance. supports external & kubernetes "
             "as a value. Default is external."
         ),
     )
@@ -167,7 +173,7 @@ def pytest_addoption(parser):
         default="latest",
         help=(
             "Splunk version to spin up with docker while splunk-type "
-            " is set to docker. Examples, "
+            " is set to kubernetes. Examples, "
             " 1) latest: latest Splunk Enterprise tagged by the https://github.com/splunk/docker-splunk"
             " 2) 8.0.0: GA release of 8.0.0."
         ),
@@ -367,6 +373,7 @@ def splunk_search_util(splunk, request):
         helmut_lib.SearchUtil.SearchUtil: The SearchUtil object
     """
     LOGGER.info("Initializing SearchUtil for the Splunk instace.")
+    sleep(120)
     cloud_splunk = CloudSplunk(
         splunkd_host=splunk["host"],
         splunkd_port=splunk["port"],
@@ -422,38 +429,26 @@ def ignore_internal_errors(request):
 def splunk(request, file_system_prerequisite):
     """
     This fixture based on the passed option will provide a real fixture
-    for external or docker Splunk
+    for external or kubernetes Splunk
 
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
+    LOGGER.info('------------------------------')
     splunk_type = request.config.getoption("splunk_type")
     LOGGER.info("Get the Splunk instance of splunk_type=%s", splunk_type)
+    #withopen file...
+    with open("./splunk_type.txt","w") as splunk_type_file:
+        splunk_type_file.write(splunk_type)
     if splunk_type == "external":
         request.fixturenames.append("splunk_external")
         splunk_info = request.getfixturevalue("splunk_external")
-    elif splunk_type == "docker":
+    elif splunk_type == "kubernetes":
+        os.environ["Splunk_Type"]="kubernetes"
         os.environ["SPLUNK_APP_PACKAGE"] = request.config.getoption("splunk_app")
-        try:
-            config = configparser.ConfigParser()
-            config.read(
-                os.path.join(
-                    request.config.getoption("splunk_app"),
-                    "default",
-                    "app.conf",
-                )
-            )
-            os.environ["SPLUNK_APP_ID"] = config["package"]["id"]
-        except Exception as e:
-            pass
-            os.environ["SPLUNK_APP_ID"] = "TA_package"
-        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
-        os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
-        os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
         os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
-
-        request.fixturenames.append("splunk_docker")
-        splunk_info = request.getfixturevalue("splunk_docker")
+        request.fixturenames.append("splunk_kubernetes")
+        splunk_info = request.getfixturevalue("splunk_kubernetes")
     else:
         raise Exception
 
@@ -464,7 +459,7 @@ def splunk(request, file_system_prerequisite):
 def sc4s(request):
     """
     This fixture based on the passed option will provide a real fixture
-    for external or docker sc4s configuration
+    for external or kubernetes sc4s configuration
 
     Returns:
         tuple: Details of SC4S which includes sc4s server IP and its related ports.
@@ -472,9 +467,9 @@ def sc4s(request):
     if request.config.getoption("splunk_type") == "external":
         request.fixturenames.append("sc4s_external")
         sc4s = request.getfixturevalue("sc4s_external")
-    elif request.config.getoption("splunk_type") == "docker":
-        request.fixturenames.append("sc4s_docker")
-        sc4s = request.getfixturevalue("sc4s_docker")
+    elif request.config.getoption("splunk_type") == "kubernetes":
+        request.fixturenames.append("sc4s_kubernetes")
+        sc4s = request.getfixturevalue("sc4s_kubernetes")
     else:
         raise Exception
 
@@ -485,7 +480,7 @@ def sc4s(request):
 def uf(request):
     """
     This fixture based on the passed option will provide a real fixture
-    for external or docker uf configuration
+    for external or kubernetes uf configuration
 
     Returns:
         dict: Details of uf which includes host, port, username and password
@@ -493,39 +488,26 @@ def uf(request):
     if request.config.getoption("splunk_type") == "external":
         request.fixturenames.append("uf_external")
         uf = request.getfixturevalue("uf_external")
-    elif request.config.getoption("splunk_type") == "docker":
-        request.fixturenames.append("uf_docker")
-        uf = request.getfixturevalue("uf_docker")
+    elif request.config.getoption("splunk_type") == "kubernetes":
+        request.fixturenames.append("uf_kubernetes")
+        uf = request.getfixturevalue("uf_kubernetes")
     else:
         raise Exception
     yield uf
 
 
 @pytest.fixture(scope="session")
-def uf_docker(docker_services, tmp_path_factory, worker_id, request):
+def uf_kubernetes(request):
     """
     Provides IP of the uf server and management port based on pytest-args(splunk_type)
     """
-    LOGGER.info("Starting docker_service=uf")
-    os.environ["CURRENT_DIR"] = os.getcwd()
-    if worker_id:
-        # get the temp directory shared by all workers
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "pytest_docker"
-        with FileLock(str(fn) + ".lock"):
-            docker_services.start("uf")
     uf_info = {
-        "uf_host": docker_services.docker_ip,
-        "uf_port": docker_services.port_for("uf", 8089),
+        "uf_host": request.config.getoption("splunk_uf_host"),
+        "uf_port": request.config.getoption("splunk_uf_port"),
         "uf_username": request.config.getoption("splunk_uf_user"),
         "uf_password": request.config.getoption("splunk_uf_password"),
     }
-    for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
-        if is_responsive_uf(uf_info):
-            break
-        sleep(1)
     return uf_info
-
 
 @pytest.fixture(scope="session")
 def uf_external(request):
@@ -540,34 +522,110 @@ def uf_external(request):
     }
     return uf_info
 
+def expose_ports_splunk_sc4s(file):
+    #with open to open files
+    #todo find a better way to expose ports
+    try:
+        with open(file, 'r') as exposed_ports_file:
+            count = 0
+            for line in exposed_ports_file:
+                count+=1
+                if count%2==0:
+                    print(line.strip())
+                    service_port = re.search('[0-9]{3,4}$',line)
+                    exposed_port = re.search('^Forwarding from \[\:\:1\]\:([0-9]{0,5})', line)
+                    if service_port:
+                        service_port = service_port.group(0)
+                    if exposed_port:
+                        exposed_port = exposed_port.group(1)
+                    if service_port == "8000":
+                        os.environ['port_web']=exposed_port
+                    if service_port == "8088":
+                        os.environ['port_hec']=exposed_port
+                    if service_port == "8089":
+                        os.environ['port']=exposed_port
+                    if service_port == "514":
+                        os.environ['sc4s_port']=exposed_port
+    except Exception as e:
+        LOGGER.error("Exception occured while port-forwarding")
+
+def update_splunk_operator_version(folder,file):
+    try:
+        with open("{0}/{1}.yaml".format(folder,file), 'r') as splunk_operator_file:
+            docs = yaml.load_all(splunk_operator_file,Loader=yaml.FullLoader)
+            temp_list = []
+            for doc in docs:
+                if doc['kind'] == 'Deployment' and doc['metadata']['name'] == 'splunk-operator':
+                    # print(doc['spec']['template']['spec']['containers'])
+                    # print(doc['spec']['template']['spec']['containers'][0]['env'])
+                    for splunk_image in doc['spec']['template']['spec']['containers'][0]['env']:
+                        if splunk_image['name']=='RELATED_IMAGE_SPLUNK_ENTERPRISE':
+                            # print(splunk_image['value'])
+                            splunk_image['value'] = "docker.io/splunk/splunk:{}".format(os.getenv('SPLUNK_VERSION'))
+                temp_list.append(doc)
+            with open("{0}/{1}_updated.yaml".format(folder,file), 'w') as splunk_operator_file_updated:
+                splunk_operator_file_updated.write(yaml.dump_all(temp_list))
+    except Exception as e:
+        LOGGER.info("Error occured while updating {0}/{1}.yaml : {2}".format(folder,file,e))
+
+def update_sc4s_deployments(folder,file):
+    try:
+        with open("{0}/{1}.yaml".format(folder,file), 'r') as deployment_file:
+            # splunk_sc4s_deployment_file = deployment_file.read()
+            file_updated=os.path.expandvars(deployment_file.read())
+        with open("{0}/{1}_updated.yaml".format(folder,file),'w') as write_file:
+            write_file.write(file_updated)
+    except Exception as e:
+        LOGGER.error("Error occured while updating {0}/{1}.yaml : {2}".format(folder,file,e))
 
 @pytest.fixture(scope="session")
-def splunk_docker(
-    request, docker_services, docker_compose_files, tmp_path_factory, worker_id
-):
+def splunk_kubernetes(request):
     """
-    Splunk docker depends on lovely-pytest-docker to create the docker instance
+    Splunk kubernetes kubectl utiltity to create the kubernetes instance
     of Splunk this may be changed in the future.
-    docker-compose.yml in the project root must have
-    a service "splunk" exposing port 8000 and 8089
+    k8s_manifests in the project root must have
+    splunk_standalone consisting kubernetes manifests and shell script.
 
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
-    LOGGER.info("Starting docker_service=splunk")
-    if worker_id:
-        # get the temp directory shared by all workers
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "pytest_docker"
-        with FileLock(str(fn) + ".lock"):
-            docker_services.start("splunk")
-
+    LOGGER.info(os.environ.get("PYTEST_XDIST_WORKER"))
+    if ( "PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
+        LOGGER.info("Starting kubernetes_service=splunk for worker id {}".format(str(os.environ.get("PYTEST_XDIST_WORKER"))))
+        LOGGER.info('********************************')
+        cwd = os.getcwd()
+        LOGGER.info(cwd)
+        # Dynamic package
+        SPLUNK_ADDON=subprocess.check_output('crudini --get package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
+        LOGGER.info(SPLUNK_ADDON)
+        namespace_name=str(SPLUNK_ADDON.replace("_","-").lower())
+        LOGGER.info('namespace_name is {}'.format(namespace_name))
+        os.environ['namespace_name']=namespace_name
+        os.environ["SPLUNK_ADDON"]=SPLUNK_ADDON
+        update_splunk_operator_version(folder="k8s_manifests/splunk_standalone",file="splunk-operator-install")
+        #random secrets for splunk
+        # update_splunk_sc4s_deployments(folder="k8s_manifests/splunk_standalone",file="splunk_standalone")
+        LOGGER.info("Setting up Splunk")
+        splunk_setup = subprocess.run('sh k8s_manifests/splunk_standalone/splunk_setup.sh',capture_output=True,shell=True)
+        LOGGER.info("Splunk Setup Logs")
+        LOGGER.info(splunk_setup.stdout.decode())
+        if splunk_setup.stderr:
+            LOGGER.info("Splunk Setup Error Logs")
+            LOGGER.info(splunk_setup.stderr.decode())
+        LOGGER.info('splunk PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
+        if "PYTEST_XDIST_WORKER" in os.environ:
+            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_splunk", "w+"):
+                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
+    else:
+        while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_splunk"):
+            sleep(1)
+    expose_ports_splunk_sc4s('./exposed_splunk_ports.log')
     splunk_info = {
-        "host": docker_services.docker_ip,
-        "port": docker_services.port_for("splunk", 8089),
-        "port_hec": docker_services.port_for("splunk", 8088),
-        "port_s2s": docker_services.port_for("splunk", 9997),
-        "port_web": docker_services.port_for("splunk", 8000),
+        "host": "localhost",
+        "port": os.getenv('port'),
+        "port_hec": os.getenv('port_hec'),
+        "port_s2s": "9997", #todo make dynamic while implementing uf
+        "port_web": os.getenv('port_web'),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
     }
@@ -575,18 +633,12 @@ def splunk_docker(
     splunk_info["forwarder_host"] = splunk_info.get("host")
 
     LOGGER.info(
-        "Docker container splunk info. host=%s, port=%s, port_web=%s port_hec=%s port_s2s=%s",
-        docker_services.docker_ip,
-        docker_services.port_for("splunk", 8089),
-        docker_services.port_for("splunk", 8088),
-        docker_services.port_for("splunk", 8000),
-        docker_services.port_for("splunk", 9997),
-    )
-
-    docker_services.wait_until_responsive(
-        timeout=180.0,
-        pause=0.5,
-        check=lambda: is_responsive_splunk(splunk_info),
+        "Kubernetes container splunk info. host=%s, port=%s, port_web=%s port_hec=%s port_s2s=%s",
+        splunk_info.get("host"),
+        splunk_info.get("port"),
+        splunk_info.get("port_web"),
+        splunk_info.get("port_hec"),
+        splunk_info.get("port_s2s"),
     )
 
     return splunk_info
@@ -635,24 +687,34 @@ def splunk_external(request):
         )
     return splunk_info
 
-
 @pytest.fixture(scope="session")
-def sc4s_docker(docker_services, tmp_path_factory, worker_id):
+def sc4s_kubernetes():
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
     """
-    if worker_id:
-        # get the temp directory shared by all workers
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "pytest_docker"
-        with FileLock(str(fn) + ".lock"):
-            docker_services.start("sc4s")
-
-    ports = {514: docker_services.port_for("sc4s", 514)}
+    if ( "PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
+        LOGGER.info("Starting kubernetes_service=sc4s for worker id {}".format(str(os.environ.get("PYTEST_XDIST_WORKER"))))
+        update_sc4s_deployments(folder="k8s_manifests/sc4s",file="sc4s_deployment")
+        LOGGER.info("Setting up SC4S")
+        sc4s_setup = subprocess.run('sh k8s_manifests/sc4s/sc4s_setup.sh',capture_output=True,shell=True)
+        LOGGER.info("SC4S Setup Logs")
+        LOGGER.info(sc4s_setup.stdout.decode())
+        if sc4s_setup.stderr:
+            LOGGER.info("SC4S Setup Error Logs")
+            LOGGER.info(sc4s_setup.stderr.decode())
+        LOGGER.info('sc4s PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
+        if "PYTEST_XDIST_WORKER" in os.environ:
+            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_sc4s", "w+"):
+                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
+    else:
+        while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_sc4s"):
+            sleep(1)
+    expose_ports_splunk_sc4s('./exposed_sc4s_ports.log')
+    ports = {514: int(os.getenv('sc4s_port'))}
     for x in range(5000, 5007):
-        ports.update({x: docker_services.port_for("sc4s", x)})
-
-    return docker_services.docker_ip, ports
+        ports.update({x: x})
+    LOGGER.info('Exposed ports of sc4s=%s',ports)
+    return "localhost", ports
 
 
 @pytest.fixture(scope="session")
@@ -745,6 +807,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
             "sc4s_host": sc4s[0],  # for sc4s
             "sc4s_port": sc4s[1][514],  # for sc4s
         }
+        LOGGER.info('ingest_meta_data.....................%s',ingest_meta_data)
         thread_count = int(request.config.getoption("thread_count"))
         store_events = request.config.getoption("store_events")
         IngestorHelper.ingest_events(

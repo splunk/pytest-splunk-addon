@@ -20,6 +20,11 @@ import traceback
 from .standard_lib import AppTestGenerator
 from .standard_lib.cim_compliance import CIMReportPlugin
 from filelock import FileLock
+import os
+import glob
+import subprocess
+import sys
+from time import sleep
 
 LOG_FILE = "pytest_splunk_addon.log"
 
@@ -115,7 +120,42 @@ def pytest_sessionstart(session):
         sample_generator = SampleXdistGenerator(app_path, config_path)
         sample_generator.get_samples(store_events)
 
-
+def pytest_sessionfinish(session,exitstatus):
+    LOGGER.info('-----------------SessionFinish------------------ {}'.format(os.environ.get("PYTEST_XDIST_WORKER")))
+    try:
+        with open('./splunk_type.txt', 'r') as splunk_type_file:
+            for line in splunk_type_file:
+                splunk_type = line
+        if (os.environ.get("PYTEST_XDIST_WORKER")==None) and (splunk_type=="kubernetes"):
+            SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
+            LOGGER.info(SPLUNK_ADDON)
+            os.environ['namespace_name']=str(SPLUNK_ADDON.replace("_","-").lower())
+            files = ['./exposed_splunk_ports.log','./splunk_type.txt']
+            if os.path.exists('./exposed_sc4s_ports.log'):
+                sc4s_destroy = subprocess.run('sh k8s_manifests/sc4s/sc4s_destroy.sh',capture_output=True,shell=True)
+                files.append('./exposed_sc4s_ports.log')
+                LOGGER.info("SC4S Destroy Logs")
+                LOGGER.info(sc4s_destroy.stdout.decode())
+                if sc4s_destroy.stderr:
+                    LOGGER.error("SC4S Destroy Error Logs")
+                    LOGGER.error(sc4s_destroy.stderr.decode())
+            splunk_destroy = subprocess.run('sh k8s_manifests/splunk_standalone/splunk_destroy.sh',capture_output=True,shell=True)
+            LOGGER.info("Splunk Destroy Logs")
+            LOGGER.info(splunk_destroy.stdout.decode())
+            if splunk_destroy.stderr:
+                LOGGER.error("Splunk Destroy Error Logs")
+                LOGGER.error(splunk_destroy.stderr.decode())
+            for file in glob.glob("*/*/*_updated.yaml" ):
+                files.append(file)
+            for file in files:
+                if os.path.exists(file):
+                    os.remove(file)
+                else:
+                    LOGGER.error('{} not found'.format(file))
+    except Exception as e:
+        LOGGER.error('Exception occured in pytest_sessionfinish : {}'.format(e))
+    #modify if condition in try except..
+    
 def pytest_generate_tests(metafunc):
     """
     Parse the fixture dynamically.

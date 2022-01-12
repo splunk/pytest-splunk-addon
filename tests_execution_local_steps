@@ -1,0 +1,46 @@
+--------------------------Setup-----------------------
+Create namespace
+    kubectl create ns $namespace_name
+
+Update the splunk-version for which standalone machine needs to be spinned up (make sure the image is available on dockerhub)
+    update the value of RELATED_IMAGE_SPLUNK_ENTERPRISE stanza "docker.io/splunk/splunk:<<SPLUNK_VERSION>>"
+
+Create splunk-operator (with specific splunk-version)
+    kubectl apply -f ./k8s_manifests/splunk_standalone/splunk-operator-install.yaml -n $namespace_name
+
+Check splunk-operator is up ?
+    kubectl wait deployment splunk-operator -n $namespace_name --for=condition=available --timeout=240s
+
+Create secret (this will be use while spinning up the splunk standalone)
+    kubectl create secret generic splunk-$namespace_name-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $namespace_name
+
+Create splunk-standalone
+    kubectl apply -f ./k8s_manifests/splunk_standalone/splunk_standalone.yaml -n $namespace_name
+
+Check splunk-standalone is up ?
+    kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $namespace_name
+
+Expose splunk-standalone service
+    kubectl port-forward svc/splunk-s1-standalone-service -n $namespace_name :8000 :8088 :8089 > ./exposed_splunk_ports.log 2>&1 &
+
+Get the mapped ports of 8000, 8088, 8089 and update the pytest.ini accordingly
+
+
+--------------------------Cleanup-----------------------
+
+Delete ./exposed_splunk_ports.log file
+
+Delete splunk-standalone
+    kubectl delete -f ./k8s_manifests/splunk_standalone/splunk_standalone.yaml -n $namespace_name
+    sleep 30
+
+Delete secret
+    kubectl delete secret splunk-$namespace_name-secret -n $namespace_name
+
+Delete splunk-operator
+    kubectl delete -f ./k8s_manifests/splunk_standalone/splunk-operator-install.yaml -n $namespace_name
+    sleep 60
+
+Delete namespace
+    kubectl delete ns $namespace_name
+    sleep 60

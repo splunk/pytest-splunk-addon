@@ -22,7 +22,7 @@ import errno
 import os
 import sys
 from html import escape, unescape
-from junitparser import JUnitXml, Properties, Skipped, Failure, TestCase
+from junitparser import JUnitXml, Properties
 
 
 class JunitParser(object):
@@ -50,42 +50,36 @@ class JunitParser(object):
 
         for suites in xml:
             for tc in suites:
-                if "test_cim_required_fields" in tc.name:
-                    try:
-                        # This mimics the same behaviour we had when
-                        # junitparser<2 had only 1 result per test case.
-                        result = tc.result[0]
-                        if isinstance(result, (Skipped, Failure)):
-                            self.data.append(self.get_properties(tc))
-                    except IndexError:
-                        self.data.append(self.get_properties(tc))
+                if "test_cim_required_fields" in tc.name and (
+                    not tc.result or tc.result._tag in ["failure", "skipped"]
+                ):
+                    self.data.append(self.get_properties(tc))
 
-    def get_properties(self, testcase: TestCase):
+    def get_properties(self, testcase):
         """
         Function to get all the properties of a testcase.
 
         Args:
-            testcase: Contains all the data of a Testcase.
+            testcase(junitparser.TestCase): Contains all the data of a Testcase
 
-        Returns:
+        returns:
             Dictionary: dictionary with all the required properties of Testcase.
         """
-        try:
-            result = testcase.result[0]
-            status = "failed" if isinstance(result, Failure) else "skipped"
-            test_property = (
-                "-"
-                if not status == "failed"
-                else escape(unescape(result.message.splitlines()[0])[:100])
-            )
-        except IndexError:
+        if testcase.result:
+            status = "failed" if testcase.result._tag == "failure" else "skipped"
+        else:
             status = "passed"
-            test_property = "-"
+
+        test_property = (
+            "-"
+            if not status == "failed"
+            else escape(unescape(testcase.result.message.splitlines()[0])[:100])
+        )
         row_template = {
             "status": status,
             "test_property": test_property,
         }
-        for prop in self._yield_properties(testcase):
+        for prop in self.yield_properties(testcase):
             if prop.name in [
                 "data_model",
                 "data_set",
@@ -96,10 +90,10 @@ class JunitParser(object):
                 row_template[prop.name] = prop.value
 
         if len(row_template) != 7:
-            raise Exception(f"{testcase.name} does not have all required properties")
+            raise Exception(testcase.name + " does not have all required properties")
         return row_template
 
-    def _yield_properties(self, testcase):
+    def yield_properties(self, testcase):
         """
         Function to yield properties of a Testcase
 
@@ -111,7 +105,10 @@ class JunitParser(object):
         """
         yield from testcase.child(Properties)
 
-    def generate_report(self, report_path):
+    def generate_report(
+        self,
+        report_path,
+    ):
         self.parse_junit()
         report_gen = CIMReportGenerator(self.data)
         report_gen.generate_report(report_path)

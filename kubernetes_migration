@@ -1,0 +1,52 @@
+Install and Setup minikube for local K8S
+    https://minikube.sigs.k8s.io/docs/start/
+
+Increase cpu to 12 and memory to 16 GB in Docker Desktop by going to settings >> resources
+
+Start Minikube in docker desktop with specified cpu, memory and kubernetes-version
+    minikube start --cpus 12 --memory 15000 --kubernetes-version v1.20.13
+
+Change context to use minikube
+    kubectl config use-context minikube
+
+Convert addons in .tgz and copy them in tests/src folder make sure to name the .tgz file with the specific name.
+    
+
+Get indexes in .tgz and copy them on minikube node
+    git clone git@github.com:splunk/addonfactory-splunk_env_indexer.git
+    tar -cvzf indexes.tgz addonfactory-splunk_env_indexer/
+    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/indexes.tgz /indexes.tgz
+
+Get lisence, rename (enterprise.lic) and copy it to minikube node
+    https://repo.splunk.com/artifactory/Solutions/Common/misc/Splunk_Enterprise_NFR_FY23.lic
+    minikube cp /Users/dwijeshs/Desktop/psa/pytest-splunk-addon/tests/src/enterprise.lic /enterprise.lic
+
+export KUBECONFIG path
+    export KUBECONFIG=$HOME/.kube/config
+
+To install requirements:
+    poetry install
+    pip install git+https://github.com/pixelb/crudini
+To execute tests:
+    poetry run pytest -v --splunk-version=latest -m docker
+
+
+Docker daemon restart
+    https://stackoverflow.com/questions/40080887/how-do-i-restart-docker-for-mac-from-the-terminal
+
+Compress file to .tgz
+    https://askubuntu.com/questions/83868/compress-in-tgz
+
+
+https://stackoverflow.com/questions/52369247/namespace-stuck-as-terminating-how-i-removed-it
+
+
+Create secrets to use during splunk spin up
+    kubectl create secret generic splunk-default-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22'
+    
+Setup splunk-operator
+    kubectl apply -f k8s_manifests/splunk-operator-install.yaml
+
+Create configmaps
+    kubectl create configmap splunk-apps --from-file=TA_fiction.tgz --from-file=TA_broken_sourcetype.tgz --from-file=TA_broken.tgz --from-file=TA_CIM_Broken.tgz --from-file=TA_CIM_Fiction.tgz --from-file=TA_fiction_indextime.tgz --from-file=TA_fiction_indextime_broken.tgz --from-file=TA_requirement_test_modinput.tgz --from-file=TA_requirement_test_uf.tgz --from-file=TA_requirement_test.tgz --from-file=TA_SavedSearch.tgz --from-file=indexes.tgz
+    kubectl create configmap splunk-licenses --from-file=enterprise.lic

@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: uf
+  name: splunk-uf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uf
+  template:
+    metadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+      labels:
+        app: uf
+    spec:
+      initContainers:
+      - name: copy-addon-to-container
+        image: ubuntu:latest
+        command:
+        - /bin/sh
+        args:
+        - -c
+        - |
+          ls -al;
+          apt update && apt upgrade -y;
+          apt install wget -y;
+          wget "http://nginx:80/$SPLUNK_ADDON.tgz";
+          tar xzvf $SPLUNK_ADDON.tgz --directory /ufaddon/;
+          ls -al /ufaddon/;
+        volumeMounts:
+        - mountPath: /ufaddon
+          name: ufaddon
+      containers:
+      - name: uf
+        env:
+        - name: SPLUNKBASE_USERNAME
+          value: admin
+        - name: SPLUNK_PASSWORD
+          value: Chang3d!
+        - name: SPLUNK_START_ARGS
+          value: --accept-license
+        image: splunk/universalforwarder:latest
+        ports:
+        - containerPort: 8089
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - cat /opt/container_artifact/ansible.log | grep "PLAY RECAP"
+          failureThreshold: 15
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: "1"
+            memory: 4Gi
+          requests:
+            cpu: 750m
+            memory: 4Gi
+        volumeMounts:
+        - mountPath: /opt/splunkforwarder/etc/apps/
+          name: ufaddon
+      volumes:
+      - emptyDir: {}
+        name: ufaddon
