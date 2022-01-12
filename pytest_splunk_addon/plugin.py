@@ -129,7 +129,7 @@ def pytest_sessionfinish(session,exitstatus):
         if (os.environ.get("PYTEST_XDIST_WORKER")==None) and (splunk_type=="kubernetes"):
             SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
             LOGGER.info(SPLUNK_ADDON)
-            os.environ['namespace_name']=str(SPLUNK_ADDON.replace("_","-").lower())
+            os.environ['NAMESPACE_NAME']=str(SPLUNK_ADDON.replace("_","-").lower())
             files = ['./exposed_splunk_ports.log','./splunk_type.txt']
             if os.path.exists('./exposed_sc4s_ports.log'):
                 sc4s_destroy = subprocess.run('sh k8s_manifests/sc4s/sc4s_destroy.sh',capture_output=True,shell=True)
