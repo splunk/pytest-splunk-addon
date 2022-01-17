@@ -45,7 +45,7 @@ test_data = [
 ]
 
 
-# @pytest.mark.docker
+# @pytest.mark.kubernetes
 # def test_data_generation():
 #     jp = JunitParser(
 #         os.path.join(os.path.dirname(__file__), "test_data", "sample_junit.xml")

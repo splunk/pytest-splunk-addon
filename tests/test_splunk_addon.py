@@ -79,10 +79,10 @@ def setup_test_dir(testdir):
     #     testdir.tmpdir,
     # )
 
-    shutil.copytree(
-        os.path.join(testdir.request.config.invocation_dir, "k8s_manifests"),
-        os.path.join(testdir.tmpdir, "k8s_manifests"),
-    )
+    # shutil.copytree(
+    #     os.path.join(testdir.request.config.invocation_dir, "k8s_manifests"),
+    #     os.path.join(testdir.tmpdir, "k8s_manifests"),
+    # )
 
     shutil.copytree(
         os.path.join(testdir.request.config.invocation_dir, "tests/src"),
@@ -348,57 +348,57 @@ def test_splunk_connection_external(testdir):
 #     assert result.ret != 0
 
 
-# @pytest.mark.kubernetes
-# def test_splunk_fiction_indextime(testdir):
-#     """Make sure that pytest accepts our fixture."""
+@pytest.mark.kubernetes
+def test_splunk_fiction_indextime(testdir):
+    """Make sure that pytest accepts our fixture."""
 
-#     testdir.makepyfile(
-#         """
-#         from pytest_splunk_addon.standard_lib.addon_basic import Basic
-#         class Test_App(Basic):
-#             def empty_method():
-#                 pass
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
 
-#     """
-#     )
+    """
+    )
 
-#     shutil.copytree(
-#         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction_indextime"),
-#         os.path.join(testdir.tmpdir, "package"),
-#     )
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction_indextime"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
 
-#     shutil.copytree(
-#         os.path.join(testdir.request.fspath.dirname, "test_data_models"),
-#         os.path.join(testdir.tmpdir, "tests/data_models"),
-#     )
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+        os.path.join(testdir.tmpdir, "tests/data_models"),
+    )
 
-#     setup_test_dir(testdir)
-#     SampleGenerator.clean_samples()
-#     Rule.clean_rules()
+    setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
 
-#     # run pytest with the following cmd args
-#     result = testdir.runpytest(
-#         "--splunk-type=kubernetes",
-#         "--splunk-web-scheme=http",
-#         "-v",
-#         "--search-interval=0",
-#         "--search-retry=0",
-#         "--splunk-data-generator=tests/addons/TA_fiction_indextime/default",
-#         "--search-index=*,_internal",
-#     )
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        "--splunk-type=kubernetes",
+        "--splunk-web-scheme=http",
+        "-vv",
+        "--search-interval=0",
+        "--search-retry=0",
+        "--splunk-data-generator=tests/addons/TA_fiction_indextime/default",
+        "--search-index=*,_internal",
+    )
 
-#     # fnmatch_lines does an assertion internally
-#     result.stdout.fnmatch_lines_random(
-#         constants.TA_FICTION_INDEXTIME_PASSED + constants.TA_FICTION_INDEXTIME_SKIPPED
-#     )
-#     result.assert_outcomes(
-#         passed=len(constants.TA_FICTION_INDEXTIME_PASSED),
-#         skipped=len(constants.TA_FICTION_INDEXTIME_SKIPPED),
-#         failed=0,
-#     )
+    # fnmatch_lines does an assertion internally
+    result.stdout.fnmatch_lines_random(
+        constants.TA_FICTION_INDEXTIME_PASSED + constants.TA_FICTION_INDEXTIME_SKIPPED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_FICTION_INDEXTIME_PASSED),
+        skipped=len(constants.TA_FICTION_INDEXTIME_SKIPPED),
+        failed=0,
+    )
 
-#     # make sure that that we get a '0' exit code for the testsuite
-#     assert result.ret == 0
+    # make sure that that we get a '0' exit code for the testsuite
+    assert result.ret == 0
 
 
 # @pytest.mark.kubernetes
@@ -625,48 +625,48 @@ def test_docstrings(testdir):
 #     assert result.ret != 0
 
 
-@pytest.mark.kubernetes
-def test_splunk_app_requirements_uf(testdir):
-    """Make sure that pytest accepts our fixture."""
+# @pytest.mark.kubernetes
+# def test_splunk_app_requirements_uf(testdir):
+#     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
-        class Test_App(Basic):
-            def empty_method():
-                pass
-    """
-    )
+#     testdir.makepyfile(
+#         """
+#         from pytest_splunk_addon.standard_lib.addon_basic import Basic
+#         class Test_App(Basic):
+#             def empty_method():
+#                 pass
+#     """
+#     )
 
-    shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_requirement_test_uf"),
-        os.path.join(testdir.tmpdir, "package"),
-    )
+#     shutil.copytree(
+#         os.path.join(testdir.request.fspath.dirname, "addons/TA_requirement_test_uf"),
+#         os.path.join(testdir.tmpdir, "package"),
+#     )
 
-    setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
-    Rule.clean_rules()
+#     setup_test_dir(testdir)
+#     SampleGenerator.clean_samples()
+#     Rule.clean_rules()
 
-    # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
-        "-vv",
-        "-m splunk_searchtime_requirements",
-        "--search-interval=4",
-        "--search-retry=4",
-        "--search-index=*,_internal",
-        "--requirement-test=tests/requirement_test_uf",
-    )
-    logger.info(result.outlines)
-    logger.info(len(constants.TA_REQUIREMENTS_UF_PASSED))
-    result.stdout.fnmatch_lines_random(
-        constants.TA_REQUIREMENTS_UF_PASSED + constants.TA_REQUIREMENTS_UF_FAILED
-    )
-    result.assert_outcomes(passed=len(constants.TA_REQUIREMENTS_UF_PASSED), failed=1)
+#     # run pytest with the following cmd args
+#     result = testdir.runpytest(
+#         "--splunk-type=kubernetes",
+#         "--splunk-web-scheme=http",
+#         "-vv",
+#         "-m splunk_searchtime_requirements",
+#         "--search-interval=4",
+#         "--search-retry=4",
+#         "--search-index=*,_internal",
+#         "--requirement-test=tests/requirement_test_uf",
+#     )
+#     logger.info(result.outlines)
+#     logger.info(len(constants.TA_REQUIREMENTS_UF_PASSED))
+#     result.stdout.fnmatch_lines_random(
+#         constants.TA_REQUIREMENTS_UF_PASSED + constants.TA_REQUIREMENTS_UF_FAILED
+#     )
+#     result.assert_outcomes(passed=len(constants.TA_REQUIREMENTS_UF_PASSED), failed=1)
 
-    # make sure that that we get a non '0' exit code for the testsuite as it contains failure
-    assert result.ret != 0
+#     # make sure that that we get a non '0' exit code for the testsuite as it contains failure
+#     assert result.ret != 0
 
 
 # @pytest.mark.kubernetes

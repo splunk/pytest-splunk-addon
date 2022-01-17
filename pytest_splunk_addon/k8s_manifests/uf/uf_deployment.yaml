@@ -27,8 +27,8 @@ spec:
           ls -al;
           apt update && apt upgrade -y;
           apt install wget -y;
-          wget "http://nginx:80/$SPLUNK_ADDON.tgz";
-          tar xzvf $SPLUNK_ADDON.tgz --directory /ufaddon/;
+          wget "http://nginx:80/$SPLUNK_ADDON.spl";
+          tar xzvf $SPLUNK_ADDON.spl --directory /ufaddon/;
           ls -al /ufaddon/;
         volumeMounts:
         - mountPath: /ufaddon
@@ -67,6 +67,13 @@ spec:
         volumeMounts:
         - mountPath: /opt/splunkforwarder/etc/apps/
           name: ufaddon
+        - mountPath: /private
+          name: mydir
       volumes:
       - emptyDir: {}
         name: ufaddon
+      - name: mydir
+        hostPath:
+          # Ensure the file directory is created.
+          path: /private
+          type: DirectoryOrCreate

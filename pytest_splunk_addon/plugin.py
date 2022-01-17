@@ -127,25 +127,34 @@ def pytest_sessionfinish(session,exitstatus):
             for line in splunk_type_file:
                 splunk_type = line
         if (os.environ.get("PYTEST_XDIST_WORKER")==None) and (splunk_type=="kubernetes"):
-            SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
+            SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf id name',shell=True).decode(sys.stdout.encoding).strip()
             LOGGER.info(SPLUNK_ADDON)
             os.environ['NAMESPACE_NAME']=str(SPLUNK_ADDON.replace("_","-").lower())
             files = ['./exposed_splunk_ports.log','./splunk_type.txt']
+            current_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"k8s_manifests")
             if os.path.exists('./exposed_sc4s_ports.log'):
-                sc4s_destroy = subprocess.run('sh k8s_manifests/sc4s/sc4s_destroy.sh',capture_output=True,shell=True)
+                sc4s_destroy = subprocess.run('sh sc4s/sc4s_destroy.sh',capture_output=True,shell=True,cwd=current_path)
                 files.append('./exposed_sc4s_ports.log')
                 LOGGER.info("SC4S Destroy Logs")
                 LOGGER.info(sc4s_destroy.stdout.decode())
                 if sc4s_destroy.stderr:
                     LOGGER.error("SC4S Destroy Error Logs")
                     LOGGER.error(sc4s_destroy.stderr.decode())
-            splunk_destroy = subprocess.run('sh k8s_manifests/splunk_standalone/splunk_destroy.sh',capture_output=True,shell=True)
+            if os.path.exists('./exposed_uf_ports.log'):
+                uf_destroy = subprocess.run('sh uf/uf_destroy.sh',capture_output=True,shell=True,cwd=current_path)
+                files.append('./exposed_uf_ports.log')
+                LOGGER.info("UF Destroy Logs")
+                LOGGER.info(uf_destroy.stdout.decode())
+                if uf_destroy.stderr:
+                    LOGGER.error("UF Destroy Error Logs")
+                    LOGGER.error(uf_destroy.stderr.decode())
+            splunk_destroy = subprocess.run('sh splunk_standalone/splunk_destroy.sh',capture_output=True,shell=True,cwd=current_path)
             LOGGER.info("Splunk Destroy Logs")
             LOGGER.info(splunk_destroy.stdout.decode())
             if splunk_destroy.stderr:
                 LOGGER.error("Splunk Destroy Error Logs")
                 LOGGER.error(splunk_destroy.stderr.decode())
-            for file in glob.glob("*/*/*_updated.yaml" ):
+            for file in glob.glob("{}/*/*_updated.yaml".format(current_path)):
                 files.append(file)
             for file in files:
                 if os.path.exists(file):

@@ -501,9 +501,29 @@ def uf_kubernetes(request):
     """
     Provides IP of the uf server and management port based on pytest-args(splunk_type)
     """
+    if ( "PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
+        LOGGER.info("Starting kubernetes_service=uf for worker id {}".format(str(os.environ.get("PYTEST_XDIST_WORKER"))))
+        current_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"k8s_manifests/uf")
+        update_k8s_manifest_files(folder=current_path,file="uf_deployment")
+        LOGGER.info("Setting up UF")
+        uf_setup = subprocess.run('sh uf_setup.sh',capture_output=True,shell=True,cwd=current_path)
+        LOGGER.info("UF Setup Logs")
+        LOGGER.info(uf_setup.stdout.decode())
+        if uf_setup.stderr:
+            LOGGER.info("UF Setup Error Logs")
+            LOGGER.info(uf_setup.stderr.decode())
+        LOGGER.info('uf PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
+        if "PYTEST_XDIST_WORKER" in os.environ:
+            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf", "w+"):
+                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
+    else:
+        while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf"):
+            sleep(1)
+    expose_ports_splunk_sc4s_uf('./exposed_uf_ports.log')
+    LOGGER.info('Exposed ports of UF=%s',os.getenv('port_uf'))
     uf_info = {
-        "uf_host": request.config.getoption("splunk_uf_host"),
-        "uf_port": request.config.getoption("splunk_uf_port"),
+        "uf_host": "localhost",
+        "uf_port": os.getenv('port_uf'),
         "uf_username": request.config.getoption("splunk_uf_user"),
         "uf_password": request.config.getoption("splunk_uf_password"),
     }
@@ -522,7 +542,7 @@ def uf_external(request):
     }
     return uf_info
 
-def expose_ports_splunk_sc4s(file):
+def expose_ports_splunk_sc4s_uf(file):
     #with open to open files
     #todo find a better way to expose ports
     try:
@@ -543,7 +563,12 @@ def expose_ports_splunk_sc4s(file):
                     if service_port == "8088":
                         os.environ['port_hec']=exposed_port
                     if service_port == "8089":
-                        os.environ['port']=exposed_port
+                        if file == "./exposed_uf_ports.log":
+                            os.environ['port_uf']=exposed_port
+                        else:
+                            os.environ['port']=exposed_port
+                    if service_port == "9997":
+                        os.environ['port_s2s']=exposed_port
                     if service_port == "514":
                         os.environ['sc4s_port']=exposed_port
     except Exception as e:
@@ -593,22 +618,41 @@ def splunk_kubernetes(request):
     if ( "PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
         LOGGER.info("Starting kubernetes_service=splunk for worker id {}".format(str(os.environ.get("PYTEST_XDIST_WORKER"))))
         LOGGER.info('********************************')
-        cwd = os.getcwd()
-        LOGGER.info(cwd)
+        os.environ['TEST_RUNNER_DIRECTORY'] = os.getcwd()
+        LOGGER.info(os.getenv('TEST_RUNNER_DIRECTORY'))
+        # minikube_status=subprocess.run('minikube status',capture_output=True,shell=True)
+        # LOGGER.info(minikube_status.stdout.decode())
+        # LOGGER.info(minikube_status.stderr.decode())
+        # minikube_profile=subprocess.run('minikube profile default',capture_output=True,shell=True)
+        # LOGGER.info(minikube_profile.stdout.decode())
+        # LOGGER.info(minikube_profile.stderr.decode())
+        # minikube_profile_list=subprocess.run('minikube profile list',capture_output=True,shell=True)
+        # LOGGER.info(minikube_profile_list.stdout.decode())
+        # LOGGER.info(minikube_profile_list.stderr.decode())
+        # uf_files=os.getcwd()+"/uf_files/"
+        # uf_mount = subprocess.run('nohup minikube mount {}:{} &'.format(uf_files,uf_files),capture_output=True,shell=True)
+        # LOGGER.info("UF Mount Logs")
+        # LOGGER.info(uf_mount.stdout.decode())
+        # if uf_mount.stderr:
+        #     LOGGER.info("UF Mount Error Logs")
+        #     LOGGER.info(uf_mount.stderr.decode())
         # Dynamic package
-        SPLUNK_ADDON=subprocess.check_output('crudini --get package/default/app.conf package id',shell=True).decode(sys.stdout.encoding).strip()
+        SPLUNK_ADDON_NAME=subprocess.check_output('crudini --get package/default/app.conf id name',shell=True).decode(sys.stdout.encoding).strip()
+        SPLUNK_ADDON_VERSION=subprocess.check_output('crudini --get package/default/app.conf id version',shell=True).decode(sys.stdout.encoding).strip()
+        SPLUNK_ADDON=str(SPLUNK_ADDON_NAME)+"-"+str(SPLUNK_ADDON_VERSION)
         LOGGER.info(SPLUNK_ADDON)
-        NAMESPACE_NAME=str(SPLUNK_ADDON.replace("_","-").lower())
+        NAMESPACE_NAME=str(SPLUNK_ADDON_NAME.replace("_","-").lower())
         LOGGER.info('NAMESPACE_NAME is {}'.format(NAMESPACE_NAME))
         os.environ['NAMESPACE_NAME']=NAMESPACE_NAME
         os.environ["SPLUNK_ADDON"]=SPLUNK_ADDON
-        update_k8s_manifest_files(folder="k8s_manifests/splunk_standalone",file="namespace")
-        update_k8s_manifest_files(folder="k8s_manifests/splunk_standalone",file="splunk_standalone")
+        current_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"k8s_manifests/splunk_standalone")
+        update_k8s_manifest_files(folder=current_path,file="namespace")
+        update_k8s_manifest_files(folder=current_path,file="splunk_standalone")
         # update_splunk_operator_version(folder="k8s_manifests/splunk_standalone",file="splunk-operator-install")
         #random secrets for splunk
         # update_splunk_sc4s_deployments(folder="k8s_manifests/splunk_standalone",file="splunk_standalone")
         LOGGER.info("Setting up Splunk")
-        splunk_setup = subprocess.run('sh k8s_manifests/splunk_standalone/splunk_setup.sh',capture_output=True,shell=True)
+        splunk_setup = subprocess.run('sh splunk_setup.sh',capture_output=True,shell=True,cwd=current_path)
         LOGGER.info("Splunk Setup Logs")
         LOGGER.info(splunk_setup.stdout.decode())
         if splunk_setup.stderr:
@@ -621,12 +665,12 @@ def splunk_kubernetes(request):
     else:
         while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_splunk"):
             sleep(1)
-    expose_ports_splunk_sc4s('./exposed_splunk_ports.log')
+    expose_ports_splunk_sc4s_uf('./exposed_splunk_ports.log')
     splunk_info = {
         "host": "localhost",
         "port": os.getenv('port'),
         "port_hec": os.getenv('port_hec'),
-        "port_s2s": "9997", #todo make dynamic while implementing uf
+        "port_s2s": os.getenv('port_s2s'), #todo make dynamic while implementing uf
         "port_web": os.getenv('port_web'),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
@@ -696,9 +740,10 @@ def sc4s_kubernetes():
     """
     if ( "PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
         LOGGER.info("Starting kubernetes_service=sc4s for worker id {}".format(str(os.environ.get("PYTEST_XDIST_WORKER"))))
-        update_k8s_manifest_files(folder="k8s_manifests/sc4s",file="sc4s_deployment")
+        current_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"k8s_manifests/sc4s")
+        update_k8s_manifest_files(folder=current_path,file="sc4s_deployment")
         LOGGER.info("Setting up SC4S")
-        sc4s_setup = subprocess.run('sh k8s_manifests/sc4s/sc4s_setup.sh',capture_output=True,shell=True)
+        sc4s_setup = subprocess.run('sh sc4s_setup.sh',capture_output=True,shell=True,cwd=current_path)
         LOGGER.info("SC4S Setup Logs")
         LOGGER.info(sc4s_setup.stdout.decode())
         if sc4s_setup.stderr:
@@ -711,7 +756,7 @@ def sc4s_kubernetes():
     else:
         while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_sc4s"):
             sleep(1)
-    expose_ports_splunk_sc4s('./exposed_sc4s_ports.log')
+    expose_ports_splunk_sc4s_uf('./exposed_sc4s_ports.log')
     ports = {514: int(os.getenv('sc4s_port'))}
     for x in range(5000, 5007):
         ports.update({x: x})
@@ -799,6 +844,9 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
         addon_path = request.config.getoption("splunk_app")
         config_path = request.config.getoption("splunk_data_generator")
         run_requirement_test = request.config.getoption("requirement_test")
+        splunk_s2s_port="9997"
+        if os.getenv('Splunk_Type')=="kubernetes":
+            splunk_s2s_port=os.getenv('port_s2s')
         ingest_meta_data = {
             "uf_host": uf.get("uf_host"),
             "uf_port": uf.get("uf_port"),
@@ -806,6 +854,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
             "uf_password": uf.get("uf_password"),
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
+            "splunk_s2s_port":splunk_s2s_port,
             "sc4s_host": sc4s[0],  # for sc4s
             "sc4s_port": sc4s[1][514],  # for sc4s
         }
