@@ -1,5 +1,4 @@
-#
-# Copyright 2021 Splunk Inc.
+# Copyright 2022 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,30 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# -*- coding: utf-8 -*-
 """
-Base class for test cases. Provides test cases to verify
-field extractions and CIM compatibility.
+Base class for requirement test cases.
 """
-
-from .fields_tests import FieldTestTemplates
-from .cim_tests import CIMTestTemplates, FieldTestHelper
-from .index_tests import IndexTimeTestTemplate
+from .requirement_tests import ReqsTestTemplates
+from .cim_tests import FieldTestHelper
 import pytest
 
 
-class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
+class RequirementBasic(ReqsTestTemplates):
     """
-    Base class for test cases. Inherit this class to include the test
-    cases for an Add-on. Only implement the common tests here, all the other
-    specific test case should be implemented in a TestTemplate class and Basic
-    should inherit it.
+    Base class for requirement test cases.Only implement the common tests here.
     """
 
-    @pytest.mark.first
-    @pytest.mark.splunk_indextime
-    @pytest.mark.splunk_searchtime_cim
-    @pytest.mark.splunk_searchtime_fields
+    @pytest.mark.splunk_searchtime_requirements
     def test_events_with_untokenised_values(
         self, splunk_search_util, splunk_ingest_data, splunk_setup, record_property
     ):
