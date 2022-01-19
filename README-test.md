@@ -72,14 +72,14 @@ kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :
 8. Get the mapped ports of 8000, 8088, 8089 and update the pytest.ini accordingly.
 
 9. Access the splunk ui and install the addon by "Install app from file",
-   > http://localhost:<splunk-web-port>/
-   > Install modinput helper addon https://github.com/splunk/splunk-add-on-for-modinput-test , as a prerequisite of execution of modinput tests.
+   > [http://localhost:<splunk-web-port>/]
+   > Install modinput helper addon downloaded in step-1 , as a prerequisite of execution of modinput tests.
 
 10. If TEST_TYPE is `ui` then follow the below steps,
   > Download Browser's specific driver
-    - For Chrome: download chromedriver
-    - For Firefox: download geckodriver
-    - For IE: download IEdriverserver
+    > For Chrome: download chromedriver
+    > For Firefox: download geckodriver
+    > For IE: download IEdriverserver
   > Put the downloaded driver into `test/ui/` directory, make sure that it is within the environment's PATH variable, and that it is executable
   > For Internet explorer, The steps mentioned at below link must be performed [selenium](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration)
 
