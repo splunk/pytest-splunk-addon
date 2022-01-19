@@ -7,7 +7,10 @@
 - Git
 - Python3 (>=3.7)
 - kubectl
-- splunk-operator at cluster-scope (https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces)
+- [splunk-operator at cluster-scope](https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces)
+```bash
+kubectl apply -f splunk-operator.yaml
+```
 
 ### Steps - Kubernetes
 
@@ -45,7 +48,7 @@ export UI_TEST_HEADLESS="true"
 ```
 **Note:** If TEST_TYPE is `modinput_functional` or `ui`, also set all variables in [test_credentials.env](test_credentials.env) file with appropriate values encoded with base64.
 
-3. Update the value of NAMESPACE_NAME in namespace.yaml file and apply
+3. Update the value of NAMESPACE_NAME in [namespace.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml) file and apply
 ```bash
 kubectl apply -f namespace.yaml
 ```
@@ -54,7 +57,7 @@ kubectl apply -f namespace.yaml
 kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
 ```
 
-5. Update the SPLUNK_VERSION in splunk_standalone.yaml file for which Standalone machine will be created
+5. Update the SPLUNK_VERSION in [splunk_standalone.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml) file for which Standalone machine will be created
 ```bash
 kubectl apply -f splunk_standalone.yaml -n $NAMESPACE_NAME
 ```
@@ -72,8 +75,8 @@ kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :
 8. Get the mapped ports of 8000, 8088, 8089 and update the pytest.ini accordingly.
 
 9. Access the splunk ui and install the addon by "Install app from file",
-- http://localhost:splunk-web-port/
-- Install modinput helper addon downloaded in step-1 , as a prerequisite of execution of modinput tests.
+> - http://localhost:splunk-web-port/
+> - Install modinput helper addon downloaded in step-1 , as a prerequisite of execution of modinput tests.
 
 10. If TEST_TYPE is `ui` then follow the below steps,
   - Download Browser's specific driver
