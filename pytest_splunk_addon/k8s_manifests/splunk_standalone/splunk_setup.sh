@@ -9,7 +9,7 @@ cat "$(dirname -- "$0")"/addon_information.yaml >> "$(dirname -- "$0")"/addon_in
 export SC4S_INDEX_URL=$( curl -s https://api.github.com/repos/splunk/splunk-configurations-base-indexes/releases/latest \ | jq -r '.assets[] | select((.name | contains("spl")) and (.name | contains("search_head") | not) and (.name | contains("indexers") | not ) and (.name | contains("forwarders") | not)) | .browser_download_url ')
 echo $SC4S_INDEX_URL | sed "s|^|        - |" >> "$(dirname -- "$0")"/addon_information_updated.yaml
 # export TEST_RUNNER_DIRECTORY_Updated=$TEST_RUNNER_DIRECTORY/tests/src/
-if [[ -f "$TEST_RUNNER_DIRECTORY/tests/src/$SPLUNK_ADDON.spl" ]]; 
+if [ -f "$TEST_RUNNER_DIRECTORY/tests/src/$SPLUNK_ADDON.spl" ]; 
 then
     kubectl cp $TEST_RUNNER_DIRECTORY/tests/src/$SPLUNK_ADDON.spl nginx:/usr/share/nginx/html -n $NAMESPACE_NAME
     echo "        - http://nginx//$SPLUNK_ADDON.spl" >> "$(dirname -- "$0")"/addon_information_updated.yaml;

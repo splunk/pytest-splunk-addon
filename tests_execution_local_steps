@@ -1,46 +1,50 @@
 --------------------------Setup-----------------------
-Create namespace
-    kubectl create ns $namespace_name
+Download kubernetes manifest fiels: 
+    https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml
+    https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml
 
-Update the splunk-version for which standalone machine needs to be spinned up (make sure the image is available on dockerhub)
-    update the value of RELATED_IMAGE_SPLUNK_ENTERPRISE stanza "docker.io/splunk/splunk:<<SPLUNK_VERSION>>"
+Export NAMESPACE_NAME in which all the kubernetes resources will deploy.
+    export NAMESPACE_NAME="splunk-ta-X"
 
-Create splunk-operator (with specific splunk-version)
-    kubectl apply -f ./k8s_manifests/splunk_standalone/splunk-operator-install.yaml -n $namespace_name
+Update the value of NAMESPACE_NAME in namespace.yaml file.
+    kubectl apply -f namespace.yaml
 
-Check splunk-operator is up ?
-    kubectl wait deployment splunk-operator -n $namespace_name --for=condition=available --timeout=240s
+Create secret (this will be used while spinning up the splunk standalone)
+    kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
 
-Create secret (this will be use while spinning up the splunk standalone)
-    kubectl create secret generic splunk-$namespace_name-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $namespace_name
-
-Create splunk-standalone
-    kubectl apply -f ./k8s_manifests/splunk_standalone/splunk_standalone.yaml -n $namespace_name
+Update the SPLUNK_VERSION in splunk_standalone.yaml file.
+    kubectl apply -f splunk_standalone.yaml -n $NAMESPACE_NAME
 
 Check splunk-standalone is up ?
-    kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $namespace_name
+    kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
 
 Expose splunk-standalone service
-    kubectl port-forward svc/splunk-s1-standalone-service -n $namespace_name :8000 :8088 :8089 > ./exposed_splunk_ports.log 2>&1 &
+    kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :8088 :8089 > ./exposed_splunk_ports.log 2>&1 &
 
 Get the mapped ports of 8000, 8088, 8089 and update the pytest.ini accordingly
 
+Access the splunk ui and install the addon by "Install app from file",
+    http://localhost:<splunk-web-port>/
+    Install modinput helper addon https://github.com/splunk/splunk-add-on-for-modinput-test , as a prerequisite of execution of modinput tests.
 
+Set addon specific parameters by encoding into Base64 Format
+
+To execute modinput tests:
+    python -m pytest -v --username=admin --password=Chang3d! --splunk-url=localhost --splunkd-port=<splunk-management-port> --remote -n 5 tests/modinput_functional
+
+To execute UI tests:
+    python -m pytest -v --splunk-type=external --splunk-host=localhost --splunkweb-port=<splunk-web-port> --splunk-port=<splunk-management-port> --splunk-password=Chang3d! --browser=<browser> --splunk-hec-port=<splunk-hec-port> --local tests/ui 
 --------------------------Cleanup-----------------------
 
 Delete ./exposed_splunk_ports.log file
 
 Delete splunk-standalone
-    kubectl delete -f ./k8s_manifests/splunk_standalone/splunk_standalone.yaml -n $namespace_name
+    kubectl delete -f splunk_standalone.yaml -n $NAMESPACE_NAME
     sleep 30
 
 Delete secret
-    kubectl delete secret splunk-$namespace_name-secret -n $namespace_name
-
-Delete splunk-operator
-    kubectl delete -f ./k8s_manifests/splunk_standalone/splunk-operator-install.yaml -n $namespace_name
-    sleep 60
+    kubectl delete secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME
 
 Delete namespace
-    kubectl delete ns $namespace_name
+    kubectl delete -f namespace.yaml -n $NAMESPACE_NAME
     sleep 60
