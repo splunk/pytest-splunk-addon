@@ -72,7 +72,7 @@ kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :
 8. Get the mapped ports of 8000, 8088, 8089 and update the pytest.ini accordingly.
 
 9. Access the splunk ui and install the addon by "Install app from file",
-- (http://localhost:<splunk-web-port>/)
+- http://localhost:splunk-web-port/
 - Install modinput helper addon downloaded in step-1 , as a prerequisite of execution of modinput tests.
 
 10. If TEST_TYPE is `ui` then follow the below steps,
