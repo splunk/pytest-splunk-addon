@@ -184,7 +184,7 @@ jobs:
           kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
           sleep 30
           kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
-          kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997
+          kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
           sleep 30
       # - name: Install dependencies
       #   run: |
