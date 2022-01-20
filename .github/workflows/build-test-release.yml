@@ -242,6 +242,10 @@ jobs:
           export PATH="~/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
           source ~/.poetry/env
+          echo $HOME
+          ls -al $HOME
+          export KUBECONFIG=$HOME/.kube/config
+          kubectl get pods -A
           poetry install
           poetry run pytest -vv --splunk-version=${{ matrix.splunk-version }} -m kubernetes
 
