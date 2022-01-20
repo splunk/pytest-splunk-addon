@@ -151,19 +151,7 @@ jobs:
           kubectl get pods -A
       - name: Setup for testing
         run: |
-          sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
-          curl https://pyenv.run | bash
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          pyenv install 3.7.8
-          pyenv local 3.7.8
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-          source ~/.poetry/env
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          source ~/.poetry/env
-          kubectl get pods -A
-          poetry install
+          pip install git+https://github.com/pixelb/crudini
           mkdir test-results-${{ matrix.splunk-version }}
       - name: Splunk Up
         run: |
@@ -186,23 +174,23 @@ jobs:
           kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
           kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
           sleep 30
-      # - name: Install dependencies
-      #   run: |
-      #     sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
-      #     curl https://pyenv.run | bash
-      #     export PATH="~/.pyenv/bin:$PATH"
-      #     eval "$(pyenv init -)"
-      #     pyenv install 3.7.8
-      #     pyenv local 3.7.8
-      #     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-      #     source ~/.poetry/env
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+          curl https://pyenv.run | bash
+          export PATH="~/.pyenv/bin:$PATH"
+          eval "$(pyenv init -)"
+          pyenv install 3.7.8
+          pyenv local 3.7.8
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+          source ~/.poetry/env
       - name: Test with pytest
         run: |
-          # export PATH="~/.pyenv/bin:$PATH"
-          # eval "$(pyenv init -)"
-          # source ~/.poetry/env
-          # kubectl get pods -A
-          # poetry install
+          export PATH="~/.pyenv/bin:$PATH"
+          eval "$(pyenv init -)"
+          source ~/.poetry/env
+          kubectl get pods -A
+          poetry install
           poetry run pytest -v -m external --junitxml=test-results-${{ matrix.splunk-version }}/test.xml
           ls -al
       - uses: actions/upload-artifact@v2.2.4
