@@ -126,7 +126,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.7]
-        splunk-version: ["8.0","8.1","8.2"]
+        splunk-version: [8.0,8.1,8.2]
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
@@ -169,7 +169,8 @@ jobs:
         run: |
           export NAMESPACE_NAME=ta-fiction-external
           export SPLUNK_ADDON=TA_fiction-0.0.0-dev
-          export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf ${{ matrix.splunk-version }} VERSION)
+          export SPLUNK_VERSION=${{ matrix.splunk-version }}
+          echo $SPLUNK_VERSION
           eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml)\"" >> ./namespace_updated.yaml
           eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml)\"" >> ./splunk_standalone_updated.yaml
           kubectl apply -f ./namespace_updated.yaml
