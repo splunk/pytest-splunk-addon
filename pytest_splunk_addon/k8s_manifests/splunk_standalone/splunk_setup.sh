@@ -18,12 +18,15 @@ else
 fi
 # for FILE in $TEST_RUNNER_DIRECTORY/tests/src/*.spl; do echo "        - ${FILE//$TEST_RUNNER_DIRECTORY_Updated/http://nginx//}" >> "$(dirname -- "$0")"/addon_information_updated.yaml; done;
 cat "$(dirname -- "$0")"/addon_information_updated.yaml >> "$(dirname -- "$0")"/splunk_standalone_updated.yaml
+echo "((((((((((((((((((((((())))))))))))))))))))))))))"
+cat "$(dirname -- "$0")"/splunk_standalone_updated.yaml
 kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
 # while [[ $(kubectl get deploy splunk-operator -n $NAMESPACE_NAME -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for splunk-operator deployment" && sleep 1; done
 # until kubectl get deploy splunk-operator -n $NAMESPACE_NAME 2>&1 >/dev/null; do sleep 3; done
 kubectl apply -f "$(dirname -- "$0")"/splunk_standalone_updated.yaml -n $NAMESPACE_NAME
 sleep 30
 kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
+kubectl get pods -n $NAMESPACE_NAME
 # while [[ $(kubectl get pod splunk-s1-standalone-0 -n $NAMESPACE_NAME -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for splunk standalone" && sleep 1; done
 kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :8088 :8089 :9997 > $TEST_RUNNER_DIRECTORY/exposed_splunk_ports.log 2>&1 &
 sleep 30
