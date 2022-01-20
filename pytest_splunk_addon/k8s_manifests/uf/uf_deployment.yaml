@@ -43,6 +43,9 @@ spec:
         - name: SPLUNK_START_ARGS
           value: --accept-license
         image: splunk/universalforwarder:latest
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 0
         ports:
         - containerPort: 8089
           protocol: TCP
@@ -67,7 +70,7 @@ spec:
         volumeMounts:
         - mountPath: /opt/splunkforwarder/etc/apps/
           name: ufaddon
-        - mountPath: /private
+        - mountPath: $TEST_RUNNER_DIRECTORY
           name: mydir
       volumes:
       - emptyDir: {}
@@ -75,5 +78,5 @@ spec:
       - name: mydir
         hostPath:
           # Ensure the file directory is created.
-          path: /private
+          path: $TEST_RUNNER_DIRECTORY
           type: DirectoryOrCreate
