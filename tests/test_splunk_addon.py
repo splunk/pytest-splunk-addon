@@ -109,9 +109,9 @@ def test_splunk_connection_external(testdir):
     result = testdir.runpytest(
         "--splunk-app=addons/TA_fiction",
         "--splunk-type=external",
-        "--splunk-host=splunk",
+        "--splunk-host=localhost",
         "--splunk-port=8089",
-        "--splunk-forwarder-host=splunk",
+        "--splunk-forwarder-host=localhost",
         "-v",
     )
 

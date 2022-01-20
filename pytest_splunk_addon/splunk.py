@@ -614,7 +614,7 @@ def splunk_kubernetes(request):
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
-    LOGGER.info(os.environ.get("PYTEST_XDIST_WORKER"))
+    # LOGGER.info(os.environ.get("PYTEST_XDIST_WORKER"))
     if ( "PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
         LOGGER.info("Starting kubernetes_service=splunk for worker id {}".format(str(os.environ.get("PYTEST_XDIST_WORKER"))))
         LOGGER.info('********************************')
@@ -658,7 +658,7 @@ def splunk_kubernetes(request):
         if splunk_setup.stderr:
             LOGGER.info("Splunk Setup Error Logs")
             LOGGER.info(splunk_setup.stderr.decode())
-        LOGGER.info('splunk PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
+        # LOGGER.info('splunk PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
         if "PYTEST_XDIST_WORKER" in os.environ:
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_splunk", "w+"):
                 PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
