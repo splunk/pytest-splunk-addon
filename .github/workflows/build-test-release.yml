@@ -213,7 +213,7 @@ jobs:
       - name: Setup kubernetes cluster
         id: kubernetes
         run: |
-          ./k3s.sh
+          sudo ./k3s.sh
           kubectl get no
       # now you can run kubectl to see the pods in the cluster
       - name: kubectl
