@@ -121,14 +121,14 @@ def pytest_sessionstart(session):
         sample_generator.get_samples(store_events)
 
 def pytest_sessionfinish(session,exitstatus):
-    LOGGER.info('-----------------SessionFinish------------------ {}'.format(os.environ.get("PYTEST_XDIST_WORKER")))
+    # LOGGER.info('-----------------SessionFinish------------------ {}'.format(os.environ.get("PYTEST_XDIST_WORKER")))
     try:
         with open('./splunk_type.txt', 'r') as splunk_type_file:
             for line in splunk_type_file:
                 splunk_type = line
         if (os.environ.get("PYTEST_XDIST_WORKER")==None) and (splunk_type=="kubernetes"):
             SPLUNK_ADDON=subprocess.check_output('crudini --get  package/default/app.conf id name',shell=True).decode(sys.stdout.encoding).strip()
-            LOGGER.info(SPLUNK_ADDON)
+            # LOGGER.info(SPLUNK_ADDON)
             os.environ['NAMESPACE_NAME']=str(SPLUNK_ADDON.replace("_","-").lower())
             files = ['./exposed_splunk_ports.log','./splunk_type.txt']
             current_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"k8s_manifests")

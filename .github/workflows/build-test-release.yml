@@ -210,6 +210,19 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - name: start minikube
+        id: minikube
+        uses: medyagh/setup-minikube@master
+      # now you can run kubectl to see the pods in the cluster
+      - name: kubectl
+        run: kubectl get pods -A
+      - name: Setup Splunk-Operator
+        run: |
+          wget -O splunk-operator.yaml https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-cluster.yaml
+          kubectl apply -f splunk-operator.yaml
+          sleep 30
+          kubectl get ns
+          kubectl get pods -A
       - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}::Splunk=${{ matrix.splunk-version }}
         uses: actions/setup-python@v1
         with:
@@ -229,8 +242,8 @@ jobs:
           export PATH="~/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
           source ~/.poetry/env
-          poetry install -E docker
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker
+          poetry install
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes
 
   test-splunk-unit:
     name: Unit tests
