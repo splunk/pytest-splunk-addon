@@ -27,6 +27,10 @@ kubectl apply -f "$(dirname -- "$0")"/splunk_standalone_updated.yaml -n $NAMESPA
 sleep 30
 kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
 kubectl get pods -n $NAMESPACE_NAME
+echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+kubectl describe pod splunk-s1-standalone-0 -n $NAMESPACE_NAME
+echo "###########################"
+kubectl logs pod splunk-s1-standalone-0 -n $NAMESPACE_NAME
 # while [[ $(kubectl get pod splunk-s1-standalone-0 -n $NAMESPACE_NAME -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for splunk standalone" && sleep 1; done
 kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :8088 :8089 :9997 > $TEST_RUNNER_DIRECTORY/exposed_splunk_ports.log 2>&1 &
 sleep 30
