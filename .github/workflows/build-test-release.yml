@@ -248,7 +248,7 @@ jobs:
           source ~/.poetry/env
           kubectl get pods -A
           poetry install
-          poetry run pytest -vv --splunk-version=${{ matrix.splunk-version }} -m kubernetes
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes
 
   test-splunk-unit:
     name: Unit tests
