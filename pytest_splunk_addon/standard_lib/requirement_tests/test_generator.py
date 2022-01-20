@@ -129,6 +129,7 @@ class ReqsTestGenerator(object):
                     for event_tag in root.iter("event"):
                         event_no += 1
                         unescaped_event = self.get_event(event_tag)
+                        event_name = self.get_event_name(event_tag)
                         transport_type = self.extract_transport_tag(event_tag)
                         if transport_type.lower() == "syslog":
                             stripped_event = self.strip_syslog_header(unescaped_event)
@@ -200,8 +201,15 @@ class ReqsTestGenerator(object):
                                 "transport_type": transport_type,
                                 "exceptions_dict": exceptions_dict,
                             },
-                            id=f"{(' '.join(model_list))}::{filename}::event_no::{event_no}",
+                            id=f"{(' '.join(model_list))}::{filename}::event_no::{event_no}::event_name::{event_name}",
                         )
+
+    def get_event_name(self, event_tag):
+        """
+            Input: Event tag
+            Function to return event name
+        """
+        return event_tag.get("name")
 
     def get_models(self, root):
         """
