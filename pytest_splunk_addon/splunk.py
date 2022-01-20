@@ -501,29 +501,35 @@ def uf_kubernetes(request):
     """
     Provides IP of the uf server and management port based on pytest-args(splunk_type)
     """
-    if ( "PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
-        LOGGER.info("Starting kubernetes_service=uf for worker id {}".format(str(os.environ.get("PYTEST_XDIST_WORKER"))))
-        current_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"k8s_manifests/uf")
-        update_k8s_manifest_files(folder=current_path,file="uf_deployment")
-        LOGGER.info("Setting up UF")
-        uf_setup = subprocess.run('sh uf_setup.sh',capture_output=True,shell=True,cwd=current_path)
-        LOGGER.info("UF Setup Logs")
-        LOGGER.info(uf_setup.stdout.decode())
-        if uf_setup.stderr:
-            LOGGER.info("UF Setup Error Logs")
-            LOGGER.info(uf_setup.stderr.decode())
-        LOGGER.info('uf PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
-        if "PYTEST_XDIST_WORKER" in os.environ:
-            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf", "w+"):
-                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
-    else:
-        while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf"):
-            sleep(1)
-    expose_ports_splunk_sc4s_uf('./exposed_uf_ports.log')
-    LOGGER.info('Exposed ports of UF=%s',os.getenv('port_uf'))
+    # if ( "PYTEST_XDIST_WORKER" not in os.environ or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"):
+    #     LOGGER.info("Starting kubernetes_service=uf for worker id {}".format(str(os.environ.get("PYTEST_XDIST_WORKER"))))
+    #     current_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"k8s_manifests/uf")
+    #     update_k8s_manifest_files(folder=current_path,file="uf_deployment")
+    #     LOGGER.info("Setting up UF")
+    #     uf_setup = subprocess.run('sh uf_setup.sh',capture_output=True,shell=True,cwd=current_path)
+    #     LOGGER.info("UF Setup Logs")
+    #     LOGGER.info(uf_setup.stdout.decode())
+    #     if uf_setup.stderr:
+    #         LOGGER.info("UF Setup Error Logs")
+    #         LOGGER.info(uf_setup.stderr.decode())
+    #     LOGGER.info('uf PYTEST_XDIST_TESTRUNUID {}'.format(os.environ.get("PYTEST_XDIST_TESTRUNUID")))
+    #     if "PYTEST_XDIST_WORKER" in os.environ:
+    #         with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf", "w+"):
+    #             PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
+    # else:
+    #     while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf"):
+    #         sleep(1)
+    # expose_ports_splunk_sc4s_uf('./exposed_uf_ports.log')
+    # LOGGER.info('Exposed ports of UF=%s',os.getenv('port_uf'))
+    # uf_info = {
+    #     "uf_host": "localhost",
+    #     "uf_port": os.getenv('port_uf'),
+    #     "uf_username": request.config.getoption("splunk_uf_user"),
+    #     "uf_password": request.config.getoption("splunk_uf_password"),
+    # }
     uf_info = {
-        "uf_host": "localhost",
-        "uf_port": os.getenv('port_uf'),
+        "uf_host": request.config.getoption("splunk_uf_host"),
+        "uf_port": request.config.getoption("splunk_uf_port"),
         "uf_username": request.config.getoption("splunk_uf_user"),
         "uf_password": request.config.getoption("splunk_uf_password"),
     }
@@ -844,9 +850,9 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
         addon_path = request.config.getoption("splunk_app")
         config_path = request.config.getoption("splunk_data_generator")
         run_requirement_test = request.config.getoption("requirement_test")
-        splunk_s2s_port="9997"
-        if os.getenv('Splunk_Type')=="kubernetes":
-            splunk_s2s_port=os.getenv('port_s2s')
+        # splunk_s2s_port="9997"
+        # if os.getenv('Splunk_Type')=="kubernetes":
+        #     splunk_s2s_port=os.getenv('port_s2s')
         ingest_meta_data = {
             "uf_host": uf.get("uf_host"),
             "uf_port": uf.get("uf_port"),
@@ -854,7 +860,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
             "uf_password": uf.get("uf_password"),
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
-            "splunk_s2s_port":splunk_s2s_port,
+            # "splunk_s2s_port":splunk_s2s_port,
             "sc4s_host": sc4s[0],  # for sc4s
             "sc4s_port": sc4s[1][514],  # for sc4s
         }
