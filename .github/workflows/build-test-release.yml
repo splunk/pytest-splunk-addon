@@ -210,13 +210,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - name: start minikube
-        id: minikube
-        uses: manusa/actions-setup-minikube@v2.4.3
-        with:
-          minikube version: 'v1.24.0'
-          kubernetes version: 'v1.23.0'
-          start args: '--cpus 8 --memory 9216'
+      - name: Setup kubernetes cluster
+        id: kubernetes
+        run: |
+          ./k3s.sh
+          kubectl get no
       # now you can run kubectl to see the pods in the cluster
       - name: kubectl
         run: kubectl get pods -A
