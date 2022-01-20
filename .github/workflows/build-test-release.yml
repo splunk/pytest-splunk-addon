@@ -192,9 +192,9 @@ jobs:
       - name: Test with pytest
         run: |
           export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"          
+          eval "$(pyenv init -)"
           source ~/.poetry/env
-          poetry install -E docker
+          poetry install
           poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc
 
   test-splunk-matrix:
@@ -212,7 +212,11 @@ jobs:
           submodules: true
       - name: start minikube
         id: minikube
-        uses: medyagh/setup-minikube@master
+        uses: manusa/actions-setup-minikube@v2.4.3
+        with:
+          minikube version: 'v1.24.0'
+          kubernetes version: 'v1.23.0'
+          start args: '--cpus 8 --memory 9216'
       # now you can run kubectl to see the pods in the cluster
       - name: kubectl
         run: kubectl get pods -A
