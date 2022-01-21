@@ -153,6 +153,16 @@ jobs:
         run: |
           pip install git+https://github.com/pixelb/crudini
           mkdir test-results-${{ matrix.splunk-version }}
+      - name: Slim Package
+        id: slim
+        uses: splunk/addonfactory-packaging-toolkit-action@v1
+        with:
+          source: 
+            "./pytest_splunk_addon/tests/addons/TA_fiction"
+      - name: Slim Package
+        run: |
+          ls -al
+          ls -al ./pytest_splunk_addon/tests/addons/
       - name: Splunk Up
         run: |
           export NAMESPACE_NAME=ta-fiction-external
