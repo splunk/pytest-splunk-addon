@@ -163,7 +163,8 @@ jobs:
         run: |
           ls -al
           ls -al build/
-          ls -al build/package/
+          ls -al build/package/deployment/
+          ls -al build/package/splunkbase/
       - name: Splunk Up
         run: |
           export NAMESPACE_NAME=ta-fiction-external
