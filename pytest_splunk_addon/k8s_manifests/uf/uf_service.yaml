@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: uf
+  name: uf-service
+spec:
+  ports:
+  - name: port-1
+    port: 8089
+    protocol: TCP
+    targetPort: 8089
+  selector:
+    app: uf
+  type: ClusterIP

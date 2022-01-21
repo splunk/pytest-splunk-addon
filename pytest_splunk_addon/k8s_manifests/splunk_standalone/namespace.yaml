@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: $NAMESPACE_NAME
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: splunk:operator:namespace-manager
+  namespace: $NAMESPACE_NAME
+subjects:
+- kind: ServiceAccount
+  name: splunk-operator
+  namespace: splunk-operator
+roleRef:
+  kind: ClusterRole
+  name: splunk:operator:namespace-manager
+  apiGroup: rbac.authorization.k8s.io

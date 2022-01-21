@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sc4s
+  name: sc4s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sc4s
+  template:
+    metadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+      labels:
+        app: sc4s
+    spec:
+      initContainers:
+      - name: wait-for-splunkd
+        image: ubuntu:latest
+        args:
+        - -c
+        - |
+          apt-get -y update ;
+          apt-get install -y curl ;
+          while true;
+          do curl -k https://splunk-s1-standalone-service.$NAMESPACE_NAME.svc.cluster.local:8088/services/collector \
+            -H "Authorization: Splunk 9b741d03-43e9-4164-908b-e09102327d22" \
+            -d '{"event": "Splunk readiness test event.", "sourcetype": "manual"}' &&\
+          break;
+          sleep 5;
+          done
+        command:
+        - /bin/sh
+      containers:
+      - env:
+        - name: SC4S_ARCHIVE_GLOBAL
+          value: "no"
+        - name: SC4S_DEST_SPLUNK_HEC_TLS_VERIFY
+          value: "no"
+        - name: SC4S_LISTEN_CHECKPOINT_SPLUNK_NOISE_CONTROL
+          value: "yes"
+        - name: SC4S_SOURCE_TLS_ENABLE
+          value: "no"
+        - name: SPLUNK_HEC_TOKEN
+          value: "9b741d03-43e9-4164-908b-e09102327d22"
+        - name: SPLUNK_HEC_URL
+          value: https://splunk-s1-standalone-service.$NAMESPACE_NAME.svc.cluster.local:8088
+        - name: TEST_SC4S_ACTIVATE_EXAMPLES
+          value: "yes"
+        image: splunk/scs:latest
+        name: sc4s
+        ports:
+        - containerPort: 514
+        - containerPort: 601
+        - containerPort: 6514
+        - containerPort: 5425
+        resources:
+          limits:
+            cpu: "1"
+            memory: "250Mi"
+          requests:
+            cpu: "50m"
+            memory: "200Mi"
+      restartPolicy: Always
