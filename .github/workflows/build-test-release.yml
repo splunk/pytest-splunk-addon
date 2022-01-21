@@ -162,7 +162,8 @@ jobs:
       - name: Slim Package
         run: |
           ls -al
-          ls -al ./tests/addons/
+          ls -al build/
+          ls -al build/package/
       - name: Splunk Up
         run: |
           export NAMESPACE_NAME=ta-fiction-external
