@@ -153,18 +153,8 @@ jobs:
         run: |
           pip install git+https://github.com/pixelb/crudini
           mkdir test-results-${{ matrix.splunk-version }}
-      - name: Slim Package
-        id: slim
-        uses: splunk/addonfactory-packaging-toolkit-action@v1
-        with:
-          source: 
-            "./tests/addons/TA_fiction"
-      - name: Slim Package
-        run: |
-          ls -al
-          ls -al build/
-          ls -al build/package/deployment/
-          ls -al build/package/splunkbase/
+          pip install https://download.splunk.com/misc/packaging-toolkit/splunk-packaging-toolkit-1.0.1.tar.gz
+          ./spl_generation.sh
       - name: Splunk Up
         run: |
           export NAMESPACE_NAME=ta-fiction-external
@@ -202,6 +192,7 @@ jobs:
           eval "$(pyenv init -)"
           source ~/.poetry/env
           kubectl get pods -A
+          ls -al ./tests/src/
           poetry install
           poetry run pytest -v -m external --junitxml=test-results-${{ matrix.splunk-version }}/test.xml
           ls -al
@@ -293,6 +284,9 @@ jobs:
           eval "$(pyenv init -)"
           source ~/.poetry/env
           kubectl get pods -A
+          pip install https://download.splunk.com/misc/packaging-toolkit/splunk-packaging-toolkit-1.0.1.tar.gz
+          ./spl_generation.sh
+          ls -al ./tests/src/
           poetry install
           poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes
 
