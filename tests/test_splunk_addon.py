@@ -429,7 +429,7 @@ def test_splunk_fiction_indextime_broken(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-vv",
+        "-v",
         "--search-interval=0",
         "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime_broken/default",
