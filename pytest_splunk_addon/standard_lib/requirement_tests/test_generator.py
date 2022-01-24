@@ -206,8 +206,8 @@ class ReqsTestGenerator(object):
 
     def get_event_name(self, event_tag):
         """
-            Input: Event tag
-            Function to return event name
+        Input: Event tag
+        Function to return event name
         """
         return event_tag.get("name")
 
