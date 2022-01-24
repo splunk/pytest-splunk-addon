@@ -25,15 +25,14 @@
       "Network Sessions": "==4.18.0",
       "Performance": "==4.18.0"
     },
-    "description": "Splunk Add-on for Unix and Linux",
+    "description": "Splunk Add-on for Requirement Test Uf",
     "id": {
       "group": null,
-      "name": "Splunk_TA_nix",
-      "version": "8.3.1"
+      "name": "TA_requirement_test_uf",
+      "version": "0.0.0-dev"
     },
     "license": {
       "name": "Splunk Software License Agreement",
-      "text": "LICENSES/LicenseRef-Splunk-1-2020.txt",
       "uri": "http://www.splunk.com/en_us/legal/splunk-software-license-agreement.html"
     },
     "privacyPolicy": {
@@ -44,10 +43,9 @@
     "releaseDate": null,
     "releaseNotes": {
       "name": "README",
-      "text": "./README.txt",
       "uri": "http://docs.splunk.com/Documentation/AddOns/released/UnixLinux/About"
     },
-    "title": "Splunk Add-on for Unix and Linux"
+    "title": "Splunk Add-on for Requirement Test Uf"
   },
   "inputGroups": null,
   "platformRequirements": null,
