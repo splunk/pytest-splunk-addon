@@ -51,7 +51,7 @@ class FileMonitorEventIngestor(EventIngestor):
         self.uf_password = required_configs.get("uf_password")
         # Container of universal forwarder is linked with splunk instance.
         # So using splunk_host as splunk and port 9997 directly.
-        self.splunk_host = "splunk"
+        self.splunk_host = "splunk-s1-standalone-service"
         self.splunk_s2s_port = "9997"
         self.uf_rest_uri = "https://{}:{}".format(self.uf_host, self.uf_port)
         self.outputs_endpoint = "{}/services/data/outputs/tcp/group".format(

@@ -34,5 +34,13 @@ header:
     - "MANIFEST.in"
     - "entrypoint.sh"
     - "pytest_splunk_addon/.ignore_splunk_internal_errors"
+    - "k3s.sh"
+    - "spl_generation.sh"
+    - "pytest_splunk_addon/k8s_manifests/sc4s/sc4s_destroy.sh"
+    - "pytest_splunk_addon/k8s_manifests/sc4s/sc4s_setup.sh"
+    - "pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_destroy.sh"
+    - "pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_setup.sh"
+    - "pytest_splunk_addon/k8s_manifests/uf/uf_destroy.sh"
+    - "pytest_splunk_addon/k8s_manifests/uf/uf_setup.sh"
 
   comment: on-failure

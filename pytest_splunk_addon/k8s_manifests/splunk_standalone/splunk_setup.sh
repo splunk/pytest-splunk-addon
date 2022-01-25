@@ -17,7 +17,10 @@ else
     echo "Unable to found $SPLUNK_ADDON.spl in tests/src"
 fi
 # for FILE in $TEST_RUNNER_DIRECTORY/tests/src/*.spl; do echo "        - ${FILE//$TEST_RUNNER_DIRECTORY_Updated/http://nginx//}" >> "$(dirname -- "$0")"/addon_information_updated.yaml; done;
-cat "$(dirname -- "$0")"/addon_information_updated.yaml >> "$(dirname -- "$0")"/splunk_standalone_updated.yaml
+grep -v ^\# "$(dirname -- "$0")"/addon_information_updated.yaml | grep . >> "$(dirname -- "$0")"/splunk_standalone_updated.yaml
+echo "*************************************+++++++++++++++++++++++++++++++++++++++++++"
+cat "$(dirname -- "$0")"/splunk_standalone_updated.yaml
+# cat "$(dirname -- "$0")"/addon_information_updated.yaml >> "$(dirname -- "$0")"/splunk_standalone_updated.yaml
 kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
 # while [[ $(kubectl get deploy splunk-operator -n $NAMESPACE_NAME -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for splunk-operator deployment" && sleep 1; done
 # until kubectl get deploy splunk-operator -n $NAMESPACE_NAME 2>&1 >/dev/null; do sleep 3; done
