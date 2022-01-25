@@ -169,7 +169,7 @@ jobs:
           kubectl cp ./tests/src/$SPLUNK_ADDON.spl nginx:/usr/share/nginx/html -n $NAMESPACE_NAME
           cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/addon_information.yaml >> ./addon_information_updated.yaml
           echo "        - http://nginx//$SPLUNK_ADDON.spl" >> ./addon_information_updated.yaml
-          cat ./addon_information_updated.yaml >> ./splunk_standalone_updated.yaml
+          grep -v ^\# ./addon_information_updated.yaml | grep . >> ./splunk_standalone_updated.yaml
           kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
           kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
           sleep 30

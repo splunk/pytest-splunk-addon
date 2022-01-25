@@ -159,7 +159,7 @@ def pytest_sessionfinish(session, exitstatus):
                     "sh uf/uf_destroy.sh",
                     capture_output=True,
                     shell=True,
-                    cwd=current_path
+                    cwd=current_path,
                 )
                 files.append("./exposed_uf_ports.log")
                 LOGGER.info("UF Destroy Logs")
@@ -171,7 +171,7 @@ def pytest_sessionfinish(session, exitstatus):
                 "sh splunk_standalone/splunk_destroy.sh",
                 capture_output=True,
                 shell=True,
-                cwd=current_path
+                cwd=current_path,
             )
             LOGGER.info("Splunk Destroy Logs")
             LOGGER.info(splunk_destroy.stdout.decode())
