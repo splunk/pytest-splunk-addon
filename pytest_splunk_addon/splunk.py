@@ -604,7 +604,7 @@ def splunk_kubernetes(request):
         dict: Details of the splunk instance including host, port, username & password.
     """
     if (
-        "PYTEST_XDIST_WORKER" not in os.environ 
+        "PYTEST_XDIST_WORKER" not in os.environ
         or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
     ):
         LOGGER.info(
