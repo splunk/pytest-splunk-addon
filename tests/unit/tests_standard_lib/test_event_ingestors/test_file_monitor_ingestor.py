@@ -50,7 +50,7 @@ def test_create_output_conf(requests_mock):
     assert sent_requests == [
         (
             "POST https://localhost:8888/services/data/outputs/tcp/group",
-            "name=uf_monitor&servers=splunk:9997",
+            "name=uf_monitor&servers=splunk-s1-standalone-service:9997",
         )
     ]
 
