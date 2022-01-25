@@ -288,7 +288,7 @@ jobs:
           ./spl_generation.sh
           ls -al ./tests/src/
           poetry install
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes -k test_splunk_fiction_indextime
 
   test-splunk-unit:
     name: Unit tests
