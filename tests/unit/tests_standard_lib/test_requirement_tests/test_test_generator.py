@@ -99,6 +99,7 @@ def test_extract_params():
     "extract_transport_tag_return_value, "
     "root_events, "
     "get_models_return_value, "
+    "get_event_name_return_value, "
     "extract_key_value_xml_return_value, "
     "expected_output",
     [
@@ -108,6 +109,7 @@ def test_extract_params():
             ["syslog"],
             {"event": ["<34>Oct 11 22:14:15 machine1 pr1:event_1"]},
             [["model_1:dataset_1", "model_2:dataset_2"]],
+            ["event_name_1"],
             [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
             [
                 (
@@ -123,7 +125,7 @@ def test_extract_params():
                         "transport_type": "syslog",
                     },
                     "model_1:dataset_1 "
-                    "model_2:dataset_2::fake_path/requirement.log::event_no::1",
+                    "model_2:dataset_2::fake_path/requirement.log::event_no::1::event_name::event_name_1",
                 ),
             ],
         ),
@@ -133,6 +135,7 @@ def test_extract_params():
             ["syslog"],
             {"event": ["event_1", "event_2"]},
             [["model_1:dataset_1", "model_2:dataset_2"], ["model_3:dataset_3"]],
+            ["event_name_2"],
             [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
             [],
         ),
@@ -142,6 +145,7 @@ def test_extract_params():
             ["syslog"],
             {"event": ["event_1"]},
             [[]],
+            ["event_name_3"],
             [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
             [],
         ),
@@ -155,6 +159,7 @@ def test_generate_cim_req_params(
     extract_transport_tag_return_value,
     root_events,
     get_models_return_value,
+    get_event_name_return_value,
     extract_key_value_xml_return_value,
     expected_output,
 ):
@@ -177,6 +182,8 @@ def test_generate_cim_req_params(
         ReqsTestGenerator, "escape_char_event", side_effect=lambda x: x
     ), patch.object(
         ReqsTestGenerator, "get_models", side_effect=get_models_return_value
+    ), patch.object(
+        ReqsTestGenerator, "get_event_name", side_effect=get_event_name_return_value
     ), patch.object(
         ReqsTestGenerator,
         "extract_key_value_xml",
