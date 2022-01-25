@@ -649,7 +649,6 @@ TA_FICTION_INDEXTIME_SKIPPED = [
     "*test_splunk_fiction_indextime.py::Test_App::test_tags*splunk_searchtime_fields_tags0* SKIPPED*",
     "*test_splunk_fiction_indextime.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*",
     "*test_splunk_fiction_indextime.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*",
-    "*test_splunk_fiction_indextime.py::Test_App::test_requirement_params* SKIPPED*",
 ]
 """
 Define the TA_fiction_indextime_broken add-on passed test case list.
@@ -739,7 +738,6 @@ TA_FICTION_INDEXTIME_BROKEN_SKIPPED = [
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_tags*splunk_searchtime_fields_tags0* SKIPPED*",
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*",
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*",
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_requirement_params* SKIPPED*",
 ]
 """
 Define TA_requirement_tests passed test

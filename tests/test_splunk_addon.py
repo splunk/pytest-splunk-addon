@@ -532,8 +532,8 @@ def test_splunk_app_requirements(testdir):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
-        class Test_App(Basic):
+        from pytest_splunk_addon.standard_lib.addon_requirements_basic import RequirementBasic
+        class Test_App(RequirementBasic):
             def empty_method():
                 pass
     """
@@ -576,8 +576,8 @@ def test_splunk_app_requirements_modinput(testdir):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
-        class Test_App(Basic):
+        from pytest_splunk_addon.standard_lib.addon_requirements_basic import RequirementBasic
+        class Test_App(RequirementBasic):
             def empty_method():
                 pass
     """
@@ -625,8 +625,8 @@ def test_splunk_app_requirements_uf(testdir):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
-        class Test_App(Basic):
+        from pytest_splunk_addon.standard_lib.addon_requirements_basic import RequirementBasic
+        class Test_App(RequirementBasic):
             def empty_method():
                 pass
     """
@@ -669,8 +669,8 @@ def test_splunk_app_requirements_scripted(testdir):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
-        class Test_App(Basic):
+        from pytest_splunk_addon.standard_lib.addon_requirements_basic import RequirementBasic
+        class Test_App(RequirementBasic):
             def empty_method():
                 pass
     """
