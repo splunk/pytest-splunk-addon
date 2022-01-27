@@ -125,37 +125,77 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: ["8.0","8.1","8.2"]
+        python-version: [3.7]
+        splunk-version: ['8.0','8.1','8.2']
+    env:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Setup kubernetes cluster
+        id: kubernetes
+        run: |
+          ./k3s.sh
+          kubectl get no
+      - name: Setup Splunk-Operator at cluster-scope
+        run: |
+          wget -O splunk-operator.yaml https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-cluster.yaml
+          kubectl apply -f splunk-operator.yaml
+          sleep 30
+          kubectl get ns
+          kubectl get pods -A
       - name: Setup for testing
         run: |
           pip install git+https://github.com/pixelb/crudini
           mkdir test-results-${{ matrix.splunk-version }}
+          pip install https://download.splunk.com/misc/packaging-toolkit/splunk-packaging-toolkit-1.0.1.tar.gz
+          ./spl_generation.sh
       - name: Splunk Up
         run: |
-          export SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction
-          export SPLUNK_ADDON=TA_fiction
-          export SPLUNK_APP_ID=TA_fiction
-          ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
-          export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf ${{ matrix.splunk-version }} VERSION)
+          export NAMESPACE_NAME=ta-fiction-external
+          export SPLUNK_ADDON=TA_fiction-0.0.0-dev
+          export SPLUNK_VERSION=${{ matrix.splunk-version }}
           echo $SPLUNK_VERSION
-          docker-compose -f "docker-compose-ci.yml" build
-          SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up -d splunk
-          sleep 90
-      - name: Test
+          eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml)\"" >> ./namespace_updated.yaml
+          eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml)\"" >> ./splunk_standalone_updated.yaml
+          kubectl apply -f ./namespace_updated.yaml
+          kubectl run nginx -n $NAMESPACE_NAME --image=nginx --port=80 --expose
+          kubectl wait pod nginx --for=condition=ready --timeout=300s -n $NAMESPACE_NAME
+          kubectl cp ./tests/src/$SPLUNK_ADDON.spl nginx:/usr/share/nginx/html -n $NAMESPACE_NAME
+          cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/addon_information.yaml >> ./addon_information_updated.yaml
+          echo "        - http://nginx//$SPLUNK_ADDON.spl" >> ./addon_information_updated.yaml
+          grep -v ^\# ./addon_information_updated.yaml | grep . >> ./splunk_standalone_updated.yaml
+          kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
+          kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
+          sleep 30
+          kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
+          kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
+          sleep 30
+      - name: Install dependencies
         run: |
-          SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
-          docker volume ls
-      - name: Collect Results
+          sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+          curl https://pyenv.run | bash
+          export PATH="~/.pyenv/bin:$PATH"
+          eval "$(pyenv init -)"
+          pyenv install 3.7.8
+          pyenv local 3.7.8
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+          source ~/.poetry/env
+      - name: Test with pytest
         run: |
-          docker volume ls
-          docker container create --name dummy \
-                              -v pytest-splunk-addon_results:/work/test-results \
-                              registry.access.redhat.com/ubi7/ubi
-          docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.splunk-version }}
+          export PATH="~/.pyenv/bin:$PATH"
+          eval "$(pyenv init -)"
+          source ~/.poetry/env
+          kubectl get pods -A
+          ls -al ./tests/src/
+          poetry install
+          poetry run pytest -v -m external --junitxml=test-results-${{ matrix.splunk-version }}/test.xml
+          ls -al
       - uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
@@ -194,7 +234,7 @@ jobs:
           export PATH="~/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"          
           source ~/.poetry/env
-          poetry install -E docker
+          poetry install
           poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc
 
   test-splunk-matrix:
@@ -205,11 +245,25 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.7]
-        splunk-version: [8.0, 8.1, 8.2]
+        splunk-version: ['8.0', '8.1', '8.2']
+    env:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - name: Setup kubernetes cluster
+        id: kubernetes
+        run: |
+          ./k3s.sh
+          kubectl get no
+      - name: Setup Splunk-Operator
+        run: |
+          wget -O splunk-operator.yaml https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-cluster.yaml
+          kubectl apply -f splunk-operator.yaml
+          sleep 30
+          kubectl get ns
+          kubectl get pods -A
       - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}::Splunk=${{ matrix.splunk-version }}
         uses: actions/setup-python@v1
         with:
@@ -229,8 +283,12 @@ jobs:
           export PATH="~/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
           source ~/.poetry/env
-          poetry install -E docker
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker
+          kubectl get pods -A
+          pip install https://download.splunk.com/misc/packaging-toolkit/splunk-packaging-toolkit-1.0.1.tar.gz
+          ./spl_generation.sh
+          ls -al ./tests/src/
+          poetry install
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes -k test_splunk_fiction_indextime
 
   test-splunk-unit:
     name: Unit tests
