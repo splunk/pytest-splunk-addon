@@ -48,6 +48,8 @@ spec:
         volumeMounts:
         - mountPath: /ufaddon
           name: ufaddon
+        - mountPath: /uf-files
+          name: uf-files
       containers:
       - name: uf
         env:
@@ -85,13 +87,10 @@ spec:
         volumeMounts:
         - mountPath: /opt/splunkforwarder/etc/apps/
           name: ufaddon
-        - mountPath: $TEST_RUNNER_DIRECTORY
-          name: mydir
+        - mountPath: $TEST_RUNNER_DIRECTORY/uf_files/
+          name: uf-files
       volumes:
       - emptyDir: {}
         name: ufaddon
-      - name: mydir
-        hostPath:
-          # Ensure the file directory is created.
-          path: $TEST_RUNNER_DIRECTORY
-          type: DirectoryOrCreate
+      - emptyDir: {}
+        name: uf-files

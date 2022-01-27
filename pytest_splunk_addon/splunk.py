@@ -510,6 +510,14 @@ def uf_kubernetes(request):
         )
         update_k8s_manifest_files(folder=current_path, file="uf_deployment")
         LOGGER.info("Setting up UF")
+        test_runner_output = subprocess.run("ls -al $TEST_RUNNER_DIRECTORY/",shell=True,capture_output=True)
+        LOGGER.info("######################################")
+        LOGGER.info(test_runner_output.stdout.decode())
+        LOGGER.info(test_runner_output.stderr.decode())
+        uf_output = subprocess.run("ls -al $TEST_RUNNER_DIRECTORY/uf_files/",shell=True,capture_output=True)
+        LOGGER.info(uf_output.stdout.decode())
+        LOGGER.info(uf_output.stderr.decode())
+        LOGGER.info("######################################")
         uf_setup = subprocess.run(
             "sh uf_setup.sh", capture_output=True, shell=True, cwd=current_path
         )
@@ -518,6 +526,8 @@ def uf_kubernetes(request):
         if uf_setup.stderr:
             LOGGER.info("UF Setup Error Logs")
             LOGGER.info(uf_setup.stderr.decode())
+        os.environ["UF_POD_NAME"] = subprocess.check_output(['bash','-c', "echo $(kubectl get pods -n {0} -l='app=uf' -o json| jq -r '.items[].metadata.name')".format(os.getenv("NAMESPACE_NAME"))]).strip().decode("utf-8")
+        print("UF_POD_NAME ............................... {}".format(os.getenv("UF_POD_NAME")))
         if "PYTEST_XDIST_WORKER" in os.environ:
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf", "w+"):
                 PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
@@ -613,6 +623,8 @@ def splunk_kubernetes(request):
             )
         )
         os.environ["TEST_RUNNER_DIRECTORY"] = os.getcwd()
+        # root_dir = "/" + os.getenv("TEST_RUNNER_DIRECTORY").split("/")[1]
+        # root_dir_permission = subprocess.run(f"chmod -R 766 {root_dir}",shell=True)
         LOGGER.info(
             "TEST_RUNNER_DIRECTORY : {}".format(
                 str(os.environ.get("TEST_RUNNER_DIRECTORY"))
