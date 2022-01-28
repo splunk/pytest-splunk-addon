@@ -18,12 +18,7 @@
 @contact: U{leiz@splunk.com<mailto:leiz@splunk.com>}
 @since: 2018-06-11
 """
-from future import standard_library
-
-standard_library.install_aliases()
-from builtins import range
 from future.utils import raise_
-from builtins import object
 from splunklib.client import HTTPError
 
 from pytest_splunk_addon.helmut.manager.indexes import Indexes

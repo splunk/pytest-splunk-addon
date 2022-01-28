@@ -18,11 +18,6 @@
 @contact: U{leiz@splunk.com<mailto:leiz@splunk.com>}
 @since: 2018-05-01
 """
-from future import standard_library
-
-standard_library.install_aliases()
-from builtins import range
-from builtins import object
 from splunklib.client import HTTPError
 
 from pytest_splunk_addon.helmut.manager.confs.conf import Conf

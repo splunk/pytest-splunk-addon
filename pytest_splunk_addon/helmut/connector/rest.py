@@ -17,10 +17,6 @@
 @author: Sagar Bhatnagar
 """
 
-from future import standard_library
-
-standard_library.install_aliases()
-from builtins import str
 from .base import Connector
 import urllib.request, urllib.parse, urllib.error
 import httplib2

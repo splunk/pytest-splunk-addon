@@ -24,11 +24,6 @@ Meta
     $Author$
     $Change$
 """
-
-from future import standard_library
-
-standard_library.install_aliases()
-from builtins import object
 import urllib.request, urllib.parse, urllib.error
 import datetime
 import time

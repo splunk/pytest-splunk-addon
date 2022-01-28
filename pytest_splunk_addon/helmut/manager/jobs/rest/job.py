@@ -18,9 +18,6 @@
 @contact: U{xju@splunk.com<mailto:xju@splunk.com>}
 @since: 2018-06-14
 """
-from future import standard_library
-
-standard_library.install_aliases()
 from pytest_splunk_addon.helmut.manager.jobs.results import Results
 from pytest_splunk_addon.helmut.manager.jobs.job import Job
 import json
