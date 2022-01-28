@@ -73,11 +73,8 @@ class JobNotFound(RuntimeError):
 # We need this at the bottom to avoid cyclic imports
 
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
-from pytest_splunk_addon.helmut.connector.rest import RESTConnector
 from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
-from pytest_splunk_addon.helmut.manager.jobs.rest import RESTJobsWrapper
 
 _CONNECTOR_TO_WRAPPER_MAPPINGS = {
     SDKConnector: SDKJobsWrapper,
-    RESTConnector: RESTJobsWrapper,
 }

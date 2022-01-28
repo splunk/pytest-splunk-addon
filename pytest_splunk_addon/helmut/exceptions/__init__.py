@@ -13,9 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from httplib2 import HttpLib2Error
-
-
 class UnsupportedConnectorError(BaseException):
     """
     Raised in manager_utils during creation of a Manager when the class type
@@ -32,11 +29,3 @@ class UnsupportedConnectorError(BaseException):
     def __init__(self, message=None):
         message = message or "The specified connector is not supported"
         super(UnsupportedConnectorError, self).__init__(message)
-
-
-class AuthenticationError(HttpLib2Error):
-    """
-    Raised when a login request to Splunk fails.
-    """
-
-    pass

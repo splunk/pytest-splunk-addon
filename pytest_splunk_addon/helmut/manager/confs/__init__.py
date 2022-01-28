@@ -101,11 +101,8 @@ class Confs(Manager, Collection):
 
 # We need to do this at the bottom to avoid import errors
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
-from pytest_splunk_addon.helmut.connector.rest import RESTConnector
 from pytest_splunk_addon.helmut.manager.confs.sdk import SDKConfsWrapper
-from pytest_splunk_addon.helmut.manager.confs.rest import RESTConfsWrapper
 
 _CONNECTOR_TO_WRAPPER_MAPPINGS = {
     SDKConnector: SDKConfsWrapper,
-    RESTConnector: RESTConfsWrapper,
 }

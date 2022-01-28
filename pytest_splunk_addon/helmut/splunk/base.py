@@ -26,14 +26,12 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 from future.utils import with_metaclass
 
 from pytest_splunk_addon.helmut.connector.base import Connector
-from pytest_splunk_addon.helmut.connector.rest import RESTConnector
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
 from pytest_splunk_addon.helmut.exceptions import UnsupportedConnectorError
 from pytest_splunk_addon.helmut.exceptions.command_execution import (
     CommandExecutionFailure,
 )
 from pytest_splunk_addon.helmut.log import Logging
-from pytest_splunk_addon.helmut.util.rip import RESTInPeace
 
 
 class Splunk(with_metaclass(ABCMeta, Logging)):
@@ -61,7 +59,6 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
 
     _CONNECTOR_TYPE_TO_CLASS_MAPPINGS = {
         Connector.SDK: SDKConnector,
-        Connector.REST: RESTConnector,
     }
     _is_an_universal_forwarder = False
 
@@ -335,13 +332,6 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         if contype is None and username is None:
             return self.default_connector
 
-        if contype == "REST":
-            rest_conn = self.create_logged_in_connector(
-                contype=Connector.REST, username=username, password=password
-            )
-            self._attempt_login(rest_conn)
-            return rest_conn
-
         connector_id = self._get_connector_id(contype, username)
         if connector_id not in list(self._connectors.keys()):
             raise InvalidConnector(
@@ -384,23 +374,6 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         from pytest_splunk_addon.helmut.manager.confs import Confs
 
         return Confs(self.connector(contype, username, password))
-
-    def inputs(self, contype=None, username=None):
-        """
-        Returns a Inputs manager that uses the specified connector. Defaults to
-        default connector if none specified.
-
-        This property creates a new Inputs manager each call so you may do as
-        you please with it.
-
-        @param contype: type of connector, defined in L{Connector} class
-        @param username: connector's username
-        @type username: string
-        @rtype: L{Inputs}
-        """
-        from pytest_splunk_addon.helmut.manager.inputs import Inputs
-
-        return Inputs(self.connector(contype, username))
 
     def indexes(self, contype=None, username=None, password=None):
         """
@@ -479,60 +452,7 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         for l in self._start_listeners:
             l()
 
-    def get_rip(self, owner=None, app=None, username=None, password=None):
-        """
-        Create a RESTInPeace under certian user and app namespace
-
-        :param owner: owner namespace, default to admin
-        :type owner: str
-        :param app: app namespace, default to search
-        :type app: str
-        :param username: default to self.username
-        :type username: str
-        :param password: default to self.password
-        :type password: str
-        :return: RESTInPeace
-        :rtype: RESTInPeace
-        """
-        username = username or self.username
-        password = password or self.password
-
-        self.create_logged_in_connector(
-            contype=Connector.REST,
-            username=username,
-            password=password,
-            owner=owner,
-            app=app,
-        )
-        return RESTInPeace(self.connector(Connector.REST, username))
-
     # Abstract methods
-
-    @abstractmethod
-    def restart(self):
-        """
-        Restarts the Splunk instance.
-
-        Subclasses should call the L{_notify_listeners_of_splunk_start} method
-        when Splunk has restarted.
-
-        @raise CouldNotRestartSplunk: If Splunk could not be restarted
-        @rtype: None
-        """
-
-        pass
-
-    @abstractmethod
-    def is_running(self):
-        """
-        Checks if Splunk is up and running.
-
-        When this returns False a lot of commands will probably fail.
-
-        @rtype: bool
-        @return: True if Splunk is started, False otherwise.
-        """
-        pass
 
     @abstractmethod
     def splunkd_scheme(self):
@@ -543,13 +463,6 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
 
         @return: The scheme
         @rtype: str
-        """
-        pass
-
-    @abstractmethod
-    def get_host_os(self):
-        """
-        Returns the os of the host.
         """
         pass
 
@@ -572,50 +485,6 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
 
         @return: The port
         @rtype: int
-        """
-        pass
-
-    def enable_listen(self, ports):
-        """
-        Enable this Splunk instance to receive data through certain TCP ports.
-
-        Port values which are not ints or within the range 0-65535 will be
-        ignored.
-
-        @param ports: The ports through which the data is received.
-        @type ports: A list of ints detailing which ports to be enabled.
-        """
-        pass
-
-    def disable_listen(self, ports):
-        """
-        Disable ports through which this Splunk instance is receiving data.
-
-        Port values which are not ints or within the range 0-65535 will be
-        ignored.
-
-        @param ports: The port through which the data was received.
-        @type ports: A list of ints detailing which ports to be disabled.
-        """
-        pass
-
-    def check_for_fields_in_source(self, source, fieldsList):
-        """
-        checks if the fields present in the fieldsList are being extracted
-         & stored by the splunk. It returns the list of missing fields.
-        """
-        pass
-
-    def is_monitoring_source(self, source):
-        """
-        Checks if splunk is already monitoring a given source. If it is
-        already, it returns True, otherwise, it returns False
-        """
-        pass
-
-    def _dump_splunkd_process(self):
-        """
-        Dump splunkd process/opening port into log for troubleshooting
         """
         pass
 
@@ -654,14 +523,6 @@ class InvalidStartListener(AttributeError):
     def __init__(self, message=None):
         message = message or "Start listeners must be callable"
         super(InvalidStartListener, self).__init__(message)
-
-
-class CouldNotRestartSplunk(CommandExecutionFailure):
-    """
-    Raised when a Splunk restart fails.
-    """
-
-    pass
 
 
 class InvalidConnector(KeyError):
