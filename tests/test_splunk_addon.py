@@ -112,35 +112,35 @@ def test_splunk_connection_external(testdir):
     assert result.ret == 0
 
 
-@pytest.mark.docker
-def test_splunk_connection_docker(testdir):
-    """Make sure that pytest accepts our fixture."""
+# @pytest.mark.docker
+# def test_splunk_connection_docker(testdir):
+#     """Make sure that pytest accepts our fixture."""
 
-    # create a temporary pytest test module
-    testdir.makepyfile(test_connection_only)
+#     # create a temporary pytest test module
+#     testdir.makepyfile(test_connection_only)
 
-    # Copy the content of source to destination
+#     # Copy the content of source to destination
 
-    shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
-        os.path.join(testdir.tmpdir, "package"),
-    )
+#     shutil.copytree(
+#         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
+#         os.path.join(testdir.tmpdir, "package"),
+#     )
 
-    setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
-    Rule.clean_rules()
+#     setup_test_dir(testdir)
+#     SampleGenerator.clean_samples()
+#     Rule.clean_rules()
 
-    # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-type=docker",
-        "-vv",
-    )
+#     # run pytest with the following cmd args
+#     result = testdir.runpytest(
+#         "--splunk-type=docker",
+#         "-vv",
+#     )
 
-    # fnmatch_lines does an assertion internally
-    result.assert_outcomes(passed=1, failed=0)
+#     # fnmatch_lines does an assertion internally
+#     result.assert_outcomes(passed=1, failed=0)
 
-    # make sure that that we get a '0' exit code for the testsuite
-    assert result.ret == 0
+#     # make sure that that we get a '0' exit code for the testsuite
+#     assert result.ret == 0
 
 
 @pytest.mark.docker
@@ -235,50 +235,50 @@ def test_splunk_app_broken(testdir):
     assert result.ret != 0
 
 
-@pytest.mark.docker
-def test_splunk_app_cim_fiction(testdir):
-    """Make sure that pytest accepts our fixture."""
+# @pytest.mark.docker
+# def test_splunk_app_cim_fiction(testdir):
+#     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
-        class Test_App(Basic):
-            def empty_method():
-                pass
+#     testdir.makepyfile(
+#         """
+#         from pytest_splunk_addon.standard_lib.addon_basic import Basic
+#         class Test_App(Basic):
+#             def empty_method():
+#                 pass
 
-    """
-    )
+#     """
+#     )
 
-    shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_CIM_Fiction"),
-        os.path.join(testdir.tmpdir, "package"),
-    )
+#     shutil.copytree(
+#         os.path.join(testdir.request.fspath.dirname, "addons/TA_CIM_Fiction"),
+#         os.path.join(testdir.tmpdir, "package"),
+#     )
 
-    shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
-        os.path.join(testdir.tmpdir, "tests/data_models"),
-    )
+#     shutil.copytree(
+#         os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+#         os.path.join(testdir.tmpdir, "tests/data_models"),
+#     )
 
-    setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
-    Rule.clean_rules()
+#     setup_test_dir(testdir)
+#     SampleGenerator.clean_samples()
+#     Rule.clean_rules()
 
-    # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-type=docker",
-        "--splunk-dm-path=tests/data_models",
-        "-vv",
-        "-m splunk_searchtime_cim",
-        "--search-interval=4",
-        "--search-retry=4",
-        "--search-index=*,_internal",
-    )
+#     # run pytest with the following cmd args
+#     result = testdir.runpytest(
+#         "--splunk-type=docker",
+#         "--splunk-dm-path=tests/data_models",
+#         "-vv",
+#         "-m splunk_searchtime_cim",
+#         "--search-interval=4",
+#         "--search-retry=4",
+#         "--search-index=*,_internal",
+#     )
 
-    result.stdout.fnmatch_lines_random(constants.TA_CIM_FICTION_PASSED)
-    result.assert_outcomes(passed=len(constants.TA_CIM_FICTION_PASSED), failed=0)
+#     result.stdout.fnmatch_lines_random(constants.TA_CIM_FICTION_PASSED)
+#     result.assert_outcomes(passed=len(constants.TA_CIM_FICTION_PASSED), failed=0)
 
-    # make sure that that we get a '0' exit code for the testsuite
-    assert result.ret == 0
+#     # make sure that that we get a '0' exit code for the testsuite
+#     assert result.ret == 0
 
 
 # @pytest.mark.docker
