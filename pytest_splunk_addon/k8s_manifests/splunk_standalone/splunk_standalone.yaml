@@ -20,5 +20,5 @@ metadata:
   finalizers:
   - enterprise.splunk.com/delete-pvc
 spec:
-  image: docker.io/splunk/splunk:latest
+  image: docker.io/splunk/splunk:$SPLUNK_VERSION
   defaults: |-

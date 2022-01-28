@@ -164,9 +164,6 @@ class FileMonitorEventIngestor(EventIngestor):
                 self.inputs_endpoint
             )
         )
-        LOGGER.info("Creating following stanza in inputs.conf : {}".format(stanza))
-        LOGGER.info("{0}:{1}".format(self.uf_username,self.uf_password))
-        LOGGER.info("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
         try:
             response = requests.post(
                 self.inputs_endpoint,
