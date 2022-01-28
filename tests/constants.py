@@ -425,9 +425,6 @@ TA_CIM_FICTION_PASSED = [
 Define the TA_CIM_Broken add-on passed test case list.
 """
 TA_CIM_BROKEN_PASSED = [
-    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken* PASSED*',
-    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::broken_field_one+broken_field_two* PASSED*',
-    '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::date_minute* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken"::Broken::date_second* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::broken_field_one+broken_field_two* PASSED*',
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_2"::Broken::broken_field_one+date_hour+date_minute+date_second* PASSED*',
