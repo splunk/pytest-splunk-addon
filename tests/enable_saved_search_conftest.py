@@ -5,28 +5,9 @@ import os
 
 pytest_plugins = "pytester"
 
-
 def pytest_configure(config):
     config.addinivalue_line("markers", "external: Test search time only")
     config.addinivalue_line("markers", "kubernetes: Test search time only")
-
-
-@pytest.fixture(scope="session")
-def docker_compose_files(request):
-    """
-    Get an absolute path to the  `docker-compose.yml` file. Override this
-    fixture in your tests if you need a custom location.
-
-    Returns:
-        string: the path of the `docker-compose.yml` file
-
-    """
-    docker_compose_path = os.path.join(
-        str(request.config.invocation_dir), "docker-compose.yml"
-    )
-    # LOGGER.info("docker-compose path: %s", docker_compose_path)
-
-    return [docker_compose_path]
 
 
 class TASetup(object):
@@ -52,5 +33,6 @@ class TASetup(object):
 @pytest.fixture(scope="session")
 def splunk_setup(splunk):
     ta_setup = TASetup(splunk)
+    time.sleep(30)
     ta_setup.enable_savedsearch("TA_SavedSearch", "ta_saved_search_one")
     ta_setup.wait_for_lookup("ta_saved_search_lookup")
