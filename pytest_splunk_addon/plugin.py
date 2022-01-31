@@ -25,6 +25,7 @@ import glob
 import subprocess
 import sys
 from time import sleep
+import datetime
 
 LOG_FILE = "pytest_splunk_addon.log"
 
@@ -121,6 +122,8 @@ def pytest_sessionstart(session):
         sample_generator.get_samples(store_events)
 
 def pytest_sessionfinish(session, exitstatus):
+    datetime1 = datetime.datetime.now()
+    LOGGER.info("Destroy K8S.............................")
     try:
         with open("./splunk_type.txt", "r") as splunk_type_file:
             for line in splunk_type_file:
@@ -187,6 +190,9 @@ def pytest_sessionfinish(session, exitstatus):
                     LOGGER.error("{} not found".format(file))
     except Exception as e:
         LOGGER.error("Exception occured in pytest_sessionfinish : {}".format(e))
+    datetime2 = datetime.datetime.now()
+    difference = datetime2 - datetime1
+    LOGGER.info(f"The time difference to destroy k8s is : {difference}")
 
 def pytest_generate_tests(metafunc):
     """
