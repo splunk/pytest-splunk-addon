@@ -28,7 +28,7 @@ MONITOR_DIR = "uf_files"
 class FileMonitorEventIngestor(EventIngestor):
     """
     Class to ingest event via File monitor
-    This ingestor will only work if splunk_type is docker and container of universal forwarder is linked with container
+    This ingestor will only work if splunk_type is kubernetes and container of universal forwarder is linked with container
     of splunk instance as 'splunk' service.
 
     The format for required_configs is::

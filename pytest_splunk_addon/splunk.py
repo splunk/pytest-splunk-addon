@@ -370,7 +370,7 @@ def splunk_search_util(splunk, request):
         helmut_lib.SearchUtil.SearchUtil: The SearchUtil object
     """
     LOGGER.info("Initializing SearchUtil for the Splunk instace.")
-    sleep(30)
+    sleep(10)
     cloud_splunk = CloudSplunk(
         splunkd_host=splunk["host"],
         splunkd_port=splunk["port"],
