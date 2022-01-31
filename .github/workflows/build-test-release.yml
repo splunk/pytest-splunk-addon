@@ -199,7 +199,7 @@ jobs:
 
   test-splunk-matrix:
     name: Test Matrix
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
