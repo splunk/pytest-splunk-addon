@@ -15,8 +15,9 @@ fi
 grep -v ^\# "$(dirname -- "$0")"/addon_information_updated.yaml | grep . >> "$(dirname -- "$0")"/splunk_standalone_updated.yaml
 kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
 kubectl apply -f "$(dirname -- "$0")"/splunk_standalone_updated.yaml -n $NAMESPACE_NAME
-sleep 15
-kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
+# sleep 15
+until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
+# kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
 kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :8088 :8089 :9997 > $TEST_RUNNER_DIRECTORY/exposed_splunk_ports.log 2>&1 &
 sleep 15
 echo "splunk up"

@@ -510,14 +510,6 @@ def uf_kubernetes(request):
         )
         update_k8s_manifest_files(folder=current_path, file="uf_deployment")
         LOGGER.info("Setting up UF")
-        test_runner_output = subprocess.run("ls -al $TEST_RUNNER_DIRECTORY/",shell=True,capture_output=True)
-        LOGGER.info("######################################")
-        LOGGER.info(test_runner_output.stdout.decode())
-        LOGGER.info(test_runner_output.stderr.decode())
-        uf_output = subprocess.run("ls -al $TEST_RUNNER_DIRECTORY/uf_files/",shell=True,capture_output=True)
-        LOGGER.info(uf_output.stdout.decode())
-        LOGGER.info(uf_output.stderr.decode())
-        LOGGER.info("######################################")
         uf_setup = subprocess.run(
             "sh uf_setup.sh", capture_output=True, shell=True, cwd=current_path
         )
