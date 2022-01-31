@@ -364,7 +364,7 @@ def test_splunk_fiction_indextime(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "-vv",
         "--search-interval=0",
         "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime/default",
@@ -418,7 +418,7 @@ def test_splunk_fiction_indextime_broken(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "-vv",
         "--search-interval=0",
         "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime_broken/default",
