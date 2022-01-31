@@ -169,7 +169,7 @@ def test_splunk_app_fiction(testdir):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "-v",
+        "-vv",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
         "--search-retry=4",
