@@ -35,6 +35,7 @@ from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
 import configparser
 from filelock import FileLock
+import datetime
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
@@ -506,6 +507,7 @@ def uf_docker(docker_services, tmp_path_factory, worker_id, request):
     """
     Provides IP of the uf server and management port based on pytest-args(splunk_type)
     """
+    datetime1 = datetime.datetime.now()
     LOGGER.info("Starting docker_service=uf")
     os.environ["CURRENT_DIR"] = os.getcwd()
     if worker_id:
@@ -524,6 +526,9 @@ def uf_docker(docker_services, tmp_path_factory, worker_id, request):
         if is_responsive_uf(uf_info):
             break
         sleep(1)
+    datetime2 = datetime.datetime.now()
+    difference = datetime2 - datetime1
+    LOGGER.info(f"The time difference to spin up UF is : {difference}")
     return uf_info
 
 
@@ -554,6 +559,7 @@ def splunk_docker(
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
+    datetime1 = datetime.datetime.now()
     LOGGER.info("Starting docker_service=splunk")
     if worker_id:
         # get the temp directory shared by all workers
@@ -588,6 +594,9 @@ def splunk_docker(
         pause=0.5,
         check=lambda: is_responsive_splunk(splunk_info),
     )
+    datetime2 = datetime.datetime.now()
+    difference = datetime2 - datetime1
+    LOGGER.info(f"The time difference to spin up Splunk is : {difference}")
 
     return splunk_info
 
@@ -641,6 +650,7 @@ def sc4s_docker(docker_services, tmp_path_factory, worker_id):
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
     """
+    datetime1 = datetime.datetime.now()
     if worker_id:
         # get the temp directory shared by all workers
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
@@ -651,7 +661,9 @@ def sc4s_docker(docker_services, tmp_path_factory, worker_id):
     ports = {514: docker_services.port_for("sc4s", 514)}
     for x in range(5000, 5007):
         ports.update({x: docker_services.port_for("sc4s", x)})
-
+    datetime2 = datetime.datetime.now()
+    difference = datetime2 - datetime1
+    LOGGER.info(f"The time difference to spin up SC4S is : {difference}")
     return docker_services.docker_ip, ports
 
 
