@@ -176,7 +176,7 @@ def test_splunk_app_fiction(testdir):
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
         "-v",
-        "-k test_props_fields[splunkd::LOOKUP-test_as_input_output_multiple]",
+        "-k test_props_fields",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
         "--search-retry=4",
