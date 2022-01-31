@@ -33,7 +33,5 @@ class TASetup(object):
 @pytest.fixture(scope="session")
 def splunk_setup(splunk):
     ta_setup = TASetup(splunk)
-    time.sleep(10)
     ta_setup.enable_savedsearch("TA_SavedSearch", "ta_saved_search_one")
-    time.sleep(10)
     ta_setup.wait_for_lookup("ta_saved_search_lookup")
