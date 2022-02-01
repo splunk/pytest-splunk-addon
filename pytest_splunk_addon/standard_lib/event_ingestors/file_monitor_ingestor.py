@@ -76,7 +76,7 @@ class FileMonitorEventIngestor(EventIngestor):
                     os.getenv("TEST_RUNNER_DIRECTORY"),
                     os.getenv("UF_POD_NAME"),
                     os.getenv("TEST_RUNNER_DIRECTORY"),
-                    os.getenv("NAMESPACE_NAME")
+                    os.getenv("NAMESPACE_NAME"),
                 )
             )
             copy_files = subprocess.run(
@@ -84,10 +84,10 @@ class FileMonitorEventIngestor(EventIngestor):
                     os.getenv("TEST_RUNNER_DIRECTORY"),
                     os.getenv("UF_POD_NAME"),
                     os.getenv("TEST_RUNNER_DIRECTORY"),
-                    os.getenv("NAMESPACE_NAME")
+                    os.getenv("NAMESPACE_NAME"),
                 ),
                 shell=True,
-                capture_output=True
+                capture_output=True,
             )
             sleep(10)
             self.create_inputs_stanza(each_event)
