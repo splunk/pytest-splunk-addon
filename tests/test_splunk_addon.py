@@ -60,26 +60,10 @@ def setup_test_dir(testdir):
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_scripted"),
     )
-
-    # shutil.copy(
-    #     os.path.join(testdir.request.config.invocation_dir, "Dockerfile.splunk"),
-    #     testdir.tmpdir,
-    # )
-    # shutil.copy(
-    #     os.path.join(testdir.request.config.invocation_dir, "Dockerfile.uf"),
-    #     testdir.tmpdir,
-    # )
-    # shutil.copy(
-    #     os.path.join(testdir.request.config.invocation_dir, "Dockerfile.tests"),
-    #     testdir.tmpdir,
-    # )
-
-    # shutil.copy(
-    #     os.path.join(testdir.request.config.invocation_dir, "docker-compose.yml"),
-    #     testdir.tmpdir,
-    # )
     shutil.copytree(
-        os.path.join(testdir.request.config.invocation_dir, "tests/src"),
+        os.path.join(
+            testdir.request.config.invocation_dir, "tests/src"
+        ),
         os.path.join(testdir.tmpdir, "tests/src"),
     )
 
