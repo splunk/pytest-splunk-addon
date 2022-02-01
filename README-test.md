@@ -1,13 +1,16 @@
 
 # Run Addon tests in local environment
 
-## With Kubernetes
+
+
+## - With Kubernetes
 
 ### Prerequisitory - Kubernetes
 - Git
 - Python3 (>=3.7)
-- jq
 - kubectl
+- jq
+- docker-compose (to spin sc4s if required)
 - [splunk-operator at cluster-scope](https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces)
 ```bash
 kubectl apply -f splunk-operator.yaml
@@ -107,7 +110,7 @@ kubectl delete -f namespace.yaml -n $NAMESPACE_NAME
 sleep 60
 ```
 
-## With External
+## - With External
 
 ### Prerequisitory - external
 - Git
@@ -132,21 +135,74 @@ git submodule update --init --recursive
 pip3 install -r requirements_dev.txt
 ```
 
-3. Set Variables (only if Addon supports sc4s)
+3. Setup SC4S (if required for KO tests)
 
-**Note:** Stop the existing splunk if it is running. New splunk will up after executing following steps with `Changed@11` splunk password.
-```bash
-export SPLUNK_VERSION=<splunk_version> [i.e. latest, 8.1.0]
-export SPLUNK_APP_ID=<Addon_id> [i.e. Splunk_TA_addon-name]
-export SPLUNK_APP_PACKAGE=<splunk_package>
-export IMAGE_TAG="3.7-browsers"
-export SC4S_VERSION=<sc4s_version>
+- If addon requires sc4s, need to update following in docker-compose.yml used to spin sc4s, (docker-compose.yml is already present in addon repo)
 
-docker-compose -f docker-compose.yml build
-docker-compose -f docker-compose.yml up -d splunk
+- docker-compose.yml file contents
+
+```
+sc4s:
+    image: splunk/scs:1.51.6
+    hostname: sc4s
+    #When this is enabled test_common will fail
+    #    command: -det
+    ports:
+      - "514"
+      - "601"
+      - "514/udp"
+      - "9000"
+      - "5000-5050"
+      - "5000-5050/udp"
+      - "6514"
+    stdin_open: true
+    tty: true
+    environment:
+      - SPLUNK_HEC_URL=https://http-inputs-noah-stack-3.stg.splunkcloud.com:443
+      - SPLUNK_HEC_TOKEN=751f7b50-423e-4ddb-bf00-cab5e3d7b982
+      - SC4S_SOURCE_TLS_ENABLE=no
+      - SC4S_DEST_SPLUNK_HEC_TLS_VERIFY=no
+      - SC4S_LISTEN_CISCO_ESA_TCP_PORT=9000
+      - SC4S_LISTEN_JUNIPER_NETSCREEN_TCP_PORT=5000
+      - SC4S_LISTEN_CISCO_ASA_TCP_PORT=5001
+      - SC4S_LISTEN_CISCO_IOS_TCP_PORT=5002
+      - SC4S_LISTEN_CISCO_MERAKI_TCP_PORT=5003
+      - SC4S_LISTEN_JUNIPER_IDP_TCP_PORT=5004
+      - SC4S_LISTEN_PALOALTO_PANOS_TCP_PORT=5005
+      - SC4S_LISTEN_PFSENSE_TCP_PORT=5006
+      - SC4S_LISTEN_CISCO_ASA_UDP_PORT=5001
+      - SC4S_LISTEN_CISCO_IOS_UDP_PORT=5002
+      - SC4S_LISTEN_CISCO_MERAKI_UDP_PORT=5003
+      - SC4S_LISTEN_JUNIPER_IDP_UDP_PORT=5004
+      - SC4S_LISTEN_PALOALTO_PANOS_UDP_PORT=5005
+      - SC4S_LISTEN_PFSENSE_UDP_PORT=5006
+      - SC4S_ARCHIVE_GLOBAL=no
+      - SC4S_LISTEN_CHECKPOINT_SPLUNK_NOISE_CONTROL=yes
 ```
 
-4. Run Tests
+- sc4s-version,  use latest if no version mentioned in json file
+- SPLUNK_HEC_TOKEN:  HEC token of the Noah created earlier
+- SPLUNK_HEC_URL: HEC url of the splunk instance 
+
+- And execute following to spin sc4s in your local or any other machine.
+
+```
+docker-compose -f docker-compose.yml up -d sc4s
+```
+
+- Validate the sc4s is up and running via `docker ps` with the given version and connected to splunk instance by checking if sc4s startup events are available in splunk instance at `sourcetype = sc4s:events:startup:out`
+
+- Update the sc4s-host and sc4s-port value in pytest.ini file.
+port value mapped to 514/tcp can be obtained via `docker ps` command
+
+- Install required SC4S indexes using the SPL obtained from the link by executing below command.
+```
+export SC4S_INDEX_URL=$( curl -s https://api.github.com/repos/splunk/splunk-configurations-base-indexes/releases/latest \ | jq -r '.assets[] | select((.name | contains("spl")) and (.name | contains("search_head") | not) and (.name | contains("indexers") | not ) and (.name | contains("forwarders") | not)) | .browser_download_url ')
+echo $SC4S_INDEX_URL
+```
+
+
+5. Run Tests
 
 - Knowledge
 
@@ -164,37 +220,17 @@ pytest -vv --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-
 3. Put the downloaded driver into `test/ui/` directory, make sure that it is within the environment's PATH variable, and that it is executable
 4. For Internet explorer, The steps mentioned at below link must be performed [selenium](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration)
 
-5. Execute the test cases
+6. Execute the test cases
  ```script
 pytest -vv --browser=<browser> --local --splunk-host=<web_url> --splunk-port=<mgmt_url> --splunk-user=<username> --splunk-password=<password>
  ```
-- Debug UI tests with selenium inside docker-compose stack.
->prerequisite:
-> 1. Setup all env variables mentioned above. As BROWSER variable pickup one "chrome_grid" or "firefox_grid". TEST_TYPE=ui etc.
-> 2. Install [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/)
-1. To select which test should be run we can use DEBUG_TEST variable and setup it to ingest -k parameter
-```bash
-export DEBUG_TEST="-k test_name_to_run"
-```
-2. Build images and execute the test
-```bash
-docker-compose -f docker-compose.yml build
-docker-compose -f docker-compose.yml up
-```
-To watch the logs form docker container which run the test We can use command
-```bash
-docker logs -f containter_test_name [ eg. docker logs -f splunk-add-on-for-servicenow_test_1]
-```
-during the test execution when container with selenium standandalone hub is up and running We can connect to it using VNC Viewer.
-```bash
-localhost:6000  # chrome grid adress
-localhost:6001 # firefox grid adress
-```
-Password is "secret"
 
 - Modinput
 
 Install [splunk-add-on-for-modinput-test](https://github.com/splunk/splunk-add-on-for-modinput-test/releases/latest/) addon in splunk and set all variables in environment mentioned at [test_credentials.env](test_credentials.env) file with appropriate values encoded with base64 or add variables in pytest command mentioned in conftest file.
+
+Update the pytest command with additional params if required for the addon.
+
 ```bash
 pytest -vv --username=<splunk_username> --password=<splunk_password> --splunk-url=<splunk_url> --remote
 ```
