@@ -17,14 +17,15 @@ kubectl apply -f ./splunk-operator.yaml
 
 ### Steps - Kubernetes
 
-1. Clone the repository
+## 1. Clone the repository
 ```bash
 git clone git@github.com:splunk/<repo name>.git
 cd <repo dir>
 ```
 
-2. Run Tests
+## 2. Run Tests
 
+- Knowledge
 - Modinput_Functional / UI
 
 1. Install Requirements and Generate Addon
@@ -41,14 +42,6 @@ curl -s https://api.github.com/repos/splunk/splunk-add-on-for-modinput-test/rele
 ```bash
 export KUBECONFIG="PATH of Kubernetes Config File"
 export NAMESPACE_NAME="splunk-ta-<ADDON_NAME>"
-
-# If TEST_TYPE is ui also set the following variables
-export TEST_BROWSER=<browser_name> [i.e. chrome, firefox]
-export JOB_NAME=<LocalRun::[addon_name]-[browser]>
-export SAUCE_USERNAME=<sauce_username>
-export SAUCE_PASSWORD=<sauce_password>
-export SAUCE_IDENTIFIER=$SAUCE_IDENTIFIER-$(cat /proc/sys/kernel/random/uuid)
-export UI_TEST_HEADLESS="true"
 ```
 **Note:** If TEST_TYPE is `modinput_functional` or `ui`, also set all variables in [test_credentials.env](test_credentials.env) file with appropriate values encoded with base64.
 
@@ -57,6 +50,7 @@ export UI_TEST_HEADLESS="true"
 eval "echo \"$(cat ./namespace.yaml)\"" >> ./namespace.yaml
 kubectl apply -f ./namespace.yaml
 ```
+
 4. Create secret (this will be used while spinning up the splunk standalone)
 ```bash
 kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
@@ -138,11 +132,8 @@ pip install -r requirements_dev.txt
 ```
 
 3. Setup SC4S (if required for KO tests)
-
 - If addon requires sc4s, need to update following in docker-compose.yml used to spin sc4s, (docker-compose.yml is already present in addon repo)
-
 - docker-compose.yml file contents
-
 ```
 sc4s:
     image: splunk/scs:1.51.6
@@ -181,7 +172,6 @@ sc4s:
       - SC4S_ARCHIVE_GLOBAL=no
       - SC4S_LISTEN_CHECKPOINT_SPLUNK_NOISE_CONTROL=yes
 ```
-
 - sc4s-version,  use latest if no version mentioned in json file
 - SPLUNK_HEC_TOKEN:  HEC token of the Noah created earlier
 - SPLUNK_HEC_URL: HEC url of the splunk instance 
