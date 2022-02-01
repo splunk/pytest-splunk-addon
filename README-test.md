@@ -10,10 +10,9 @@
 - Python3 (>=3.7)
 - kubectl
 - jq
-- docker-compose (to spin sc4s if required)
 - [splunk-operator at cluster-scope](https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces)
 ```bash
-kubectl apply -f splunk-operator.yaml
+kubectl apply -f ./splunk-operator.yaml
 ```
 
 ### Steps - Kubernetes
@@ -54,7 +53,8 @@ export UI_TEST_HEADLESS="true"
 
 3. Update the value of NAMESPACE_NAME in [namespace.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml) file and apply
 ```bash
-kubectl apply -f namespace.yaml
+eval "echo \"$(cat ./namespace.yaml)\"" >> ./namespace.yaml
+kubectl apply -f ./namespace.yaml
 ```
 4. Create secret (this will be used while spinning up the splunk standalone)
 ```bash
@@ -63,7 +63,8 @@ kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='pass
 
 5. Update the SPLUNK_VERSION in [splunk_standalone.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml) file for which Standalone machine will be created
 ```bash
-kubectl apply -f splunk_standalone.yaml -n $NAMESPACE_NAME
+eval "echo \"$(cat ./splunk_standalone.yaml)\"" >> ./splunk_standalone.yaml
+kubectl apply -f ./splunk_standalone.yaml -n $NAMESPACE_NAME
 ```
 
 6. Wait till Splunk Standalone is created
@@ -103,10 +104,10 @@ python -m pytest -v --splunk-type=external --splunk-host=localhost --splunkweb-p
 
 12. Delete the ./exposed_splunk_ports.log file and other kubernetes resources
 ```bash
-kubectl delete -f splunk_standalone.yaml -n $NAMESPACE_NAME
+kubectl delete -f ./splunk_standalone.yaml -n $NAMESPACE_NAME
 sleep 30
 kubectl delete secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME
-kubectl delete -f namespace.yaml -n $NAMESPACE_NAME
+kubectl delete -f ./namespace.yaml -n $NAMESPACE_NAME
 sleep 60
 ```
 
@@ -127,12 +128,12 @@ sleep 60
 ```bash
 git clone git@github.com:splunk/<repo name>.git
 cd <repo dir>
-git submodule update --init --recursive
 ```
 
 2. Install Requirements
 ```bash
-pip3 install -r requirements_dev.txt
+poetry export --without-hashes --dev -o requirements_dev.txt
+pip install -r requirements_dev.txt
 ```
 
 3. Setup SC4S (if required for KO tests)
