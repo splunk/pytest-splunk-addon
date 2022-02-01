@@ -35,9 +35,9 @@ curl -s https://api.github.com/repos/splunk/splunk-add-on-for-modinput-test/rele
 ```
 
 2. Generate addon SPL
- - To generate addon package use ucc-gen (output/Splunk_TA_<<ADDON_NAME>>) and slim package Splunk_TA_<<ADDON_NAME>>
+ - To generate addon package use ucc-gen (output/Splunk_TA_<ADDON_NAME>) and slim package Splunk_TA_<ADDON_NAME>
  - Replace the extension of generated *.tar.gz to *.spl.
- - Replace the addon_version of .spl file by obtaining it from package/default/app.conf id.version.
+ - Rename the generated .spl with the approriate addon_version from package/default/app.conf id.version i.e. Splunk_TA_<ADDON_NAME>-<ADDON_VERSION>.spl
 
 3. Set Variables
 ```bash
