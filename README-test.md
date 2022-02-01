@@ -95,9 +95,9 @@ kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :
 
 10. If TEST_TYPE is `ui` then follow the below steps,
   - Download Browser's specific driver
-    > - For Chrome: download chromedriver
-    > - For Firefox: download geckodriver
-    > - For IE: download IEdriverserver
+     - For Chrome: download chromedriver
+     - For Firefox: download geckodriver
+     - For IE: download IEdriverserver
   - Put the downloaded driver into `test/ui/` directory, make sure that it is within the environment's PATH variable, and that it is executable
   - For Internet explorer, The steps mentioned at below link must be performed [selenium](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration)
 
@@ -126,7 +126,6 @@ sleep 60
 ### Prerequisitory - external
 - Git
 - Python3 (>=3.7)
-- Python2
 - Splunk along with addon installed and HEC token created
 - If Addon support the syslog data ingestion(sc4s)
   - Docker
@@ -208,7 +207,6 @@ export SC4S_INDEX_URL=$( curl -s https://api.github.com/repos/splunk/splunk-conf
 echo $SC4S_INDEX_URL
 ```
 
-
 5. Run Tests
 
 - Knowledge
@@ -227,7 +225,7 @@ pytest -vv --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-
 3. Put the downloaded driver into `test/ui/` directory, make sure that it is within the environment's PATH variable, and that it is executable
 4. For Internet explorer, The steps mentioned at below link must be performed [selenium](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration)
 
-6. Execute the test cases
+5. Execute the test cases
  ```script
 pytest -vv --browser=<browser> --local --splunk-host=<web_url> --splunk-port=<mgmt_url> --splunk-user=<username> --splunk-password=<password>
  ```
