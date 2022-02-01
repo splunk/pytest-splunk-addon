@@ -3,9 +3,9 @@
 
 
 
-## - With Kubernetes
+## With Kubernetes
 
-### Prerequisitory - Kubernetes
+### Prerequisitory
 - Git
 - Python3 (>=3.7)
 - kubectl
@@ -15,15 +15,15 @@
 kubectl apply -f ./splunk-operator.yaml
 ```
 
-### Steps - Kubernetes
+### Steps
 
-## 1. Clone the repository
+#### 1. Clone the repository
 ```bash
 git clone git@github.com:splunk/<repo name>.git
 cd <repo dir>
 ```
 
-## 2. Run Tests
+#### 2. Run Tests
 
 1. Install Requirements
 ```bash
@@ -35,9 +35,9 @@ curl -s https://api.github.com/repos/splunk/splunk-add-on-for-modinput-test/rele
 ```
 
 2. Generate addon SPL
-> - To generate addon package use ucc-gen (output/Splunk_TA_<<ADDON_NAME>>) and slim package Splunk_TA_<<ADDON_NAME>>
-> - Replace the extension of generated *.tar.gz to *.spl.
-> - Replace the addon_version of .spl file by obtaining it from package/default/app.conf id.version.
+ - To generate addon package use ucc-gen (output/Splunk_TA_<<ADDON_NAME>>) and slim package Splunk_TA_<<ADDON_NAME>>
+ - Replace the extension of generated *.tar.gz to *.spl.
+ - Replace the addon_version of .spl file by obtaining it from package/default/app.conf id.version.
 
 3. Set Variables
 ```bash
@@ -48,52 +48,52 @@ export NAMESPACE_NAME="splunk-ta-<ADDON_NAME>"
 ```
 **Note:** If TEST_TYPE is `modinput_functional` or `ui`, also set all variables in [test_credentials.env](test_credentials.env) file with appropriate values encoded with base64.
 
-## - Knowledge
+##### Knowledge
 
-3. Create `src` directory in `tests` of the addon repository and put the SPL generated in step-2 in `tests/src`.
+4. Create `src` directory in `tests` of the addon repository and put the SPL generated in step-2 in `tests/src`.
 
-4. Execute Tests
-> - Default value of `--splunk-version = latest`
+5. Execute Tests
+- Default value of `--splunk-version = latest`
 ```bash
 python -m pytest -v tests/knowledge --splunk-data-generator=tests/knowledge --splunk-type=kubernetes --splunk-version=<<SPLUNK_VERSION>> --xfail-file=.pytest.expect
 ```
 
-## - Modinput_Functional / UI
+##### Modinput_Functional / UI
 
-3. Download [namespace.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml) and put into the root directory of addon repository, also update the value of NAMESPACE_NAME in file and apply
+4. Download [namespace.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml) and put into the root directory of addon repository, also update the value of `NAMESPACE_NAME` in file and apply
 ```bash
 eval "echo \"$(cat ./namespace.yaml)\"" >> ./namespace.yaml
 kubectl apply -f ./namespace.yaml
 ```
 
-4. Create secret (this will be used while spinning up the splunk standalone)
+5. Create secret (this will be used while spinning up the splunk standalone)
 ```bash
 kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
 ```
 
-5. Download [splunk_standalone.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml) and put into the root directory of addon repository, also update the SPLUNK_VERSION in file for which Standalone machine will be created
+6. Download [splunk_standalone.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml) and put into the root directory of addon repository, also update the `SPLUNK_VERSION` in file for which Standalone machine will be created
 ```bash
 eval "echo \"$(cat ./splunk_standalone.yaml)\"" >> ./splunk_standalone.yaml
 kubectl apply -f ./splunk_standalone.yaml -n $NAMESPACE_NAME
 ```
 
-6. Wait till Splunk Standalone is created
+7. Wait till Splunk Standalone is created
 ```bash
 kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
 ```
 
-7. Expose service of splunk standalone to access locally, all the ports will be mapped with freely available ports of local machine
+8. Expose service of splunk standalone to access locally, all the ports will be mapped with freely available ports of local machine
 ```bash
 kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :8088 :8089 > ./exposed_splunk_ports.log 2>&1 &
 ```
 
-8. Get the mapped ports of 8000, 8088, 8089 and update the pytest.ini accordingly.
+9. Get the mapped ports of 8000, 8088, 8089 and update the pytest.ini accordingly.
 
-9. Access the splunk ui and install the addon by "Install app from file",
-> - http://localhost:splunk-web-port/
-> - Install modinput helper addon downloaded in step-1 , as a prerequisite of execution of modinput tests.
+10. Access the splunk ui and install the addon by "Install app from file",
+ - http://localhost:splunk-web-port/
+ - Install modinput helper addon downloaded in step-1 , as a prerequisite of execution of modinput tests.
 
-10. If TEST_TYPE is `ui` then follow the below steps,
+11. If TEST_TYPE is `ui` then follow the below steps,
   - Download Browser's specific driver
      - For Chrome: download chromedriver
      - For Firefox: download geckodriver
@@ -101,7 +101,7 @@ kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :
   - Put the downloaded driver into `test/ui/` directory, make sure that it is within the environment's PATH variable, and that it is executable
   - For Internet explorer, The steps mentioned at below link must be performed [selenium](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration)
 
-11. Execute Tests
+12. Execute Tests
 - Modinput_Functional
 ```bash
 python -m pytest -v --username=admin --password=Chang3d! --splunk-url=localhost --splunkd-port=<splunk-management-port> --remote -n 5 tests/modinput_functional
@@ -112,7 +112,7 @@ python -m pytest -v --username=admin --password=Chang3d! --splunk-url=localhost 
 python -m pytest -v --splunk-type=external --splunk-host=localhost --splunkweb-port=<splunk-web-port> --splunk-port=<splunk-management-port> --splunk-password=Chang3d! --browser=<browser> --splunk-hec-port=<splunk-hec-port> --local tests/ui 
 ```
 
-12. Delete the ./exposed_splunk_ports.log file and other kubernetes resources
+13. Delete the ./exposed_splunk_ports.log file and other kubernetes resources
 ```bash
 kubectl delete -f ./splunk_standalone.yaml -n $NAMESPACE_NAME
 sleep 30
@@ -121,9 +121,9 @@ kubectl delete -f ./namespace.yaml -n $NAMESPACE_NAME
 sleep 60
 ```
 
-## - With External
+## With External
 
-### Prerequisitory - external
+### Prerequisitory
 - Git
 - Python3 (>=3.7)
 - Splunk along with addon installed and HEC token created
@@ -131,7 +131,7 @@ sleep 60
   - Docker
   - Docker-compose
 
-### Steps - external
+### Steps
 
 1. Clone the repository
 ```bash
@@ -207,7 +207,7 @@ export SC4S_INDEX_URL=$( curl -s https://api.github.com/repos/splunk/splunk-conf
 echo $SC4S_INDEX_URL
 ```
 
-5. Run Tests
+4. Run Tests
 
 - Knowledge
 
