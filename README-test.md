@@ -39,6 +39,7 @@ curl -s https://api.github.com/repos/splunk/splunk-add-on-for-modinput-test/rele
 
 2. Set Variables
 ```bash
+export KUBECONFIG="PATH of Kubernetes Config File"
 export NAMESPACE_NAME="splunk-ta-<ADDON_NAME>"
 
 # If TEST_TYPE is ui also set the following variables
