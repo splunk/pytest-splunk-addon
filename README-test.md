@@ -25,27 +25,42 @@ cd <repo dir>
 
 ## 2. Run Tests
 
-- Knowledge
-- Modinput_Functional / UI
-
-1. Install Requirements and Generate Addon
+1. Install Requirements
 ```bash
 poetry export --without-hashes --dev -o requirements_dev.txt
 pip install -r requirements_dev.txt
-ucc-gen
 
 # Download only if TEST_TYPE is modinput_functional
 curl -s https://api.github.com/repos/splunk/splunk-add-on-for-modinput-test/releases/latest | grep "Splunk_TA.*spl" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -qi -;
 ```
 
+2. Generate addon SPL
+> - To generate addon package use ucc-gen (output/Splunk_TA_<<ADDON_NAME>>) and slim package Splunk_TA_<<ADDON_NAME>>
+> - Replace the extension of generated *.tar.gz to *.spl.
+> - Replace the addon_version of .spl file by obtaining it from package/default/app.conf id.version.
+
 2. Set Variables
 ```bash
 export KUBECONFIG="PATH of Kubernetes Config File"
+
+# If TEST_TYPE is modinput_functional or ui also set the following variable,
 export NAMESPACE_NAME="splunk-ta-<ADDON_NAME>"
 ```
 **Note:** If TEST_TYPE is `modinput_functional` or `ui`, also set all variables in [test_credentials.env](test_credentials.env) file with appropriate values encoded with base64.
 
-3. Update the value of NAMESPACE_NAME in [namespace.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml) file and apply
+- Knowledge
+
+3. Create `src` directory in `tests` of the addon repository and put the SPL generated in step-1 in `tests/src`.
+
+4. Execute Tests
+> - Default value of `--splunk-version = latest`
+```bash
+python -m pytest -v tests/knowledge --splunk-data-generator=tests/knowledge --splunk-type=kubernetes --splunk-version=<<SPLUNK_VERSION>> --xfail-file=.pytest.expect
+```
+
+- Modinput_Functional / UI
+
+3. Download [namespace.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml) and put into the root directory of addon repository, also update the value of NAMESPACE_NAME in file and apply
 ```bash
 eval "echo \"$(cat ./namespace.yaml)\"" >> ./namespace.yaml
 kubectl apply -f ./namespace.yaml
@@ -56,7 +71,7 @@ kubectl apply -f ./namespace.yaml
 kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
 ```
 
-5. Update the SPLUNK_VERSION in [splunk_standalone.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml) file for which Standalone machine will be created
+5. Download [splunk_standalone.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml) and put into the root directory of addon repository, also update the SPLUNK_VERSION in file for which Standalone machine will be created
 ```bash
 eval "echo \"$(cat ./splunk_standalone.yaml)\"" >> ./splunk_standalone.yaml
 kubectl apply -f ./splunk_standalone.yaml -n $NAMESPACE_NAME
