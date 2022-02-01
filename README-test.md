@@ -6,6 +6,7 @@
 ### Prerequisitory - Kubernetes
 - Git
 - Python3 (>=3.7)
+- jq
 - kubectl
 - [splunk-operator at cluster-scope](https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces)
 ```bash
