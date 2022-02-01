@@ -71,9 +71,24 @@ class FileMonitorEventIngestor(EventIngestor):
         self.create_output_conf()
         for each_event in events:
             self.create_event_file(each_event)
-            LOGGER.info("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-            LOGGER.info("kubectl cp {0}/uf_files/ {1}:{2} -c uf -n {3}".format(os.getenv("TEST_RUNNER_DIRECTORY"),os.getenv("UF_POD_NAME"),os.getenv("TEST_RUNNER_DIRECTORY"),os.getenv("NAMESPACE_NAME")))
-            copy_files = subprocess.run("kubectl cp {0}/uf_files/ {1}:{2} -c uf -n {3}".format(os.getenv("TEST_RUNNER_DIRECTORY"),os.getenv("UF_POD_NAME"),os.getenv("TEST_RUNNER_DIRECTORY"),os.getenv("NAMESPACE_NAME")),shell=True,capture_output=True)
+            LOGGER.info(
+                "kubectl cp {0}/uf_files/ {1}:{2} -c uf -n {3}".format(
+                    os.getenv("TEST_RUNNER_DIRECTORY"),
+                    os.getenv("UF_POD_NAME"),
+                    os.getenv("TEST_RUNNER_DIRECTORY"),
+                    os.getenv("NAMESPACE_NAME")
+                )
+            )
+            copy_files = subprocess.run(
+                "kubectl cp {0}/uf_files/ {1}:{2} -c uf -n {3}".format(
+                    os.getenv("TEST_RUNNER_DIRECTORY"),
+                    os.getenv("UF_POD_NAME"),
+                    os.getenv("TEST_RUNNER_DIRECTORY"),
+                    os.getenv("NAMESPACE_NAME")
+                ),
+                shell=True,
+                capture_output=True
+            )
             sleep(10)
             self.create_inputs_stanza(each_event)
 

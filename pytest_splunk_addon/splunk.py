@@ -518,8 +518,20 @@ def uf_kubernetes(request):
         if uf_setup.stderr:
             LOGGER.info("UF Setup Error Logs")
             LOGGER.info(uf_setup.stderr.decode())
-        os.environ["UF_POD_NAME"] = subprocess.check_output(['bash','-c', "echo $(kubectl get pods -n {0} -l='app=uf' -o json| jq -r '.items[].metadata.name')".format(os.getenv("NAMESPACE_NAME"))]).strip().decode("utf-8")
-        print("UF_POD_NAME ............................... {}".format(os.getenv("UF_POD_NAME")))
+        os.environ["UF_POD_NAME"] = (
+            subprocess.check_output(
+                [
+                    "bash",
+                    "-c",
+                    "echo $(kubectl get pods -n {0} -l='app=uf' -o json| jq -r '.items[].metadata.name')".format(
+                        os.getenv("NAMESPACE_NAME")
+                    ),
+                ]
+            )
+            .strip()
+            .decode("utf-8")
+        )
+        LOGGER.info("UF_POD_NAME : %s", os.getenv("UF_POD_NAME"))
         if "PYTEST_XDIST_WORKER" in os.environ:
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf", "w+"):
                 PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
@@ -538,6 +550,7 @@ def uf_kubernetes(request):
     }
     return uf_info
 
+
 @pytest.fixture(scope="session")
 def uf_external(request):
     """
@@ -550,6 +563,7 @@ def uf_external(request):
         "uf_password": request.config.getoption("splunk_uf_password"),
     }
     return uf_info
+
 
 def expose_ports_splunk_sc4s_uf(file):
     try:
@@ -583,6 +597,7 @@ def expose_ports_splunk_sc4s_uf(file):
     except Exception as e:
         LOGGER.error("Exception occured while port-forwarding")
 
+
 def update_k8s_manifest_files(folder, file):
     try:
         with open("{0}/{1}.yaml".format(folder, file), "r") as deployment_file:
@@ -593,6 +608,7 @@ def update_k8s_manifest_files(folder, file):
         LOGGER.error(
             "Error occured while updating {0}/{1}.yaml : {2}".format(folder, file, e)
         )
+
 
 @pytest.fixture(scope="session")
 def splunk_kubernetes(request):
@@ -732,6 +748,7 @@ def splunk_external(request):
             "Please check the log file for possible errors."
         )
     return splunk_info
+
 
 @pytest.fixture(scope="session")
 def sc4s_kubernetes():
