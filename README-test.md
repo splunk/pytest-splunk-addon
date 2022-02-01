@@ -79,7 +79,7 @@ kubectl apply -f ./splunk_standalone.yaml -n $NAMESPACE_NAME
 
 7. Wait till Splunk Standalone is created
 ```bash
-kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
+until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
 ```
 
 8. Expose service of splunk standalone to access locally, all the ports will be mapped with freely available ports of local machine
