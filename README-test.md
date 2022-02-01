@@ -48,7 +48,7 @@ export NAMESPACE_NAME="splunk-ta-<ADDON_NAME>"
 ```
 **Note:** If TEST_TYPE is `modinput_functional` or `ui`, also set all variables in [test_credentials.env](test_credentials.env) file with appropriate values encoded with base64.
 
-- Knowledge
+# - Knowledge
 
 3. Create `src` directory in `tests` of the addon repository and put the SPL generated in step-1 in `tests/src`.
 
@@ -58,7 +58,7 @@ export NAMESPACE_NAME="splunk-ta-<ADDON_NAME>"
 python -m pytest -v tests/knowledge --splunk-data-generator=tests/knowledge --splunk-type=kubernetes --splunk-version=<<SPLUNK_VERSION>> --xfail-file=.pytest.expect
 ```
 
-- Modinput_Functional / UI
+# - Modinput_Functional / UI
 
 3. Download [namespace.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml) and put into the root directory of addon repository, also update the value of NAMESPACE_NAME in file and apply
 ```bash
