@@ -120,6 +120,7 @@ def pytest_sessionstart(session):
         sample_generator = SampleXdistGenerator(app_path, config_path)
         sample_generator.get_samples(store_events)
 
+
 def pytest_sessionfinish(session, exitstatus):
     try:
         with open("./splunk_type.txt", "r") as splunk_type_file:
@@ -187,6 +188,7 @@ def pytest_sessionfinish(session, exitstatus):
                     LOGGER.error("{} not found".format(file))
     except Exception as e:
         LOGGER.error("Exception occured in pytest_sessionfinish : {}".format(e))
+
 
 def pytest_generate_tests(metafunc):
     """

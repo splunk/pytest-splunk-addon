@@ -126,7 +126,7 @@ def test_splunk_connection_kubernetes(testdir):
     # Copy the content of source to destination
 
     shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_broken"),
         os.path.join(testdir.tmpdir, "package"),
     )
 
@@ -176,7 +176,6 @@ def test_splunk_app_fiction(testdir):
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
         "-v",
-        "--reruns=3",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
         "--search-retry=4",
