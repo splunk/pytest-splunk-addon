@@ -243,9 +243,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest]
+        os: [ubuntu-latest]
         python-version: [3.7]
-        splunk-version: ['8.1.0','8.1.7.2','8.2.0','8.2.3.3', '8.2.4']
+        splunk-version: ['8.1','8.2']
+        test-marker: ['test_report', 'splunk_connection_kubernetes', 'splunk_app_fiction', 'splunk_app_broken','splunk_app_cim_fiction','splunk_app_cim_broken','splunk_fiction_indextime','splunk_fiction_indextime_broken','splunk_setup_fixture','splunk_app_requirements','splunk_app_requirements_modinput','splunk_app_requirements_uf','splunk_app_requirements_scripted']
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
@@ -288,7 +289,7 @@ jobs:
           ./spl_generation.sh
           ls -al ./tests/src/
           poetry install
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes -m ${{ matrix.test-marker }}
 
   test-splunk-unit:
     name: Unit tests

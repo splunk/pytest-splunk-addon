@@ -123,12 +123,10 @@ def pytest_sessionstart(session):
 
 def pytest_sessionfinish(session, exitstatus):
     try:
-        with open("./splunk_type.txt", "r") as splunk_type_file:
-            for line in splunk_type_file:
-                splunk_type = line
-        if (os.environ.get("PYTEST_XDIST_WORKER") == None) and (
-            splunk_type == "kubernetes"
-        ):
+        with open('./splunk_type.txt', 'r') as splunk_type_file:
+            splunk_data = [line.rstrip() for line in splunk_type_file]
+            LOGGER.info("Type of splunk_data {0},{1}".format(splunk_data[1],type(splunk_data[1])))
+        if (os.environ.get("PYTEST_XDIST_WORKER") == None) and (splunk_data[0] == "kubernetes") and (splunk_data[1] != True):
             LOGGER.info("SessionFinish - destroying all kubernetes resources")
             SPLUNK_ADDON = (
                 subprocess.check_output(

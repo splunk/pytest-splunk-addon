@@ -332,6 +332,13 @@ def pytest_addoption(parser):
         help="Should execute test or not (True|False)",
         default="True",
     )
+    group.addoption(
+        "--keep-alive",
+        action="store",
+        dest="keep_alive",
+        help="Should execute test or not (True|False)",
+        default="False",
+    )
 
 
 @pytest.fixture(scope="session")
@@ -432,9 +439,11 @@ def splunk(request, file_system_prerequisite):
         dict: Details of the splunk instance including host, port, username & password.
     """
     splunk_type = request.config.getoption("splunk_type")
+    keep_alive = request.config.getoption("keep_alive")
     LOGGER.info("Get the Splunk instance of splunk_type=%s", splunk_type)
     with open("./splunk_type.txt", "w") as splunk_type_file:
         splunk_type_file.write(splunk_type)
+        splunk_type_file.write("\n{0}".format(keep_alive))
     if splunk_type == "external":
         request.fixturenames.append("splunk_external")
         splunk_info = request.getfixturevalue("splunk_external")
