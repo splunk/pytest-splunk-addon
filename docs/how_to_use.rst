@@ -86,7 +86,7 @@ There are three ways to execute the tests:
 
         .. literalinclude:: ../tests/conftest.py
             :language: python
-            :lines: 1-2,12-
+            :lines: 1-2
 
     Run pytest with the add-on, using the following command:
 
