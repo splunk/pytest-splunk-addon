@@ -243,9 +243,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest]
         python-version: [3.7]
-        splunk-version: ['8.1', '8.2']
+        splunk-version: ['8.1.0','8.1.7.2','8.2.0','8.2.3.3', '8.2.4']
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
