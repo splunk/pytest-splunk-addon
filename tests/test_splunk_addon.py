@@ -61,9 +61,7 @@ def setup_test_dir(testdir):
         os.path.join(testdir.tmpdir, "tests/requirement_test_scripted"),
     )
     shutil.copytree(
-        os.path.join(
-            testdir.request.config.invocation_dir, "tests/src"
-        ),
+        os.path.join(testdir.request.config.invocation_dir, "tests/src"),
         os.path.join(testdir.tmpdir, "tests/src"),
     )
 
@@ -110,7 +108,7 @@ def test_splunk_connection_kubernetes(testdir):
     # Copy the content of source to destination
 
     shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_broken"),
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
         os.path.join(testdir.tmpdir, "package"),
     )
 
