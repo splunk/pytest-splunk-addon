@@ -239,7 +239,7 @@ jobs:
 
   test-splunk-matrix:
     name: Test Matrix
-    runs-on: {{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
