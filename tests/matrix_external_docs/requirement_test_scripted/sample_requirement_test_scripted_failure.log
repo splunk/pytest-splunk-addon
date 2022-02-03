@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<device>
+	<vendor>Nix</vendor>
+	<product>Nix</product>
+	<version id="6,7" os="CentOS"/>
+	<version id="6.9,7.4,8.0" os="RHEL"/>
+	<version id="16.04" os="Ubuntu"/>
+	<version id="10,11,11.3" os="Solaris"/>
+	<version id="10.11,10.12" os="MAC OS X"/>
+	<event code="" name="service" format="">
+		<transport type="scripted input" host="sample_host" source="Unix:Service" sourcetype ="Unix:Service" />
+		<source>
+			<comment>Unix service information. Data is collected from live instance. Data is generated from systemctl command. </comment>
+		</source>
+		<raw>
+		<![CDATA[Tue May 26 01:38:02 PDT 2020 type=systemctl UNIT=whoopsie.service, LOADED=not-found, ACTIVE=inactive, SUB=dead, DESCRIPTION="whoopsie.service"]]>
+		</raw>
+		<cim>
+		    <models>
+			    <model>Endpoint:Services</model>
+		    </models>
+			<cim_fields>
+                <field name="dest" value="qa-ubuntu-105"/>
+				<field name="service" value="whoopsie.service"/>
+				<field name="service_name" value="whoopsie.service"/>
+				<field name="status" value="stopped"/>
+				<field name="start_mode" value="Auto"/>
+				<field name="vendor_product" value="nix"/>
+			</cim_fields>
+			<missing_recommended_fields>
+				<field>service_id</field>
+				<field>service_path</field>
+				<field>user</field>
+			</missing_recommended_fields>
+		</cim>
+		<test></test>
+	</event>
+</device>

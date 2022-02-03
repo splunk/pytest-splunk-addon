@@ -36,22 +36,11 @@ def setup_test_dir(testdir):
         os.path.join(testdir.request.config.invocation_dir, "tests/matrix_external_docs/conftest.py"),
         os.path.join(testdir.tmpdir, ""),
     )
-    if os.path.exists(os.path.join(testdir.request.config.invocation_dir, "tests/matrix_external_docs/requirement_test")):
-        shutil.copytree(
-            os.path.join(testdir.request.config.invocation_dir, "tests/matrix_external_docs/requirement_test"),
-            os.path.join(testdir.tmpdir, "tests/requirement_test"),
-        )
-    else:
-        dir_output = subprocess.run("ls -al {}".format(os.path.join(testdir.request.config.invocation_dir, "tests/matrix_external_docs")),shell=True, capture_output=True)
-        print(dir_output.stdout.decode())
-        print("ERRROR-------------")
-        print(dir_output.stderr.decode())
-        print("************************")
-        l_dir_output = subprocess.run("ls -al {}".format(os.path.join(testdir.request.config.invocation_dir, "tests/matrix_external_docs/requirement_test")),shell=True, capture_output=True)
-        print(l_dir_output.stdout.decode())
-        print("------------ERRROR")
-        print(l_dir_output.stderr.decode())
-
+    
+    shutil.copytree(
+        os.path.join(testdir.request.config.invocation_dir, "tests/matrix_external_docs/requirement_test"),
+        os.path.join(testdir.tmpdir, "tests/requirement_test"),
+    )
 
     shutil.copytree(
         os.path.join(
