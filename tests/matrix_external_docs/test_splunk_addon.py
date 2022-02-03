@@ -3,7 +3,7 @@ import os
 import shutil
 import logging
 import pytest
-from tests import constants
+from tests.matrix_external_docs import constants
 from pytest_splunk_addon.standard_lib.sample_generation import SampleGenerator, Rule
 
 logger = logging.getLogger("test_pytest_splunk_addon")
