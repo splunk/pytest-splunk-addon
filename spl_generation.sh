@@ -1,5 +1,5 @@
 #!/bin/sh
-cd ./tests/matrix_external_docs/addons/
+cd ./tests/psa_tests/addons/
 for FILE in *; do
     echo "\n";
     echo "Generating spl for $FILE";

@@ -194,7 +194,7 @@ jobs:
           kubectl get pods -A
           ls -al ./tests/src/
           poetry install
-          poetry run pytest -v -m external --junitxml=test-results-${{ matrix.splunk-version }}/test.xml tests/matrix_external_docs
+          poetry run pytest -v -m external --junitxml=test-results-${{ matrix.splunk-version }}/test.xml tests/psa_tests
           ls -al
       - uses: actions/upload-artifact@v2.2.4
         if: always()
@@ -235,7 +235,7 @@ jobs:
           eval "$(pyenv init -)"          
           source ~/.poetry/env
           poetry install
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc tests/matrix_external_docs
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc tests/psa_tests
 
   test-splunk-matrix:
     name: Test Matrix
@@ -289,7 +289,7 @@ jobs:
           ./spl_generation.sh
           ls -al ./tests/src/
           poetry install
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes -m ${{ matrix.test-marker }} tests/matrix_external_docs
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes -m ${{ matrix.test-marker }} tests/psa_tests
 
   test-splunk-unit:
     name: Unit tests
