@@ -159,7 +159,7 @@ def test_splunk_app_fiction(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-vv",
+        "-v",
         "-n 5",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
