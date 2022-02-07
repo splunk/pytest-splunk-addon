@@ -12,11 +12,13 @@ kubectl apply -f ./splunk-operator.yaml
 ```
 ### Steps
 #### 1. Clone the repository
+
 ```bash
 git clone git@github.com:splunk/<repo name>.git
 cd <repo dir>
 ```
 #### 2. Run Tests
+
 1. Install Requirements
 ```bash
 poetry export --without-hashes --dev -o requirements_dev.txt
@@ -24,10 +26,12 @@ pip install -r requirements_dev.txt
 # Download only if TEST_TYPE is modinput_functional
 curl -s https://api.github.com/repos/splunk/splunk-add-on-for-modinput-test/releases/latest | grep "Splunk_TA.*spl" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -qi -;
 ```
+
 2. Generate addon SPL
  - To generate addon package use `ucc-gen` (output/Splunk_TA_<ADDON_NAME>) and `slim package output/Splunk_TA_<ADDON_NAME>`
  - Replace the extension of generated *.tar.gz to *.spl.
  - Rename the generated .spl with the approriate addon_version from package/default/app.conf id.version i.e. `Splunk_TA_<ADDON_NAME>-<ADDON_VERSION>.spl`
+
 3. Set Variables
 ```bash
 export KUBECONFIG="PATH of Kubernetes Config File"
@@ -35,40 +39,52 @@ export KUBECONFIG="PATH of Kubernetes Config File"
 export NAMESPACE_NAME="splunk-ta-<ADDON_NAME>"
 ```
 **Note:** If TEST_TYPE is `modinput_functional` or `ui`, also set all variables in [test_credentials.env](test_credentials.env) file with appropriate values encoded with base64.
+
 ##### Knowledge
+
 4. Create `src` directory in `tests` of the addon repository and put the SPL generated in step-2 in `tests/src`.
+
 5. Execute Tests
 - Default value of `--splunk-version = latest`
 ```bash
-python -m pytest -v tests/knowledge --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-type=kubernetes --splunk-version=<<SPLUNK_VERSION>> --xfail-file=.pytest.expect
+python -m pytest -vv tests/knowledge --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-type=kubernetes --splunk-version=<<SPLUNK_VERSION>> --xfail-file=.pytest.expect
 ```
+
 ##### Modinput_Functional / UI
-4. Download [namespace.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml) and put into the root directory of addon repository, also update the value of `NAMESPACE_NAME` in file and apply
+
+4. Get `namespace.yaml` which will be find in `pytest-splunk-addon/k8s_manifests/splunk_standalone` and put into the root directory of addon repository, also update the value of `NAMESPACE_NAME` in file and apply
 ```bash
 eval "echo \"$(cat ./namespace.yaml)\"" >> ./namespace.yaml
 kubectl apply -f ./namespace.yaml
 ```
+
 5. Create secret (this will be used while spinning up the splunk standalone)
 ```bash
 kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
 ```
-6. Download [splunk_standalone.yaml](https://github.com/splunk/pytest-splunk-addon/blob/test/migrate-k8s-poc/pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml) and put into the root directory of addon repository, also update the `SPLUNK_VERSION` in file for which Standalone machine will be created
+
+6. Get `splunk_standalone.yaml` which will be find in `pytest-splunk-addon/k8s_manifests/splunk_standalone` and put into the root directory of addon repository, also update the `SPLUNK_VERSION` in file for which Standalone machine will be created
 ```bash
 eval "echo \"$(cat ./splunk_standalone.yaml)\"" >> ./splunk_standalone.yaml
 kubectl apply -f ./splunk_standalone.yaml -n $NAMESPACE_NAME
 ```
+
 7. Wait till Splunk Standalone is created
 ```bash
 until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
 ```
+
 8. Expose service of splunk standalone to access locally, all the ports will be mapped with freely available ports of local machine
 ```bash
 kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :8088 :8089 > ./exposed_splunk_ports.log 2>&1 &
 ```
+
 9. Get the mapped ports of 8000, 8088, 8089 and update the pytest.ini accordingly.
+
 10. Access the splunk ui and install the addon by "Install app from file",
- - http://localhost:splunk-web-port/
+ - `http://localhost:splunk-web-port/`
  - Install modinput helper addon downloaded in step-1 , as a prerequisite of execution of modinput tests.
+
 11. If TEST_TYPE is `ui` then follow the below steps,
   - Download Browser's specific driver
      - For Chrome: download chromedriver
@@ -76,65 +92,19 @@ kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :
      - For IE: download IEdriverserver
   - Put the downloaded driver into `test/ui/` directory, make sure that it is within the environment's PATH variable, and that it is executable
   - For Internet explorer, The steps mentioned at below link must be performed [selenium](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration)
+
 12. Execute Tests
-- Modinput_Functional
+##### Modinput_Functional
 ```bash
-python -m pytest -v --username=admin --password=Chang3d! --splunk-url=localhost --splunkd-port=<splunk-management-port> --remote -n 5 tests/modinput_functional
+python -m pytest -vv --username=admin --password=Chang3d! --splunk-url=localhost --splunkd-port=<splunk-management-port> --remote -n 5 tests/modinput_functional
 ```
-- UI (local)
+##### UI (local)
 ```bash
-python -m pytest -v --splunk-type=external --splunk-host=localhost --splunkweb-port=<splunk-web-port> --splunk-port=<splunk-management-port> --splunk-password=Chang3d! --browser=<browser> --splunk-hec-port=<splunk-hec-port> --local tests/ui 
+python -m pytest -vv --splunk-type=external --splunk-host=localhost --splunkweb-port=<splunk-web-port> --splunk-port=<splunk-management-port> --splunk-password=Chang3d! --browser=<browser> --splunk-hec-port=<splunk-hec-port> --local tests/ui 
 ```
-- UI (in Saucelabs)
-Splunk should be ready with the steps mentioned above
-Set the following env variables with appropriate values
-```
-export SAUCE_USERNAME=<username>
-export SAUCE_PASSWORD=<password>
-export SAUCE_TUNNEL_PARENT=<parent-tunnel-name>
-export SAUCE_TUNNEL_ID=k8s-sauce-tunnel
-export SAUCE_IDENTIFIER=k8s-sauce-tunnel
-```
-Assuming the following files are present in the directory.
- 
- - test_runner.yaml
- - test_runner_svc.yaml
- - saucelabs.yaml
- - saucelabs_svc.yaml
-Put these files into the root directory of addon repository, also update the value of env variables in file and apply as following
+##### UI (in Saucelabs)
+  - Set the following env variables with appropriate values
 ```bash
-eval "echo \"$(cat ./saucelabs.yaml)\"" >> ./saucelabs.yaml
-kubectl apply -f ./saucelabs.yaml
-kubectl apply -f ./saucelabs_svc.yaml
-kubectl apply -f ./test_runner.yaml
-kubectl apply -f ./test_runner_svc.yaml
-```
-Verify test-runner is available 
-```
-kubectl wait pod -n $NAMESPACE_NAME --for=condition=ready --timeout=900s -l='app=test-runner'
-```
-Get the test runner pod name
-```
-export TEST_RUNNER_POD="$(kubectl get pods -n $NAMESPACE_NAME -l='app=test-runner' -o json| jq -r '.items[].metadata.name')"
-echo $TEST_RUNNER_POD
-```
-Copy the addon inside the test-runner
-```
-kubectl cp splunk-add-on-for-<addon-name> $TEST_RUNNER_POD:/opt/ -n $NAMESPACE_NAME -c test-runner
-```
-exec inside test-runner
-```
-kubectl exec --stdin --tty $TEST_RUNNER_POD -n $NAMESPACE_NAME -c test-runner -it -- /bin/bash
-```
-Install requirements and test execution
-```
-cd /opt/splunk-add-on-for-<addon-name>
-pip install poetry
-poetry export --without-hashes --dev -o requirements_dev.txt
-pip install -r requirements_dev.txt
-```
-Set the following env variables with appropriate values
-```
 export SAUCE_USERNAME=<username>
 export SAUCE_PASSWORD=<password>
 export SAUCE_TUNNEL_PARENT=<parent-tunnel-name>
@@ -142,17 +112,18 @@ export SAUCE_TUNNEL_ID=<tunnel-id>
 export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
 export JOB_NAME="k8s::<addon-name>-<browser>-<unique-string>"
 ```
-Best practice is to keep the JOB_NAME unique for each test execution
-Use the following pytest command to execute the tests from addon root directory
+>- Best practice is to keep the JOB_NAME unique for each test execution
+- Set up sauce-connect proxy by following the steps mentioned [here](https://docs.saucelabs.com/secure-connections/sauce-connect/installation/) in another terminal by exporting above mentioned variables
+- Add `domain_name` mapped to `127.0.0.1` or `localhost` in /etc/hosts
+
 ```
-pytest -v -s --splunk-type=external --splunk-password=Chang3d! --splunk-host=splunk-s1-standalone-service.$NAMESPACE_NAME.svc.cluster.local --browser=<browser> tests/ui
+python -m pytest -vv --splunk-type=external --splunk-password=Chang3d! --splunk-host=<domain_name> --splunkweb-port=<splunk-web-port> --splunk-port=<splunk-management-port> --splunk-hec-port=<splunk-hec-port> --browser=<browser> tests/ui
 ```
-Command to copy the artifacts from test-runner to local machine
-```
-kubectl cp $NAMESPACE_NAME/$TEST_RUNNER_POD:/opt/splunk-add-on-for-<add_on_name> <destination_directory>/splunk-add-on-for-<add_on_name> -c test-runner
-```
-### NOTE: Once test-execution is done user needs to manually delete the tunnel created in saucelabs with given SAUCE_TUNNEL_ID
+
+### NOTE: Once test-execution is done user needs to manually turn off the sauce-connect proxy
+
 13. Delete the ./exposed_splunk_ports.log file and other kubernetes resources
+
 ```bash
 kubectl delete -f ./splunk_standalone.yaml -n $NAMESPACE_NAME
 sleep 30
@@ -160,28 +131,35 @@ kubectl delete secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME
 kubectl delete -f ./namespace.yaml -n $NAMESPACE_NAME
 sleep 60
 ```
+
 ## With External
 ### Prerequisitory
+
 - Git
 - Python3 (>=3.7)
 - Splunk along with addon installed and HEC token created
 - If Addon support the syslog data ingestion(sc4s)
   - Docker
   - Docker-compose
+
 ### Steps
+
 1. Clone the repository
 ```bash
 git clone git@github.com:splunk/<repo name>.git
 cd <repo dir>
 ```
+
 2. Install Requirements
 ```bash
 pip install poetry
 poetry export --without-hashes --dev -o requirements_dev.txt
 pip install -r requirements_dev.txt
 ```
+
 3. Setup SC4S (for SC4S based addons)
 - If addon requires sc4s, need to update following in `docker-compose.yml` used to spin sc4s, (`docker-compose.yml` is already present in addon repo)
+
 - `docker-compose.yml` file contents
 ```yml
 sc4s:
@@ -225,22 +203,28 @@ sc4s:
 - SPLUNK_HEC_TOKEN: HEC token generated by external splunk instance.
 - SPLUNK_HEC_URL: HEC url of the external splunk instance.
 - And execute following to spin sc4s in your local or any other machine.
+
 ```
 docker-compose -f docker-compose.yml up -d sc4s
 ```
+
 - Validate the sc4s is up and running via `docker ps` with the given version and connected to splunk instance by checking if sc4s startup events are available in splunk instance at `sourcetype = sc4s:events:startup:out`
 - Update the sc4s-host and sc4s-port value in pytest.ini file.
 port value mapped to 514/tcp can be obtained via `docker ps` command
 - Create required SC4S indexes using the following SPL
+
 ```
 wget $( curl -s https://api.github.com/repos/splunk/splunk-configurations-base-indexes/releases/latest \ | jq -r '.assets[] | select((.name | contains("spl")) and (.name | contains("search_head") | not) and (.name | contains("indexers") | not ) and (.name | contains("forwarders") | not)) | .browser_download_url ')
 ```
+
 4. Run Tests
-- Knowledge
+#### Knowledge
+
 ```bash
 python -m pytest -vv --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password> --splunk-hec-token=<splunk_hec_token> --sc4s-host=<sc4s_host> --sc4s-port=<sc4s_port>
 ```
-- UI
+
+#### UI
 1. Set all variables in environment mentioned at [test_credentials.env](test_credentials.env) file with appropriate values encoded with base64.
 2. Download Browser's specific driver
     - For Chrome: download chromedriver
@@ -249,20 +233,24 @@ python -m pytest -vv --splunk-type=external --splunk-app=<path-to-addon-package>
 3. Put the downloaded driver into `test/ui/` directory, make sure that it is within the environment's PATH variable, and that it is executable
 4. For Internet explorer, The steps mentioned at below link must be performed [selenium](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration)
 5. Execute the test cases
-```bash
-python -m pytest -vv --browser=<browser> --local --splunk-host=<web_url> --splunk-port=<mgmt_url> --splunk-user=<username> --splunk-password=<password>
-```
-To execute the tests on saucelabs set the required env variable for saucelabs
+
+- To execute the tests on saucelabs set the required env variable for saucelabs
+
 ```
 export SAUCE_USERNAME=<username>
 export SAUCE_PASSWORD=<password>
 export JOB_NAME="Local::<addon-name>-browser-<unique-string>"
 ```
-Best practice is to keep the JOB_NAME unique for each test execution
-Remove --local param from pytest command Tests should be executed on saucelabs
-- Modinput
-Install [splunk-add-on-for-modinput-test](https://github.com/splunk/splunk-add-on-for-modinput-test/releases/latest/) addon in splunk and set all variables in environment mentioned at [test_credentials.env](test_credentials.env) file with appropriate values encoded with base64 or add variables in pytest command mentioned in conftest file.
-Update the pytest command with additional params if required for the addon.
+>- Best practice is to keep the JOB_NAME unique for each test execution
+- Remove --local param from the below pytest command and tests will be executed on saucelabs
+```bash
+python -m pytest -vv --browser=<browser> --local --splunk-host=<web_url> --splunk-port=<mgmt_url> --splunk-user=<username> --splunk-password=<password>
+```
+
+#### Modinput
+  - Install [splunk-add-on-for-modinput-test](https://github.com/splunk/splunk-add-on-for-modinput-test/releases/latest/) addon in splunk and set all variables in environment mentioned at [test_credentials.env](test_credentials.env) file with appropriate values encoded with base64 or add variables in pytest command mentioned in conftest file.
+  - Update the pytest command with additional params if required for the addon.
+
 ```bash
 python -m pytest -vv --username=<splunk_username> --password=<splunk_password> --splunk-url=<splunk_url> --remote
 ```
