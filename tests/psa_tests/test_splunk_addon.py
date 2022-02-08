@@ -89,7 +89,7 @@ def test_splunk_connection_external(testdir):
         "--splunk-host=localhost",
         "--splunk-port=8089",
         "--splunk-forwarder-host=localhost",
-        "-v",
+        "-vv",
     )
 
     # fnmatch_lines does an assertion internally
@@ -122,7 +122,7 @@ def test_splunk_connection_kubernetes(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-v",
+        "-vv",
     )
 
     # fnmatch_lines does an assertion internally
@@ -160,7 +160,7 @@ def test_splunk_app_fiction(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-v",
+        "-vv",
         "-n 5",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
@@ -208,7 +208,7 @@ def test_splunk_app_broken(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-v",
+        "-vv",
         "-n 5",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
@@ -264,7 +264,7 @@ def test_splunk_app_cim_fiction(testdir):
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
         "--splunk-dm-path=tests/data_models",
-        "-v",
+        "-vv",
         "-n 5",
         "-m splunk_searchtime_cim",
         "--search-interval=4",
@@ -313,7 +313,7 @@ def test_splunk_app_cim_broken(testdir):
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
         "--splunk-dm-path=tests/data_models",
-        "-v",
+        "-vv",
         "-n 5",
         "-m splunk_searchtime_cim",
         "--search-interval=4",
@@ -367,7 +367,7 @@ def test_splunk_fiction_indextime(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-v",
+        "-vv",
         "-n 5",
         "--search-interval=0",
         "--search-retry=0",
@@ -424,7 +424,7 @@ def test_splunk_fiction_indextime_broken(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-v",
+        "-vv",
         "-n 5",
         "--search-interval=0",
         "--search-retry=0",
@@ -476,7 +476,7 @@ def test_splunk_setup_fixture(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-v",
+        "-vv",
         "-k saved_search_lookup",
         "--search-interval=4",
         "--search-retry=4",
@@ -550,7 +550,7 @@ def test_splunk_app_requirements(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-v",
+        "-vv",
         "-n 5",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
@@ -598,7 +598,7 @@ def test_splunk_app_requirements_modinput(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-v",
+        "-vv",
         "-n 5",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
@@ -647,7 +647,7 @@ def test_splunk_app_requirements_uf(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-v",
+        "-vv",
         "-n 5",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
@@ -693,7 +693,7 @@ def test_splunk_app_requirements_scripted(testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "-v",
+        "-vv",
         "-n 5",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",

@@ -21,13 +21,13 @@ Features
 --------
 
 * Generate tests for Splunk Knowledge objects in your Splunk Technology Add-ons
-* Validate your add-ons using Splunk + Docker and this test tool
+* Validate your add-ons using Splunk + Kubernetes and this test tool
 
 
 Requirements
 ------------
 
-* Docker or an external single instance Splunk deployment
+* Kubernetes or an external single instance Splunk deployment
 
 
 Installation
@@ -40,7 +40,7 @@ You can install "pytest-splunk-addon" via `pip`_ from `PyPI`_::
 Developing
 ------------
 
-Note: Must install docker desktop, vscode or pycharm pro optional
+Note: Must setup kubernetes cluster, vscode or pycharm pro optional
 
 Note2: Appinspect requires libmagic verify this has been installed correctly each time a new workstation/vm is used https://dev.splunk.com/enterprise/docs/releaseapps/appinspect/splunkappinspectclitool/installappinspect
 
@@ -49,34 +49,27 @@ Note2: Appinspect requires libmagic verify this has been installed correctly eac
     $ git clone --recurse-submodules -j8 git@github.com:splunk/pytest-splunk-addon.git
 
     $ #setup python venv must be 3.7    
-    $ /Library/Frameworks/Python.framework/Versions/3.7/bin/python3 -m venv .venv
+    $ python3 -m venv .venv
 
     $ source .venv/bin/activate
 
     $ cd pytest-splunk-addon
     
-    $ pip3 install -r requirements.txt
+    $ pip install poetry
 
-    $ pip3 install https://download.splunk.com/misc/appinspect/splunk-appinspect-latest.tar.gz
+    $ poetry export --without-hashes --dev -o requirements_dev.txt
 
-    $ python setup.py develop
-    
+    $ pip install -r requirements_dev.txt
 
 
 Usage
 -----
 
-Installation for external Splunk
+Installation for external Splunk and with built in Kubernetes orchestration
 
 .. code:: bash
 
     pip install pytest-splunk-addon
-
-Installation with built in docker orchestration
-
-.. code:: bash
-
-    pip install pytest-splunk-addon[docker]
 
 
 Basic project structure
@@ -94,56 +87,23 @@ Create a test file in the tests folder
             def empty_method():
                 pass
 
-Create a Dockerfile-splunk file
-
-.. code:: Dockerfile
-
-    ARG SPLUNK_VERSION=latest
-    FROM splunk/splunk:$SPLUNK_VERSION
-    ARG SPLUNK_APP=TA_UNKNOWN
-    ARG SPLUNK_APP_PACKAGE=package
-    COPY deps/apps /opt/splunk/etc/apps/
-
-    COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP
-
-
-Create a docker-compose.yml update the value of SPLUNK_APP
-
-.. code:: yaml
-
-    version: "3.7"
-    services:
-    splunk:
-        build:
-        context: .
-        dockerfile: Dockerfile-splunk
-        args:
-            - SPLUNK_APP=xxxxxxx
-        ports:
-        - "8000"
-        - "8089"
-        environment:
-        - SPLUNK_PASSWORD=Changed@11
-        - SPLUNK_START_ARGS=--accept-license
-
 Run pytest with the add-on and SA-eventgen installed and enabled in an external Splunk deployment
 
 .. code::: bash
 
         pytest \
         --splunk-type=external \
-        --splunk-type=external \
         --splunk-host=splunk \
         --splunk-port=8089 \
         --splunk-password=Changed@11 \
         -v
 
-Run pytest with the add-on and SA-eventgen installed and enabled in docker
+Run pytest with the add-on and SA-eventgen installed and enabled in kubernetes
 
 .. code::: bash
 
         pytest \
-        --splunk-password=Changed@11 \
+        --splunk-type=kubernetes \
         -v
 
 For full usage instructions, please visit the `pytest-splunk-addon documentation pages over at readthedocs`_.
