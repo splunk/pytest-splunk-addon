@@ -38,7 +38,7 @@ def setup_test_dir(testdir):
         ),
         os.path.join(testdir.tmpdir, ""),
     )
-    
+
     shutil.copytree(
         os.path.join(
             testdir.request.config.invocation_dir, "tests/psa_tests/requirement_test"
