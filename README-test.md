@@ -54,7 +54,7 @@ python -m pytest -vv tests/knowledge --splunk-data-generator=<path to pytest-spl
 
 4. Get `namespace.yaml` which will be find in `pytest-splunk-addon/k8s_manifests/splunk_standalone` and put into the root directory of addon repository, also update the value of `NAMESPACE_NAME` in file and apply
 ```bash
-eval "echo \"$(cat ./namespace.yaml)\"" >> ./namespace.yaml
+eval "echo \"$(cat ./namespace.yaml)\"" > ./namespace.yaml
 kubectl apply -f ./namespace.yaml
 ```
 
@@ -65,7 +65,7 @@ kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='pass
 
 6. Get `splunk_standalone.yaml` which will be find in `pytest-splunk-addon/k8s_manifests/splunk_standalone` and put into the root directory of addon repository, also update the `SPLUNK_VERSION` in file for which Standalone machine will be created
 ```bash
-eval "echo \"$(cat ./splunk_standalone.yaml)\"" >> ./splunk_standalone.yaml
+eval "echo \"$(cat ./splunk_standalone.yaml)\"" > ./splunk_standalone.yaml
 kubectl apply -f ./splunk_standalone.yaml -n $NAMESPACE_NAME
 ```
 
