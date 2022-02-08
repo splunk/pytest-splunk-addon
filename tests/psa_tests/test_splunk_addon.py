@@ -20,6 +20,7 @@ test_connection_only = """
             assert result
     """
 
+
 def pytest_addoption(parser):
     """Add options for interaction with Splunk this allows the tool to work in two modes
     1) kubernetes mode which is typically used by developers on their workstation
@@ -41,6 +42,7 @@ def pytest_addoption(parser):
             " 2) 8.0.0: GA release of 8.0.0."
         ),
     )
+
 
 def setup_test_dir(testdir):
     shutil.copytree(
@@ -128,7 +130,7 @@ def test_splunk_connection_external(testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_connection_kubernetes
-def test_splunk_connection_kubernetes(request,testdir):
+def test_splunk_connection_kubernetes(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     # create a temporary pytest test module
@@ -162,7 +164,7 @@ def test_splunk_connection_kubernetes(request,testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_app_fiction
-def test_splunk_app_fiction(request,testdir):
+def test_splunk_app_fiction(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -206,7 +208,7 @@ def test_splunk_app_fiction(request,testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_app_broken
-def test_splunk_app_broken(request,testdir):
+def test_splunk_app_broken(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -262,7 +264,7 @@ def test_splunk_app_broken(request,testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_app_cim_fiction
-def test_splunk_app_cim_fiction(request,testdir):
+def test_splunk_app_cim_fiction(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -312,7 +314,7 @@ def test_splunk_app_cim_fiction(request,testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_app_cim_broken
-def test_splunk_app_cim_broken(request,testdir):
+def test_splunk_app_cim_broken(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -368,7 +370,7 @@ def test_splunk_app_cim_broken(request,testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_fiction_indextime
-def test_splunk_fiction_indextime(request,testdir):
+def test_splunk_fiction_indextime(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -424,7 +426,7 @@ def test_splunk_fiction_indextime(request,testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_fiction_indextime_broken
-def test_splunk_fiction_indextime_broken(request,testdir):
+def test_splunk_fiction_indextime_broken(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -484,7 +486,7 @@ def test_splunk_fiction_indextime_broken(request,testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_setup_fixture
-def test_splunk_setup_fixture(request,testdir):
+def test_splunk_setup_fixture(request, testdir):
     testdir.makepyfile(
         """
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
@@ -560,7 +562,7 @@ def test_docstrings(testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_app_requirements
-def test_splunk_app_requirements(request,testdir):
+def test_splunk_app_requirements(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -607,7 +609,7 @@ def test_splunk_app_requirements(request,testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_app_requirements_modinput
-def test_splunk_app_requirements_modinput(request,testdir):
+def test_splunk_app_requirements_modinput(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -659,7 +661,7 @@ def test_splunk_app_requirements_modinput(request,testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_app_requirements_uf
-def test_splunk_app_requirements_uf(request,testdir):
+def test_splunk_app_requirements_uf(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -706,7 +708,7 @@ def test_splunk_app_requirements_uf(request,testdir):
 
 @pytest.mark.kubernetes
 @pytest.mark.splunk_app_requirements_scripted
-def test_splunk_app_requirements_scripted(request,testdir):
+def test_splunk_app_requirements_scripted(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
