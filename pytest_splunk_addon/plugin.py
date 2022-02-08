@@ -127,7 +127,7 @@ def pytest_sessionfinish(session, exitstatus):
             splunk_data = [line.rstrip() for line in splunk_type_file]
         if (
             (os.environ.get("PYTEST_XDIST_WORKER") == None)
-            and (splunk_data[0] == "kubernetes") 
+            and (splunk_data[0] == "kubernetes")
             and (splunk_data[1] != "True")
         ):
             LOGGER.info("SessionFinish - destroying all kubernetes resources")

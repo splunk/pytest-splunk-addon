@@ -49,7 +49,7 @@ def setup_test_dir(testdir):
     shutil.copytree(
         os.path.join(
             testdir.request.config.invocation_dir,
-            "tests/psa_tests/requirement_test_modinput"
+            "tests/psa_tests/requirement_test_modinput",
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_modinput"),
     )
@@ -63,7 +63,7 @@ def setup_test_dir(testdir):
     shutil.copytree(
         os.path.join(
             testdir.request.config.invocation_dir,
-            "tests/psa_tests/requirement_test_scripted"
+            "tests/psa_tests/requirement_test_scripted",
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_scripted"),
     )
