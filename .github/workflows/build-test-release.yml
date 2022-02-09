@@ -191,9 +191,6 @@ jobs:
           export NAMESPACE_NAME=ta-fiction-external
           export splunk_password=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.password' | base64 -d)
           export splunk_hec_token=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.hec_token' | base64 -d)
-          echo $splunk_password
-          echo $splunk_hec_token
-          echo "---------------===========================------------------"
           export PATH="~/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
           source ~/.poetry/env
