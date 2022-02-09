@@ -176,8 +176,6 @@ jobs:
           kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
           kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
           sleep 30
-          export splunk_password=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.password' | base64 -d)
-          export splunk_hec_token=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.hec_token' d)
       - name: Install dependencies
         run: |
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
@@ -190,6 +188,9 @@ jobs:
           source ~/.poetry/env
       - name: Test with pytest
         run: |
+          export NAMESPACE_NAME=ta-fiction-external
+          export splunk_password=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.password' | base64 -d)
+          export splunk_hec_token=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.hec_token' | base64 -d)
           echo $splunk_password
           echo $splunk_hec_token
           echo "---------------===========================------------------"
