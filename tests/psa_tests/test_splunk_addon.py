@@ -42,6 +42,20 @@ def pytest_addoption(parser):
             " 2) 8.0.0: GA release of 8.0.0."
         ),
     )
+    group.addoption(
+        "--splunk-password",
+        action="store",
+        dest="splunk_password",
+        default="Chang3d!",
+        help="Password of the Splunk user",
+    )
+    group.addoption(
+        "--splunk-hec-token",
+        action="store",
+        dest="splunk_hec_token",
+        default="9b741d03-43e9-4164-908b-e09102327d22",
+        help='Splunk HTTP event collector token. default is "9b741d03-43e9-4164-908b-e09102327d22" If an external forwarder is used provide HEC token of forwarder.',
+    )
 
 
 def setup_test_dir(testdir):
@@ -97,7 +111,7 @@ def setup_test_dir(testdir):
 
 
 @pytest.mark.external
-def test_splunk_connection_external(testdir):
+def test_splunk_connection_external(request,testdir):
     """Make sure that pytest accepts our fixture."""
 
     # create a temporary pytest test module
@@ -118,6 +132,8 @@ def test_splunk_connection_external(testdir):
         "--splunk-host=localhost",
         "--splunk-port=8089",
         "--splunk-forwarder-host=localhost",
+        "--splunk-password={0}".format(request.config.getoption("splunk_password")),
+        "--splunk-hec-token={0}".format(request.config.getoption("splunk_hec_token")),
         "-vv",
     )
 

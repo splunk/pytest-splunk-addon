@@ -698,7 +698,7 @@ def splunk_kubernetes(request):
                 "bash",
                 "-c",
                 "echo $(kubectl get secret splunk-{0}-secret -o json -n {1} -o json | jq -r '.data.password')".format(
-                    os.getenv("NAMESPACE_NAME"),os.getenv("NAMESPACE_NAME")
+                    os.getenv("NAMESPACE_NAME"), os.getenv("NAMESPACE_NAME")
                 ),
             ]
         )
@@ -711,7 +711,7 @@ def splunk_kubernetes(request):
                 "bash",
                 "-c",
                 "echo $(kubectl get secret splunk-{0}-secret -o json -n {1} -o json | jq -r '.data.hec_token')".format(
-                    os.getenv("NAMESPACE_NAME"),os.getenv("NAMESPACE_NAME")
+                    os.getenv("NAMESPACE_NAME"), os.getenv("NAMESPACE_NAME")
                 ),
             ]
         )
@@ -810,7 +810,11 @@ def sc4s_kubernetes():
         current_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "k8s_manifests/sc4s"
         )
-        os.environ["SPLUNK_URL"] = "splunk-s1-standalone-service.{0}.svc.cluster.local".format(os.getenv("NAMESPACE_NAME"))
+        os.environ[
+            "SPLUNK_URL"
+        ] = "splunk-s1-standalone-service.{0}.svc.cluster.local".format(
+            os.getenv("NAMESPACE_NAME")
+        )
         update_k8s_manifest_files(folder=current_path, file="sc4s_deployment")
         LOGGER.info("Setting up SC4S")
         sc4s_setup = subprocess.run(
@@ -870,9 +874,7 @@ def splunk_hec_uri(request, splunk):
     Provides a uri to the Splunk hec port
     """
     splunk_session = requests.Session()
-    splunk_session.headers = {
-        "Authorization": f'Splunk {splunk["splunk_hec_token"]}'
-    }
+    splunk_session.headers = {"Authorization": f'Splunk {splunk["splunk_hec_token"]}'}
     uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector'
     LOGGER.info("Fetched splunk_hec_uri=%s", uri)
 
@@ -1062,9 +1064,7 @@ def is_responsive_hec(request, splunk):
             "Trying to connect Splunk HEC...  splunk=%s",
             json.dumps(splunk),
         )
-        session_headers = {
-            "Authorization": f'Splunk {splunk["splunk_hec_token"]}'
-        }
+        session_headers = {"Authorization": f'Splunk {splunk["splunk_hec_token"]}'}
         response = requests.get(
             f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/health/1.0',
             verify=False,

@@ -170,12 +170,13 @@ jobs:
           cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/addon_information.yaml >> ./addon_information_updated.yaml
           echo "        - http://nginx//$SPLUNK_ADDON.spl" >> ./addon_information_updated.yaml
           grep -v ^\# ./addon_information_updated.yaml | grep . >> ./splunk_standalone_updated.yaml
-          kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
           kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
           sleep 30
           kubectl wait pod splunk-s1-standalone-0 --for=condition=ready --timeout=900s -n $NAMESPACE_NAME
           kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
           sleep 30
+          export splunk_password=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.password' | base64 -d)
+          export splunk_hec_token=$(kubectl get secret splunk-default-secret -o json | jq -r '.data.hec_token' d)
       - name: Install dependencies
         run: |
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
@@ -188,13 +189,16 @@ jobs:
           source ~/.poetry/env
       - name: Test with pytest
         run: |
+          echo $splunk_password
+          echo $splunk_hec_token
+          echo "---------------===========================------------------"
           export PATH="~/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
           source ~/.poetry/env
           kubectl get pods -A
           ls -al ./tests/src/
           poetry install
-          poetry run pytest -v -m external --junitxml=test-results-${{ matrix.splunk-version }}/test.xml tests/psa_tests
+          poetry run pytest -v -m external --splunk-password=$splunk_password --splunk-hec-token=$splunk_hec_token --junitxml=test-results-${{ matrix.splunk-version }}/test.xml tests/psa_tests
           ls -al
       - uses: actions/upload-artifact@v2.2.4
         if: always()
