@@ -13,7 +13,7 @@ else
     echo "Unable to found $SPLUNK_ADDON.spl in tests/src"
 fi
 grep -v ^\# "$(dirname -- "$0")"/addon_information_updated.yaml | grep . >> "$(dirname -- "$0")"/splunk_standalone_updated.yaml
-kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
+# kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
 kubectl apply -f "$(dirname -- "$0")"/splunk_standalone_updated.yaml -n $NAMESPACE_NAME
 # sleep 15
 until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done

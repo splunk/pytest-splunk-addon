@@ -40,8 +40,8 @@ spec:
           apt-get -y update ;
           apt-get install -y curl ;
           while true;
-          do curl -k https://splunk-s1-standalone-service.$NAMESPACE_NAME.svc.cluster.local:8088/services/collector \
-            -H "Authorization: Splunk 9b741d03-43e9-4164-908b-e09102327d22" \
+          do curl -k https://$SPLUNK_URL:8088/services/collector \
+            -H "Authorization: Splunk $SPLUNK_HEC_TOKEN" \
             -d '{"event": "Splunk readiness test event.", "sourcetype": "manual"}' &&\
           break;
           sleep 5;
@@ -59,9 +59,9 @@ spec:
         - name: SC4S_SOURCE_TLS_ENABLE
           value: "no"
         - name: SPLUNK_HEC_TOKEN
-          value: "9b741d03-43e9-4164-908b-e09102327d22"
+          value: $SPLUNK_HEC_TOKEN
         - name: SPLUNK_HEC_URL
-          value: https://splunk-s1-standalone-service.$NAMESPACE_NAME.svc.cluster.local:8088
+          value: https://$SPLUNK_URL:8088
         - name: TEST_SC4S_ACTIVATE_EXAMPLES
           value: "yes"
         image: splunk/scs:latest
