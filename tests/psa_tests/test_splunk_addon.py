@@ -111,7 +111,7 @@ def setup_test_dir(testdir):
 
 
 @pytest.mark.external
-def test_splunk_connection_external(request,testdir):
+def test_splunk_connection_external(request, testdir):
     """Make sure that pytest accepts our fixture."""
 
     # create a temporary pytest test module
