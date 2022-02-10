@@ -44,9 +44,9 @@ export NAMESPACE_NAME="splunk-ta-<ADDON_NAME>"
 4. Create `src` directory in `tests` of the addon repository and put the SPL generated in step-2 in `tests/src`.
 
 5. Execute Tests
-- Default value of `--splunk-version = latest`
+- Default value of `--splunk-version=latest`
 ```bash
-python -m pytest -vv tests/knowledge --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-type=kubernetes --splunk-version=<<SPLUNK_VERSION>> --xfail-file=.pytest.expect
+python -m pytest -vv tests/knowledge --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-type=kubernetes --splunk-version=<SPLUNK_VERSION> --xfail-file=.pytest.expect
 ```
 
 ##### Modinput_Functional / UI
@@ -59,7 +59,7 @@ kubectl apply -f ./namespace.yaml
 
 5. Create secret (this will be used while spinning up the splunk standalone)
 ```bash
-kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=Chang3d!' --from-literal='hec_token=9b741d03-43e9-4164-908b-e09102327d22' -n $NAMESPACE_NAME
+kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=<splunk_password>' --from-literal='hec_token=<splunk_hec_token>' -n $NAMESPACE_NAME
 ```
 
 6. Get `splunk_standalone.yaml` which will be found at `pytest-splunk-addon/k8s_manifests/splunk_standalone` and put into the root directory of addon repository, also update the `SPLUNK_VERSION` in file for which Standalone machine will be created
@@ -81,7 +81,7 @@ kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :
 9. Get the mapped ports of 8000, 8088, 8089 and update the pytest.ini accordingly.
 
 10. Access the splunk ui and install the addon by "Install app from file",
- - `http://localhost:splunk-web-port/`
+ - http://localhost:<splunk_web_port>/
  - Install modinput helper addon downloaded in step-1 , as a prerequisite of execution of modinput tests.
 
 11. If TEST_TYPE is `ui` then follow the below steps,
@@ -95,11 +95,11 @@ kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :
 12. Execute Tests
 ##### Modinput_Functional
 ```bash
-python -m pytest -vv --username=admin --password=Chang3d! --splunk-url=localhost --splunkd-port=<splunk-management-port> --remote -n 5 tests/modinput_functional
+python -m pytest -vv --username=admin --password=<splunk_password> --splunk-url=localhost --splunkd-port=<splunk_management_port> --remote -n 5 tests/modinput_functional
 ```
 ##### UI (local)
 ```bash
-python -m pytest -vv --splunk-type=external --splunk-host=localhost --splunkweb-port=<splunk-web-port> --splunk-port=<splunk-management-port> --splunk-password=Chang3d! --browser=<browser> --splunk-hec-port=<splunk-hec-port> --local tests/ui 
+python -m pytest -vv --splunk-type=external --splunk-host=localhost --splunk-password=<splunk_password> --splunkweb-port=<splunk_web_port> --splunk-port=<splunk_management_port> --browser=<browser> --splunk-hec-port=<splunk_hec_port> --splunk-hec-token=<splunk_hec_token> --local tests/ui 
 ```
 ##### UI (in Saucelabs)
   - Set the following env variables with appropriate values
@@ -116,7 +116,7 @@ export JOB_NAME="k8s::<addon-name>-<browser>-<unique-string>"
 - Add `domain_name` mapped to `127.0.0.1` or `localhost` in /etc/hosts
 
 ```
-python -m pytest -vv --splunk-type=external --splunk-password=Chang3d! --splunk-host=<domain_name> --splunkweb-port=<splunk-web-port> --splunk-port=<splunk-management-port> --splunk-hec-port=<splunk-hec-port> --browser=<browser> tests/ui
+python -m pytest -vv --splunk-type=external --splunk-password=<splunk_password> --splunk-host=<domain_name> --splunkweb-port=<splunk_web_port> --splunk-port=<splunk_management_port> --splunk-hec-port=<splunk_hec_port> --splunk-hec-token=<splunk_hec_token> --browser=<browser> tests/ui
 ```
 
 ### NOTE: Once test-execution is done user needs to manually turn off the sauce-connect proxy
@@ -138,8 +138,7 @@ sleep 60
 - Python3 (>=3.7)
 - Splunk along with addon installed and HEC token created
 - If Addon support the syslog data ingestion(sc4s)
-  - Docker
-  - Docker-compose
+  - kubectl
 
 ### Steps
 
@@ -157,70 +156,33 @@ pip install -r requirements_dev.txt
 ```
 
 3. Setup SC4S (for SC4S based addons)
-- If addon requires sc4s, need to update following in `docker-compose.yml` used to spin sc4s, (`docker-compose.yml` is already present in addon repo)
-
-- `docker-compose.yml` file contents
-```yml
-sc4s:
-    image: splunk/scs:<<SC4S_VERSION>>
-    hostname: sc4s
-    #When this is enabled test_common will fail
-    #    command: -det
-    ports:
-      - "514"
-      - "601"
-      - "514/udp"
-      - "9000"
-      - "5000-5050"
-      - "5000-5050/udp"
-      - "6514"
-    stdin_open: true
-    tty: true
-    environment:
-      - SPLUNK_HEC_URL=<<SPLUNK_HEC_URL>>
-      - SPLUNK_HEC_TOKEN=<<SPLUNK_HEC_TOKEN>>
-      - SC4S_SOURCE_TLS_ENABLE=no
-      - SC4S_DEST_SPLUNK_HEC_TLS_VERIFY=no
-      - SC4S_LISTEN_CISCO_ESA_TCP_PORT=9000
-      - SC4S_LISTEN_JUNIPER_NETSCREEN_TCP_PORT=5000
-      - SC4S_LISTEN_CISCO_ASA_TCP_PORT=5001
-      - SC4S_LISTEN_CISCO_IOS_TCP_PORT=5002
-      - SC4S_LISTEN_CISCO_MERAKI_TCP_PORT=5003
-      - SC4S_LISTEN_JUNIPER_IDP_TCP_PORT=5004
-      - SC4S_LISTEN_PALOALTO_PANOS_TCP_PORT=5005
-      - SC4S_LISTEN_PFSENSE_TCP_PORT=5006
-      - SC4S_LISTEN_CISCO_ASA_UDP_PORT=5001
-      - SC4S_LISTEN_CISCO_IOS_UDP_PORT=5002
-      - SC4S_LISTEN_CISCO_MERAKI_UDP_PORT=5003
-      - SC4S_LISTEN_JUNIPER_IDP_UDP_PORT=5004
-      - SC4S_LISTEN_PALOALTO_PANOS_UDP_PORT=5005
-      - SC4S_LISTEN_PFSENSE_UDP_PORT=5006
-      - SC4S_ARCHIVE_GLOBAL=no
-      - SC4S_LISTEN_CHECKPOINT_SPLUNK_NOISE_CONTROL=yes
-```
-- SC4S_VERSION: used by sc4s to spin up.
-- SPLUNK_HEC_TOKEN: HEC token generated by external splunk instance.
-- SPLUNK_HEC_URL: HEC url of the external splunk instance.
-- And execute following to spin sc4s in your local or any other machine.
-
-```
-docker-compose -f docker-compose.yml up -d sc4s
-```
-
-- Validate the sc4s is up and running via `docker ps` with the given version and connected to splunk instance by checking if sc4s startup events are available in splunk instance at `sourcetype = sc4s:events:startup:out`
-- Update the sc4s-host and sc4s-port value in pytest.ini file.
-port value mapped to 514/tcp can be obtained via `docker ps` command
-- Create required SC4S indexes using the following SPL
-
+- Create required SC4S indexes in splunk-instance using the following SPL
 ```
 wget $( curl -s https://api.github.com/repos/splunk/splunk-configurations-base-indexes/releases/latest \ | jq -r '.assets[] | select((.name | contains("spl")) and (.name | contains("search_head") | not) and (.name | contains("indexers") | not ) and (.name | contains("forwarders") | not)) | .browser_download_url ')
+```
+- Get `sc4s_deployment.yaml`, `sc4s_service.yaml` which will be found at `pytest-splunk-addon/k8s_manifests/sc4s` and put into the root directory of addon repository, also update the `SPLUNK_URL` and `SPLUNK_HEC_TOKEN` in `sc4s_deployment.yaml` for which SC4S deployment and service will be created in separate namespace.
+```bash
+export NAMESPACE_NAME="splunk-ta-<ADDON_NAME>"
+export SPLUNK_URL=<splunk_url>
+export SPLUNK_HEC_TOKEN=<splunk_hec_token>
+kubectl create ns $NAMESPACE_NAME
+kubectl apply -f ./sc4s_service.yaml -n $NAMESPACE_NAME
+eval "echo \"$(cat ./sc4s_deployment.yaml)\"" > ./sc4s_deployment.yaml
+kubectl apply -f ./sc4s_deployment.yaml -n $NAMESPACE_NAME
+kubectl wait pod -n $NAMESPACE_NAME --for=condition=ready --timeout=900s -l='app=sc4s'
+kubectl port-forward svc/sc4s-service -n $NAMESPACE_NAME :514 > ./exposed_sc4s_ports.log 2>&1 &
+```
+- Get the mapped port of 514 and update the pytest.ini accordingly for --sc4s-port=<sc4s_port> and --sc4s-host=<sc4s_host>(`localhost`)
+- Once test execution is completed then make sure to delete kubernetes resources
+```bash
+kubectl delete ns $NAMESPACE_NAME
 ```
 
 4. Run Tests
 #### Knowledge
 
 ```bash
-python -m pytest -vv --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password> --splunk-hec-token=<splunk_hec_token> --sc4s-host=<sc4s_host> --sc4s-port=<sc4s_port>
+python -m pytest -vv --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-host=<splunk_host> --splunk-port=<splunk_management_port> --splunk-user=<splunk_username> --splunk-password=<splunk_password> --splunk-hec-token=<splunk_hec_token> --sc4s-host=<sc4s_host> --sc4s-port=<sc4s_port>
 ```
 
 #### UI
@@ -243,7 +205,7 @@ export JOB_NAME="Local::<addon-name>-browser-<unique-string>"
 >- Best practice is to keep the JOB_NAME unique for each test execution
 - Remove --local param from the below pytest command and tests will be executed on saucelabs
 ```bash
-python -m pytest -vv --browser=<browser> --local --splunk-host=<web_url> --splunk-port=<mgmt_url> --splunk-user=<username> --splunk-password=<password>
+python -m pytest -vv --browser=<browser> --local --splunk-host=<splunk_host> --splunk-port=<splunk_mgmt_port> --splunk-user=<splunk_username> --splunk-password=<splunk_password> --splunk-hec-token=<splunk_hec_token>
 ```
 
 #### Modinput
