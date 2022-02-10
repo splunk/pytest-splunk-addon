@@ -392,23 +392,6 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
 
         return Indexes(self.connector(contype, username, password))
 
-    def roles(self, contype=None, username=None):
-        """
-        Returns a Roles manager that uses the specified connector. Defaults to
-        default connector if none specified.
-
-        This property creates a new Roles manager each call so you may do as
-        you please with it.
-
-        @param contype: type of connector, defined in L{Connector} class
-        @param username: connector's username
-        @type username: string
-        @rtype: L{Roles}
-        """
-        from pytest_splunk_addon.helmut.manager.roles import Roles
-
-        return Roles(self.connector(contype, username))
-
     def saved_searches(self, contype=None, username=None):
         """
         Returns a SavedSearches manager that uses the specified connector.
@@ -425,23 +408,6 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         from pytest_splunk_addon.helmut.manager.saved_searches import SavedSearches
 
         return SavedSearches(self.connector(contype, username))
-
-    def users(self, contype=None, username=None):
-        """
-        Returns a Users manager that uses the specified connector. Defaults to
-        default connector if none specified.
-
-        This property creates a new Users manager each call so you may do as
-        you please with it.
-
-        @param contype: type of connector, defined in L{Connector} class
-        @param username: connector's username
-        @type username: string
-        @rtype: L{Users}
-        """
-        from pytest_splunk_addon.helmut.manager.users import Users
-
-        return Users(self.connector(contype, username))
 
     def _notify_listeners_of_splunk_start(self):
         """
