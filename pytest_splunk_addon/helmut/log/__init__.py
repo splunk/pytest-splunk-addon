@@ -22,7 +22,6 @@ Created on Jun 15, 2012
 import datetime
 import logging
 import logging.config
-import os
 from builtins import object
 from logging import FileHandler, Formatter
 

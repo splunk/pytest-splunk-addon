@@ -28,9 +28,6 @@ from future.utils import with_metaclass
 from pytest_splunk_addon.helmut.connector.base import Connector
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
 from pytest_splunk_addon.helmut.exceptions import UnsupportedConnectorError
-from pytest_splunk_addon.helmut.exceptions.command_execution import (
-    CommandExecutionFailure,
-)
 from pytest_splunk_addon.helmut.log import Logging
 
 
