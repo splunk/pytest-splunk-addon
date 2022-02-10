@@ -280,7 +280,3 @@ class CloudSplunkConnectorException(Exception):
         "Don't pass username/password to connector. Helmut allows only one user per CloudSplunk instance."
         "Please create another CloudSplunk instance if you need to use another user."
     )
-
-
-class CloudRestartException(Exception):
-    message = "Restart on cloud is prohibited unless you are using cloud ops role."

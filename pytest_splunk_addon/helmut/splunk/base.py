@@ -372,23 +372,6 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
 
         return Confs(self.connector(contype, username, password))
 
-    def indexes(self, contype=None, username=None, password=None):
-        """
-        Returns a Indexes manager that uses the specified connector. Defaults
-        to default connector if none specified.
-
-        This property creates a new Indexes manager each time it is called so
-        you may handle the object as you wish.
-
-        @param contype: type of connector, defined in L{Connector} class
-        @param username: connector's username
-        @type username: string
-        @rtype: L{Indexes}
-        """
-        from pytest_splunk_addon.helmut.manager.indexes import Indexes
-
-        return Indexes(self.connector(contype, username, password))
-
     def saved_searches(self, contype=None, username=None):
         """
         Returns a SavedSearches manager that uses the specified connector.
