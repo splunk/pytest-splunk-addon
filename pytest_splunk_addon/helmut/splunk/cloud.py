@@ -17,7 +17,6 @@ from __future__ import absolute_import
 
 import sys
 import time
-from builtins import str
 
 from splunklib.binding import HTTPError
 

@@ -21,7 +21,7 @@ This module has things regarding a generic Splunk instance.
 @since: 2011-12-05
 """
 import time
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import ABCMeta, abstractproperty
 
 from future.utils import with_metaclass
 
@@ -363,42 +363,6 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         """
         for l in self._start_listeners:
             l()
-
-    # Abstract methods
-
-    @abstractmethod
-    def splunkd_scheme(self):
-        """
-        Returns the scheme for the splunkd instance.
-
-        Should be either C{http} or C{https}
-
-        @return: The scheme
-        @rtype: str
-        """
-        pass
-
-    @abstractmethod
-    def splunkd_host(self):
-        """
-        Returns the host for the splunkd instance.
-
-        Should be either a hostname or an IP address
-
-        @return: The host
-        @rtype: str
-        """
-        pass
-
-    @abstractmethod
-    def splunkd_port(self):
-        """
-        Returns the port for the splunkd instanct.
-
-        @return: The port
-        @rtype: int
-        """
-        pass
 
 
 def _validate_start_listener(listener):

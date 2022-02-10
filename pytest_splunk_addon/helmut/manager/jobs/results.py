@@ -19,7 +19,6 @@
 @since: 2011-11-23
 """
 import copy
-from builtins import object
 
 
 class Results(object):

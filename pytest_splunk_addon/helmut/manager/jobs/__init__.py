@@ -26,15 +26,6 @@ from pytest_splunk_addon.helmut.misc.manager_utils import (
     create_wrapper_from_connector_mapping,
 )
 
-PATH_PERFIX = "/servicesNS/nobody/system/search/jobs/"
-EVENTS = "/events"
-RESULTS = "/results"
-SUMMARY = "/summary"
-CONTROL = "/control"
-RESULTS_PREVIEW = "/results_preview"
-TIMELINE = "/timeline"
-SEARCHLOG = "/search.log"
-
 
 class Jobs(Manager, Collection):
     """

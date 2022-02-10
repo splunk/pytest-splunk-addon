@@ -22,7 +22,6 @@ Created on Jun 15, 2012
 import datetime
 import logging
 import logging.config
-from builtins import object
 from logging import FileHandler, Formatter
 
 from future.utils import with_metaclass
