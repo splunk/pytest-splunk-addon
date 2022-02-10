@@ -355,23 +355,6 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
 
         return Jobs(self.connector(contype, username))
 
-    def confs(self, contype=None, username=None, password=None):
-        """
-        Returns a Confs manager that uses the specified connector. Defaults to
-        default connector if none specified.
-
-        This property creates a new Confs manager each call so you may do as
-        you please with it.
-
-        @param contype: type of connector, defined in L{Connector} class
-        @param username: connector's username
-        @type username: string
-        @rtype: L{Confs}
-        """
-        from pytest_splunk_addon.helmut.manager.confs import Confs
-
-        return Confs(self.connector(contype, username, password))
-
     def _notify_listeners_of_splunk_start(self):
         """
         Notifies all the listeners that Splunk has started.
