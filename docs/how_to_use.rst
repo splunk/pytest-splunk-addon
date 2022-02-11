@@ -56,9 +56,9 @@ There are three ways to execute the tests:
 
         kubectl apply -f ./splunk-operator.yaml
 
-    Generate addon SPL with the format ``<<package/default/app.conf/id.name>>-<<package/default/app.conf/id.version>>.spl``
+    Generate addon SPL with the format ``<<package/default/app.conf/id.name>>-<<package/default/app.conf/id.version>>.spl``.
 
-    Create ``src`` directory in ``tests`` of the addon repository and move *.spl in ``tests/src``
+    Create ``src`` directory in ``tests`` of the addon repository and move *.spl in ``tests/src``.
 
 .. _conftest_file:
 
