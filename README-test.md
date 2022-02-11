@@ -4,6 +4,7 @@
 ### Prerequisitory
 - Git
 - Python3 (>=3.7)
+- Kubernetes Cluster
 - kubectl
 - jq
 - [splunk-operator at cluster-scope](https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces)
@@ -28,16 +29,14 @@ curl -s https://api.github.com/repos/splunk/splunk-add-on-for-modinput-test/rele
 ```
 
 2. Generate addon SPL
- - To generate addon package use [ucc-gen --ta-version=<<package/default/app.conf/id.version>>](https://github.com/splunk/addonfactory-ucc-generator#splunk-add-on-ucc-framework) and [slim package](https://splunk.github.io/addonfactory-ucc-generator/how_to_use/)
- - Replace the extension of generated *.tar.gz to *.spl.
+- Generate addon SPL with the format <<package/default/app.conf/id.name>>-<<package/default/app.conf/id.version>>.spl
+ <!-- - To generate addon package use [ucc-gen --ta-version=<<package/default/app.conf/id.version>>](https://github.com/splunk/addonfactory-ucc-generator#splunk-add-on-ucc-framework) and [slim package](https://splunk.github.io/addonfactory-ucc-generator/how_to_use/)
+ - Replace the extension of generated *.tar.gz to *.spl. -->
 
 3. Set Variables
 ```bash
 export KUBECONFIG="PATH of Kubernetes Config File"
-# If TEST_TYPE is modinput_functional or ui also set the following variable,
-export NAMESPACE_NAME="splunk-ta-<ADDON_NAME>"
 ```
-**Note:** If TEST_TYPE is `modinput_functional` or `ui`, also set all variables in [test_credentials.env](test_credentials.env) file with appropriate values encoded with base64.
 
 ##### Knowledge
 
@@ -50,87 +49,6 @@ python -m pytest -vv tests/knowledge --splunk-data-generator=<path to pytest-spl
 ```
 **Note:** For debugging purposes if resources need to be kept then pass `--keep-alive=True` while executing above pytest command, after troubleshooting user will have to manually delete the kubernetes resources.
 
-##### Modinput_Functional / UI
-
-4. Get `namespace.yaml` which will be found at `pytest-splunk-addon/k8s_manifests/splunk_standalone` and put into the root directory of addon repository, also update the value of `NAMESPACE_NAME` in file and apply
-```bash
-eval "echo \"$(cat ./namespace.yaml)\"" > ./namespace.yaml
-kubectl apply -f ./namespace.yaml
-```
-
-5. Create secret (this will be used while spinning up the splunk standalone)
-```bash
-kubectl create secret generic splunk-$NAMESPACE_NAME-secret --from-literal='password=<splunk_password>' --from-literal='hec_token=<splunk_hec_token>' -n $NAMESPACE_NAME
-```
-
-6. Get `splunk_standalone.yaml` which will be found at `pytest-splunk-addon/k8s_manifests/splunk_standalone` and put into the root directory of addon repository, also update the `SPLUNK_VERSION` in file for which Standalone machine will be created
-```bash
-eval "echo \"$(cat ./splunk_standalone.yaml)\"" > ./splunk_standalone.yaml
-kubectl apply -f ./splunk_standalone.yaml -n $NAMESPACE_NAME
-```
-
-7. Wait till Splunk Standalone is created
-```bash
-until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
-```
-
-8. Expose service of splunk standalone to access locally, all the ports will be mapped with freely available ports of local machine
-```bash
-kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME :8000 :8088 :8089 > ./exposed_splunk_ports.log 2>&1 &
-```
-
-9. Get the mapped ports of 8000, 8088, 8089 and update the pytest.ini accordingly.
-
-10. Access the splunk ui and install the addon by "Install app from file",
- - http://localhost:<splunk_web_port>/
- - Install modinput helper addon downloaded in step-1 , as a prerequisite of execution of modinput tests.
-
-11. If TEST_TYPE is `ui` then follow the below steps,
-  - Download Browser's specific driver
-     - For Chrome: download chromedriver
-     - For Firefox: download geckodriver
-     - For IE: download IEdriverserver
-  - Put the downloaded driver into `test/ui/` directory, make sure that it is within the environment's PATH variable, and that it is executable
-  - For Internet explorer, The steps mentioned at below link must be performed [selenium](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration)
-
-12. Execute Tests
-##### Modinput_Functional
-```bash
-python -m pytest -vv --username=admin --password=<splunk_password> --splunk-url=localhost --splunkd-port=<splunk_management_port> --remote -n 5 tests/modinput_functional
-```
-##### UI (local)
-```bash
-python -m pytest -vv --splunk-type=external --splunk-host=localhost --splunk-password=<splunk_password> --splunkweb-port=<splunk_web_port> --splunk-port=<splunk_management_port> --browser=<browser> --splunk-hec-port=<splunk_hec_port> --splunk-hec-token=<splunk_hec_token> --local tests/ui 
-```
-##### UI (in Saucelabs)
-  - Set the following env variables with appropriate values
-```bash
-export SAUCE_USERNAME=<username>
-export SAUCE_PASSWORD=<password>
-export SAUCE_TUNNEL_PARENT=<parent-tunnel-name>
-export SAUCE_TUNNEL_ID=<tunnel-id>
-export SAUCE_IDENTIFIER=$SAUCE_TUNNEL_ID
-export JOB_NAME="k8s::<addon-name>-<browser>-<unique-string>"
-```
->- Best practice is to keep the JOB_NAME unique for each test execution
-- Set up sauce-connect proxy by following the steps mentioned [here](https://docs.saucelabs.com/secure-connections/sauce-connect/installation/) in another terminal by exporting above mentioned variables
-- Add `domain_name` mapped to `127.0.0.1` or `localhost` in /etc/hosts
-
-```
-python -m pytest -vv --splunk-type=external --splunk-password=<splunk_password> --splunk-host=<domain_name> --splunkweb-port=<splunk_web_port> --splunk-port=<splunk_management_port> --splunk-hec-port=<splunk_hec_port> --splunk-hec-token=<splunk_hec_token> --browser=<browser> tests/ui
-```
-
-### NOTE: Once test-execution is done user needs to manually turn off the sauce-connect proxy
-
-13. Delete the ./exposed_splunk_ports.log file and other kubernetes resources
-
-```bash
-kubectl delete -f ./splunk_standalone.yaml -n $NAMESPACE_NAME
-sleep 30
-kubectl delete secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME
-kubectl delete -f ./namespace.yaml -n $NAMESPACE_NAME
-sleep 60
-```
 
 ## With External
 ### Prerequisitory
@@ -139,6 +57,7 @@ sleep 60
 - Python3 (>=3.7)
 - Splunk along with addon installed and HEC token created
 - If Addon support the syslog data ingestion(sc4s)
+  - Kubernetes Cluster
   - kubectl
 
 ### Steps
