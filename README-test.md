@@ -47,7 +47,7 @@ export KUBECONFIG="PATH of Kubernetes Config File"
 ```bash
 python -m pytest -vv tests/knowledge --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-type=kubernetes --splunk-version=<SPLUNK_VERSION> --xfail-file=.pytest.expect
 ```
-**Note:** For debugging purposes if resources need to be kept then pass `--keep-alive=True` while executing above pytest command, after troubleshooting user will have to manually delete the kubernetes resources.
+**Note:** For debugging purposes if resources need to be kept then pass `--keep-alive` while executing above pytest command, after troubleshooting user will have to manually delete the kubernetes resources.
 
 
 ## With External
