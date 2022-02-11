@@ -36,6 +36,7 @@ There are three ways to execute the tests:
 **2. Running tests with kubernetes splunk**
 
     Prerequisitory
+        - kubernetes cluster
         - kubectl
         - jq
 
@@ -46,8 +47,6 @@ There are three ways to execute the tests:
         pip install poetry
         poetry install
 
-    Create a kubernetes cluster
-
     Download `splunk-operator at cluster-scoped level <https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces>`_
 
     Install and setup splunk-operator in kubernetes cluster
@@ -56,7 +55,7 @@ There are three ways to execute the tests:
 
         kubectl apply -f ./splunk-operator.yaml
 
-    Generate addon SPL with the format `<<package/default/app.conf/id.name>>-<<package/default/app.conf/id.version>>.spl`.
+    Generate addon SPL with the format `<package/default/app.conf/id.name>-<package/default/app.conf/id.version>.spl`.
 
     Create `src` directory in `tests` of the addon repository and move .spl in `tests/src`.
 
@@ -75,6 +74,9 @@ There are three ways to execute the tests:
     .. code:: bash
 
         pytest --splunk-type=kubernetes --splunk-data-generator=<path to pytest-splunk-addon-data.conf file>
+
+.. note::
+    * For debugging purposes if resources need to be kept then pass `--keep-alive` while executing above pytest command, after troubleshooting user will have to manually delete the kubernetes resources.
 
 The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 

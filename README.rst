@@ -105,10 +105,11 @@ Run pytest with the add-on and SA-eventgen installed and enabled in an external 
         -v
 
 Run pytest with the add-on and SA-eventgen installed and enabled in kubernetes
-- If addon is UCC based then, generate addon package using [ucc-gen --ta-version=<<package/default/app.conf/id.version>>](https://github.com/splunk/addonfactory-ucc-generator#splunk-add-on-ucc-framework) and [slim package](https://splunk.github.io/addonfactory-ucc-generator/how_to_use/)
-- Replace the extension of generated *.tar.gz to *.spl
-- If addon is non UCC based then, generate addon spl <<package/default/app.conf/id.name>>-<<package/default/app.conf/id.version>>.spl
-- Place the generated addon spl in tests/src/*.spl
+
+Generate addons spl with format ``<package/default/app.conf/id.name>-<package/default/app.conf/id.version>.spl``
+
+Place the generated addon spl in tests/src/*.spl
+
 .. code::: bash
 
         pytest \
