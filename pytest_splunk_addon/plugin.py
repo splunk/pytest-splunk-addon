@@ -188,7 +188,7 @@ def pytest_sessionfinish(session, exitstatus):
                 else:
                     LOGGER.error("{} not found".format(file))
     except Exception as e:
-        LOGGER.error("Exception occured in pytest_sessionfinish : {}".format(e))
+        LOGGER.error("Exception occurred in pytest_sessionfinish : {}".format(e))
 
 
 def pytest_generate_tests(metafunc):

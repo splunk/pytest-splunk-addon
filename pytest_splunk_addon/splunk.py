@@ -604,7 +604,7 @@ def expose_ports_splunk_sc4s_uf(file):
                     if service_port == "514":
                         os.environ["sc4s_port"] = exposed_port
     except Exception as e:
-        LOGGER.error("Exception occured while port-forwarding")
+        LOGGER.error("Exception occurred while port-forwarding")
 
 
 def update_k8s_manifest_files(folder, file):
@@ -615,7 +615,7 @@ def update_k8s_manifest_files(folder, file):
             write_file.write(file_updated)
     except Exception as e:
         LOGGER.error(
-            "Error occured while updating {0}/{1}.yaml : {2}".format(folder, file, e)
+            "Error occurred while updating {0}/{1}.yaml : {2}".format(folder, file, e)
         )
 
 
