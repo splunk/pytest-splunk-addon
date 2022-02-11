@@ -18,7 +18,7 @@ Features
 
 * Generate tests for checking Splunk index-time properties in Splunk Technology Add-ons. 
 
-* Validate your add-ons using Splunk + Docker. 
+* Validate your add-ons using Splunk + Kubernetes. 
 
 Release notes
 -------------
