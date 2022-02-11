@@ -11,7 +11,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-  # Keep Dockerfile up to date, batching pull requests weekly
+  # Keep k8s_manifests up to date, batching pull requests weekly
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
