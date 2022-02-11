@@ -301,7 +301,7 @@ Extending pytest-splunk-addon
 
         .. literalinclude:: ../tests/psa_tests/enable_saved_search_conftest.py
             :language: python
-            :lines: 2,31-
+            :lines: 2,13-
 
 
 **4. Check mapping of an add-on with custom data models**
