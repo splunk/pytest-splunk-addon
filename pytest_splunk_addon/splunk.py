@@ -335,10 +335,9 @@ def pytest_addoption(parser):
     )
     group.addoption(
         "--keep-alive",
-        action="store",
+        action="store_true",
         dest="keep_alive",
-        help="Should execute test or not (True|False)",
-        default="False",
+        help="Should keep kubernetes resources after test execution",
     )
 
 
