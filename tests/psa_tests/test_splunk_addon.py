@@ -211,7 +211,7 @@ def test_splunk_app_fiction(request, testdir):
         "-n 5",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
-        "--search-retry=4",
+        "--search-retry=10",
         "--search-index=*,_internal",
     )
 
