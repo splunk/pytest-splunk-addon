@@ -17,8 +17,6 @@ from __future__ import absolute_import
 
 import sys
 import time
-import traceback
-from builtins import str
 
 from splunklib.binding import HTTPError
 
@@ -176,21 +174,6 @@ class CloudSplunk(Splunk):
             raise CloudSplunkConnectorException()
         return super(CloudSplunk, self).connector(contype=contype, username=username)
 
-    def get_host_os(self):
-        raise NotImplementedError("Host os should not matter for CloudSplunk.")
-
-    def is_running(self):
-        restconn = self.create_connector(contype=Connector.REST)
-        try:
-            response, _ = restconn.make_request("GET", "/services/server/info")
-            return response["status"] == restconn.SUCCESS["GET"]
-        except Exception:
-            self.logger.debug("Not able to make GET request." + traceback.format_exc())
-            return False
-
-    def restart(self):
-        raise CloudRestartException()
-
     def get_event_count(self, search_string="*"):
         """
         Displatches a search job and returns an event count without waiting for indexing to finish
@@ -296,7 +279,3 @@ class CloudSplunkConnectorException(Exception):
         "Don't pass username/password to connector. Helmut allows only one user per CloudSplunk instance."
         "Please create another CloudSplunk instance if you need to use another user."
     )
-
-
-class CloudRestartException(Exception):
-    message = "Restart on cloud is prohibited unless you are using cloud ops role."

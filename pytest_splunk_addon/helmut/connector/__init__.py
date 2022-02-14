@@ -21,7 +21,6 @@ Module for handling generic connections with a Splunk instance.
 @since: 2011-11-21
 """
 
-__all__ = ["sdk", "rest"]
+__all__ = ["sdk"]
 
-from .rest import RESTConnector
 from .sdk import SDKConnector
