@@ -147,7 +147,6 @@ jobs:
           kubectl get pods -A
       - name: Setup for testing
         run: |
-          sudo apt-get install -y jq
           pip install git+https://github.com/pixelb/crudini
           mkdir test-results-${{ matrix.splunk-version }}
           pip install https://download.splunk.com/misc/packaging-toolkit/splunk-packaging-toolkit-1.0.1.tar.gz
@@ -174,14 +173,13 @@ jobs:
           sleep 30
       - name: Test with pytest
         run: |
+          poetry install
           export NAMESPACE_NAME=ta-fiction-external
           export splunk_password=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.password' | base64 -d)
           export splunk_hec_token=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.hec_token' | base64 -d)
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
           curl -sSL https://install.python-poetry.org | python3 -
           mv ./pytest-ci.ini ./pytest.ini
-          cat ./pytest.ini
-          poetry install
           poetry run pytest -vv --splunk-password=$splunk_password --splunk-hec-token=$splunk_hec_token --junitxml=test-results-${{ matrix.splunk-version }}/test.xml
       - uses: actions/upload-artifact@v2.2.4
         if: always()

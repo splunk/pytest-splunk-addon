@@ -46,6 +46,7 @@ pytest-ordering = "*"
 junitparser = "^2.2.0"
 addonfactory-splunk-conf-parser-lib = "^0.3.3"
 crudini = "0.9.3"
+jq = "^1.2.2"
 
 
 [tool.poetry.dev-dependencies]
