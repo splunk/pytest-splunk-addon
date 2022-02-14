@@ -31,16 +31,11 @@ pip install -r requirements_dev.txt
  <!-- - To generate addon package use [ucc-gen --ta-version=<<package/default/app.conf/id.version>>](https://github.com/splunk/addonfactory-ucc-generator#splunk-add-on-ucc-framework) and [slim package](https://splunk.github.io/addonfactory-ucc-generator/how_to_use/)
  - Replace the extension of generated *.tar.gz to *.spl. -->
 
-3. Set Variables
-```bash
-export KUBECONFIG="PATH of Kubernetes Config File"
-```
-
 ##### Knowledge
 
-4. Create `src` directory in `tests` of the addon repository and put the SPL generated in step-2 in `tests/src`.
+3. Create `src` directory in `tests` of the addon repository and put the SPL generated in step-2 in `tests/src`.
 
-5. Execute Tests
+4. Execute Tests
 - Default value of `--splunk-version=latest`
 ```bash
 python -m pytest -vv tests/knowledge --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-type=kubernetes --splunk-version=<SPLUNK_VERSION> --xfail-file=.pytest.expect
