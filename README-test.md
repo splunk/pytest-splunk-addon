@@ -4,7 +4,7 @@
 ### Prerequisitory
 - Git
 - Python3 (>=3.7)
-- Kubernetes Cluster
+- Kubernetes Cluster [minikube](https://minikube.sigs.k8s.io/docs/start/), [microk8s](https://microk8s.io/), [k3s](https://k3s.io/)
 - kubectl
 - jq
 - [splunk-operator at cluster-scope](https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces)
