@@ -36,7 +36,7 @@ There are three ways to execute the tests:
 **2. Running tests with kubernetes splunk**
 
     Prerequisitory
-        - kubernetes cluster
+        - kubernetes cluster [`minikube`_ , `microk8s`_, `k3s`_]
         - kubectl
         - jq
 
@@ -319,3 +319,7 @@ Extending pytest-splunk-addon
    <hr width=100%>
    
 .. [#] xfail indicates that you expect a test to fail for some reason. A common example is a test for a feature not yet implemented, or a bug not yet fixed. When a test passes despite being expected to fail, it's an xpass and will be reported in the test summary.
+
+.. _`minikube`: https://minikube.sigs.k8s.io/docs/start/
+.. _`microk8s`: https://microk8s.io/
+.. _`k3s`: https://k3s.io/
