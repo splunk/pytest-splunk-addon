@@ -36,7 +36,7 @@ There are three ways to execute the tests:
 **2. Running tests with kubernetes splunk**
 
     Prerequisitory
-        - kubernetes cluster [`minikube`_ , `microk8s`_, `k3s`_]
+        - kubernetes cluster [ Reference: `minikube`_ , `microk8s`_, `k3s`_ ]
         - kubectl
         - jq
 

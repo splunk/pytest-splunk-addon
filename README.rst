@@ -40,7 +40,7 @@ You can install "pytest-splunk-addon" via `pip`_ from `PyPI`_::
 Developing
 ------------
 
-Note: Must setup kubernetes cluster [`minikube`_ , `microk8s`_, `k3s`_], vscode or pycharm pro optional
+Note: Must setup kubernetes cluster [ Reference: `minikube`_ , `microk8s`_, `k3s`_ ], vscode or pycharm pro optional
 
 Note2: Appinspect requires libmagic verify this has been installed correctly each time a new workstation/vm is used https://dev.splunk.com/enterprise/docs/releaseapps/appinspect/splunkappinspectclitool/installappinspect
 
