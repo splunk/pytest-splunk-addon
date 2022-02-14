@@ -16,7 +16,7 @@
 
 [tool.poetry]
 name = "pytest-splunk-addon"
-version = "1.11.4"
+version = "2.1.0"
 description = "A Dynamic test tool for Splunk Apps and Add-ons"
 authors = ["rfaircloth-splunk <rfaircloth@splunk.com>"]
 license = "APACHE-2.0"
@@ -32,7 +32,6 @@ classifiers = [
 include = ["pytest_splunk_addon/**/*.json", "pytest_splunk_addon/**/*.txt"]
 
 [tool.poetry.dependencies]
-httplib2 = "*"
 python = "^3.7"
 pytest = ">5.4.0,<6.3"
 splunk-sdk = "^1.6"

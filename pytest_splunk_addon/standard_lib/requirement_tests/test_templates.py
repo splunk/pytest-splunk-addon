@@ -144,7 +144,10 @@ class ReqsTestTemplates(object):
 
     @pytest.mark.splunk_searchtime_requirements
     def test_requirement_params(
-        self, splunk_searchtime_requirement_param, splunk_search_util
+        self,
+        splunk_searchtime_requirement_param,
+        splunk_search_util,
+        splunk_ingest_data,
     ):
         model_datalist = splunk_searchtime_requirement_param["model_list"]
         escaped_event = splunk_searchtime_requirement_param["escaped_event"]

@@ -49,9 +49,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Check License Header
-        uses: apache/skywalking-eyes@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: apache/skywalking-eyes@v0.2.0
   
   pre-commit:
     runs-on: ubuntu-latest
@@ -166,34 +164,17 @@ jobs:
   test-splunk-doc:
     name: Test Docs
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        python-version: [3.7]
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+      - uses: actions/setup-python@v1
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+          python-version: 3.7
+      - name: Install and run tests
         run: |
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
-          curl https://pyenv.run | bash
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          pyenv install 3.7.8
-          pyenv local 3.7.8
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-          source ~/.poetry/env
-      - name: Test with pytest
-        run: |
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"          
-          source ~/.poetry/env
+          curl -sSL https://install.python-poetry.org | python3 -
           poetry install -E docker
           poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc
 
@@ -213,42 +194,25 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [3.7]
         splunk-version: [8.1, 8.2]
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - name: Set up OS=${{ matrix.os }}::Python=${{ matrix.python-version }}::Splunk=${{ matrix.splunk-version }}
+      - name: Set up OS=${{ matrix.os }}::Python=3.7::Splunk=${{ matrix.splunk-version }}
         uses: actions/setup-python@v1
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+          python-version: 3.7
+      - name: Install and run tests
         run: |
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
-          curl https://pyenv.run | bash
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          pyenv install 3.7.8
-          pyenv local 3.7.8
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-          source ~/.poetry/env
-      - name: Test with pytest
-        run: |
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          source ~/.poetry/env
+          curl -sSL https://install.python-poetry.org | python3 -
           poetry install -E docker
           poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker
 
   test-splunk-unit:
     name: Unit tests
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        python-version: [3.7]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -256,18 +220,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
-          curl https://pyenv.run | bash
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          pyenv install 3.7.8
-          pyenv local 3.7.8
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-          source ~/.poetry/env
-      - name: Test with pytest
-        run: |
-          export PATH="~/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          source ~/.poetry/env
+          curl -sSL https://install.python-poetry.org | python3 -
           poetry install
           poetry run coverage run --source=./pytest_splunk_addon/standard_lib -m pytest -v tests/unit
           poetry run coverage xml
@@ -285,8 +238,6 @@ jobs:
     needs:
       - test-splunk-matrix
     runs-on: ubuntu-latest
-    env:
-      NEEDS: ${{ toJson(needs) }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -301,35 +252,15 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.7"
-      - name: Install Poetry
-        run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
-      - name: Build
+      - name: Install and build
         run: |
-          # shellcheck disable=SC1090
-          source "$HOME/.poetry/env"
+          curl -sSL https://install.python-poetry.org | python3 -
           poetry build
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: Package
           path: dist/
-      - name: check if tests have passed or skipped
-        if: github.event_name != 'pull_request'
-        id: check
-        shell: bash
-        run: |
-          RUN_PUBLISH=`echo $NEEDS | jq ".[] |  select(  ( .result != \"skipped\" ) and .result != \"success\" ) | length == 0"`
-          if [[ $RUN_PUBLISH != *'false'* ]]
-          then
-              echo "::set-output name=run-publish::true"
-          else
-              echo "::set-output name=run-publish::false"
-          fi
-      - name: exit without publish
-        if: ${{ steps.check.outputs.run-publish == 'false' || github.event_name == 'pull_request'}}
-        run: |
-          echo " some test job failed. "
-          exit 1
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2.5.4
         with:
@@ -342,12 +273,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
           PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-
-  update-semver:
-    name: Move Repository semver tags
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: publish
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: haya14busa/action-update-semver@v1
