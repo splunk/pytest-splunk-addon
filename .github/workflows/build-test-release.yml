@@ -182,6 +182,13 @@ jobs:
           mv ./pytest-ci.ini ./pytest.ini
           poetry install
           poetry run pytest -vv --splunk-password=$splunk_password --splunk-hec-token=$splunk_hec_token --junitxml=test-results-${{ matrix.splunk-version }}/test.xml
+      - name: Destroy kubernetes resources
+        run: |
+          export NAMESPACE_NAME=ta-fiction-external
+          kubectl delete -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
+          sleep 15
+          kubectl delete -f ./namespace_updated.yaml
+          sleep 15
       - uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
