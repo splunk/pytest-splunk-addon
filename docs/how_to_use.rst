@@ -67,7 +67,7 @@ There are three ways to execute the tests:
 
         .. literalinclude:: ../tests/psa_tests/conftest.py
             :language: python
-            :lines: 1-2
+            :lines: 1-9
 
     Run pytest with the add-on, using the following command:
 
