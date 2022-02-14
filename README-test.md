@@ -24,8 +24,6 @@ cd <repo dir>
 ```bash
 poetry export --without-hashes --dev -o requirements_dev.txt
 pip install -r requirements_dev.txt
-# Download only if TEST_TYPE is modinput_functional
-curl -s https://api.github.com/repos/splunk/splunk-add-on-for-modinput-test/releases/latest | grep "Splunk_TA.*spl" | grep -v search_head | grep -v indexer | grep -v forwarder | cut -d : -f 2,3 | tr -d \" | wget -qi -;
 ```
 
 2. Generate addon SPL
