@@ -444,6 +444,7 @@ def splunk(request, file_system_prerequisite):
     with open("./splunk_type.txt", "w") as splunk_type_file:
         splunk_type_file.write(splunk_type)
         splunk_type_file.write("\n{0}".format(keep_alive))
+        splunk_type_file.write("\n{0}".format(request.config.getoption("splunk_app")))
     if splunk_type == "external":
         request.fixturenames.append("splunk_external")
         splunk_info = request.getfixturevalue("splunk_external")
@@ -632,14 +633,14 @@ def splunk_kubernetes(request):
     """
     SPLUNK_ADDON_NAME = (
         subprocess.check_output(
-            "crudini --get package/default/app.conf id name", shell=True
+            "crudini --get {0}/default/app.conf id name".format(os.getenv("SPLUNK_APP_PACKAGE")), shell=True
         )
         .decode(sys.stdout.encoding)
         .strip()
     )
     SPLUNK_ADDON_VERSION = (
         subprocess.check_output(
-            "crudini --get package/default/app.conf id version", shell=True
+            "crudini --get {0}/default/app.conf id version".format(os.getenv("SPLUNK_APP_PACKAGE")), shell=True
         )
         .decode(sys.stdout.encoding)
         .strip()
