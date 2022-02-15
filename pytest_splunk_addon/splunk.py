@@ -880,9 +880,6 @@ def is_responsive_hec(request, splunk):
             "Trying to connect Splunk HEC...  splunk=%s",
             json.dumps(splunk),
         )
-        session_headers = {
-            "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
-        }
         response = requests.get(
             f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/health/1.0',
             verify=False,

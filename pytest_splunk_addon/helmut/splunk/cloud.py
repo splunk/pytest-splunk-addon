@@ -20,7 +20,6 @@ import time
 
 from splunklib.binding import HTTPError
 
-from pytest_splunk_addon.helmut.connector.base import Connector
 from pytest_splunk_addon.helmut.manager.jobs import Jobs
 from .base import Splunk
 
@@ -56,7 +55,7 @@ class CloudSplunk(Splunk):
         server_web_scheme = server_web_host = server_web_port = None
         if not (web_scheme and web_host):
             try:
-                sdkconn = self.create_logged_in_connector(contype=Connector.SDK)
+                sdkconn = self.create_logged_in_connector()
                 server_settings = sdkconn.service.settings
                 server_web_scheme = (
                     "http" if server_settings["enableSplunkWebSSL"] == "0" else "https"
@@ -64,9 +63,9 @@ class CloudSplunk(Splunk):
                 server_web_host = server_settings["host"]
                 server_web_port = server_settings["httpport"]
                 self._pass4SymmKey = server_settings["pass4SymmKey"]
-            except HTTPError as he:
+            except HTTPError:
                 self.logger.warning(
-                    "No sufficient permissions to qury server settings."
+                    "No sufficient permissions to query server settings."
                 )
         self._web_scheme = web_scheme or server_web_scheme or "http"
         self._web_host = web_host or server_web_host or self._splunkd_host
@@ -113,7 +112,7 @@ class CloudSplunk(Splunk):
     @property
     def pass4SymmKey(self):
         if not self._pass4SymmKey:
-            sdkconn = self.create_logged_in_connector(contype=Connector.SDK)
+            sdkconn = self.create_logged_in_connector()
             server_settings = sdkconn.service.settings
             self._pass4SymmKey = server_settings["pass4SymmKey"]
         return self._pass4SymmKey
@@ -139,40 +138,16 @@ class CloudSplunk(Splunk):
             scheme=self.web_scheme(), host=self.web_host(), web_port=self.web_port()
         )
 
-    def create_connector(
-        self, contype=None, username=None, password=None, *args, **kwargs
-    ):
-        """
-        @param contype:
-        @param username: Don't use this parameter. This is only for backward compatible. CloudSplunk
-                        only uses self.username as connector's username.
-        @param password: Don't use this parameter. This is only for backward compatible.
-        @param args:
-        @param kwargs:
-        @return:
-        """
-        if (
-            username
-            and username != self.username
-            and password
-            and password != self.password
-        ):
-            raise CloudSplunkConnectorException()
-        return super(CloudSplunk, self).create_connector(
-            contype=contype, username=username, password=password, *args, **kwargs
-        )
-
-    def connector(self, contype=None, username=None):
+    def connector(self, username=None):
         """
 
-        @param contype:
         @param username: Don't use this parameter. This is only for backward compatible. CloudSplunk
                         only uses self.username as connector's username.
         @return:
         """
         if username and username != self.username:
             raise CloudSplunkConnectorException()
-        return super(CloudSplunk, self).connector(contype=contype, username=username)
+        return super(CloudSplunk, self).connector(username=username)
 
     def get_event_count(self, search_string="*"):
         """
@@ -200,7 +175,6 @@ class CloudSplunk(Splunk):
         resultPrev = -1
         resultSameSince = sys.maxsize
         lastPolledAt = int(time.time())
-        counts = []
         while True:
             time.sleep(retry_interval)
             result = self.get_event_count(search_string=search_string)

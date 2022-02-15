@@ -20,4 +20,4 @@
 """
 from . import log
 
-log.setup_logger(debug=True)
+log.setup_logger()

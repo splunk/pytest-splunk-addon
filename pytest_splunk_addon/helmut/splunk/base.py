@@ -25,9 +25,7 @@ from abc import ABCMeta, abstractproperty
 
 from future.utils import with_metaclass
 
-from pytest_splunk_addon.helmut.connector.base import Connector
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
-from pytest_splunk_addon.helmut.exceptions import UnsupportedConnectorError
 from pytest_splunk_addon.helmut.log import Logging
 
 
@@ -54,9 +52,6 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
     _username = "admin"
     _password = "changeme"
 
-    _CONNECTOR_TYPE_TO_CLASS_MAPPINGS = {
-        Connector.SDK: SDKConnector,
-    }
     _is_an_universal_forwarder = False
 
     def __init__(self, name):
@@ -158,9 +153,7 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         except KeyError:
             pass
 
-    def create_connector(
-        self, contype=None, username=None, password=None, *args, **kwargs
-    ):
+    def create_connector(self, username=None, password=None, **kwargs):
         """
         Creates and returns a new connector of the type specified or
         SDK connector if none specified
@@ -171,28 +164,16 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         Any argument specified to this method will be passed to the connector's
         initialization method
 
-        @param contype: Type of connector to create, defined in Connector
-                        class, defaults to Connector.SDK
-
-        @param args: Deprecated.
         @param kwargs: owner, app, sharing(for SDK connector)
 
         @return: The newly created connector
         """
-        contype = contype or Connector.SDK
         kwargs["username"] = username or self.username
         kwargs["password"] = password or self.password
 
-        if contype not in self._CONNECTOR_TYPE_TO_CLASS_MAPPINGS:
-            raise UnsupportedConnectorError
+        conn = SDKConnector(self, **kwargs)
 
-        if args:
-            self.logger.debug(
-                "Args in create_connector is deprecated, Please use kwargs."
-            )
-        conn = self._CONNECTOR_TYPE_TO_CLASS_MAPPINGS[contype](self, *args, **kwargs)
-
-        connector_id = self._get_connector_id(contype=contype, user=conn.username)
+        connector_id = self._get_connector_id(user=conn.username)
 
         if connector_id in list(self._connectors.keys()):
             self.logger.warning(
@@ -204,13 +185,7 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         return self._connectors[connector_id]
 
     def create_logged_in_connector(
-        self,
-        set_as_default=False,
-        contype=None,
-        username=None,
-        password=None,
-        *args,
-        **kwargs
+        self, set_as_default=False, username=None, password=None, **kwargs
     ):
         """
         Creates and returns a new connector of type specified or of type
@@ -225,55 +200,21 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         @param set_as_default: Determines whether the created connector is set
                                as the default connector too. True as default.
         @type bool
-        @param contype: type of connector to create, available types defined in
-            L{Connector} class. Connector.SDK as default
-
         @return: The newly created, logged in, connector
         """
-        contype = contype or Connector.SDK
-        conn = self.create_connector(
-            contype, username=username, password=password, *args, **kwargs
-        )
+        conn = self.create_connector(username=username, password=password, **kwargs)
         if set_as_default:
             self._default_connector = conn
         conn.login()
         return conn
 
-    def set_default_connector(self, contype, username):
-        """
-        Sets the default connector to an already existing connector
-
-        @param contype: type of connector, defined in L{Connector} class
-        @param username: splunk username used by connector
-        @type username: string
-        """
-        self._default_connector = self.connector(contype, username)
-
-    def remove_connector(self, contype, username):
-        """
-        removes a  connector, sets default connector to None if removing the
-        default connector
-
-        @param contype: type of connector, defined in L{Connector} class
-        @param username: splunk username used by connector
-        @type username: string
-        """
-        if self.default_connector == self.connector(contype, username):
-            self._default_connector = None
-
-        connector_id = self._get_connector_id(contype, username)
-        del self._connectors[connector_id]
-
-    def _get_connector_id(self, contype, user):
+    def _get_connector_id(self, user):
         """
         Returns the connector id
-
-        @param contype: type of connector, defined in L{Connector} class
         @param username: splunk username used by connector
         @type username: string
         """
-        connector_id = "{contype}:{user}".format(contype=contype, user=user)
-        return connector_id
+        return "{user}".format(user=user)
 
     def set_credentials_to_use(self, username="admin", password="changeme"):
         """
@@ -317,19 +258,18 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         ):
             connector.login()
 
-    def connector(self, contype=None, username=None, password=None):
+    def connector(self, username=None, password=None):
         """
         Returns the connector specified by type and username, defaults to
         the default connector if none specified
 
-        @param contype: type of connector, defined in L{Connector} class
         @param username: connector's username
         @type username: string
         """
-        if contype is None and username is None:
+        if username is None:
             return self.default_connector
 
-        connector_id = self._get_connector_id(contype, username)
+        connector_id = self._get_connector_id(username)
         if connector_id not in list(self._connectors.keys()):
             raise InvalidConnector(
                 "Connector {id} does not exist".format(id=connector_id)
@@ -338,7 +278,7 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         self._attempt_login(connector)
         return connector
 
-    def jobs(self, contype=None, username=None):
+    def jobs(self, username=None):
         """
         Returns a Jobs manager that uses the specified connector. Defaults to
         default connector if none specified.
@@ -346,14 +286,13 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         This property creates a new Jobs manager each call so you may do as
         you please with it.
 
-        @param contype: type of connector, defined in L{Connector} class
         @param username: connector's username
         @type username: string
         @rtype: L{Jobs}
         """
         from pytest_splunk_addon.helmut.manager.jobs import Jobs
 
-        return Jobs(self.connector(contype, username))
+        return Jobs(self.connector(username))
 
     def _notify_listeners_of_splunk_start(self):
         """
