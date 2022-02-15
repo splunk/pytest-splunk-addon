@@ -633,14 +633,20 @@ def splunk_kubernetes(request):
     """
     SPLUNK_ADDON_NAME = (
         subprocess.check_output(
-            "crudini --get {0}/default/app.conf id name".format(os.getenv("SPLUNK_APP_PACKAGE")), shell=True
+            "crudini --get {0}/default/app.conf id name".format(
+                os.getenv("SPLUNK_APP_PACKAGE")
+            ),
+            shell=True,
         )
         .decode(sys.stdout.encoding)
         .strip()
     )
     SPLUNK_ADDON_VERSION = (
         subprocess.check_output(
-            "crudini --get {0}/default/app.conf id version".format(os.getenv("SPLUNK_APP_PACKAGE")), shell=True
+            "crudini --get {0}/default/app.conf id version".format(
+                os.getenv("SPLUNK_APP_PACKAGE")
+            ),
+            shell=True,
         )
         .decode(sys.stdout.encoding)
         .strip()

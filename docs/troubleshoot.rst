@@ -32,6 +32,11 @@ Troubleshooting
         - Make sure tests/src directory have addon spl with adequate name
         - Check ``jq`` is installed in the system from which tests are executing
 
+    - Addon tests are erroring out
+
+        - Check whether Splunk is up and addon is installed or not.
+        - Make sure tests are getting executed from the root directory of addon repository.
+
 **6. Only no-dash-no-empty test cases are passing**
 
     - If splunk-type is kubernetes, make sure you have add-on getting installed on the kubernetes deployed Splunk OR if external, install the add-on on the Splunk instance.

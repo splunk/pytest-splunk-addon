@@ -133,7 +133,10 @@ def pytest_sessionfinish(session, exitstatus):
             LOGGER.info("SessionFinish - destroying all kubernetes resources")
             SPLUNK_ADDON = (
                 subprocess.check_output(
-                    "crudini --get  {0}/default/app.conf id name".format(splunk_data[2]), shell=True
+                    "crudini --get  {0}/default/app.conf id name".format(
+                        splunk_data[2]
+                    ),
+                    shell=True,
                 )
                 .decode(sys.stdout.encoding)
                 .strip()
