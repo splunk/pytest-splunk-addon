@@ -13,7 +13,7 @@
 			<comment>Unix service information. Data is collected from live instance. Data is generated from systemctl command. </comment>
 		</source>
 		<raw>
-		<![CDATA[Tue May 26 01:38:02 PDT 2020 type=systemctl UNIT=whoopsie.service, LOADED=not-found, ACTIVE=inactive, SUB=dead, DESCRIPTION="whoopsie.service"]]>
+		<![CDATA[Tue May 26 01:38:02 PDT 2020 type=systemctl UNIT=whoopsie.service, LOADED= NOT -found, ACTIVE=inactive, SUB=dead, DESCRIPTION="whoopsie.service"]]>
 		</raw>
 		<cim>
 		    <models>
