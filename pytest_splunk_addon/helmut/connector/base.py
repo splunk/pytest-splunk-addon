@@ -22,8 +22,6 @@ Module for handling generic connections with a Splunk instance.
 """
 
 from abc import ABCMeta
-from builtins import range
-from builtins import str
 
 from future.utils import with_metaclass
 
