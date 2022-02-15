@@ -328,6 +328,7 @@ class ReqsTestGenerator(object):
             "OVER",
             "WHERE",
             "LIKE",
+            "NOT",
         ]
         event = event.replace("\\", "\\\\")
         bounded_asterisk = re.search(
