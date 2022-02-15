@@ -80,9 +80,17 @@ There are three ways to execute the tests:
 The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 
 .. note::
-   * For debugging purposes if resources need to be kept then pass `--keep-alive` while executing above pytest command, after troubleshooting user will have to manually delete the kubernetes resources.
    * From v1.3.0 pytest-splunk-addon ingests data independently which is used for execution of all the test cases.
+   * For debugging purposes if resources need to be kept then pass ``--keep-alive`` while executing above pytest command, after troubleshooting user will have to manually delete the kubernetes resources using following commands.
 
+    .. code:: bash
+
+        export NAMESPACE_NAME="<namespace_name>"  # namespace_name is of format splunk-ta-juniper (package/default/app.conf/id.name = Splunk_TA_juniper)
+        kubectl delete deploy sc4s -n $NAMESPACE_NAME
+        kubectl delete deploy splunk-uf -n $NAMESPACE_NAME
+        kubectl delete secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME
+        kubectl delete Standalone s1 -n $NAMESPACE_NAME
+        kubectl delete ns $NAMESPACE_NAME
 
 **3. Running tests with an external forwarder and Splunk instance**
 
