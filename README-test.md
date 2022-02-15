@@ -28,7 +28,7 @@ pip install -r requirements_dev.txt
 
 2. Generate addon SPL
 - For UCC based addons generate addon SPL with [ucc-gen --ta-version=<package/default/app.conf/id.version>](https://splunk.github.io/addonfactory-ucc-generator/).
-- For Non UCC based addons generate addon SPL of format `<package/default/app.conf/id.name>-<package/default/app.conf/id.version>.spl`
+- For Non-UCC based addons generate addon SPL of format `<package/default/app.conf/id.name>-<package/default/app.conf/id.version>.spl`
 
 ##### Knowledge
 
