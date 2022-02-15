@@ -27,9 +27,8 @@ pip install -r requirements_dev.txt
 ```
 
 2. Generate addon SPL
-- Generate addon SPL with the format <<package/default/app.conf/id.name>>-<<package/default/app.conf/id.version>>.spl
- <!-- - To generate addon package use [ucc-gen --ta-version=<<package/default/app.conf/id.version>>](https://github.com/splunk/addonfactory-ucc-generator#splunk-add-on-ucc-framework) and [slim package](https://splunk.github.io/addonfactory-ucc-generator/how_to_use/)
- - Replace the extension of generated *.tar.gz to *.spl. -->
+- For UCC based addons generate addon SPL with [ucc-gen --ta-version=<package/default/app.conf/id.version>](https://splunk.github.io/addonfactory-ucc-generator/).
+- For Non UCC based addons generate addon SPL of format <package/default/app.conf/id.name>-<package/default/app.conf/id.version>.spl
 
 ##### Knowledge
 
@@ -40,7 +39,15 @@ pip install -r requirements_dev.txt
 ```bash
 python -m pytest -vv tests/knowledge --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-type=kubernetes --splunk-version=<SPLUNK_VERSION> --xfail-file=.pytest.expect
 ```
-**Note:** For debugging purposes if resources need to be kept then pass `--keep-alive` while executing above pytest command, after troubleshooting user will have to manually delete the kubernetes resources.
+**Note:** For debugging purposes if resources need to be kept then pass `--keep-alive` while executing above pytest command, after troubleshooting user will have to manually delete the kubernetes resources using following commands.
+```bash
+export NAMESPACE_NAME="<ADDON_NAME>"  # ADDON_NAME is of format splunk-ta-juniper (package/default/app.conf/id.name = Splunk_TA_juniper)
+kubectl delete deploy sc4s -n $NAMESPACE_NAME
+kubectl delete deploy splunk-uf -n $NAMESPACE_NAME
+kubectl delete secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME
+kubectl delete Standalone s1 -n $NAMESPACE_NAME
+kubectl delete ns $NAMESPACE_NAME
+```
 
 
 ## With External
@@ -80,7 +87,7 @@ export SPLUNK_URL=<splunk_url>
 export SPLUNK_HEC_TOKEN=<splunk_hec_token>
 kubectl create ns $NAMESPACE_NAME
 kubectl apply -f ./sc4s_service.yaml -n $NAMESPACE_NAME
-eval "echo \"$(cat ./sc4s_deployment.yaml)\"" > ./sc4s_deployment.yaml
+envsubst < ./sc4s_deployment.yaml > ./sc4s_deployment.yaml
 kubectl apply -f ./sc4s_deployment.yaml -n $NAMESPACE_NAME
 kubectl wait pod -n $NAMESPACE_NAME --for=condition=ready --timeout=900s -l='app=sc4s'
 kubectl port-forward svc/sc4s-service -n $NAMESPACE_NAME :514 > ./exposed_sc4s_ports.log 2>&1 &
@@ -103,10 +110,8 @@ python -m pytest -vv --splunk-type=external --splunk-app=<path-to-addon-package>
 2. Download Browser's specific driver
     - For Chrome: download chromedriver
     - For Firefox: download geckodriver
-    - For IE: download IEdriverserver
 3. Put the downloaded driver into `test/ui/` directory, make sure that it is within the environment's PATH variable, and that it is executable
-4. For Internet explorer, The steps mentioned at below link must be performed [selenium](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration)
-5. Execute the test cases
+4. Execute the test cases
 
 - To execute the tests on saucelabs set the required env variable for saucelabs
 
