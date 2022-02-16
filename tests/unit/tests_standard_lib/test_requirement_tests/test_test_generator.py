@@ -273,6 +273,7 @@ def test_check_xml_format(et_parse_mock, is_xml_valid, expected_output):
         ("OVER", "SESSION \\OVER CREATED"),
         ("WHERE", "SESSION \\WHERE CREATED"),
         ("LIKE", "SESSION \\LIKE CREATED"),
+        ("NOT", "SESSION \\NOT CREATED"),
     ],
 )
 def test_escape_char_event(escape_char, expected_output):
