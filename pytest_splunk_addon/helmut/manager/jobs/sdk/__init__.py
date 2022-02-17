@@ -50,8 +50,6 @@ class SDKJobsWrapper(Jobs):
                 return job
         raise JobNotFound(sid)
 
-    # Required from Collection
-
     def items(self):
         jobs = self._service.jobs
         return [SDKJobWrapper(self.connector, job) for job in jobs]

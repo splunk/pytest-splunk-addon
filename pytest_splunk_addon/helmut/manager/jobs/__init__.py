@@ -13,13 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from pytest_splunk_addon.helmut.misc.collection import Collection
 from pytest_splunk_addon.helmut.misc.manager_utils import (
     create_wrapper_from_connector_mapping,
 )
 
 
-class Jobs(Collection):
+class Jobs:
     """
     Jobs is the manager that handles searches.
     It does not handle pausing, resuming, etc of individual searches, it just
@@ -28,7 +27,6 @@ class Jobs(Collection):
 
     def __init__(self, connector):
         self._connector = connector
-        Collection.__init__(self)
 
     def __new__(cls, connector):
         mappings = _CONNECTOR_TO_WRAPPER_MAPPINGS
@@ -36,6 +34,34 @@ class Jobs(Collection):
 
     def create(self, query, **kwargs):
         pass
+
+    def items(self):
+        """
+        Return a collection of all the contained objects. It is up to the
+        subclass to decide whether this collection is a list, map or of any
+        other kind.
+
+        @return: A collection of all the items contained.
+        """
+        pass
+
+    def __contains__(self, item):
+        """
+        Return boolean whether item is contained in Collection.
+
+        @param item: The item which is checked if contained.
+        """
+        pass
+
+    def __call__(self):
+        return list(self.items())
+
+    def __len__(self):
+        return len(list(self.items()))
+
+    def __iter__(self):
+        for item in list(self.items()):
+            yield item
 
     def __getitem__(self, sid):
         pass
