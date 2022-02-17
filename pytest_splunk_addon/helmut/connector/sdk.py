@@ -333,16 +333,3 @@ class SDKConnector:
         self._attempt_login_time = time.time()
         self.service.login()
         return self
-
-    def logout(self):
-        """
-        Logs the connector out by calling the logout method on the service.
-
-        This in turn just unsets the auth token.
-
-        @return: self
-        @rtype: SDKConnector
-        """
-        LOGGER.debug("Logging out the connector.")
-        self.service.logout()
-        return self

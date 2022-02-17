@@ -22,12 +22,16 @@ import time
 from splunklib.binding import HTTPError
 
 from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
-from .base import Splunk
+from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
 
 LOGGER = logging.getLogger("helmut")
 
 
-class CloudSplunk(Splunk):
+class CloudSplunk:
+
+    _username = "admin"
+    _password = "changeme"
+
     def __init__(
         self,
         name=None,
@@ -52,7 +56,11 @@ class CloudSplunk(Splunk):
         self._splunkd_scheme = splunkd_scheme or "https"
         self._splunkd_port = splunkd_port or "8089"
         self._splunkd_host = splunkd_host or "127.0.0.1"
-        super(CloudSplunk, self).__init__(name)
+        self._default_connector = None
+        self._start_listeners = set()
+        self._connectors = {}
+        self._name = name or id(self)
+        LOGGER.debug("Helmut Splunk created:{splunk}".format(splunk=self))
         self.set_credentials_to_use(username=username, password=password)
 
         server_web_scheme = server_web_host = server_web_port = None
@@ -66,9 +74,9 @@ class CloudSplunk(Splunk):
                 server_web_host = server_settings["host"]
                 server_web_port = server_settings["httpport"]
                 self._pass4SymmKey = server_settings["pass4SymmKey"]
-            except HTTPError as he:
+            except HTTPError:
                 LOGGER.warning(
-                    "No sufficient permissions to qury server settings."
+                    "No sufficient permissions to query server settings."
                 )
         self._web_scheme = web_scheme or server_web_scheme or "http"
         self._web_host = web_host or server_web_host or self._splunkd_host
@@ -87,6 +95,29 @@ class CloudSplunk(Splunk):
             "name": self.name,
             "uri_base": self.uri_base(),
         }
+
+    def __str__(self):
+        return self._str_format.format(**self._str_format_arguments)
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def username(self):
+        return self._username
+
+    @username.setter
+    def username(self, value):
+        self._username = value
+
+    @property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, value):
+        self._password = value
 
     def splunkd_scheme(self):
         return self._splunkd_scheme
@@ -141,6 +172,35 @@ class CloudSplunk(Splunk):
             scheme=self.web_scheme(), host=self.web_host(), web_port=self.web_port()
         )
 
+    def register_start_listener(self, listener):
+        """
+        Adds a listener that will be notified when splunk (re)starts.
+
+        This can be used to re-read values from conf files or recreate things
+        that become invalid when Splunk restarts such as auth tokens.
+
+        The listener must be a function (respond to C{__call__} to be more
+        precise)
+
+        @param listener: The start listener
+        @raise InvalidStartListener: If the listener is not callable.
+        """
+        _validate_start_listener(listener)
+        self._start_listeners.add(listener)
+
+    def unregister_start_listener(self, listener):
+        """
+        Removes the specified start listener.
+
+        If the listener is not in the list this call has no effect.
+
+        @param listener: The listener to remove
+        """
+        try:
+            self._start_listeners.remove(listener)
+        except KeyError:
+            pass
+
     def create_connector(
         self, username=None, password=None, *args, **kwargs
     ):
@@ -159,9 +219,117 @@ class CloudSplunk(Splunk):
             and password != self.password
         ):
             raise CloudSplunkConnectorException()
-        return super(CloudSplunk, self).create_connector(
+        kwargs["username"] = username or self.username
+        kwargs["password"] = password or self.password
+
+        if args:
+            LOGGER.debug(
+                "Args in create_connector is deprecated, Please use kwargs."
+            )
+        conn = SDKConnector(self, *args, **kwargs)
+
+        connector_id = self._get_connector_id(user=conn.username)
+
+        if connector_id in list(self._connectors.keys()):
+            LOGGER.warning(
+                "Connector {id} is being replaced".format(id=connector_id)
+            )
+            del self._connectors[connector_id]
+        self._connectors[connector_id] = conn
+
+        return self._connectors[connector_id]
+
+    def create_logged_in_connector(
+        self,
+        set_as_default=False,
+        username=None,
+        password=None,
+        *args,
+        **kwargs
+    ):
+        """
+        Creates and returns a new connector of type specified or of type
+        L{SDKConnector} if none specified.
+
+        This method is identical to the L{create_connector} except that this
+        method also logs the connector in.
+
+        Any argument specified to this method will be passed to the connector's
+        initialization method
+
+        @param set_as_default: Determines whether the created connector is set
+                               as the default connector too. True as default.
+        @type bool
+
+        @return: The newly created, logged in, connector
+        """
+        conn = self.create_connector(
             username=username, password=password, *args, **kwargs
         )
+        if set_as_default:
+            self._default_connector = conn
+        conn.login()
+        return conn
+
+    def set_default_connector(self, username):
+        """
+        Sets the default connector to an already existing connector
+
+        @param username: splunk username used by connector
+        @type username: string
+        """
+        self._default_connector = self.connector(username)
+
+    def set_credentials_to_use(self, username="admin", password="changeme"):
+        """
+        This method just initializes/updates self._username to username
+        specified & self._password to password specified
+
+        @param username: splunk username that gets assigned to _username
+                         property of splunk class
+
+        @param password: splunk password for the above username.
+        Note: This method won't create/update the actual credentials on
+              the splunk running instance.
+
+        It is asssumed that credentials specified here are already
+        valid credentials.
+        """
+        self._username = username
+        self._password = password
+
+    def _get_connector_id(self, user):
+        """
+        Returns the connector id
+
+        @param user: splunk username used by connector
+        @type user: string
+        """
+        return "{user}".format(user=user)
+
+    @property
+    def default_connector(self):
+        """
+        Returns the default connector for this Splunk instance.
+
+        This method caches the value so it isn't created on every call.
+        """
+        if self._default_connector is None:
+            self._default_connector = self.create_logged_in_connector(
+                set_as_default=True, username=self.username, password=self.password
+            )
+        self._attempt_login(self._default_connector)
+        return self._default_connector
+
+    @classmethod
+    def _attempt_login(cls, connector):
+        if (
+            hasattr(connector, "is_logged_in")
+            and connector._attempt_login_time > 0
+            and time.time() - connector._attempt_login_time > 30 * 60
+            and not connector.is_logged_in()
+        ):
+            connector.login()
 
     def connector(self, username=None, password=None):
         """
@@ -171,7 +339,33 @@ class CloudSplunk(Splunk):
         """
         if username and username != self.username:
             raise CloudSplunkConnectorException()
-        return super(CloudSplunk, self).connector(username=username)
+        if username is None:
+            return self.default_connector
+
+        connector_id = self._get_connector_id(username)
+        if connector_id not in list(self._connectors.keys()):
+            raise InvalidConnector(
+                "Connector {id} does not exist".format(id=connector_id)
+            )
+        connector = self._connectors[connector_id]
+        self._attempt_login(connector)
+        return connector
+
+    def jobs(self, username=None):
+        """
+        Returns a Jobs manager that uses the specified connector. Defaults to
+        default connector if none specified.
+
+        This property creates a new Jobs manager each call so you may do as
+        you please with it.
+
+        @param username: connector's username
+        @type username: string
+        @rtype: L{Jobs}
+        """
+        from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
+
+        return SDKJobsWrapper(self.connector(username))
 
     def get_event_count(self, search_string="*"):
         """
@@ -278,3 +472,47 @@ class CloudSplunkConnectorException(Exception):
         "Don't pass username/password to connector. Helmut allows only one user per CloudSplunk instance."
         "Please create another CloudSplunk instance if you need to use another user."
     )
+
+
+def _validate_start_listener(listener):
+    """
+    Validates the start listener making sure it can be called.
+
+    @param listener: The start listener
+    @raise InvalidStartListener: If the listener is invalid
+    """
+    if not _variable_is_a_function(listener):
+        raise InvalidStartListener
+
+
+def _variable_is_a_function(variable):
+    """
+    Checks if a specified variable is a function by checking if it implements
+    the __call__ method.
+
+    This means that the object doesn't have to be a function to pass this
+    function, just implement __call__
+
+    @return: True if the variable is a function
+    @rtype: bool
+    """
+    return hasattr(variable, "__call__")
+
+
+class InvalidStartListener(AttributeError):
+    """
+    Exception for when the start listener does not implement the
+    splunk_has_started method
+    """
+
+    def __init__(self, message=None):
+        message = message or "Start listeners must be callable"
+        super(InvalidStartListener, self).__init__(message)
+
+
+class InvalidConnector(KeyError):
+    """
+    Raised when accessing an invalid connector
+    """
+
+    pass
