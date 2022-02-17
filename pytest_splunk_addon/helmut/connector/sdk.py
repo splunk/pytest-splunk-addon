@@ -26,12 +26,10 @@ import time
 from splunklib.binding import _NoAuthenticationToken, AuthenticationError
 from splunklib.client import Service, Endpoint
 
-from .base import Connector
-
 LOGGER = logging.getLogger("helmut")
 
 
-class SDKConnector(Connector):
+class SDKConnector:
     """
     This class represents one connection through the public python SDK.
 
@@ -67,6 +65,10 @@ class SDKConnector(Connector):
                         specified by the user.
     """
 
+    DEFAULT_USERNAME = "admin"
+    DEFAULT_PASSWORD = "changeme"
+    DEFAULT_OWNER = "nobody"
+    DEFAULT_APP = "system"
     DEFAULT_SHARING = "system"
     DEFAULT_HANDLER = None
 
@@ -106,10 +108,6 @@ class SDKConnector(Connector):
         @param app: used by python sdk service
         @type app: str
         """
-
-        super(SDKConnector, self).__init__(
-            splunk, username=username, password=password, owner=owner, app=app
-        )
         if namespace is not None and namespace != self.namespace:
             msg = (
                 "namespace is derecated. please use owner and app. "
@@ -118,6 +116,12 @@ class SDKConnector(Connector):
             )
             LOGGER.error(msg)
             raise Exception(msg)
+        self._splunk = splunk
+        self._username = username or self.DEFAULT_USERNAME
+        self._password = password or self.DEFAULT_PASSWORD
+        self._owner = owner or self.DEFAULT_OWNER
+        self._app = app or self.DEFAULT_APP
+        self._attempt_login_time = 0
         self.sharing = (
             sharing  # accepting None value, so SDK takes owner and app blindly.
         )
@@ -129,6 +133,76 @@ class SDKConnector(Connector):
         self._server_settings_endpoint = Endpoint(
             self._service, self.PATH_SERVER_SETTINGS
         )
+
+    @property
+    def splunk(self):
+        """
+        The Splunk object associated with this connector.
+
+        @rtype: L{Splunk<..splunk.Splunk>}
+        """
+        return self._splunk
+
+    @property
+    def username(self):
+        """
+        The username for this connector.
+
+        @rtype: str
+        """
+        return self._username
+
+    @username.setter
+    def username(self, value):
+        """
+        Setter for the username property
+        """
+        self._username = value
+
+    @property
+    def password(self):
+        """
+        The password for this connector.
+
+        @rtype: str
+        """
+        return self._password
+
+    @password.setter
+    def password(self, value):
+        """
+        Setter for the password property
+        """
+        self._password = value
+
+    @property
+    def namespace(self):
+        """
+        The namespace for this connector.
+
+        Will be in the format <owner>:<app>
+
+        @rtype: str
+        """
+        return str(self._owner) + ":" + str(self._app)
+
+    @property
+    def owner(self):
+        """
+        The owner for this connector.
+
+        @rtype: str
+        """
+        return self._owner
+
+    @property
+    def app(self):
+        """
+        The app for this connector.
+
+        @rtype: str
+        """
+        return self._app
 
     @property
     def _service_arguments(self):

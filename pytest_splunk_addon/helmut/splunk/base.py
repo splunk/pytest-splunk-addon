@@ -23,7 +23,6 @@ This module has things regarding a generic Splunk instance.
 import logging
 import time
 
-from pytest_splunk_addon.helmut.connector.base import Connector
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
 
 LOGGER = logging.getLogger("helmut")
