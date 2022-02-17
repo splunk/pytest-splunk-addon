@@ -21,7 +21,6 @@ import time
 
 from splunklib.binding import HTTPError
 
-from pytest_splunk_addon.helmut.connector.base import Connector
 from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
 from .base import Splunk
 
@@ -59,7 +58,7 @@ class CloudSplunk(Splunk):
         server_web_scheme = server_web_host = server_web_port = None
         if not (web_scheme and web_host):
             try:
-                sdkconn = self.create_logged_in_connector(contype=Connector.SDK)
+                sdkconn = self.create_logged_in_connector()
                 server_settings = sdkconn.service.settings
                 server_web_scheme = (
                     "http" if server_settings["enableSplunkWebSSL"] == "0" else "https"
@@ -116,7 +115,7 @@ class CloudSplunk(Splunk):
     @property
     def pass4SymmKey(self):
         if not self._pass4SymmKey:
-            sdkconn = self.create_logged_in_connector(contype=Connector.SDK)
+            sdkconn = self.create_logged_in_connector()
             server_settings = sdkconn.service.settings
             self._pass4SymmKey = server_settings["pass4SymmKey"]
         return self._pass4SymmKey
@@ -143,10 +142,9 @@ class CloudSplunk(Splunk):
         )
 
     def create_connector(
-        self, contype=None, username=None, password=None, *args, **kwargs
+        self, username=None, password=None, *args, **kwargs
     ):
         """
-        @param contype:
         @param username: Don't use this parameter. This is only for backward compatible. CloudSplunk
                         only uses self.username as connector's username.
         @param password: Don't use this parameter. This is only for backward compatible.
@@ -162,20 +160,18 @@ class CloudSplunk(Splunk):
         ):
             raise CloudSplunkConnectorException()
         return super(CloudSplunk, self).create_connector(
-            contype=contype, username=username, password=password, *args, **kwargs
+            username=username, password=password, *args, **kwargs
         )
 
-    def connector(self, contype=None, username=None):
+    def connector(self, username=None, password=None):
         """
-
-        @param contype:
         @param username: Don't use this parameter. This is only for backward compatible. CloudSplunk
                         only uses self.username as connector's username.
         @return:
         """
         if username and username != self.username:
             raise CloudSplunkConnectorException()
-        return super(CloudSplunk, self).connector(contype=contype, username=username)
+        return super(CloudSplunk, self).connector(username=username)
 
     def get_event_count(self, search_string="*"):
         """

@@ -44,9 +44,6 @@ class Connector:
     DEFAULT_OWNER = "nobody"
     DEFAULT_APP = "system"
 
-    # types of connectors
-    (SDK, REST) = list(range(0, 2))
-
     def __init__(self, splunk, username=None, password=None, owner=None, app=None):
         """
         Creates a new Connector instance.
