@@ -18,12 +18,15 @@
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-23
 """
+import logging
 import time
 from abc import abstractmethod, abstractproperty
 
 from pytest_splunk_addon.helmut.exceptions.search import SearchFailure
 from pytest_splunk_addon.helmut.exceptions.wait import WaitTimedOut
 from pytest_splunk_addon.helmut.manager.object import ItemFromManager
+
+LOGGER = logging.getLogger("helmut")
 
 
 class Job(ItemFromManager):
@@ -67,7 +70,7 @@ class Job(ItemFromManager):
         @raise WaitTimedOut: If the search isn't done after
                                   C{timeout} seconds.
         """
-        self.logger.debug("Waiting for job to finish.")
+        LOGGER.debug("Waiting for job to finish.")
         if timeout == 0:
             timeout = None
 
@@ -75,17 +78,17 @@ class Job(ItemFromManager):
         while not self.is_done():
             try:
                 if self.is_failed():
-                    self.logger.warn(
+                    LOGGER.warn(
                         "job %s failed. error message: %s"
                         % (self.sid, self.get_messages())
                     )
                     break
             except AttributeError as e:
-                self.logger.debug(str(e))
+                LOGGER.debug(str(e))
             _check_if_wait_has_timed_out(start_time, timeout)
             time.sleep(self._SECONDS_BETWEEN_JOB_IS_DONE_CHECKS)
 
-        self.logger.debug("Job %s wait is done." % self.sid)
+        LOGGER.debug("Job %s wait is done." % self.sid)
         return self
 
     def check_message(self):

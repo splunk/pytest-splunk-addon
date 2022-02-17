@@ -22,14 +22,10 @@ from abc import ABCMeta
 
 from future.utils import with_metaclass
 
-from pytest_splunk_addon.helmut.log import Logging
 
-
-class Manager(with_metaclass(ABCMeta, Logging)):
+class Manager(with_metaclass(ABCMeta)):
     def __init__(self, connector):
         self._connector = connector
-
-        Logging.__init__(self)
 
     @property
     def connector(self):

@@ -18,10 +18,14 @@
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-23
 """
+import logging
+
 import splunklib.results as results
 
 from pytest_splunk_addon.helmut.manager.jobs.job import Job
 from pytest_splunk_addon.helmut.manager.jobs.results import Results
+
+LOGGER = logging.getLogger("helmut")
 
 
 class SDKJobWrapper(Job):
@@ -65,7 +69,7 @@ class SDKJobWrapper(Job):
         return self.raw_sdk_job.refresh().content.messages
 
     def cancel(self):
-        self.logger.info("Cancelling job, SID: %s" % self.sid)
+        LOGGER.info("Cancelling job, SID: %s" % self.sid)
         self.raw_sdk_job.cancel()
         return self
 

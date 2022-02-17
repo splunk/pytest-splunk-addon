@@ -20,12 +20,15 @@ This module handles connections through the public python SDK.
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-11-09
 """
+import logging
 import time
 
 from splunklib.binding import _NoAuthenticationToken, AuthenticationError
 from splunklib.client import Service, Endpoint
 
 from .base import Connector
+
+LOGGER = logging.getLogger("helmut")
 
 
 class SDKConnector(Connector):
@@ -113,7 +116,7 @@ class SDKConnector(Connector):
                 "Your namespace setting : %s, owner&app setting:%s"
                 % (namespace, self.namespace)
             )
-            self.logger.error(msg)
+            LOGGER.error(msg)
             raise Exception(msg)
         self.sharing = (
             sharing  # accepting None value, so SDK takes owner and app blindly.
@@ -163,7 +166,7 @@ class SDKConnector(Connector):
 
         Called when Splunk starts.
         """
-        self.logger.debug("Recreating and cloning the current Service.")
+        LOGGER.debug("Recreating and cloning the current Service.")
         _was_logged_in = self._was_logged_in()
         service = self._clone_existing_service()
         self._service = service
@@ -171,7 +174,7 @@ class SDKConnector(Connector):
             try:
                 self.login()
             except AuthenticationError as autherr:
-                self.logger.warn(
+                LOGGER.warn(
                     "SDKConnector for username:{username} password:{password}"
                     " login failed when recreating service. error msg:{error}".format(
                         username=self.username,
@@ -224,12 +227,12 @@ class SDKConnector(Connector):
             self._service.get("authentication/current-context")
             # FAST-8222
         except AuthenticationError as err:
-            self.logger.debug(
+            LOGGER.debug(
                 "SDKconnector %s:%s is NOT logged in" % (self.username, self.password)
             )
             return False
         else:
-            self.logger.debug(
+            LOGGER.debug(
                 "SDKconnector %s:%s is logged in" % (self.username, self.password)
             )
             return True
@@ -252,7 +255,7 @@ class SDKConnector(Connector):
         @return: self
         @rtype: SDKConnector
         """
-        self.logger.debug("Logging in the connector.")
+        LOGGER.debug("Logging in the connector.")
         self._attempt_login_time = time.time()
         self.service.login()
         return self
@@ -266,6 +269,6 @@ class SDKConnector(Connector):
         @return: self
         @rtype: SDKConnector
         """
-        self.logger.debug("Logging out the connector.")
+        LOGGER.debug("Logging out the connector.")
         self.service.logout()
         return self

@@ -24,8 +24,6 @@ import logging
 import logging.config
 from logging import FileHandler, Formatter
 
-from future.utils import with_metaclass
-
 _LOG_FORMAT = "[%(asctime)s] %(levelname)s - %(name)s: %(message)s"
 _DATE_FORMAT = "%Y-%m-%d %H:%M:%S.%f"
 _FILE_NAME = "helmut.log"
@@ -38,8 +36,8 @@ def setup_logger(debug=False):
     @param debug: If debug log messages are to be outputted
     @type debug: bool
     """
-    logger = logging.getLogger("")
-    handler = FileHandler(filename=_FILE_NAME, mode="w")
+    logger = logging.getLogger("helmut")
+    handler = FileHandler(filename=_FILE_NAME)
     handler.setFormatter(HelmutFormatter(_LOG_FORMAT))
     level = logging.INFO
     if debug:
@@ -59,38 +57,3 @@ class HelmutFormatter(Formatter):
         # microseconds, remove it if you intend to remove microseconds
         # from the _DATE_FORMAT
         return t.strftime(_DATE_FORMAT)[:-3]
-
-
-from abc import ABCMeta
-
-
-class Logging(with_metaclass(ABCMeta, object)):
-    def __init__(self):
-        self._logger = self._get_logger()
-        super(Logging, self).__init__()
-
-    def _get_logger(self):
-        """
-        Creates a new logger for this instance, should only be called once.
-
-        @return: The newly created logger.
-        """
-        return logging.getLogger(self._logger_name)
-
-    @property
-    def _logger_name(self):
-        """
-        The name of the logger.
-
-        @rtype: str
-        """
-        return self.__class__.__name__
-
-    @property
-    def logger(self):
-        """
-        The logger of this Splunk object.
-
-        @return: The associated logger.
-        """
-        return self._logger

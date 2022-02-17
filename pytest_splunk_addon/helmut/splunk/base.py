@@ -20,6 +20,7 @@ This module has things regarding a generic Splunk instance.
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
 @since: 2011-12-05
 """
+import logging
 import time
 from abc import ABCMeta, abstractproperty
 
@@ -28,10 +29,11 @@ from future.utils import with_metaclass
 from pytest_splunk_addon.helmut.connector.base import Connector
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
 from pytest_splunk_addon.helmut.exceptions import UnsupportedConnectorError
-from pytest_splunk_addon.helmut.log import Logging
+
+LOGGER = logging.getLogger("helmut")
 
 
-class Splunk(with_metaclass(ABCMeta, Logging)):
+class Splunk(with_metaclass(ABCMeta)):
     """
     Represents a Splunk instance.
 
@@ -69,7 +71,7 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
 
         self._name = name or id(self)
         super(Splunk, self).__init__()
-        self.logger.debug("Helmut Splunk created:{splunk}".format(splunk=self))
+        LOGGER.debug("Helmut Splunk created:{splunk}".format(splunk=self))
 
     def __str__(self):
         """
@@ -187,7 +189,7 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
             raise UnsupportedConnectorError
 
         if args:
-            self.logger.debug(
+            LOGGER.debug(
                 "Args in create_connector is deprecated, Please use kwargs."
             )
         conn = self._CONNECTOR_TYPE_TO_CLASS_MAPPINGS[contype](self, *args, **kwargs)
@@ -195,7 +197,7 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
         connector_id = self._get_connector_id(contype=contype, user=conn.username)
 
         if connector_id in list(self._connectors.keys()):
-            self.logger.warning(
+            LOGGER.warning(
                 "Connector {id} is being replaced".format(id=connector_id)
             )
             del self._connectors[connector_id]

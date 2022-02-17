@@ -15,6 +15,7 @@
 #
 from __future__ import absolute_import
 
+import logging
 import sys
 import time
 
@@ -23,6 +24,8 @@ from splunklib.binding import HTTPError
 from pytest_splunk_addon.helmut.connector.base import Connector
 from pytest_splunk_addon.helmut.manager.jobs import Jobs
 from .base import Splunk
+
+LOGGER = logging.getLogger("helmut")
 
 
 class CloudSplunk(Splunk):
@@ -65,13 +68,13 @@ class CloudSplunk(Splunk):
                 server_web_port = server_settings["httpport"]
                 self._pass4SymmKey = server_settings["pass4SymmKey"]
             except HTTPError as he:
-                self.logger.warning(
+                LOGGER.warning(
                     "No sufficient permissions to qury server settings."
                 )
         self._web_scheme = web_scheme or server_web_scheme or "http"
         self._web_host = web_host or server_web_host or self._splunkd_host
         self._web_port = web_port or server_web_port or ""
-        self.logger.debug("Set web base to: {}".format(self.web_base()))
+        LOGGER.debug("Set web base to: {}".format(self.web_base()))
 
     @property
     def _str_format(self):
@@ -179,13 +182,13 @@ class CloudSplunk(Splunk):
         Displatches a search job and returns an event count without waiting for indexing to finish
         @param search_string: The search string
         """
-        self.logger.info("Getting event count")
+        LOGGER.info("Getting event count")
         event_count = 0
         jobs = Jobs(self.default_connector)
         job = jobs.create("search %s" % search_string)
         job.wait()
         event_count = job.get_event_count()
-        self.logger.debug("Event count: {ec}".format(ec=event_count))
+        LOGGER.debug("Event count: {ec}".format(ec=event_count))
         return event_count
 
     def get_final_event_count(
@@ -209,7 +212,7 @@ class CloudSplunk(Splunk):
             )  # time()'s precision will suffice here, and in fact seconds is all we want
             if result == resultPrev:
                 if (now - resultSameSince) > secondsToStable:  ### we have stable state
-                    self.logger.info(
+                    LOGGER.info(
                         "Achieved stable state for search %s with totalEventCount=%s"
                         % (search_string, result)
                     )
@@ -217,19 +220,19 @@ class CloudSplunk(Splunk):
                 if (
                     resultSameSince == sys.maxsize
                 ):  ### our first time in what could become stable state
-                    self.logger.debug(
+                    LOGGER.debug(
                         "Possibly entering stable state for search %s at totalEventCount=%s"
                         % (search_string, result)
                     )
                     resultSameSince = lastPolledAt
-                    self.logger.debug("Using resultSameSince=%d " % (resultSameSince))
+                    LOGGER.debug("Using resultSameSince=%d " % (resultSameSince))
                 else:  ### our 2nd/3rd/... time in what could become stable state
-                    self.logger.debug(
+                    LOGGER.debug(
                         "Confirming putative stable at totalEventCount=%s for search_string %s "
                         % (result, search_string)
                     )
             else:  ### we do NOT have stable state
-                self.logger.debug(
+                LOGGER.debug(
                     "Flux at totalEventCount=%s for search_string %s; delta +%s"
                     % (result, search_string, (result - resultPrev))
                 )
@@ -259,14 +262,14 @@ class CloudSplunk(Splunk):
                 )
                 return True
             else:
-                self.logger.debug(
+                LOGGER.debug(
                     "wait event count to met. event_count={event_count}".format(
                         event_count=str(event_count)
                     )
                 )
             time.sleep(retry_interval)
             retry = retry - 1
-        self.logger.debug(
+        LOGGER.debug(
             "Timeout wait event count to met. event_count={event_count}".format(
                 event_count=str(event_count)
             )

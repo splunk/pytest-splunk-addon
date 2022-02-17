@@ -22,13 +22,14 @@ Module for handling generic connections with a Splunk instance.
 """
 
 from abc import ABCMeta
+import logging
 
 from future.utils import with_metaclass
 
-from pytest_splunk_addon.helmut.log import Logging
+LOGGER = logging.getLogger("helmut")
 
 
-class Connector(with_metaclass(ABCMeta, Logging)):
+class Connector(with_metaclass(ABCMeta)):
     """
     A connector is an object that handles connections with Splunk.
 
@@ -80,7 +81,6 @@ class Connector(with_metaclass(ABCMeta, Logging)):
         self._owner = owner or self.DEFAULT_OWNER
         self._app = app or self.DEFAULT_APP
         self._attempt_login_time = 0
-        Logging.__init__(self)
 
     @property
     def splunk(self):
