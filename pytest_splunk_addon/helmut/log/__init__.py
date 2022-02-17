@@ -13,12 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-Created on Jun 15, 2012
-
-@author: parhamfh
-"""
-
 import datetime
 import logging
 import logging.config

@@ -13,8 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from __future__ import absolute_import
-
 import logging
 import sys
 import time
@@ -201,32 +199,15 @@ class CloudSplunk:
         except KeyError:
             pass
 
-    def create_connector(
-        self, username=None, password=None, *args, **kwargs
-    ):
+    def create_connector(self, **kwargs):
         """
-        @param username: Don't use this parameter. This is only for backward compatible. CloudSplunk
-                        only uses self.username as connector's username.
-        @param password: Don't use this parameter. This is only for backward compatible.
-        @param args:
         @param kwargs:
         @return:
         """
-        if (
-            username
-            and username != self.username
-            and password
-            and password != self.password
-        ):
-            raise CloudSplunkConnectorException()
-        kwargs["username"] = username or self.username
-        kwargs["password"] = password or self.password
+        kwargs["username"] = self.username
+        kwargs["password"] = self.password
 
-        if args:
-            LOGGER.debug(
-                "Args in create_connector is deprecated, Please use kwargs."
-            )
-        conn = SDKConnector(self, *args, **kwargs)
+        conn = SDKConnector(self, **kwargs)
 
         connector_id = self._get_connector_id(user=conn.username)
 
@@ -242,9 +223,6 @@ class CloudSplunk:
     def create_logged_in_connector(
         self,
         set_as_default=False,
-        username=None,
-        password=None,
-        *args,
         **kwargs
     ):
         """
@@ -263,22 +241,11 @@ class CloudSplunk:
 
         @return: The newly created, logged in, connector
         """
-        conn = self.create_connector(
-            username=username, password=password, *args, **kwargs
-        )
+        conn = self.create_connector(**kwargs)
         if set_as_default:
             self._default_connector = conn
         conn.login()
         return conn
-
-    def set_default_connector(self, username):
-        """
-        Sets the default connector to an already existing connector
-
-        @param username: splunk username used by connector
-        @type username: string
-        """
-        self._default_connector = self.connector(username)
 
     def set_credentials_to_use(self, username="admin", password="changeme"):
         """
@@ -316,7 +283,7 @@ class CloudSplunk:
         """
         if self._default_connector is None:
             self._default_connector = self.create_logged_in_connector(
-                set_as_default=True, username=self.username, password=self.password
+                set_as_default=True
             )
         self._attempt_login(self._default_connector)
         return self._default_connector
@@ -331,18 +298,11 @@ class CloudSplunk:
         ):
             connector.login()
 
-    def connector(self, username=None, password=None):
-        """
-        @param username: Don't use this parameter. This is only for backward compatible. CloudSplunk
-                        only uses self.username as connector's username.
-        @return:
-        """
-        if username and username != self.username:
-            raise CloudSplunkConnectorException()
-        if username is None:
+    def connector(self):
+        if self.username is None:
             return self.default_connector
 
-        connector_id = self._get_connector_id(username)
+        connector_id = self._get_connector_id(self.username)
         if connector_id not in list(self._connectors.keys()):
             raise InvalidConnector(
                 "Connector {id} does not exist".format(id=connector_id)
@@ -351,7 +311,7 @@ class CloudSplunk:
         self._attempt_login(connector)
         return connector
 
-    def jobs(self, username=None):
+    def jobs(self):
         """
         Returns a Jobs manager that uses the specified connector. Defaults to
         default connector if none specified.
@@ -359,13 +319,11 @@ class CloudSplunk:
         This property creates a new Jobs manager each call so you may do as
         you please with it.
 
-        @param username: connector's username
-        @type username: string
         @rtype: L{Jobs}
         """
         from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
 
-        return SDKJobsWrapper(self.connector(username))
+        return SDKJobsWrapper(self.connector())
 
     def get_event_count(self, search_string="*"):
         """
@@ -373,7 +331,6 @@ class CloudSplunk:
         @param search_string: The search string
         """
         LOGGER.info("Getting event count")
-        event_count = 0
         jobs = SDKJobsWrapper(self.default_connector)
         job = jobs.create("search %s" % search_string)
         job.wait()
@@ -393,7 +350,6 @@ class CloudSplunk:
         resultPrev = -1
         resultSameSince = sys.maxsize
         lastPolledAt = int(time.time())
-        counts = []
         while True:
             time.sleep(retry_interval)
             result = self.get_event_count(search_string=search_string)
@@ -465,13 +421,6 @@ class CloudSplunk:
             )
         )
         return False
-
-
-class CloudSplunkConnectorException(Exception):
-    message = (
-        "Don't pass username/password to connector. Helmut allows only one user per CloudSplunk instance."
-        "Please create another CloudSplunk instance if you need to use another user."
-    )
 
 
 def _validate_start_listener(listener):

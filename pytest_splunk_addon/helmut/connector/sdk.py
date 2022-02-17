@@ -13,13 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-This module handles connections through the public python SDK.
-
-@author: Nicklas Ansman-Giertz
-@contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
-@since: 2011-11-09
-"""
 import logging
 import time
 
@@ -248,7 +241,7 @@ class SDKConnector:
             try:
                 self.login()
             except AuthenticationError as autherr:
-                LOGGER.warn(
+                LOGGER.warning(
                     "SDKConnector for username:{username} password:{password}"
                     " login failed when recreating service. error msg:{error}".format(
                         username=self.username,

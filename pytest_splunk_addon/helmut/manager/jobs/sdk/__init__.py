@@ -13,13 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-This module is a specialized version of the search_manager module for the SDK
-
-@author: Nicklas Ansman-Giertz
-@contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
-@since: 2011-11-23
-"""
 import logging
 
 from pytest_splunk_addon.helmut.exceptions.job import JobNotFound
