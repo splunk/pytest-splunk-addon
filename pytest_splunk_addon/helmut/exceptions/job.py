@@ -13,8 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-@author: Nicklas Ansman-Giertz
-@contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
-@since: 2011-11-23
-"""
+class JobNotFound(RuntimeError):
+    def __init__(self, sid):
+        self.sid = sid
+        super(JobNotFound, self).__init__(self._error_message)
+
+    @property
+    def _error_message(self):
+        return "Could not find a job with SID {sid}".format(sid=self.sid)

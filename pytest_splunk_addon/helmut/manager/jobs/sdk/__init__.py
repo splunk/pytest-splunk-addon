@@ -22,13 +22,17 @@ This module is a specialized version of the search_manager module for the SDK
 """
 import logging
 
-from pytest_splunk_addon.helmut.manager.jobs import Jobs, JobNotFound
+from pytest_splunk_addon.helmut.exceptions.job import JobNotFound
 from pytest_splunk_addon.helmut.manager.jobs.sdk.job import SDKJobWrapper
 
 LOGGER = logging.getLogger("helmut")
 
 
-class SDKJobsWrapper(Jobs):
+class SDKJobsWrapper:
+
+    def __init__(self, connector):
+        self._connector = connector
+
     @property
     def _service(self):
         return self._connector.service
@@ -37,6 +41,16 @@ class SDKJobsWrapper(Jobs):
         LOGGER.info("Creating job with query: %s" % query)
         job = self._service.jobs.create(query, **kwargs)
         return SDKJobWrapper(self._connector, job)
+
+    def __call__(self):
+        return list(self.items())
+
+    def __len__(self):
+        return len(list(self.items()))
+
+    def __iter__(self):
+        for item in list(self.items()):
+            yield item
 
     def __contains__(self, sid):
         for job in self:
@@ -52,4 +66,4 @@ class SDKJobsWrapper(Jobs):
 
     def items(self):
         jobs = self._service.jobs
-        return [SDKJobWrapper(self.connector, job) for job in jobs]
+        return [SDKJobWrapper(self._connector, job) for job in jobs]

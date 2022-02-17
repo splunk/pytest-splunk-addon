@@ -22,9 +22,10 @@ import re
 import time
 import traceback
 
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from pytest_splunk_addon.helmut.manager.jobs import Jobs
+from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
 from pytest_splunk_addon.helmut.splunk.cloud import CloudSplunk
 from pytest_splunk_addon.standard_lib.addon_parser import AddonParser
 
@@ -531,7 +532,7 @@ def main():
 
         cloud_splunk = CloudSplunk(**splunk_cfg)
         conn = cloud_splunk.create_logged_in_connector()
-        jobs = Jobs(conn)
+        jobs = SDKJobsWrapper(conn)
 
         build_report(jobs, eventtypes, config)
 

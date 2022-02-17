@@ -22,7 +22,7 @@ import time
 from splunklib.binding import HTTPError
 
 from pytest_splunk_addon.helmut.connector.base import Connector
-from pytest_splunk_addon.helmut.manager.jobs import Jobs
+from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
 from .base import Splunk
 
 LOGGER = logging.getLogger("helmut")
@@ -184,7 +184,7 @@ class CloudSplunk(Splunk):
         """
         LOGGER.info("Getting event count")
         event_count = 0
-        jobs = Jobs(self.default_connector)
+        jobs = SDKJobsWrapper(self.default_connector)
         job = jobs.create("search %s" % search_string)
         job.wait()
         event_count = job.get_event_count()

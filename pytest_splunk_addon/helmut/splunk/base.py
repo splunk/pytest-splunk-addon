@@ -348,9 +348,9 @@ class Splunk:
         @type username: string
         @rtype: L{Jobs}
         """
-        from pytest_splunk_addon.helmut.manager.jobs import Jobs
+        from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
 
-        return Jobs(self.connector(contype, username))
+        return SDKJobsWrapper(self.connector(contype, username))
 
     def _notify_listeners_of_splunk_start(self):
         """
