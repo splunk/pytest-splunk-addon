@@ -22,4 +22,5 @@ class RequirementBasic(ReqsTestTemplates):
     """
     Base class for requirement test cases. Only implement the common tests here.
     """
+
     pass
