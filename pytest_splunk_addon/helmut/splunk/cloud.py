@@ -73,9 +73,7 @@ class CloudSplunk:
                 server_web_port = server_settings["httpport"]
                 self._pass4SymmKey = server_settings["pass4SymmKey"]
             except HTTPError:
-                LOGGER.warning(
-                    "No sufficient permissions to query server settings."
-                )
+                LOGGER.warning("No sufficient permissions to query server settings.")
         self._web_scheme = web_scheme or server_web_scheme or "http"
         self._web_host = web_host or server_web_host or self._splunkd_host
         self._web_port = web_port or server_web_port or ""
@@ -212,19 +210,13 @@ class CloudSplunk:
         connector_id = self._get_connector_id(user=conn.username)
 
         if connector_id in list(self._connectors.keys()):
-            LOGGER.warning(
-                "Connector {id} is being replaced".format(id=connector_id)
-            )
+            LOGGER.warning("Connector {id} is being replaced".format(id=connector_id))
             del self._connectors[connector_id]
         self._connectors[connector_id] = conn
 
         return self._connectors[connector_id]
 
-    def create_logged_in_connector(
-        self,
-        set_as_default=False,
-        **kwargs
-    ):
+    def create_logged_in_connector(self, set_as_default=False, **kwargs):
         """
         Creates and returns a new connector of type specified or of type
         L{SDKConnector} if none specified.

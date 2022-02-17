@@ -22,7 +22,6 @@ LOGGER = logging.getLogger("helmut")
 
 
 class SDKJobsWrapper:
-
     def __init__(self, connector):
         self._connector = connector
 
