@@ -741,7 +741,7 @@ TA_REQUIREMENTS_PASSED = [
 ]
 
 TA_REQUIREMENTS_FAILED = [
-    "*test_splunk_app_requirements.py_general::Test_App::test_requirement_params* FAILED*",
+    "*test_splunk_app_requirements_general.py::Test_App::test_requirement_params* FAILED*",
 ]
 
 TA_REQUIREMENTS_MODINPUT_PASSED = [
