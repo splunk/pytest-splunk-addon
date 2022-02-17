@@ -743,7 +743,6 @@ TA_FICTION_INDEXTIME_BROKEN_SKIPPED = [
 Define TA_requirement_tests passed test
 """
 TA_REQUIREMENTS_PASSED = [
-    "*test_splunk_app_requirements.py::Test_App::test_events_with_untokenised_values PASSED*",
     "*test_splunk_app_requirements.py::Test_App::test_requirement_params* PASSED*",
 ]
 
@@ -752,7 +751,6 @@ TA_REQUIREMENTS_FAILED = [
 ]
 
 TA_REQUIREMENTS_MODINPUT_PASSED = [
-    "*test_splunk_app_requirements_modinput.py::Test_App::test_events_with_untokenised_values PASSED*",
     "*test_splunk_app_requirements_modinput.py::Test_App::test_requirement_params* PASSED*",
 ]
 
@@ -761,7 +759,6 @@ TA_REQUIREMENTS_MODINPUT_FAILED = [
 ]
 
 TA_REQUIREMENTS_UF_PASSED = [
-    "*test_splunk_app_requirements_uf.py::Test_App::test_events_with_untokenised_values PASSED*",
     "*test_splunk_app_requirements_uf.py::Test_App::test_requirement_params* PASSED*",
 ]
 
@@ -770,7 +767,6 @@ TA_REQUIREMENTS_UF_FAILED = [
 ]
 
 TA_REQUIREMENTS_SCRIPTED_PASSED = [
-    "*test_splunk_app_requirements_scripted.py::Test_App::test_events_with_untokenised_values* PASSED*",
     "*test_splunk_app_requirements_scripted.py::Test_App::test_requirement_params* PASSED*",
 ]
 
