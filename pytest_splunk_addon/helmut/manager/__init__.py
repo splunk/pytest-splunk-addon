@@ -13,10 +13,3 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-class Manager:
-    def __init__(self, connector):
-        self._connector = connector
-
-    @property
-    def connector(self):
-        return self._connector

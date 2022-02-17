@@ -13,14 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from pytest_splunk_addon.helmut.manager import Manager
 from pytest_splunk_addon.helmut.misc.collection import Collection
 from pytest_splunk_addon.helmut.misc.manager_utils import (
     create_wrapper_from_connector_mapping,
 )
 
 
-class Jobs(Manager, Collection):
+class Jobs(Collection):
     """
     Jobs is the manager that handles searches.
     It does not handle pausing, resuming, etc of individual searches, it just
@@ -28,7 +27,7 @@ class Jobs(Manager, Collection):
     """
 
     def __init__(self, connector):
-        Manager.__init__(self, connector)
+        self._connector = connector
         Collection.__init__(self)
 
     def __new__(cls, connector):

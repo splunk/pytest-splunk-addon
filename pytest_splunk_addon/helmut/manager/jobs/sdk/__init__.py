@@ -31,12 +31,12 @@ LOGGER = logging.getLogger("helmut")
 class SDKJobsWrapper(Jobs):
     @property
     def _service(self):
-        return self.connector.service
+        return self._connector.service
 
     def create(self, query, **kwargs):
         LOGGER.info("Creating job with query: %s" % query)
         job = self._service.jobs.create(query, **kwargs)
-        return SDKJobWrapper(self.connector, job)
+        return SDKJobWrapper(self._connector, job)
 
     def __contains__(self, sid):
         for job in self:
