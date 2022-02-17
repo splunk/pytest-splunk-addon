@@ -13,17 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-@author: Nicklas Ansman-Giertz
-@contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
-@since: 2011-11-23
-"""
-from abc import ABCMeta
-
-from future.utils import with_metaclass
-
-
-class ItemFromManager(with_metaclass(ABCMeta)):
+class ItemFromManager:
     def __init__(self, connector):
         self._connector = connector
 

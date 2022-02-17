@@ -13,18 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-@author: Nicklas Ansman-Giertz
-@contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
-@since: 2011-11-23
-"""
-
-from abc import ABCMeta, abstractmethod
-
-from future.utils import with_metaclass
-
-
-class Collection(with_metaclass(ABCMeta, object)):
+class Collection:
     """
     A Collection metaclass that specifies what functions a collection in the
     Helmut framework must implement.
@@ -40,7 +29,6 @@ class Collection(with_metaclass(ABCMeta, object)):
         for item in list(self.items()):
             yield item
 
-    @abstractmethod
     def items(self):
         """
         Return a collection of all the contained objects. It is up to the
@@ -51,7 +39,6 @@ class Collection(with_metaclass(ABCMeta, object)):
         """
         pass
 
-    @abstractmethod
     def __contains__(self, item):
         """
         Return boolean whether item is contained in Collection.

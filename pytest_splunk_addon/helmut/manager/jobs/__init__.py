@@ -13,13 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-@author: Nicklas Ansman-Giertz
-@contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
-@since: 2011-11-23
-"""
-from abc import abstractmethod
-
 from pytest_splunk_addon.helmut.manager import Manager
 from pytest_splunk_addon.helmut.misc.collection import Collection
 from pytest_splunk_addon.helmut.misc.manager_utils import (
@@ -42,11 +35,9 @@ class Jobs(Manager, Collection):
         mappings = _CONNECTOR_TO_WRAPPER_MAPPINGS
         return create_wrapper_from_connector_mapping(cls, connector, mappings)
 
-    @abstractmethod
     def create(self, query, **kwargs):
         pass
 
-    @abstractmethod
     def __getitem__(self, sid):
         pass
 

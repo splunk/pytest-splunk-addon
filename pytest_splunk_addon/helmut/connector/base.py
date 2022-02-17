@@ -13,23 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-Module for handling generic connections with a Splunk instance.
-
-@author: Nicklas Ansman-Giertz
-@contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
-@since: 2011-11-21
-"""
-
-from abc import ABCMeta
 import logging
-
-from future.utils import with_metaclass
 
 LOGGER = logging.getLogger("helmut")
 
 
-class Connector(with_metaclass(ABCMeta)):
+class Connector:
     """
     A connector is an object that handles connections with Splunk.
 

@@ -22,9 +22,6 @@ This module has things regarding a generic Splunk instance.
 """
 import logging
 import time
-from abc import ABCMeta, abstractproperty
-
-from future.utils import with_metaclass
 
 from pytest_splunk_addon.helmut.connector.base import Connector
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
@@ -33,7 +30,7 @@ from pytest_splunk_addon.helmut.exceptions import UnsupportedConnectorError
 LOGGER = logging.getLogger("helmut")
 
 
-class Splunk(with_metaclass(ABCMeta)):
+class Splunk:
     """
     Represents a Splunk instance.
 
@@ -89,7 +86,6 @@ class Splunk(with_metaclass(ABCMeta)):
         """
         return "{cls}({name})".format(cls=self.__class__.__name__, name=self.name)
 
-    @abstractproperty
     def _str_format(self):
         """
         The format to use when casting this instance to a string.
@@ -97,7 +93,6 @@ class Splunk(with_metaclass(ABCMeta)):
         @rtype: str
         """
 
-    @abstractproperty
     def _str_format_arguments(self):
         """
         The arguments for the L{_str_format} to use when casting this instance

@@ -20,7 +20,6 @@
 """
 import logging
 import time
-from abc import abstractmethod, abstractproperty
 
 from pytest_splunk_addon.helmut.exceptions.search import SearchFailure
 from pytest_splunk_addon.helmut.exceptions.wait import WaitTimedOut
@@ -38,23 +37,18 @@ class Job(ItemFromManager):
 
     _SECONDS_BETWEEN_JOB_IS_DONE_CHECKS = 1
 
-    @abstractmethod
     def get_results(self, **kwargs):
         pass
 
-    @abstractmethod
     def is_done(self):
         pass
 
-    @abstractmethod
     def is_failed(self):
         pass
 
-    @abstractmethod
     def get_messages(self):
         pass
 
-    @abstractproperty
     def sid(self):
         pass
 
