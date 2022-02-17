@@ -33,9 +33,7 @@ def setup_logger(debug=False):
     logger = logging.getLogger("helmut")
     handler = FileHandler(filename=_FILE_NAME)
     handler.setFormatter(HelmutFormatter(_LOG_FORMAT))
-    level = logging.INFO
-    if debug:
-        level = logging.DEBUG
+    level = logging.DEBUG if debug else logging.INFO
     logger.addHandler(handler)
     logger.setLevel(level)
     logger.debug("Logger: DEBUG logging is enabled")

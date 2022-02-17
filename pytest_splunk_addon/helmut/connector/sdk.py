@@ -31,7 +31,7 @@ class SDKConnector:
     multiple login from the same user.
 
     Associated with each object is a C{Service} object from the SDK which in
-    turn contains connection info, namespace and auth.
+    turn contains connection info and auth.
 
     When a connector is logged in an auth token is generated and will be kept
     until the point that you logout or the server is restarted.
@@ -43,10 +43,6 @@ class SDKConnector:
     When Splunk is restarted the connector I{tries} to login again if the
     connector was logged in before. This might not always work (if you disabled
     auth for instance) though.
-
-    The Python SDK, as of version 0.8.0, uses separate parameters to evaluate
-    the namespace. Therefor the primary parameters to be used are 'owner', 'app'
-    and 'sharing' instead of namespace. See splunklib.binding for more info.
 
     @ivar _service: The underlying service
     @cvar DEFAULT_SHARING: The default sharing option, as defined by the
@@ -73,7 +69,6 @@ class SDKConnector:
         splunk,
         username=None,
         password=None,
-        namespace=None,
         sharing=DEFAULT_SHARING,
         owner=None,
         app=None,
@@ -92,8 +87,6 @@ class SDKConnector:
         @param password: The password to use. If None (default)
                          L{Connector.DEFAULT_PASSWORD} is used.
         @type password: str
-        @param namespace: Deprecated. user owner and app instead.
-        @type namespace: str
         @param sharing: used by python sdk service
         @type sharing: str
         @param owner: used by python sdk service
@@ -101,14 +94,6 @@ class SDKConnector:
         @param app: used by python sdk service
         @type app: str
         """
-        if namespace is not None and namespace != self.namespace:
-            msg = (
-                "namespace is derecated. please use owner and app. "
-                "Your namespace setting : %s, owner&app setting:%s"
-                % (namespace, self.namespace)
-            )
-            LOGGER.error(msg)
-            raise Exception(msg)
         self._splunk = splunk
         self._username = username or self.DEFAULT_USERNAME
         self._password = password or self.DEFAULT_PASSWORD
@@ -169,17 +154,6 @@ class SDKConnector:
         self._password = value
 
     @property
-    def namespace(self):
-        """
-        The namespace for this connector.
-
-        Will be in the format <owner>:<app>
-
-        @rtype: str
-        """
-        return str(self._owner) + ":" + str(self._app)
-
-    @property
     def owner(self):
         """
         The owner for this connector.
@@ -209,8 +183,6 @@ class SDKConnector:
         return {
             "username": self.username,
             "password": self.password,
-            # No longer used by SDK's splunklib.binding since 0.8.0 (beta)
-            # 'namespace': self.namespace,
             "owner": self.owner,
             "app": self.app,
             "sharing": self.sharing,
