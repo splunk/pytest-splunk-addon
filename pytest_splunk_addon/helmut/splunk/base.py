@@ -25,7 +25,6 @@ import time
 
 from pytest_splunk_addon.helmut.connector.base import Connector
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
-from pytest_splunk_addon.helmut.exceptions import UnsupportedConnectorError
 
 LOGGER = logging.getLogger("helmut")
 
@@ -179,9 +178,6 @@ class Splunk:
         contype = contype or Connector.SDK
         kwargs["username"] = username or self.username
         kwargs["password"] = password or self.password
-
-        if contype not in self._CONNECTOR_TYPE_TO_CLASS_MAPPINGS:
-            raise UnsupportedConnectorError
 
         if args:
             LOGGER.debug(
