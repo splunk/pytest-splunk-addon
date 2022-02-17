@@ -48,9 +48,7 @@ def test_cim_report_generator():
     with open("test_report.md") as inputfile:
         test_data = inputfile.read()
     with open(
-        os.path.join(
-            os.path.dirname(__file__), "test_data", "sample_cim_report.md"
-        )
+        os.path.join(os.path.dirname(__file__), "test_data", "sample_cim_report.md")
     ) as input_file:
         actual_data = input_file.read()
     assert test_data == actual_data
