@@ -334,7 +334,7 @@ def test_splunk_app_cim_broken(testdir):
 
 
 @pytest.mark.docker
-def test_splunk_fiction_indextime(testdir):
+def test_splunk_fiction_indextime_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -515,7 +515,7 @@ def test_docstrings(testdir):
 
 
 @pytest.mark.docker
-def test_splunk_app_requirements(testdir):
+def test_splunk_app_requirements_general(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(

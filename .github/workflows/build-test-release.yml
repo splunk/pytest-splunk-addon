@@ -185,6 +185,20 @@ jobs:
       fail-fast: false
       matrix:
         splunk-version: [8.1, 8.2]
+        test_name: [
+            "test_splunk_connection_docker",
+            "test_splunk_app_fiction",
+            "test_splunk_app_broken",
+            "test_splunk_app_cim_fiction",
+            "test_splunk_app_cim_broken",
+            "test_splunk_fiction_indextime_fiction",
+            "test_splunk_fiction_indextime_broken",
+            "test_splunk_setup_fixture",
+            "test_splunk_app_requirements_general",
+            "test_splunk_app_requirements_modinput",
+            "test_splunk_app_requirements_uf",
+            "test_splunk_app_requirements_scripted"
+        ]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -198,7 +212,7 @@ jobs:
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
           curl -sSL https://install.python-poetry.org | python3 -
           poetry install -E docker
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker -k ${{ matrix.test_name }}
 
   test-splunk-unit:
     name: Unit tests
