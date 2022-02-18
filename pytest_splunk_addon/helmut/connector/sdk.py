@@ -69,7 +69,7 @@ class SDKConnector:
         splunk,
         username=None,
         password=None,
-        sharing=DEFAULT_SHARING,
+        sharing=None,
         owner=None,
         app=None,
     ):
@@ -97,12 +97,10 @@ class SDKConnector:
         self._splunk = splunk
         self._username = username or self.DEFAULT_USERNAME
         self._password = password or self.DEFAULT_PASSWORD
+        self.sharing = sharing or self.DEFAULT_SHARING
         self._owner = owner or self.DEFAULT_OWNER
         self._app = app or self.DEFAULT_APP
         self._attempt_login_time = 0
-        self.sharing = (
-            sharing  # accepting None value, so SDK takes owner and app blindly.
-        )
 
         self._service = Service(handler=self.DEFAULT_HANDLER, **self._service_arguments)
         splunk.register_start_listener(self._recreate_service)
