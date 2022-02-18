@@ -151,7 +151,7 @@ def test_extract_params():
                         "transport_type": "syslog",
                     },
                     "model_1:dataset_1 "
-                    "model_2:dataset_2::fake_path/requirement.log::event_no::1::event_name::event_name_1",
+                    "model_2:dataset_2::fake_path/requirement.xml::event_no::1::event_name::event_name_1",
                 ),
             ],
         ),
