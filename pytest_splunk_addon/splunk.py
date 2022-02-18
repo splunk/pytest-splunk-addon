@@ -28,7 +28,7 @@ import json
 import pytest
 import requests
 import splunklib.client as client
-from .helmut.manager.jobs import Jobs
+from .helmut.manager.jobs.sdk import SDKJobsWrapper
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
@@ -374,7 +374,7 @@ def splunk_search_util(splunk, request):
     )
 
     conn = cloud_splunk.create_logged_in_connector()
-    jobs = Jobs(conn)
+    jobs = SDKJobsWrapper(conn)
     LOGGER.info("initialized SearchUtil for the Splunk instace.")
     search_util = SearchUtil(jobs, LOGGER)
     search_util.search_index = request.config.getoption("search_index")
