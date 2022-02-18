@@ -1,7 +1,7 @@
 Data Generator
 ===============
 
-To ingest samples into Splunk, plugin takes `pytest-splunk-addon-data.conf` or `eventgen.conf` as input. 
+To ingest samples into Splunk, plugin takes `pytest-splunk-addon-data.conf` as input.
 The sample generation & ingestion takes place before executing the testcases. 
 For index-time test cases, there are multiple metadata required about the sample file for which `pytest-splunk-addon-data.conf` must be created and provided to the pytest command.
 

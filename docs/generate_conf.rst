@@ -4,7 +4,11 @@ Generate Conf Utility
 .. _generate_conf:
 
 Overview
-""""""""""
+""""""""
+
+.. note::
+
+    This is deprecated since `pytest-splunk-addon` v1.12.0 and latest available version is v1.11.4.
 
 * The utility helps in creating the `pytest-splunk-addon-data.conf` from the existing `eventgen.conf` of the add-on.
 * The utility adds the following metadata required for the index-times tests in the new conf file:

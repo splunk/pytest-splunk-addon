@@ -19,14 +19,10 @@ The module provides the Add-on parsing mechanism. It can
 parse the knowledge objects from an Add-on's configuration files
 
 Supports: fields from props & transforms, tags, eventtypes
-
-Dependencies: 
-    splunk_appinspect.App: To parse the configuration files 
 """
 import os
 import re
 import logging
-from splunk_appinspect import App
 
 from .fields import convert_to_fields, Field
 from .transforms_parser import TransformsParser
@@ -49,25 +45,15 @@ class AddonParser(object):
 
     def __init__(self, splunk_app_path):
         self.splunk_app_path = splunk_app_path
-        LOGGER.info(
-            f"Initializing the splunk_appinspect.App from path={splunk_app_path}"
-        )
-        self._app = None
         self._props_parser = None
         self._tags_parser = None
         self._eventtype_parser = None
         self._savedsearch_parser = None
 
     @property
-    def app(self):
-        if not self._app:
-            self._app = App(self.splunk_app_path, python_analyzer_enable=False)
-        return self._app
-
-    @property
     def props_parser(self):
         if not self._props_parser:
-            self._props_parser = PropsParser(self.splunk_app_path, self.app)
+            self._props_parser = PropsParser(self.splunk_app_path)
         return self._props_parser
 
     @property
@@ -79,13 +65,13 @@ class AddonParser(object):
     @property
     def eventtype_parser(self):
         if not self._eventtype_parser:
-            self._eventtype_parser = EventTypeParser(self.splunk_app_path, self.app)
+            self._eventtype_parser = EventTypeParser(self.splunk_app_path)
         return self._eventtype_parser
 
     @property
     def savedsearch_parser(self):
         if not self._savedsearch_parser:
-            self._savedsearch_parser = SavedSearchParser(self.splunk_app_path, self.app)
+            self._savedsearch_parser = SavedSearchParser(self.splunk_app_path)
         return self._savedsearch_parser
 
     def get_props_fields(self):

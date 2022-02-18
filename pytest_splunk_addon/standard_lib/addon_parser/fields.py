@@ -51,6 +51,15 @@ class Field(object):
     def __str__(self):
         return str(self.name)
 
+    def __eq__(self, other: "Field"):
+        return self.__dict__ == other.__dict__
+
+    def __lt__(self, other: "Field"):
+        return self.name < other.name
+
+    def __repr__(self):
+        return f"<Field name={self.name}>"
+
     def get_type(self):
         return self.type
 
