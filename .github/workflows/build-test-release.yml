@@ -180,6 +180,15 @@ jobs:
 
   test-splunk-matrix:
     name: Test Matrix
+    needs:
+      - pre-commit
+      - compliance-dependencies
+      - compliance-copyrights
+      - test-splunk-external
+      - test-splunk-doc
+      - test-splunk-unit
+      - review_secrets
+      - review-dog-misspell
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -213,25 +222,20 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           poetry install
           poetry run coverage run --source=./pytest_splunk_addon/standard_lib -m pytest -v tests/unit
-          poetry run coverage html
-      - name: Archive test coverage results
-        uses: actions/upload-artifact@v2
+          poetry run coverage xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
         with:
-          name: code-coverage-report-unit-tests
-          path: htmlcov
-
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          directory: ./coverage/reports/
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          verbose: true
   publish:
     name: publish
     needs:
-      - pre-commit
-      - compliance-dependencies
-      - compliance-copyrights
-      - test-splunk-external
-      - test-splunk-doc
       - test-splunk-matrix
-      - test-splunk-unit
-      - review_secrets
-      - review-dog-misspell
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

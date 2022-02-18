@@ -25,16 +25,17 @@ class TestSampleGenerator:
         tks_2 = "tokenized_sample_2"
         sample_mock = MagicMock()
         sample_mock.get_tokenized_events.return_value = [tks_1, tks_2]
-        eventgen_mock = MagicMock()
-        eventgen_mock.get_sample_stanzas = MagicMock(
+        psa_data_mock = MagicMock()
+        psa_data_mock.get_sample_stanzas = MagicMock(
             return_value=[sample_mock, sample_mock]
         )
         with patch(
-            f"{MODULE_PATH}.EventgenParser", MagicMock(return_value=eventgen_mock)
+            f"{MODULE_PATH}.PytestSplunkAddonDataParser",
+            MagicMock(return_value=psa_data_mock),
         ), patch(f"{MODULE_PATH}.SampleStanza", MagicMock()) as sample_stanza_mock:
             sample_stanza_mock.get_raw_events = ["event_1", "event_2"]
             sample_stanza_mock.tokenize = lambda x, y: (x, y)
-            eventgen_mock.conf_name = CONFIG_PATH
+            psa_data_mock.conf_name = CONFIG_PATH
             sg = SampleGenerator(ADDON_PATH)
             assert list(sg.get_samples()) == [tks_1, tks_2, tks_1, tks_2]
 

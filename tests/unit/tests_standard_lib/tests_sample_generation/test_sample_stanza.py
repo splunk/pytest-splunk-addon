@@ -59,14 +59,14 @@ class TestSampleStanza:
     @pytest.fixture
     def sample_stanza(self):
         def func(
-            eventgen_params={"tokens": tokens},
+            psa_data_params={"tokens": tokens},
             rule_mock_value="Test_rule",
         ):
             with patch.object(os, "sep", "/"), patch(
                 "pytest_splunk_addon.standard_lib.sample_generation.sample_stanza.Rule",
                 MagicMock(return_value=rule_mock_value),
             ):
-                ss = SampleStanza(SAMPLE_PATH, eventgen_params)
+                ss = SampleStanza(SAMPLE_PATH, psa_data_params)
             return ss
 
         return func
@@ -98,7 +98,7 @@ class TestSampleStanza:
                 assert m.key_fields == "three"
 
     @pytest.mark.parametrize(
-        "eventgen_params, conf_name, expected",
+        "psa_data_params, conf_name, expected",
         [
             (
                 {"tokens": tokens},
@@ -107,7 +107,7 @@ class TestSampleStanza:
             ),
             (
                 {"tokens": tokens, "count": "1"},
-                "eventgen",
+                "psa_data",
                 [rule_obj({"breaker": 1, "expected_event_count": 1})],
             ),
             (
@@ -115,15 +115,10 @@ class TestSampleStanza:
                 "som",
                 [rule_obj({"breaker": 1, "sample_count": 1})],
             ),
-            (
-                {"tokens": tokens, "count": "0"},
-                "eventgen",
-                [rule_obj({"breaker": 1, "expected_event_count": 250})] * 250,
-            ),
         ],
     )
-    def test_tokenize(self, sample_stanza, eventgen_params, conf_name, expected):
-        ss = sample_stanza(eventgen_params=eventgen_params)
+    def test_tokenize(self, sample_stanza, psa_data_params, conf_name, expected):
+        ss = sample_stanza(psa_data_params=psa_data_params)
         ss._get_raw_sample = MagicMock(return_value=[rule_obj({})])
         rule = MagicMock()
         rule.apply.return_value = [rule_obj({"breaker": 1})]
@@ -223,7 +218,7 @@ class TestSampleStanza:
     )
     def test_break_events(self, sample_stanza, sample_raw, expected):
         ss = sample_stanza(
-            eventgen_params={
+            psa_data_params={
                 "tokens": tokens,
                 "breaker": "aa",
             }
@@ -231,7 +226,7 @@ class TestSampleStanza:
         assert ss.break_events(sample_raw) == expected
 
     @pytest.mark.parametrize(
-        "eventgen_params, sample_event_params",
+        "psa_data_params, sample_event_params",
         [
             (
                 {
@@ -251,8 +246,8 @@ class TestSampleStanza:
             *get_params_for_get_raw_sample(),
         ],
     )
-    def test_get_raw_sample(self, sample_stanza, eventgen_params, sample_event_params):
-        ss = sample_stanza(eventgen_params=eventgen_params)
+    def test_get_raw_sample(self, sample_stanza, psa_data_params, sample_event_params):
+        ss = sample_stanza(psa_data_params=psa_data_params)
         data = "sample_raw"
         with patch("builtins.open", mock_open(read_data=data)), patch(
             "pytest_splunk_addon.standard_lib.sample_generation.sample_stanza.SampleEvent",
@@ -263,7 +258,7 @@ class TestSampleStanza:
 
     def test_get_raw_sample_empty_event(self, sample_stanza):
         ss = sample_stanza(
-            eventgen_params={
+            psa_data_params={
                 "tokens": tokens,
                 "input_type": "file_monitor",
             }
@@ -278,7 +273,7 @@ class TestSampleStanza:
 
     def test_break_events_exception(self, sample_stanza, caplog):
         ss = sample_stanza(
-            eventgen_params={
+            psa_data_params={
                 "tokens": {
                     "token_1": {"replacementType": "all"},
                     "token_2": {"replacementType": "random"},

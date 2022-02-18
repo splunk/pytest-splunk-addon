@@ -26,7 +26,7 @@ def test_generate_tests_without_conf_file(mock_object, caplog):
         )
     )
     assert caplog.messages == [
-        "Index Time tests cannot be executed using eventgen.conf, pytest-splunk-addon-data.conf is required."
+        "Index time tests cannot be executed without pytest-splunk-addon-data.conf"
     ]
 
 

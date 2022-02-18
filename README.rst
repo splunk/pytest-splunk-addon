@@ -42,13 +42,11 @@ Developing
 
 Note: Must install docker desktop, vscode or pycharm pro optional
 
-Note2: Appinspect requires libmagic verify this has been installed correctly each time a new workstation/vm is used https://dev.splunk.com/enterprise/docs/releaseapps/appinspect/splunkappinspectclitool/installappinspect
-
 .. code:: bash
 
     $ git clone --recurse-submodules -j8 git@github.com:splunk/pytest-splunk-addon.git
 
-    $ #setup python venv must be 3.7    
+    $ #setup python venv must be 3.7
     $ /Library/Frameworks/Python.framework/Versions/3.7/bin/python3 -m venv .venv
 
     $ source .venv/bin/activate
@@ -56,8 +54,6 @@ Note2: Appinspect requires libmagic verify this has been installed correctly eac
     $ cd pytest-splunk-addon
     
     $ pip3 install -r requirements.txt
-
-    $ pip3 install https://download.splunk.com/misc/appinspect/splunk-appinspect-latest.tar.gz
 
     $ python setup.py develop
     
