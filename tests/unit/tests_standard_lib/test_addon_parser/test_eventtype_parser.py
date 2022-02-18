@@ -1,61 +1,33 @@
-import pytest
-from unittest.mock import patch, PropertyMock
+from unittest.mock import patch, mock_open
 from pytest_splunk_addon.standard_lib.addon_parser.eventtype_parser import (
     EventTypeParser,
 )
 
+TEST_EVENTTYPES = """[fiction_is_splunkd]
+search = index=_internal sourcetype=splunkd
 
-output_to_build = {
-    "fiction_is_splunkd": {"search": "index=_internal sourcetype=splunkd"},
-    "fiction_for_tags_positive": {"search": "sourcetype=splunkd"},
-    "fiction_is_splunkd-%host%": {"search": "index=_internal sourcetype=splunkd"},
-}
+[fiction_for_tags_positive]
+search = sourcetype=splunkd
 
-
-def test_eventtypes_can_be_parsed_and_extracted(parser_instance):
-    assert list(parser_instance.eventtypes.sects.keys()) == [
-        "fiction_is_splunkd",
-        "fiction_for_tags_positive",
-        "fiction_is_splunkd-%host%",
-    ], "eventypes can not be called or does not have sects attribute"
+[fiction_is_splunkd-%host%]
+search = index=_internal sourcetype=splunkd
+"""
 
 
-def test_eventtypes_can_be_parsed_and_returned(parsed_output, parser_instance):
-    expected_outputs = [{"stanza": x} for x in parsed_output.keys()]
-    for i, event in enumerate(parser_instance.get_eventtypes()):
-        assert event == expected_outputs[i], "expeceted event {} not found".format(
-            expected_outputs[i]
-        )
+def test_eventtypes_can_be_parsed_and_returned():
+    expected_outputs = [
+        {"stanza": "fiction_is_splunkd"},
+        {"stanza": "fiction_for_tags_positive"},
+        {"stanza": "fiction_is_splunkd-%host%"},
+    ]
+    eventtypes_parser = EventTypeParser("unused_path")
+    with patch("builtins.open", new_callable=mock_open, read_data=TEST_EVENTTYPES):
+        output = eventtypes_parser.get_eventtypes()
+        assert expected_outputs == list(output)
 
 
-def test_get_eventtypes_calls_app_get_config(parser_instance):
-    for _ in parser_instance.get_eventtypes():
-        pass
-    parser_instance.app.eventtypes_conf.assert_called_once()
-
-
-def test_no_eventtype_config_file(parser_instance):
-    parser_instance.app.eventtypes_conf.side_effect = OSError
-    assert (
-        parser_instance.eventtypes is None
-    ), "eventtypes created when no config file exists"
-
-
-def test_nothing_returned_when_no_tags_config_file(parser):
-    with patch.object(
-        EventTypeParser, "eventtypes", new_callable=PropertyMock
-    ) as eventtypes_mock:
-        eventtypes_mock.return_value = None
-        parser_instance = parser(EventTypeParser, "eventtypes_conf", {})
-        output = [tag for tag in parser_instance.get_eventtypes() if tag]
-        assert output == [], "eventtypes returned when no config file exists"
-
-
-@pytest.fixture(scope="module")
-def parsed_output(build_parsed_output):
-    return build_parsed_output(output_to_build)
-
-
-@pytest.fixture()
-def parser_instance(parsed_output, parser):
-    return parser(EventTypeParser, "eventtypes_conf", parsed_output)
+def test_no_eventtypes_config_file():
+    eventtypes_parser = EventTypeParser("unused_path")
+    with patch("builtins.open", mock_open()) as mock_file:
+        mock_file.side_effect = OSError()
+        assert eventtypes_parser.eventtypes is None

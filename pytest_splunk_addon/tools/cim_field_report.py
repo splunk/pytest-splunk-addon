@@ -18,7 +18,6 @@ import sys
 import logging
 import json
 import argparse
-import re
 import time
 import traceback
 
@@ -498,7 +497,8 @@ def get_addon_eventtypes(addon_path):
     parser = AddonParser(addon_path)
 
     eventtypes = {
-        eventtype: [] for eventtype in parser.eventtype_parser.eventtypes.sects
+        eventtype["stanza"]: []
+        for eventtype in parser.eventtype_parser.get_eventtypes()
     }
 
     for item in parser.tags_parser.get_tags():

@@ -13,10 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import time
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
-from . import EventgenParser
+from . import PytestSplunkAddonDataParser
 from . import SampleStanza
 from itertools import cycle
 
@@ -47,14 +46,13 @@ class SampleGenerator(object):
         Generate SampleEvent object
         """
         if not SampleGenerator.sample_stanzas:
-            eventgen_parser = EventgenParser(
+            psa_data_parser = PytestSplunkAddonDataParser(
                 self.addon_path, config_path=self.config_path
             )
-            sample_stanzas = list(eventgen_parser.get_sample_stanzas())
-            SampleGenerator.conf_name = eventgen_parser.conf_name
+            sample_stanzas = psa_data_parser.get_sample_stanzas()
+            SampleGenerator.conf_name = psa_data_parser.conf_name
             with ThreadPoolExecutor(min(20, max(len(sample_stanzas), 1))) as t:
                 t.map(SampleStanza.get_raw_events, sample_stanzas)
-            # with ProcessPoolExecutor(self.process_count) as p:
             _ = list(
                 map(
                     SampleStanza.tokenize,

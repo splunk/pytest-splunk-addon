@@ -13,15 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# -*- coding: utf-8 -*-
 """
 Provides transforms.conf parsing mechanism
 """
+from typing import Dict
+from typing import Generator
+from typing import Optional
 import logging
 import re
 import os
 import csv
-from urllib.parse import unquote
+
+import addonfactory_splunk_conf_parser_lib as conf_parser
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -34,29 +37,29 @@ class TransformsParser(object):
 
     Args:
         splunk_app_path (str): Path of the Splunk app
-        app (splunk_appinspect.App): Object of Splunk app
     """
 
-    def __init__(self, splunk_app_path, app):
-        self.app = app
+    def __init__(self, splunk_app_path: str):
+        self._conf_parser = conf_parser.TABConfigParser()
         self.splunk_app_path = splunk_app_path
         self._transforms = None
 
     @property
-    def transforms(self):
-        try:
-            if not self._transforms:
-                LOGGER.info("Parsing transforms.conf")
-                self._transforms = self.app.transforms_conf()
+    def transforms(self) -> Optional[Dict]:
+        if self._transforms is not None:
             return self._transforms
-        except OSError:
-            LOGGER.warning("transforms.conf not found.")
-            return None
+        transforms_conf_path = os.path.join(
+            self.splunk_app_path, "default", "transforms.conf"
+        )
+        LOGGER.info("Parsing transforms.conf")
+        self._conf_parser.read(transforms_conf_path)
+        self._transforms = self._conf_parser.item_dict()
+        return self._transforms if self._transforms else None
 
     @convert_to_fields
-    def get_transform_fields(self, transforms_stanza):
+    def get_transform_fields(self, transforms_stanza: str) -> Optional[Generator]:
         """
-        Parse the tranforms.conf of the App & yield fields of
+        Parse the transforms.conf of the App & yield fields of
         a specific stanza.
 
         Supported extractions from transforms.conf are
@@ -83,45 +86,36 @@ class TransformsParser(object):
         try:
             if not self.transforms:
                 return
-            transforms_section = self.transforms.sects[transforms_stanza]
-            if "SOURCE_KEY" in transforms_section.options:
-                LOGGER.info("Parsing source_key of %s", transforms_stanza)
-                yield transforms_section.options["SOURCE_KEY"].value
-
-            if "REGEX" in transforms_section.options:
-                LOGGER.info("Parsing REGEX of %s", transforms_stanza)
+            transforms_values = self.transforms[transforms_stanza]
+            if "SOURCE_KEY" in transforms_values:
+                LOGGER.info(f"Parsing source_key of {transforms_stanza}")
+                yield transforms_values["SOURCE_KEY"]
+            if "REGEX" in transforms_values:
+                LOGGER.info(f"Parsing REGEX of {transforms_stanza}")
 
                 regex = r"\(\?P?[<'](?!_KEY|_VAL)([A-Za-z0-9_]+)[>']"
-                match_fields = re.findall(
-                    regex, transforms_section.options["REGEX"].value
-                )
+                match_fields = re.findall(regex, transforms_values["REGEX"])
                 for each_field in match_fields:
                     if not each_field.startswith(("_KEY_", "_VAL_")):
                         yield each_field.strip()
-
-            if "FIELDS" in transforms_section.options:
-                LOGGER.info("Parsing FIELDS of %s", transforms_stanza)
-                for each_field in transforms_section.options["FIELDS"].value.split(","):
+            if "FIELDS" in transforms_values:
+                LOGGER.info(f"Parsing FIELDS of {transforms_stanza}")
+                fields_values = transforms_values["FIELDS"]
+                for each_field in fields_values.split(","):
                     yield each_field.strip()
-
-            if "FORMAT" in transforms_section.options:
-                LOGGER.info("Parsing FORMAT of %s", transforms_stanza)
+            if "FORMAT" in transforms_values:
+                LOGGER.info(f"Parsing FORMAT of {transforms_stanza}")
                 regex = r"(\S*)::"
-                match_fields = re.findall(
-                    regex, transforms_section.options["FORMAT"].value
-                )
+                match_fields = re.findall(regex, transforms_values["FORMAT"])
                 for each_field in match_fields:
-                    if not "$" in each_field:
+                    if "$" not in each_field:
                         yield each_field.strip()
-
         except KeyError:
             LOGGER.error(
-                "The stanza {} does not exists in transforms.conf.".format(
-                    transforms_stanza
-                ),
+                f"The stanza {transforms_stanza} does not exists in transforms.conf."
             )
 
-    def get_lookup_csv_fields(self, lookup_stanza):
+    def get_lookup_csv_fields(self, lookup_stanza: str) -> Optional[Generator]:
         """
         Parse the fields from a lookup file for a specific lookup_stanza
 
@@ -133,15 +127,15 @@ class TransformsParser(object):
         """
         if not self.transforms:
             return
-        if lookup_stanza in self.transforms.sects:
-            stanza = self.transforms.sects[lookup_stanza]
-            if "filename" in stanza.options:
-                lookup_file = stanza.options["filename"].value
+        if lookup_stanza in self.transforms.keys():
+            stanza_values = self.transforms[lookup_stanza]
+            if "filename" in stanza_values:
+                lookup_file = stanza_values["filename"]
                 try:
                     location = os.path.join(
                         self.splunk_app_path, "lookups", lookup_file
                     )
-                    with open(location, "r") as csv_file:
+                    with open(location) as csv_file:
                         reader = csv.DictReader(csv_file)
                         fieldnames = reader.fieldnames
                         for items in fieldnames:

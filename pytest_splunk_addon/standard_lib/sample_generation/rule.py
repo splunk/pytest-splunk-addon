@@ -16,7 +16,6 @@
 """
 Provides Rules for all possible replacements for tokens.
 """
-import csv
 import re
 import string
 import uuid
@@ -62,7 +61,7 @@ class Rule:
 
     Args:
         token (dict): Dictionary containing token and its data
-        eventgen_params (dict): Eventgen stanzas dictionary
+        psa_data_params (dict): PSA data stanzas dictionary
         sample_path (str): Path to the samples directory
     """
 
@@ -70,24 +69,24 @@ class Rule:
     src_header = ["host", "ipv4", "ipv6", "fqdn"]
     token_value = namedtuple("token_value", ["key", "value"])
 
-    def __init__(self, token, eventgen_params=None, sample_path=None):
+    def __init__(self, token, psa_data_params=None, sample_path=None):
         self.token = token["token"]
         self.replacement = token["replacement"]
         self.replacement_type = token["replacementType"]
         self.field = token.get("field", self.token.strip("#"))
-        self.eventgen_params = eventgen_params
+        self.psa_data_params = psa_data_params
         self.sample_path = sample_path
         self.fake = Faker()
         self.file_count = 0
 
     @classmethod
-    def parse_rule(cls, token, eventgen_params, sample_path):
+    def parse_rule(cls, token, psa_data_params, sample_path):
         """
         Returns appropriate Rule object as per replacement type of token.
 
         Args:
             token (dict): Dictionary containing token and its data
-            eventgen_params (dict): Eventgen stanzas dictionary
+            psa_data_params (dict): PSA data stanzas dictionary
             sample_path (str): Path to the samples directory
         """
         rule_book = {
@@ -135,7 +134,7 @@ class Rule:
         if replacement_type == "static":
             return StaticRule(token)
         elif replacement_type == "timestamp":
-            return TimeRule(token, eventgen_params)
+            return TimeRule(token, psa_data_params)
         elif replacement_type == "random" or replacement_type == "all":
             for each_rule in rule_book:
                 if replacement.lower().startswith(each_rule):
@@ -619,9 +618,9 @@ class TimeRule(Rule):
             sample (SampleEvent): Instance containing event info
             token_count (int): No. of token in sample event where rule is applicable
         """
-        earliest = self.eventgen_params.get("earliest")
-        latest = self.eventgen_params.get("latest")
-        timezone_time = self.eventgen_params.get("timezone", "0000")
+        earliest = self.psa_data_params.get("earliest")
+        latest = self.psa_data_params.get("latest")
+        timezone_time = self.psa_data_params.get("timezone", "0000")
         random_time = datetime.utcnow()
         time_parser = time_parse()
         time_delta = datetime.now().timestamp() - datetime.utcnow().timestamp()

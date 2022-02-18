@@ -16,7 +16,6 @@
 # -*- coding: utf-8 -*-
 """
 Module usage:
-- splunk_appinspect: To parse the configuration files from Add-on package
 - helmut : To connect to a Splunk instance. source: splunk-sdk
 - helmut_lib: Provides various Utility functions to search on Splunk. Source: splunk-sdk
 """
