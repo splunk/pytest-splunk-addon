@@ -27,7 +27,7 @@ import addonfactory_splunk_conf_parser_lib as conf_parser
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class SavedSearchParser(object):
+class SavedSearchParser:
     """
     Parses savedsearches.conf and extracts savedsearches
 

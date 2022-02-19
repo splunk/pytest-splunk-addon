@@ -32,7 +32,7 @@ from .transforms_parser import TransformsParser
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class PropsParser(object):
+class PropsParser:
     """
     Parses props.conf and extracts the fields.
 
@@ -262,7 +262,7 @@ class PropsParser(object):
             r"(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+)"
         )
         fields_tuples = re.findall(regex, value, re.IGNORECASE)
-        return list(set([item for t in fields_tuples for item in t]))
+        return list({item for t in fields_tuples for item in t})
 
     def _get_report_fields(self, name: str, value: str):
         """

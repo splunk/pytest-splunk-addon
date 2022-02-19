@@ -134,7 +134,7 @@ def get_config():
     LOGGER.setLevel(args.log_level)
 
     if not os.path.exists(args.splunk_app) or not os.path.isdir(args.splunk_app):
-        msg = "There is no such directory: {}".format(args.splunk_app)
+        msg = f"There is no such directory: {args.splunk_app}"
         LOGGER.error(msg)
         sys.exit(msg)
 
@@ -222,7 +222,7 @@ def get_punct_by_eventtype(jobs, eventtypes, config):
     """
 
     start = time.time()
-    eventtypes_str = ",".join(['"{}"'.format(et) for et in eventtypes])
+    eventtypes_str = ",".join([f'"{et}"' for et in eventtypes])
     query = 'search (index="{}") eventtype IN ({}) | dedup punct,eventtype | table punct,eventtype'.format(
         config.splunk_index, eventtypes_str
     )
@@ -238,7 +238,7 @@ def get_punct_by_eventtype(jobs, eventtypes, config):
         )
         return result
     except Exception as e:
-        LOGGER.error("Errors when executing search!!! Error: {}".format(e))
+        LOGGER.error(f"Errors when executing search!!! Error: {e}")
         LOGGER.debug(traceback.format_exc())
 
 
@@ -263,7 +263,7 @@ def get_field_names(jobs, eventtypes, config):
     """
 
     start = time.time()
-    eventtypes_str = ",".join(['"{}"'.format(et) for et in eventtypes])
+    eventtypes_str = ",".join([f'"{et}"' for et in eventtypes])
     query = 'search (index="{}") eventtype IN ({}) | fieldsummary'.format(
         config.splunk_index, eventtypes_str
     )
@@ -274,12 +274,10 @@ def get_field_names(jobs, eventtypes, config):
         result = collect_job_results(
             job, [], lambda acc, recs: acc.extend([v["field"] for v in recs])
         )
-        LOGGER.info(
-            "Time taken to collect field names: {} s".format(time.time() - start)
-        )
+        LOGGER.info(f"Time taken to collect field names: {time.time() - start} s")
         return result
     except Exception as e:
-        LOGGER.error("Errors when executing search!!! Error: {}".format(e))
+        LOGGER.error(f"Errors when executing search!!! Error: {e}")
         LOGGER.debug(traceback.format_exc())
 
 
@@ -343,7 +341,7 @@ def get_fieldsummary(jobs, punct_by_eventtype, config):
             job.wait(config.splunk_max_time)
             summary = collect_job_results(job, [], lambda acc, recs: acc.extend(recs))
         except Exception as e:
-            LOGGER.error("Errors executing search: {}".format(e))
+            LOGGER.error(f"Errors executing search: {e}")
             LOGGER.debug(traceback.format_exc())
 
         try:
@@ -351,10 +349,10 @@ def get_fieldsummary(jobs, punct_by_eventtype, config):
                 f["values"] = json.loads(f["values"])
             result[eventtype].append(summary)
         except Exception as e:
-            LOGGER.warn('Parameter "values" is not a json object: {}'.format(e))
+            LOGGER.warn(f'Parameter "values" is not a json object: {e}')
             LOGGER.debug(traceback.format_exc())
 
-    LOGGER.info("Time taken to build fieldsummary: {}".format(time.time() - start))
+    LOGGER.info(f"Time taken to build fieldsummary: {time.time() - start}")
     return result
 
 
@@ -380,7 +378,7 @@ def get_fieldsreport(jobs, eventtypes, fields, config):
 
     start = time.time()
     report, sourcetypes = {}, set()
-    field_list = ",".join(['"{}"'.format(f) for f in fields])
+    field_list = ",".join([f'"{f}"' for f in fields])
     for eventtype, tags in eventtypes.items():
         query = 'search (index="{}") eventtype="{}" | table sourcetype,{}'.format(
             config.splunk_index, eventtype, field_list
@@ -403,7 +401,7 @@ def get_fieldsreport(jobs, eventtypes, fields, config):
                 ],
             }
         except Exception as e:
-            LOGGER.error("Errors when executing search!!! Error: {}".format(e))
+            LOGGER.error(f"Errors when executing search!!! Error: {e}")
             LOGGER.debug(traceback.format_exc())
 
     LOGGER.info(
@@ -478,7 +476,7 @@ def build_report(jobs, eventtypes, config):
     with open(config.splunk_report_file, "w") as f:
         json.dump(summary, f, indent=4)
 
-    LOGGER.info("Total time taken to generate report: {} s".format(time.time() - start))
+    LOGGER.info(f"Total time taken to generate report: {time.time() - start} s")
 
 
 def get_addon_eventtypes(addon_path):
@@ -549,7 +547,7 @@ def main():
         LOGGER.error(msg)
         sys.exit(msg)
     except Exception as error:
-        msg = "Unexpected exception: {}".format(error)
+        msg = f"Unexpected exception: {error}"
         LOGGER.error(msg)
         LOGGER.debug(traceback.format_exc())
         sys.exit(msg)

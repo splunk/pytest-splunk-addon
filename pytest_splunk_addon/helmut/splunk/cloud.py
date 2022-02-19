@@ -58,7 +58,7 @@ class CloudSplunk:
         self._start_listeners = set()
         self._connectors = {}
         self._name = name or id(self)
-        LOGGER.debug("Helmut Splunk created:{splunk}".format(splunk=self))
+        LOGGER.debug(f"Helmut Splunk created:{self}")
         self.set_credentials_to_use(username=username, password=password)
 
         server_web_scheme = server_web_host = server_web_port = None
@@ -77,7 +77,7 @@ class CloudSplunk:
         self._web_scheme = web_scheme or server_web_scheme or "http"
         self._web_host = web_host or server_web_host or self._splunkd_host
         self._web_port = web_port or server_web_port or ""
-        LOGGER.debug("Set web base to: {}".format(self.web_base()))
+        LOGGER.debug(f"Set web base to: {self.web_base()}")
 
     @property
     def _str_format(self):
@@ -210,7 +210,7 @@ class CloudSplunk:
         connector_id = self._get_connector_id(user=conn.username)
 
         if connector_id in list(self._connectors.keys()):
-            LOGGER.warning("Connector {id} is being replaced".format(id=connector_id))
+            LOGGER.warning(f"Connector {connector_id} is being replaced")
             del self._connectors[connector_id]
         self._connectors[connector_id] = conn
 
@@ -264,7 +264,7 @@ class CloudSplunk:
         @param user: splunk username used by connector
         @type user: string
         """
-        return "{user}".format(user=user)
+        return f"{user}"
 
     @property
     def default_connector(self):
@@ -296,9 +296,7 @@ class CloudSplunk:
 
         connector_id = self._get_connector_id(self.username)
         if connector_id not in list(self._connectors.keys()):
-            raise InvalidConnector(
-                "Connector {id} does not exist".format(id=connector_id)
-            )
+            raise InvalidConnector(f"Connector {connector_id} does not exist")
         connector = self._connectors[connector_id]
         self._attempt_login(connector)
         return connector
@@ -327,7 +325,7 @@ class CloudSplunk:
         job = jobs.create("search %s" % search_string)
         job.wait()
         event_count = job.get_event_count()
-        LOGGER.debug("Event count: {ec}".format(ec=event_count))
+        LOGGER.debug(f"Event count: {event_count}")
         return event_count
 
     def get_final_event_count(
@@ -448,7 +446,7 @@ class InvalidStartListener(AttributeError):
 
     def __init__(self, message=None):
         message = message or "Start listeners must be callable"
-        super(InvalidStartListener, self).__init__(message)
+        super().__init__(message)
 
 
 class InvalidConnector(KeyError):

@@ -41,8 +41,7 @@ class SDKJobsWrapper:
         return len(list(self.items()))
 
     def __iter__(self):
-        for item in list(self.items()):
-            yield item
+        yield from list(self.items())
 
     def __contains__(self, sid):
         for job in self:

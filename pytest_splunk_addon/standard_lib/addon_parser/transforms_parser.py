@@ -31,7 +31,7 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 from . import convert_to_fields
 
 
-class TransformsParser(object):
+class TransformsParser:
     """
     Parses transforms.conf and extracts fields
 
@@ -142,7 +142,7 @@ class TransformsParser(object):
                             yield items.strip()
                 # If there is an error. the test should fail with the current fields
                 # This makes sure the test doesn't exit prematurely
-                except (OSError, IOError, UnboundLocalError, TypeError) as e:
+                except (OSError, UnboundLocalError, TypeError) as e:
                     LOGGER.error(
                         "Could not read the lookup file, skipping test. error=%s",
                         str(e),

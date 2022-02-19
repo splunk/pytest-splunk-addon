@@ -27,7 +27,7 @@ import addonfactory_splunk_conf_parser_lib as conf_parser
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class EventTypeParser(object):
+class EventTypeParser:
     """
     Parses eventtypes.conf and extracts eventtypes
 

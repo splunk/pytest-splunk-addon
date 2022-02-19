@@ -219,10 +219,10 @@ class Rule:
         csv_row = []
         global user_email_count
         user_email_count += 1
-        name = "user{}".format(user_email_count)
-        email = "user{}@email.com".format(user_email_count)
-        domain_user = r"sample_domain.com\user{}".format(user_email_count)
-        distinguished_name = "CN=user{}".format(user_email_count)
+        name = f"user{user_email_count}"
+        email = f"user{user_email_count}@email.com"
+        domain_user = rf"sample_domain.com\user{user_email_count}"
+        distinguished_name = f"CN=user{user_email_count}"
         csv_row.extend([name, email, domain_user, distinguished_name])
         index_list = [i for i, item in enumerate(headers) if item in value_list]
         if hasattr(sample, "replacement_map") and key in sample.replacement_map:
@@ -311,7 +311,7 @@ class FloatRule(Rule):
         float_match = re.match(r"[Ff]loat\[(-?[\d\.]+):(-?[\d\.]+)\]", self.replacement)
         if float_match:
             lower_limit, upper_limit = float_match.groups()
-            precision = re.search("\[-?\d+\.?(\d*):", self.replacement).group(1)
+            precision = re.search(r"\[-?\d+\.?(\d*):", self.replacement).group(1)
             if not precision:
                 precision = str(1)
             for _ in range(token_count):
@@ -428,8 +428,8 @@ class FileRule(Rule):
                     elif self.replacement_type == "all":
                         for each_value in lines:
                             yield self.token_value(*([each_value] * 2))
-            except IOError:
-                LOGGER.warning("File not found : {}".format(relative_file_path))
+            except OSError:
+                LOGGER.warning(f"File not found : {relative_file_path}")
 
     def get_file_path(self):
         """
@@ -488,7 +488,7 @@ class FileRule(Rule):
         """
         all_data = []
         try:
-            with open(file_path, "r") as _file:
+            with open(file_path) as _file:
                 selected_sample_lines = _file.readlines()
                 for i in selected_sample_lines:
                     if i.strip() != "":
@@ -541,8 +541,8 @@ class FileRule(Rule):
                 f"Index for column {index} in replacement"
                 f"file {file_path} is out of bounds"
             )
-        except IOError:
-            LOGGER.warning("File not found : {}".format(file_path))
+        except OSError:
+            LOGGER.warning(f"File not found : {file_path}")
 
     def lookupfile(self, sample, file_path, index, token_count):
         """
@@ -557,7 +557,7 @@ class FileRule(Rule):
         all_data = []
         header = ""
         try:
-            with open(file_path, "r") as _file:
+            with open(file_path) as _file:
                 header = next(_file)
                 for line in _file:
                     if line.strip() != "":
@@ -603,10 +603,10 @@ class FileRule(Rule):
                             yield self.token
         except ValueError:
             LOGGER.error(
-                "Column '%s' is not present replacement file '%s'" % (index, file_path)
+                f"Column '{index}' is not present replacement file '{file_path}'"
             )
-        except IOError:
-            LOGGER.warning("File not found : {}".format(file_path))
+        except OSError:
+            LOGGER.warning(f"File not found : {file_path}")
 
 
 class TimeRule(Rule):
@@ -901,22 +901,20 @@ class UrlRule(Rule):
                     replace_token = False
             if replace_token:
                 for _ in range(token_count):
-                    if bool(
-                        set(["ip_host", "fqdn_host", "full"]).intersection(value_list)
-                    ):
+                    if bool({"ip_host", "fqdn_host", "full"}.intersection(value_list)):
                         url = ""
                         domain_name = []
-                        if bool(set(["full", "protocol"]).intersection(value_list)):
+                        if bool({"full", "protocol"}.intersection(value_list)):
                             url = url + choice(["http://", "https://"])
-                        if bool(set(["full", "ip_host"]).intersection(value_list)):
+                        if bool({"full", "ip_host"}.intersection(value_list)):
                             domain_name.append(sample.get_ipv4("url"))
-                        if bool(set(["full", "fqdn_host"]).intersection(value_list)):
+                        if bool({"full", "fqdn_host"}.intersection(value_list)):
                             domain_name.append(self.fake.hostname())
                         url = url + choice(domain_name)
                     else:
                         url = self.fake.url()
 
-                    if bool(set(["full", "path"]).intersection(value_list)):
+                    if bool({"full", "path"}.intersection(value_list)):
                         url = (
                             url
                             + "/"
@@ -928,7 +926,7 @@ class UrlRule(Rule):
                             )
                         )
 
-                    if bool(set(["full", "query"]).intersection(value_list)):
+                    if bool({"full", "query"}.intersection(value_list)):
                         url = url + self.generate_url_query_params()
                     yield self.token_value(*([str(url)] * 2))
         else:

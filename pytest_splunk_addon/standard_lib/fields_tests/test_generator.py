@@ -30,7 +30,7 @@ from . import FieldBank
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class FieldTestGenerator(object):
+class FieldTestGenerator:
     """
     Generates test cases to test the knowledge objects of an Add-on.
 

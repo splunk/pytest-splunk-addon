@@ -34,7 +34,7 @@ from .savedsearches_parser import SavedSearchParser
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class AddonParser(object):
+class AddonParser:
     """
     Parse the knowledge objects from an Add-on's configuration files.
     Supports: fields from props & transforms, tags, eventtypes

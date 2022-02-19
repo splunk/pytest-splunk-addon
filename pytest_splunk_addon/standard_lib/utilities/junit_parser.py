@@ -25,7 +25,7 @@ from html import escape, unescape
 from junitparser import JUnitXml, Properties, Skipped, Failure, TestCase
 
 
-class JunitParser(object):
+class JunitParser:
     def __init__(self, junit_xml_path):
         if os.path.isfile(junit_xml_path):
             self._junitfile = junit_xml_path

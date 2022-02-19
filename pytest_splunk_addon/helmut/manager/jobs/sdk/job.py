@@ -49,7 +49,7 @@ class SDKJobWrapper:
         return self.raw_sdk_job.sid
 
     def __str__(self):
-        return "SDK Job with SID {sid}".format(sid=self.sid)
+        return f"SDK Job with SID {self.sid}"
 
     def get_event_count(self):
         return int(self.raw_sdk_job.refresh().content.eventCount)

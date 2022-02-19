@@ -22,7 +22,7 @@ import json
 from .field_test_adapter import FieldTestAdapater
 
 
-class FieldTestHelper(object):
+class FieldTestHelper:
     """
     Provides the helper methods to test addon_parser.Field object
 
@@ -259,7 +259,7 @@ class FieldTestHelper(object):
         col_length = [
             max(map(lambda cell: len(str(cell)), col)) for col in zip(*table_list)
         ]
-        format_str = " | ".join(["{{:<{}}}".format(i) for i in col_length])
+        format_str = " | ".join([f"{{:<{i}}}" for i in col_length])
         # Separating line
         table_list.insert(1, ["-" * i for i in col_length])
         for each_value in table_list:

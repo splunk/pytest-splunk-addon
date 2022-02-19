@@ -120,7 +120,7 @@ class HECRawEventIngestor(EventIngestor):
                 headers=self.session_headers,
                 verify=False,
             )
-            LOGGER.debug("Status code: {}".format(response.status_code))
+            LOGGER.debug(f"Status code: {response.status_code}")
             if response.status_code not in (200, 201):
                 raise Exception(
                     "\nStatus code: {} \nReason: {} \ntext:{}".format(
@@ -129,5 +129,5 @@ class HECRawEventIngestor(EventIngestor):
                 )
 
         except Exception as e:
-            LOGGER.error("\n\nAn error occurred while data ingestion.{}".format(e))
-            raise type(e)("An error occurred while data ingestion.{}".format(e))
+            LOGGER.error(f"\n\nAn error occurred while data ingestion.{e}")
+            raise type(e)(f"An error occurred while data ingestion.{e}")

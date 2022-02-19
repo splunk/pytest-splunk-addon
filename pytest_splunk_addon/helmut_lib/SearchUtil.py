@@ -34,7 +34,7 @@ class SearchUtilException(Exception):
         return repr(self.message)
 
 
-class SearchUtil(object):
+class SearchUtil:
     def __init__(self, jobs, logger):
         """
         Constructor of the SearchUtil object.

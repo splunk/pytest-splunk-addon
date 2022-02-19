@@ -29,7 +29,7 @@ import pytest
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class AppTestGenerator(object):
+class AppTestGenerator:
     """
     Test Generator for an App.
     Generates test cases of Fields and CIM.

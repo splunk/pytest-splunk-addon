@@ -265,13 +265,11 @@ class SDKConnector:
             # FAST-8222
         except AuthenticationError as err:
             LOGGER.debug(
-                "SDKconnector %s:%s is NOT logged in" % (self.username, self.password)
+                f"SDKconnector {self.username}:{self.password} is NOT logged in"
             )
             return False
         else:
-            LOGGER.debug(
-                "SDKconnector %s:%s is logged in" % (self.username, self.password)
-            )
+            LOGGER.debug(f"SDKconnector {self.username}:{self.password} is logged in")
             return True
 
     def _was_logged_in(self):

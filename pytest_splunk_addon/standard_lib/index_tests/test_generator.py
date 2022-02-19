@@ -23,7 +23,7 @@ from ..sample_generation.sample_event import SampleEvent
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class IndexTimeTestGenerator(object):
+class IndexTimeTestGenerator:
     """
     Generates test cases to test the index time extraction of an Add-on.
 
@@ -132,7 +132,7 @@ class IndexTimeTestGenerator(object):
                     )
                 )
             except ValueError as e:
-                raise_warning("Invalid value  {}".format(e))
+                raise_warning(f"Invalid value  {e}")
 
             if event.sample_name not in line_breaker_params:
                 line_breaker_params[event.sample_name] = {}
@@ -193,7 +193,7 @@ class IndexTimeTestGenerator(object):
         else:
             hosts = None
             LOGGER.error(
-                "Invalid 'host_type' for stanza {}".format(tokenized_event.sample_name)
+                f"Invalid 'host_type' for stanza {tokenized_event.sample_name}"
             )
         if isinstance(hosts, str):
             hosts = [hosts]
@@ -320,5 +320,5 @@ class IndexTimeTestGenerator(object):
                 "source": self.get_source(tokenized_event),
                 "tokenized_event": tokenized_event,
             },
-            id="{}::{}".format(self.get_sourcetype(tokenized_event), id_host),
+            id=f"{self.get_sourcetype(tokenized_event)}::{id_host}",
         )
