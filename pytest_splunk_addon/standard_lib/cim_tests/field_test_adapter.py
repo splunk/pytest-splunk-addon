@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from ..addon_parser import Field
+from pytest_splunk_addon.standard_lib.addon_parser.fields import Field
 
 
 class FieldTestAdapater(Field):

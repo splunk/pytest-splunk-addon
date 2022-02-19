@@ -13,13 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import logging
 import socket
 from time import sleep
-import os
-import re
-import concurrent.futures
-from .base_event_ingestor import EventIngestor
-import logging
+
+from pytest_splunk_addon.standard_lib.event_ingestors.base_event_ingestor import (
+    EventIngestor,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

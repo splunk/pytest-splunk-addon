@@ -1,6 +1,8 @@
-import pytest
-from unittest.mock import patch, call
 from collections import namedtuple
+from unittest.mock import call, patch
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.cim_tests.data_set import DataSet
 
 field = namedtuple("Field", ["name"])

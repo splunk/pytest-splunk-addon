@@ -13,13 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import logging
 import os
 import re
-import logging
-from .rule import raise_warning
-from . import SampleStanza
 
 import addonfactory_splunk_conf_parser_lib as conf_parser
+
+from pytest_splunk_addon.standard_lib.sample_generation.rule import raise_warning
+from pytest_splunk_addon.standard_lib.sample_generation.sample_stanza import (
+    SampleStanza,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

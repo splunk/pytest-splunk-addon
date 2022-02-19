@@ -16,13 +16,17 @@
 """
 Parse the Junit XML report and convert it to required format
 """
-from ..cim_compliance import CIMReportGenerator
 import argparse
 import errno
 import os
 import sys
 from html import escape, unescape
-from junitparser import JUnitXml, Properties, Skipped, Failure, TestCase
+
+from junitparser import Failure, JUnitXml, Properties, Skipped, TestCase
+
+from pytest_splunk_addon.standard_lib.cim_compliance.cim_report_generator import (
+    CIMReportGenerator,
+)
 
 
 class JunitParser:

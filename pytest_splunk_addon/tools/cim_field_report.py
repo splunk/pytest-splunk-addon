@@ -13,22 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import argparse
+import json
+import logging
 import os.path
 import sys
-import logging
-import json
-import argparse
 import time
 import traceback
 
-
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
+from splunklib import binding
 
 from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
 from pytest_splunk_addon.helmut.splunk.cloud import CloudSplunk
 from pytest_splunk_addon.standard_lib.addon_parser import AddonParser
-
-from splunklib import binding
 
 logging.basicConfig(
     format="%(asctime)s.%(msecs)03d %(name)s %(levelname)s %(message)s",

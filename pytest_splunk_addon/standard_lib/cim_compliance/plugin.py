@@ -17,8 +17,7 @@
 Plugin to generate the report dynamically after executing the test cases
 """
 import pytest
-import time
-import os
+
 from .cim_report_generator import CIMReportGenerator
 
 

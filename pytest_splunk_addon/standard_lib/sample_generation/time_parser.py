@@ -13,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from datetime import timedelta, datetime
-import math
 import logging
+import math
 import re
+from datetime import datetime, timedelta
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

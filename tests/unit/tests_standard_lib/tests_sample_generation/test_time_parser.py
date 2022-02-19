@@ -1,10 +1,9 @@
-import pytest
 from datetime import datetime
+
+import pytest
 from freezegun import freeze_time
 
-from pytest_splunk_addon.standard_lib.sample_generation.time_parser import (
-    time_parse,
-)
+from pytest_splunk_addon.standard_lib.sample_generation.time_parser import time_parse
 
 
 @pytest.fixture(scope="session")

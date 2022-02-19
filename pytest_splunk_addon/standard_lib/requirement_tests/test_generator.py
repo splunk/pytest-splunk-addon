@@ -16,12 +16,12 @@
 """
 Generates test cases to verify the event analytics logs.
 """
-import pytest
 import logging
 import os
-from xml.etree import cElementTree as ET
 import re
+from xml.etree import cElementTree as ET
 
+import pytest
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

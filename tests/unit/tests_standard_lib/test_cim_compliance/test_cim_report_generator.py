@@ -1,9 +1,11 @@
-import pytest
-from unittest.mock import MagicMock, patch, call
 from collections import Counter
+from unittest.mock import MagicMock, call, patch
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.cim_compliance.cim_report_generator import (
-    CIMReportGenerator,
     NOT_SUPPORTED_DATAMODELS,
+    CIMReportGenerator,
 )
 
 

@@ -1,6 +1,8 @@
-import pytest
-from unittest.mock import patch
 from collections import namedtuple
+from unittest.mock import patch
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.app_test_generator import AppTestGenerator
 
 module = "pytest_splunk_addon.standard_lib.app_test_generator"

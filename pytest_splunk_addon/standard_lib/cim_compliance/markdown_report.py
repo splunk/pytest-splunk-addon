@@ -16,7 +16,7 @@
 """
 Markdown generator
 """
-from .base_report import CIMReport
+from pytest_splunk_addon.standard_lib.cim_compliance.base_report import CIMReport
 
 
 class MarkDownReport(CIMReport):

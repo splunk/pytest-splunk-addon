@@ -1,6 +1,7 @@
 import importlib
+from unittest.mock import MagicMock, PropertyMock, patch
+
 import pytest
-from unittest.mock import MagicMock, patch, PropertyMock
 
 EXAMPLE_PATH = "Example_Path"
 PROPS_RETURN_VALUE = "Props_return_value"

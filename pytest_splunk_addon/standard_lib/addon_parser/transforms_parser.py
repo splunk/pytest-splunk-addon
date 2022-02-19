@@ -16,19 +16,17 @@
 """
 Provides transforms.conf parsing mechanism
 """
-from typing import Dict
-from typing import Generator
-from typing import Optional
-import logging
-import re
-import os
 import csv
+import logging
+import os
+import re
+from typing import Dict, Generator, Optional
 
 import addonfactory_splunk_conf_parser_lib as conf_parser
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-from . import convert_to_fields
+from pytest_splunk_addon.standard_lib.addon_parser.fields import convert_to_fields
 
 
 class TransformsParser:

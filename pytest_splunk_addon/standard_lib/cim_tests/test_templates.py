@@ -18,8 +18,10 @@
 Includes the test scenarios to check the CIM compatibility of an Add-on.
 """
 import logging
+
 import pytest
-from .field_test_helper import FieldTestHelper
+
+from pytest_splunk_addon.standard_lib.cim_tests.field_test_helper import FieldTestHelper
 
 
 class CIMTestTemplates:

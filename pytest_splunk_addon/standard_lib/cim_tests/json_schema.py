@@ -18,10 +18,12 @@
 Includes JSON schema for data models
 """
 import json
-import os.path as op
-from .base_schema import BaseSchema
-from jsonschema import Draft7Validator
 import logging
+import os.path as op
+
+from jsonschema import Draft7Validator
+
+from pytest_splunk_addon.standard_lib.cim_tests.base_schema import BaseSchema
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

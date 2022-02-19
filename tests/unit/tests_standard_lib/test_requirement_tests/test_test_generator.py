@@ -1,7 +1,9 @@
-import pytest
 import traceback
-from unittest.mock import MagicMock, call, patch
 from collections import namedtuple
+from unittest.mock import MagicMock, call, patch
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.requirement_tests.test_generator import (
     ReqsTestGenerator,
 )

@@ -13,12 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from .base_event_ingestor import EventIngestor
-import requests
-from time import time, mktime
 import concurrent.futures
 import logging
-import os
+
+import requests
+
+from pytest_splunk_addon.standard_lib.event_ingestors.base_event_ingestor import (
+    EventIngestor,
+)
 
 requests.urllib3.disable_warnings()
 

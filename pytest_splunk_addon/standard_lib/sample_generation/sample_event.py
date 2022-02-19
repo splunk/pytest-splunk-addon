@@ -13,11 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import re
 import logging
-from ..index_tests import key_fields
-from faker import Faker
+import re
 from copy import deepcopy
+
+from faker import Faker
+
+from pytest_splunk_addon.standard_lib.index_tests import key_fields
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 host_ipv4, dvc_ipv4 = 51, 0

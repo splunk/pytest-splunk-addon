@@ -1,9 +1,14 @@
+import logging
 import os
 import shutil
-import logging
+
 import pytest
+
+from pytest_splunk_addon.standard_lib.sample_generation.rule import Rule
+from pytest_splunk_addon.standard_lib.sample_generation.sample_generator import (
+    SampleGenerator,
+)
 from tests import constants
-from pytest_splunk_addon.standard_lib.sample_generation import SampleGenerator, Rule
 
 logger = logging.getLogger("test_pytest_splunk_addon")
 

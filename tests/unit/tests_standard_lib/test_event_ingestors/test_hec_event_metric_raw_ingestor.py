@@ -1,4 +1,7 @@
+from urllib.parse import unquote
+
 import pytest
+
 from pytest_splunk_addon.standard_lib.event_ingestors.hec_event_ingestor import (
     HECEventIngestor,
 )
@@ -8,8 +11,6 @@ from pytest_splunk_addon.standard_lib.event_ingestors.hec_metric_ingestor import
 from pytest_splunk_addon.standard_lib.event_ingestors.hec_raw_ingestor import (
     HECRawEventIngestor,
 )
-from urllib.parse import unquote
-
 
 HEC_URI = "https://127.0.0.1:55238/services/collector"
 HEADERS = {"Authorization": "Splunk 9b741d03-43e9-4164-908b-e09102327d22"}

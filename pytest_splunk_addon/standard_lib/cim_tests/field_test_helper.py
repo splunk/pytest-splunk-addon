@@ -18,8 +18,10 @@
 Provides the helper methods to test addon_parser.Field object
 """
 import logging
-import json
-from .field_test_adapter import FieldTestAdapater
+
+from pytest_splunk_addon.standard_lib.cim_tests.field_test_adapter import (
+    FieldTestAdapater,
+)
 
 
 class FieldTestHelper:

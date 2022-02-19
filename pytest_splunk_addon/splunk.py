@@ -20,20 +20,24 @@ Module usage:
 - helmut_lib: Provides various Utility functions to search on Splunk. Source: splunk-sdk
 """
 
+import configparser
+import json
 import logging
 import os
 import shutil
 from time import sleep
-import json
+
 import pytest
 import requests
 import splunklib.client as client
-from .helmut.manager.jobs.sdk import SDKJobsWrapper
-from .helmut.splunk.cloud import CloudSplunk
-from .helmut_lib.SearchUtil import SearchUtil
-from .standard_lib.event_ingestors import IngestorHelper
-import configparser
 from filelock import FileLock
+
+from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
+from pytest_splunk_addon.helmut.splunk.cloud import CloudSplunk
+from pytest_splunk_addon.helmut_lib.SearchUtil import SearchUtil
+from pytest_splunk_addon.standard_lib.event_ingestors.ingestor_helper import (
+    IngestorHelper,
+)
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 

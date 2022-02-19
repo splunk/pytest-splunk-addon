@@ -17,13 +17,15 @@
 HEC Event Ingestor class for Metric data.
 Indextime tests of Metric data will be covered in upcoming versions of the plugin. It is not supported in current version.
 """
-from .base_event_ingestor import EventIngestor
-import requests
-import time
 import logging
 
+import requests
+
+from pytest_splunk_addon.standard_lib.event_ingestors.base_event_ingestor import (
+    EventIngestor,
+)
+
 requests.urllib3.disable_warnings()
-import os
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

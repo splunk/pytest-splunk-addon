@@ -1,9 +1,10 @@
 import datetime
+from collections import namedtuple
+from unittest.mock import ANY, MagicMock, call, mock_open, patch
+
 import pytest
 import pytz
-from collections import namedtuple
 from freezegun import freeze_time
-from unittest.mock import MagicMock, call, patch, mock_open, ANY
 
 import pytest_splunk_addon.standard_lib.sample_generation.rule
 

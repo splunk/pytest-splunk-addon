@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import patch
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.cim_compliance.markdown_table import MarkdownTable
 
 

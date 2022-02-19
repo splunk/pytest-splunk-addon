@@ -31,6 +31,3 @@ The test generation mechanism is divided into 3 types of class
 5. Other utility classes like Add-on parser & Data model handlers.
 
 """
-
-from .app_test_generator import AppTestGenerator
-from .addon_basic import Basic

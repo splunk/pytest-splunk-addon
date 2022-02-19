@@ -19,10 +19,16 @@ Base class for test cases. Provides test cases to verify
 field extractions and CIM compatibility.
 """
 
-from .fields_tests import FieldTestTemplates
-from .cim_tests import CIMTestTemplates, FieldTestHelper
-from .index_tests import IndexTimeTestTemplate
 import pytest
+
+from pytest_splunk_addon.standard_lib.cim_tests.field_test_helper import FieldTestHelper
+from pytest_splunk_addon.standard_lib.cim_tests.test_templates import CIMTestTemplates
+from pytest_splunk_addon.standard_lib.fields_tests.test_templates import (
+    FieldTestTemplates,
+)
+from pytest_splunk_addon.standard_lib.index_tests.test_templates import (
+    IndexTimeTestTemplate,
+)
 
 
 class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):

@@ -16,10 +16,10 @@
 """
 Provides tags.conf parsing mechanism
 """
-import os
-from typing import Optional, Dict, Generator
-from urllib.parse import unquote
 import logging
+import os
+from typing import Dict, Generator, Optional
+from urllib.parse import unquote
 
 import addonfactory_splunk_conf_parser_lib as conf_parser
 

@@ -13,12 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from .base_event_ingestor import EventIngestor
-import requests
 import logging
 import os
 from time import sleep
+
+import requests
 from requests.exceptions import ConnectionError
+
+from pytest_splunk_addon.standard_lib.event_ingestors.base_event_ingestor import (
+    EventIngestor,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 MONITOR_DIR = "uf_files"

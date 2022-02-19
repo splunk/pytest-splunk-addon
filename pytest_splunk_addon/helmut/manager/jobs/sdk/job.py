@@ -18,9 +18,9 @@ import time
 
 import splunklib.results as results
 
-from pytest_splunk_addon.helmut.manager.jobs.results import Results
 from pytest_splunk_addon.helmut.exceptions.search import SearchFailure
 from pytest_splunk_addon.helmut.exceptions.wait import WaitTimedOut
+from pytest_splunk_addon.helmut.manager.jobs.results import Results
 
 LOGGER = logging.getLogger("helmut")
 

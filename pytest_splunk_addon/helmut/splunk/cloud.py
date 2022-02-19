@@ -19,8 +19,8 @@ import time
 
 from splunklib.binding import HTTPError
 
-from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
+from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
 
 LOGGER = logging.getLogger("helmut")
 

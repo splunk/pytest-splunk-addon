@@ -14,11 +14,14 @@
 # limitations under the License.
 #
 import logging
+
 import pytest
 
-from ..sample_generation import SampleXdistGenerator
-from ..sample_generation.rule import raise_warning
-from ..sample_generation.sample_event import SampleEvent
+from pytest_splunk_addon.standard_lib.sample_generation.rule import raise_warning
+from pytest_splunk_addon.standard_lib.sample_generation.sample_event import SampleEvent
+from pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator import (
+    SampleXdistGenerator,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

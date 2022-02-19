@@ -17,13 +17,17 @@
 """
 Generates test cases to verify the CIM compatibility . 
 """
-import logging
-import pytest
 import json
+import logging
 import os.path as op
-from . import DataModelHandler
-from ..addon_parser import AddonParser
-from ..addon_parser import Field
+
+import pytest
+
+from pytest_splunk_addon.standard_lib.addon_parser import AddonParser
+from pytest_splunk_addon.standard_lib.addon_parser.fields import Field
+from pytest_splunk_addon.standard_lib.cim_tests.data_model_handler import (
+    DataModelHandler,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

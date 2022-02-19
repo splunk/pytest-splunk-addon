@@ -16,7 +16,7 @@
 """
 Markdown table generator
 """
-from .base_table import BaseTable
+from pytest_splunk_addon.standard_lib.cim_compliance.base_table import BaseTable
 
 
 class MarkdownTable(BaseTable):

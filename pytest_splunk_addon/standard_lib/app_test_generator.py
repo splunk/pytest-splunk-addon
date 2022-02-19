@@ -20,11 +20,17 @@ Generates test cases of Fields and CIM.
 """
 import logging
 import os
-from .fields_tests import FieldTestGenerator
-from .cim_tests import CIMTestGenerator
-from .index_tests import IndexTimeTestGenerator
-from .requirement_tests import ReqsTestGenerator
-import pytest
+
+from pytest_splunk_addon.standard_lib.cim_tests.test_generator import CIMTestGenerator
+from pytest_splunk_addon.standard_lib.fields_tests.test_generator import (
+    FieldTestGenerator,
+)
+from pytest_splunk_addon.standard_lib.index_tests.test_generator import (
+    IndexTimeTestGenerator,
+)
+from pytest_splunk_addon.standard_lib.requirement_tests.test_generator import (
+    ReqsTestGenerator,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

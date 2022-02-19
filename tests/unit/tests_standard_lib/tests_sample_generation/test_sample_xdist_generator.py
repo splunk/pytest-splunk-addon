@@ -1,6 +1,7 @@
-import pytest
 from collections import namedtuple
-from unittest.mock import MagicMock, patch, mock_open, call
+from unittest.mock import MagicMock, call, mock_open, patch
+
+import pytest
 
 from pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator import (
     SampleXdistGenerator,

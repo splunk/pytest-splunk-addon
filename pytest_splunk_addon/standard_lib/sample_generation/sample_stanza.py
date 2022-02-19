@@ -13,13 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import copy
+import logging
 import os
 import re
-import copy
-from . import Rule
-from . import raise_warning
-from . import SampleEvent
-import logging
+
+from pytest_splunk_addon.standard_lib.sample_generation.rule import Rule, raise_warning
+from pytest_splunk_addon.standard_lib.sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

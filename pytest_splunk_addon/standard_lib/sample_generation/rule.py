@@ -16,22 +16,22 @@
 """
 Provides Rules for all possible replacements for tokens.
 """
+import logging
+import os
+import random
 import re
 import string
 import uuid
-
+import warnings
 from collections import namedtuple
 from datetime import datetime, timezone
-from faker import Faker
-from random import uniform, randint, choice
+from random import choice, randint, uniform
 from time import mktime
-from .time_parser import time_parse
-import os
-import random
 
-from . import SampleEvent
-import logging
-import warnings
+from faker import Faker
+
+from pytest_splunk_addon.standard_lib.sample_generation.sample_event import SampleEvent
+from pytest_splunk_addon.standard_lib.sample_generation.time_parser import time_parse
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
