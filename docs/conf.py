@@ -21,14 +21,14 @@ sys.path.insert(0, os.path.abspath("../pytest_splunk_addon"))
 
 # -- Project information -----------------------------------------------------
 
-project = u"pytest-splunk-addon"
-copyright = u"2021, Splunk, Inc."
-author = u"Splunk, Inc."
+project = "pytest-splunk-addon"
+copyright = "2021, Splunk, Inc."
+author = "Splunk, Inc."
 
 # The short X.Y version
-version = u""
+version = ""
 # The full version, including alpha/beta/rc tags
-release = u""
+release = ""
 
 
 # -- General configuration ---------------------------------------------------
@@ -134,8 +134,8 @@ latex_documents = [
     (
         master_doc,
         "pytest-splunk-addon.tex",
-        u"pytest-splunk-addon Documentation",
-        u"Splunk, Inc.",
+        "pytest-splunk-addon Documentation",
+        "Splunk, Inc.",
         "manual",
     ),
 ]
@@ -149,7 +149,7 @@ man_pages = [
     (
         master_doc,
         "pytest-splunk-addon",
-        u"pytest-splunk-addon Documentation",
+        "pytest-splunk-addon Documentation",
         [author],
         1,
     )
@@ -165,7 +165,7 @@ texinfo_documents = [
     (
         master_doc,
         "pytest-splunk-addon",
-        u"pytest-splunk-addon Documentation",
+        "pytest-splunk-addon Documentation",
         author,
         "pytest-splunk-addon",
         "One line description of project.",
