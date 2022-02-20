@@ -18,10 +18,12 @@
 Includes JSON schema for data models
 """
 import json
-import os.path as op
-from .base_schema import BaseSchema
-from jsonschema import Draft7Validator
 import logging
+import os.path as op
+
+from jsonschema import Draft7Validator
+
+from pytest_splunk_addon.standard_lib.cim_tests.base_schema import BaseSchema
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -55,25 +57,24 @@ class JSONSchema(BaseSchema):
         try:
             with open(
                 cls().schema_path,
-                "r",
             ) as schema_f:
                 json_schema = json.load(schema_f)
-            with open(file_path, "r") as json_f:
+            with open(file_path) as json_f:
                 json_data = json.load(json_f)
                 errors = Draft7Validator(json_schema).iter_errors(json_data)
                 error_location, exc = "", ""
-                LOGGER.info("Validating {}".format(file_path))
+                LOGGER.info(f"Validating {file_path}")
                 for error in errors:
                     for error_index in error.path:
-                        error_location = error_location + "[{}]".format(error_index)
+                        error_location = error_location + f"[{error_index}]"
                     if type(error.instance) == dict:
-                        exc = exc + "\n{} for {}".format(error.message, error_location)
+                        exc = exc + f"\n{error.message} for {error_location}"
                     elif type(error.instance) in [str, list]:
                         exc = exc + "\nType mismatch: {} in property {}".format(
                             error.message, error_location
                         )
                     else:
-                        exc = exc + "\n{}".format(error)
+                        exc = exc + f"\n{error}"
                 if not error_location:
                     LOGGER.info("Valid Json")
                     return json_data
@@ -82,5 +83,5 @@ class JSONSchema(BaseSchema):
                     raise Exception(exc)
 
         except json.decoder.JSONDecodeError as err:
-            LOGGER.error("Json Decoding error in {} ".format(file_path))
-            raise Exception("{} in file {}".format(err.args[0], file_path))
+            LOGGER.error(f"Json Decoding error in {file_path} ")
+            raise Exception(f"{err.args[0]} in file {file_path}")

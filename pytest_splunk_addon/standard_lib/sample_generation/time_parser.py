@@ -13,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from datetime import timedelta, datetime
-import math
 import logging
+import math
 import re
+from datetime import datetime, timedelta
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -71,7 +71,7 @@ class time_parse:
                 monthnum = int(
                     (abs(monthnum) % 12) * -1
                     if sign == "-"
-                    else int((abs(monthnum) % 12))
+                    else int(abs(monthnum) % 12)
                 )
                 unittime = datetime(
                     unittime.year + yearnum,

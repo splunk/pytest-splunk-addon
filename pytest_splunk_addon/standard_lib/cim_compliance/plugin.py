@@ -17,12 +17,11 @@
 Plugin to generate the report dynamically after executing the test cases
 """
 import pytest
-import time
-import os
+
 from .cim_report_generator import CIMReportGenerator
 
 
-class CIMReportPlugin(object):
+class CIMReportPlugin:
     def __init__(self, config):
         self.data = []
         self.report_path = config.getoption("cim_report")
@@ -60,7 +59,7 @@ class CIMReportPlugin(object):
     def pytest_terminal_summary(self, terminalreporter):
         if self.data:
             terminalreporter.write_sep(
-                "-", "Generated markdown report: {}".format(self.report_path)
+                "-", f"Generated markdown report: {self.report_path}"
             )
         else:
             terminalreporter.write_sep(

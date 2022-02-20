@@ -17,10 +17,10 @@
 """
 Includes DataSet class which handles a single data set
 """
-from ..addon_parser import Field
+from pytest_splunk_addon.standard_lib.addon_parser.fields import Field
 
 
-class DataSet(object):
+class DataSet:
     """
     Handles a single data set
 

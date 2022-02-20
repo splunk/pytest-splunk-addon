@@ -16,8 +16,8 @@
 class JobNotFound(RuntimeError):
     def __init__(self, sid):
         self.sid = sid
-        super(JobNotFound, self).__init__(self._error_message)
+        super().__init__(self._error_message)
 
     @property
     def _error_message(self):
-        return "Could not find a job with SID {sid}".format(sid=self.sid)
+        return f"Could not find a job with SID {self.sid}"

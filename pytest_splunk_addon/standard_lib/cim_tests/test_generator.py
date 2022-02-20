@@ -17,18 +17,22 @@
 """
 Generates test cases to verify the CIM compatibility . 
 """
-import logging
-import pytest
 import json
+import logging
 import os.path as op
-from . import DataModelHandler
-from ..addon_parser import AddonParser
-from ..addon_parser import Field
+
+import pytest
+
+from pytest_splunk_addon.standard_lib.addon_parser import AddonParser
+from pytest_splunk_addon.standard_lib.addon_parser.fields import Field
+from pytest_splunk_addon.standard_lib.cim_tests.data_model_handler import (
+    DataModelHandler,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class CIMTestGenerator(object):
+class CIMTestGenerator:
     """
     Generates test cases to verify the CIM compatibility.
 
@@ -228,7 +232,7 @@ class CIMTestGenerator(object):
         """
         To obtain list object of common fields mentioned in COMMON_FIELDS_PATH
         """
-        with open(self.common_fields_path, "r") as cf_json:
+        with open(self.common_fields_path) as cf_json:
             common_fields_json = json.load(cf_json)
         common_fields_list = list(Field.parse_fields(common_fields_json["fields"]))
         return [

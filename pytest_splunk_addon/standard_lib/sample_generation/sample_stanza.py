@@ -13,21 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import copy
+import logging
 import os
 import re
-import copy
-from . import Rule
-from . import raise_warning
-from . import SampleEvent
-import logging
+
+from pytest_splunk_addon.standard_lib.sample_generation.rule import Rule, raise_warning
+from pytest_splunk_addon.standard_lib.sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-TIMEZONE_REX = "((\+1[0-2])|(-1[0-4])|[+|-][0][0-9])([0-5][0-9])"
+TIMEZONE_REX = r"((\+1[0-2])|(-1[0-4])|[+|-][0][0-9])([0-5][0-9])"
 BULK_EVENT_COUNT = 250
 
 
-class SampleStanza(object):
+class SampleStanza:
     """
     This class represents a stanza of the pytest-splunk-addon-data.conf.
     It contains all the parameters for the stanza such as:
@@ -90,7 +90,7 @@ class SampleStanza(object):
         bulk_event = []
         raw_event = []
         event_counter = 0
-        while (int(required_event_count)) > len((bulk_event)):
+        while (int(required_event_count)) > len(bulk_event):
             raw_event.insert(event_counter, list(self._get_raw_sample()))
             if not raw_event[-1]:
                 break
@@ -249,7 +249,7 @@ class SampleStanza(object):
         event_host = self.metadata.get("host") + "_" + str(self.host_count)
         event_metadata = copy.deepcopy(self.metadata)
         event_metadata.update(host=event_host)
-        LOGGER.info("event metadata: {}".format(event_metadata))
+        LOGGER.info(f"event metadata: {event_metadata}")
         return event_metadata
 
     def _get_raw_sample(self):
@@ -268,7 +268,7 @@ class SampleStanza(object):
                 "default"
             ]
         """
-        with open(self.sample_path, "r", encoding="utf-8") as sample_file:
+        with open(self.sample_path, encoding="utf-8") as sample_file:
             sample_raw = sample_file.read()
             if self.metadata.get("breaker"):
                 for each_event in self.break_events(sample_raw):
@@ -290,7 +290,7 @@ class SampleStanza(object):
             ]:
                 event = sample_raw.strip()
                 if not event:
-                    raise_warning("sample file: '{}' is empty".format(self.sample_path))
+                    raise_warning(f"sample file: '{self.sample_path}' is empty")
                 else:
                     yield SampleEvent(event, self.metadata, self.sample_name)
 
@@ -326,7 +326,7 @@ class SampleStanza(object):
             event_list.append(sample_raw[pos:].strip())
             return event_list
         except:
-            raise_warning("Invalid breaker for stanza {}".format(self.sample_name))
+            raise_warning(f"Invalid breaker for stanza {self.sample_name}")
             return [sample_raw]
 
     def _sort_tokens_by_replacement_type_all(self, tokens_dict):

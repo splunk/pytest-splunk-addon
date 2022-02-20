@@ -13,12 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from .base_event_ingestor import EventIngestor
-import requests
-from time import time, mktime
 import concurrent.futures
 import logging
-import os
+
+import requests
+
+from pytest_splunk_addon.standard_lib.event_ingestors.base_event_ingestor import (
+    EventIngestor,
+)
 
 requests.urllib3.disable_warnings()
 
@@ -132,7 +134,7 @@ class HECEventIngestor(EventIngestor):
                 headers=self.session_headers,
                 verify=False,
             )
-            LOGGER.debug("Status code: {}".format(response.status_code))
+            LOGGER.debug(f"Status code: {response.status_code}")
             if response.status_code not in (200, 201):
                 raise Exception(
                     "\nStatus code: {} \nReason: {} \ntext:{}".format(
@@ -141,5 +143,5 @@ class HECEventIngestor(EventIngestor):
                 )
 
         except Exception as e:
-            LOGGER.error("\n\nAn error occurred while data ingestion.{}".format(e))
-            raise type(e)("An error occurred while data ingestion.{}".format(e))
+            LOGGER.error(f"\n\nAn error occurred while data ingestion.{e}")
+            raise type(e)(f"An error occurred while data ingestion.{e}")

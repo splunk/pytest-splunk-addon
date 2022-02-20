@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import string
 import sys
 import time
-import string
 
 try:
     import py
@@ -34,7 +34,7 @@ class SearchUtilException(Exception):
         return repr(self.message)
 
 
-class SearchUtil(object):
+class SearchUtil:
     def __init__(self, jobs, logger):
         """
         Constructor of the SearchUtil object.

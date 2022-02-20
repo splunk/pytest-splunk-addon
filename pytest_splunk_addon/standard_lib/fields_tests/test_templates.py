@@ -17,17 +17,19 @@
 """
 Includes the test scenarios to check the field extractions of an Add-on.
 """
-import pprint
-import logging
-import pytest
-from ..addon_parser import Field
 import json
+import logging
+import pprint
+
+import pytest
+
+from pytest_splunk_addon.standard_lib.addon_parser.fields import Field
 
 TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART = " | dedup punct | head 5"
 COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART = " | stats count by sourcetype"
 
 
-class FieldTestTemplates(object):
+class FieldTestTemplates:
     """
     Test templates to test the knowledge objects of an App
     """
@@ -354,7 +356,7 @@ class FieldTestTemplates(object):
         if temp_search_query[0].find("savedsearch") == -1 and (
             len(temp_search_query) < 2 or temp_search_query[1].find("savedsearch") == -1
         ):
-            temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(
+            temp_search_query[0] += " earliest_time = {} latest_time = {} ".format(
                 earliest_time, latest_time
             )
             search_query = "|".join(temp_search_query)

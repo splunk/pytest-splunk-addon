@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.fields_tests.field_bank import FieldBank
 
 

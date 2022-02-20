@@ -16,18 +16,19 @@
 """
 Includes the test scenarios to check the index time properties of an Add-on.
 """
-import logging
-import pytest
 import copy
-
+import logging
 from math import ceil
-from ..cim_tests import FieldTestHelper
+
+import pytest
+
+from pytest_splunk_addon.standard_lib.cim_tests.field_test_helper import FieldTestHelper
 
 MAX_TIME_DIFFERENCE = 45
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class IndexTimeTestTemplate(object):
+class IndexTimeTestTemplate:
     """
     Test templates to test the index time fields of an App
     """
@@ -96,16 +97,16 @@ class IndexTimeTestTemplate(object):
             ",".join(fields_to_check),
         )
 
-        search = "search {} {}".format(index_list, query)
+        search = f"search {index_list} {query}"
         record_property("Query", search)
-        LOGGER.debug("Base search for indextime key field test: {}".format(search))
+        LOGGER.debug(f"Base search for indextime key field test: {search}")
         results = splunk_search_util.getFieldValuesList(
             search,
             interval=splunk_search_util.search_interval,
             retries=splunk_search_util.search_retry,
         )
         results = list(results)
-        LOGGER.debug("Results:{}".format(results))
+        LOGGER.debug(f"Results:{results}")
 
         if not results:
             assert False, "No Events found for query " + search
@@ -225,17 +226,17 @@ class IndexTimeTestTemplate(object):
             "e_time",
         )
 
-        search = "search {} {}".format(index_list, query)
+        search = f"search {index_list} {query}"
 
         record_property("Query", search)
-        LOGGER.debug("Base search for indextime time field test: {}".format(search))
+        LOGGER.debug(f"Base search for indextime time field test: {search}")
         results = splunk_search_util.getFieldValuesList(
             search,
             interval=splunk_search_util.search_interval,
             retries=splunk_search_util.search_retry,
         )
         results = list(results)
-        LOGGER.debug("Results:{}".format(results))
+        LOGGER.debug(f"Results:{results}")
         if not results:
             assert False, "No Events found for query: " + search
         result_fields = {
@@ -293,7 +294,7 @@ class IndexTimeTestTemplate(object):
         )
         record_property("Query", query)
 
-        LOGGER.debug("Base search for indextime key field test: {}".format(query))
+        LOGGER.debug(f"Base search for indextime key field test: {query}")
         results = list(
             splunk_search_util.getFieldValuesList(
                 query,
@@ -302,7 +303,7 @@ class IndexTimeTestTemplate(object):
             )
         )
         count_from_results = int(results[0].get("count"))
-        LOGGER.debug("Resulting count:{}".format(count_from_results))
+        LOGGER.debug(f"Resulting count:{count_from_results}")
         assert (
             count_from_results == expected_events_count
         ), f"Query: {query} \nExpected count: {expected_events_count} Actual Count: {count_from_results}"

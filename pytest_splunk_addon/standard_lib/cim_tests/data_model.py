@@ -18,10 +18,10 @@
 Includes DataModel class which handles the DataSets within a data model. 
 """
 
-from . import DataSet
+from pytest_splunk_addon.standard_lib.cim_tests.data_set import DataSet
 
 
-class DataModel(object):
+class DataModel:
     """
     Handles the DataSets within a data model.
 

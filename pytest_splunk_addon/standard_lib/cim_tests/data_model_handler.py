@@ -20,17 +20,16 @@ Provides Data Model handling functionalities. Such as
 * Parse all the data model JSON files
 * Get Mapped data model for an eventtype 
 """
-import os
 import logging
+import os
 
-import json
-from . import DataModel
-from . import JSONSchema
+from pytest_splunk_addon.standard_lib.cim_tests.data_model import DataModel
+from pytest_splunk_addon.standard_lib.cim_tests.json_schema import JSONSchema
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class DataModelHandler(object):
+class DataModelHandler:
     """
     Provides Data Model handling functionalities. Such as
 

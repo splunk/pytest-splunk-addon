@@ -14,13 +14,17 @@
 # limitations under the License.
 #
 from concurrent.futures import ThreadPoolExecutor
-
-from . import PytestSplunkAddonDataParser
-from . import SampleStanza
 from itertools import cycle
 
+from pytest_splunk_addon.standard_lib.sample_generation.pytest_splunk_addon_data_parser import (
+    PytestSplunkAddonDataParser,
+)
+from pytest_splunk_addon.standard_lib.sample_generation.sample_stanza import (
+    SampleStanza,
+)
 
-class SampleGenerator(object):
+
+class SampleGenerator:
     """
     Main Class
     Generate sample objects
@@ -67,4 +71,4 @@ class SampleGenerator(object):
     @classmethod
     def clean_samples(cls):
         cls.sample_stanzas = list()
-        cls.conf_name = str()
+        cls.conf_name = ""

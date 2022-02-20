@@ -1,6 +1,8 @@
-import pytest
-from unittest.mock import patch, MagicMock, call
 from collections import namedtuple
+from unittest.mock import MagicMock, call, patch
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.cim_tests.data_model import DataModel
 
 

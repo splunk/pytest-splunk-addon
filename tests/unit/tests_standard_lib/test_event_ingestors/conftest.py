@@ -1,5 +1,7 @@
-import pytest
 from dataclasses import dataclass
+
+import pytest
+
 from .test_hec_event_metric_raw_ingestor import HEC_URI
 
 

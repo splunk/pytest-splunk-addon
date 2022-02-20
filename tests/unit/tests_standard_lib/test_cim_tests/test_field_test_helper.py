@@ -1,8 +1,9 @@
-import pytest
-from unittest.mock import patch, MagicMock
 from collections import namedtuple
-from pytest_splunk_addon.standard_lib.cim_tests.field_test_helper import FieldTestHelper
+from unittest.mock import MagicMock, patch
 
+import pytest
+
+from pytest_splunk_addon.standard_lib.cim_tests.field_test_helper import FieldTestHelper
 
 field = namedtuple(
     "Field",

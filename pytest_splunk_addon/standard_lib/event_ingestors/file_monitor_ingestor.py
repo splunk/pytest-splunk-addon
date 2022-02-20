@@ -13,12 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from .base_event_ingestor import EventIngestor
-import requests
 import logging
 import os
 from time import sleep
+
+import requests
 from requests.exceptions import ConnectionError
+
+from pytest_splunk_addon.standard_lib.event_ingestors.base_event_ingestor import (
+    EventIngestor,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 MONITOR_DIR = "uf_files"
@@ -53,7 +57,7 @@ class FileMonitorEventIngestor(EventIngestor):
         # So using splunk_host as splunk and port 9997 directly.
         self.splunk_host = "splunk"
         self.splunk_s2s_port = "9997"
-        self.uf_rest_uri = "https://{}:{}".format(self.uf_host, self.uf_port)
+        self.uf_rest_uri = f"https://{self.uf_host}:{self.uf_port}"
         self.outputs_endpoint = "{}/services/data/outputs/tcp/group".format(
             self.uf_rest_uri
         )
@@ -79,16 +83,14 @@ class FileMonitorEventIngestor(EventIngestor):
         """
         tcp_out_dict = {
             "name": "uf_monitor",
-            "servers": "{}:{}".format(self.splunk_host, self.splunk_s2s_port),
+            "servers": f"{self.splunk_host}:{self.splunk_s2s_port}",
         }
         LOGGER.info(
             "Making rest call to create stanza in outputs.conf file with following endpoint : {}".format(
                 self.outputs_endpoint
             )
         )
-        LOGGER.debug(
-            "Creating following stanza in output.conf : {}".format(tcp_out_dict)
-        )
+        LOGGER.debug(f"Creating following stanza in output.conf : {tcp_out_dict}")
         try:
             response = requests.post(
                 self.outputs_endpoint,
@@ -103,7 +105,7 @@ class FileMonitorEventIngestor(EventIngestor):
                     )
                 )
         except ConnectionError as e:
-            LOGGER.error("Unable to connect to Universal forwarder, {}".format(e))
+            LOGGER.error(f"Unable to connect to Universal forwarder, {e}")
 
     def create_event_file(self, event):
         """
@@ -160,7 +162,7 @@ class FileMonitorEventIngestor(EventIngestor):
                 self.inputs_endpoint
             )
         )
-        LOGGER.debug("Creating following stanza in inputs.conf : {}".format(stanza))
+        LOGGER.debug(f"Creating following stanza in inputs.conf : {stanza}")
         try:
             response = requests.post(
                 self.inputs_endpoint,
@@ -175,7 +177,7 @@ class FileMonitorEventIngestor(EventIngestor):
                     )
                 )
         except ConnectionError as e:
-            LOGGER.error("Unable to connect to Universal forwarder, {}".format(e))
+            LOGGER.error(f"Unable to connect to Universal forwarder, {e}")
 
     def get_file_path(self, event):
         """

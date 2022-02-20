@@ -1,10 +1,13 @@
-import pytest
 import os
 
-from pytest_splunk_addon.standard_lib.cim_compliance import CIMReportGenerator
+import pytest
+
+from pytest_splunk_addon.standard_lib.cim_compliance.cim_report_generator import (
+    CIMReportGenerator,
+)
 
 
-class TestCIMReport(object):
+class TestCIMReport:
     @pytest.mark.docker
     def test_report(self):
         data = [
@@ -48,13 +51,12 @@ class TestCIMReport(object):
         cim_report_gen = CIMReportGenerator(data)
         cim_report_gen.generate_report("test_report.md")
 
-        with open("test_report.md", "r") as inputfile:
+        with open("test_report.md") as inputfile:
             test_data = inputfile.read()
         with open(
             os.path.join(
                 os.path.dirname(__file__), "test_data", "sample_cim_report.md"
             ),
-            "r",
         ) as input_file:
             actual_data = input_file.read()
         assert test_data == actual_data

@@ -1,6 +1,8 @@
-import pytest
-from unittest.mock import patch, MagicMock
 from collections import namedtuple
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.cim_tests.test_generator import CIMTestGenerator
 
 field = namedtuple("Field", ["type", "name"], defaults=["", ""])
@@ -299,7 +301,7 @@ def test_get_common_fields(
     mocked_cim_test_generator.common_fields_path = "fake_path"
     assert mocked_cim_test_generator.get_common_fields(*args) == expected_output
     field_mock.parse_fields.assert_called_once_with(FIELDS)
-    open_mock.assert_called_once_with("fake_path", "r")
+    open_mock.assert_called_once_with("fake_path")
 
 
 def test_generate_mapped_datamodel_tests(mocked_cim_test_generator, fake_addon_parser):

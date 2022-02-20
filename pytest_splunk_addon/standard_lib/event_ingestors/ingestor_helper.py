@@ -13,21 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from . import (
-    HECEventIngestor,
-    HECRawEventIngestor,
-    HECMetricEventIngestor,
-    SC4SEventIngestor,
+import logging
+
+from pytest_splunk_addon.standard_lib.event_ingestors.file_monitor_ingestor import (
     FileMonitorEventIngestor,
 )
-import logging
-from ..sample_generation import SampleXdistGenerator
+from pytest_splunk_addon.standard_lib.event_ingestors.hec_event_ingestor import (
+    HECEventIngestor,
+)
+from pytest_splunk_addon.standard_lib.event_ingestors.hec_metric_ingestor import (
+    HECMetricEventIngestor,
+)
+from pytest_splunk_addon.standard_lib.event_ingestors.hec_raw_ingestor import (
+    HECRawEventIngestor,
+)
+from pytest_splunk_addon.standard_lib.event_ingestors.sc4s_event_ingestor import (
+    SC4SEventIngestor,
+)
+from pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator import (
+    SampleXdistGenerator,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 from .requirement_event_ingester import RequirementEventIngestor
 
 
-class IngestorHelper(object):
+class IngestorHelper:
     """
     Module for helper methods for ingestors.
     """
@@ -50,7 +61,7 @@ class IngestorHelper(object):
         }
 
         ingestor = ingest_methods.get(input_type)(ingest_meta_data)
-        LOGGER.debug("Using the following HEC ingestor: {}".format(str(ingestor)))
+        LOGGER.debug(f"Using the following HEC ingestor: {str(ingestor)}")
         return ingestor
 
     @classmethod
@@ -99,7 +110,7 @@ class IngestorHelper(object):
         ingestor_dict = cls.get_consolidated_events(tokenized_events)
         for input_type, events in ingestor_dict.items():
             LOGGER.debug(
-                "Received the following input type for HEC event: {}".format(input_type)
+                f"Received the following input type for HEC event: {input_type}"
             )
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
             event_ingestor.ingest(events, thread_count)

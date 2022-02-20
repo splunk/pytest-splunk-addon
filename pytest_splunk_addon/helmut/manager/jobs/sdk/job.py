@@ -18,9 +18,9 @@ import time
 
 import splunklib.results as results
 
-from pytest_splunk_addon.helmut.manager.jobs.results import Results
 from pytest_splunk_addon.helmut.exceptions.search import SearchFailure
 from pytest_splunk_addon.helmut.exceptions.wait import WaitTimedOut
+from pytest_splunk_addon.helmut.manager.jobs.results import Results
 
 LOGGER = logging.getLogger("helmut")
 
@@ -49,7 +49,7 @@ class SDKJobWrapper:
         return self.raw_sdk_job.sid
 
     def __str__(self):
-        return "SDK Job with SID {sid}".format(sid=self.sid)
+        return f"SDK Job with SID {self.sid}"
 
     def get_event_count(self):
         return int(self.raw_sdk_job.refresh().content.eventCount)

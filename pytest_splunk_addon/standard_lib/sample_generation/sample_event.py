@@ -13,11 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import re
 import logging
-from ..index_tests import key_fields
-from faker import Faker
+import re
 from copy import deepcopy
+
+from faker import Faker
+
+from pytest_splunk_addon.standard_lib.index_tests import key_fields
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 host_ipv4, dvc_ipv4 = 51, 0
@@ -51,7 +53,7 @@ ip_rules = {
 }
 
 
-class SampleEvent(object):
+class SampleEvent:
     """
     This class represents an event which will be ingested in Splunk.
 
@@ -76,7 +78,7 @@ class SampleEvent(object):
         Args:
             new_event (str): Event content
         """
-        LOGGER.debug("Updated the event {} with {}".format(self.event, new_event))
+        LOGGER.debug(f"Updated the event {self.event} with {new_event}")
         self.event = new_event
 
     def get_host(self):
@@ -226,7 +228,7 @@ class SampleEvent(object):
             )
         else:
             temp_ipv4 = Faker().ipv4()
-            LOGGER.debug("Creating ipv4 field with value: {}".format(temp_ipv4))
+            LOGGER.debug(f"Creating ipv4 field with value: {temp_ipv4}")
             return temp_ipv4
 
     def get_ipv6(self, rule):
@@ -255,7 +257,7 @@ class SampleEvent(object):
             dest_ipv6 += 1
         else:
             temp_ipv4 = Faker().ipv6()
-            LOGGER.debug("Creating ipv6 field with value: {}".format(temp_ipv4))
+            LOGGER.debug(f"Creating ipv6 field with value: {temp_ipv4}")
             return temp_ipv4
 
         hex_count = hex(ipv6)

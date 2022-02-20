@@ -16,7 +16,7 @@
 """
 Markdown generator
 """
-from .base_report import CIMReport
+from pytest_splunk_addon.standard_lib.cim_compliance.base_report import CIMReport
 
 
 class MarkDownReport(CIMReport):
@@ -31,7 +31,7 @@ class MarkDownReport(CIMReport):
         Args:
             title_string(string): String containing title for report.
         """
-        self.title_str = "# {} \n".format(title_string)
+        self.title_str = f"# {title_string} \n"
 
     def add_section_title(self, section_title):
         """
@@ -40,7 +40,7 @@ class MarkDownReport(CIMReport):
         Args:
             section_title(string): String containing title for new Section.
         """
-        self.markdown_str += "\n## {}\n".format(section_title)
+        self.markdown_str += f"\n## {section_title}\n"
 
     def add_section_description(self, description):
         """
@@ -58,7 +58,7 @@ class MarkDownReport(CIMReport):
         Args:
             section_note(string): String containing note for report.
         """
-        self.note_str = "## Note: {} \n".format(section_note)
+        self.note_str = f"## Note: {section_note} \n"
 
     def add_table(self, table_string):
         """

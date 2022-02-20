@@ -19,11 +19,11 @@ To enhance the test cases while verifying the field extractions.
 """
 import json
 
-from ..addon_parser import Field
-from ..addon_parser import PropsParser
+from pytest_splunk_addon.standard_lib.addon_parser.fields import Field
+from pytest_splunk_addon.standard_lib.addon_parser.props_parser import PropsParser
 
 
-class FieldBank(object):
+class FieldBank:
     """
     Supports field_bank: List of fields with patterns and expected
         values which should be tested for the Add-on.

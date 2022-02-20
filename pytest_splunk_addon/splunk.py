@@ -20,20 +20,24 @@ Module usage:
 - helmut_lib: Provides various Utility functions to search on Splunk. Source: splunk-sdk
 """
 
+import configparser
+import json
 import logging
 import os
 import shutil
 from time import sleep
-import json
+
 import pytest
 import requests
 import splunklib.client as client
-from .helmut.manager.jobs.sdk import SDKJobsWrapper
-from .helmut.splunk.cloud import CloudSplunk
-from .helmut_lib.SearchUtil import SearchUtil
-from .standard_lib.event_ingestors import IngestorHelper
-import configparser
 from filelock import FileLock
+
+from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
+from pytest_splunk_addon.helmut.splunk.cloud import CloudSplunk
+from pytest_splunk_addon.helmut_lib.SearchUtil import SearchUtil
+from pytest_splunk_addon.standard_lib.event_ingestors.ingestor_helper import (
+    IngestorHelper,
+)
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
@@ -180,7 +184,7 @@ def pytest_addoption(parser):
             "Relative or absolute path can be provided."
             "Json files are expected in the directory."
             "Json files must follow the schema mentioned in DatamodelSchema.json"
-            "pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\DatamodelSchema.json"
+            r"pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\DatamodelSchema.json"
         ),
     )
     group.addoption(
@@ -402,14 +406,14 @@ def ignore_internal_errors(request):
     if request.config.getoption("ignore_addon_errors"):
         addon_error_file_path = request.config.getoption("ignore_addon_errors")
         if os.path.exists(addon_error_file_path):
-            with open(addon_error_file_path, "r") as addon_errors:
+            with open(addon_error_file_path) as addon_errors:
                 error_list.extend(
                     [each_error.strip() for each_error in addon_errors.readlines()]
                 )
     if request.config.getoption("ignore_errors_not_related_to_addon"):
         file_path = request.config.getoption("ignore_errors_not_related_to_addon")
         if os.path.exists(file_path):
-            with open(file_path, "r") as non_ta_errors:
+            with open(file_path) as non_ta_errors:
                 error_list.extend(
                     [each_error.strip() for each_error in non_ta_errors.readlines()]
                 )
@@ -886,7 +890,7 @@ def is_responsive_hec(request, splunk):
             f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/health/1.0',
             verify=False,
         )
-        LOGGER.debug("Status code: {}".format(response.status_code))
+        LOGGER.debug(f"Status code: {response.status_code}")
         if response.status_code in (200, 201):
             LOGGER.info("Splunk HEC is responsive.")
             return True

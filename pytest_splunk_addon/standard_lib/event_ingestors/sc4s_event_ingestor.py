@@ -13,13 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import logging
 import socket
 from time import sleep
-import os
-import re
-import concurrent.futures
-from .base_event_ingestor import EventIngestor
-import logging
+
+from pytest_splunk_addon.standard_lib.event_ingestors.base_event_ingestor import (
+    EventIngestor,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -65,11 +65,9 @@ class SC4SEventIngestor(EventIngestor):
                 break
             except Exception as e:
                 tried += 1
-                LOGGER.debug("Attempt {} to ingest data with SC4S".format(str(tried)))
+                LOGGER.debug(f"Attempt {str(tried)} to ingest data with SC4S")
                 if tried > 90:
-                    LOGGER.error(
-                        "Failed to ingest event with SC4S {} times".format(str(tried))
-                    )
+                    LOGGER.error(f"Failed to ingest event with SC4S {str(tried)} times")
                     raise e
                 sleep(1)
             finally:
@@ -84,7 +82,7 @@ class SC4SEventIngestor(EventIngestor):
                 try:
                     sock.sendall(str.encode(se + "\n"))
                 except Exception as e:
-                    LOGGER.debug("Attempt ingest data with SC4S=".format(se))
+                    LOGGER.debug(f"Attempt ingest data with SC4S=")
                     LOGGER.exception(e)
                     sleep(1)
         sock.close()

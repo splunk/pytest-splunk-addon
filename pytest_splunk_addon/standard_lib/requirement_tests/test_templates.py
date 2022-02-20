@@ -15,15 +15,19 @@
 #
 import json
 import logging
-import pytest
 import re
-from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
+
+import pytest
+
+from pytest_splunk_addon.standard_lib.requirement_tests.requirement_test_datamodel_tag_constants import (
+    dict_datamodel_tag,
+)
 
 INTERVAL = 3
 RETRIES = 3
 
 
-class ReqsTestTemplates(object):
+class ReqsTestTemplates:
     """
     Test templates to test the log files in the event_analytics folder
     """

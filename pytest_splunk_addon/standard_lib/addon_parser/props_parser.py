@@ -16,23 +16,23 @@
 """
 Provides props.conf parsing mechanism
 """
-from typing import Dict
-from typing import Generator
-from typing import Optional
 import logging
 import os
 import re
 from itertools import product
+from typing import Dict, Generator, Optional
 
 import addonfactory_splunk_conf_parser_lib as conf_parser
 
-from .fields import convert_to_fields
-from .transforms_parser import TransformsParser
+from pytest_splunk_addon.standard_lib.addon_parser.fields import convert_to_fields
+from pytest_splunk_addon.standard_lib.addon_parser.transforms_parser import (
+    TransformsParser,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class PropsParser(object):
+class PropsParser:
     """
     Parses props.conf and extracts the fields.
 
@@ -262,7 +262,7 @@ class PropsParser(object):
             r"(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+)"
         )
         fields_tuples = re.findall(regex, value, re.IGNORECASE)
-        return list(set([item for t in fields_tuples for item in t]))
+        return list({item for t in fields_tuples for item in t})
 
     def _get_report_fields(self, name: str, value: str):
         """

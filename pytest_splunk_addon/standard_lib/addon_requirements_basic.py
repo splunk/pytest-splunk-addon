@@ -15,7 +15,9 @@
 """
 Base class for requirement test cases.
 """
-from .requirement_tests import ReqsTestTemplates
+from pytest_splunk_addon.standard_lib.requirement_tests.test_templates import (
+    ReqsTestTemplates,
+)
 
 
 class RequirementBasic(ReqsTestTemplates):

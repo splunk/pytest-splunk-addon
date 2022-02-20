@@ -16,22 +16,20 @@
 """
 Provides transforms.conf parsing mechanism
 """
-from typing import Dict
-from typing import Generator
-from typing import Optional
-import logging
-import re
-import os
 import csv
+import logging
+import os
+import re
+from typing import Dict, Generator, Optional
 
 import addonfactory_splunk_conf_parser_lib as conf_parser
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-from . import convert_to_fields
+from pytest_splunk_addon.standard_lib.addon_parser.fields import convert_to_fields
 
 
-class TransformsParser(object):
+class TransformsParser:
     """
     Parses transforms.conf and extracts fields
 
@@ -142,7 +140,7 @@ class TransformsParser(object):
                             yield items.strip()
                 # If there is an error. the test should fail with the current fields
                 # This makes sure the test doesn't exit prematurely
-                except (OSError, IOError, UnboundLocalError, TypeError) as e:
+                except (OSError, UnboundLocalError, TypeError) as e:
                     LOGGER.error(
                         "Could not read the lookup file, skipping test. error=%s",
                         str(e),

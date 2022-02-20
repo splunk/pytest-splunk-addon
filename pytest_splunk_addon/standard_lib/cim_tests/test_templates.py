@@ -18,11 +18,13 @@
 Includes the test scenarios to check the CIM compatibility of an Add-on.
 """
 import logging
+
 import pytest
-from .field_test_helper import FieldTestHelper
+
+from pytest_splunk_addon.standard_lib.cim_tests.field_test_helper import FieldTestHelper
 
 
-class CIMTestTemplates(object):
+class CIMTestTemplates:
     """
     Test scenarios to check the CIM compatibility of an Add-on
     Supported Test scenarios:
@@ -71,11 +73,11 @@ class CIMTestTemplates(object):
         )
 
         # Search Query
-        base_search = "| search {}".format(index_list)
+        base_search = f"| search {index_list}"
         for each_set in cim_data_set:
-            base_search += " | search {}".format(each_set.search_constraints)
+            base_search += f" | search {each_set.search_constraints}"
 
-        base_search += " | search {}".format(cim_tag_stanza)
+        base_search += f" | search {cim_tag_stanza}"
 
         test_helper = FieldTestHelper(
             splunk_search_util,
@@ -178,15 +180,15 @@ class CIMTestTemplates(object):
             + ")"
         )
 
-        base_search = "search {}".format(index_list)
+        base_search = f"search {index_list}"
         for each_set in cim_dataset:
-            base_search += " | search {}".format(each_set.search_constraints)
+            base_search += f" | search {each_set.search_constraints}"
 
-        base_search += " | search {}".format(cim_tag_stanza)
+        base_search += f" | search {cim_tag_stanza}"
 
         base_search += " AND ("
         for each_field in cim_fields:
-            base_search += " ({}=*) OR".format(each_field.name)
+            base_search += f" ({each_field.name}=*) OR"
 
         # To remove the extra OR at the end of search
         base_search = base_search[:-2]
@@ -434,10 +436,10 @@ class CIMTestTemplates(object):
             + " OR index=".join(splunk_search_util.search_index.split(","))
             + ")"
         )
-        search = "search {} ".format(index_list)
+        search = f"search {index_list} "
         # search = "search "
         search += " OR ".join(
-            "eventtype={} \n".format(eventtype)
+            f"eventtype={eventtype} \n"
             for eventtype in splunk_searchtime_cim_mapped_datamodel["eventtypes"]
         )
         search += " | fields eventtype,tag \n"
@@ -445,7 +447,7 @@ class CIMTestTemplates(object):
         for data_model in data_models:
             search += "| appendpipe [ | search "
             search += " OR ".join(
-                "({})".format((" ".join("tag={}".format(tag) for tag in tags_list)))
+                "({})".format(" ".join(f"tag={tag}" for tag in tags_list))
                 for tags_list in data_model.get("tags")
             )
             search += f" | eval dm_type=\"{data_model.get('name')}\"]\n"

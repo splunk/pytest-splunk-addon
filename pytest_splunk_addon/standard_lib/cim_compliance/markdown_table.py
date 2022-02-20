@@ -16,7 +16,7 @@
 """
 Markdown table generator
 """
-from .base_table import BaseTable
+from pytest_splunk_addon.standard_lib.cim_compliance.base_table import BaseTable
 
 
 class MarkdownTable(BaseTable):
@@ -34,7 +34,7 @@ class MarkdownTable(BaseTable):
         Args:
             title(str): Title string.
         """
-        return "### {}".format(title) if title else ""
+        return f"### {title}" if title else ""
 
     def __set_headers(self, header_list):
         """
@@ -46,9 +46,9 @@ class MarkdownTable(BaseTable):
         header_str = "\n"
         helper_str = ""
         for each_column in header_list:
-            header_str += "| {} ".format(each_column)
+            header_str += f"| {each_column} "
             helper_str += "|:{}".format("-" * len(each_column))
-        return "{} |\n {} |\n".format(header_str, helper_str)
+        return f"{header_str} |\n {helper_str} |\n"
 
     def set_description(self, description):
         """
@@ -57,7 +57,7 @@ class MarkdownTable(BaseTable):
         Args:
             description(str): Description string.
         """
-        self.table_description = "\n {} \n".format(description)
+        self.table_description = f"\n {description} \n"
 
     def add_row(self, value_list):
         """
@@ -68,8 +68,8 @@ class MarkdownTable(BaseTable):
         """
         row_element = ""
         for each_value in value_list:
-            row_element += "| {} ".format(each_value)
-        self.row_str += "{} |\n".format(row_element)
+            row_element += f"| {each_value} "
+        self.row_str += f"{row_element} |\n"
 
     def set_note(self, note_str):
         """
@@ -78,7 +78,7 @@ class MarkdownTable(BaseTable):
         Args:
             note_str(str): Note string to be added.
         """
-        self.table_note = "\n*NOTE: {} *\n ".format(note_str)
+        self.table_note = f"\n*NOTE: {note_str} *\n "
 
     def return_table_str(self):
         """

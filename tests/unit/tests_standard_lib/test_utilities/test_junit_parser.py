@@ -2,6 +2,7 @@ import os
 import tempfile
 
 import pytest
+
 from pytest_splunk_addon.standard_lib.utilities.junit_parser import JunitParser
 
 

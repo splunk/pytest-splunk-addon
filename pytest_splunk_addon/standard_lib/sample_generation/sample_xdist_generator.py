@@ -13,12 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from . import SampleGenerator
+import json
 import os
 import pickle
-from filelock import FileLock
-import json
+
 import pytest
+from filelock import FileLock
+
+from pytest_splunk_addon.standard_lib.sample_generation.sample_generator import (
+    SampleGenerator,
+)
 
 
 class SampleXdistGenerator:

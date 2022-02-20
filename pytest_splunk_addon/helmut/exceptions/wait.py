@@ -20,7 +20,7 @@ class WaitTimedOut(RuntimeError):
 
     def __init__(self, seconds_waited):
         self.seconds_waited = seconds_waited
-        super(WaitTimedOut, self).__init__(self._error_message)
+        super().__init__(self._error_message)
 
     @property
     def _error_message(self):

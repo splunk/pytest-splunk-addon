@@ -22,7 +22,7 @@ to convert a list to field list
 from functools import wraps
 
 
-class Field(object):
+class Field:
     """
     Contains the field properties
 

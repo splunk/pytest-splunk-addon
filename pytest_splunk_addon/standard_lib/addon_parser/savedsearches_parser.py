@@ -16,18 +16,16 @@
 """
 Provides savedsearches.conf parsing mechanism
 """
-from typing import Dict
-from typing import Generator
-from typing import Optional
 import logging
 import os
+from typing import Dict, Generator, Optional
 
 import addonfactory_splunk_conf_parser_lib as conf_parser
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class SavedSearchParser(object):
+class SavedSearchParser:
     """
     Parses savedsearches.conf and extracts savedsearches
 

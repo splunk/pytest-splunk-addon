@@ -1,7 +1,9 @@
-import pytest
 import traceback
-from unittest.mock import MagicMock, call, patch
 from collections import namedtuple
+from unittest.mock import MagicMock, call, patch
+
+import pytest
+
 from pytest_splunk_addon.standard_lib.requirement_tests.test_generator import (
     ReqsTestGenerator,
 )
@@ -262,10 +264,10 @@ def test_check_xml_format(et_parse_mock, is_xml_valid, expected_output):
         (";", "SESSION \\; CREATED"),
         (":", "SESSION \\: CREATED"),
         ("'", "SESSION \\' CREATED"),
-        ("\,", "SESSION \\\\\, CREATED"),
+        (r"\,", "SESSION \\\\\\, CREATED"),
         ("<", "SESSION \\< CREATED"),
         (">", "SESSION \\> CREATED"),
-        ("\/", "SESSION \\\\\/ CREATED"),
+        (r"\/", "SESSION \\\\\\/ CREATED"),
         ("?", "SESSION \\? CREATED"),
         ("IN", "SESSION \\IN CREATED"),
         ("AS", "SESSION \\AS CREATED"),

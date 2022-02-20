@@ -1,11 +1,9 @@
 import os
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
 
 import pytest
 
-from pytest_splunk_addon.standard_lib.addon_parser.tags_parser import (
-    TagsParser,
-)
+from pytest_splunk_addon.standard_lib.addon_parser.tags_parser import TagsParser
 
 TEST_TAGS_WITHOUT_STANZA_NAME = """tags_positive_event = enabled
 tags_disabled_event = disabled

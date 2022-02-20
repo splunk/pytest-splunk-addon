@@ -20,21 +20,28 @@ parse the knowledge objects from an Add-on's configuration files
 
 Supports: fields from props & transforms, tags, eventtypes
 """
-import os
-import re
 import logging
 
-from .fields import convert_to_fields, Field
-from .transforms_parser import TransformsParser
-from .props_parser import PropsParser
-from .tags_parser import TagsParser
-from .eventtype_parser import EventTypeParser
-from .savedsearches_parser import SavedSearchParser
+from pytest_splunk_addon.standard_lib.addon_parser.eventtype_parser import (
+    EventTypeParser,
+)
+from pytest_splunk_addon.standard_lib.addon_parser.fields import (
+    Field,
+    convert_to_fields,
+)
+from pytest_splunk_addon.standard_lib.addon_parser.props_parser import PropsParser
+from pytest_splunk_addon.standard_lib.addon_parser.savedsearches_parser import (
+    SavedSearchParser,
+)
+from pytest_splunk_addon.standard_lib.addon_parser.tags_parser import TagsParser
+from pytest_splunk_addon.standard_lib.addon_parser.transforms_parser import (
+    TransformsParser,
+)
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class AddonParser(object):
+class AddonParser:
     """
     Parse the knowledge objects from an Add-on's configuration files.
     Supports: fields from props & transforms, tags, eventtypes

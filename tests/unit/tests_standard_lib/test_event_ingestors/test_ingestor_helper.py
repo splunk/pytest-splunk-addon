@@ -1,8 +1,9 @@
 import importlib
-import pytest
-from unittest.mock import patch, MagicMock, call
-import pytest_splunk_addon.standard_lib.event_ingestors as event_ingestors
+from unittest.mock import MagicMock, call, patch
 
+import pytest
+
+import pytest_splunk_addon.standard_lib.event_ingestors as event_ingestors
 
 EVENT_INGESTOR_PATH = "pytest_splunk_addon.standard_lib.event_ingestors"
 HEC_EVENT_INGESTOR_RETURN_VALUE = "hec_event_ingestor_return_value"
