@@ -266,15 +266,9 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.7"
-      - name: Install and build
+      - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          poetry build
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: Package
-          path: dist/
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2.5.4
         with:
