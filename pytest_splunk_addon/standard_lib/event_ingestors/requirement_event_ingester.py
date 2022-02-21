@@ -213,7 +213,7 @@ class RequirementEventIngestor(object):
                         )
                 else:
                     LOGGER.error(
-                        "Requirement event ingestion failure: Invalid file format not .log {}".format(
+                        "Requirement event ingestion failure: Invalid file format not .log or .xml {}".format(
                             filename
                         )
                     )
