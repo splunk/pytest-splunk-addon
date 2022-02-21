@@ -70,30 +70,7 @@ jobs:
         uses: returntocorp/semgrep-action@v1
         with:
           publishToken: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
-  
-  snyk:
-    name: security-vuln-snyk
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-      - uses: snyk/actions/setup@master
-      - uses: actions/setup-go@v2.1.3
-        with:
-          go-version: "1.13"
-      - name: Snyk monitor
-        run: snyk test --sarif-file-output=snyk-scan_requirements.sarif --all-projects --print-deps --severity-threshold=high
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: snyk-results
-          path: snyk-scan_requirements.sarif
-  
+
   review_secrets:
     name: security-detect-secrets
     runs-on: ubuntu-latest
