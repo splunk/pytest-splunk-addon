@@ -92,7 +92,7 @@ class FileMonitorEventIngestor(EventIngestor):
         )
         LOGGER.debug(f"Creating following stanza in output.conf : {tcp_out_dict}")
         try:
-            response = requests.post(
+            response = requests.post(  # nosemgrep: splunk.disabled-cert-validation
                 self.outputs_endpoint,
                 tcp_out_dict,
                 auth=(self.uf_username, self.uf_password),
@@ -164,7 +164,7 @@ class FileMonitorEventIngestor(EventIngestor):
         )
         LOGGER.debug(f"Creating following stanza in inputs.conf : {stanza}")
         try:
-            response = requests.post(
+            response = requests.post(  # nosemgrep: splunk.disabled-cert-validation
                 self.inputs_endpoint,
                 stanza,
                 auth=(self.uf_username, self.uf_password),

@@ -19,9 +19,9 @@ Generates test cases to verify the event analytics logs.
 import logging
 import os
 import re
-from xml.etree import cElementTree as ET
 
 import pytest
+from defusedxml import cElementTree as ET
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
