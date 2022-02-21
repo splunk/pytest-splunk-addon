@@ -243,6 +243,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.7"
+      - uses: actions/download-artifact@v2
+        with:
+          name: analysis-reports
+          path: /tmp/analysis-reports
+      - name: Update Notices
+        run: cp -f /tmp/analysis-reports/NOTICE_summary NOTICE
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
