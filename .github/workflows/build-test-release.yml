@@ -116,10 +116,57 @@ jobs:
       uses: reviewdog/action-misspell@v1.0.0
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-  
+
+  test-splunk-unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Install dependencies
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install
+          poetry run coverage run --source=./pytest_splunk_addon/standard_lib -m pytest -v tests/unit
+          poetry run coverage xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          directory: ./coverage/reports/
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          verbose: true
+
+  test-splunk-doc:
+    name: Test Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install and run tests
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install -E docker
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc
+
   test-splunk-external:
     runs-on: ubuntu-latest
     name: Test splunk external
+    needs:
+      - pre-commit
+      - compliance-dependencies
+      - compliance-copyrights
+      - test-splunk-doc
+      - test-splunk-unit
+      - review_secrets
+      - review-dog-misspell
     strategy:
       fail-fast: false
       matrix:
@@ -160,22 +207,6 @@ jobs:
           name: splunk ${{ matrix.splunk-version }} external test artifacts
           path: |
             test-results-${{ matrix.splunk-version }}
-  
-  test-splunk-doc:
-    name: Test Docs
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - uses: actions/setup-python@v1
-        with:
-          python-version: 3.7
-      - name: Install and run tests
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          poetry install -E docker
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc
 
   test-splunk-matrix:
     name: Test Matrix
@@ -183,7 +214,6 @@ jobs:
       - pre-commit
       - compliance-dependencies
       - compliance-copyrights
-      - test-splunk-external
       - test-splunk-doc
       - test-splunk-unit
       - review_secrets
@@ -216,31 +246,10 @@ jobs:
           poetry install -E docker
           poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker -k ${{ matrix.test-name }}
 
-  test-splunk-unit:
-    name: Unit tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Install dependencies
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          poetry install
-          poetry run coverage run --source=./pytest_splunk_addon/standard_lib -m pytest -v tests/unit
-          poetry run coverage xml
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          directory: ./coverage/reports/
-          env_vars: OS,PYTHON
-          fail_ci_if_error: true
-          verbose: true
   publish:
     name: publish
     needs:
+      - test-splunk-external
       - test-splunk-matrix
     runs-on: ubuntu-latest
     steps:
