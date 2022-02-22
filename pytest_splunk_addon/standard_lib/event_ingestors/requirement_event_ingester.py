@@ -21,13 +21,15 @@
 
 import logging
 import os
-from xml.etree import cElementTree as ET
-from ..sample_generation.sample_event import SampleEvent
+
+from defusedxml import cElementTree as ET
+
+from pytest_splunk_addon.standard_lib.sample_generation.sample_event import SampleEvent
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class RequirementEventIngestor(object):
+class RequirementEventIngestor:
     def __init__(self, requirement_file_path):
         """
         app_path to drill down to requirement file folder in package/tests/requirement_files/
@@ -117,9 +119,7 @@ class RequirementEventIngestor(object):
                                 transport_type = self.extract_transport_tag(event_tag)
                                 if transport_type == "syslog":
                                     transport_type = "syslog_tcp"
-                                    LOGGER.info(
-                                        "sending data using sc4s {}".format(filename)
-                                    )
+                                    LOGGER.info(f"sending data using sc4s {filename}")
                                 elif transport_type in (
                                     "modinput",
                                     "Modinput",

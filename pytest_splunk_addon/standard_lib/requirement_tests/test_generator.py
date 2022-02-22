@@ -16,17 +16,17 @@
 """
 Generates test cases to verify the event analytics logs.
 """
-import pytest
 import logging
 import os
-from xml.etree import cElementTree as ET
 import re
 
+import pytest
+from defusedxml import cElementTree as ET
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
-class SrcRegex(object):
+class SrcRegex:
     def __init__(self):
         self.regex_src = None
         self.source_type = None
@@ -40,7 +40,7 @@ class keyValue(dict):
         self[key] = value
 
 
-class ReqsTestGenerator(object):
+class ReqsTestGenerator:
     """
     Generates test cases to test the events in the log files of the event anlytics folder
     * Provides the pytest parameters to the test_templates.py.
@@ -317,10 +317,10 @@ class ReqsTestGenerator(object):
             ";",
             ":",
             "'",
-            "\,",
+            r"\,",
             "<",
             ">",
-            "\/",
+            r"\/",
             "?",
             "IN",
             "AS",
