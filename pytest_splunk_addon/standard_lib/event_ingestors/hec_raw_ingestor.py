@@ -112,7 +112,7 @@ class HECRawEventIngestor(EventIngestor):
                     str(event), str(params)
                 )
             )
-            response = requests.post(
+            response = requests.post(  # nosemgrep: splunk.disabled-cert-validation
                 "{}/{}".format(self.hec_uri, "raw"),
                 auth=None,
                 data=event,
