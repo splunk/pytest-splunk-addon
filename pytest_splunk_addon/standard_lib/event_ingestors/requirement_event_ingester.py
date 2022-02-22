@@ -21,7 +21,8 @@
 
 import logging
 import os
-from xml.etree import cElementTree as ET
+
+from defusedxml import cElementTree as ET
 
 from pytest_splunk_addon.standard_lib.sample_generation.sample_event import SampleEvent
 

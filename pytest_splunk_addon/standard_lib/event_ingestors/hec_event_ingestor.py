@@ -127,7 +127,7 @@ class HECEventIngestor(EventIngestor):
                     str(data)
                 )
             )
-            response = requests.post(
+            response = requests.post(  # nosemgrep: splunk.disabled-cert-validation
                 "{}/{}".format(self.hec_uri, "event"),
                 auth=None,
                 json=data,
