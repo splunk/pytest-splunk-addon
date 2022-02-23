@@ -123,7 +123,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: ['8.1','8.2']
+        splunk-version: ["8.1","8.2"]
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
@@ -155,7 +155,7 @@ jobs:
       - name: Splunk Up
         run: |
           export NAMESPACE_NAME=ta-fiction-external
-          export SPLUNK_ADDON=TA_fiction-0.0.0-dev
+          export SPLUNK_ADDON=TA_fiction-0.0.0-dev.spl
           export SPLUNK_VERSION=${{ matrix.splunk-version }}
           echo $SPLUNK_VERSION
           eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml)\"" >> ./namespace_updated.yaml
@@ -163,9 +163,9 @@ jobs:
           kubectl apply -f ./namespace_updated.yaml
           kubectl run nginx -n $NAMESPACE_NAME --image=nginx --port=80 --expose
           kubectl wait pod nginx --for=condition=ready --timeout=300s -n $NAMESPACE_NAME
-          kubectl cp ./tests/src/$SPLUNK_ADDON.spl nginx:/usr/share/nginx/html -n $NAMESPACE_NAME
+          kubectl cp ./tests/src/$SPLUNK_ADDON nginx:/usr/share/nginx/html -n $NAMESPACE_NAME
           cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/addon_information.yaml >> ./addon_information_updated.yaml
-          echo "        - http://nginx//$SPLUNK_ADDON.spl" >> ./addon_information_updated.yaml
+          echo "        - http://nginx//$SPLUNK_ADDON" >> ./addon_information_updated.yaml
           grep -v ^\# ./addon_information_updated.yaml | grep . >> ./splunk_standalone_updated.yaml
           kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
           sleep 30
@@ -220,7 +220,7 @@ jobs:
       fail-fast: false
       matrix:
         test-marker: ['test_report', 'splunk_connection_kubernetes', 'splunk_app_fiction', 'splunk_app_broken','splunk_app_cim_fiction','splunk_app_cim_broken','splunk_fiction_indextime','splunk_fiction_indextime_broken','splunk_setup_fixture','splunk_app_requirements','splunk_app_requirements_modinput','splunk_app_requirements_uf','splunk_app_requirements_scripted']
-        splunk-version: ['8.1','8.2']
+        splunk-version: ["8.1","8.2"]
         os: [ubuntu-latest]
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml

@@ -23,8 +23,7 @@ from filelock import FileLock
 import os
 import glob
 import subprocess
-import sys
-from time import sleep
+import addonfactory_splunk_conf_parser_lib as conf_parser
 
 LOG_FILE = "pytest_splunk_addon.log"
 
@@ -131,17 +130,10 @@ def pytest_sessionfinish(session, exitstatus):
             and (splunk_data[1] != "True")
         ):
             LOGGER.info("SessionFinish - destroying all kubernetes resources")
-            SPLUNK_ADDON = (
-                subprocess.check_output(
-                    "crudini --get  {0}/default/app.conf id name".format(
-                        splunk_data[2]
-                    ),
-                    shell=True,
-                )
-                .decode(sys.stdout.encoding)
-                .strip()
-            )
-            os.environ["NAMESPACE_NAME"] = str(SPLUNK_ADDON.replace("_", "-").lower())
+            parser = conf_parser.TABConfigParser()
+            parser.read(("{0}/default/app.conf").format(splunk_data[2]))
+            splunk_addon_name = parser.get("package","id")
+            os.environ["NAMESPACE_NAME"] = str(splunk_addon_name.replace("_", "-").lower())
             files = ["./exposed_splunk_ports.log", "./splunk_type.txt"]
             current_path = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)), "k8s_manifests"

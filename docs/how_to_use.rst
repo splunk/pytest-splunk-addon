@@ -55,9 +55,9 @@ There are three ways to execute the tests:
 
         kubectl apply -f ./splunk-operator.yaml
 
-    For UCC based addons generate addon SPL with `ucc-gen --ta-version=<package/default/app.conf/id.version>`_
+    Generate addon SPL with `ucc-gen`_
 
-    For Non-UCC based addons generate addon SPL of format ``<package/default/app.conf/id.name>-<package/default/app.conf/id.version>.spl``
+    For third-party addons generate addon SPL.
 
     Create `src` directory in `tests` of the addon repository and move .spl in `tests/src`.
 
@@ -331,4 +331,4 @@ Extending pytest-splunk-addon
 .. _`minikube`: https://minikube.sigs.k8s.io/docs/start/
 .. _`microk8s`: https://microk8s.io/
 .. _`k3s`: https://k3s.io/
-.. _`ucc-gen --ta-version=<package/default/app.conf/id.version>` : https://splunk.github.io/addonfactory-ucc-generator/
+.. _`ucc-gen` : https://splunk.github.io/addonfactory-ucc-generator/

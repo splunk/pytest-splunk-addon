@@ -39,6 +39,7 @@ import subprocess
 import re
 import sys
 import base64
+import addonfactory_splunk_conf_parser_lib as conf_parser
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
@@ -631,29 +632,13 @@ def splunk_kubernetes(request):
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
-    SPLUNK_ADDON_NAME = (
-        subprocess.check_output(
-            "crudini --get {0}/default/app.conf id name".format(
-                os.getenv("SPLUNK_APP_PACKAGE")
-            ),
-            shell=True,
-        )
-        .decode(sys.stdout.encoding)
-        .strip()
-    )
-    SPLUNK_ADDON_VERSION = (
-        subprocess.check_output(
-            "crudini --get {0}/default/app.conf id version".format(
-                os.getenv("SPLUNK_APP_PACKAGE")
-            ),
-            shell=True,
-        )
-        .decode(sys.stdout.encoding)
-        .strip()
-    )
-    SPLUNK_ADDON = str(SPLUNK_ADDON_NAME) + "-" + str(SPLUNK_ADDON_VERSION)
+    parser = conf_parser.TABConfigParser()
+    parser.read(("{0}/default/app.conf").format(os.getenv("SPLUNK_APP_PACKAGE")))
+    splunk_addon_name = parser.get("package","id")
+    splunk_spl_name = [filename for filename in os.listdir("./tests/src") if filename.startswith(("{0}-").format(splunk_addon_name))]
+    SPLUNK_ADDON = str(splunk_spl_name[0])
     LOGGER.info(SPLUNK_ADDON)
-    NAMESPACE_NAME = str(SPLUNK_ADDON_NAME.replace("_", "-").lower())
+    NAMESPACE_NAME = str(splunk_addon_name.replace("_", "-").lower())
     LOGGER.info("NAMESPACE_NAME is {}".format(NAMESPACE_NAME))
     os.environ["NAMESPACE_NAME"] = NAMESPACE_NAME
     os.environ["SPLUNK_ADDON"] = SPLUNK_ADDON
