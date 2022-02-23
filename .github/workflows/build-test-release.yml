@@ -215,13 +215,12 @@ jobs:
 
   test-splunk-matrix:
     name: Test Matrix
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         test-marker: ['test_report', 'splunk_connection_kubernetes', 'splunk_app_fiction', 'splunk_app_broken','splunk_app_cim_fiction','splunk_app_cim_broken','splunk_fiction_indextime','splunk_fiction_indextime_broken','splunk_setup_fixture','splunk_app_requirements','splunk_app_requirements_modinput','splunk_app_requirements_uf','splunk_app_requirements_scripted']
         splunk-version: ["8.1","8.2"]
-        os: [ubuntu-latest]
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
@@ -240,7 +239,7 @@ jobs:
           sleep 30
           kubectl get ns
           kubectl get pods -A
-      - name: Set up OS=${{ matrix.os }}::Python=3.7::Splunk=${{ matrix.splunk-version }}
+      - name: Set up OS=ubuntu-latest::Python=3.7::Splunk=${{ matrix.splunk-version }}
         uses: actions/setup-python@v1
         with:
           python-version: 3.7
