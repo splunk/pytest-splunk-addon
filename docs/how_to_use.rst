@@ -331,4 +331,4 @@ Extending pytest-splunk-addon
 .. _`minikube`: https://minikube.sigs.k8s.io/docs/start/
 .. _`microk8s`: https://microk8s.io/
 .. _`k3s`: https://k3s.io/
-.. _`ucc-gen --ta-version=<package/default/app.conf/id.version>` : https://splunk.github.io/addonfactory-ucc-generator/
+.. _`ucc-gen` : https://splunk.github.io/addonfactory-ucc-generator/
