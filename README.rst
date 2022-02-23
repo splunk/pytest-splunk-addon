@@ -95,7 +95,7 @@ Create a test file in the tests folder
 
 Run pytest with the add-on and SA-eventgen installed and enabled in an external Splunk deployment
 
-.. code::: bash
+.. code::: python3
 
         pytest \
         --splunk-type=external \
@@ -106,13 +106,13 @@ Run pytest with the add-on and SA-eventgen installed and enabled in an external 
 
 Run pytest with the add-on and SA-eventgen installed and enabled in kubernetes
 
-For UCC based addons generate addon SPL with `ucc-gen --ta-version=<package/default/app.conf/id.version>`_.
+Generate addon SPL with `ucc-gen`_.
 
-For Non-UCC based addons generate addon SPL of format ``<package/default/app.conf/id.name>-<package/default/app.conf/id.version>.spl``
+For third-party addons generate addon SPL.
 
-Place the generated addon spl in tests/src/<addon_name-addon_version>.spl
+Place the generated addon spl in tests/src/<addon>.spl
 
-.. code::: bash
+.. code::: python3
 
         pytest \
         --splunk-type=kubernetes \
@@ -145,4 +145,4 @@ If you encounter any problems, please `file an issue`_ along with a detailed des
 .. _`minikube`: https://minikube.sigs.k8s.io/docs/start/
 .. _`microk8s`: https://microk8s.io/
 .. _`k3s`: https://k3s.io/
-.. _`ucc-gen --ta-version=<package/default/app.conf/id.version>` : https://splunk.github.io/addonfactory-ucc-generator/
+.. _`ucc-gen` : https://splunk.github.io/addonfactory-ucc-generator/
