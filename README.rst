@@ -40,23 +40,18 @@ You can install "pytest-splunk-addon" via `pip`_ from `PyPI`_::
 Developing
 ------------
 
-Note: Must install docker desktop, vscode or pycharm pro optional
+Note: Must install docker desktop.
 
 .. code:: bash
 
     $ git clone --recurse-submodules -j8 git@github.com:splunk/pytest-splunk-addon.git
-
-    $ #setup python venv must be 3.7
-    $ /Library/Frameworks/Python.framework/Versions/3.7/bin/python3 -m venv .venv
-
-    $ source .venv/bin/activate
-
     $ cd pytest-splunk-addon
-    
-    $ pip3 install -r requirements.txt
-
-    $ python setup.py develop
-    
+    $ poetry install
+    $ ... (change something)
+    # run unit tests
+    $ poetry run pytest tests/unit
+    # run some of the docker-based tests to verify end-to-end behaviour, example:
+    $ poetry run pytest -v --splunk-version=8.2 -m docker tests/test_splunk_addon.py::test_splunk_app_requirements_modinput
 
 
 Usage
@@ -86,9 +81,11 @@ Create a test file in the tests folder
 .. code:: python3
 
     from pytest_splunk_addon.standard_lib.addon_basic import Basic
-        class Test_App(Basic):
-            def empty_method():
-                pass
+
+
+    class Test_App(Basic):
+        def empty_method():
+            pass
 
 Create a Dockerfile-splunk file
 
