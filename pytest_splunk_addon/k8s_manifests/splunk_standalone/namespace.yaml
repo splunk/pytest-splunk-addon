@@ -13,12 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-[pytest]
-testpaths = tests
-addopts = -v --tb=long -m kubernetes --log-level=INFO 
-#    --force-flaky --max-runs=3 --min-passes=1
-filterwarnings =
-    ignore::DeprecationWarning
-#[pytest]
-
-#junit_family = xunit2
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: $NAMESPACE_NAME
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: splunk:operator:namespace-manager
+  namespace: $NAMESPACE_NAME
+subjects:
+- kind: ServiceAccount
+  name: splunk-operator
+  namespace: splunk-operator
+roleRef:
+  kind: ClusterRole
+  name: splunk:operator:namespace-manager
+  apiGroup: rbac.authorization.k8s.io

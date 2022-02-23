@@ -13,12 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-[pytest]
-testpaths = tests
-addopts = -v --tb=long -m kubernetes --log-level=INFO 
-#    --force-flaky --max-runs=3 --min-passes=1
-filterwarnings =
-    ignore::DeprecationWarning
-#[pytest]
-
-#junit_family = xunit2
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: uf
+  name: uf-service
+spec:
+  ports:
+  - name: port-1
+    port: 8089
+    protocol: TCP
+    targetPort: 8089
+  selector:
+    app: uf
+  type: ClusterIP

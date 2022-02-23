@@ -13,12 +13,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-[pytest]
-testpaths = tests
-addopts = -v --tb=long -m kubernetes --log-level=INFO 
-#    --force-flaky --max-runs=3 --min-passes=1
-filterwarnings =
-    ignore::DeprecationWarning
-#[pytest]
-
-#junit_family = xunit2
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sc4s
+  name: sc4s-service
+spec:
+  ports:
+  - name: port-1
+    port: 514
+    protocol: TCP
+    targetPort: 514
+  - name: port-2
+    port: 601
+    protocol: TCP
+    targetPort: 601
+  - name: port-3
+    port: 6514
+    protocol: TCP
+    targetPort: 6514
+  - name: port-4
+    port: 5425
+    protocol: TCP
+    targetPort: 5425
+  selector:
+    app: sc4s
+  type: ClusterIP

@@ -59,7 +59,7 @@ input_type = modinput | scripted_input | syslog_tcp | file_monitor | windows_inp
     * For example, in an Add-on, a sourcetype "alert" is ingested through syslog in live environment, provide input_type=syslog_tcp.
     
     .. warning::
-        uf_file_monitor input_type will only work with splunk-type=docker.
+        uf_file_monitor input_type will only work with splunk-type=kubernetes.
 
 index = <index>
     * The index used to ingest the data.
