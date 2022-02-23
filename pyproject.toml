@@ -18,7 +18,7 @@
 name = "pytest-splunk-addon"
 version = "2.1.2"
 description = "A Dynamic test tool for Splunk Apps and Add-ons"
-authors = ["rfaircloth-splunk <rfaircloth@splunk.com>"]
+authors = ["Splunk <addonfactory@splunk.com>"]
 license = "APACHE-2.0"
 classifiers = [
         "Framework :: Pytest",
@@ -47,7 +47,6 @@ junitparser = "^2.2.0"
 addonfactory-splunk-conf-parser-lib = "^0.3.3"
 defusedxml = "^0.7.1"
 
-
 [tool.poetry.extras]
 docker = ['lovely-pytest-docker']
 
@@ -57,8 +56,6 @@ pytest-cov = "^3.0.0"
 requests-mock = "^1.8.0"
 freezegun = "^1.1.0"
 pytz = "^2021.1"
-sphinx-rtd-theme = "^1.0.0"
-sphinx-panels = "^0.6.0"
 
 [tool.poetry.plugins]
 pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_addon.splunk" }
