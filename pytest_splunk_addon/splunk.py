@@ -632,10 +632,11 @@ def splunk_kubernetes(request):
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
+    os.environ["TEST_RUNNER_DIRECTORY"] = os.getcwd()
     parser = conf_parser.TABConfigParser()
     parser.read(("{0}/default/app.conf").format(os.getenv("SPLUNK_APP_PACKAGE")))
     splunk_addon_name = parser.get("package","id")
-    splunk_spl_name = [filename for filename in os.listdir("./tests/src") if filename.startswith(("{0}-").format(splunk_addon_name))]
+    splunk_spl_name = [filename for filename in os.listdir("{0}/tests/src".format(os.getenv("TEST_RUNNER_DIRECTORY"))) if filename.startswith(("{0}-").format(splunk_addon_name))]
     SPLUNK_ADDON = str(splunk_spl_name[0])
     LOGGER.info(SPLUNK_ADDON)
     NAMESPACE_NAME = str(splunk_addon_name.replace("_", "-").lower())
@@ -651,7 +652,6 @@ def splunk_kubernetes(request):
                 str(os.environ.get("PYTEST_XDIST_WORKER"))
             )
         )
-        os.environ["TEST_RUNNER_DIRECTORY"] = os.getcwd()
         # root_dir = "/" + os.getenv("TEST_RUNNER_DIRECTORY").split("/")[1]
         # root_dir_permission = subprocess.run(f"chmod -R 766 {root_dir}",shell=True)
         LOGGER.info(

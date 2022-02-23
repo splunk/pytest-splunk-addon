@@ -123,7 +123,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: ["8.1","8.2"]
+        splunk-version: ['8.1','8.2']
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
@@ -220,7 +220,7 @@ jobs:
       fail-fast: false
       matrix:
         test-marker: ['test_report', 'splunk_connection_kubernetes', 'splunk_app_fiction', 'splunk_app_broken','splunk_app_cim_fiction','splunk_app_cim_broken','splunk_fiction_indextime','splunk_fiction_indextime_broken','splunk_setup_fixture','splunk_app_requirements','splunk_app_requirements_modinput','splunk_app_requirements_uf','splunk_app_requirements_scripted']
-        splunk-version: ["8.1","8.2"]
+        splunk-version: ['8.1','8.2']
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
