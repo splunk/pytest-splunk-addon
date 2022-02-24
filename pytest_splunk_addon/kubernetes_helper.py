@@ -127,13 +127,14 @@ class KubernetesHelper:
                                 splunk_standalone.write(api_response)
                         except Exception as e:
                             LOGGER.error('Found exception in writing the logs for pod : {0}'.format(pod_name))
-                        # continue
+                        time.sleep(30)
+                        wait_count += 1
+                        continue
                 else:
                     LOGGER.error("Pod {0} is still in Pending state.".format(pod_name))
-                    time.sleep(1)
-                    # continue
-                time.sleep(30)
-                wait_count += 1
+                    time.sleep(30)
+                    wait_count += 1
+                    continue
             if wait_count > 5:
                 LOGGER.error("Waiting for pod {0} took more than expected, please check for logs")
         except Exception as e:
