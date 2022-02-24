@@ -112,7 +112,7 @@ class RequirementEventIngestor(object):
                     try:
                         self.check_xml_format(filename)
                     except ET.ParseError as e:
-                        LOGGER.error(f'Invalid XML- {filename} Exception- {e}')
+                        LOGGER.error(f"Invalid XML- {filename} Exception- {e}")
                         continue
                     root = self.get_root(filename)
                     for event_tag in root.iter("event"):
