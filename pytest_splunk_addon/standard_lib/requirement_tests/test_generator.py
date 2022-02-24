@@ -121,8 +121,8 @@ class ReqsTestGenerator(object):
                 if filename.endswith(".log"):
                     try:
                         self.check_xml_format(filename)
-                    except Exception:
-                        LOGGER.error("Invalid XML")
+                    except ET.ParseError as e:
+                        LOGGER.error(f'Invalid XML- {filename} Exception- {e}')
                         continue
                     root = self.get_root(filename)
                     event_no = 0

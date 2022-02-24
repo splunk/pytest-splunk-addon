@@ -109,108 +109,104 @@ class RequirementEventIngestor(object):
             for file1 in os.listdir(req_file_path):
                 filename = os.path.join(req_file_path, file1)
                 if filename.endswith(".log"):
-                    if self.check_xml_format(filename):
-                        root = self.get_root(filename)
-                        for event_tag in root.iter("event"):
-                            model_list = self.get_models(event_tag)
-                            if len(model_list) != 0:
-                                transport_type = self.extract_transport_tag(event_tag)
-                                if transport_type == "syslog":
-                                    transport_type = "syslog_tcp"
-                                    LOGGER.info(
-                                        "sending data using sc4s {}".format(filename)
-                                    )
-                                elif transport_type in (
-                                    "modinput",
-                                    "Modinput",
-                                    "Mod input",
-                                    "Modular Input",
-                                    "Modular input",
-                                    "modular input",
-                                    "modular_input",
-                                    "Mod Input",
-                                    "hec_event",
-                                ):
-                                    transport_type = "modinput"
-                                    host, source, sourcetype = self.extract_params(
-                                        event_tag
-                                    )
-                                    LOGGER.info(
-                                        f"sending data transport_type:modinput filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
-                                    )
-                                elif transport_type == "dbx":
-                                    transport_type = "modinput"
-                                    host, source, sourcetype = self.extract_params(
-                                        event_tag
-                                    )
-                                    LOGGER.info(
-                                        f"sending data transport_type:dbx filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
-                                    )
-                                elif transport_type == "windows_input":
-                                    host, source, sourcetype = self.extract_params(
-                                        event_tag
-                                    )
-                                    LOGGER.info(
-                                        f"sending data transport_type:windows_input filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
-                                    )
-                                elif transport_type == "forwarder":
-                                    transport_type = "uf_file_monitor"
-                                    host, source, sourcetype = self.extract_params(
-                                        event_tag
-                                    )
-                                    host_type = "plugin"
-                                    LOGGER.info(
-                                        f"sending data transport_type:forwarder/uf_file_monitor filename:{filename} "
-                                    )
-                                elif transport_type in (
-                                    "scripted_input",
-                                    "scripted input",
-                                    "hec_raw",
-                                ):
-                                    transport_type = "scripted_input"
-                                    host, source, sourcetype = self.extract_params(
-                                        event_tag
-                                    )
-                                    LOGGER.info(
-                                        f"sending data transport_type:scripted_input or hec_raw filename:{filename} "
-                                    )
-                                elif transport_type == "file_monitor":
-                                    host, source, sourcetype = self.extract_params(
-                                        event_tag
-                                    )
-                                    LOGGER.info(
-                                        f"sending data transport_type:file_monitor filename:{filename} "
-                                    )
-                                else:
-                                    transport_type = "default"
-                                unescaped_event = self.extract_raw_events(event_tag)
-                                escaped_ingest = self.escape_before_ingest(
-                                    unescaped_event
+                    try:
+                        self.check_xml_format(filename)
+                    except ET.ParseError as e:
+                        LOGGER.error(f'Invalid XML- {filename} Exception- {e}')
+                        continue
+                    root = self.get_root(filename)
+                    for event_tag in root.iter("event"):
+                        model_list = self.get_models(event_tag)
+                        if len(model_list) != 0:
+                            transport_type = self.extract_transport_tag(event_tag)
+                            if transport_type == "syslog":
+                                transport_type = "syslog_tcp"
+                                LOGGER.info(
+                                    "sending data using sc4s {}".format(filename)
                                 )
-                                metadata = {
-                                    "input_type": transport_type,
-                                    "index": "main",
-                                    "source": source,
-                                    "host": host,
-                                    "sourcetype": sourcetype,
-                                    "timestamp_type": "event",
-                                    "host_type": host_type,
-                                }
-                                events.append(
-                                    SampleEvent(
-                                        escaped_ingest, metadata, "requirement_test"
-                                    )
+                            elif transport_type in (
+                                "modinput",
+                                "Modinput",
+                                "Mod input",
+                                "Modular Input",
+                                "Modular input",
+                                "modular input",
+                                "modular_input",
+                                "Mod Input",
+                                "hec_event",
+                            ):
+                                transport_type = "modinput"
+                                host, source, sourcetype = self.extract_params(
+                                    event_tag
                                 )
-
+                                LOGGER.info(
+                                    f"sending data transport_type:modinput filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
+                                )
+                            elif transport_type == "dbx":
+                                transport_type = "modinput"
+                                host, source, sourcetype = self.extract_params(
+                                    event_tag
+                                )
+                                LOGGER.info(
+                                    f"sending data transport_type:dbx filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
+                                )
+                            elif transport_type == "windows_input":
+                                host, source, sourcetype = self.extract_params(
+                                    event_tag
+                                )
+                                LOGGER.info(
+                                    f"sending data transport_type:windows_input filename:{filename} host:{host}, source:{source} sourcetype:{sourcetype}"
+                                )
+                            elif transport_type == "forwarder":
+                                transport_type = "uf_file_monitor"
+                                host, source, sourcetype = self.extract_params(
+                                    event_tag
+                                )
+                                host_type = "plugin"
+                                LOGGER.info(
+                                    f"sending data transport_type:forwarder/uf_file_monitor filename:{filename} "
+                                )
+                            elif transport_type in (
+                                "scripted_input",
+                                "scripted input",
+                                "hec_raw",
+                            ):
+                                transport_type = "scripted_input"
+                                host, source, sourcetype = self.extract_params(
+                                    event_tag
+                                )
+                                LOGGER.info(
+                                    f"sending data transport_type:scripted_input or hec_raw filename:{filename} "
+                                )
+                            elif transport_type == "file_monitor":
+                                host, source, sourcetype = self.extract_params(
+                                    event_tag
+                                )
+                                LOGGER.info(
+                                    f"sending data transport_type:file_monitor filename:{filename} "
+                                )
                             else:
-                                # if there is no model in event do not ingest that event
-                                continue
-                    else:
-                        LOGGER.error(
-                            "Requirement event ingestion failure: Invalid XML {}".format(
-                                filename
+                                transport_type = "default"
+                            unescaped_event = self.extract_raw_events(event_tag)
+                            escaped_ingest = self.escape_before_ingest(unescaped_event)
+                            metadata = {
+                                "input_type": transport_type,
+                                "index": "main",
+                                "source": source,
+                                "host": host,
+                                "sourcetype": sourcetype,
+                                "timestamp_type": "event",
+                                "host_type": host_type,
+                            }
+                            events.append(
+                                SampleEvent(
+                                    escaped_ingest, metadata, "requirement_test"
+                                )
                             )
-                        )
+
+                        else:
+                            # if there is no model in event do not ingest that event
+                            continue
                 else:
                     LOGGER.error(
                         "Requirement event ingestion failure: Invalid file format not .log {}".format(
