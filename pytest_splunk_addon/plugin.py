@@ -132,7 +132,7 @@ def pytest_sessionfinish(session, exitstatus):
         ):
             LOGGER.info("SessionFinish - destroying all kubernetes resources")
             parser = conf_parser.TABConfigParser()
-            parser.read(("{0}/default/app.conf").format(splunk_data[2]))
+            parser.read(os.path.join("{0}".format(splunk_data[2]),"default","app.conf"))
             splunk_addon_name = parser.get("package","id")
             os.environ["NAMESPACE_NAME"] = str(splunk_addon_name.replace("_", "-").lower())
             files = ["./exposed_splunk_ports.log", "./splunk_type.txt"]
