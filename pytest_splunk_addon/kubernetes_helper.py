@@ -38,15 +38,14 @@ class KubernetesHelper:
         file = Path of namespace.yaml file,
         namespace_name = Name of the namespace.
         """
-        config.load_kube_config()
-        k8s_client = client.ApiClient()
-        print(file)
-        LOGGER.info("file in create_namespace: {0}".format(file))
-        if path.exists(file):
-            print("File exists....{0}".format(file))
-        resp = utils.create_from_yaml(k8s_client, file)
-        # time.sleep(1)
         try:
+            config.load_kube_config()
+            k8s_client = client.ApiClient()
+            print(file)
+            LOGGER.info("file in create_namespace: {0}".format(file))
+            if path.exists(file):
+                print("File exists....{0}".format(file))
+            resp = utils.create_from_yaml(k8s_client, file)
             while True:
                 core_v1 = core_v1_api.CoreV1Api()
                 api_response = core_v1.read_namespace_status(name=namespace_name)
@@ -65,10 +64,13 @@ class KubernetesHelper:
         file = Path of yaml file,
         namespace_name = Name of the namespace
         """
-        config.load_kube_config()
-        k8s_client = client.ApiClient()
-        resp = utils.create_from_yaml(k8s_client, file, namespace=namespace_name)
-        time.sleep(1)
+        try:
+            config.load_kube_config()
+            k8s_client = client.ApiClient()
+            resp = utils.create_from_yaml(k8s_client, file, namespace=namespace_name)
+            time.sleep(1)
+        except Exception as e:
+            LOGGER.error("Exception occured while creating resource from {0} : {1}".format(file , e))
 
     def create_splunk_standalone(self,file,namespace_name):
         """
@@ -76,12 +78,6 @@ class KubernetesHelper:
         file = Path of splunk_standalone.yaml,
         namespace_name = Name of the namespace
         """
-        config.load_kube_config()
-        k8s_api = client.CustomObjectsApi()
-        group = "enterprise.splunk.com"
-        version = 'v1'
-        namespace=namespace_name
-        plural = 'standalones'
         with open(file, "r") as f:
             lines = f.readlines()
         with open(file, "w") as f:
@@ -94,6 +90,12 @@ class KubernetesHelper:
             yaml_object = yaml.safe_load(yaml_in) # yaml_object will be a list or a dict
             body = json.loads(json.dumps(yaml_object))
         try:
+            config.load_kube_config()
+            k8s_api = client.CustomObjectsApi()
+            group = "enterprise.splunk.com"
+            version = "v1"
+            namespace = namespace_name
+            plural = "standalones"
             LOGGER.info("Creating Splunk Standalone")
             api_response = k8s_api.create_namespaced_custom_object(group, version, namespace, plural, body)
             time.sleep(2)
@@ -107,7 +109,8 @@ class KubernetesHelper:
         namespace_name = Name of the namespace
         """
         try:
-            while True:
+            wait_count = 0
+            while wait_count > 5:
                 config.load_kube_config()
                 api_instance = client.CoreV1Api()
                 api_response = api_instance.read_namespaced_pod_status(name=pod_name, namespace=namespace_name)
@@ -124,11 +127,15 @@ class KubernetesHelper:
                                 splunk_standalone.write(api_response)
                         except Exception as e:
                             LOGGER.error('Found exception in writing the logs for pod : {0}'.format(pod_name))
-                        continue
+                        # continue
                 else:
                     LOGGER.error("Pod {0} is still in Pending state.".format(pod_name))
                     time.sleep(1)
-                    continue
+                    # continue
+                time.sleep(30)
+                wait_count += 1
+            if wait_count > 5:
+                LOGGER.error("Waiting for pod {0} took more than expected, please check for logs")
         except Exception as e:
             LOGGER.error('Found exception while waiting for pod {0} : {1}'.format(pod_name,e))
 
@@ -157,47 +164,54 @@ class KubernetesHelper:
         destination_location = Location of the pod where files will be stored,
         source_location = Location of the source from where files will be copied.
         """
-        LOGGER.info("Copy files to pod")
-        config.load_kube_config()
-        api_instance = client.CoreV1Api()
+        try:
+            LOGGER.info("Copy files to pod")
+            config.load_kube_config()
+            api_instance = client.CoreV1Api()
 
-        exec_command = ['tar', 'xvf', '-', '-C', str(destination_location)]
-        resp = stream(api_instance.connect_get_namespaced_pod_exec, pod_name, namespace_name,
-                    command=exec_command,
-                    stderr=True, stdin=True,
-                    stdout=True, tty=False,
-                    _preload_content=False)
+            exec_command = ['tar', 'xvf', '-', '-C', str(destination_location)]
+            resp = stream(api_instance.connect_get_namespaced_pod_exec, pod_name, namespace_name,
+                        command=exec_command,
+                        stderr=True, stdin=True,
+                        stdout=True, tty=False,
+                        _preload_content=False)
 
 
-        with TemporaryFile() as tar_buffer:
-            with tarfile.open(fileobj=tar_buffer, mode='w') as tar:
-                tar.add(source_location)
+            with TemporaryFile() as tar_buffer:
+                with tarfile.open(fileobj=tar_buffer, mode='w') as tar:
+                    tar.add(source_location)
 
-            tar_buffer.seek(0)
-            commands = []
-            commands.append(tar_buffer.read())
+                tar_buffer.seek(0)
+                commands = []
+                commands.append(tar_buffer.read())
 
-            while resp.is_open():
-                resp.update(timeout=1)
-                if resp.peek_stdout():
-                    print("STDOUT: %s" % resp.read_stdout())
-                if resp.peek_stderr():
-                    print("STDERR: %s" % resp.read_stderr())
-                if commands:
-                    c = commands.pop(0)
-                    resp.write_stdin(c)
-                else:
-                    break
-            resp.close()
+                while resp.is_open():
+                    resp.update(timeout=1)
+                    if resp.peek_stdout():
+                        print("STDOUT: %s" % resp.read_stdout())
+                    if resp.peek_stderr():
+                        print("STDERR: %s" % resp.read_stderr())
+                    if commands:
+                        c = commands.pop(0)
+                        resp.write_stdin(c)
+                    else:
+                        break
+                resp.close()
+        except Exception as e:
+            LOGGER.error("Exception occured while copying files : {0}".format(e))
 
     def get_splunk_creds(self,secret_name,namespace_name):
-        LOGGER.info("Get splunk secrets")
-        config.load_kube_config()
-        core_v1 = core_v1_api.CoreV1Api()
-        api_response = core_v1.read_namespaced_secret(name=secret_name, namespace=namespace_name)
-        hec_token = api_response.data['hec_token']
-        password = api_response.data['password']
-        return hec_token, password
+        try:
+            LOGGER.info("Get splunk secrets")
+            config.load_kube_config()
+            core_v1 = core_v1_api.CoreV1Api()
+            api_response = core_v1.read_namespaced_secret(name=secret_name, namespace=namespace_name)
+            hec_token = api_response.data['hec_token']
+            password = api_response.data['password']
+            return hec_token, password
+        except Exception as e:
+            LOGGER.error("Exception occured while fetching splunk creds : {0}".format(e))
+            return None, None
 
     def delete_splunk_standalone(self,namespace_name):
         try:
@@ -239,8 +253,8 @@ class KubernetesHelper:
         Delete namespace
         namespace_name = Name of the namespace.
         """
-        config.load_kube_config()
         try:
+            config.load_kube_config()
             while True:
                 core_v1 = core_v1_api.CoreV1Api()
                 api_response = core_v1.delete_namespace(name=namespace_name)
