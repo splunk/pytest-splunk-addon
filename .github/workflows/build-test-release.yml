@@ -256,17 +256,10 @@ jobs:
   test-splunk-unit:
     name: Unit tests
     runs-on: ubuntu-latest
-    env:
-      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - name: Setup kubernetes cluster
-        id: kubernetes
-        run: |
-          ./k3s.sh
-          kubectl get no
       - name: Install dependencies
         run: |
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
