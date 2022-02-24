@@ -20,7 +20,7 @@ import logging
 import os
 from time import sleep
 from requests.exceptions import ConnectionError
-from ...kubernetes_helper import KubernetesHelper
+from pytest_splunk_addon.kubernetes_helper import KubernetesHelper
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 MONITOR_DIR = "uf_files"
