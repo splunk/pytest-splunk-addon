@@ -27,7 +27,7 @@ import shutil
 from time import sleep
 import json
 import pytest
-import requests
+import requests, re
 import splunklib.client as client
 from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
@@ -40,6 +40,7 @@ import re
 import sys
 import base64
 import addonfactory_splunk_conf_parser_lib as conf_parser
+from .kubernetes_helper import KubernetesHelper
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
@@ -519,10 +520,17 @@ def uf_kubernetes(request):
         current_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "k8s_manifests/uf"
         )
+        os.environ["ADDON_LOCATION"] = str(os.getenv("TEST_RUNNER_DIRECTORY")) + "/tests/src/" + str(os.getenv("SPLUNK_ADDON"))
         update_k8s_manifest_files(folder=current_path, file="uf_deployment")
         LOGGER.info("Setting up UF")
+        kubernetes_helper_uf = KubernetesHelper()
+        kubernetes_helper_uf.create_k8s_resource_from_yaml(file=current_path+"/uf_deployment_updated.yaml",namespace_name=os.getenv("NAMESPACE_NAME"))
+        uf_pod_name = kubernetes_helper_uf.get_pod_name(os.getenv("NAMESPACE_NAME"),"app=uf")
+        os.environ["UF_POD_NAME"] = uf_pod_name
+        kubernetes_helper_uf.wait_for_pod_to_get_ready(pod_name=uf_pod_name,namespace_name=os.getenv("NAMESPACE_NAME"))
+        kubernetes_helper_uf.create_k8s_resource_from_yaml(file=current_path+"/uf_service.yaml",namespace_name=os.getenv("NAMESPACE_NAME"))
         uf_setup = subprocess.run(
-            "sh uf_setup.sh", capture_output=True, shell=True, cwd=current_path
+            "kubectl port-forward svc/uf-service -n {0} :8089 > {1}/exposed_uf_ports.log 2>&1 &".format(os.getenv("NAMESPACE_NAME"),os.getenv("TEST_RUNNER_DIRECTORY")), capture_output=True, shell=True
         )
         LOGGER.info("UF Setup Logs")
         LOGGER.info(uf_setup.stdout.decode())
@@ -537,21 +545,10 @@ def uf_kubernetes(request):
             os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf"
         ):
             sleep(1)
-    os.environ["UF_POD_NAME"] = (
-        subprocess.check_output(
-            [
-                "bash",
-                "-c",
-                "echo $(kubectl get pods -n {0} -l='app=uf' -o json| jq -r '.items[].metadata.name')".format(
-                    os.getenv("NAMESPACE_NAME")
-                ),
-            ]
-        )
-        .strip()
-        .decode("utf-8")
-    )
-    LOGGER.info("UF_POD_NAME : %s", os.getenv("UF_POD_NAME"))
-    expose_ports_splunk_sc4s_uf("./exposed_uf_ports.log")
+    # kubernetes_helper_uf = KubernetesHelper()
+    # os.environ["UF_POD_NAME"] = kubernetes_helper_uf.get_pod_name(os.getenv("NAMESPACE_NAME"),"app=uf")
+    # LOGGER.info("UF_POD_NAME : %s", os.getenv("UF_POD_NAME"))
+    expose_ports_splunk_sc4s_uf("{0}/exposed_uf_ports.log".format(os.getenv("TEST_RUNNER_DIRECTORY")))
     LOGGER.info("Exposed ports of UF=%s", os.getenv("port_uf"))
     uf_info = {
         "uf_host": "localhost",
@@ -578,12 +575,13 @@ def uf_external(request):
 
 def expose_ports_splunk_sc4s_uf(file):
     try:
+        sleep(10)
         with open(file, "r") as exposed_ports_file:
             count = 0
-            for line in exposed_ports_file:
+            Lines = exposed_ports_file.readlines()
+            for line in Lines:
                 count += 1
                 if count % 2 == 0:
-                    print(line.strip())
                     service_port = re.search("[0-9]{3,4}$", line)
                     exposed_port = re.search(
                         "^Forwarding from \[\:\:1\]\:([0-9]{0,5})", line
@@ -597,7 +595,7 @@ def expose_ports_splunk_sc4s_uf(file):
                     if service_port == "8088":
                         os.environ["port_hec"] = exposed_port
                     if service_port == "8089":
-                        if file == "./exposed_uf_ports.log":
+                        if file == "{0}/exposed_uf_ports.log".format(os.getenv("TEST_RUNNER_DIRECTORY")):
                             os.environ["port_uf"] = exposed_port
                         else:
                             os.environ["port"] = exposed_port
@@ -632,10 +630,11 @@ def splunk_kubernetes(request):
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
+    os.environ["TEST_RUNNER_DIRECTORY"] = os.getcwd()
     parser = conf_parser.TABConfigParser()
-    parser.read(("{0}/default/app.conf").format(os.getenv("SPLUNK_APP_PACKAGE")))
+    parser.read(os.path.join("{0}".format(os.getenv("SPLUNK_APP_PACKAGE")),"default","app.conf"))
     splunk_addon_name = parser.get("package","id")
-    splunk_spl_name = [filename for filename in os.listdir("./tests/src") if filename.startswith(("{0}-").format(splunk_addon_name))]
+    splunk_spl_name = [filename for filename in os.listdir("{0}/tests/src".format(os.getenv("TEST_RUNNER_DIRECTORY"))) if filename.startswith(("{0}-").format(splunk_addon_name))]
     SPLUNK_ADDON = str(splunk_spl_name[0])
     LOGGER.info(SPLUNK_ADDON)
     NAMESPACE_NAME = str(splunk_addon_name.replace("_", "-").lower())
@@ -651,7 +650,6 @@ def splunk_kubernetes(request):
                 str(os.environ.get("PYTEST_XDIST_WORKER"))
             )
         )
-        os.environ["TEST_RUNNER_DIRECTORY"] = os.getcwd()
         # root_dir = "/" + os.getenv("TEST_RUNNER_DIRECTORY").split("/")[1]
         # root_dir_permission = subprocess.run(f"chmod -R 766 {root_dir}",shell=True)
         LOGGER.info(
@@ -661,13 +659,43 @@ def splunk_kubernetes(request):
         )
         current_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            "k8s_manifests/splunk_standalone",
+            "k8s_manifests","splunk_standalone",
         )
+        pattern = r"https:\/\/github\.com\/splunk\/splunk-configurations-base-indexes\/releases\/download\/v[0-9.]+\/splunk_configurations_base_indexes-[0-9.]+.spl"
+        try:
+            response = requests.get("https://api.github.com/repos/splunk/splunk-configurations-base-indexes/releases/latest")
+            regex_match = re.search(pattern, str(response.json()))
+            if regex_match:
+                os.environ["SC4S_INDEX_URL"] = regex_match.group()
+        except Exception as e:
+            LOGGER.error("Exception occured while fetching SC4S_INDEX_URL : {0}".format(e))
+        print(os.getenv("SC4S_INDEX_URL"))
         update_k8s_manifest_files(folder=current_path, file="namespace")
         update_k8s_manifest_files(folder=current_path, file="splunk_standalone")
         LOGGER.info("Setting up Splunk")
+        kubernetes_helper_splunk = KubernetesHelper()
+        LOGGER.info("=======================")
+        LOGGER.info(current_path)
+        LOGGER.info(current_path+"/namespace_updated.yaml")
+        kubernetes_helper_splunk.create_namespace(file=current_path+"/namespace_updated.yaml",namespace_name=os.getenv("NAMESPACE_NAME"))
+        kubernetes_helper_splunk.create_k8s_resource_from_yaml(file=current_path+"/nginx.yaml",namespace_name=os.getenv("NAMESPACE_NAME"))
+        kubernetes_helper_splunk.create_k8s_resource_from_yaml(file=current_path+"/nginx_service.yaml",namespace_name=os.getenv("NAMESPACE_NAME"))
+        kubernetes_helper_splunk.wait_for_pod_to_get_ready(pod_name="nginx",namespace_name=os.getenv("NAMESPACE_NAME"))
+        destination_location = "/usr/share/nginx/html/"
+        source_location = str(os.getenv("TEST_RUNNER_DIRECTORY")) + "/tests/src/" + str(os.getenv("SPLUNK_ADDON"))
+        LOGGER.info(source_location)
+        kubernetes_helper_splunk.copy_files_to_pod("nginx",os.getenv("NAMESPACE_NAME"),destination_location,source_location)
+        file = current_path + "/splunk_standalone_updated.yaml"
+        # Open a file with access mode 'a'
+        with open(file, "a") as file_object:
+            file_object.write("        - http://nginx/{0}".format(source_location))
+        kubernetes_helper_splunk.create_splunk_standalone(file,os.getenv("NAMESPACE_NAME"))
+        kubernetes_helper_splunk.wait_for_pod_to_get_ready("splunk-s1-standalone-0",os.getenv("NAMESPACE_NAME"))
+        # kubernetes_helper_splunk.wait_for_pod_to_get_ready("splunk-{0}-monitoring-console-0".format(os.getenv("NAMESPACE_NAME")),os.getenv("NAMESPACE_NAME"))
+        # sleep(30)
+
         splunk_setup = subprocess.run(
-            "sh splunk_setup.sh", capture_output=True, shell=True, cwd=current_path
+            "kubectl port-forward svc/splunk-s1-standalone-service -n {0} :8000 :8088 :8089 :9997 > {1}/exposed_splunk_ports.log 2>&1 &".format(os.getenv("NAMESPACE_NAME"),os.getenv("TEST_RUNNER_DIRECTORY")), capture_output=True, shell=True
         )
         LOGGER.info("Splunk Setup Logs")
         LOGGER.info(splunk_setup.stdout.decode())
@@ -682,35 +710,15 @@ def splunk_kubernetes(request):
             os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_splunk"
         ):
             sleep(1)
-    expose_ports_splunk_sc4s_uf("./exposed_splunk_ports.log")
-    splunk_password = (
-        subprocess.check_output(
-            [
-                "bash",
-                "-c",
-                "echo $(kubectl get secret splunk-{0}-secret -o json -n {1} -o json | jq -r '.data.password')".format(
-                    os.getenv("NAMESPACE_NAME"), os.getenv("NAMESPACE_NAME")
-                ),
-            ]
-        )
-        .strip()
-        .decode("utf-8")
-    )
-    splunk_hec_token = (
-        subprocess.check_output(
-            [
-                "bash",
-                "-c",
-                "echo $(kubectl get secret splunk-{0}-secret -o json -n {1} -o json | jq -r '.data.hec_token')".format(
-                    os.getenv("NAMESPACE_NAME"), os.getenv("NAMESPACE_NAME")
-                ),
-            ]
-        )
-        .strip()
-        .decode("utf-8")
-    )
+    expose_ports_splunk_sc4s_uf("{0}/exposed_splunk_ports.log".format(os.getenv("TEST_RUNNER_DIRECTORY")))
+    secret_name = "splunk-" + os.getenv("NAMESPACE_NAME") + "-secret"
+    kubernetes_helper_splunk = KubernetesHelper()
+    splunk_hec_token, splunk_password = kubernetes_helper_splunk.get_splunk_creds(secret_name,os.getenv("NAMESPACE_NAME"))
     os.environ["SPLUNK_PASSWORD"] = base64.b64decode(splunk_password).decode("utf-8")
     os.environ["SPLUNK_HEC_TOKEN"] = base64.b64decode(splunk_hec_token).decode("utf-8")
+    LOGGER.info(os.getenv("port"))
+    LOGGER.info(os.getenv("port_hec"))
+
     splunk_info = {
         "host": "localhost",
         "port": os.getenv("port"),
@@ -808,8 +816,13 @@ def sc4s_kubernetes():
         )
         update_k8s_manifest_files(folder=current_path, file="sc4s_deployment")
         LOGGER.info("Setting up SC4S")
+        kubernetes_helper_sc4s = KubernetesHelper()
+        kubernetes_helper_sc4s.create_k8s_resource_from_yaml(file=current_path+"/sc4s_deployment_updated.yaml",namespace_name=os.getenv("NAMESPACE_NAME"))
+        sc4s_pod_name = kubernetes_helper_sc4s.get_pod_name(os.getenv("NAMESPACE_NAME"),"app=sc4s")
+        kubernetes_helper_sc4s.wait_for_pod_to_get_ready(pod_name=sc4s_pod_name,namespace_name=os.getenv("NAMESPACE_NAME"))
+        kubernetes_helper_sc4s.create_k8s_resource_from_yaml(file=current_path+"/sc4s_service.yaml",namespace_name=os.getenv("NAMESPACE_NAME"))
         sc4s_setup = subprocess.run(
-            "sh sc4s_setup.sh", capture_output=True, shell=True, cwd=current_path
+            "kubectl port-forward svc/sc4s-service -n {0} :514 > {1}/exposed_sc4s_ports.log 2>&1 &".format(os.getenv("NAMESPACE_NAME"),os.getenv("TEST_RUNNER_DIRECTORY")), capture_output=True, shell=True
         )
         LOGGER.info("SC4S Setup Logs")
         LOGGER.info(sc4s_setup.stdout.decode())
@@ -824,7 +837,7 @@ def sc4s_kubernetes():
             os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_sc4s"
         ):
             sleep(1)
-    expose_ports_splunk_sc4s_uf("./exposed_sc4s_ports.log")
+    expose_ports_splunk_sc4s_uf("{0}/exposed_sc4s_ports.log".format(os.getenv("TEST_RUNNER_DIRECTORY")))
     ports = {514: int(os.getenv("sc4s_port"))}
     for x in range(5000, 5007):
         ports.update({x: x})
@@ -934,7 +947,6 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
         if "PYTEST_XDIST_WORKER" in os.environ:
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait", "w+"):
                 PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
-
     else:
         while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait"):
             sleep(1)

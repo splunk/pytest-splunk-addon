@@ -13,15 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-apiVersion: enterprise.splunk.com/v1
-kind: Standalone
+apiVersion: v1
+kind: Pod
 metadata:
-  name: s1
-  finalizers:
-  - enterprise.splunk.com/delete-pvc
+  labels:
+    run: nginx
+  name: nginx
 spec:
-  image: docker.io/splunk/splunk:$SPLUNK_VERSION
-  defaults: |-
-    splunk:
-      apps_location:
-        - $SC4S_INDEX_URL
+  containers:
+  - image: nginx
+    imagePullPolicy: Always
+    name: nginx
+    ports:
+    - containerPort: 80
+      protocol: TCP

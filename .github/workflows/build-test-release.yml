@@ -153,9 +153,11 @@ jobs:
           ./spl_generation.sh
       - name: Splunk Up
         run: |
+          sudo apt-get install -y curl jq
           export NAMESPACE_NAME=ta-fiction-external
           export SPLUNK_ADDON=TA_fiction-0.0.0-dev.spl
           export SPLUNK_VERSION=${{ matrix.splunk-version }}
+          export SC4S_INDEX_URL=$( curl -s https://api.github.com/repos/splunk/splunk-configurations-base-indexes/releases/latest \ | jq -r '.assets[] | select((.name | contains("spl")) and (.name | contains("search_head") | not) and (.name | contains("indexers") | not ) and (.name | contains("forwarders") | not)) | .browser_download_url ')
           echo $SPLUNK_VERSION
           eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml)\"" >> ./namespace_updated.yaml
           eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml)\"" >> ./splunk_standalone_updated.yaml
@@ -163,9 +165,9 @@ jobs:
           kubectl run nginx -n $NAMESPACE_NAME --image=nginx --port=80 --expose
           kubectl wait pod nginx --for=condition=ready --timeout=300s -n $NAMESPACE_NAME
           kubectl cp ./tests/src/$SPLUNK_ADDON nginx:/usr/share/nginx/html -n $NAMESPACE_NAME
-          cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/addon_information.yaml >> ./addon_information_updated.yaml
-          echo "        - http://nginx//$SPLUNK_ADDON" >> ./addon_information_updated.yaml
-          grep -v ^\# ./addon_information_updated.yaml | grep . >> ./splunk_standalone_updated.yaml
+          # cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/addon_information.yaml >> ./addon_information_updated.yaml
+          echo "        - http://nginx//$SPLUNK_ADDON" >> ./splunk_standalone_updated.yaml
+          # grep -v ^\# ./addon_information_updated.yaml | grep . >> ./splunk_standalone_updated.yaml
           kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
           sleep 30
           until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
