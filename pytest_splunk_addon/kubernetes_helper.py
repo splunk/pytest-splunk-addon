@@ -29,6 +29,13 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class KubernetesHelper:
 
+    def __init__(self) -> None:
+        try:
+            config.load_kube_config()
+        except Exception as e:
+            LOGGER.error("KUBECONFIG file not found")
+        pass
+
     def create_namespace(self,file,namespace_name):
         """
         Create namespace
@@ -36,7 +43,6 @@ class KubernetesHelper:
         namespace_name = Name of the namespace.
         """
         try:
-            config.load_kube_config()
             k8s_client = client.ApiClient()
             print(file)
             LOGGER.info("file in create_namespace: {0}".format(file))
@@ -62,7 +68,6 @@ class KubernetesHelper:
         namespace_name = Name of the namespace
         """
         try:
-            config.load_kube_config()
             k8s_client = client.ApiClient()
             resp = utils.create_from_yaml(k8s_client, file, namespace=namespace_name)
             time.sleep(1)
@@ -87,7 +92,6 @@ class KubernetesHelper:
             yaml_object = yaml.safe_load(yaml_in) # yaml_object will be a list or a dict
             body = json.loads(json.dumps(yaml_object))
         try:
-            config.load_kube_config()
             k8s_api = client.CustomObjectsApi()
             group = "enterprise.splunk.com"
             version = "v1"
@@ -109,7 +113,6 @@ class KubernetesHelper:
             wait_count = 0
             while wait_count <= 5:
                 LOGGER.info("wait_count is {0}".format(str(wait_count)))
-                config.load_kube_config()
                 api_instance = client.CoreV1Api()
                 api_response = api_instance.read_namespaced_pod_status(name=pod_name, namespace=namespace_name)
                 print(api_response.status.phase)
@@ -147,7 +150,6 @@ class KubernetesHelper:
         returns name of the matching pod
         """
         try:
-            config.load_kube_config()
             api_instance = client.CoreV1Api()
             api_response = api_instance.list_namespaced_pod(namespace=namespace_name, label_selector='{}'.format(label))
             return str(api_response.items[0].metadata.name)
@@ -165,7 +167,6 @@ class KubernetesHelper:
         """
         try:
             LOGGER.info("Copy files to pod")
-            config.load_kube_config()
             api_instance = client.CoreV1Api()
 
             exec_command = ['tar', 'xvf', '-', '-C', str(destination_location)]
@@ -179,11 +180,9 @@ class KubernetesHelper:
             with TemporaryFile() as tar_buffer:
                 with tarfile.open(fileobj=tar_buffer, mode='w') as tar:
                     tar.add(source_location)
-
                 tar_buffer.seek(0)
                 commands = []
                 commands.append(tar_buffer.read())
-
                 while resp.is_open():
                     resp.update(timeout=1)
                     if resp.peek_stdout():
@@ -202,7 +201,6 @@ class KubernetesHelper:
     def get_splunk_creds(self,secret_name,namespace_name):
         try:
             LOGGER.info("Get splunk secrets")
-            config.load_kube_config()
             core_v1 = core_v1_api.CoreV1Api()
             api_response = core_v1.read_namespaced_secret(name=secret_name, namespace=namespace_name)
             hec_token = api_response.data['hec_token']
@@ -214,7 +212,6 @@ class KubernetesHelper:
 
     def delete_splunk_standalone(self,namespace_name):
         try:
-            config.load_kube_config()
             k8s_api = client.CustomObjectsApi()
             group = 'enterprise.splunk.com'
             version = 'v1'
@@ -232,7 +229,6 @@ class KubernetesHelper:
 
     def delete_kubernetes_deployment(self, deployment_name, namespace_name, pod_label):
         try:
-            config.load_kube_config()
             k8s_api = client.AppsV1Api()
             name = deployment_name
             namespace = namespace_name
@@ -253,7 +249,6 @@ class KubernetesHelper:
         namespace_name = Name of the namespace.
         """
         try:
-            config.load_kube_config()
             while True:
                 core_v1 = core_v1_api.CoreV1Api()
                 api_response = core_v1.delete_namespace(name=namespace_name)
