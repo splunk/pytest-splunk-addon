@@ -28,10 +28,7 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class KubernetesHelper:
-    def __init__(self) -> None:
-        config.load_kube_config()
-        pass
-    
+
     def create_namespace(self,file,namespace_name):
         """
         Create namespace
