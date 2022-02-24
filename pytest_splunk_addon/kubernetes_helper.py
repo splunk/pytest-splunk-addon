@@ -110,7 +110,8 @@ class KubernetesHelper:
         """
         try:
             wait_count = 0
-            while wait_count > 5:
+            while wait_count <= 5:
+                LOGGER.info("wait_count is {0}".format(str(wait_count)))
                 config.load_kube_config()
                 api_instance = client.CoreV1Api()
                 api_response = api_instance.read_namespaced_pod_status(name=pod_name, namespace=namespace_name)
