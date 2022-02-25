@@ -81,7 +81,12 @@ class FileMonitorEventIngestor(EventIngestor):
                 )
             )
             kubernetes_helper_uf_copy = KubernetesHelper()
-            kubernetes_helper_uf_copy.copy_files_to_pod(os.getenv("UF_POD_NAME"),os.getenv("NAMESPACE_NAME"),"/",(os.path.join(os.getenv("TEST_RUNNER_DIRECTORY","/"),"uf_files")))
+            kubernetes_helper_uf_copy.copy_files_to_pod(
+                os.getenv("UF_POD_NAME"),
+                os.getenv("NAMESPACE_NAME"),
+                "/",
+                (os.path.join(os.getenv("TEST_RUNNER_DIRECTORY", "/"), "uf_files")),
+            )
             # copy_files = subprocess.run(
             #     "kubectl cp {0}/uf_files/ {1}:{2} -c uf -n {3}".format(
             #         os.getenv("TEST_RUNNER_DIRECTORY"),

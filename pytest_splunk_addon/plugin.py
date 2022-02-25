@@ -132,16 +132,22 @@ def pytest_sessionfinish(session, exitstatus):
         ):
             LOGGER.info("SessionFinish - destroying all kubernetes resources")
             parser = conf_parser.TABConfigParser()
-            parser.read(os.path.join("{0}".format(splunk_data[2]),"default","app.conf"))
-            splunk_addon_name = parser.get("package","id")
-            os.environ["NAMESPACE_NAME"] = str(splunk_addon_name.replace("_", "-").lower())
+            parser.read(
+                os.path.join("{0}".format(splunk_data[2]), "default", "app.conf")
+            )
+            splunk_addon_name = parser.get("package", "id")
+            os.environ["NAMESPACE_NAME"] = str(
+                splunk_addon_name.replace("_", "-").lower()
+            )
             files = ["./exposed_splunk_ports.log", "./splunk_type.txt"]
             current_path = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)), "k8s_manifests"
             )
             if os.path.exists("./exposed_sc4s_ports.log"):
                 kubernetes_sc4s_delete = KubernetesHelper()
-                kubernetes_sc4s_delete.delete_kubernetes_deployment("sc4s",os.environ["NAMESPACE_NAME"],"app=sc4s")
+                kubernetes_sc4s_delete.delete_kubernetes_deployment(
+                    "sc4s", os.environ["NAMESPACE_NAME"], "app=sc4s"
+                )
                 # sc4s_destroy = subprocess.run(
                 #     "sh sc4s/sc4s_destroy.sh",
                 #     capture_output=True,
@@ -156,7 +162,9 @@ def pytest_sessionfinish(session, exitstatus):
                 #     LOGGER.error(sc4s_destroy.stderr.decode())
             if os.path.exists("./exposed_uf_ports.log"):
                 kubernetes_uf_delete = KubernetesHelper()
-                kubernetes_uf_delete.delete_kubernetes_deployment("splunk-uf",os.environ["NAMESPACE_NAME"],"app=uf")
+                kubernetes_uf_delete.delete_kubernetes_deployment(
+                    "splunk-uf", os.environ["NAMESPACE_NAME"], "app=uf"
+                )
                 # uf_destroy = subprocess.run(
                 #     "sh uf/uf_destroy.sh",
                 #     capture_output=True,
@@ -170,8 +178,12 @@ def pytest_sessionfinish(session, exitstatus):
                 #     LOGGER.error("UF Destroy Error Logs")
                 #     LOGGER.error(uf_destroy.stderr.decode())
             kubernetes_splunk_namespace_delete = KubernetesHelper()
-            kubernetes_splunk_namespace_delete.delete_splunk_standalone(os.environ["NAMESPACE_NAME"])
-            kubernetes_splunk_namespace_delete.delete_namespace(os.environ["NAMESPACE_NAME"])
+            kubernetes_splunk_namespace_delete.delete_splunk_standalone(
+                os.environ["NAMESPACE_NAME"]
+            )
+            kubernetes_splunk_namespace_delete.delete_namespace(
+                os.environ["NAMESPACE_NAME"]
+            )
             # splunk_destroy = subprocess.run(
             #     "sh splunk_standalone/splunk_destroy.sh",
             #     capture_output=True,
