@@ -48,7 +48,8 @@ class KubernetesHelper:
             if path.exists(file):
                 print("File exists....{0}".format(file))
             resp = utils.create_from_yaml(k8s_client, file)
-            while True:
+            wait_count = 0
+            while wait_count < 5:
                 core_v1 = core_v1_api.CoreV1Api()
                 api_response = core_v1.read_namespace_status(name=namespace_name)
                 if str(api_response.status.phase) == "Active":
@@ -56,6 +57,8 @@ class KubernetesHelper:
                     break
                 else:
                     LOGGER.info("waiting for namespace to get created...")
+                    time.sleep(3)
+                    wait_count += 1
                     continue
         except Exception as e:
             LOGGER.error("Exception occured while creating namespace : {0}".format(e))
@@ -126,6 +129,8 @@ class KubernetesHelper:
                 )
                 print(api_response.status.phase)
                 if api_response.status.phase != "Pending":
+                    # check for bool
+                    # readiness probe
                     if str(api_response.status.container_statuses[0].ready) == "True":
                         LOGGER.info("Pod {0} created....".format(pod_name))
                         break
