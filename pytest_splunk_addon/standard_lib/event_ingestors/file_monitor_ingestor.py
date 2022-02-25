@@ -20,6 +20,7 @@ import logging
 import os
 from time import sleep
 from requests.exceptions import ConnectionError
+from pytest_splunk_addon.kubernetes_helper import KubernetesHelper
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 MONITOR_DIR = "uf_files"
@@ -79,15 +80,12 @@ class FileMonitorEventIngestor(EventIngestor):
                     os.getenv("NAMESPACE_NAME"),
                 )
             )
-            copy_files = subprocess.run(
-                "kubectl cp {0}/uf_files/ {1}:{2} -c uf -n {3}".format(
-                    os.getenv("TEST_RUNNER_DIRECTORY"),
-                    os.getenv("UF_POD_NAME"),
-                    os.getenv("TEST_RUNNER_DIRECTORY"),
-                    os.getenv("NAMESPACE_NAME"),
-                ),
-                shell=True,
-                capture_output=True,
+            kubernetes_helper_uf_copy = KubernetesHelper()
+            kubernetes_helper_uf_copy.copy_files_to_pod(
+                os.getenv("UF_POD_NAME"),
+                os.getenv("NAMESPACE_NAME"),
+                "/",
+                (os.path.join(os.getenv("TEST_RUNNER_DIRECTORY", "/"), "uf_files")),
             )
             sleep(10)
             self.create_inputs_stanza(each_event)

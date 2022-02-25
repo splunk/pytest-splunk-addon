@@ -24,6 +24,7 @@ import os
 import glob
 import subprocess
 import addonfactory_splunk_conf_parser_lib as conf_parser
+from .kubernetes_helper import KubernetesHelper
 
 LOG_FILE = "pytest_splunk_addon.log"
 
@@ -131,50 +132,36 @@ def pytest_sessionfinish(session, exitstatus):
         ):
             LOGGER.info("SessionFinish - destroying all kubernetes resources")
             parser = conf_parser.TABConfigParser()
-            parser.read(("{0}/default/app.conf").format(splunk_data[2]))
-            splunk_addon_name = parser.get("package","id")
-            os.environ["NAMESPACE_NAME"] = str(splunk_addon_name.replace("_", "-").lower())
+            parser.read(
+                os.path.join("{0}".format(splunk_data[2]), "default", "app.conf")
+            )
+            splunk_addon_name = parser.get("package", "id")
+            os.environ["NAMESPACE_NAME"] = str(
+                splunk_addon_name.replace("_", "-").lower()
+            )
             files = ["./exposed_splunk_ports.log", "./splunk_type.txt"]
             current_path = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)), "k8s_manifests"
             )
             if os.path.exists("./exposed_sc4s_ports.log"):
-                sc4s_destroy = subprocess.run(
-                    "sh sc4s/sc4s_destroy.sh",
-                    capture_output=True,
-                    shell=True,
-                    cwd=current_path,
+                kubernetes_sc4s_delete = KubernetesHelper()
+                kubernetes_sc4s_delete.delete_kubernetes_deployment(
+                    "sc4s", os.environ["NAMESPACE_NAME"], "app=sc4s"
                 )
                 files.append("./exposed_sc4s_ports.log")
-                LOGGER.info("SC4S Destroy Logs")
-                LOGGER.info(sc4s_destroy.stdout.decode())
-                if sc4s_destroy.stderr:
-                    LOGGER.error("SC4S Destroy Error Logs")
-                    LOGGER.error(sc4s_destroy.stderr.decode())
             if os.path.exists("./exposed_uf_ports.log"):
-                uf_destroy = subprocess.run(
-                    "sh uf/uf_destroy.sh",
-                    capture_output=True,
-                    shell=True,
-                    cwd=current_path,
+                kubernetes_uf_delete = KubernetesHelper()
+                kubernetes_uf_delete.delete_kubernetes_deployment(
+                    "splunk-uf", os.environ["NAMESPACE_NAME"], "app=uf"
                 )
                 files.append("./exposed_uf_ports.log")
-                LOGGER.info("UF Destroy Logs")
-                LOGGER.info(uf_destroy.stdout.decode())
-                if uf_destroy.stderr:
-                    LOGGER.error("UF Destroy Error Logs")
-                    LOGGER.error(uf_destroy.stderr.decode())
-            splunk_destroy = subprocess.run(
-                "sh splunk_standalone/splunk_destroy.sh",
-                capture_output=True,
-                shell=True,
-                cwd=current_path,
+            kubernetes_splunk_namespace_delete = KubernetesHelper()
+            kubernetes_splunk_namespace_delete.delete_splunk_standalone(
+                os.environ["NAMESPACE_NAME"]
             )
-            LOGGER.info("Splunk Destroy Logs")
-            LOGGER.info(splunk_destroy.stdout.decode())
-            if splunk_destroy.stderr:
-                LOGGER.error("Splunk Destroy Error Logs")
-                LOGGER.error(splunk_destroy.stderr.decode())
+            kubernetes_splunk_namespace_delete.delete_namespace(
+                os.environ["NAMESPACE_NAME"]
+            )
             for file in glob.glob("{}/*/*_updated.yaml".format(current_path)):
                 files.append(file)
             for file in files:

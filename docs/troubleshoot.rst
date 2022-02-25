@@ -21,6 +21,10 @@ Troubleshooting
 
 **5. While executing test cases on Kubernetes, all the test cases abort with the following setup failure:**
 
+    - Kubernetes resources are not created
+
+        - Make sure ``KUBECONFIG="PATH of Kubernetes Config File"`` is set in environment variables before starting test execution. (This will be used while spinning up kubernetes resources for --splunk-type=kubernetes)
+
     - Standalone not found.
 
         - Check whether splunk-operator is deployed at cluster-scoped level.
@@ -30,7 +34,6 @@ Troubleshooting
 
         - Check the logs of the pod using ``kubectl logs``
         - Make sure tests/src directory have addon spl with adequate name
-        - Check ``jq`` is installed in the system from which tests are executing
 
     - Addon tests are erroring out
 

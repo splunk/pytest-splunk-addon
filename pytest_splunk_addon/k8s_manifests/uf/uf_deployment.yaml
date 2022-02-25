@@ -42,7 +42,7 @@ spec:
           ls -al;
           apt update && apt upgrade -y;
           apt install wget -y;
-          wget "http://nginx:80/$SPLUNK_ADDON";
+          wget "http://nginx:80/$ADDON_LOCATION";
           tar xzvf $SPLUNK_ADDON --directory /ufaddon/;
           ls -al /ufaddon/;
         volumeMounts:

@@ -38,7 +38,6 @@ There are three ways to execute the tests:
     Prerequisitory
         - kubernetes cluster [ Reference: `minikube`_ , `microk8s`_, `k3s`_ ]
         - kubectl
-        - jq
 
     .. code:: bash
 
@@ -57,9 +56,11 @@ There are three ways to execute the tests:
 
     Generate addon SPL with `ucc-gen`_
 
-    For third-party addons generate addon SPL.
+    For third-party addons generate addon SPL by following the necessary steps required.
 
     Create `src` directory in `tests` of the addon repository and move .spl in `tests/src`.
+
+    export KUBECONFIG="PATH of Kubernetes Config File" (This will be used while spinning up kubernetes resources for --splunk-type=kubernetes)
 
 .. _conftest_file:
 
