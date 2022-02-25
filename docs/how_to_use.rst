@@ -56,7 +56,7 @@ There are three ways to execute the tests:
 
     Generate addon SPL with `ucc-gen`_
 
-    For third-party addons generate addon SPL.
+    For third-party addons generate addon SPL by following the necessary steps required.
 
     Create `src` directory in `tests` of the addon repository and move .spl in `tests/src`.
 

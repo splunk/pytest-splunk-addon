@@ -108,7 +108,7 @@ Run pytest with the add-on and SA-eventgen installed and enabled in kubernetes
 
 Generate addon SPL with `ucc-gen`_.
 
-For third-party addons generate addon SPL.
+For third-party addons generate addon SPL by following the necessary steps required.
 
 Place the generated addon spl in tests/src/<addon>.spl
 
