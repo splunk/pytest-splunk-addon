@@ -38,7 +38,6 @@ There are three ways to execute the tests:
     Prerequisitory
         - kubernetes cluster [ Reference: `minikube`_ , `microk8s`_, `k3s`_ ]
         - kubectl
-        - jq
 
     .. code:: bash
 

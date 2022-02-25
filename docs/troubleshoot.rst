@@ -30,7 +30,6 @@ Troubleshooting
 
         - Check the logs of the pod using ``kubectl logs``
         - Make sure tests/src directory have addon spl with adequate name
-        - Check ``jq`` is installed in the system from which tests are executing
 
     - Addon tests are erroring out
 
