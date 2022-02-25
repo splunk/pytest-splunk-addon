@@ -60,6 +60,8 @@ There are three ways to execute the tests:
 
     Create `src` directory in `tests` of the addon repository and move .spl in `tests/src`.
 
+    export KUBECONFIG="PATH of Kubernetes Config File" (This will be used while spinning up kubernetes resources for --splunk-type=kubernetes)
+
 .. _conftest_file:
 
     Create conftest.py in the test folder along with :ref:`the test file <test_file>`
