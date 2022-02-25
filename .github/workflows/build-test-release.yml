@@ -180,7 +180,7 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           mv ./pytest-ci.ini ./pytest.ini
           poetry install
-          poetry run pytest -vv --splunk-password=$splunk_password --splunk-hec-token=$splunk_hec_token --junitxml=test-results-${{ matrix.splunk-version }}/test.xml
+          poetry run pytest -v --splunk-password=$splunk_password --splunk-hec-token=$splunk_hec_token --junitxml=test-results-${{ matrix.splunk-version }}/test.xml
       - name: Destroy kubernetes resources
         run: |
           export NAMESPACE_NAME=ta-fiction-external
