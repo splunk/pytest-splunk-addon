@@ -118,7 +118,7 @@ class ReqsTestGenerator:
             for file1 in os.listdir(req_file_path):
                 filename = os.path.join(req_file_path, file1)
                 LOGGER.info(filename)
-                if filename.endswith(".log"):
+                if filename.endswith(".log") or filename.endswith(".xml"):
                     try:
                         self.check_xml_format(filename)
                     except Exception:
