@@ -29,6 +29,10 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 class KubernetesHelper:
     def __init__(self) -> None:
+        """
+        Check for KUBECONFIG provided in env variable,
+        which will be used for kubernetes setup.
+        """
         try:
             config.load_kube_config()
         except Exception as e:
@@ -171,6 +175,11 @@ class KubernetesHelper:
             )
 
     def wait_for_deployment_to_get_available(self, deployment_name, namespace_name):
+        """
+        Wait for deployment to get available
+        deployment_name = Name of the deployment,
+        namespace_name = Name of the namespace
+        """
         try:
             wait_count = 0
             while wait_count <= 5:
@@ -196,6 +205,11 @@ class KubernetesHelper:
             )
     
     def wait_for_statefulset_to_get_available(self, statefulset_name, namespace_name):
+        """
+        Wait for statefulset (Splunk Standalone) to get available
+        statefulset_name = Name of the stateful set,
+        namespace_name = Name of the namespace.
+        """
         try:
             wait_count = 0
             while wait_count <= 5:
@@ -289,6 +303,13 @@ class KubernetesHelper:
             LOGGER.error("Exception occured while copying files : {0}".format(e))
 
     def get_splunk_creds(self, secret_name, namespace_name):
+        """
+        Get splunk secrets (HEC token, Password)
+        secret_name = Name of the secret,
+        namespace_name = Name of the namespace.
+
+        Returns HEC_TOKEN and Password.
+        """
         try:
             LOGGER.info("Get splunk secrets")
             core_v1 = core_v1_api.CoreV1Api()
@@ -305,6 +326,10 @@ class KubernetesHelper:
             return None, None
 
     def delete_splunk_standalone(self, namespace_name):
+        """
+        Delete splunk standalone
+        namespace_name = Name of the namespace
+        """
         try:
             k8s_api = client.CustomObjectsApi()
             group = "enterprise.splunk.com"
@@ -329,6 +354,12 @@ class KubernetesHelper:
             )
 
     def delete_kubernetes_deployment(self, deployment_name, namespace_name, pod_label):
+        """
+        Delete Kubernetes Deployments (SC4S and UF)
+        deployment_name = Name of the deployment,
+        namespace_name = Name of the namespace,
+        pod_label = Label of the pod.
+        """
         try:
             k8s_api = client.AppsV1Api()
             name = deployment_name
