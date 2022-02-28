@@ -72,7 +72,7 @@ class KubernetesHelper:
         try:
             k8s_client = client.ApiClient()
             resp = utils.create_from_yaml(k8s_client, file, namespace=namespace_name)
-            time.sleep(1)
+            # time.sleep(1)
         except Exception as e:
             LOGGER.error(
                 "Exception occured while creating resource from {0} : {1}".format(
@@ -129,6 +129,20 @@ class KubernetesHelper:
                 )
                 print(api_response.status.phase)
                 if api_response.status.phase != "Pending":
+                    try:
+                        api_response_log = api_instance.read_namespaced_pod_log(
+                            name=pod_name, namespace=namespace_name
+                        )
+                        with open(
+                            "{0}.log".format(pod_name), "w"
+                        ) as splunk_standalone:
+                            splunk_standalone.write(api_response_log)
+                    except Exception as e:
+                        LOGGER.error(
+                            "Found exception in writing the logs for pod : {0}".format(
+                                pod_name
+                            )
+                        )
                     # readiness probe
                     if api_response.status.container_statuses[0].ready == True:
                         LOGGER.info("Pod {0} created....".format(pod_name))
@@ -137,20 +151,6 @@ class KubernetesHelper:
                         LOGGER.info(
                             "waiting for pod {0} to get created...".format(pod_name)
                         )
-                        try:
-                            api_response = api_instance.read_namespaced_pod_log(
-                                name=pod_name, namespace=namespace_name
-                            )
-                            with open(
-                                "{0}.log".format(pod_name), "w"
-                            ) as splunk_standalone:
-                                splunk_standalone.write(api_response)
-                        except Exception as e:
-                            LOGGER.error(
-                                "Found exception in writing the logs for pod : {0}".format(
-                                    pod_name
-                                )
-                            )
                         time.sleep(30)
                         wait_count += 1
                         continue
@@ -169,6 +169,54 @@ class KubernetesHelper:
             LOGGER.error(
                 "Found exception while waiting for pod {0} : {1}".format(pod_name, e)
             )
+
+    def wait_for_deployment_to_get_available(self, deployment_name, namespace_name):
+        try:
+            wait_count = 0
+            while wait_count <= 5:
+                k8s_api = client.AppsV1Api()
+                api_response = k8s_api.read_namespaced_deployment_status(deployment_name, namespace_name)
+                if api_response.status.replicas != None:
+                    LOGGER.info("Deployment {0} is available".format(deployment_name))
+                    break
+                else:
+                    LOGGER.error("Deployment {0} is still not available".format(deployment_name))
+                    time.sleep(30)
+                    wait_count += 1
+                    continue
+            if wait_count > 5:
+                LOGGER.error(
+                    "Waiting for deployment {0} to get available took more than expected".format(
+                        deployment_name
+                    )
+                )
+        except Exception as e:
+            LOGGER.error(
+                "Found exception while waiting for deployment {0} : {1}".format(deployment_name, e)
+            )
+    
+    def wait_for_statefulset_to_get_available(self, statefulset_name, namespace_name):
+        try:
+            wait_count = 0
+            while wait_count <= 5:
+                k8s_api = client.AppsV1Api()
+                api_response = k8s_api.read_namespaced_stateful_set_status(statefulset_name, namespace_name)
+                if api_response.status.replicas != 0:
+                    LOGGER.info("Statefulset is {0} available".format(statefulset_name))
+                    break
+                else:
+                    LOGGER.error("Statefulset {0} is still not available".format(statefulset_name))
+                    time.sleep(30)
+                    wait_count += 1
+                    continue
+            if wait_count > 5:
+                LOGGER.error(
+                    "Waiting for statefulset {0} to get available took more than expected".format(
+                        statefulset_name
+                    )
+                )
+        except:
+            LOGGER.error("Exception occured while fetching statefulset status")
 
     def get_pod_name(self, namespace_name, label):
         """

@@ -541,6 +541,7 @@ def uf_kubernetes(request):
             file=os.path.join(current_path, "uf_deployment_updated.yaml"),
             namespace_name=os.getenv("NAMESPACE_NAME"),
         )
+        kubernetes_helper_uf.wait_for_deployment_to_get_available("splunk-uf",os.getenv("NAMESPACE_NAME"))
         uf_pod_name = kubernetes_helper_uf.get_pod_name(
             os.getenv("NAMESPACE_NAME"), "app=uf"
         )
@@ -678,16 +679,19 @@ def splunk_kubernetes(request):
         )
     )
     splunk_addon_name = parser.get("package", "id")
-    spl_path = os.path.join(
+    try:
+        spl_path = os.path.join(
         "{0}".format(os.getenv("TEST_RUNNER_DIRECTORY")), "tests", "src"
-    )
-    splunk_spl_name = [
-        filename
-        for filename in os.listdir(spl_path)
-        if filename.startswith(("{0}-").format(splunk_addon_name))
-    ]
-    SPLUNK_ADDON = str(splunk_spl_name[0])
-    LOGGER.info(SPLUNK_ADDON)
+        )
+        splunk_spl_name = [
+            filename
+            for filename in os.listdir(spl_path)
+            if filename.startswith(("{0}-").format(splunk_addon_name))
+        ]
+        SPLUNK_ADDON = str(splunk_spl_name[0])
+        LOGGER.info(SPLUNK_ADDON)
+    except Exception as e:
+        LOGGER.error("ADDON SPL doesn't exist for {0} at tests/src".format(splunk_addon_name))
     NAMESPACE_NAME = str(splunk_addon_name.replace("_", "-").lower())
     LOGGER.info("NAMESPACE_NAME is {}".format(NAMESPACE_NAME))
     os.environ["NAMESPACE_NAME"] = NAMESPACE_NAME
@@ -767,6 +771,7 @@ def splunk_kubernetes(request):
         kubernetes_helper_splunk.create_splunk_standalone(
             file, os.getenv("NAMESPACE_NAME")
         )
+        kubernetes_helper_splunk.wait_for_statefulset_to_get_available("splunk-s1-standalone",os.getenv("NAMESPACE_NAME"))
         kubernetes_helper_splunk.wait_for_pod_to_get_ready(
             "splunk-s1-standalone-0", os.getenv("NAMESPACE_NAME")
         )
@@ -911,6 +916,7 @@ def sc4s_kubernetes():
             file=os.path.join(current_path, "sc4s_deployment_updated.yaml"),
             namespace_name=os.getenv("NAMESPACE_NAME"),
         )
+        kubernetes_helper_sc4s.wait_for_deployment_to_get_available("sc4s",os.getenv("NAMESPACE_NAME"))
         sc4s_pod_name = kubernetes_helper_sc4s.get_pod_name(
             os.getenv("NAMESPACE_NAME"), "app=sc4s"
         )

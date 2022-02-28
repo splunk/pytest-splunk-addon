@@ -87,7 +87,7 @@ class FileMonitorEventIngestor(EventIngestor):
                 "/",
                 (os.path.join(os.getenv("TEST_RUNNER_DIRECTORY", "/"), "uf_files")),
             )
-            sleep(10)
+            sleep(5)
             self.create_inputs_stanza(each_event)
 
     def create_output_conf(self):
