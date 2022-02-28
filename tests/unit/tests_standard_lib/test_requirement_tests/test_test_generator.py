@@ -135,11 +135,27 @@ def test_extract_params():
             ["requirement.xml"],
             [True],
             ["syslog"],
-            {"event": ["event_1", "event_2"]},
-            [["model_1:dataset_1", "model_2:dataset_2"], ["model_3:dataset_3"]],
-            ["event_name_2"],
+            {"event": ["<34>Oct 11 22:14:15 machine1 pr1:event_1"]},
+            [["model_1:dataset_1", "model_2:dataset_2"]],
+            ["event_name_1"],
             [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
-            [],
+            [
+                (
+                    {
+                        "model_list": [
+                            ("model_1", "dataset_1", ""),
+                            ("model_2", "dataset_2", ""),
+                        ],
+                        "escaped_event": "event_1",
+                        "exceptions_dict": {"field3": "value3"},
+                        "Key_value_dict": {"field1": "value1", "field2": "value2"},
+                        "modinput_params": None,
+                        "transport_type": "syslog",
+                    },
+                    "model_1:dataset_1 "
+                    "model_2:dataset_2::fake_path/requirement.xml::event_no::1::event_name::event_name_1",
+                ),
+            ],
         ),
         (
             ["req.log"],

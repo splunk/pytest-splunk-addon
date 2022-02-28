@@ -555,7 +555,8 @@ def test_splunk_app_requirements(testdir):
     result.stdout.fnmatch_lines_random(
         constants.TA_REQUIREMENTS_PASSED + constants.TA_REQUIREMENTS_FAILED
     )
-    result.assert_outcomes(passed=len(constants.TA_REQUIREMENTS_PASSED), failed=1)
+    result.assert_outcomes(passed=2, failed=1)
+    #   passed=2 as the successful data comes from 2 sources (log & xml)
 
     # make sure that that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0
