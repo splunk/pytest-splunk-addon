@@ -110,7 +110,7 @@ class RequirementEventIngestor:
         if os.path.isdir(req_file_path):
             for file1 in os.listdir(req_file_path):
                 filename = os.path.join(req_file_path, file1)
-                if filename.endswith(".log"):
+                if filename.endswith(".log") or filename.endswith(".xml"):
                     if self.check_xml_format(filename):
                         root = self.get_root(filename)
                         for event_tag in root.iter("event"):
@@ -213,7 +213,7 @@ class RequirementEventIngestor:
                         )
                 else:
                     LOGGER.error(
-                        "Requirement event ingestion failure: Invalid file format not .log {}".format(
+                        "Requirement event ingestion failure: Invalid file format not .log or .xml {}".format(
                             filename
                         )
                     )
