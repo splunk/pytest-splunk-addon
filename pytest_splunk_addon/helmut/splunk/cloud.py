@@ -19,8 +19,10 @@ import time
 
 from splunklib.binding import HTTPError
 
+from pytest_splunk_addon.helmut.connector.rest import RESTConnector
 from pytest_splunk_addon.helmut.connector.sdk import SDKConnector
 from pytest_splunk_addon.helmut.manager.jobs.sdk import SDKJobsWrapper
+from pytest_splunk_addon.helmut.util.rip import RESTInPeace
 
 LOGGER = logging.getLogger("helmut")
 
@@ -239,6 +241,35 @@ class CloudSplunk:
         conn.login()
         return conn
 
+    def create_logged_in_rest_connector(self, username=None, password=None):
+        conn = RESTConnector(self, username=username, password=password)
+        connector_id = self._get_connector_id(user=conn.username)
+        if connector_id in list(self._connectors.keys()):
+            LOGGER.warning(f"Connector {connector_id} is being replaced")
+            del self._connectors[connector_id]
+        self._connectors[connector_id] = conn
+        conn.login()
+        return conn
+
+    def get_rip(self, username=None, password=None):
+        """
+        Create a RESTInPeace under certain user and app namespace
+        :param username: default to self.username
+        :type username: str
+        :param password: default to self.password
+        :type password: str
+        :return: RESTInPeace
+        :rtype: RESTInPeace
+        """
+        username = username or self.username
+        password = password or self.password
+
+        conn = self.create_logged_in_rest_connector(
+            username=username,
+            password=password,
+        )
+        return RESTInPeace(conn)
+
     def set_credentials_to_use(self, username="admin", password="changeme"):
         """
         This method just initializes/updates self._username to username
@@ -317,7 +348,7 @@ class CloudSplunk:
 
     def get_event_count(self, search_string="*"):
         """
-        Displatches a search job and returns an event count without waiting for indexing to finish
+        Dispatches a search job and returns an event count without waiting for indexing to finish
         @param search_string: The search string
         """
         LOGGER.info("Getting event count")

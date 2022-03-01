@@ -13,3 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from httplib2 import HttpLib2Error
+
+
+class AuthenticationError(HttpLib2Error):
+    """
+    Raised when a login request to Splunk fails.
+    """
+
+    pass
