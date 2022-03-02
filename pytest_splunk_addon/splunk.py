@@ -530,10 +530,24 @@ def uf_kubernetes(request):
                 str(os.getenv("SPLUNK_ADDON")),
             )
         )
-        if "\\" in str(os.getenv("ADDON_LOCATION")):
-            os.environ["ADDON_LOCATION"] = str(os.getenv("ADDON_LOCATION")).replace(
+        if ":\\" in os.getenv("ADDON_LOCATION"):
+            os.environ["ADDON_LOCATION"] = os.getenv("ADDON_LOCATION").split(":\\", 1)[
+                1
+            ]
+        if "\\" in os.getenv("ADDON_LOCATION"):
+            os.environ["ADDON_LOCATION"] = os.getenv("ADDON_LOCATION").replace(
                 "\\", "/"
             )
+        if ":\\" in os.getenv("TEST_RUNNER_DIRECTORY"):
+            os.environ["TEST_RUNNER_DIRECTORY_UF"] = os.getenv(
+                "TEST_RUNNER_DIRECTORY"
+            ).split(":\\", 1)[1]
+        else:
+            os.environ["TEST_RUNNER_DIRECTORY_UF"] = os.getenv("TEST_RUNNER_DIRECTORY")
+        if "\\" in os.getenv("TEST_RUNNER_DIRECTORY_UF"):
+            os.environ["TEST_RUNNER_DIRECTORY_UF"] = os.getenv(
+                "TEST_RUNNER_DIRECTORY_UF"
+            ).replace("\\", "/")
         update_k8s_manifest_files(folder=current_path, file="uf_deployment")
         LOGGER.info("Setting up UF")
         kubernetes_helper_uf = KubernetesHelper()
@@ -559,18 +573,13 @@ def uf_kubernetes(request):
             os.getenv("TEST_RUNNER_DIRECTORY"), "exposed_uf_ports.log"
         )
         # Below kubectl port-forward can be replaced in future with kubernetes-client or any equivalent
-        uf_setup = subprocess.run(
+        uf_setup = subprocess.Popen(
             "kubectl port-forward svc/uf-service -n {0} :8089 > {1} 2>&1 &".format(
                 os.getenv("NAMESPACE_NAME"), uf_ports_file
             ),
-            capture_output=True,
             shell=True,
         )
         LOGGER.info("UF Setup Logs")
-        LOGGER.info(uf_setup.stdout.decode())
-        if uf_setup.stderr:
-            LOGGER.info("UF Setup Error Logs")
-            LOGGER.info(uf_setup.stderr.decode())
         if "PYTEST_XDIST_WORKER" in os.environ:
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf", "w+"):
                 PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
@@ -769,6 +778,8 @@ def splunk_kubernetes(request):
             "nginx", os.getenv("NAMESPACE_NAME"), destination_location, source_location
         )
         file = os.path.join(current_path, "splunk_standalone_updated.yaml")
+        if ":\\" in source_location:
+            source_location = source_location.split(":\\", 1)[1]
         if "\\" in source_location:
             source_location = source_location.replace("\\", "/")
 
@@ -788,18 +799,13 @@ def splunk_kubernetes(request):
             os.getenv("TEST_RUNNER_DIRECTORY"), "exposed_splunk_ports.log"
         )
         # Below kubectl port-forward can be replaced in future with kubernetes-client or any equivalent
-        splunk_setup = subprocess.run(
+        splunk_setup = subprocess.Popen(
             "kubectl port-forward svc/splunk-s1-standalone-service -n {0} :8000 :8088 :8089 :9997 > {1} 2>&1 &".format(
                 os.getenv("NAMESPACE_NAME"), splunk_ports_file
             ),
-            capture_output=True,
             shell=True,
         )
         LOGGER.info("Splunk Setup Logs")
-        LOGGER.info(splunk_setup.stdout.decode())
-        if splunk_setup.stderr:
-            LOGGER.info("Splunk Setup Error Logs")
-            LOGGER.info(splunk_setup.stderr.decode())
         if "PYTEST_XDIST_WORKER" in os.environ:
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_splunk", "w+"):
                 PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
@@ -941,18 +947,13 @@ def sc4s_kubernetes():
             os.getenv("TEST_RUNNER_DIRECTORY"), "exposed_sc4s_ports.log"
         )
         # Below kubectl port-forward can be replaced in future with kubernetes-client or any equivalent
-        sc4s_setup = subprocess.run(
+        sc4s_setup = subprocess.Popen(
             "kubectl port-forward svc/sc4s-service -n {0} :514 > {1} 2>&1 &".format(
                 os.getenv("NAMESPACE_NAME"), sc4s_ports_file
             ),
-            capture_output=True,
             shell=True,
         )
         LOGGER.info("SC4S Setup Logs")
-        LOGGER.info(sc4s_setup.stdout.decode())
-        if sc4s_setup.stderr:
-            LOGGER.info("SC4S Setup Error Logs")
-            LOGGER.info(sc4s_setup.stderr.decode())
         if "PYTEST_XDIST_WORKER" in os.environ:
             with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_sc4s", "w+"):
                 PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")

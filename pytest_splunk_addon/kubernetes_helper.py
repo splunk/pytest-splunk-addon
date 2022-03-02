@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 # -*- coding: utf-8 -*-
-from os import path
 import yaml, json
 import time
 from kubernetes import client, config, utils
@@ -47,23 +46,29 @@ class KubernetesHelper:
         """
         try:
             k8s_client = client.ApiClient()
-            print(file)
-            LOGGER.info("file in create_namespace: {0}".format(file))
-            if path.exists(file):
-                print("File exists....{0}".format(file))
             resp = utils.create_from_yaml(k8s_client, file)
-            wait_count = 0
-            while wait_count < 5:
-                core_v1 = core_v1_api.CoreV1Api()
-                api_response = core_v1.read_namespace_status(name=namespace_name)
-                if str(api_response.status.phase) == "Active":
-                    LOGGER.info("namespace created....")
+            SLEEP_TIME = 3
+            namespace_created = False
+            wait_count = 1
+            while wait_count <= 5:
+                timer = SLEEP_TIME * wait_count
+                initial_timer = 0
+                while initial_timer < timer:
+                    status = self.namespace_status(namespace_name)
+                    if str(status) == "Active":
+                        LOGGER.info("namespace created....")
+                        namespace_created = True
+                        break
+                    else:
+                        LOGGER.info("waiting for namespace to get created...")
+                        time.sleep(1)
+                        initial_timer += 1
+                        continue
+                if namespace_created == True:
                     break
-                else:
-                    LOGGER.info("waiting for namespace to get created...")
-                    time.sleep(3)
-                    wait_count += 1
-                    continue
+                wait_count += 1
+            if (wait_count > 5) and (namespace_created == False):
+                LOGGER.error("Namespace creation took more than expected")
         except Exception as e:
             LOGGER.error("Exception occured while creating namespace : {0}".format(e))
 
@@ -76,7 +81,6 @@ class KubernetesHelper:
         try:
             k8s_client = client.ApiClient()
             resp = utils.create_from_yaml(k8s_client, file, namespace=namespace_name)
-            # time.sleep(1)
         except Exception as e:
             LOGGER.error(
                 "Exception occured while creating resource from {0} : {1}".format(
@@ -116,6 +120,7 @@ class KubernetesHelper:
             time.sleep(2)
         except:
             LOGGER.error("Exception occured while creating splunk-deployment")
+            LOGGER.error("Ensure splunk-operator is setup at cluster scoped level")
 
     def wait_for_pod_to_get_ready(self, pod_name, namespace_name):
         """
@@ -125,43 +130,56 @@ class KubernetesHelper:
         """
         try:
             wait_count = 0
+            SLEEP_TIME = 30
+            pod_created = False
             while wait_count <= 5:
-                LOGGER.info("wait_count is {0}".format(str(wait_count)))
-                api_instance = client.CoreV1Api()
-                api_response = api_instance.read_namespaced_pod_status(
-                    name=pod_name, namespace=namespace_name
-                )
-                print(api_response.status.phase)
-                if api_response.status.phase != "Pending":
-                    try:
-                        api_response_log = api_instance.read_namespaced_pod_log(
-                            name=pod_name, namespace=namespace_name
-                        )
-                        with open("{0}.log".format(pod_name), "w") as splunk_standalone:
-                            splunk_standalone.write(api_response_log)
-                    except Exception as e:
-                        LOGGER.error(
-                            "Found exception in writing the logs for pod : {0}".format(
-                                pod_name
+                timer = SLEEP_TIME * wait_count
+                initial_timer = 0
+                while initial_timer < timer:
+                    LOGGER.info("wait_count is {0}".format(str(wait_count)))
+                    api_instance = client.CoreV1Api()
+                    api_response = api_instance.read_namespaced_pod_status(
+                        name=pod_name, namespace=namespace_name
+                    )
+                    print(api_response.status.phase)
+                    if api_response.status.phase != "Pending":
+                        try:
+                            api_response_log = api_instance.read_namespaced_pod_log(
+                                name=pod_name, namespace=namespace_name
                             )
-                        )
-                    # readiness probe
-                    if api_response.status.container_statuses[0].ready == True:
-                        LOGGER.info("Pod {0} created....".format(pod_name))
-                        break
+                            with open(
+                                "{0}.log".format(pod_name), "w"
+                            ) as splunk_standalone:
+                                splunk_standalone.write(api_response_log)
+                        except Exception as e:
+                            LOGGER.error(
+                                "Found exception in writing the logs for pod : {0}".format(
+                                    pod_name
+                                )
+                            )
+                        # readiness probe
+                        if api_response.status.container_statuses[0].ready == True:
+                            LOGGER.info("Pod {0} created....".format(pod_name))
+                            pod_created = True
+                            break
+                        else:
+                            LOGGER.info(
+                                "waiting for pod {0} to get created...".format(pod_name)
+                            )
+                            initial_timer += 1
+                            time.sleep(1)
+                            continue
                     else:
-                        LOGGER.info(
-                            "waiting for pod {0} to get created...".format(pod_name)
+                        LOGGER.error(
+                            "Pod {0} is still in Pending state.".format(pod_name)
                         )
-                        time.sleep(30)
-                        wait_count += 1
+                        initial_timer += 1
+                        time.sleep(1)
                         continue
-                else:
-                    LOGGER.error("Pod {0} is still in Pending state.".format(pod_name))
-                    time.sleep(30)
-                    wait_count += 1
-                    continue
-            if wait_count > 5:
+                if pod_created == True:
+                    break
+                wait_count += 1
+            if (wait_count > 5) and (pod_created == False):
                 LOGGER.error(
                     "Waiting for pod {0} creation took more than expected, please check for logs".format(
                         pod_name
@@ -180,22 +198,35 @@ class KubernetesHelper:
         """
         try:
             wait_count = 0
+            SLEEP_TIME = 30
+            deployment_created = False
             while wait_count <= 5:
-                k8s_api = client.AppsV1Api()
-                api_response = k8s_api.read_namespaced_deployment_status(
-                    deployment_name, namespace_name
-                )
-                if api_response.status.replicas != None:
-                    LOGGER.info("Deployment {0} is available".format(deployment_name))
-                    break
-                else:
-                    LOGGER.error(
-                        "Deployment {0} is still not available".format(deployment_name)
+                timer = SLEEP_TIME * wait_count
+                initial_timer = 0
+                while initial_timer < timer:
+                    k8s_api = client.AppsV1Api()
+                    api_response = k8s_api.read_namespaced_deployment_status(
+                        deployment_name, namespace_name
                     )
-                    time.sleep(30)
-                    wait_count += 1
-                    continue
-            if wait_count > 5:
+                    if api_response.status.replicas != None:
+                        LOGGER.info(
+                            "Deployment {0} is available".format(deployment_name)
+                        )
+                        deployment_created = True
+                        break
+                    else:
+                        LOGGER.error(
+                            "Deployment {0} is still not available".format(
+                                deployment_name
+                            )
+                        )
+                        initial_timer += 1
+                        time.sleep(1)
+                        continue
+                if deployment_created == True:
+                    break
+                wait_count += 1
+            if (wait_count > 5) and (deployment_created == False):
                 LOGGER.error(
                     "Waiting for deployment {0} to get available took more than expected".format(
                         deployment_name
@@ -215,25 +246,36 @@ class KubernetesHelper:
         namespace_name = Name of the namespace.
         """
         try:
-            wait_count = 0
+            wait_count = 1
+            SLEEP_TIME = 30
+            statefulset_created = False
             while wait_count <= 5:
-                k8s_api = client.AppsV1Api()
-                api_response = k8s_api.read_namespaced_stateful_set_status(
-                    statefulset_name, namespace_name
-                )
-                if api_response.status.replicas != 0:
-                    LOGGER.info("Statefulset is {0} available".format(statefulset_name))
-                    break
-                else:
-                    LOGGER.error(
-                        "Statefulset {0} is still not available".format(
-                            statefulset_name
-                        )
+                timer = SLEEP_TIME * wait_count
+                initial_timer = 0
+                while initial_timer < timer:
+                    k8s_api = client.AppsV1Api()
+                    api_response = k8s_api.read_namespaced_stateful_set_status(
+                        statefulset_name, namespace_name
                     )
-                    time.sleep(30)
-                    wait_count += 1
-                    continue
-            if wait_count > 5:
+                    if api_response.status.replicas != 0:
+                        LOGGER.info(
+                            "Statefulset {0} is available".format(statefulset_name)
+                        )
+                        statefulset_created = True
+                        break
+                    else:
+                        LOGGER.error(
+                            "Statefulset {0} is still not available".format(
+                                statefulset_name
+                            )
+                        )
+                        initial_timer += 1
+                        time.sleep(1)
+                        continue
+                if statefulset_created == True:
+                    break
+                wait_count += 1
+            if (wait_count > 5) and (statefulset_created == False):
                 LOGGER.error(
                     "Waiting for statefulset {0} to get available took more than expected".format(
                         statefulset_name
@@ -350,14 +392,30 @@ class KubernetesHelper:
                 group, version, namespace, plural, name="s1"
             )
 
-            while True:
-                pod_name = self.get_pod_name(
-                    namespace_name,
-                    "statefulset.kubernetes.io/pod-name=splunk-s1-standalone-0",
-                )
-                if pod_name == None:
-                    LOGGER.info("Splunk deleted....")
-                    return False
+            SLEEP_TIME = 3
+            standalone_deleted = False
+            wait_count = 1
+            while wait_count <= 5:
+                timer = SLEEP_TIME * wait_count
+                initial_timer = 0
+                while initial_timer < timer:
+                    pod_name = self.get_pod_name(
+                        namespace_name,
+                        "statefulset.kubernetes.io/pod-name=splunk-s1-standalone-0",
+                    )
+                    if pod_name == None:
+                        standalone_deleted = True
+                        LOGGER.info("Splunk deleted....")
+                        break
+                    LOGGER.info("Standalone in deletion...")
+                    initial_timer += 1
+                    time.sleep(1)
+                wait_count += 1
+                if standalone_deleted == True:
+                    LOGGER.info("Splunk Standalone deleted successfully")
+                    break
+            if (wait_count > 5) and (standalone_deleted == False):
+                LOGGER.error("Splunk standalone deletion took more than expected")
         except Exception as e:
             LOGGER.error(
                 "Found exception while deleting Splunk Standalone : {0}".format(e)
@@ -376,16 +434,55 @@ class KubernetesHelper:
             namespace = namespace_name
             label = pod_label
             api_response = k8s_api.delete_namespaced_deployment(name, namespace)
-
-            while True:
-                pod_name = self.get_pod_name(namespace_name, label)
-                if pod_name == None:
-                    LOGGER.info("Deployment {0} deleted....".format(name))
-                    return False
+            SLEEP_TIME = 3
+            deployment_deleted = False
+            wait_count = 1
+            while wait_count <= 5:
+                timer = SLEEP_TIME * wait_count
+                initial_timer = 0
+                while initial_timer < timer:
+                    pod_name = self.get_pod_name(namespace_name, label)
+                    if pod_name == None:
+                        LOGGER.info("Deployment {0} deleted....".format(name))
+                        deployment_deleted = True
+                        break
+                    LOGGER.info("Deployment {0} in deletion...".format(name))
+                    initial_timer += 1
+                    time.sleep(1)
+                wait_count += 1
+                if deployment_deleted == True:
+                    LOGGER.info("Deployment {0} deleted successfully".format(name))
+                    break
+            if (wait_count > 5) and (deployment_deleted == False):
+                LOGGER.error(
+                    "Deployment {0} deletion took more than expected".format(name)
+                )
         except Exception as e:
             LOGGER.error(
-                "Found exception while deleting Splunk Standalone : {0}".format(e)
+                "Found exception while deleting deployment {0} : {1}".format(
+                    deployment_name, e
+                )
             )
+
+    def namespace_status(self, namespace_name):
+        """
+        Namespace status
+        namespace_name = Name of the namespace
+
+        return status = Status of the namespace
+        """
+        try:
+            core_v1 = core_v1_api.CoreV1Api()
+            api_response = core_v1.read_namespace_status(name=namespace_name)
+            status = api_response.status.phase
+            return status
+        except Exception:
+            LOGGER.error(
+                "Found exception while finding namespace status for {0}".format(
+                    namespace_name
+                )
+            )
+            return None
 
     def delete_namespace(self, namespace_name):
         """
@@ -393,16 +490,40 @@ class KubernetesHelper:
         namespace_name = Name of the namespace.
         """
         try:
-            while True:
-                core_v1 = core_v1_api.CoreV1Api()
-                api_response = core_v1.delete_namespace(name=namespace_name)
-                core_v1_status = core_v1_api.CoreV1Api()
-                api_response_status = core_v1_status.read_namespace_status(
-                    name=namespace_name
-                )
-                if str(api_response_status.status.phase) == "Terminating":
-                    LOGGER.error("Deleting Namespace : {0}".format(namespace_name))
-                    time.sleep(10)
+            core_v1 = core_v1_api.CoreV1Api()
+            api_response = core_v1.delete_namespace(name=namespace_name)
+            core_v1_status = core_v1_api.CoreV1Api()
+            api_response_status = core_v1_status.read_namespace_status(
+                name=namespace_name
+            )
+            if str(api_response_status.status.phase) == "Terminating":
+                LOGGER.info("Deleting Namespace : {0}".format(namespace_name))
+            SLEEP_TIME = 3
+            namespace_deleted = False
+            wait_count = 1
+            while wait_count <= 5:
+                timer = SLEEP_TIME * wait_count
+                initial_timer = 0
+                while initial_timer < timer:
+                    status = self.namespace_status(namespace_name)
+                    if status == None:
+                        LOGGER.info("Namespace {0} deleted".format(namespace_name))
+                        namespace_deleted = True
+                        break
+                    LOGGER.info("Namespace in deletion...".format(namespace_name))
+                    initial_timer += 1
+                    time.sleep(1)
+                wait_count += 1
+                if namespace_deleted == True:
+                    LOGGER.info(
+                        "Namespace {0} deleted successfully".format(namespace_name)
+                    )
                     break
+            if (wait_count > 5) and (namespace_deleted == False):
+                LOGGER.error(
+                    "Namespace {0} deletion took more than expected".format(
+                        namespace_name
+                    )
+                )
         except Exception as e:
             LOGGER.error("Exception occured while deleting namespace : {0}".format(e))

@@ -87,7 +87,7 @@ spec:
         volumeMounts:
         - mountPath: /opt/splunkforwarder/etc/apps/
           name: ufaddon
-        - mountPath: $TEST_RUNNER_DIRECTORY/uf_files/
+        - mountPath: /$TEST_RUNNER_DIRECTORY_UF/uf_files/
           name: uf-files
       volumes:
       - emptyDir: {}

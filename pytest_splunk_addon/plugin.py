@@ -123,7 +123,7 @@ def pytest_sessionstart(session):
 
 def pytest_sessionfinish(session, exitstatus):
     try:
-        with open("./splunk_type.txt", "r") as splunk_type_file:
+        with open(".{0}splunk_type.txt".format(os.sep), "r") as splunk_type_file:
             splunk_data = [line.rstrip() for line in splunk_type_file]
         if (
             (os.environ.get("PYTEST_XDIST_WORKER") == None)
@@ -139,22 +139,25 @@ def pytest_sessionfinish(session, exitstatus):
             os.environ["NAMESPACE_NAME"] = str(
                 splunk_addon_name.replace("_", "-").lower()
             )
-            files = ["./exposed_splunk_ports.log", "./splunk_type.txt"]
+            files = [
+                ".{0}exposed_splunk_ports.log".format(os.sep),
+                ".{0}splunk_type.txt".format(os.sep),
+            ]
             current_path = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)), "k8s_manifests"
             )
-            if os.path.exists("./exposed_sc4s_ports.log"):
+            if os.path.exists(".{0}exposed_sc4s_ports.log".format(os.sep)):
                 kubernetes_sc4s_delete = KubernetesHelper()
                 kubernetes_sc4s_delete.delete_kubernetes_deployment(
                     "sc4s", os.environ["NAMESPACE_NAME"], "app=sc4s"
                 )
-                files.append("./exposed_sc4s_ports.log")
-            if os.path.exists("./exposed_uf_ports.log"):
+                files.append(".{0}exposed_sc4s_ports.log".format(os.sep))
+            if os.path.exists(".{0}exposed_uf_ports.log".format(os.sep)):
                 kubernetes_uf_delete = KubernetesHelper()
                 kubernetes_uf_delete.delete_kubernetes_deployment(
                     "splunk-uf", os.environ["NAMESPACE_NAME"], "app=uf"
                 )
-                files.append("./exposed_uf_ports.log")
+                files.append(".{0}exposed_uf_ports.log".format(os.sep))
             kubernetes_splunk_namespace_delete = KubernetesHelper()
             kubernetes_splunk_namespace_delete.delete_splunk_standalone(
                 os.environ["NAMESPACE_NAME"]
@@ -162,7 +165,9 @@ def pytest_sessionfinish(session, exitstatus):
             kubernetes_splunk_namespace_delete.delete_namespace(
                 os.environ["NAMESPACE_NAME"]
             )
-            for file in glob.glob("{}/*/*_updated.yaml".format(current_path)):
+            for file in glob.glob(
+                "{0}{1}*{2}*_updated.yaml".format(current_path, os.sep, os.sep)
+            ):
                 files.append(file)
             for file in files:
                 if os.path.exists(file):
