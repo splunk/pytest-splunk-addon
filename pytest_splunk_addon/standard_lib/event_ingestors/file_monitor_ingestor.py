@@ -155,11 +155,7 @@ class FileMonitorEventIngestor(EventIngestor):
             event (SampleEvent): Instance containing event info
         """
         file_path = self.get_file_path(event)
-        if ":\\" in file_path:
-            file_path = file_path.split(":\\", 1)[1]
-        if "\\" in file_path:
-            file_path = "/" + file_path.replace("\\", "/")
-        host_segment = len(file_path.split("/")) - 2
+        host_segment = len(file_path.split(os.sep)) - 2
         # If file path is /home/uf_files/host_name/sample_name
         # Then split will return ['', home, 'uf_files', 'host_name', 'sample_name']
         sourcetype = event.metadata.get("sourcetype")
