@@ -20,10 +20,10 @@ from time import sleep
 import requests
 from requests.exceptions import ConnectionError
 
+from pytest_splunk_addon.kubernetes_helper import KubernetesHelper
 from pytest_splunk_addon.standard_lib.event_ingestors.base_event_ingestor import (
     EventIngestor,
 )
-from pytest_splunk_addon.kubernetes_helper import KubernetesHelper
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 MONITOR_DIR = "uf_files"
@@ -76,7 +76,7 @@ class FileMonitorEventIngestor(EventIngestor):
         for each_event in events:
             self.create_event_file(each_event)
             LOGGER.info(
-                "kubectl cp {0}/uf_files/ {1}:{2} -c uf -n {3}".format(
+                "kubectl cp {}/uf_files/ {}:{} -c uf -n {}".format(
                     os.getenv("TEST_RUNNER_DIRECTORY"),
                     os.getenv("UF_POD_NAME"),
                     os.getenv("TEST_RUNNER_DIRECTORY"),

@@ -13,9 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import glob
 import logging
+import os
 import traceback
 
+import addonfactory_splunk_conf_parser_lib as conf_parser
 import pytest
 from filelock import FileLock
 
@@ -24,9 +27,7 @@ from pytest_splunk_addon.standard_lib.cim_compliance.plugin import CIMReportPlug
 from pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator import (
     SampleXdistGenerator,
 )
-import os
-import glob
-import addonfactory_splunk_conf_parser_lib as conf_parser
+
 from .kubernetes_helper import KubernetesHelper
 
 LOG_FILE = "pytest_splunk_addon.log"
@@ -126,7 +127,7 @@ def pytest_sessionstart(session):
 
 def pytest_sessionfinish(session, exitstatus):
     try:
-        with open(".{0}splunk_type.txt".format(os.sep), "r") as splunk_type_file:
+        with open(f".{os.sep}splunk_type.txt") as splunk_type_file:
             splunk_data = [line.rstrip() for line in splunk_type_file]
         if (
             (os.environ.get("PYTEST_XDIST_WORKER") == None)
@@ -135,32 +136,30 @@ def pytest_sessionfinish(session, exitstatus):
         ):
             LOGGER.info("SessionFinish - destroying all kubernetes resources")
             parser = conf_parser.TABConfigParser()
-            parser.read(
-                os.path.join("{0}".format(splunk_data[2]), "default", "app.conf")
-            )
+            parser.read(os.path.join(f"{splunk_data[2]}", "default", "app.conf"))
             splunk_addon_name = parser.get("package", "id")
             os.environ["NAMESPACE_NAME"] = str(
                 splunk_addon_name.replace("_", "-").lower()
             )
             files = [
-                ".{0}exposed_splunk_ports.log".format(os.sep),
-                ".{0}splunk_type.txt".format(os.sep),
+                f".{os.sep}exposed_splunk_ports.log",
+                f".{os.sep}splunk_type.txt",
             ]
             current_path = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)), "k8s_manifests"
             )
-            if os.path.exists(".{0}exposed_sc4s_ports.log".format(os.sep)):
+            if os.path.exists(f".{os.sep}exposed_sc4s_ports.log"):
                 kubernetes_sc4s_delete = KubernetesHelper()
                 kubernetes_sc4s_delete.delete_kubernetes_deployment(
                     "sc4s", os.environ["NAMESPACE_NAME"], "app=sc4s"
                 )
-                files.append(".{0}exposed_sc4s_ports.log".format(os.sep))
-            if os.path.exists(".{0}exposed_uf_ports.log".format(os.sep)):
+                files.append(f".{os.sep}exposed_sc4s_ports.log")
+            if os.path.exists(f".{os.sep}exposed_uf_ports.log"):
                 kubernetes_uf_delete = KubernetesHelper()
                 kubernetes_uf_delete.delete_kubernetes_deployment(
                     "splunk-uf", os.environ["NAMESPACE_NAME"], "app=uf"
                 )
-                files.append(".{0}exposed_uf_ports.log".format(os.sep))
+                files.append(f".{os.sep}exposed_uf_ports.log")
             kubernetes_splunk_namespace_delete = KubernetesHelper()
             kubernetes_splunk_namespace_delete.delete_splunk_standalone(
                 os.environ["NAMESPACE_NAME"]
@@ -168,17 +167,15 @@ def pytest_sessionfinish(session, exitstatus):
             kubernetes_splunk_namespace_delete.delete_namespace(
                 os.environ["NAMESPACE_NAME"]
             )
-            for file in glob.glob(
-                "{0}{1}*{2}*_updated.yaml".format(current_path, os.sep, os.sep)
-            ):
+            for file in glob.glob(f"{current_path}{os.sep}*{os.sep}*_updated.yaml"):
                 files.append(file)
             for file in files:
                 if os.path.exists(file):
                     os.remove(file)
                 else:
-                    LOGGER.error("{} not found".format(file))
+                    LOGGER.error(f"{file} not found")
     except Exception as e:
-        LOGGER.error("Exception occurred in pytest_sessionfinish : {}".format(e))
+        LOGGER.error(f"Exception occurred in pytest_sessionfinish : {e}")
 
 
 def pytest_generate_tests(metafunc):

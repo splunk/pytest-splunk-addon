@@ -135,8 +135,8 @@ def test_splunk_connection_external(request, testdir):
         "--splunk-host=localhost",
         "--splunk-port=8089",
         "--splunk-forwarder-host=localhost",
-        "--splunk-password={0}".format(request.config.getoption("splunk_password")),
-        "--splunk-hec-token={0}".format(request.config.getoption("splunk_hec_token")),
+        "--splunk-password={}".format(request.config.getoption("splunk_password")),
+        "--splunk-hec-token={}".format(request.config.getoption("splunk_hec_token")),
         "-v",
     )
 
@@ -170,7 +170,7 @@ def test_splunk_connection_kubernetes(request, testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
     )
 
@@ -209,7 +209,7 @@ def test_splunk_app_fiction(request, testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
@@ -257,7 +257,7 @@ def test_splunk_app_broken(request, testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
@@ -313,7 +313,7 @@ def test_splunk_app_cim_fiction(request, testdir):
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
         "--splunk-dm-path=tests/data_models",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
         "-m splunk_searchtime_cim",
         "--search-interval=4",
@@ -362,7 +362,7 @@ def test_splunk_app_cim_broken(request, testdir):
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
         "--splunk-dm-path=tests/data_models",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
         "-m splunk_searchtime_cim",
         "--search-interval=4",
@@ -416,7 +416,7 @@ def test_splunk_fiction_indextime(request, testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
         "--search-interval=0",
         "--search-retry=0",
@@ -473,7 +473,7 @@ def test_splunk_fiction_indextime_broken(request, testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
         "--search-interval=0",
         "--search-retry=0",
@@ -525,7 +525,7 @@ def test_splunk_setup_fixture(request, testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
         "-k saved_search_lookup",
         "--search-interval=4",
@@ -600,7 +600,7 @@ def test_splunk_app_requirements(request, testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
@@ -649,7 +649,7 @@ def test_splunk_app_requirements_modinput(request, testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
@@ -698,7 +698,7 @@ def test_splunk_app_requirements_uf(request, testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
@@ -744,7 +744,7 @@ def test_splunk_app_requirements_scripted(request, testdir):
     result = testdir.runpytest(
         "--splunk-type=kubernetes",
         "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-version={}".format(request.config.getoption("splunk_version")),
         "-v",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
