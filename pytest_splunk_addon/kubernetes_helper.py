@@ -139,7 +139,6 @@ class KubernetesHelper:
                     api_response = api_instance.read_namespaced_pod_status(
                         name=pod_name, namespace=namespace_name
                     )
-                    print(api_response.status.phase)
                     if api_response.status.phase != "Pending":
                         try:
                             api_response_log = api_instance.read_namespaced_pod_log(
