@@ -21,13 +21,13 @@ Features
 --------
 
 * Generate tests for Splunk Knowledge objects in your Splunk Technology Add-ons
-* Validate your add-ons using Splunk + Docker and this test tool
+* Validate your add-ons using Splunk + Kubernetes and this test tool
 
 
 Requirements
 ------------
 
-* Docker or an external single instance Splunk deployment
+* Kubernetes or an external single instance Splunk deployment
 
 
 Installation
@@ -40,34 +40,34 @@ You can install "pytest-splunk-addon" via `pip`_ from `PyPI`_::
 Developing
 ------------
 
-Note: Must install docker desktop.
+Note: Must setup kubernetes cluster [ Reference: `minikube`_ , `microk8s`_, `k3s`_ ], vscode or pycharm pro optional
 
 .. code:: bash
 
     $ git clone --recurse-submodules -j8 git@github.com:splunk/pytest-splunk-addon.git
+    $ #setup python venv must be 3.7    
+    $ python3 -m venv .venv
+    $ source .venv/bin/activate
     $ cd pytest-splunk-addon
-    $ poetry install
-    $ ... (change something)
-    # run unit tests
-    $ poetry run pytest tests/unit
-    # run some of the docker-based tests to verify end-to-end behaviour, example:
-    $ poetry run pytest -v --splunk-version=8.2 -m docker tests/test_splunk_addon.py::test_splunk_app_requirements_modinput
+
+Generate addons spl (tests/psa_tests/addons/<ADDON_NAME>) with format ``<<ADDON_NAME>/default/app.conf/id.name>-<<ADDON_NAME>/default/app.conf/id.version>.spl``
+
+.. code:: bash
+
+    $ pip install poetry
+    $ poetry export --without-hashes --dev -o requirements_dev.txt
+    $ pip install -r requirements_dev.txt
+    $ export KUBECONFIG="PATH of Kubernetes Config File"
 
 
 Usage
 -----
 
-Installation for external Splunk
+Installation for external Splunk and with built in Kubernetes orchestration
 
 .. code:: bash
 
     pip install pytest-splunk-addon
-
-Installation with built in docker orchestration
-
-.. code:: bash
-
-    pip install pytest-splunk-addon[docker]
 
 
 Basic project structure
@@ -82,61 +82,36 @@ Create a test file in the tests folder
 
     from pytest_splunk_addon.standard_lib.addon_basic import Basic
 
-
     class Test_App(Basic):
         def empty_method():
             pass
 
-Create a Dockerfile-splunk file
-
-.. code:: Dockerfile
-
-    ARG SPLUNK_VERSION=latest
-    FROM splunk/splunk:$SPLUNK_VERSION
-    ARG SPLUNK_APP=TA_UNKNOWN
-    ARG SPLUNK_APP_PACKAGE=package
-    COPY deps/apps /opt/splunk/etc/apps/
-
-    COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP
-
-
-Create a docker-compose.yml update the value of SPLUNK_APP
-
-.. code:: yaml
-
-    version: "3.7"
-    services:
-    splunk:
-        build:
-        context: .
-        dockerfile: Dockerfile-splunk
-        args:
-            - SPLUNK_APP=xxxxxxx
-        ports:
-        - "8000"
-        - "8089"
-        environment:
-        - SPLUNK_PASSWORD=Changed@11
-        - SPLUNK_START_ARGS=--accept-license
 
 Run pytest with the add-on and SA-eventgen installed and enabled in an external Splunk deployment
 
-.. code::: bash
+.. code:: python3
 
         pytest \
-        --splunk-type=external \
         --splunk-type=external \
         --splunk-host=splunk \
         --splunk-port=8089 \
         --splunk-password=Changed@11 \
         -v
 
-Run pytest with the add-on and SA-eventgen installed and enabled in docker
+Run pytest with the add-on and SA-eventgen installed and enabled in kubernetes
 
-.. code::: bash
+Deploy `splunk-operator at cluster-scope in kubernetes cluster`_.
+
+Generate addon SPL with `ucc-gen`_.
+
+For third-party addons generate addon SPL.
+
+Place the generated addon spl in tests/src/<addon>.spl
+
+.. code:: python3
 
         pytest \
-        --splunk-password=Changed@11 \
+        --splunk-type=kubernetes \
         -v
 
 For full usage instructions, please visit the `pytest-splunk-addon documentation pages over at readthedocs`_.
@@ -163,3 +138,8 @@ If you encounter any problems, please `file an issue`_ along with a detailed des
 .. _`pytest`: https://github.com/pytest-dev/pytest
 .. _`pip`: https://pypi.org/project/pip/
 .. _`PyPI`: https://pypi.org/project
+.. _`minikube`: https://minikube.sigs.k8s.io/docs/start/
+.. _`microk8s`: https://microk8s.io/
+.. _`k3s`: https://k3s.io/
+.. _`ucc-gen` : https://splunk.github.io/addonfactory-ucc-generator/
+.. _`splunk-operator at cluster-scope in kubernetes cluster` : https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces

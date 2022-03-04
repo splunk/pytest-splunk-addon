@@ -23,6 +23,7 @@ from requests.exceptions import ConnectionError
 from pytest_splunk_addon.standard_lib.event_ingestors.base_event_ingestor import (
     EventIngestor,
 )
+from pytest_splunk_addon.kubernetes_helper import KubernetesHelper
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 MONITOR_DIR = "uf_files"
@@ -31,7 +32,7 @@ MONITOR_DIR = "uf_files"
 class FileMonitorEventIngestor(EventIngestor):
     """
     Class to ingest event via File monitor
-    This ingestor will only work if splunk_type is docker and container of universal forwarder is linked with container
+    This ingestor will only work if splunk_type is kubernetes and container of universal forwarder is linked with container
     of splunk instance as 'splunk' service.
 
     The format for required_configs is::
@@ -55,7 +56,7 @@ class FileMonitorEventIngestor(EventIngestor):
         self.uf_password = required_configs.get("uf_password")
         # Container of universal forwarder is linked with splunk instance.
         # So using splunk_host as splunk and port 9997 directly.
-        self.splunk_host = "splunk"
+        self.splunk_host = "splunk-s1-standalone-service"
         self.splunk_s2s_port = "9997"
         self.uf_rest_uri = f"https://{self.uf_host}:{self.uf_port}"
         self.outputs_endpoint = "{}/services/data/outputs/tcp/group".format(
@@ -74,7 +75,22 @@ class FileMonitorEventIngestor(EventIngestor):
         self.create_output_conf()
         for each_event in events:
             self.create_event_file(each_event)
-            sleep(10)
+            LOGGER.info(
+                "kubectl cp {0}/uf_files/ {1}:{2} -c uf -n {3}".format(
+                    os.getenv("TEST_RUNNER_DIRECTORY"),
+                    os.getenv("UF_POD_NAME"),
+                    os.getenv("TEST_RUNNER_DIRECTORY"),
+                    os.getenv("NAMESPACE_NAME"),
+                )
+            )
+            kubernetes_helper_uf_copy = KubernetesHelper()
+            kubernetes_helper_uf_copy.copy_files_to_pod(
+                os.getenv("UF_POD_NAME"),
+                os.getenv("NAMESPACE_NAME"),
+                "/",
+                (os.path.join(os.getenv("TEST_RUNNER_DIRECTORY", "/"), "uf_files")),
+            )
+            sleep(5)
             self.create_inputs_stanza(each_event)
 
     def create_output_conf(self):

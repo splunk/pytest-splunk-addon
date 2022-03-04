@@ -32,7 +32,8 @@ header:
     - ".*"
     - "pytest_splunk_addon/standard_lib/**/*.json"
     - "MANIFEST.in"
-    - "entrypoint.sh"
+    - "k3s.sh"
+    - "spl_generation.sh"
     - "pytest_splunk_addon/.ignore_splunk_internal_errors"
 
   comment: on-failure

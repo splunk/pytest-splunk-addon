@@ -130,10 +130,10 @@ jobs:
       - name: Install and run tests
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          poetry install -E docker
+          poetry install
           poetry add --dev sphinx-rtd-theme
           poetry add --dev sphinx-panels
-          poetry run pytest -v -m doc
+          poetry run pytest -v -m doc tests/psa_tests
 
   test-splunk-external:
     runs-on: ubuntu-latest
@@ -150,36 +150,67 @@ jobs:
       fail-fast: false
       matrix:
         splunk-version: ["8.1","8.2"]
+    env:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - name: Setup kubernetes cluster
+        id: kubernetes
+        run: |
+          ./k3s.sh
+          kubectl get no
+      - name: Setup Splunk-Operator at cluster-scope
+        run: |
+          wget -O splunk-operator.yaml https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-cluster.yaml
+          kubectl apply -f splunk-operator.yaml
+          sleep 30
+          kubectl get ns
+          kubectl get pods -A
       - name: Setup for testing
         run: |
           pip install git+https://github.com/pixelb/crudini
           mkdir test-results-${{ matrix.splunk-version }}
+          pip install https://download.splunk.com/misc/packaging-toolkit/splunk-packaging-toolkit-1.0.1.tar.gz
+          ./spl_generation.sh
       - name: Splunk Up
         run: |
-          export SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction
-          export SPLUNK_ADDON=TA_fiction
-          export SPLUNK_APP_ID=TA_fiction
-          ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
-          export SPLUNK_VERSION=$(crudini --get deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf ${{ matrix.splunk-version }} VERSION)
+          sudo apt-get install -y curl jq
+          export NAMESPACE_NAME=ta-fiction-external
+          export SPLUNK_ADDON=TA_fiction-0.0.0-dev.spl
+          export SPLUNK_VERSION=${{ matrix.splunk-version }}
+          export SC4S_INDEX_URL=$( curl -s https://api.github.com/repos/splunk/splunk-configurations-base-indexes/releases/latest \ | jq -r '.assets[] | select((.name | contains("spl")) and (.name | contains("search_head") | not) and (.name | contains("indexers") | not ) and (.name | contains("forwarders") | not)) | .browser_download_url ')
           echo $SPLUNK_VERSION
-          docker-compose -f "docker-compose-ci.yml" build
-          SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up -d splunk
-          sleep 90
+          eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml)\"" >> ./namespace_updated.yaml
+          eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml)\"" >> ./splunk_standalone_updated.yaml
+          kubectl apply -f ./namespace_updated.yaml
+          kubectl run nginx -n $NAMESPACE_NAME --image=nginx --port=80 --expose
+          kubectl wait pod nginx --for=condition=ready --timeout=300s -n $NAMESPACE_NAME
+          kubectl cp ./tests/src/$SPLUNK_ADDON nginx:/usr/share/nginx/html -n $NAMESPACE_NAME
+          echo "        - http://nginx//$SPLUNK_ADDON" >> ./splunk_standalone_updated.yaml
+          kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
+          sleep 30
+          until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
+          kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
+          sleep 30
       - name: Test
         run: |
-          SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
-          docker volume ls
-      - name: Collect Results
+          export NAMESPACE_NAME=ta-fiction-external
+          export splunk_password=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.password' | base64 -d)
+          export splunk_hec_token=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.hec_token' | base64 -d)
+          sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+          curl -sSL https://install.python-poetry.org | python3 -
+          mv ./pytest-ci.ini ./pytest.ini
+          poetry install
+          poetry run pytest -v --splunk-password=$splunk_password --splunk-hec-token=$splunk_hec_token --junitxml=test-results-${{ matrix.splunk-version }}/test.xml
+      - name: Destroy kubernetes resources
         run: |
-          docker volume ls
-          docker container create --name dummy \
-                              -v pytest-splunk-addon_results:/work/test-results \
-                              registry.access.redhat.com/ubi7/ubi
-          docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.splunk-version }}
+          export NAMESPACE_NAME=ta-fiction-external
+          kubectl delete -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
+          sleep 15
+          kubectl delete -f ./namespace_updated.yaml
+          sleep 15
       - uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
@@ -202,19 +233,39 @@ jobs:
       fail-fast: false
       matrix:
         splunk-version: [8.1, 8.2]
-        test-name: [
-          "test_splunk_connection_docker",
-          "test_splunk_app_fiction",
-          "test_splunk_app_broken",
-          "test_splunk_app_cim",
-          "test_splunk_fiction_indextime",
-          "test_splunk_setup_fixture",
-          "test_splunk_app_requirements"
+        test-marker: [
+          "test_report",
+          "splunk_connection_kubernetes",
+          "splunk_app_fiction",
+          "splunk_app_broken",
+          "splunk_app_cim_fiction",
+          "splunk_app_cim_broken",
+          "splunk_fiction_indextime",
+          "splunk_fiction_indextime_broken",
+          "splunk_setup_fixture",
+          "splunk_app_requirements",
+          "splunk_app_requirements_modinput",
+          "splunk_app_requirements_uf",
+          "splunk_app_requirements_scripted"
         ]
+    env:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - name: Setup kubernetes cluster
+        id: kubernetes
+        run: |
+          ./k3s.sh
+          kubectl get no
+      - name: Setup Splunk-Operator
+        run: |
+          wget -O splunk-operator.yaml https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-cluster.yaml
+          kubectl apply -f splunk-operator.yaml
+          sleep 30
+          kubectl get ns
+          kubectl get pods -A
       - name: Set up OS=ubuntu-latest::Python=3.7::Splunk=${{ matrix.splunk-version }}
         uses: actions/setup-python@v1
         with:
@@ -222,8 +273,10 @@ jobs:
       - name: Install and run tests
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          poetry install -E docker
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker -k ${{ matrix.test-name }}
+          pip install https://download.splunk.com/misc/packaging-toolkit/splunk-packaging-toolkit-1.0.1.tar.gz
+          ./spl_generation.sh
+          poetry install
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes -m ${{ matrix.test-marker }} tests/psa_tests
 
   publish:
     name: publish

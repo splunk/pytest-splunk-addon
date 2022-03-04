@@ -1,4 +1,3 @@
 Sphinx
-lovely-pytest-docker
 sphinx-panels
 sphinx-rtd-theme

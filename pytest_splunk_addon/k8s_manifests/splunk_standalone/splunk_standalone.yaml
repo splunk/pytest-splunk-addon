@@ -13,8 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-[pytest]
-testpaths = tests
-addopts = -v --tb=long -m kubernetes --log-level=INFO 
-filterwarnings =
-    ignore::DeprecationWarning
+apiVersion: enterprise.splunk.com/v1
+kind: Standalone
+metadata:
+  name: s1
+  finalizers:
+  - enterprise.splunk.com/delete-pvc
+spec:
+  image: docker.io/splunk/splunk:$SPLUNK_VERSION
+  defaults: |-
+    splunk:
+      apps_location:
+        - $SC4S_INDEX_URL
