@@ -529,7 +529,7 @@ def test_splunk_setup_fixture(request, testdir):
         "-v",
         "-k saved_search_lookup",
         "--search-interval=4",
-        "--search-retry=4",
+        "--search-retry=10",
         "--search-index=*,_internal",
     )
 
