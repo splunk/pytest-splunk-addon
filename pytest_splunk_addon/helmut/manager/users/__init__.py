@@ -67,7 +67,7 @@ class Users(Manager, Collection):
         @type password: String
         @param roles: The role(s) of the new user.
         @type roles: String or list
-        @param kwargs: The arugments the new user.
+        @param kwargs: The arguments the new user.
         @type kwargs: kwargs
         """
         pass

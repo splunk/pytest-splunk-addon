@@ -26,7 +26,7 @@ import urllib.request, urllib.parse, urllib.error
 import httplib2
 from pytest_splunk_addon.helmut.exceptions import AuthenticationError
 import json
-import xml.etree.ElementTree as et
+from defusedxml import cElementTree as ET
 from xml.dom.minidom import parseString
 import time
 import six
@@ -299,7 +299,7 @@ class RESTConnector(Connector):
             self.logger.warn(msg)
             raise AuthenticationError(msg)
 
-        root = et.fromstring(six.ensure_text(content, "utf-8"))
+        root = ET.fromstring(six.ensure_text(content, "utf-8"))
         self.sessionkey = root[0].text
         if not self._service.credentials.credentials:
             self._service.add_credentials(self._username, self._password)

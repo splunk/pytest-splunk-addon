@@ -481,7 +481,7 @@ class Splunk(with_metaclass(ABCMeta, Logging)):
 
     def get_rip(self, owner=None, app=None, username=None, password=None):
         """
-        Create a RESTInPeace under certian user and app namespace
+        Create a RESTInPeace under certain user and app namespace
 
         :param owner: owner namespace, default to admin
         :type owner: str
