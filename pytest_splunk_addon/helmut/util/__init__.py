@@ -14,14 +14,9 @@
 # limitations under the License.
 #
 """
-Module for handling generic connections with a Splunk instance.
+Various utility classes and functions
 
 @author: Nicklas Ansman-Giertz
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
-@since: 2011-11-21
+@since: 2011-11-23
 """
-
-__all__ = ["sdk", "rest"]
-
-from .rest import RESTConnector
-from .sdk import SDKConnector

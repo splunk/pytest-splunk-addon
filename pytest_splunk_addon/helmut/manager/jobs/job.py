@@ -20,6 +20,7 @@
 """
 import time
 from abc import abstractmethod, abstractproperty
+from builtins import str
 
 from pytest_splunk_addon.helmut.exceptions.search import SearchFailure
 from pytest_splunk_addon.helmut.exceptions.wait import WaitTimedOut
