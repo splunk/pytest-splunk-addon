@@ -14,14 +14,25 @@
 # limitations under the License.
 #
 """
-Module for handling generic connections with a Splunk instance.
-
 @author: Nicklas Ansman-Giertz
 @contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
-@since: 2011-11-21
+@since: 2011-11-23
 """
+from abc import abstractmethod
 
-__all__ = ["sdk", "rest"]
+from pytest_splunk_addon.helmut.manager.object import ItemFromManager
 
-from .rest import RESTConnector
-from .sdk import SDKConnector
+
+class Role(ItemFromManager):
+    """
+    The Role class represents an role in Splunk.
+    """
+
+    @abstractmethod
+    def edit(self, **kwargs):
+        """
+        Edit this role. Check REST documentation to see what options are
+        available at
+        http://docs.splunk.com/Documentation/Splunk/latest/RESTAPI/RESTrole
+        """
+        pass

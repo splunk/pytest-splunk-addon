@@ -13,15 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-Module for handling generic connections with a Splunk instance.
+def normalize_to_unicode(value):
+    """
+    string convert to unicode
+    """
+    if hasattr(value, "decode") and not isinstance(value, str):
+        return value.decode("utf-8")
+    return value
 
-@author: Nicklas Ansman-Giertz
-@contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
-@since: 2011-11-21
-"""
 
-__all__ = ["sdk", "rest"]
-
-from .rest import RESTConnector
-from .sdk import SDKConnector
+def normalize_to_str(value):
+    """
+    unicode convert to string
+    """
+    if hasattr(value, "encode") and isinstance(value, str):
+        return value.encode("utf-8")
+    return value

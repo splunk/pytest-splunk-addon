@@ -32,6 +32,7 @@ classifiers = [
 include = ["pytest_splunk_addon/**/*.json", "pytest_splunk_addon/**/*.txt"]
 
 [tool.poetry.dependencies]
+httplib2 = "*"
 python = "^3.7"
 pytest = ">5.4.0,<6.3"
 splunk-sdk = "^1.6"

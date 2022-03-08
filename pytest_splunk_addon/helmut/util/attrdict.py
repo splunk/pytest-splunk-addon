@@ -13,15 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-Module for handling generic connections with a Splunk instance.
+class AttrDict(dict):
+    """A dictionary for which keys are also accessible as attributes."""
 
-@author: Nicklas Ansman-Giertz
-@contact: U{ngiertz@splunk.com<mailto:ngiertz@splunk.com>}
-@since: 2011-11-21
-"""
-
-__all__ = ["sdk", "rest"]
-
-from .rest import RESTConnector
-from .sdk import SDKConnector
+    def __init__(self, *args, **kwargs):
+        super(AttrDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
