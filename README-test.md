@@ -6,7 +6,6 @@
 - Python3 (>=3.7)
 - Kubernetes Cluster (Reference: [minikube](https://minikube.sigs.k8s.io/docs/start/), [microk8s](https://microk8s.io/), [k3s](https://k3s.io/))
 - kubectl
-- jq
 - [splunk-operator at cluster-scope](https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces)
 ```bash
 kubectl apply -f ./splunk-operator.yaml
@@ -27,8 +26,9 @@ pip install -r requirements_dev.txt
 ```
 
 2. Generate addon SPL
-- For UCC based addons generate addon SPL with [ucc-gen --ta-version=<package/default/app.conf/id.version>](https://splunk.github.io/addonfactory-ucc-generator/).
-- For Non-UCC based addons generate addon SPL of format `<package/default/app.conf/id.name>-<package/default/app.conf/id.version>.spl`
+- Generate addon SPL with ucc-gen.
+- For third-party addons generate addon SPL.
+
 
 ##### Knowledge
 
