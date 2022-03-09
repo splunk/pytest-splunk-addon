@@ -251,6 +251,8 @@ jobs:
           "splunk_app_requirements_uf",
           "splunk_app_requirements_scripted"
         ]
+    env:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
       - uses: actions/checkout@v2
         with:
