@@ -35,7 +35,7 @@ def pytest_addoption(parser):
         dest="splunk_version",
         default="latest",
         help=(
-            "Splunk version to spin up with docker while splunk-type "
+            "Splunk version to spin up with kubernetes while splunk-type "
             " is set to kubernetes. Examples, "
             " 1) latest: latest Splunk Enterprise tagged by the https://github.com/splunk/docker-splunk"
             " 2) 8.0.0: GA release of 8.0.0."
