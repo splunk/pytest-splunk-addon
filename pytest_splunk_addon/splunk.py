@@ -738,7 +738,7 @@ def splunk_kubernetes(request):
                 os.environ["SC4S_INDEX_URL"] = regex_match.group()
         except Exception as e:
             LOGGER.error(
-                "Exception occured while fetching SC4S_INDEX_URL : {0}".format(e)
+                "Exception occurred while fetching SC4S_INDEX_URL : {0}".format(e)
             )
         print(os.getenv("SC4S_INDEX_URL"))
         update_k8s_manifest_files(folder=current_path, file="namespace")

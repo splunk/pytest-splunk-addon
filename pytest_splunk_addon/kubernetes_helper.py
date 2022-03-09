@@ -70,7 +70,7 @@ class KubernetesHelper:
             if (wait_count > 5) and (namespace_created == False):
                 LOGGER.error("Namespace creation took more than expected")
         except Exception as e:
-            LOGGER.error("Exception occured while creating namespace : {0}".format(e))
+            LOGGER.error("Exception occurred while creating namespace : {0}".format(e))
 
     def create_k8s_resource_from_yaml(self, file, namespace_name):
         """
@@ -83,7 +83,7 @@ class KubernetesHelper:
             resp = utils.create_from_yaml(k8s_client, file, namespace=namespace_name)
         except Exception as e:
             LOGGER.error(
-                "Exception occured while creating resource from {0} : {1}".format(
+                "Exception occurred while creating resource from {0} : {1}".format(
                     file, e
                 )
             )
@@ -119,7 +119,7 @@ class KubernetesHelper:
             )
             time.sleep(2)
         except:
-            LOGGER.error("Exception occured while creating splunk-deployment")
+            LOGGER.error("Exception occurred while creating splunk-deployment")
             LOGGER.error("Ensure splunk-operator is setup at cluster scoped level")
 
     def wait_for_pod_to_get_ready(self, pod_name, namespace_name):
@@ -282,7 +282,7 @@ class KubernetesHelper:
                     )
                 )
         except:
-            LOGGER.error("Exception occured while fetching statefulset status")
+            LOGGER.error("Exception occurred while fetching statefulset status")
 
     def get_pod_name(self, namespace_name, label):
         """
@@ -352,7 +352,7 @@ class KubernetesHelper:
                         break
                 resp.close()
         except Exception as e:
-            LOGGER.error("Exception occured while copying files : {0}".format(e))
+            LOGGER.error("Exception occurred while copying files : {0}".format(e))
 
     def get_splunk_creds(self, secret_name, namespace_name):
         """
@@ -373,7 +373,7 @@ class KubernetesHelper:
             return hec_token, password
         except Exception as e:
             LOGGER.error(
-                "Exception occured while fetching splunk creds : {0}".format(e)
+                "Exception occurred while fetching splunk creds : {0}".format(e)
             )
             return None, None
 
@@ -526,4 +526,4 @@ class KubernetesHelper:
                     )
                 )
         except Exception as e:
-            LOGGER.error("Exception occured while deleting namespace : {0}".format(e))
+            LOGGER.error("Exception occurred while deleting namespace : {0}".format(e))
