@@ -4,7 +4,7 @@
   "info": {
     "author": [
       {
-        "name": "Splunk",
+        "name": "Splunk, Inc.",
         "email": null,
         "company": null
       }
@@ -12,29 +12,29 @@
     "classification": {
       "categories": [
         "IT Operations",
-        "Utilities"
+        "Security, Fraud & Compliance"
       ],
       "developmentStatus": "Production/Stable",
-      "intendedAudience": "IT"
+      "intendedAudience": "IT Professionals"
     },
     "commonInformationModels": {
+      "Alerts": "==4.18.0",
       "Authentication": "==4.18.0",
       "Change": "==4.18.0",
-      "Endpoint": "==4.18.0",
-      "Inventory": "==4.18.0",
-      "Network Sessions": "==4.18.0",
-      "Performance": "==4.18.0"
+      "Intrusion Detection": "==4.18.0",
+      "Network Traffic": "==4.18.0",
+      "Web": "==4.18.0"
     },
-    "description": "Splunk Add-on for Unix and Linux",
+    "description": "Splunk Add-on for Requirement Test",
     "id": {
       "group": null,
-      "name": "Splunk_TA_nix",
-      "version": "8.3.1"
+      "name": "TA_requirement_test",
+      "version": "0.0.0-dev"
     },
     "license": {
-      "name": "Splunk Software License Agreement",
+      "name": null,
       "text": "LICENSES/LicenseRef-Splunk-1-2020.txt",
-      "uri": "http://www.splunk.com/en_us/legal/splunk-software-license-agreement.html"
+      "uri": null
     },
     "privacyPolicy": {
       "name": null,
@@ -44,10 +44,10 @@
     "releaseDate": null,
     "releaseNotes": {
       "name": "README",
-      "text": "./README.txt",
-      "uri": "http://docs.splunk.com/Documentation/AddOns/released/UnixLinux/About"
+      "text": "README.txt",
+      "uri": "https://docs.splunk.com/Documentation/AddOns/released/Juniper/Releasenotes"
     },
-    "title": "Splunk Add-on for Unix and Linux"
+    "title": "Splunk Add-on for Requirement Test"
   },
   "inputGroups": null,
   "platformRequirements": null,
@@ -59,8 +59,8 @@
   ],
   "targetWorkloads": [
     "_search_heads",
-    "_forwarders",
-    "_indexers"
+    "_indexers",
+    "_forwarders"
   ],
   "tasks": null
 }

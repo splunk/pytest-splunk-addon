@@ -13,13 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-ARG SPLUNK_VERSION=latest
-FROM splunk/splunk:$SPLUNK_VERSION
-ARG SPLUNK_VERSION=latest
-ARG SPLUNK_APP_ID=TA_UNKNOWN
-ARG SPLUNK_APP_PACKAGE=package
-RUN echo ${SPLUNK_VERSION} $SPLUNK_APP_PACKAGE
-COPY ${SPLUNK_APP_PACKAGE} /opt/splunk/etc/apps/${SPLUNK_APP_ID}
-COPY deps/apps /opt/splunk/etc/apps/
-COPY deps/build/addonfactory_test_matrix_splunk/packages/all/common /opt/splunk/etc/apps/
-COPY deps/build/addonfactory_test_matrix_splunk/packages/all/sh /opt/splunk/etc/apps/
+apiVersion: enterprise.splunk.com/v1
+kind: Standalone
+metadata:
+  name: s1
+  finalizers:
+  - enterprise.splunk.com/delete-pvc
+spec:
+  image: docker.io/splunk/splunk:$SPLUNK_VERSION
+  defaults: |-
+    splunk:
+      apps_location:
+        - $SC4S_INDEX_URL

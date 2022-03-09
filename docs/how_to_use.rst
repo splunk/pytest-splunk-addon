@@ -33,7 +33,11 @@ There are three ways to execute the tests:
         pytest --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password> --splunk-hec-token=<splunk_hec_token>
 
 
-**2. Running tests with docker splunk**
+**2. Running tests with kubernetes splunk**
+
+    Prerequisitory
+        - kubernetes cluster [ Reference: `minikube`_ , `microk8s`_, `k3s`_ ]
+        - kubectl
 
     .. code:: bash
 
@@ -42,41 +46,21 @@ There are three ways to execute the tests:
         pip install poetry
         poetry install
 
-    Create a Dockerfile.splunk file
+    Download `splunk-operator at cluster-scoped level <https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces>`_
 
-    .. dropdown:: Example Dockerfile
+    Install and setup splunk-operator in kubernetes cluster
 
-        .. code:: Dockerfile
+    .. code:: bash
 
-            ARG SPLUNK_VERSION=latest
-            FROM splunk/splunk:$SPLUNK_VERSION
-            ARG SPLUNK_VERSION=latest
-            ARG SPLUNK_APP_ID=TA_UNKNOWN
-            ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
-            RUN echo Splunk VERSION=$SPLUNK_VERSION
-            COPY deps/apps /opt/splunk/etc/apps/
-            COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
+        kubectl apply -f ./splunk-operator.yaml
 
-    Create a Dockerfile.uf file
+    Generate addon SPL with `ucc-gen`_
 
-    .. dropdown:: Example Dockerfile
+    For third-party addons generate addon SPL by following the necessary steps required.
 
-        .. code:: Dockerfile
+    Create `src` directory in `tests` of the addon repository and move .spl in `tests/src`.
 
-            ARG SPLUNK_VERSION=latest
-            FROM splunk/universalforwarder:$SPLUNK_VERSION
-            ARG SPLUNK_VERSION=latest
-            ARG SPLUNK_APP_ID=TA_UNKNOWN
-            ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
-            COPY $SPLUNK_APP_PACKAGE /opt/splunkforwarder/etc/apps/$SPLUNK_APP_ID
-
-    Create docker-compose.yml
-
-    .. dropdown:: Example docker-compose file
-
-        .. literalinclude:: ../docker-compose.yml
-            :language: YAML
-            :lines: 9-
+    export KUBECONFIG="PATH of Kubernetes Config File" (This will be used while spinning up kubernetes resources for --splunk-type=kubernetes)
 
 .. _conftest_file:
 
@@ -84,23 +68,31 @@ There are three ways to execute the tests:
 
     .. dropdown:: Example conftest file
 
-        .. literalinclude:: ../tests/conftest.py
+        .. literalinclude:: ../tests/psa_tests/conftest.py
             :language: python
-            :lines: 1-2,12-
+            :lines: 1-9
 
     Run pytest with the add-on, using the following command:
 
     .. code:: bash
 
-        pytest --splunk-type=docker --splunk-data-generator=<path to pytest-splunk-addon-data.conf file>
+        pytest --splunk-type=kubernetes --splunk-data-generator=<path to pytest-splunk-addon-data.conf file>
 
 The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
 
 .. note::
-   * If live events are available in external Splunk instance or docker splunk, then SA-Eventgen is not required. This is applicable only till v1.2.0 of pytest-splunk-addon.
+   * If live events are available in external Splunk instance or kubernetes splunk, then SA-Eventgen is not required. This is applicable only till v1.2.0 of pytest-splunk-addon.
    * From v1.3.0 pytest-splunk-addon ingests data independently which is used for execution of all the test cases.
+   * For debugging purposes if resources need to be kept then pass ``--keep-alive`` while executing above pytest command, after troubleshooting user will have to manually delete the kubernetes resources using following commands.
 
+    .. code:: bash
 
+        export NAMESPACE_NAME="<namespace_name>"  # namespace_name is of format splunk-ta-juniper (package/default/app.conf/id.name = Splunk_TA_juniper)
+        kubectl delete deploy sc4s -n $NAMESPACE_NAME
+        kubectl delete deploy splunk-uf -n $NAMESPACE_NAME
+        kubectl delete secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME
+        kubectl delete Standalone s1 -n $NAMESPACE_NAME
+        kubectl delete ns $NAMESPACE_NAME
 
 **3. Running tests with an external forwarder and Splunk instance**
 
@@ -116,7 +108,7 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
     
     .. code:: bash
 
-        pytest --splunk-type=external                                   # Whether you want to run the addon with docker or an external Splunk instance
+        pytest --splunk-type=external                                   # Whether you want to run the addon with kubernetes or an external Splunk instance
             --splunk-app=<path-to-addon-package>                        # Path to Splunk app package. The package should have the configuration files in the default folder.
             --splunk-host=<hostname>                                    # Receiver Splunk instance where events are searchable.
             --splunk-port=<splunk_management_port>                      # default 8089
@@ -317,9 +309,9 @@ Extending pytest-splunk-addon
 
     .. dropdown:: enable_saved_search_conftest.py
 
-        .. literalinclude:: ../tests/enable_saved_search_conftest.py
+        .. literalinclude:: ../tests/psa_tests/enable_saved_search_conftest.py
             :language: python
-            :lines: 2,31-
+            :lines: 2,13-
 
 
 **4. Check mapping of an add-on with custom data models**
@@ -337,3 +329,8 @@ Extending pytest-splunk-addon
    <hr width=100%>
    
 .. [#] xfail indicates that you expect a test to fail for some reason. A common example is a test for a feature not yet implemented, or a bug not yet fixed. When a test passes despite being expected to fail, it's an xpass and will be reported in the test summary.
+
+.. _`minikube`: https://minikube.sigs.k8s.io/docs/start/
+.. _`microk8s`: https://microk8s.io/
+.. _`k3s`: https://k3s.io/
+.. _`ucc-gen` : https://splunk.github.io/addonfactory-ucc-generator/

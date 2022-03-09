@@ -13,10 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-ARG SPLUNK_VERSION=latest
-FROM splunk/universalforwarder:$SPLUNK_VERSION
-ARG SPLUNK_VERSION=latest
-ARG SPLUNK_APP_ID=TA_UNKNOWN
-ARG SPLUNK_APP_PACKAGE=package
-RUN echo ${SPLUNK_VERSION} $SPLUNK_APP_PACKAGE
-COPY ${SPLUNK_APP_PACKAGE} /opt/splunkforwarder/etc/apps/${SPLUNK_APP_ID}
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: nginx
+  type: ClusterIP
+status:
+  loadBalancer: {}

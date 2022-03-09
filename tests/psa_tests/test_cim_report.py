@@ -5,7 +5,8 @@ from pytest_splunk_addon.standard_lib.cim_compliance import CIMReportGenerator
 
 
 class TestCIMReport(object):
-    @pytest.mark.docker
+    @pytest.mark.kubernetes
+    @pytest.mark.test_report
     def test_report(self):
         data = [
             {

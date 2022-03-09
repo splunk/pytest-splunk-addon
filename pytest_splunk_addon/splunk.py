@@ -26,7 +26,7 @@ import shutil
 from time import sleep
 import json
 import pytest
-import requests
+import requests, re
 import splunklib.client as client
 from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
@@ -34,6 +34,11 @@ from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
 import configparser
 from filelock import FileLock
+import sys
+import base64
+import subprocess
+import addonfactory_splunk_conf_parser_lib as conf_parser
+from .kubernetes_helper import KubernetesHelper
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
@@ -43,7 +48,7 @@ PYTEST_XDIST_TESTRUNUID = ""
 
 def pytest_addoption(parser):
     """Add options for interaction with Splunk this allows the tool to work in two modes
-    1) docker mode which is typically used by developers on their workstation
+    1) kubernetes mode which is typically used by developers on their workstation
         manages a single instance of splunk
     2) external interacts with a single instance of splunk that is lifecycle managed
         by another process such as a ci/cd pipeline
@@ -66,7 +71,7 @@ def pytest_addoption(parser):
         dest="splunk_type",
         default="external",
         help=(
-            "Type of the Splunk instance. supports external & docker "
+            "Type of the Splunk instance. supports external & kubernetes "
             "as a value. Default is external."
         ),
     )
@@ -166,7 +171,7 @@ def pytest_addoption(parser):
         default="latest",
         help=(
             "Splunk version to spin up with docker while splunk-type "
-            " is set to docker. Examples, "
+            " is set to kubernetes. Examples, "
             " 1) latest: latest Splunk Enterprise tagged by the https://github.com/splunk/docker-splunk"
             " 2) 8.0.0: GA release of 8.0.0."
         ),
@@ -328,6 +333,12 @@ def pytest_addoption(parser):
         help="Should execute test or not (True|False)",
         default="True",
     )
+    group.addoption(
+        "--keep-alive",
+        action="store_true",
+        dest="keep_alive",
+        help="Should keep kubernetes resources after test execution",
+    )
 
 
 @pytest.fixture(scope="session")
@@ -366,6 +377,7 @@ def splunk_search_util(splunk, request):
         helmut_lib.SearchUtil.SearchUtil: The SearchUtil object
     """
     LOGGER.info("Initializing SearchUtil for the Splunk instace.")
+    sleep(10)
     cloud_splunk = CloudSplunk(
         splunkd_host=splunk["host"],
         splunkd_port=splunk["port"],
@@ -421,38 +433,27 @@ def ignore_internal_errors(request):
 def splunk(request, file_system_prerequisite):
     """
     This fixture based on the passed option will provide a real fixture
-    for external or docker Splunk
+    for external or kubernetes Splunk
 
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
     splunk_type = request.config.getoption("splunk_type")
+    keep_alive = request.config.getoption("keep_alive")
     LOGGER.info("Get the Splunk instance of splunk_type=%s", splunk_type)
+    with open("./splunk_type.txt", "w") as splunk_type_file:
+        splunk_type_file.write(splunk_type)
+        splunk_type_file.write("\n{0}".format(keep_alive))
+        splunk_type_file.write("\n{0}".format(request.config.getoption("splunk_app")))
     if splunk_type == "external":
         request.fixturenames.append("splunk_external")
         splunk_info = request.getfixturevalue("splunk_external")
-    elif splunk_type == "docker":
+    elif splunk_type == "kubernetes":
+        os.environ["Splunk_Type"] = "kubernetes"
         os.environ["SPLUNK_APP_PACKAGE"] = request.config.getoption("splunk_app")
-        try:
-            config = configparser.ConfigParser()
-            config.read(
-                os.path.join(
-                    request.config.getoption("splunk_app"),
-                    "default",
-                    "app.conf",
-                )
-            )
-            os.environ["SPLUNK_APP_ID"] = config["package"]["id"]
-        except Exception as e:
-            pass
-            os.environ["SPLUNK_APP_ID"] = "TA_package"
-        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
-        os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
-        os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
         os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
-
-        request.fixturenames.append("splunk_docker")
-        splunk_info = request.getfixturevalue("splunk_docker")
+        request.fixturenames.append("splunk_kubernetes")
+        splunk_info = request.getfixturevalue("splunk_kubernetes")
     else:
         raise Exception
 
@@ -463,7 +464,7 @@ def splunk(request, file_system_prerequisite):
 def sc4s(request):
     """
     This fixture based on the passed option will provide a real fixture
-    for external or docker sc4s configuration
+    for external or kubernetes sc4s configuration
 
     Returns:
         tuple: Details of SC4S which includes sc4s server IP and its related ports.
@@ -471,9 +472,9 @@ def sc4s(request):
     if request.config.getoption("splunk_type") == "external":
         request.fixturenames.append("sc4s_external")
         sc4s = request.getfixturevalue("sc4s_external")
-    elif request.config.getoption("splunk_type") == "docker":
-        request.fixturenames.append("sc4s_docker")
-        sc4s = request.getfixturevalue("sc4s_docker")
+    elif request.config.getoption("splunk_type") == "kubernetes":
+        request.fixturenames.append("sc4s_kubernetes")
+        sc4s = request.getfixturevalue("sc4s_kubernetes")
     else:
         raise Exception
 
@@ -484,7 +485,7 @@ def sc4s(request):
 def uf(request):
     """
     This fixture based on the passed option will provide a real fixture
-    for external or docker uf configuration
+    for external or kubernetes uf configuration
 
     Returns:
         dict: Details of uf which includes host, port, username and password
@@ -492,37 +493,115 @@ def uf(request):
     if request.config.getoption("splunk_type") == "external":
         request.fixturenames.append("uf_external")
         uf = request.getfixturevalue("uf_external")
-    elif request.config.getoption("splunk_type") == "docker":
-        request.fixturenames.append("uf_docker")
-        uf = request.getfixturevalue("uf_docker")
+    elif request.config.getoption("splunk_type") == "kubernetes":
+        request.fixturenames.append("uf_kubernetes")
+        uf = request.getfixturevalue("uf_kubernetes")
     else:
         raise Exception
     yield uf
 
 
 @pytest.fixture(scope="session")
-def uf_docker(docker_services, tmp_path_factory, worker_id, request):
+def uf_kubernetes(request):
     """
     Provides IP of the uf server and management port based on pytest-args(splunk_type)
     """
-    LOGGER.info("Starting docker_service=uf")
-    os.environ["CURRENT_DIR"] = os.getcwd()
-    if worker_id:
-        # get the temp directory shared by all workers
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "pytest_docker"
-        with FileLock(str(fn) + ".lock"):
-            docker_services.start("uf")
+    if (
+        "PYTEST_XDIST_WORKER" not in os.environ
+        or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
+    ):
+        LOGGER.info(
+            "Starting kubernetes_service=uf for worker id {}".format(
+                str(os.environ.get("PYTEST_XDIST_WORKER"))
+            )
+        )
+        current_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "k8s_manifests",
+            "uf",
+        )
+        os.environ["ADDON_LOCATION"] = str(
+            os.path.join(
+                os.getenv("TEST_RUNNER_DIRECTORY"),
+                "tests",
+                "src",
+                str(os.getenv("SPLUNK_ADDON")),
+            )
+        )
+        if ":\\" in os.getenv("ADDON_LOCATION"):
+            os.environ["ADDON_LOCATION"] = os.getenv("ADDON_LOCATION").split(":\\", 1)[
+                1
+            ]
+        if "\\" in os.getenv("ADDON_LOCATION"):
+            os.environ["ADDON_LOCATION"] = os.getenv("ADDON_LOCATION").replace(
+                "\\", "/"
+            )
+        if ":\\" in os.getenv("TEST_RUNNER_DIRECTORY"):
+            os.environ["TEST_RUNNER_DIRECTORY_UF"] = os.getenv(
+                "TEST_RUNNER_DIRECTORY"
+            ).split(":\\", 1)[1]
+        else:
+            os.environ["TEST_RUNNER_DIRECTORY_UF"] = os.getenv("TEST_RUNNER_DIRECTORY")
+        if "\\" in os.getenv("TEST_RUNNER_DIRECTORY_UF"):
+            os.environ["TEST_RUNNER_DIRECTORY_UF"] = os.getenv(
+                "TEST_RUNNER_DIRECTORY_UF"
+            ).replace("\\", "/")
+        update_k8s_manifest_files(folder=current_path, file="uf_deployment")
+        LOGGER.info("Setting up UF")
+        kubernetes_helper_uf = KubernetesHelper()
+        kubernetes_helper_uf.create_k8s_resource_from_yaml(
+            file=os.path.join(current_path, "uf_deployment_updated.yaml"),
+            namespace_name=os.getenv("NAMESPACE_NAME"),
+        )
+        kubernetes_helper_uf.wait_for_deployment_to_get_available(
+            "splunk-uf", os.getenv("NAMESPACE_NAME")
+        )
+        uf_pod_name = kubernetes_helper_uf.get_pod_name(
+            os.getenv("NAMESPACE_NAME"), "app=uf"
+        )
+        os.environ["UF_POD_NAME"] = uf_pod_name
+        kubernetes_helper_uf.wait_for_pod_to_get_ready(
+            pod_name=uf_pod_name, namespace_name=os.getenv("NAMESPACE_NAME")
+        )
+        kubernetes_helper_uf.create_k8s_resource_from_yaml(
+            file=os.path.join(current_path, "uf_service.yaml"),
+            namespace_name=os.getenv("NAMESPACE_NAME"),
+        )
+        uf_ports_file = os.path.join(
+            os.getenv("TEST_RUNNER_DIRECTORY"), "exposed_uf_ports.log"
+        )
+        # Below kubectl port-forward can be replaced in future with kubernetes-client or any equivalent
+        uf_setup = subprocess.Popen(
+            "kubectl port-forward svc/uf-service -n {0} :8089 > {1} 2>&1 &".format(
+                os.getenv("NAMESPACE_NAME"), uf_ports_file
+            ),
+            shell=True,
+        )
+        LOGGER.info("UF Setup Logs")
+        if "PYTEST_XDIST_WORKER" in os.environ:
+            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf", "w+"):
+                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
+    else:
+        while not os.path.exists(
+            os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_uf"
+        ):
+            sleep(1)
+    kubernetes_helper_uf = KubernetesHelper()
+    os.environ["UF_POD_NAME"] = kubernetes_helper_uf.get_pod_name(
+        os.getenv("NAMESPACE_NAME"), "app=uf"
+    )
+    LOGGER.info("UF_POD_NAME : %s", os.getenv("UF_POD_NAME"))
+    uf_ports_file = os.path.join(
+        os.getenv("TEST_RUNNER_DIRECTORY"), "exposed_uf_ports.log"
+    )
+    expose_ports_splunk_sc4s_uf("{0}".format(uf_ports_file))
+    LOGGER.info("Exposed ports of UF=%s", os.getenv("port_uf"))
     uf_info = {
-        "uf_host": docker_services.docker_ip,
-        "uf_port": docker_services.port_for("uf", 8089),
+        "uf_host": "localhost",
+        "uf_port": os.getenv("port_uf"),
         "uf_username": request.config.getoption("splunk_uf_user"),
         "uf_password": request.config.getoption("splunk_uf_password"),
     }
-    for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
-        if is_responsive_uf(uf_info):
-            break
-        sleep(1)
     return uf_info
 
 
@@ -540,52 +619,234 @@ def uf_external(request):
     return uf_info
 
 
+def expose_ports_splunk_sc4s_uf(file):
+    try:
+        sleep(10)
+        with open(file, "r") as exposed_ports_file:
+            count = 0
+            Lines = exposed_ports_file.readlines()
+            for line in Lines:
+                count += 1
+                if count % 2 == 0:
+                    service_port = re.search("[0-9]{3,4}$", line)
+                    exposed_port = re.search(
+                        "^Forwarding from \[\:\:1\]\:([0-9]{0,5})", line
+                    )
+                    if service_port:
+                        service_port = service_port.group(0)
+                    if exposed_port:
+                        exposed_port = exposed_port.group(1)
+                    if service_port == "8000":
+                        os.environ["port_web"] = exposed_port
+                    if service_port == "8088":
+                        os.environ["port_hec"] = exposed_port
+                    if service_port == "8089":
+                        if "exposed_uf_ports.log" in file:
+                            os.environ["port_uf"] = exposed_port
+                        else:
+                            os.environ["port"] = exposed_port
+                    if service_port == "9997":
+                        os.environ["port_s2s"] = exposed_port
+                    if service_port == "514":
+                        os.environ["sc4s_port"] = exposed_port
+    except Exception as e:
+        LOGGER.error("Exception occurred while port-forwarding")
+
+
+def update_k8s_manifest_files(folder, file):
+    try:
+        with open(
+            os.path.join("{0}".format(folder), "{0}.yaml".format(file)), "r"
+        ) as deployment_file:
+            file_updated = os.path.expandvars(deployment_file.read())
+        with open(
+            os.path.join("{0}".format(folder), "{0}_updated.yaml".format(file)), "w"
+        ) as write_file:
+            write_file.write(file_updated)
+    except Exception as e:
+        LOGGER.error(
+            "Error occurred while updating {0}.yaml : {1}".format(
+                os.path.join(folder, file), e
+            )
+        )
+
+
 @pytest.fixture(scope="session")
-def splunk_docker(
-    request, docker_services, docker_compose_files, tmp_path_factory, worker_id
-):
+def splunk_kubernetes(request):
     """
-    Splunk docker depends on lovely-pytest-docker to create the docker instance
+    Splunk kubernetes kubectl utiltity to create the kubernetes instance
     of Splunk this may be changed in the future.
-    docker-compose.yml in the project root must have
-    a service "splunk" exposing port 8000 and 8089
+    k8s_manifests in the project root must have
+    splunk_standalone consisting kubernetes manifests and shell script.
 
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
-    LOGGER.info("Starting docker_service=splunk")
-    if worker_id:
-        # get the temp directory shared by all workers
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "pytest_docker"
-        with FileLock(str(fn) + ".lock"):
-            docker_services.start("splunk")
+    os.environ["TEST_RUNNER_DIRECTORY"] = os.getcwd()
+    parser = conf_parser.TABConfigParser()
+    parser.read(
+        os.path.join(
+            "{0}".format(os.getenv("SPLUNK_APP_PACKAGE")), "default", "app.conf"
+        )
+    )
+    splunk_addon_name = parser.get("package", "id")
+    try:
+        spl_path = os.path.join(
+            "{0}".format(os.getenv("TEST_RUNNER_DIRECTORY")), "tests", "src"
+        )
+        splunk_spl_name = [
+            filename
+            for filename in os.listdir(spl_path)
+            if filename.startswith(("{0}-").format(splunk_addon_name))
+        ]
+        SPLUNK_ADDON = str(splunk_spl_name[0])
+        LOGGER.info(SPLUNK_ADDON)
+    except Exception as e:
+        LOGGER.error(
+            "ADDON SPL doesn't exist for {0} at tests/src".format(splunk_addon_name)
+        )
+    NAMESPACE_NAME = str(splunk_addon_name.replace("_", "-").lower())
+    LOGGER.info("NAMESPACE_NAME is {}".format(NAMESPACE_NAME))
+    os.environ["NAMESPACE_NAME"] = NAMESPACE_NAME
+    os.environ["SPLUNK_ADDON"] = SPLUNK_ADDON
+    if (
+        "PYTEST_XDIST_WORKER" not in os.environ
+        or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
+    ):
+        LOGGER.info(
+            "Starting kubernetes_service=splunk for worker id {}".format(
+                str(os.environ.get("PYTEST_XDIST_WORKER"))
+            )
+        )
+        LOGGER.info(
+            "TEST_RUNNER_DIRECTORY : {}".format(
+                str(os.environ.get("TEST_RUNNER_DIRECTORY"))
+            )
+        )
+        current_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "k8s_manifests",
+            "splunk_standalone",
+        )
+        pattern = r"https:\/\/github\.com\/splunk\/splunk-configurations-base-indexes\/releases\/download\/v[0-9.]+\/splunk_configurations_base_indexes-[0-9.]+.spl"
+        try:
+            response = requests.get(
+                "https://api.github.com/repos/splunk/splunk-configurations-base-indexes/releases/latest"
+            )
+            regex_match = re.search(pattern, str(response.json()))
+            if regex_match:
+                os.environ["SC4S_INDEX_URL"] = regex_match.group()
+        except Exception as e:
+            LOGGER.error(
+                "Exception occured while fetching SC4S_INDEX_URL : {0}".format(e)
+            )
+        print(os.getenv("SC4S_INDEX_URL"))
+        update_k8s_manifest_files(folder=current_path, file="namespace")
+        update_k8s_manifest_files(folder=current_path, file="splunk_standalone")
+        LOGGER.info("Setting up Splunk")
+        kubernetes_helper_splunk = KubernetesHelper()
+        LOGGER.info(current_path)
+        LOGGER.info(current_path + "/namespace_updated.yaml")
+        kubernetes_helper_splunk.create_namespace(
+            file=os.path.join(current_path, "namespace_updated.yaml"),
+            namespace_name=os.getenv("NAMESPACE_NAME"),
+        )
+        kubernetes_helper_splunk.create_k8s_resource_from_yaml(
+            file=os.path.join(current_path, "nginx.yaml"),
+            namespace_name=os.getenv("NAMESPACE_NAME"),
+        )
+        kubernetes_helper_splunk.create_k8s_resource_from_yaml(
+            file=os.path.join(current_path, "nginx_service.yaml"),
+            namespace_name=os.getenv("NAMESPACE_NAME"),
+        )
+        kubernetes_helper_splunk.wait_for_pod_to_get_ready(
+            pod_name="nginx", namespace_name=os.getenv("NAMESPACE_NAME")
+        )
+        destination_location = "/usr/share/nginx/html/"
+        source_location = str(
+            os.path.join(
+                os.getenv("TEST_RUNNER_DIRECTORY"),
+                "tests",
+                "src",
+                str(os.getenv("SPLUNK_ADDON")),
+            )
+        )
+        LOGGER.info(source_location)
+        kubernetes_helper_splunk.copy_files_to_pod(
+            "nginx", os.getenv("NAMESPACE_NAME"), destination_location, source_location
+        )
+        file = os.path.join(current_path, "splunk_standalone_updated.yaml")
+        if ":\\" in source_location:
+            source_location = source_location.split(":\\", 1)[1]
+        if "\\" in source_location:
+            source_location = source_location.replace("\\", "/")
+
+        with open(file, "a") as file_object:
+            file_object.write("        - http://nginx/{0}".format(source_location))
+        kubernetes_helper_splunk.create_splunk_standalone(
+            file, os.getenv("NAMESPACE_NAME")
+        )
+        kubernetes_helper_splunk.wait_for_statefulset_to_get_available(
+            "splunk-s1-standalone", os.getenv("NAMESPACE_NAME")
+        )
+        kubernetes_helper_splunk.wait_for_pod_to_get_ready(
+            "splunk-s1-standalone-0", os.getenv("NAMESPACE_NAME")
+        )
+
+        splunk_ports_file = os.path.join(
+            os.getenv("TEST_RUNNER_DIRECTORY"), "exposed_splunk_ports.log"
+        )
+        # Below kubectl port-forward can be replaced in future with kubernetes-client or any equivalent
+        splunk_setup = subprocess.Popen(
+            "kubectl port-forward svc/splunk-s1-standalone-service -n {0} :8000 :8088 :8089 :9997 > {1} 2>&1 &".format(
+                os.getenv("NAMESPACE_NAME"), splunk_ports_file
+            ),
+            shell=True,
+        )
+        LOGGER.info("Splunk Setup Logs")
+        if "PYTEST_XDIST_WORKER" in os.environ:
+            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_splunk", "w+"):
+                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
+    else:
+        while not os.path.exists(
+            os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_splunk"
+        ):
+            sleep(1)
+    splunk_ports_file = os.path.join(
+        os.getenv("TEST_RUNNER_DIRECTORY"), "exposed_splunk_ports.log"
+    )
+    expose_ports_splunk_sc4s_uf("{0}".format(splunk_ports_file))
+    secret_name = "splunk-" + os.getenv("NAMESPACE_NAME") + "-secret"
+    kubernetes_helper_splunk = KubernetesHelper()
+    splunk_hec_token, splunk_password = kubernetes_helper_splunk.get_splunk_creds(
+        secret_name, os.getenv("NAMESPACE_NAME")
+    )
+    os.environ["SPLUNK_PASSWORD"] = base64.b64decode(splunk_password).decode("utf-8")
+    os.environ["SPLUNK_HEC_TOKEN"] = base64.b64decode(splunk_hec_token).decode("utf-8")
 
     splunk_info = {
-        "host": docker_services.docker_ip,
-        "port": docker_services.port_for("splunk", 8089),
-        "port_hec": docker_services.port_for("splunk", 8088),
-        "port_s2s": docker_services.port_for("splunk", 9997),
-        "port_web": docker_services.port_for("splunk", 8000),
+        "host": "localhost",
+        "port": os.getenv("port"),
+        "port_hec": os.getenv("port_hec"),
+        "port_s2s": os.getenv("port_s2s"),
+        "port_web": os.getenv("port_web"),
         "username": request.config.getoption("splunk_user"),
-        "password": request.config.getoption("splunk_password"),
+        "password": os.getenv("SPLUNK_PASSWORD"),
+        "splunk_hec_token": os.getenv("SPLUNK_HEC_TOKEN"),
     }
 
     splunk_info["forwarder_host"] = splunk_info.get("host")
 
     LOGGER.info(
-        "Docker container splunk info. host=%s, port=%s, port_web=%s port_hec=%s port_s2s=%s",
-        docker_services.docker_ip,
-        docker_services.port_for("splunk", 8089),
-        docker_services.port_for("splunk", 8088),
-        docker_services.port_for("splunk", 8000),
-        docker_services.port_for("splunk", 9997),
-    )
-
-    docker_services.wait_until_responsive(
-        timeout=180.0,
-        pause=0.5,
-        check=lambda: is_responsive_splunk(splunk_info),
+        "Kubernetes container splunk info. host=%s, username=%s, password=%s, splunk_hec_token=%s, port=%s, port_web=%s port_hec=%s port_s2s=%s",
+        splunk_info.get("host"),
+        splunk_info.get("username"),
+        splunk_info.get("password"),
+        splunk_info.get("splunk_hec_token"),
+        splunk_info.get("port"),
+        splunk_info.get("port_web"),
+        splunk_info.get("port_hec"),
+        splunk_info.get("port_s2s"),
     )
 
     return splunk_info
@@ -607,6 +868,7 @@ def splunk_external(request):
         "port": request.config.getoption("splunkd_port"),
         "username": request.config.getoption("splunk_user"),
         "password": request.config.getoption("splunk_password"),
+        "splunk_hec_token": request.config.getoption("splunk_hec_token"),
     }
     if not request.config.getoption("splunk_forwarder_host"):
         splunk_info["forwarder_host"] = splunk_info.get("host")
@@ -636,22 +898,77 @@ def splunk_external(request):
 
 
 @pytest.fixture(scope="session")
-def sc4s_docker(docker_services, tmp_path_factory, worker_id):
+def sc4s_kubernetes():
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
     """
-    if worker_id:
-        # get the temp directory shared by all workers
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "pytest_docker"
-        with FileLock(str(fn) + ".lock"):
-            docker_services.start("sc4s")
-
-    ports = {514: docker_services.port_for("sc4s", 514)}
+    if (
+        "PYTEST_XDIST_WORKER" not in os.environ
+        or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
+    ):
+        LOGGER.info(
+            "Starting kubernetes_service=sc4s for worker id {}".format(
+                str(os.environ.get("PYTEST_XDIST_WORKER"))
+            )
+        )
+        current_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "k8s_manifests",
+            "sc4s",
+        )
+        os.environ[
+            "SPLUNK_URL"
+        ] = "splunk-s1-standalone-service.{0}.svc.cluster.local".format(
+            os.getenv("NAMESPACE_NAME")
+        )
+        update_k8s_manifest_files(folder=current_path, file="sc4s_deployment")
+        LOGGER.info("Setting up SC4S")
+        kubernetes_helper_sc4s = KubernetesHelper()
+        kubernetes_helper_sc4s.create_k8s_resource_from_yaml(
+            file=os.path.join(current_path, "sc4s_deployment_updated.yaml"),
+            namespace_name=os.getenv("NAMESPACE_NAME"),
+        )
+        kubernetes_helper_sc4s.wait_for_deployment_to_get_available(
+            "sc4s", os.getenv("NAMESPACE_NAME")
+        )
+        sc4s_pod_name = kubernetes_helper_sc4s.get_pod_name(
+            os.getenv("NAMESPACE_NAME"), "app=sc4s"
+        )
+        kubernetes_helper_sc4s.wait_for_pod_to_get_ready(
+            pod_name=sc4s_pod_name, namespace_name=os.getenv("NAMESPACE_NAME")
+        )
+        kubernetes_helper_sc4s.create_k8s_resource_from_yaml(
+            file=os.path.join(current_path, "sc4s_service.yaml"),
+            namespace_name=os.getenv("NAMESPACE_NAME"),
+        )
+        sc4s_ports_file = os.path.join(
+            os.getenv("TEST_RUNNER_DIRECTORY"), "exposed_sc4s_ports.log"
+        )
+        # Below kubectl port-forward can be replaced in future with kubernetes-client or any equivalent
+        sc4s_setup = subprocess.Popen(
+            "kubectl port-forward svc/sc4s-service -n {0} :514 > {1} 2>&1 &".format(
+                os.getenv("NAMESPACE_NAME"), sc4s_ports_file
+            ),
+            shell=True,
+        )
+        LOGGER.info("SC4S Setup Logs")
+        if "PYTEST_XDIST_WORKER" in os.environ:
+            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_sc4s", "w+"):
+                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
+    else:
+        while not os.path.exists(
+            os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait_sc4s"
+        ):
+            sleep(1)
+    sc4s_ports_file = os.path.join(
+        os.getenv("TEST_RUNNER_DIRECTORY"), "exposed_sc4s_ports.log"
+    )
+    expose_ports_splunk_sc4s_uf("{0}".format(sc4s_ports_file))
+    ports = {514: int(os.getenv("sc4s_port"))}
     for x in range(5000, 5007):
-        ports.update({x: docker_services.port_for("sc4s", x)})
-
-    return docker_services.docker_ip, ports
+        ports.update({x: x})
+    LOGGER.info("Exposed ports of sc4s=%s", ports)
+    return "localhost", ports
 
 
 @pytest.fixture(scope="session")
@@ -687,9 +1004,7 @@ def splunk_hec_uri(request, splunk):
     Provides a uri to the Splunk hec port
     """
     splunk_session = requests.Session()
-    splunk_session.headers = {
-        "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
-    }
+    splunk_session.headers = {"Authorization": f'Splunk {splunk["splunk_hec_token"]}'}
     uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector'
     LOGGER.info("Fetched splunk_hec_uri=%s", uri)
 

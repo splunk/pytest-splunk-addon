@@ -20,6 +20,10 @@ import traceback
 from .standard_lib import AppTestGenerator
 from .standard_lib.cim_compliance import CIMReportPlugin
 from filelock import FileLock
+import os
+import glob
+import addonfactory_splunk_conf_parser_lib as conf_parser
+from .kubernetes_helper import KubernetesHelper
 
 LOG_FILE = "pytest_splunk_addon.log"
 
@@ -114,6 +118,63 @@ def pytest_sessionstart(session):
         store_events = session.config.getoption("store_events")
         sample_generator = SampleXdistGenerator(app_path, config_path)
         sample_generator.get_samples(store_events)
+
+
+def pytest_sessionfinish(session, exitstatus):
+    try:
+        with open(".{0}splunk_type.txt".format(os.sep), "r") as splunk_type_file:
+            splunk_data = [line.rstrip() for line in splunk_type_file]
+        if (
+            (os.environ.get("PYTEST_XDIST_WORKER") == None)
+            and (splunk_data[0] == "kubernetes")
+            and (splunk_data[1] != "True")
+        ):
+            LOGGER.info("SessionFinish - destroying all kubernetes resources")
+            parser = conf_parser.TABConfigParser()
+            parser.read(
+                os.path.join("{0}".format(splunk_data[2]), "default", "app.conf")
+            )
+            splunk_addon_name = parser.get("package", "id")
+            os.environ["NAMESPACE_NAME"] = str(
+                splunk_addon_name.replace("_", "-").lower()
+            )
+            files = [
+                ".{0}exposed_splunk_ports.log".format(os.sep),
+                ".{0}splunk_type.txt".format(os.sep),
+            ]
+            current_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "k8s_manifests"
+            )
+            if os.path.exists(".{0}exposed_sc4s_ports.log".format(os.sep)):
+                kubernetes_sc4s_delete = KubernetesHelper()
+                kubernetes_sc4s_delete.delete_kubernetes_deployment(
+                    "sc4s", os.environ["NAMESPACE_NAME"], "app=sc4s"
+                )
+                files.append(".{0}exposed_sc4s_ports.log".format(os.sep))
+            if os.path.exists(".{0}exposed_uf_ports.log".format(os.sep)):
+                kubernetes_uf_delete = KubernetesHelper()
+                kubernetes_uf_delete.delete_kubernetes_deployment(
+                    "splunk-uf", os.environ["NAMESPACE_NAME"], "app=uf"
+                )
+                files.append(".{0}exposed_uf_ports.log".format(os.sep))
+            kubernetes_splunk_namespace_delete = KubernetesHelper()
+            kubernetes_splunk_namespace_delete.delete_splunk_standalone(
+                os.environ["NAMESPACE_NAME"]
+            )
+            kubernetes_splunk_namespace_delete.delete_namespace(
+                os.environ["NAMESPACE_NAME"]
+            )
+            for file in glob.glob(
+                "{0}{1}*{2}*_updated.yaml".format(current_path, os.sep, os.sep)
+            ):
+                files.append(file)
+            for file in files:
+                if os.path.exists(file):
+                    os.remove(file)
+                else:
+                    LOGGER.error("{} not found".format(file))
+    except Exception as e:
+        LOGGER.error("Exception occurred in pytest_sessionfinish : {}".format(e))
 
 
 def pytest_generate_tests(metafunc):
