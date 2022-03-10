@@ -141,7 +141,6 @@ class KubernetesHelper:
                     api_response = api_instance.read_namespaced_pod_status(
                         name=pod_name, namespace=namespace_name
                     )
-                    print(api_response.status.phase)
                     if api_response.status.phase != "Pending":
                         try:
                             api_response_log = api_instance.read_namespaced_pod_log(
@@ -170,7 +169,7 @@ class KubernetesHelper:
                             time.sleep(1)
                             continue
                     else:
-                        LOGGER.error(
+                        LOGGER.warning(
                             "Pod {0} is still in Pending state.".format(pod_name)
                         )
                         initial_timer += 1
@@ -215,7 +214,7 @@ class KubernetesHelper:
                         deployment_created = True
                         break
                     else:
-                        LOGGER.error(
+                        LOGGER.warning(
                             "Deployment {0} is still not available".format(
                                 deployment_name
                             )
@@ -264,7 +263,7 @@ class KubernetesHelper:
                         statefulset_created = True
                         break
                     else:
-                        LOGGER.error(
+                        LOGGER.warning(
                             "Statefulset {0} is still not available".format(
                                 statefulset_name
                             )
