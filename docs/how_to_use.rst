@@ -70,7 +70,7 @@ There are three ways to execute the tests:
 
         .. literalinclude:: ../tests/e2e/conftest.py
             :language: python
-            :lines: 1-9
+            :lines: 1-7
 
     Run pytest with the add-on, using the following command:
 
