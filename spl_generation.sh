@@ -1,5 +1,5 @@
 #!/bin/sh
-cd ./tests/psa_tests/addons/
+cd ./tests/e2e/addons/
 for FILE in *; do
     echo "\n";
     echo "Generating spl for $FILE";

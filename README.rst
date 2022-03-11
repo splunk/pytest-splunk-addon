@@ -54,7 +54,7 @@ Note2: Appinspect requires libmagic verify this has been installed correctly eac
 
     $ cd pytest-splunk-addon
 
-Generate addons spl (tests/psa_tests/addons/<ADDON_NAME>) with format ``<ADDON_NAME>-<ADDON_VERSION>.spl``
+Generate addons spl (tests/e2e/addons/<ADDON_NAME>) with format ``<ADDON_NAME>-<ADDON_VERSION>.spl``
 
 .. code:: bash
 

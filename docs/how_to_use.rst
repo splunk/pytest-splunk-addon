@@ -68,7 +68,7 @@ There are three ways to execute the tests:
 
     .. dropdown:: Example conftest file
 
-        .. literalinclude:: ../tests/psa_tests/conftest.py
+        .. literalinclude:: ../tests/e2e/conftest.py
             :language: python
             :lines: 1-9
 
@@ -309,7 +309,7 @@ Extending pytest-splunk-addon
 
     .. dropdown:: enable_saved_search_conftest.py
 
-        .. literalinclude:: ../tests/psa_tests/enable_saved_search_conftest.py
+        .. literalinclude:: ../tests/e2e/enable_saved_search_conftest.py
             :language: python
             :lines: 2,13-
 

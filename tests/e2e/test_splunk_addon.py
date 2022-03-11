@@ -3,7 +3,7 @@ import os
 import shutil
 import logging
 import pytest
-from tests.psa_tests import constants
+from tests.e2e import constants
 from pytest_splunk_addon.standard_lib.sample_generation import SampleGenerator, Rule
 
 logger = logging.getLogger("test_pytest_splunk_addon")
@@ -20,43 +20,6 @@ test_connection_only = """
     """
 
 
-def pytest_addoption(parser):
-    """Add options for interaction with Splunk this allows the tool to work in two modes
-    1) kubernetes mode which is typically used by developers on their workstation
-        manages a single instance of splunk
-    2) external interacts with a single instance of splunk that is lifecycle managed
-        by another process such as a ci/cd pipeline
-    """
-    group = parser.getgroup("splunk-addon")
-
-    group.addoption(
-        "--splunk-version",
-        action="store",
-        dest="splunk_version",
-        default="latest",
-        help=(
-            "Splunk version to spin up with kubernetes while splunk-type "
-            " is set to kubernetes. Examples, "
-            " 1) latest: latest Splunk Enterprise tagged by the https://github.com/splunk/docker-splunk"
-            " 2) 8.0.0: GA release of 8.0.0."
-        ),
-    )
-    group.addoption(
-        "--splunk-password",
-        action="store",
-        dest="splunk_password",
-        default="Chang3d!",
-        help="Password of the Splunk user",
-    )
-    group.addoption(
-        "--splunk-hec-token",
-        action="store",
-        dest="splunk_hec_token",
-        default="9b741d03-43e9-4164-908b-e09102327d22",
-        help='Splunk HTTP event collector token. default is "9b741d03-43e9-4164-908b-e09102327d22" If an external forwarder is used provide HEC token of forwarder.',
-    )
-
-
 def setup_test_dir(testdir):
     shutil.copytree(
         os.path.join(testdir.request.config.invocation_dir, "deps"),
@@ -64,20 +27,18 @@ def setup_test_dir(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.config.invocation_dir, "tests/psa_tests/addons"),
+        os.path.join(testdir.request.config.invocation_dir, "tests/e2e/addons"),
         os.path.join(testdir.tmpdir, "tests/addons"),
     )
 
     shutil.copy(
-        os.path.join(
-            testdir.request.config.invocation_dir, "tests/psa_tests/conftest.py"
-        ),
+        os.path.join(testdir.request.config.invocation_dir, "tests/e2e/conftest.py"),
         os.path.join(testdir.tmpdir, ""),
     )
 
     shutil.copytree(
         os.path.join(
-            testdir.request.config.invocation_dir, "tests/psa_tests/requirement_test"
+            testdir.request.config.invocation_dir, "tests/e2e/requirement_test"
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test"),
     )
@@ -85,32 +46,46 @@ def setup_test_dir(testdir):
     shutil.copytree(
         os.path.join(
             testdir.request.config.invocation_dir,
-            "tests/psa_tests/requirement_test_modinput",
+            "tests/e2e/requirement_test_modinput",
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_modinput"),
     )
 
     shutil.copytree(
         os.path.join(
-            testdir.request.config.invocation_dir, "tests/psa_tests/requirement_test_uf"
+            testdir.request.config.invocation_dir, "tests/e2e/requirement_test_uf"
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_uf"),
     )
     shutil.copytree(
         os.path.join(
             testdir.request.config.invocation_dir,
-            "tests/psa_tests/requirement_test_scripted",
+            "tests/e2e/requirement_test_scripted",
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_scripted"),
     )
-    shutil.copytree(
-        os.path.join(testdir.request.config.invocation_dir, "tests/src"),
-        os.path.join(testdir.tmpdir, "tests/src"),
+
+    shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "Dockerfile.splunk"),
+        testdir.tmpdir,
+    )
+    shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "Dockerfile.uf"),
+        testdir.tmpdir,
+    )
+    shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "Dockerfile.tests"),
+        testdir.tmpdir,
+    )
+
+    shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "docker-compose.yml"),
+        testdir.tmpdir,
     )
 
 
 @pytest.mark.external
-def test_splunk_connection_external(request, testdir):
+def test_splunk_connection_external(testdir):
     """Make sure that pytest accepts our fixture."""
 
     # create a temporary pytest test module
@@ -128,11 +103,9 @@ def test_splunk_connection_external(request, testdir):
     result = testdir.runpytest(
         "--splunk-app=addons/TA_fiction",
         "--splunk-type=external",
-        "--splunk-host=localhost",
+        "--splunk-host=splunk",
         "--splunk-port=8089",
-        "--splunk-forwarder-host=localhost",
-        "--splunk-password={0}".format(request.config.getoption("splunk_password")),
-        "--splunk-hec-token={0}".format(request.config.getoption("splunk_hec_token")),
+        "--splunk-forwarder-host=splunk",
         "-v",
     )
 
@@ -143,9 +116,9 @@ def test_splunk_connection_external(request, testdir):
     assert result.ret == 0
 
 
-@pytest.mark.kubernetes
-@pytest.mark.splunk_connection_kubernetes
-def test_splunk_connection_kubernetes(request, testdir):
+@pytest.mark.docker
+@pytest.mark.splunk_connection_docker
+def test_splunk_connection_docker(testdir):
     """Make sure that pytest accepts our fixture."""
 
     # create a temporary pytest test module
@@ -164,9 +137,7 @@ def test_splunk_connection_kubernetes(request, testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-type=docker",
         "-v",
     )
 
@@ -177,9 +148,9 @@ def test_splunk_connection_kubernetes(request, testdir):
     assert result.ret == 0
 
 
-@pytest.mark.kubernetes
+@pytest.mark.docker
 @pytest.mark.splunk_app_fiction
-def test_splunk_app_fiction(request, testdir):
+def test_splunk_app_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -203,13 +174,11 @@ def test_splunk_app_fiction(request, testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-type=docker",
         "-v",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
-        "--search-retry=10",
+        "--search-retry=4",
         "--search-index=*,_internal",
     )
 
@@ -220,9 +189,9 @@ def test_splunk_app_fiction(request, testdir):
     assert result.ret == 0
 
 
-@pytest.mark.kubernetes
+@pytest.mark.docker
 @pytest.mark.splunk_app_broken
-def test_splunk_app_broken(request, testdir):
+def test_splunk_app_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -251,9 +220,7 @@ def test_splunk_app_broken(request, testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-type=docker",
         "-v",
         "-m splunk_searchtime_fields",
         "--search-interval=4",
@@ -275,9 +242,9 @@ def test_splunk_app_broken(request, testdir):
     assert result.ret != 0
 
 
-@pytest.mark.kubernetes
+@pytest.mark.docker
 @pytest.mark.splunk_app_cim_fiction
-def test_splunk_app_cim_fiction(request, testdir):
+def test_splunk_app_cim_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -306,10 +273,8 @@ def test_splunk_app_cim_fiction(request, testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
+        "--splunk-type=docker",
         "--splunk-dm-path=tests/data_models",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
         "-v",
         "-m splunk_searchtime_cim",
         "--search-interval=4",
@@ -324,9 +289,9 @@ def test_splunk_app_cim_fiction(request, testdir):
     assert result.ret == 0
 
 
-@pytest.mark.kubernetes
+@pytest.mark.docker
 @pytest.mark.splunk_app_cim_broken
-def test_splunk_app_cim_broken(request, testdir):
+def test_splunk_app_cim_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -355,10 +320,8 @@ def test_splunk_app_cim_broken(request, testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
+        "--splunk-type=docker",
         "--splunk-dm-path=tests/data_models",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
         "-v",
         "-m splunk_searchtime_cim",
         "--search-interval=4",
@@ -379,9 +342,9 @@ def test_splunk_app_cim_broken(request, testdir):
     assert result.ret != 0
 
 
-@pytest.mark.kubernetes
+@pytest.mark.docker
 @pytest.mark.splunk_fiction_indextime
-def test_splunk_fiction_indextime(request, testdir):
+def test_splunk_fiction_indextime(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -410,9 +373,7 @@ def test_splunk_fiction_indextime(request, testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-type=docker",
         "-v",
         "--search-interval=0",
         "--search-retry=0",
@@ -434,9 +395,9 @@ def test_splunk_fiction_indextime(request, testdir):
     assert result.ret == 0
 
 
-@pytest.mark.kubernetes
+@pytest.mark.docker
 @pytest.mark.splunk_fiction_indextime_broken
-def test_splunk_fiction_indextime_broken(request, testdir):
+def test_splunk_fiction_indextime_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -467,9 +428,7 @@ def test_splunk_fiction_indextime_broken(request, testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-type=docker",
         "-v",
         "--search-interval=0",
         "--search-retry=0",
@@ -493,9 +452,9 @@ def test_splunk_fiction_indextime_broken(request, testdir):
     assert result.ret != 0
 
 
-@pytest.mark.kubernetes
+@pytest.mark.docker
 @pytest.mark.splunk_setup_fixture
-def test_splunk_setup_fixture(request, testdir):
+def test_splunk_setup_fixture(testdir):
     testdir.makepyfile(
         """
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
@@ -519,13 +478,11 @@ def test_splunk_setup_fixture(request, testdir):
     )
 
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-type=docker",
         "-v",
         "-k saved_search_lookup",
         "--search-interval=4",
-        "--search-retry=10",
+        "--search-retry=4",
         "--search-index=*,_internal",
     )
 
@@ -569,9 +526,9 @@ def test_docstrings(testdir):
     app.build(force_all=all_files)
 
 
-@pytest.mark.kubernetes
+@pytest.mark.docker
 @pytest.mark.splunk_app_requirements
-def test_splunk_app_requirements(request, testdir):
+def test_splunk_app_requirements(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -594,9 +551,7 @@ def test_splunk_app_requirements(request, testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-type=docker",
         "-v",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
@@ -616,9 +571,9 @@ def test_splunk_app_requirements(request, testdir):
     assert result.ret != 0
 
 
-@pytest.mark.kubernetes
+@pytest.mark.docker
 @pytest.mark.splunk_app_requirements_modinput
-def test_splunk_app_requirements_modinput(request, testdir):
+def test_splunk_app_requirements_modinput(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -643,9 +598,7 @@ def test_splunk_app_requirements_modinput(request, testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-type=docker",
         "-v",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
@@ -667,9 +620,9 @@ def test_splunk_app_requirements_modinput(request, testdir):
     assert result.ret != 0
 
 
-@pytest.mark.kubernetes
+@pytest.mark.docker
 @pytest.mark.splunk_app_requirements_uf
-def test_splunk_app_requirements_uf(request, testdir):
+def test_splunk_app_requirements_uf(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -692,9 +645,7 @@ def test_splunk_app_requirements_uf(request, testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-type=docker",
         "-v",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",
@@ -713,9 +664,9 @@ def test_splunk_app_requirements_uf(request, testdir):
     assert result.ret != 0
 
 
-@pytest.mark.kubernetes
+@pytest.mark.docker
 @pytest.mark.splunk_app_requirements_scripted
-def test_splunk_app_requirements_scripted(request, testdir):
+def test_splunk_app_requirements_scripted(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -738,9 +689,7 @@ def test_splunk_app_requirements_scripted(request, testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        "--splunk-type=kubernetes",
-        "--splunk-web-scheme=http",
-        "--splunk-version={0}".format(request.config.getoption("splunk_version")),
+        "--splunk-type=docker",
         "-v",
         "-m splunk_searchtime_requirements",
         "--search-interval=4",

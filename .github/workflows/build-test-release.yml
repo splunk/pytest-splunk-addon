@@ -133,7 +133,7 @@ jobs:
           poetry install
           poetry add --dev sphinx-rtd-theme
           poetry add --dev sphinx-panels
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc tests/psa_tests
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m doc tests/e2e
 
   test-splunk-external:
     runs-on: ubuntu-latest
@@ -278,7 +278,7 @@ jobs:
           pip install https://download.splunk.com/misc/packaging-toolkit/splunk-packaging-toolkit-1.0.1.tar.gz
           ./spl_generation.sh
           poetry install
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes -m ${{ matrix.test-marker }} tests/psa_tests
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes -m ${{ matrix.test-marker }} tests/e2e
 
   publish:
     name: publish
