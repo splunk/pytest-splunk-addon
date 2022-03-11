@@ -3,7 +3,7 @@ import os
 import shutil
 import logging
 import pytest
-from tests import constants
+from tests.e2e import constants
 from pytest_splunk_addon.standard_lib.sample_generation import SampleGenerator, Rule
 
 logger = logging.getLogger("test_pytest_splunk_addon")
@@ -27,36 +27,40 @@ def setup_test_dir(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.config.invocation_dir, "tests/addons"),
+        os.path.join(testdir.request.config.invocation_dir, "tests/e2e/addons"),
         os.path.join(testdir.tmpdir, "tests/addons"),
     )
 
     shutil.copy(
-        os.path.join(testdir.request.config.invocation_dir, "tests/conftest.py"),
+        os.path.join(testdir.request.config.invocation_dir, "tests/e2e/conftest.py"),
         os.path.join(testdir.tmpdir, ""),
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.config.invocation_dir, "tests/requirement_test"),
+        os.path.join(
+            testdir.request.config.invocation_dir, "tests/e2e/requirement_test"
+        ),
         os.path.join(testdir.tmpdir, "tests/requirement_test"),
     )
 
     shutil.copytree(
         os.path.join(
-            testdir.request.config.invocation_dir, "tests/requirement_test_modinput"
+            testdir.request.config.invocation_dir,
+            "tests/e2e/requirement_test_modinput",
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_modinput"),
     )
 
     shutil.copytree(
         os.path.join(
-            testdir.request.config.invocation_dir, "tests/requirement_test_uf"
+            testdir.request.config.invocation_dir, "tests/e2e/requirement_test_uf"
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_uf"),
     )
     shutil.copytree(
         os.path.join(
-            testdir.request.config.invocation_dir, "tests/requirement_test_scripted"
+            testdir.request.config.invocation_dir,
+            "tests/e2e/requirement_test_scripted",
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_scripted"),
     )
@@ -113,6 +117,7 @@ def test_splunk_connection_external(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_connection_docker
 def test_splunk_connection_docker(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -144,6 +149,7 @@ def test_splunk_connection_docker(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_fiction
 def test_splunk_app_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -184,6 +190,7 @@ def test_splunk_app_fiction(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_broken
 def test_splunk_app_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -236,6 +243,7 @@ def test_splunk_app_broken(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_cim_fiction
 def test_splunk_app_cim_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -282,6 +290,7 @@ def test_splunk_app_cim_fiction(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_cim_broken
 def test_splunk_app_cim_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -334,6 +343,7 @@ def test_splunk_app_cim_broken(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_fiction_indextime
 def test_splunk_fiction_indextime(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -386,6 +396,7 @@ def test_splunk_fiction_indextime(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_fiction_indextime_broken
 def test_splunk_fiction_indextime_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -442,6 +453,7 @@ def test_splunk_fiction_indextime_broken(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_setup_fixture
 def test_splunk_setup_fixture(testdir):
     testdir.makepyfile(
         """
@@ -515,6 +527,7 @@ def test_docstrings(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_requirements
 def test_splunk_app_requirements(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -559,6 +572,7 @@ def test_splunk_app_requirements(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_requirements_modinput
 def test_splunk_app_requirements_modinput(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -607,6 +621,7 @@ def test_splunk_app_requirements_modinput(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_requirements_uf
 def test_splunk_app_requirements_uf(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -650,6 +665,7 @@ def test_splunk_app_requirements_uf(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_requirements_scripted
 def test_splunk_app_requirements_scripted(testdir):
     """Make sure that pytest accepts our fixture."""
 
