@@ -160,7 +160,7 @@ jobs:
           mkdir test-results-${{ matrix.splunk-version }}
       - name: Splunk Up
         run: |
-          export SPLUNK_APP_PACKAGE=./tests/addons/TA_fiction
+          export SPLUNK_APP_PACKAGE=./tests/psa_tests/addons/TA_fiction
           export SPLUNK_ADDON=TA_fiction
           export SPLUNK_APP_ID=TA_fiction
           ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
