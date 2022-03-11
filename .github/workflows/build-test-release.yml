@@ -133,7 +133,7 @@ jobs:
           poetry install -E docker
           poetry add --dev sphinx-rtd-theme
           poetry add --dev sphinx-panels
-          poetry run pytest -v -m doc tests/psa_tests
+          poetry run pytest -v -m doc tests/e2e
 
   test-splunk-external:
     runs-on: ubuntu-latest
@@ -160,7 +160,7 @@ jobs:
           mkdir test-results-${{ matrix.splunk-version }}
       - name: Splunk Up
         run: |
-          export SPLUNK_APP_PACKAGE=./tests/psa_tests/addons/TA_fiction
+          export SPLUNK_APP_PACKAGE=./tests/e2e/addons/TA_fiction
           export SPLUNK_ADDON=TA_fiction
           export SPLUNK_APP_ID=TA_fiction
           ls -l deps/build/addonfactory_test_matrix_splunk/splunk_matrix.conf
@@ -228,7 +228,7 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           poetry install -E docker
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker -m ${{ matrix.test-marker }} tests/psa_tests
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker -m ${{ matrix.test-marker }} tests/e2e
 
   publish:
     name: publish

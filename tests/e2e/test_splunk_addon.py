@@ -3,7 +3,7 @@ import os
 import shutil
 import logging
 import pytest
-from tests.psa_tests import constants
+from tests.e2e import constants
 from pytest_splunk_addon.standard_lib.sample_generation import SampleGenerator, Rule
 
 logger = logging.getLogger("test_pytest_splunk_addon")
@@ -27,20 +27,18 @@ def setup_test_dir(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.config.invocation_dir, "tests/psa_tests/addons"),
+        os.path.join(testdir.request.config.invocation_dir, "tests/e2e/addons"),
         os.path.join(testdir.tmpdir, "tests/addons"),
     )
 
     shutil.copy(
-        os.path.join(
-            testdir.request.config.invocation_dir, "tests/psa_tests/conftest.py"
-        ),
+        os.path.join(testdir.request.config.invocation_dir, "tests/e2e/conftest.py"),
         os.path.join(testdir.tmpdir, ""),
     )
 
     shutil.copytree(
         os.path.join(
-            testdir.request.config.invocation_dir, "tests/psa_tests/requirement_test"
+            testdir.request.config.invocation_dir, "tests/e2e/requirement_test"
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test"),
     )
@@ -48,21 +46,21 @@ def setup_test_dir(testdir):
     shutil.copytree(
         os.path.join(
             testdir.request.config.invocation_dir,
-            "tests/psa_tests/requirement_test_modinput",
+            "tests/e2e/requirement_test_modinput",
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_modinput"),
     )
 
     shutil.copytree(
         os.path.join(
-            testdir.request.config.invocation_dir, "tests/psa_tests/requirement_test_uf"
+            testdir.request.config.invocation_dir, "tests/e2e/requirement_test_uf"
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_uf"),
     )
     shutil.copytree(
         os.path.join(
             testdir.request.config.invocation_dir,
-            "tests/psa_tests/requirement_test_scripted",
+            "tests/e2e/requirement_test_scripted",
         ),
         os.path.join(testdir.tmpdir, "tests/requirement_test_scripted"),
     )
