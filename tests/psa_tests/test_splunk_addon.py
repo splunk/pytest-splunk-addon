@@ -119,6 +119,7 @@ def test_splunk_connection_external(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_connection_docker
 def test_splunk_connection_docker(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -150,6 +151,7 @@ def test_splunk_connection_docker(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_fiction
 def test_splunk_app_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -190,6 +192,7 @@ def test_splunk_app_fiction(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_broken
 def test_splunk_app_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -242,6 +245,7 @@ def test_splunk_app_broken(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_cim_fiction
 def test_splunk_app_cim_fiction(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -288,6 +292,7 @@ def test_splunk_app_cim_fiction(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_cim_broken
 def test_splunk_app_cim_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -340,6 +345,7 @@ def test_splunk_app_cim_broken(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_fiction_indextime
 def test_splunk_fiction_indextime(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -392,6 +398,7 @@ def test_splunk_fiction_indextime(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_fiction_indextime_broken
 def test_splunk_fiction_indextime_broken(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -448,6 +455,7 @@ def test_splunk_fiction_indextime_broken(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_setup_fixture
 def test_splunk_setup_fixture(testdir):
     testdir.makepyfile(
         """
@@ -521,6 +529,7 @@ def test_docstrings(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_requirements
 def test_splunk_app_requirements(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -565,6 +574,7 @@ def test_splunk_app_requirements(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_requirements_modinput
 def test_splunk_app_requirements_modinput(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -613,6 +623,7 @@ def test_splunk_app_requirements_modinput(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_requirements_uf
 def test_splunk_app_requirements_uf(testdir):
     """Make sure that pytest accepts our fixture."""
 
@@ -656,6 +667,7 @@ def test_splunk_app_requirements_uf(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_requirements_scripted
 def test_splunk_app_requirements_scripted(testdir):
     """Make sure that pytest accepts our fixture."""
 

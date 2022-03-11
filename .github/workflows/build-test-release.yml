@@ -202,14 +202,19 @@ jobs:
       fail-fast: false
       matrix:
         splunk-version: [8.1, 8.2]
-        test-name: [
-          "test_splunk_connection_docker",
-          "test_splunk_app_fiction",
-          "test_splunk_app_broken",
-          "test_splunk_app_cim",
-          "test_splunk_fiction_indextime",
-          "test_splunk_setup_fixture",
-          "test_splunk_app_requirements"
+        test-marker: [
+          "splunk_connection_docker",
+          "splunk_app_fiction",
+          "splunk_app_broken",
+          "splunk_app_cim_fiction",
+          "splunk_app_cim_broken",
+          "splunk_fiction_indextime",
+          "splunk_fiction_indextime_broken",
+          "splunk_setup_fixture",
+          "splunk_app_requirements",
+          "splunk_app_requirements_modinput",
+          "splunk_app_requirements_uf",
+          "splunk_app_requirements_scripted"
         ]
     steps:
       - uses: actions/checkout@v2
@@ -223,7 +228,7 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           poetry install -E docker
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker -k ${{ matrix.test-name }} tests/psa_tests
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker -m ${{ matrix.test-marker }} tests/psa_tests
 
   publish:
     name: publish
