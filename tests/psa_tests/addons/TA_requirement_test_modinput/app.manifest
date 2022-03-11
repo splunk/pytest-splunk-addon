@@ -1,11 +1,11 @@
 {
   "schemaVersion": "2.0.0",
   "info": {
-    "title": "Splunk Add-on for Microsoft Sysmon",
+    "title": "Splunk Add-on for Requirement Test Modinput",
     "id": {
       "group": null,
-      "name": "Splunk_TA_microsoft_sysmon",
-      "version": "11.0.0"
+      "name": "TA_requirement_test_modinput",
+      "version": "0.0.0-dev"
     },
     "author": [
       {
@@ -15,7 +15,7 @@
       }
     ],
     "releaseDate": null,
-    "description": "Splunk Add-on for Microsoft Sysmon",
+    "description": "Splunk Add-on for Requirement Test Modinput",
     "classification": {
       "intendedAudience": "IT Professionals",
       "categories": [
@@ -26,7 +26,6 @@
     "commonInformationModels": null,
     "license": {
       "name": "Splunk General Terms",
-      "text": "LICENSES/LicenseRef-Splunk-8-2021.txt",
       "uri": "https://www.splunk.com/en_us/legal/splunk-general-terms.html"
     },
     "privacyPolicy": {

@@ -133,7 +133,7 @@ jobs:
           poetry install -E docker
           poetry add --dev sphinx-rtd-theme
           poetry add --dev sphinx-panels
-          poetry run pytest -v -m doc
+          poetry run pytest -v -m doc tests/psa_tests
 
   test-splunk-external:
     runs-on: ubuntu-latest
@@ -223,7 +223,7 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           poetry install -E docker
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker -k ${{ matrix.test-name }}
+          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m docker -k ${{ matrix.test-name }} tests/psa_tests
 
   publish:
     name: publish
