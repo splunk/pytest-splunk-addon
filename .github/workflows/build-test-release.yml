@@ -108,30 +108,6 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  test-splunk-debug:
-    runs-on: ubuntu-latest
-    name: Test splunk Debug
-    needs:
-      - meta
-      # - pre-commit
-      # - compliance-dependencies
-      # - compliance-copyrights
-      # - test-splunk-doc
-      # - test-splunk-unit
-      # - review_secrets
-      # - review-dog-misspell
-    strategy:
-      fail-fast: false
-      matrix:
-        splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: false
-      - name: debug
-        run: |
-          echo "${{ matrix.splunk-version.version }}"
-
   test-splunk-unit:
     name: Unit tests
     runs-on: ubuntu-latest
@@ -155,6 +131,30 @@ jobs:
           fail_ci_if_error: true
           verbose: true
 
+  test-splunk-debug:
+    runs-on: ubuntu-latest
+    name: Test splunk Debug
+    needs:
+      - meta
+      # - pre-commit
+      # - compliance-dependencies
+      # - compliance-copyrights
+      # - test-splunk-doc
+      # - test-splunk-unit
+      # - review_secrets
+      # - review-dog-misspell
+    strategy:
+      fail-fast: false
+      matrix:
+        splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}.version
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: false
+      - name: debug
+        run: |
+          echo "${{ matrix.splunk-version }}"
+
   test-splunk-doc:
     name: Test Docs
     runs-on: ubuntu-latest
@@ -173,188 +173,188 @@ jobs:
           poetry add --dev sphinx-panels
           poetry run pytest -v -m doc tests/e2e
 
-  test-splunk-external:
-    runs-on: ubuntu-latest
-    name: Test splunk external
-    needs:
-      - meta
-      - pre-commit
-      - compliance-dependencies
-      - compliance-copyrights
-      - test-splunk-doc
-      - test-splunk-unit
-      - review_secrets
-      - review-dog-misspell
-    strategy:
-      fail-fast: false
-      matrix:
-        splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk.version) }}
-    env:
-      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - uses: actions/setup-python@v3
-        with:
-          python-version: 3.7
-      - name: Setup kubernetes cluster
-        id: kubernetes
-        run: |
-          ./k3s.sh
-          kubectl get no
-      - name: Setup Splunk-Operator at cluster-scope
-        run: |
-          kubectl apply -f https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-cluster.yaml
-          kubectl wait deploy splunk-operator --for=condition=available --timeout=60s -n splunk-operator
-          kubectl get ns
-          kubectl get pods -A
-      - name: Setup for testing
-        run: |
-          pip install git+https://github.com/pixelb/crudini
-          mkdir test-results-${{ matrix.splunk-version }}
-          pip install splunk-packaging-toolkit
-          ./spl_generation.sh
-      - name: Splunk Up
-        run: |
-          export NAMESPACE_NAME=ta-fiction-external
-          export SPLUNK_ADDON=TA_fiction-0.0.0-dev.spl
-          export SPLUNK_VERSION=${{ matrix.splunk-version }}
-          export SC4S_INDEX_URL=$( curl -s https://api.github.com/repos/splunk/splunk-configurations-base-indexes/releases/latest \ | jq -r '.assets[] | select((.name | contains("spl")) and (.name | contains("search_head") | not) and (.name | contains("indexers") | not ) and (.name | contains("forwarders") | not)) | .browser_download_url ')
-          echo $SPLUNK_VERSION
-          eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml)\"" >> ./namespace_updated.yaml
-          eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml)\"" >> ./splunk_standalone_updated.yaml
-          kubectl apply -f ./namespace_updated.yaml
-          kubectl run nginx -n $NAMESPACE_NAME --image=nginx --port=80 --expose
-          kubectl wait pod nginx --for=condition=ready --timeout=300s -n $NAMESPACE_NAME
-          kubectl cp ./tests/src/$SPLUNK_ADDON nginx:/usr/share/nginx/html -n $NAMESPACE_NAME
-          echo "        - http://nginx//$SPLUNK_ADDON" >> ./splunk_standalone_updated.yaml
-          kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
-          sleep 15
-          kubectl wait --for=condition=PodScheduled pod splunk-s1-standalone-0 --timeout=30s -n $NAMESPACE_NAME
-          until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
-          kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
-          sleep 30
-      - name: Test
-        run: |
-          export NAMESPACE_NAME=ta-fiction-external
-          export splunk_password=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.password' | base64 -d)
-          export splunk_hec_token=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.hec_token' | base64 -d)
-          curl -sSL https://install.python-poetry.org | python3 -
-          mv ./pytest-ci.ini ./pytest.ini
-          poetry install
-          poetry run pytest -v --splunk-password=$splunk_password --splunk-hec-token=$splunk_hec_token --junitxml=test-results-${{ matrix.splunk-version }}/test.xml
-      - name: Destroy kubernetes resources
-        run: |
-          export NAMESPACE_NAME=ta-fiction-external
-          kubectl delete -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
-          sleep 15
-          kubectl delete -f ./namespace_updated.yaml
-          sleep 15
-      - uses: actions/upload-artifact@v2.2.4
-        if: always()
-        with:
-          name: splunk ${{ matrix.splunk-version }} external test artifacts
-          path: |
-            test-results-${{ matrix.splunk-version }}
+  # test-splunk-external:
+  #   runs-on: ubuntu-latest
+  #   name: Test splunk external
+  #   needs:
+  #     - meta
+  #     - pre-commit
+  #     - compliance-dependencies
+  #     - compliance-copyrights
+  #     - test-splunk-doc
+  #     - test-splunk-unit
+  #     - review_secrets
+  #     - review-dog-misspell
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
+  #   env:
+  #     KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: true
+  #     - uses: actions/setup-python@v3
+  #       with:
+  #         python-version: 3.7
+  #     - name: Setup kubernetes cluster
+  #       id: kubernetes
+  #       run: |
+  #         ./k3s.sh
+  #         kubectl get no
+  #     - name: Setup Splunk-Operator at cluster-scope
+  #       run: |
+  #         kubectl apply -f https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-cluster.yaml
+  #         kubectl wait deploy splunk-operator --for=condition=available --timeout=60s -n splunk-operator
+  #         kubectl get ns
+  #         kubectl get pods -A
+  #     - name: Setup for testing
+  #       run: |
+  #         pip install git+https://github.com/pixelb/crudini
+  #         mkdir test-results-${{ matrix.splunk-version.version }}
+  #         pip install splunk-packaging-toolkit
+  #         ./spl_generation.sh
+  #     - name: Splunk Up
+  #       run: |
+  #         export NAMESPACE_NAME=ta-fiction-external
+  #         export SPLUNK_ADDON=TA_fiction-0.0.0-dev.spl
+  #         export SPLUNK_VERSION=${{ matrix.splunk-version.version }}
+  #         export SC4S_INDEX_URL=$( curl -s https://api.github.com/repos/splunk/splunk-configurations-base-indexes/releases/latest \ | jq -r '.assets[] | select((.name | contains("spl")) and (.name | contains("search_head") | not) and (.name | contains("indexers") | not ) and (.name | contains("forwarders") | not)) | .browser_download_url ')
+  #         echo $SPLUNK_VERSION
+  #         eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/namespace.yaml)\"" >> ./namespace_updated.yaml
+  #         eval "echo \"$(cat ./pytest_splunk_addon/k8s_manifests/splunk_standalone/splunk_standalone.yaml)\"" >> ./splunk_standalone_updated.yaml
+  #         kubectl apply -f ./namespace_updated.yaml
+  #         kubectl run nginx -n $NAMESPACE_NAME --image=nginx --port=80 --expose
+  #         kubectl wait pod nginx --for=condition=ready --timeout=300s -n $NAMESPACE_NAME
+  #         kubectl cp ./tests/src/$SPLUNK_ADDON nginx:/usr/share/nginx/html -n $NAMESPACE_NAME
+  #         echo "        - http://nginx//$SPLUNK_ADDON" >> ./splunk_standalone_updated.yaml
+  #         kubectl apply -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
+  #         sleep 15
+  #         kubectl wait --for=condition=PodScheduled pod splunk-s1-standalone-0 --timeout=30s -n $NAMESPACE_NAME
+  #         until kubectl logs splunk-s1-standalone-0 -c splunk -n $NAMESPACE_NAME  | grep "Ansible playbook complete"; do sleep 1; done
+  #         kubectl port-forward svc/splunk-s1-standalone-service -n $NAMESPACE_NAME 8000:8000 8088:8088 8089:8089 9997:9997 &
+  #         sleep 30
+  #     - name: Test
+  #       run: |
+  #         export NAMESPACE_NAME=ta-fiction-external
+  #         export splunk_password=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.password' | base64 -d)
+  #         export splunk_hec_token=$(kubectl get secret splunk-$NAMESPACE_NAME-secret -n $NAMESPACE_NAME -o json | jq -r '.data.hec_token' | base64 -d)
+  #         curl -sSL https://install.python-poetry.org | python3 -
+  #         mv ./pytest-ci.ini ./pytest.ini
+  #         poetry install
+  #         poetry run pytest -v --splunk-password=$splunk_password --splunk-hec-token=$splunk_hec_token --junitxml=test-results-${{ matrix.splunk-version.version }}/test.xml
+  #     - name: Destroy kubernetes resources
+  #       run: |
+  #         export NAMESPACE_NAME=ta-fiction-external
+  #         kubectl delete -f ./splunk_standalone_updated.yaml -n $NAMESPACE_NAME
+  #         sleep 15
+  #         kubectl delete -f ./namespace_updated.yaml
+  #         sleep 15
+  #     - uses: actions/upload-artifact@v2.2.4
+  #       if: always()
+  #       with:
+  #         name: splunk ${{ matrix.splunk-version.version }} external test artifacts
+  #         path: |
+  #           test-results-${{ matrix.splunk-version.version }}
 
-  test-splunk-matrix:
-    name: Test Matrix
-    needs:
-      - meta
-      - pre-commit
-      - compliance-dependencies
-      - compliance-copyrights
-      - test-splunk-doc
-      - test-splunk-unit
-      - review_secrets
-      - review-dog-misspell
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
-        test-marker: [
-          "splunk_connection_kubernetes",
-          "splunk_app_fiction",
-          "splunk_app_broken",
-          "splunk_app_cim_fiction",
-          "splunk_app_cim_broken",
-          "splunk_fiction_indextime",
-          "splunk_fiction_indextime_broken",
-          "splunk_setup_fixture",
-          "splunk_app_requirements",
-          "splunk_app_requirements_modinput",
-          "splunk_app_requirements_uf",
-          "splunk_app_requirements_scripted"
-        ]
-    env:
-      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Setup kubernetes cluster
-        id: kubernetes
-        run: |
-          ./k3s.sh
-          kubectl get no
-      - name: Setup Splunk-Operator
-        run: |
-          kubectl apply -f https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-cluster.yaml
-          kubectl wait deploy splunk-operator --for=condition=available --timeout=60s -n splunk-operator
-          kubectl get ns
-          kubectl get pods -A
-      - name: Set up OS=ubuntu-latest::Python=3.7::Splunk=${{ matrix.splunk-version }}
-        uses: actions/setup-python@v3
-        with:
-          python-version: 3.7
-      - name: Install and run tests
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          pip install splunk-packaging-toolkit
-          ./spl_generation.sh
-          poetry install
-          poetry run pytest -v --splunk-version=${{ matrix.splunk-version }} -m kubernetes -m ${{ matrix.test-marker }} tests/e2e
+  # test-splunk-matrix:
+  #   name: Test Matrix
+  #   needs:
+  #     - meta
+  #     - pre-commit
+  #     - compliance-dependencies
+  #     - compliance-copyrights
+  #     - test-splunk-doc
+  #     - test-splunk-unit
+  #     - review_secrets
+  #     - review-dog-misspell
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
+  #       test-marker: [
+  #         "splunk_connection_kubernetes",
+  #         "splunk_app_fiction",
+  #         "splunk_app_broken",
+  #         "splunk_app_cim_fiction",
+  #         "splunk_app_cim_broken",
+  #         "splunk_fiction_indextime",
+  #         "splunk_fiction_indextime_broken",
+  #         "splunk_setup_fixture",
+  #         "splunk_app_requirements",
+  #         "splunk_app_requirements_modinput",
+  #         "splunk_app_requirements_uf",
+  #         "splunk_app_requirements_scripted"
+  #       ]
+  #   env:
+  #     KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: true
+  #     - name: Setup kubernetes cluster
+  #       id: kubernetes
+  #       run: |
+  #         ./k3s.sh
+  #         kubectl get no
+  #     - name: Setup Splunk-Operator
+  #       run: |
+  #         kubectl apply -f https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-cluster.yaml
+  #         kubectl wait deploy splunk-operator --for=condition=available --timeout=60s -n splunk-operator
+  #         kubectl get ns
+  #         kubectl get pods -A
+  #     - name: Set up OS=ubuntu-latest::Python=3.7::Splunk=${{ matrix.splunk-version.version }}
+  #       uses: actions/setup-python@v3
+  #       with:
+  #         python-version: 3.7
+  #     - name: Install and run tests
+  #       run: |
+  #         curl -sSL https://install.python-poetry.org | python3 -
+  #         pip install splunk-packaging-toolkit
+  #         ./spl_generation.sh
+  #         poetry install
+  #         poetry run pytest -v --splunk-version=${{ matrix.splunk-version.version }} -m kubernetes -m ${{ matrix.test-marker }} tests/e2e
 
-  publish:
-    name: publish
-    needs:
-      - test-splunk-external
-      - test-splunk-matrix
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          # Very Important semantic-release won't trigger a tagged
-          # build if this is not set false
-          submodules: false
-          persist-credentials: false
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.7"
-      - uses: actions/download-artifact@v2
-        with:
-          name: analysis-reports
-          path: /tmp/analysis-reports
-      - name: Update Notices
-        run: cp -f /tmp/analysis-reports/NOTICE_summary NOTICE
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-      - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v2.5.4
-        with:
-          semantic_version: 17
-          extra_plugins: |
-            @semantic-release/exec
-            @semantic-release/git
-            @google/semantic-release-replace-plugin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
-          PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+  # publish:
+  #   name: publish
+  #   needs:
+  #     - test-splunk-external
+  #     - test-splunk-matrix
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         # Very Important semantic-release won't trigger a tagged
+  #         # build if this is not set false
+  #         submodules: false
+  #         persist-credentials: false
+  #     - uses: actions/setup-node@v2
+  #       with:
+  #         node-version: '14'
+  #     - name: Setup python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: "3.7"
+  #     - uses: actions/download-artifact@v2
+  #       with:
+  #         name: analysis-reports
+  #         path: /tmp/analysis-reports
+  #     - name: Update Notices
+  #       run: cp -f /tmp/analysis-reports/NOTICE_summary NOTICE
+  #     - name: Install Poetry
+  #       run: |
+  #         curl -sSL https://install.python-poetry.org | python3 -
+  #     - name: Semantic Release
+  #       uses: cycjimmy/semantic-release-action@v2.5.4
+  #       with:
+  #         semantic_version: 17
+  #         extra_plugins: |
+  #           @semantic-release/exec
+  #           @semantic-release/git
+  #           @google/semantic-release-replace-plugin
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
+  #         PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+  #         PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
