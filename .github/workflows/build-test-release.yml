@@ -20,6 +20,11 @@ jobs:
     outputs:
       matrix_supportedSplunk: ${{ steps.matrix.outputs.supportedSplunk }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: false
+          persist-credentials: false
       - name: matrix
         id: matrix
         uses: splunk/addonfactory-test-matrix-action@v1.6.0
