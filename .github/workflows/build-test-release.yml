@@ -15,6 +15,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  meta:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix_supportedSplunk: ${{ steps.matrix.outputs.supportedSplunk }}
+    steps:
+      - name: matrix
+        id: matrix
+        uses: splunk/addonfactory-test-matrix-action@v1.6.0
+
   compliance-dependencies:
     name: Compliance Dependencies
     runs-on: ubuntu-latest
@@ -139,6 +148,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Test splunk external
     needs:
+      - meta
       - pre-commit
       - compliance-dependencies
       - compliance-copyrights
@@ -149,7 +159,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: ["8.1","8.2"]
+        splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
@@ -222,6 +232,7 @@ jobs:
   test-splunk-matrix:
     name: Test Matrix
     needs:
+      - meta
       - pre-commit
       - compliance-dependencies
       - compliance-copyrights
@@ -233,7 +244,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: [8.1, 8.2]
+        splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
         test-marker: [
           "splunk_connection_kubernetes",
           "splunk_app_fiction",
