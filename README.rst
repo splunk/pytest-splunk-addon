@@ -47,7 +47,7 @@ Note: Must setup kubernetes cluster [ Reference: `minikube`_ , `microk8s`_, `k3s
     $ git clone --recurse-submodules -j8 git@github.com:splunk/pytest-splunk-addon.git
     $ cd pytest-splunk-addon
     $ poetry install
-    $ export KUBECONFIG="PATH of Kubernetes Config File" (This will vary with kubernetes cluster setups)
+    $ export KUBECONFIG="PATH of Kubernetes Config File" [For example, minikube($HOME/kube/config), k3s(/etc/rancher/k3s/k3s.yaml)]
 
 Generate addons spl (tests/e2e/addons/<ADDON_NAME>) with format ``<ADDON_NAME>-<ADDON_VERSION>.spl``
 

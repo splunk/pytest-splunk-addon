@@ -309,7 +309,6 @@ class KubernetesHelper:
         pod_label = Label of the pod.
         """
         try:
-            LOGGER.info(f"{resource_name} in deletion.................")
             if resource_name == "Standalone":
                 k8s_api = client.CustomObjectsApi()
                 group = "enterprise.splunk.com"
