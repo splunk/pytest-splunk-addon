@@ -553,7 +553,7 @@ def uf_kubernetes(request):
             file=os.path.join(current_path, "uf_deployment_updated.yaml"),
             namespace_name=os.getenv("NAMESPACE_NAME"),
         )
-        kubernetes_helper_uf.wait_for_deployment_to_get_available(
+        kubernetes_helper_uf.wait_for_kubernetes_resource_to_get_available(
             "splunk-uf", os.getenv("NAMESPACE_NAME")
         )
         uf_pod_name = kubernetes_helper_uf.get_pod_name(
@@ -786,7 +786,7 @@ def splunk_kubernetes(request):
         kubernetes_helper_splunk.create_splunk_standalone(
             file, os.getenv("NAMESPACE_NAME")
         )
-        kubernetes_helper_splunk.wait_for_statefulset_to_get_available(
+        kubernetes_helper_splunk.wait_for_kubernetes_resource_to_get_available(
             "splunk-s1-standalone", os.getenv("NAMESPACE_NAME")
         )
         kubernetes_helper_splunk.wait_for_pod_to_get_ready(
@@ -928,7 +928,7 @@ def sc4s_kubernetes():
             file=os.path.join(current_path, "sc4s_deployment_updated.yaml"),
             namespace_name=os.getenv("NAMESPACE_NAME"),
         )
-        kubernetes_helper_sc4s.wait_for_deployment_to_get_available(
+        kubernetes_helper_sc4s.wait_for_kubernetes_resource_to_get_available(
             "sc4s", os.getenv("NAMESPACE_NAME")
         )
         sc4s_pod_name = kubernetes_helper_sc4s.get_pod_name(

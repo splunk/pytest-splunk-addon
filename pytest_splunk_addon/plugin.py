@@ -146,19 +146,21 @@ def pytest_sessionfinish(session, exitstatus):
             )
             if os.path.exists(f".{os.sep}exposed_sc4s_ports.log"):
                 kubernetes_sc4s_delete = KubernetesHelper()
-                kubernetes_sc4s_delete.delete_kubernetes_deployment(
+                kubernetes_sc4s_delete.delete_kubernetes_resource(
                     "sc4s", os.environ["NAMESPACE_NAME"], "app=sc4s"
                 )
                 files.append(f".{os.sep}exposed_sc4s_ports.log")
             if os.path.exists(f".{os.sep}exposed_uf_ports.log"):
                 kubernetes_uf_delete = KubernetesHelper()
-                kubernetes_uf_delete.delete_kubernetes_deployment(
+                kubernetes_uf_delete.delete_kubernetes_resource(
                     "splunk-uf", os.environ["NAMESPACE_NAME"], "app=uf"
                 )
                 files.append(f".{os.sep}exposed_uf_ports.log")
             kubernetes_splunk_namespace_delete = KubernetesHelper()
-            kubernetes_splunk_namespace_delete.delete_splunk_standalone(
-                os.environ["NAMESPACE_NAME"]
+            kubernetes_splunk_namespace_delete.delete_kubernetes_resource(
+                "Standalone",
+                os.environ["NAMESPACE_NAME"],
+                "statefulset.kubernetes.io/pod-name=splunk-s1-standalone-0",
             )
             kubernetes_splunk_namespace_delete.delete_namespace(
                 os.environ["NAMESPACE_NAME"]

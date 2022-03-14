@@ -164,85 +164,53 @@ class KubernetesHelper:
         except Exception as e:
             LOGGER.error(f"Found exception while waiting for pod {pod_name} : {e}")
 
-    def wait_for_deployment_to_get_available(self, deployment_name, namespace_name):
+    def wait_for_kubernetes_resource_to_get_available(
+        self, resource_name, namespace_name
+    ):
         """
-        Wait for deployment to get available
-        deployment_name = Name of the deployment,
+        Wait for deployment or statefulset to get available
+        resource_name = Name of the deployment or statefulset,
         namespace_name = Name of the namespace
         """
         try:
             wait_count = 0
             SLEEP_TIME = 30
-            deployment_created = False
+            resource_created = False
             while wait_count <= 5:
                 timer = SLEEP_TIME * wait_count
                 initial_timer = 0
                 while initial_timer < timer:
                     k8s_api = client.AppsV1Api()
-                    api_response = k8s_api.read_namespaced_deployment_status(
-                        deployment_name, namespace_name
-                    )
-                    if api_response.status.replicas != None:
-                        LOGGER.info(f"Deployment {deployment_name} is available")
-                        deployment_created = True
+                    if resource_name == "splunk-s1-standalone":
+                        api_response = k8s_api.read_namespaced_stateful_set_status(
+                            resource_name, namespace_name
+                        )
+                    else:
+                        api_response = k8s_api.read_namespaced_deployment_status(
+                            resource_name, namespace_name
+                        )
+                    if api_response.status.replicas:
+                        LOGGER.info(f"Resource {resource_name} is available")
+                        resource_created = True
                         break
                     else:
                         LOGGER.warning(
-                            f"Deployment {deployment_name} is still not available"
+                            f"Resource {resource_name} is still not available"
                         )
                         initial_timer += 1
                         time.sleep(1)
                         continue
-                if deployment_created is True:
+                if resource_created is True:
                     break
                 wait_count += 1
-            if wait_count > 5 and deployment_created is False:
+            if wait_count > 5 and resource_created is False:
                 LOGGER.error(
-                    f"Waiting for deployment {deployment_name} to get available took more than expected"
+                    f"Waiting for resource {resource_name} to get available took more than expected"
                 )
         except Exception as e:
             LOGGER.error(
-                f"Found exception while waiting for deployment {deployment_name} : {e}"
+                f"Found exception while waiting for resource {resource_name} : {e}"
             )
-
-    def wait_for_statefulset_to_get_available(self, statefulset_name, namespace_name):
-        """
-        Wait for statefulset (Splunk Standalone) to get available
-        statefulset_name = Name of the stateful set,
-        namespace_name = Name of the namespace.
-        """
-        try:
-            wait_count = 1
-            SLEEP_TIME = 30
-            statefulset_created = False
-            while wait_count <= 5:
-                timer = SLEEP_TIME * wait_count
-                initial_timer = 0
-                while initial_timer < timer:
-                    k8s_api = client.AppsV1Api()
-                    api_response = k8s_api.read_namespaced_stateful_set_status(
-                        statefulset_name, namespace_name
-                    )
-                    if api_response.status.replicas != 0:
-                        LOGGER.info(f"Statefulset {statefulset_name} is available")
-                        statefulset_created = True
-                        break
-                    else:
-                        LOGGER.warning(
-                            f"Statefulset {statefulset_name} is still not available"
-                        )
-                        initial_timer += 1
-                        time.sleep(1)
-                        continue
-                if statefulset_created is True:
-                    break
-                wait_count += 1
-            if wait_count > 5 and statefulset_created is False:
-                LOGGER.error(
-                    f"Waiting for statefulset {statefulset_name} to get available took more than expected"
-                )
-        except:
-            LOGGER.error("Exception occurred while fetching statefulset status")
 
     def get_pod_name(self, namespace_name, label):
         """
@@ -333,63 +301,33 @@ class KubernetesHelper:
             LOGGER.error(f"Exception occurred while fetching splunk creds : {e}")
             return None, None
 
-    def delete_splunk_standalone(self, namespace_name):
+    def delete_kubernetes_resource(self, resource_name, namespace_name, pod_label):
         """
-        Delete splunk standalone
-        namespace_name = Name of the namespace
-        """
-        try:
-            k8s_api = client.CustomObjectsApi()
-            group = "enterprise.splunk.com"
-            version = "v1"
-            namespace = namespace_name
-            plural = "standalones"
-            _ = k8s_api.delete_namespaced_custom_object(
-                group, version, namespace, plural, name="s1"
-            )
-
-            SLEEP_TIME = 3
-            standalone_deleted = False
-            wait_count = 1
-            while wait_count <= 5:
-                timer = SLEEP_TIME * wait_count
-                initial_timer = 0
-                while initial_timer < timer:
-                    pod_name = self.get_pod_name(
-                        namespace_name,
-                        "statefulset.kubernetes.io/pod-name=splunk-s1-standalone-0",
-                    )
-                    if pod_name == None:
-                        standalone_deleted = True
-                        LOGGER.info("Splunk deleted....")
-                        break
-                    LOGGER.info("Standalone in deletion...")
-                    initial_timer += 1
-                    time.sleep(1)
-                wait_count += 1
-                if standalone_deleted is True:
-                    LOGGER.info("Splunk Standalone deleted successfully")
-                    break
-            if wait_count > 5 and standalone_deleted is False:
-                LOGGER.error("Splunk standalone deletion took more than expected")
-        except Exception as e:
-            LOGGER.error(f"Found exception while deleting Splunk Standalone : {e}")
-
-    def delete_kubernetes_deployment(self, deployment_name, namespace_name, pod_label):
-        """
-        Delete Kubernetes Deployments (SC4S and UF)
-        deployment_name = Name of the deployment,
+        Delete Kubernetes Deployments or Statefulset (SC4S, UF and Standalone )
+        resource_name = Name of the resource,
         namespace_name = Name of the namespace,
         pod_label = Label of the pod.
         """
         try:
-            k8s_api = client.AppsV1Api()
-            name = deployment_name
-            namespace = namespace_name
+            LOGGER.info(f"{resource_name} in deletion.................")
+            if resource_name == "Standalone":
+                k8s_api = client.CustomObjectsApi()
+                group = "enterprise.splunk.com"
+                version = "v1"
+                namespace = namespace_name
+                plural = "standalones"
+                name = resource_name
+                _ = k8s_api.delete_namespaced_custom_object(
+                    group, version, namespace, plural, name="s1"
+                )
+            else:
+                k8s_api = client.AppsV1Api()
+                name = resource_name
+                namespace = namespace_name
+                _ = k8s_api.delete_namespaced_deployment(name, namespace)
             label = pod_label
-            _ = k8s_api.delete_namespaced_deployment(name, namespace)
             SLEEP_TIME = 3
-            deployment_deleted = False
+            resource_deleted = False
             wait_count = 1
             while wait_count <= 5:
                 timer = SLEEP_TIME * wait_count
@@ -397,21 +335,23 @@ class KubernetesHelper:
                 while initial_timer < timer:
                     pod_name = self.get_pod_name(namespace_name, label)
                     if pod_name == None:
-                        LOGGER.info(f"Deployment {name} deleted....")
-                        deployment_deleted = True
+                        LOGGER.info(f"Kubernetes resource {name} deleted....")
+                        resource_deleted = True
                         break
-                    LOGGER.info(f"Deployment {name} in deletion...")
+                    LOGGER.info(f"Kubernetes resource {name} in deletion...")
                     initial_timer += 1
                     time.sleep(1)
                 wait_count += 1
-                if deployment_deleted is True:
-                    LOGGER.info(f"Deployment {name} deleted successfully")
+                if resource_deleted is True:
+                    LOGGER.info(f"Kubernetes resource {name} deleted successfully")
                     break
-            if wait_count > 5 and deployment_deleted is False:
-                LOGGER.error(f"Deployment {name} deletion took more than expected")
+            if wait_count > 5 and resource_deleted is False:
+                LOGGER.error(
+                    f"Kubernetes resource {name} deletion took more than expected"
+                )
         except Exception as e:
             LOGGER.error(
-                f"Found exception while deleting deployment {deployment_name} : {e}"
+                f"Found exception while deleting kubernetes resource {resource_deleted} : {e}"
             )
 
     def namespace_status(self, namespace_name):
