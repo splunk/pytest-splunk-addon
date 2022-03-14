@@ -123,14 +123,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk.version) }}
+        splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: false
       - name: debug
         run: |
-          echo "${{ matrix.splunk-version }}"
+          echo "${{ matrix.splunk-version.version }}"
 
   test-splunk-unit:
     name: Unit tests
