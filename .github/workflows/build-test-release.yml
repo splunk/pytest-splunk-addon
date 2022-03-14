@@ -108,6 +108,30 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
+  test-splunk-debug:
+    runs-on: ubuntu-latest
+    name: Test splunk external
+    needs:
+      - meta
+      # - pre-commit
+      # - compliance-dependencies
+      # - compliance-copyrights
+      # - test-splunk-doc
+      # - test-splunk-unit
+      # - review_secrets
+      # - review-dog-misspell
+    strategy:
+      fail-fast: false
+      matrix:
+        splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk.version) }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: false
+      - name: debug
+        run: |
+          echo "${{ matrix.splunk-version }}"
+
   test-splunk-unit:
     name: Unit tests
     runs-on: ubuntu-latest
@@ -164,7 +188,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
+        splunk-version: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk.version) }}
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
