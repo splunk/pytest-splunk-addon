@@ -40,32 +40,23 @@ You can install "pytest-splunk-addon" via `pip`_ from `PyPI`_::
 Developing
 ------------
 
-Note: Must setup kubernetes cluster [ Reference: `minikube`_ , `microk8s`_, `k3s`_ ], vscode or pycharm pro optional
-
-Note2: Appinspect requires libmagic verify this has been installed correctly each time a new workstation/vm is used https://dev.splunk.com/enterprise/docs/releaseapps/appinspect/splunkappinspectclitool/installappinspect
+Note: Must setup kubernetes cluster [ Reference: `minikube`_ , `microk8s`_, `k3s`_ ]
 
 .. code:: bash
 
     $ git clone --recurse-submodules -j8 git@github.com:splunk/pytest-splunk-addon.git
-    $ #setup python venv must be 3.7    
-    $ python3 -m venv .venv
-
-    $ source .venv/bin/activate
-
     $ cd pytest-splunk-addon
+    $ poetry install
+    $ export KUBECONFIG="PATH of Kubernetes Config File" (This will vary with kubernetes cluster setups)
 
 Generate addons spl (tests/e2e/addons/<ADDON_NAME>) with format ``<ADDON_NAME>-<ADDON_VERSION>.spl``
 
 .. code:: bash
 
-    $ pip install poetry
-
-    $ poetry export --without-hashes --dev -o requirements_dev.txt
-
-    $ pip install -r requirements_dev.txt
-
-    $ export KUBECONFIG="PATH of Kubernetes Config File"
-
+    # run unit tests
+    $ poetry run pytest tests/unit
+    # run some of the kubernetes-based tests to verify end-to-end behaviour, example:
+    $ poetry run pytest -v --splunk-version=8.2 -m kubernetes tests/e2e/test_splunk_addon.py::test_splunk_app_requirements_modinput
 
 Usage
 -----
