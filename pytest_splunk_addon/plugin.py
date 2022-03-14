@@ -134,9 +134,7 @@ def pytest_sessionfinish(session, exitstatus):
         ):
             LOGGER.info("SessionFinish - destroying all kubernetes resources")
             parser = conf_parser.TABConfigParser()
-            parser.read(
-                os.path.join(f"{splunk_app_path}", "default", "app.conf")
-            )
+            parser.read(os.path.join(f"{splunk_app_path}", "default", "app.conf"))
             splunk_addon_name = parser.get("package", "id")
             os.environ["NAMESPACE_NAME"] = splunk_addon_name.replace("_", "-").lower()
             files = [
@@ -165,9 +163,7 @@ def pytest_sessionfinish(session, exitstatus):
             kubernetes_splunk_namespace_delete.delete_namespace(
                 os.environ["NAMESPACE_NAME"]
             )
-            for file in glob.glob(
-                f"{current_path}{os.sep}*{os.sep}*_updated.yaml"
-            ):
+            for file in glob.glob(f"{current_path}{os.sep}*{os.sep}*_updated.yaml"):
                 files.append(file)
             for file in files:
                 if os.path.exists(file):
