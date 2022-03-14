@@ -110,7 +110,7 @@ jobs:
 
   test-splunk-debug:
     runs-on: ubuntu-latest
-    name: Test splunk external
+    name: Test splunk Debug
     needs:
       - meta
       # - pre-commit
