@@ -46,13 +46,11 @@ There are three ways to execute the tests:
         pip install poetry
         poetry install
 
-    Download `splunk-operator at cluster-scoped level <https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces>`_
-
-    Install and setup splunk-operator in kubernetes cluster
+    Setup `splunk-operator at cluster-scoped level <https://splunk.github.io/splunk-operator/Install.html#admin-installation-for-all-namespaces>`_
 
     .. code:: bash
 
-        kubectl apply -f ./splunk-operator.yaml
+        kubectl apply -f https://github.com/splunk/splunk-operator/releases/download/1.0.5/splunk-operator-cluster.yaml
 
     Generate addon SPL with `ucc-gen`_
 
