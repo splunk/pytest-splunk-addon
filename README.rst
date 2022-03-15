@@ -85,7 +85,7 @@ Create a test file in the tests folder
         def empty_method():
             pass
 
-Run pytest with the add-on and SA-eventgen installed and enabled in an external Splunk deployment
+Run pytest with the add-on installed in an external Splunk deployment
 
 .. code:: python3
 
@@ -95,8 +95,6 @@ Run pytest with the add-on and SA-eventgen installed and enabled in an external 
         --splunk-port=8089 \
         --splunk-password=Changed@11 \
         -v
-
-Run pytest with the add-on and SA-eventgen installed and enabled in kubernetes
 
 Deploy `splunk-operator at cluster-scope in kubernetes cluster`_.
 
