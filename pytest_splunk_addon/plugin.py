@@ -128,9 +128,9 @@ def pytest_sessionfinish(session, exitstatus):
             splunk_keep_alive = splunk_data[1]
             splunk_app_path = splunk_data[2]
         if (
-            (os.environ.get("PYTEST_XDIST_WORKER") == None)
-            and (splunk_type == "kubernetes")
-            and (splunk_keep_alive != "True")
+            os.environ.get("PYTEST_XDIST_WORKER") == None
+            and splunk_type == "kubernetes"
+            and splunk_keep_alive != "True"
         ):
             LOGGER.info("SessionFinish - destroying all kubernetes resources")
             parser = conf_parser.TABConfigParser()
@@ -138,24 +138,24 @@ def pytest_sessionfinish(session, exitstatus):
             splunk_addon_name = parser.get("package", "id")
             os.environ["NAMESPACE_NAME"] = splunk_addon_name.replace("_", "-").lower()
             files = [
-                f".{os.sep}exposed_splunk_ports.log",
-                f".{os.sep}splunk_type.txt",
+                "exposed_splunk_ports.log",
+                "splunk_type.txt",
             ]
             current_path = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)), "k8s_manifests"
             )
-            if os.path.exists(f".{os.sep}exposed_sc4s_ports.log"):
+            if os.path.exists("exposed_sc4s_ports.log"):
                 kubernetes_sc4s_delete = KubernetesHelper()
                 kubernetes_sc4s_delete.delete_kubernetes_resource(
                     "sc4s", os.environ["NAMESPACE_NAME"], "app=sc4s"
                 )
-                files.append(f".{os.sep}exposed_sc4s_ports.log")
-            if os.path.exists(f".{os.sep}exposed_uf_ports.log"):
+                files.append("exposed_sc4s_ports.log")
+            if os.path.exists("exposed_uf_ports.log"):
                 kubernetes_uf_delete = KubernetesHelper()
                 kubernetes_uf_delete.delete_kubernetes_resource(
                     "splunk-uf", os.environ["NAMESPACE_NAME"], "app=uf"
                 )
-                files.append(f".{os.sep}exposed_uf_ports.log")
+                files.append("exposed_uf_ports.log")
             kubernetes_splunk_namespace_delete = KubernetesHelper()
             kubernetes_splunk_namespace_delete.delete_kubernetes_resource(
                 "Standalone",

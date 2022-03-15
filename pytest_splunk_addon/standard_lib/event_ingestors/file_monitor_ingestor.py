@@ -72,19 +72,14 @@ class FileMonitorEventIngestor(EventIngestor):
         for each_event in events:
             self.create_event_file(each_event)
             LOGGER.info(
-                "kubectl cp {0}/uf_files/ {1}:{2} -c uf -n {3}".format(
-                    os.getenv("TEST_RUNNER_DIRECTORY"),
-                    os.getenv("UF_POD_NAME"),
-                    os.getenv("TEST_RUNNER_DIRECTORY"),
-                    os.getenv("NAMESPACE_NAME"),
-                )
+                f"kubectl cp {os.getenv('TEST_RUNNER_DIRECTORY')}/uf_files/ {os.getenv('UF_POD_NAME')}:{os.getenv('TEST_RUNNER_DIRECTORY')} -c uf -n {os.getenv('NAMESPACE_NAME')}"
             )
             kubernetes_helper_uf_copy = KubernetesHelper()
             kubernetes_helper_uf_copy.copy_files_to_pod(
                 os.getenv("UF_POD_NAME"),
                 os.getenv("NAMESPACE_NAME"),
                 "/",
-                (os.path.join(os.getenv("TEST_RUNNER_DIRECTORY", "/"), "uf_files")),
+                os.path.join(os.getenv("TEST_RUNNER_DIRECTORY", "/"), "uf_files"),
             )
             sleep(5)
             self.create_inputs_stanza(each_event)

@@ -21,9 +21,8 @@ jobs:
       matrix_supportedSplunk: ${{ steps.matrix.outputs.supportedSplunk }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
-          submodules: false
           persist-credentials: false
       - name: matrix
         id: matrix
@@ -34,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: ort-action
         uses: splunk/addonfactory-ort-action@v1
         id: ort-action
@@ -61,15 +60,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Check License Header
         uses: apache/skywalking-eyes@v0.2.0
   
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
         with:
           python-version: "3.7"
       - uses: pre-commit/action@v2.0.3
@@ -78,7 +77,7 @@ jobs:
     runs-on: ubuntu-latest
     name: security-sast-semgrep
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Semgrep
         id: semgrep
         uses: returntocorp/semgrep-action@v1
@@ -90,9 +89,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
-          submodules: false
           fetch-depth: "0"
       - name: Trufflehog Actions Scan
         uses: edplato/trufflehog-actions-scan@v0.9j-beta
@@ -102,7 +100,7 @@ jobs:
   review-dog-misspell:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Run misspell with reviewdog
       uses: reviewdog/action-misspell@v1.0.0
       with:
@@ -112,9 +110,7 @@ jobs:
     name: Unit tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
@@ -135,9 +131,7 @@ jobs:
     name: Test Docs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
+      - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
         with:
           python-version: 3.7
@@ -168,9 +162,7 @@ jobs:
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: false
+      - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
         with:
           python-version: 3.7
@@ -267,9 +259,7 @@ jobs:
     env:
       KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: false
+      - uses: actions/checkout@v3
       - name: Setup kubernetes cluster
         id: kubernetes
         run: |
@@ -300,17 +290,16 @@ jobs:
       - test-splunk-matrix
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # Very Important semantic-release won't trigger a tagged
           # build if this is not set false
-          submodules: false
           persist-credentials: false
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: "3.7"
       - uses: actions/download-artifact@v2

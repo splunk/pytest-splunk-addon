@@ -123,7 +123,6 @@ class KubernetesHelper:
                 timer = SLEEP_TIME * wait_count
                 initial_timer = 0
                 while initial_timer < timer:
-                    LOGGER.info(f"wait_count is {wait_count}")
                     api_instance = client.CoreV1Api()
                     api_response = api_instance.read_namespaced_pod_status(
                         name=pod_name, namespace=namespace_name
