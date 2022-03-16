@@ -49,7 +49,7 @@ dict_datamodel_tag = {
     "Databases_Database_Instance_Session_Info": ["database", "instance", "session"],
     "Databases_Database_Instance_Lock_Info": ["database", "instance", "lock"],
     "Databases_Database_Query": ["database", "query"],
-    "Databases_Database_Query_tablespace": ["database", "query", "tablespace"],
+    "Databases_Database_Query_Tablespace": ["database", "query", "tablespace"],
     "Databases_Database_Query_Query_Stats": ["database", "query", "stats"],
     "DLP": ["dlp", "incident"],
     "Email": ["email"],
