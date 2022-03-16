@@ -212,7 +212,7 @@ format_nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-
 
 [[package]]
 name = "junitparser"
-version = "2.4.2"
+version = "2.4.3"
 description = "Manipulates JUnit/xUnit Result XML files"
 category = "main"
 optional = false
@@ -614,8 +614,8 @@ jsonschema = [
     {file = "jsonschema-4.4.0.tar.gz", hash = "sha256:636694eb41b3535ed608fe04129f26542b59ed99808b4f688aa32dcf55317a83"},
 ]
 junitparser = [
-    {file = "junitparser-2.4.2-py2.py3-none-any.whl", hash = "sha256:c2d9c83bef4712da18090935cbed430e6041915986c097f7a58f35797ddf6065"},
-    {file = "junitparser-2.4.2.tar.gz", hash = "sha256:35f8f5df8fe988435c3d378befff98fa8b44724427f1ad11c7f510fa3830f50f"},
+    {file = "junitparser-2.4.3-py2.py3-none-any.whl", hash = "sha256:dca17945d298689eb05673be602efb753f04e60ef42a166531675c46abf55fbe"},
+    {file = "junitparser-2.4.3.tar.gz", hash = "sha256:a76647a7154cdb02c05e06b2fb38d3310bd1f6a358f8f3ab7bfd72e5cacf6b69"},
 ]
 lovely-pytest-docker = [
     {file = "lovely-pytest-docker-0.3.0.tar.gz", hash = "sha256:b8333ae52faefc92ffaeed3e02d7664b7b02df999f621f1635cb6e3fbb7e145c"},
