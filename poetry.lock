@@ -347,6 +347,26 @@ python-versions = "*"
 pytest = "*"
 
 [[package]]
+name = "pytest-splunk-env"
+version = "0.1.2"
+description = "pytest fixtures for interaction with Splunk Enterprise and Splunk Cloud"
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+filelock = ">=3.0,<4.0"
+future = "*"
+httplib2 = "*"
+pytest = ">=6.1.1,<7.0.0"
+pytest-xdist = "*"
+requests = "*"
+splunk-sdk = "*"
+
+[package.extras]
+docker = ["lovely-pytest-docker (>=0,<1)"]
+
+[[package]]
 name = "pytest-xdist"
 version = "2.5.0"
 description = "pytest xdist plugin for distributed testing and loop-on-failing modes"
@@ -496,7 +516,7 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "5c02bda38589255062b8615bcc423ac1a422837c8708e5b1ea248fcfd476c74a"
+content-hash = "d0967619fc6f8203fe48f7f2906d638ea2021fa14d8cd19bdbfdf62f0a764648"
 
 [metadata.files]
 addonfactory-splunk-conf-parser-lib = [
@@ -675,6 +695,10 @@ pytest-ordering = [
     {file = "pytest-ordering-0.6.tar.gz", hash = "sha256:561ad653626bb171da78e682f6d39ac33bb13b3e272d406cd555adb6b006bda6"},
     {file = "pytest_ordering-0.6-py2-none-any.whl", hash = "sha256:27fba3fc265f5d0f8597e7557885662c1bdc1969497cd58aff6ed21c3b617de2"},
     {file = "pytest_ordering-0.6-py3-none-any.whl", hash = "sha256:3f314a178dbeb6777509548727dc69edf22d6d9a2867bf2d310ab85c403380b6"},
+]
+pytest-splunk-env = [
+    {file = "pytest-splunk-env-0.1.2.tar.gz", hash = "sha256:8b87cf7ddfc2e5e4c656418c6ea2795190dc0bce1c2f238ee379cd613a304b08"},
+    {file = "pytest_splunk_env-0.1.2-py3-none-any.whl", hash = "sha256:2c51d003bd5cce3eff8e47c7b740f4da1120cd44ec13ea65223958962df7c792"},
 ]
 pytest-xdist = [
     {file = "pytest-xdist-2.5.0.tar.gz", hash = "sha256:4580deca3ff04ddb2ac53eba39d76cb5dd5edeac050cb6fbc768b0dd712b4edf"},

@@ -214,7 +214,7 @@ class FieldTestTemplates(object):
         and also checks that a tag is not assigned to the event if disabled.
 
         Args:
-            splunk_search_util (helmut_lib.SearchUtil.SearchUtil):
+            splunk_search_util (pytest_splunk_env.splunk.helmut_lib.SearchUtil.SearchUtil):
                 object that helps to search on Splunk.
             splunk_searchtime_fields_tags (fixture): pytest parameters to test.
             record_property (fixture): pytest fixture to document facts of test cases.
