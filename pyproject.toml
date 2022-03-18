@@ -54,7 +54,7 @@ docker = ['lovely-pytest-docker']
 lovely-pytest-docker = "*"
 pytest-cov = "^3.0.0"
 requests-mock = "^1.8.0"
-freezegun = "^1.1.0"
+freezegun = "^1.2.1"
 pytz = "^2021.1"
 
 [tool.poetry.plugins]
