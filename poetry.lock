@@ -133,6 +133,23 @@ optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
+name = "helmut"
+version = "0.1.0"
+description = "Package to interact with Splunk"
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+defusedxml = ">=0.7.1,<0.8.0"
+httplib2 = ">=0.20.4,<0.21.0"
+splunk-sdk = ">=1.6.18,<2.0.0"
+
+[package.source]
+type = "file"
+url = "helmut-0.1.0.tar.gz"
+
+[[package]]
 name = "httplib2"
 version = "0.20.4"
 description = "A comprehensive HTTP client library."
@@ -496,7 +513,7 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "96ac3a694cd33e11490bfb7977e730def79b1d02821ce510f61797661b7a4804"
+content-hash = "8d74b844872764dd40a06707935c1a44fe0a34e0f6012d69af9bac6449066f10"
 
 [metadata.files]
 addonfactory-splunk-conf-parser-lib = [
@@ -588,6 +605,9 @@ freezegun = [
 ]
 future = [
     {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
+]
+helmut = [
+    {file = "helmut-0.1.0.tar.gz", hash = "sha256:85b43cfb6c74b731439a41e4c2a14403cec4b84cc09bfee8d0d57913edba42f0"},
 ]
 httplib2 = [
     {file = "httplib2-0.20.4-py3-none-any.whl", hash = "sha256:8b6a905cb1c79eefd03f8669fd993c36dc341f7c558f056cb5a33b5c2f458543"},

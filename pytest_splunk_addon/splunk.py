@@ -13,13 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# -*- coding: utf-8 -*-
-"""
-Module usage:
-- helmut : To connect to a Splunk instance. source: splunk-sdk
-- helmut_lib: Provides various Utility functions to search on Splunk. Source: splunk-sdk
-"""
-
 import logging
 import os
 import shutil
@@ -28,9 +21,9 @@ import json
 import pytest
 import requests
 import splunklib.client as client
-from .helmut.manager.jobs import Jobs
-from .helmut.splunk.cloud import CloudSplunk
-from .helmut_lib.SearchUtil import SearchUtil
+from helmut.manager.jobs import Jobs
+from helmut.splunk.cloud import CloudSplunk
+from helmut.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
 import configparser
 from filelock import FileLock
