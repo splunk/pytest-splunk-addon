@@ -140,7 +140,6 @@ jobs:
     name: Test splunk external
     needs:
       - pre-commit
-      - compliance-dependencies
       - compliance-copyrights
       - test-splunk-doc
       - test-splunk-unit
@@ -191,7 +190,6 @@ jobs:
     name: Test Matrix
     needs:
       - pre-commit
-      - compliance-dependencies
       - compliance-copyrights
       - test-splunk-doc
       - test-splunk-unit
