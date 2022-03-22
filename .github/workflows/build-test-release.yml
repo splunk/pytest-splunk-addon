@@ -90,7 +90,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Run misspell with reviewdog
-      uses: reviewdog/action-misspell@v1.0.0
+      uses: reviewdog/action-misspell@v1.11
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
