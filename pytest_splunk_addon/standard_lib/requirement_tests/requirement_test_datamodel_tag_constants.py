@@ -56,7 +56,7 @@ dict_datamodel_tag = {
     "Email_Delivery": ["email", "delivery"],
     "Email_Content": ["email", "content"],
     "Email_Filtering": ["email", "filter"],
-    "Endpoint_ports": ["listening", "port"],
+    "Endpoint_Ports": ["listening", "port"],
     "Endpoint_Processes": ["process", "report"],
     "Endpoint_Filesystem": ["endpoint", "filesystem"],
     "Endpoint_Services": ["service", "report"],
