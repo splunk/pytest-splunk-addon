@@ -64,7 +64,8 @@
                     "alarm",
                     "alert",
                     "event",
-                    "task"
+                    "task",
+                    "warning"
                 ],
                 "comment":"The message type." 
             }
