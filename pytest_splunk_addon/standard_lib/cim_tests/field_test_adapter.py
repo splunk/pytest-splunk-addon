@@ -75,14 +75,20 @@ class FieldTestAdapater(Field):
                 self.validity_query += "\n" f"| nomv {self.name}"
             self.validity_query += "\n" f"| eval {self.valid_field}={self.validity}"
             if self.expected_values:
-                self.validity_query += "\n" '| eval {valid_field}=if(searchmatch("{valid_field} IN ({values})"), {valid_field}, null())'.format(
-                    valid_field=self.valid_field,
-                    values=self.get_query_from_values(self.expected_values),
+                self.validity_query += (
+                    "\n"
+                    '| eval {valid_field}=if(searchmatch("{valid_field} IN ({values})"), {valid_field}, null())'.format(
+                        valid_field=self.valid_field,
+                        values=self.get_query_from_values(self.expected_values),
+                    )
                 )
             if self.negative_values:
-                self.validity_query += "\n" '| eval {valid_field}=if(searchmatch("{valid_field} IN ({values})"), null(), {valid_field})'.format(
-                    valid_field=self.valid_field,
-                    values=self.get_query_from_values(self.negative_values),
+                self.validity_query += (
+                    "\n"
+                    '| eval {valid_field}=if(searchmatch("{valid_field} IN ({values})"), null(), {valid_field})'.format(
+                        valid_field=self.valid_field,
+                        values=self.get_query_from_values(self.negative_values),
+                    )
                 )
             self.validity_query += (
                 "\n"
