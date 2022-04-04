@@ -889,12 +889,15 @@ class SearchHelpers(threading.Thread):
         return response, content
 
     def check_geobin(self, nightlysplunk, statsfunc, geobin):
-        query = "search index=geo checkin.geolong>=%s checkin.geolong<%s checkin.geolat>=%s checkin.geolat<%s | stats %s" % (
-            geobin["_geo_bounds_west"],
-            geobin["_geo_bounds_east"],
-            geobin["_geo_bounds_south"],
-            geobin["_geo_bounds_north"],
-            statsfunc,
+        query = (
+            "search index=geo checkin.geolong>=%s checkin.geolong<%s checkin.geolat>=%s checkin.geolat<%s | stats %s"
+            % (
+                geobin["_geo_bounds_west"],
+                geobin["_geo_bounds_east"],
+                geobin["_geo_bounds_south"],
+                geobin["_geo_bounds_north"],
+                statsfunc,
+            )
         )
         job = nightlysplunk.jobs().create(query)
         job.wait()
