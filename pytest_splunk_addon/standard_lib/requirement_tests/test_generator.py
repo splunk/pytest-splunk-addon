@@ -86,8 +86,15 @@ class ReqsTestGenerator:
             r"\s(CEF:\d\|[^\|]+\|([^\|]+)\|[^\|]+\|[^\|]+\|[^\|]+\|([^\|]+)\|(.*))",
             raw_event,
         )
+        CEF_checkpoint_match = re.search(
+            r"(time=\d+\|[^\|]+\|([^\|]+)\|[^\|]+\|[^\|]+\|[^\|]+\|([^\|]+)\|(.*))",
+            raw_event,
+        )
         if CEF_format_match:
             stripped_header = CEF_format_match.group(1)
+            return stripped_header
+        if CEF_checkpoint_match:
+            stripped_header = CEF_checkpoint_match.group(1)
             return stripped_header
         regex_rfc5424 = re.search(
             r"(?:(\d{4}[-]\d{2}[-]\d{2}[T]\d{2}[:]\d{2}[:]\d{2}(?:\.\d{1,6})?(?:[+-]\d{2}[:]\d{2}|Z)?)|-)\s(?:([\w][\w\d\.@-]*)|-)\s(.*)$",

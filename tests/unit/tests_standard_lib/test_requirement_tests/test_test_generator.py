@@ -165,6 +165,32 @@ def test_extract_params():
             [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
             [],
         ),
+        (
+            ["requirement_checkpoint.log"],
+            [True],
+            ["syslog"],
+            {
+                "event": [
+                    "time=1611840576|hostname=test_name|severity=Critical|confidence_level=High|product=test_product|action=Detect|ifdir=inbound|loguid=test "
+                ]
+            },
+            [["model_1:dataset_1"]],
+            ["event_name_1"],
+            [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
+            [
+                (
+                    {
+                        "model_list": [("model_1", "dataset_1", "")],
+                        "escaped_event": "time=1611840576|hostname=test_name|severity=Critical|confidence_level=High|product=test_product|action=Detect|ifdir=inbound|loguid=test",
+                        "exceptions_dict": {"field3": "value3"},
+                        "Key_value_dict": {"field1": "value1", "field2": "value2"},
+                        "modinput_params": None,
+                        "transport_type": "syslog",
+                    },
+                    "model_1:dataset_1::fake_path/requirement_checkpoint.log::event_no::1::event_name::event_name_1",
+                ),
+            ],
+        ),
     ],
 )
 def test_generate_cim_req_params(
