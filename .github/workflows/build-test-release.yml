@@ -109,7 +109,7 @@ jobs:
           poetry run coverage run --source=./pytest_splunk_addon/standard_lib -m pytest -v tests/unit
           poetry run coverage xml
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
