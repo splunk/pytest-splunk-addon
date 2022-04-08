@@ -28,14 +28,14 @@ jobs:
           WorkDir: .
           UsePython3: "3.7"
       - name: ort-action-artifacts-reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: analysis-reports
           path: |
             .ort/reports/*
         if: always()
       - name: ort-action-artifacts-analyzer
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: analysis-analyzer
           path: |
@@ -181,7 +181,7 @@ jobs:
                               -v pytest-splunk-addon_results:/work/test-results \
                               registry.access.redhat.com/ubi7/ubi
           docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.splunk-version }}
-      - uses: actions/upload-artifact@v2.2.4
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: splunk ${{ matrix.splunk-version }} external test artifacts
