@@ -191,6 +191,32 @@ def test_extract_params():
                 ),
             ],
         ),
+        (
+            ["requirement_cisco_asa.log"],
+            [True],
+            ["syslog"],
+            {
+                "event": [
+                    "Oct 06 2021 14:44:59 10.10.10.10 : %ASA-4-405001: Received ARP response collision from 1.1.1.1/0050.56b7.52b6 on interface outside with existing ARP entry 1.1.0.1/0011.56b7.7853"
+                ]
+            },
+            [["model_1:dataset_1"]],
+            ["event_name_1"],
+            [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
+            [
+                (
+                    {
+                        "model_list": [("model_1", "dataset_1", "")],
+                        "escaped_event": "",
+                        "exceptions_dict": {"field3": "value3"},
+                        "Key_value_dict": {"field1": "value1", "field2": "value2"},
+                        "modinput_params": None,
+                        "transport_type": "syslog",
+                    },
+                    "model_1:dataset_1::fake_path/requirement_cisco_asa.log::event_no::1::event_name::event_name_1",
+                ),
+            ],
+        ),
     ],
 )
 def test_generate_cim_req_params(
