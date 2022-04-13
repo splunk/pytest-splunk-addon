@@ -205,9 +205,10 @@ def test_extract_params():
             [{"field1": "value1", "field2": "value2"}, {"field3": "value3"}],
             [
                 (
+                    # test ipv6 cisco event ingestion and escaped event with removed header
                     {
                         "model_list": [("model_1", "dataset_1", "")],
-                        "escaped_event": "",
+                        "escaped_event": " %ASA-4-405001: Received ARP response collision from 1.1.1.1/0050.56b7.52b6 on interface outside with existing ARP entry 1.1.0.1/0011.56b7.7853",
                         "exceptions_dict": {"field3": "value3"},
                         "Key_value_dict": {"field1": "value1", "field2": "value2"},
                         "modinput_params": None,
