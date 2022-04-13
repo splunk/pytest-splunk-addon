@@ -5,7 +5,7 @@
     {
       "name": "DLP Incidents",
       "tags": [["dlp", "incident"]],
-      "search_constraints": "tag=malware tag=attack",
+      "search_constraints": "tag=dlp tag=incident",
       "fields_cluster": [],
       "fields": [
         {
