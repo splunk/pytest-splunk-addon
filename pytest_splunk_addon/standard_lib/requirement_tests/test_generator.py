@@ -104,7 +104,7 @@ class ReqsTestGenerator:
             stripped_header = regex_rfc5424.group(3)
             return stripped_header
         #    regex = r"([A-Z][a-z][a-z]\s{1,2}\d{1,2}\s\d{2}[:]\d{2}[:]\d{2})\s+([\w][\w\d\.@-]*)\s\w*:?(.*)$",
-        #   (?:\s\d{4})? Added to support ipv6 cisco asa date
+        #   (?:\s\d{4})? Added to support cisco asa date format
         regex_rfc3164 = re.search(
             r"([A-Z][a-z][a-z]\s{1,2}\d{1,2}(?:\s\d{4})?\s\d{2}[:]\d{2}[:]\d{2})\s+([\w][\w\d\.@-]*)\s\w*:?(.*)$",
             raw_event,
