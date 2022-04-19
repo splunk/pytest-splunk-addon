@@ -16,7 +16,7 @@
 
 [tool.poetry]
 name = "pytest-splunk-addon"
-version = "3.0.5"
+version = "3.0.6"
 description = "A Dynamic test tool for Splunk Apps and Add-ons"
 authors = ["Splunk <addonfactory@splunk.com>"]
 license = "APACHE-2.0"
