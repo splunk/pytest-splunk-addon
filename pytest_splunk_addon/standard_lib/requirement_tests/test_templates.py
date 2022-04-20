@@ -167,11 +167,20 @@ class ReqsTestTemplates(object):
             "modular input",
             "modular_input",
             "Mod Input",
+            "dbx",
+            "windows_input",
+            "hec_event",
+            "scripted_input",
+            "scripted input",
+            "hec_raw",
+            "file_monitor",
         ):
             host = modinput_params["host"]
             source = modinput_params["source"]
-            sourcetype = modinput_params["sourcetype"]
-            search = f'search index=* host="{host}" source="{source}" sourcetype="{sourcetype}" {escaped_event}|fields * '
+            sourcetype_req_file = modinput_params["sourcetype"]
+            # Removing sourcetype from search ADDON-50593
+            search = f'search index=* host="{host}" source="{source}" {escaped_event}|fields * '
+            # search = f'search index=* host="{host}" source="{source}" sourcetype="{sourcetype}" {escaped_event}|fields * '
         else:
             search = f"search index=* {escaped_event} |fields * "
         ingestion_check = splunk_search_util.checkQueryCountIsGreaterThanZero(
@@ -214,4 +223,5 @@ class ReqsTestTemplates(object):
             f" Field_extraction_check: {field_extraction_check} \n"
             f" Field extraction errors: {json.dumps(missing_key_value, indent=4)} \n"
             f" sourcetype of ingested event: {sourcetype} \n"
+            f" sourcetype in requirement file event: {sourcetype_req_file} \n"
         )
