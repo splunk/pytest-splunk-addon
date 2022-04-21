@@ -156,6 +156,8 @@ class ReqsTestTemplates(object):
         modinput_params = splunk_searchtime_requirement_param["modinput_params"]
         transport_type = splunk_searchtime_requirement_param["transport_type"]
         logging.info(exceptions_dict)
+        # Cases where sourcetype is not defined in req file
+        sourcetype_req_file = None
         # search = f" search source= pytest_splunk_addon:hec:raw sourcetype={sourcetype} {escaped_event} |fields * "
         # removed source and sourcetype as sc4s assigns it based on event
         if transport_type in (
