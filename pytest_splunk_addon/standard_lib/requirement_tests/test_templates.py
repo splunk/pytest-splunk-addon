@@ -182,7 +182,6 @@ class ReqsTestTemplates(object):
             sourcetype_req_file = modinput_params["sourcetype"]
             # Removing sourcetype from search ADDON-50593
             search = f'search index=* host="{host}" source="{source}" {escaped_event}|fields * '
-            # search = f'search index=* host="{host}" source="{source}" sourcetype="{sourcetype}" {escaped_event}|fields * '
         else:
             search = f"search index=* {escaped_event} |fields * "
         ingestion_check = splunk_search_util.checkQueryCountIsGreaterThanZero(

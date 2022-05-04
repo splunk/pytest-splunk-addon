@@ -10,7 +10,7 @@
             <comment>Logs for Failed login attempt.(Live Sample)</comment>
         </source>
         <raw>
-            <![CDATA[Jan  8 03:56:24 crest-aix-dev auth|security:info sshd[7340318]: Failed password for invalid user poojan from 10.64.250.210 port 62110 ssh2]]>
+            <![CDATA[Jan  8 03:56:24 crest-aix-dev auth|security:info sshd[7340318]: "*" * Failed password for invalid user poojan from 10.64.250.210 port 62110 ssh2]]>
         </raw>
         <cim>
             <models>

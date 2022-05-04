@@ -340,9 +340,10 @@ class ReqsTestGenerator:
             "NOT",
         ]
         event = event.replace("\\", "\\\\")
-        bounded_asterisk = re.search(
-            r"\"[\s*\w*\.\-\,\\\?\_\]\[\']*\*+[\s*\w*\.\-\,\\\?\_\[\]\']*\"", event
-        )
+        # bounded_asterisk = re.search(
+        #     r"\"[\s*\w*\.\-\,\\\?\_\]\[\']*\*+[\s*\w*\.\-\,\\\?\_\[\]\']*\"", event
+        # )
+        bounded_asterisk = re.search(r"\".*?\*+.*?\"", event)
         if bounded_asterisk:
             event = event.replace("*", "\\*")
         else:
