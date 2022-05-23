@@ -34,7 +34,7 @@ services:
       - results:/work/test-results
 
   sc4s:
-    image: splunk/scs:latest
+    image: ghcr.io/splunk/splunk-connect-for-syslog/container2:latest
     hostname: sc4s
     #When this is enabled test_common will fail
     #    command: -det
