@@ -13,14 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-#Splunk Connect for Syslog (SC4S) by Splunk, Inc.
-#
-#To the extent possible under law, the person who associated CC0 with
-#Splunk Connect for Syslog (SC4S) has waived all copyright and related or neighboring rights
-#to Splunk Connect for Syslog (SC4S).
-#
-#You should have received a copy of the CC0 legalcode along with this
-#work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 FROM ubuntu:latest
 
 RUN mkdir -p /work/tests
@@ -34,8 +26,8 @@ RUN export DEBIAN_FRONTEND=noninteractive ;\
     apt-get update ;\
     apt-get install -y --no-install-recommends apt-utils ;\
     apt-get install -y locales ;\
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 ;\
-    apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git python-is-python3 python3-distutils python3-pip
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8;\
+    apt-get install -y curl git python-is-python3 python3-distutils python3-pip
 
 ENV LANG en_US.utf8
 
