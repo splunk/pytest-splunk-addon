@@ -15,32 +15,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  compliance-dependencies:
-    name: Compliance Dependencies
+  fossa-scan:
+    continue-on-error: true
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: ort-action
-        uses: splunk/addonfactory-ort-action@v1
-        id: ort-action
+      - uses: actions/checkout@v3
+      - name: run fossa anlyze and create report
+        run: |
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
+          fossa analyze --debug
+          fossa report attribution --format text > /tmp/THIRDPARTY
+        env:
+          FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+      - name: upload THIRDPARTY file
+        uses: actions/upload-artifact@v2
         with:
-          WorkDir: .
-          UsePython3: "3.7"
-      - name: ort-action-artifacts-reports
-        uses: actions/upload-artifact@v3
-        with:
-          name: analysis-reports
-          path: |
-            .ort/reports/*
-        if: always()
-      - name: ort-action-artifacts-analyzer
-        uses: actions/upload-artifact@v3
-        with:
-          name: analysis-analyzer
-          path: |
-            .ort/analyzer/*
-        if: always()
+          name: THIRDPARTY
+          path: /tmp/THIRDPARTY
+      - name: run fossa test
+        run: |
+          fossa test --debug
+        env:
+          FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
   
   compliance-copyrights:
     name: Compliance Copyright Headers
@@ -141,7 +137,7 @@ jobs:
     name: Test splunk external
     needs:
       - pre-commit
-      - compliance-dependencies
+      - fossa-scan
       - compliance-copyrights
       - test-splunk-doc
       - test-splunk-unit
@@ -192,7 +188,7 @@ jobs:
     name: Test Matrix
     needs:
       - pre-commit
-      - compliance-dependencies
+      - fossa-scan
       - compliance-copyrights
       - test-splunk-doc
       - test-splunk-unit
@@ -248,12 +244,11 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: "3.7"
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v2
         with:
-          name: analysis-reports
-          path: /tmp/analysis-reports
+          name: THIRDPARTY
       - name: Update Notices
-        run: cp -f /tmp/analysis-reports/NOTICE_summary NOTICE
+        run: cp -f THIRDPARTY NOTICE
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
