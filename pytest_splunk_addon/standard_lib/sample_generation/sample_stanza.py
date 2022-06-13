@@ -20,6 +20,8 @@ from . import Rule
 from . import raise_warning
 from . import SampleEvent
 import logging
+import xmltodict
+from copy import deepcopy
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -270,34 +272,52 @@ class SampleStanza(object):
         """
         with open(self.sample_path, "r", encoding="utf-8") as sample_file:
             sample_raw = sample_file.read()
-            if self.metadata.get("breaker"):
-                for each_event in self.break_events(sample_raw):
-                    if each_event:
-                        event_metadata = self.get_eventmetadata()
-                        yield SampleEvent(each_event, event_metadata, self.sample_name)
-            elif self.input_type in ["modinput", "windows_input"]:
-                for each_line in sample_raw.split("\n"):
-                    if each_line:
-                        event_metadata = self.get_eventmetadata()
-                        yield SampleEvent(each_line, event_metadata, self.sample_name)
-            elif self.input_type in [
-                "file_monitor",
-                "uf_file_monitor",
-                "scripted_input",
-                "syslog_tcp",
-                "syslog_udp",
-                "default",
-            ]:
-                event = sample_raw.strip()
-                if not event:
-                    raise_warning("sample file: '{}' is empty".format(self.sample_path))
-                else:
-                    yield SampleEvent(event, self.metadata, self.sample_name)
 
-            if not self.input_type:
-                # TODO: input_type not found scenario
-                pass
-            # More input types to be added here.
+        if self.metadata.get("requirement_test_sample"):
+            samples = xmltodict.parse(sample_raw)
+            samples_types = []
+            for each_event in samples["device"]["event"]:
+                metadata = deepcopy(self.metadata)
+                event = each_event["raw"]
+                transport_metadata = each_event["transport"]["@type"]
+                metadata["input_type"] = each_event["transport"]["@type"]
+                metadata["expected_event_count"] = None
+                for item in ["source", "sourcetype", "host"]:
+                    if f'@{item}' in each_event["transport"].keys():
+                        metadata[item] = each_event["transport"][f'@{item}']
+                        transport_metadata += f'::{metadata[item]}'
+                if transport_metadata not in samples_types:
+                    samples_types.append(transport_metadata)
+                sample_type_index = samples_types.index(transport_metadata)
+                sample_name = f'{self.sample_name}_{sample_type_index}' if sample_type_index > 0 else self.sample_name
+                yield SampleEvent(event, metadata, sample_name)
+        elif self.metadata.get("breaker"):
+            for each_event in self.break_events(sample_raw):
+                if each_event:
+                    event_metadata = self.get_eventmetadata()
+                    yield SampleEvent(each_event, event_metadata, self.sample_name)
+        elif self.input_type in ["modinput", "windows_input"]:
+            for each_line in sample_raw.split("\n"):
+                if each_line:
+                    event_metadata = self.get_eventmetadata()
+                    yield SampleEvent(each_line, event_metadata, self.sample_name)
+        elif self.input_type in [
+            "file_monitor",
+            "uf_file_monitor",
+            "scripted_input",
+            "syslog_tcp",
+            "syslog_udp",
+            "default",
+        ]:
+            event = sample_raw.strip()
+            if not event:
+                raise_warning("sample file: '{}' is empty".format(self.sample_path))
+            else:
+                yield SampleEvent(event, self.metadata, self.sample_name)
+        if not self.input_type:
+            # TODO: input_type not found scenario
+            pass
+        # More input types to be added here.
 
     def break_events(self, sample_raw):
         """
