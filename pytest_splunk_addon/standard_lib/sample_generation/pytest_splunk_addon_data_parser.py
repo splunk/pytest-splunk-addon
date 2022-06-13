@@ -95,7 +95,8 @@ class PytestSplunkAddonDataParser:
         self._check_samples()
         results = []
         for sample_name, stanza_params in sorted(_psa_data.items()):
-            sample_path = os.path.join(self._path_to_samples(), sample_name)
+            sample_path = sample_name if sample_name.startswith("tests/") else \
+                os.path.join(self._path_to_samples(), sample_name)
             results.append(SampleStanza(sample_path, stanza_params))
         return results
 
@@ -129,7 +130,12 @@ class PytestSplunkAddonDataParser:
             for sample_file in os.listdir(self._path_to_samples()):
                 for stanza, fields in sorted(self.psa_data.items()):
                     stanza_match_obj = re.search(stanza, sample_file)
-                    if stanza_match_obj and stanza_match_obj.group(0) == sample_file:
+                    if (stanza_match_obj and stanza_match_obj.group(0) == sample_file) or \
+                            (os.path.exists(stanza) and stanza.startswith("tests")):
+                        if stanza_match_obj is None:
+                            sample_file = stanza
+                            if sample_file in psa_data_dict:
+                                continue
                         self.match_stanzas.add(stanza)
                         psa_data_dict.setdefault(sample_file, {"tokens": {}})
                         for key, value in fields.items():
