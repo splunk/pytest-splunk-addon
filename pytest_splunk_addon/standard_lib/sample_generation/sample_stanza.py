@@ -283,13 +283,17 @@ class SampleStanza(object):
                 metadata["input_type"] = each_event["transport"]["@type"]
                 metadata["expected_event_count"] = None
                 for item in ["source", "sourcetype", "host"]:
-                    if f'@{item}' in each_event["transport"].keys():
-                        metadata[item] = each_event["transport"][f'@{item}']
-                        transport_metadata += f'::{metadata[item]}'
+                    if f"@{item}" in each_event["transport"].keys():
+                        metadata[item] = each_event["transport"][f"@{item}"]
+                        transport_metadata += f"::{metadata[item]}"
                 if transport_metadata not in samples_types:
                     samples_types.append(transport_metadata)
                 sample_type_index = samples_types.index(transport_metadata)
-                sample_name = f'{self.sample_name}_{sample_type_index}' if sample_type_index > 0 else self.sample_name
+                sample_name = (
+                    f"{self.sample_name}_{sample_type_index}"
+                    if sample_type_index > 0
+                    else self.sample_name
+                )
                 yield SampleEvent(event, metadata, sample_name)
         elif self.metadata.get("breaker"):
             for each_event in self.break_events(sample_raw):
