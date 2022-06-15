@@ -162,9 +162,9 @@ class FieldTestTemplates(object):
         )
 
         basic_search = ""
-        for key, value in modinput_params.items():
-            if value is not None:
-                basic_search += f" {key}={value}"
+        for param, param_value in modinput_params.items():
+            if param_value is not None:
+                basic_search += f" {param}={param_value}"
 
         search = f"search {index_list} {basic_search} {escaped_event} AND {key}={value}"
 
