@@ -19,6 +19,8 @@ import os
 from defusedxml import cElementTree as ET
 from defusedxml.cElementTree import ParseError
 
+from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
+
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
@@ -252,6 +254,7 @@ class EventXML:
         self.event_string = self.get_event_string()
         self.name = self.event_tag.get("name")
         self.models = self.xml_parser.get_models(event_tag)
+        self.tags_to_check = self.get_tags_to_check()
         self.list_model_dataset_subdataset = self.get_model_list()
         self.host, self.source, self.sourcetype = self.get_basic_fields()
         self.transport_type_params = self.get_transport_type_params()
@@ -298,6 +301,12 @@ class EventXML:
             "source": self.source,
             "sourcetype": self.sourcetype,
         }
+
+    def get_tags_to_check(self):
+        tags = []
+        for model in self.models:
+            tags += dict_datamodel_tag[model.replace(" ", "_")]
+        return list(set(tags))
 
     def extract_key_value_xml(self, _type):
         key_value_dict = {}

@@ -148,13 +148,13 @@ class FieldTestGenerator(object):
             )
 
         for event in parse_sample_files(self.folder_path):
-            for model in event.list_model_dataset_subdataset:
+            for tag in event.tags_to_check:
                 yield pytest.param(
                     {
-                        "tag": model,
+                        "tag": tag,
                         "stanza": event.event_string,
                     },
-                    id=f"{model}::event_name::{event.name}",
+                    id=f"{tag}::event_name::{event.name}",
                 )
 
     def generate_eventtype_tests(self):
