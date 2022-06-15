@@ -211,7 +211,7 @@ jobs:
           "splunk_app_requirements",
           "splunk_app_requirements_modinput",
           "splunk_app_requirements_uf",
-          "splunk_app_requirements_scripted"
+          "splunk_app_requirements_scripted",
           "splunk_app_req"
         ]
     steps:
