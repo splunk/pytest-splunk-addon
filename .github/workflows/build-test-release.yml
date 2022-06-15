@@ -191,7 +191,7 @@ jobs:
       - fossa-scan
       - compliance-copyrights
       - test-splunk-doc
-      - test-splunk-unit
+#      - test-splunk-unit
       - review_secrets
       - review-dog-misspell
     runs-on: ubuntu-latest
