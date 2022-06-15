@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from defusedxml import cElementTree as ET
 import logging
 import re
 import os
 
-from xml.etree.ElementTree import ParseError
+from defusedxml import cElementTree as ET
+from defusedxml.cElementTree import ParseError
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
