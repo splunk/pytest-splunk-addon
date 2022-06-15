@@ -143,9 +143,13 @@ class FieldTestTemplates(object):
         """
 
         # Search Query
-        record_property("stanza_name", splunk_searchtime_fields_requirements["escaped_event"])
+        record_property(
+            "stanza_name", splunk_searchtime_fields_requirements["escaped_event"]
+        )
         record_property("stanza_type", splunk_searchtime_fields_requirements["field"])
-        record_property("fields", splunk_searchtime_fields_requirements["modinput_params"])
+        record_property(
+            "fields", splunk_searchtime_fields_requirements["modinput_params"]
+        )
 
         escaped_event = splunk_searchtime_fields_requirements["escaped_event"]
         key, value = splunk_searchtime_fields_requirements["field"]
@@ -162,9 +166,7 @@ class FieldTestTemplates(object):
             if value is not None:
                 basic_search += f" {key}={value}"
 
-        search = (
-            f"search {index_list} {basic_search} {escaped_event} AND {key}={value}"
-        )
+        search = f"search {index_list} {basic_search} {escaped_event} AND {key}={value}"
 
         self.logger.info(f"Executing the search query: {search}")
 

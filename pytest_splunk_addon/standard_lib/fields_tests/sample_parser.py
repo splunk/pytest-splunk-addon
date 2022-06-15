@@ -225,24 +225,24 @@ class XMLParser:
 
 
 class EventXML:
-    transport_types =[
-            "modinput",
-            "Modinput",
-            "Mod input",
-            "Modular Input",
-            "Modular input",
-            "modular input",
-            "modular_input",
-            "Mod Input",
-            "dbx",
-            "windows_input",
-            "hec_event",
-            "scripted_input",
-            "scripted input",
-            "hec_raw",
-            "file_monitor",
-            "forwarder",
-        ]
+    transport_types = [
+        "modinput",
+        "Modinput",
+        "Mod input",
+        "Modular Input",
+        "Modular input",
+        "modular input",
+        "modular_input",
+        "Mod Input",
+        "dbx",
+        "windows_input",
+        "hec_event",
+        "scripted_input",
+        "scripted input",
+        "hec_raw",
+        "file_monitor",
+        "forwarder",
+    ]
     all_transport_types = transport_types + ["syslog"]
 
     def __init__(self, event_tag):
@@ -279,18 +279,16 @@ class EventXML:
             stripped_event = self.xml_parser.strip_syslog_header(unescaped_event)
             unescaped_event = stripped_event
             if stripped_event is None:
-                LOGGER.error(
-                    "Syslog event do not match CEF, RFC_3164, RFC_5424 format"
+                LOGGER.error("Syslog event do not match CEF, RFC_3164, RFC_5424 format")
+                raise ValueError(
+                    f"Empty event for syslog transport type from event_tag {self.event_tag}"
                 )
-                raise ValueError(f"Empty event for syslog transport type from event_tag {self.event_tag}")
         return self.xml_parser.escape_char_event(unescaped_event)
 
     def get_basic_fields(self):
         if self.transport_types in EventXML.transport_types:
             host, source, sourcetype = self.xml_parser.extract_params(self.event_tag)
-            return self.xml_parser.escape_host_src_srctype(
-                host, source, sourcetype
-            )
+            return self.xml_parser.escape_host_src_srctype(host, source, sourcetype)
         else:
             return None, None, None
 
