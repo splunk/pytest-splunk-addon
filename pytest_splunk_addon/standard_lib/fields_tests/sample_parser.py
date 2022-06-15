@@ -305,7 +305,7 @@ class EventXML:
     def get_tags_to_check(self):
         tags = []
         for model in self.models:
-            tags += dict_datamodel_tag[model.replace(" ", "_")]
+            tags += dict_datamodel_tag[model.replace(" ", "_").replace(":", "_")]
         return list(set(tags))
 
     def extract_key_value_xml(self, _type):

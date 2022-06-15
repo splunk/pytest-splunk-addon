@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<device>
+  <vendor>Alassian</vendor>
+  <product>Jira Data Center</product>
+  <version id="8.21.0" />
+  <event code="" name="AuthenticationPassed" format="">
+    <transport type="modinput" sourcetype="jira:datacenter:security:log" source="/var/atlassian/application-data/jira/log/atlassian-jira-security.log" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2021-12-31 15:15:30,340+0000 http-nio-8080-exec-16 someone 915x1010x1 cpl8k5 10.136.158.92 /rest/gadget/1.0/login The user 'someone' has PASSED authentication.]]></raw>
+    <cim>
+      <models>
+        <model>Authentication</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="success" />
+        <field name="app" value="jira" />
+        <field name="reason" value="The user 'someone' has PASSED authentication." />
+        <field name="src" value="10.136.158.92" />
+        <field name="user" value="someone" />
+        <field name="dest" value="so1" />
+      </cim_fields>
+      <missing_recommended_fields>
+        <field>src_user</field>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+  <event code="" name="AuthenticationFailed" format="">
+    <transport type="modinput" sourcetype="jira:datacenter:security:log" source="/var/atlassian/application-data/jira/log/atlassian-jira-security.log" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2021-12-31 15:21:30,538+0000 http-nio-8080-exec-24 anonymous 921x1127x1 vrocv0 10.136.158.92 /login.jsp The user 'someone' has FAILED authentication.  Failure count equals 1]]></raw>
+    <cim>
+      <models>
+        <model>Authentication</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="failure" />
+        <field name="app" value="jira" />
+        <field name="reason" value="The user 'someone' has FAILED authentication.  Failure count equals 1" />
+        <field name="src" value="10.136.158.92" />
+        <field name="src_user" value="anonymous" />
+        <field name="user" value="someone" />
+        <field name="dest" value="so1" />
+      </cim_fields>
+      <missing_recommended_fields>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+  <event code="" name="HttpSessionCreated" format="">
+    <transport type="modinput" sourcetype="jira:datacenter:security:log" source="/var/atlassian/application-data/jira/log/atlassian-jira-security.log" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2021-12-31 15:21:15,544+0000 http-nio-8080-exec-23 someone 921x1110x1 1udqfve 10.136.158.92 /secure/Logout!default.jspa HttpSession created [vrocv0]]]></raw>
+    <cim>
+      <models>
+        <model>Authentication</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="success" />
+        <field name="app" value="jira" />
+        <field name="reason" value="HttpSession created [vrocv0]" />
+        <field name="src" value="10.136.158.92" />
+        <field name="user" value="someone" />
+        <field name="dest" value="so1" />
+      </cim_fields>
+      <missing_recommended_fields>
+        <field>src_user</field>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+  <event code="" name="NotSufficientPermissionDeletingRememberMeCookie" format="">
+    <transport type="modinput" sourcetype="jira:datacenter:security:log" source="/var/atlassian/application-data/jira/log/atlassian-jira-security.log" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2021-12-31 15:21:30,522+0000 http-nio-8080-exec-24 anonymous 921x1127x1 vrocv0 10.136.158.92 /login.jsp login : 'someone' tried to login but they do not have USE permission or weren't found. Deleting remember me cookie.]]></raw>
+    <cim>
+      <models>
+        <model>Authentication</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="failure" />
+        <field name="app" value="jira" />
+        <field name="reason" value="login : 'someone' tried to login but they do not have USE permission or weren't found. Deleting remember me cookie." />
+        <field name="src" value="10.136.158.92" />
+        <field name="src_user" value="anonymous" />
+        <field name="user" value="someone" />
+        <field name="dest" value="so1" />
+      </cim_fields>
+      <missing_recommended_fields>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+  <event code="" name="RequiredToAnswerCaptchaElevatedSecurityCheck" format="">
+    <transport type="modinput" sourcetype="jira:datacenter:security:log" source="/var/atlassian/application-data/jira/log/atlassian-jira-security.log" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2021-12-31 15:44:44,254+0000 http-nio-8080-exec-19 anonymous 944x1333x1 pf21xb 10.136.158.92 /login.jsp The user 'someone' is required to answer a CAPTCHA elevated security check.  Failure count equals 4]]></raw>
+    <cim>
+      <models>
+        <model>Authentication</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="failure" />
+        <field name="app" value="jira" />
+        <field name="reason" value="The user 'someone' is required to answer a CAPTCHA elevated security check.  Failure count equals 4" />
+        <field name="src" value="10.136.158.92" />
+        <field name="src_user" value="anonymous" />
+        <field name="user" value="someone" />
+        <field name="dest" value="so1" />
+      </cim_fields>
+      <missing_recommended_fields>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+  <event code="" name="UserNotAuthorized" format="">
+    <transport type="modinput" sourcetype="jira:datacenter:security:log" source="/var/atlassian/application-data/jira/log/atlassian-jira-security.log" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2022-01-03 14:58:35,155+0000 http-nio-8080-exec-1 anonymous 898x180x1 gcfsw8 10.136.158.250 /secure/admin/user/GroupBrowser.jspa The user 'someone' is NOT AUTHORIZED to perform this request]]></raw>
+    <cim>
+      <models>
+        <model>Authentication</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="failure" />
+        <field name="app" value="jira" />
+        <field name="reason" value="The user 'someone' is NOT AUTHORIZED to perform this request" />
+        <field name="src" value="10.136.158.250" />
+        <field name="src_user" value="anonymous" />
+        <field name="user" value="someone" />
+        <field name="dest" value="so1" />
+      </cim_fields>
+      <missing_recommended_fields>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+  <event code="" name="UserAuthorizedAsAdmin" format="">
+    <transport type="modinput" sourcetype="jira:datacenter:security:log" source="/var/atlassian/application-data/jira/log/atlassian-jira-security.log" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2022-01-03 15:09:06,179+0000 http-nio-8080-exec-22 admin 909x255x1 b79ysw 10.136.158.250 /secure/admin/WebSudoAuthenticate.jspa HttpSession created [1sj9i2w]]]></raw>
+    <cim>
+      <models>
+        <model>Authentication</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="success" />
+        <field name="app" value="jira" />
+        <field name="reason" value="HttpSession created [1sj9i2w]" />
+        <field name="src" value="10.136.158.250" />
+        <field name="user" value="admin" />
+        <field name="dest" value="so1" />
+      </cim_fields>
+      <missing_recommended_fields>
+        <field>src_user</field>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+  <event code="" name="UserLogout" format="">
+    <transport type="modinput" sourcetype="jira:datacenter:security:log" source="/var/atlassian/application-data/jira/log/atlassian-jira-security.log" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2021-12-31 15:21:15,545+0000 http-nio-8080-exec-23 someone 921x1110x1 1udqfve 10.136.158.92 /secure/Logout!default.jspa The user 'someone' has logged out.]]></raw>
+    <cim>
+      <models>
+        <model>Change:Account_Management</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="logoff" />
+        <field name="change_type" value="AAA" />
+        <field name="dvc" value="so1" />
+        <field name="object" value="user session" />
+        <field name="object_category" value="session" />
+        <field name="object_id" value="1udqfve" />
+        <field name="src" value="10.136.158.92" />
+        <field name="status" value="success" />
+        <field name="user" value="someone" />
+        <field name="vendor_product" value="Jira Data Center" />
+        <field name="dest" value="so1" />
+        <field name="result" value="The user 'someone' has logged out." />
+      </cim_fields>
+      <missing_recommended_fields>
+        <field>command</field>
+        <field>dest_nt_domain</field>
+        <field>object_attrs</field>
+        <field>object_path</field>
+        <field>result_id</field>
+        <field>src_nt_domain</field>
+        <field>src_user</field>
+        <field>user_name</field>
+        <field>src_user_name</field>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+  <event code="" name="HttpSessionDestroyedLogout" format="">
+    <transport type="modinput" sourcetype="jira:datacenter:security:log" source="/var/atlassian/application-data/jira/log/atlassian-jira-security.log" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2021-12-31 15:21:15,542+0000 http-nio-8080-exec-23 someone 921x1110x1 1udqfve 10.136.158.92 /secure/Logout!default.jspa HttpSession [1udqfve] destroyed for 'someone']]></raw>
+    <cim>
+      <models>
+        <model>Change:Account_Management</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="logoff" />
+        <field name="change_type" value="AAA" />
+        <field name="dvc" value="so1" />
+        <field name="object" value="user session" />
+        <field name="object_category" value="session" />
+        <field name="object_id" value="1udqfve" />
+        <field name="result" value="HttpSession [1udqfve] destroyed for 'someone'" />
+        <field name="src" value="10.136.158.92" />
+        <field name="status" value="success" />
+        <field name="user" value="someone" />
+        <field name="vendor_product" value="Jira Data Center" />
+        <field name="dest" value="so1" />
+      </cim_fields>
+      <missing_recommended_fields>
+        <field>command</field>
+        <field>dest_nt_domain</field>
+        <field>object_attrs</field>
+        <field>object_path</field>
+        <field>result_id</field>
+        <field>src_nt_domain</field>
+        <field>src_user</field>
+        <field>user_name</field>
+        <field>src_user_name</field>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+  <event code="" name="AdminPrivilegesDropped" format="">
+    <transport type="modinput" sourcetype="jira:datacenter:security:log" source="/var/atlassian/application-data/jira/log/atlassian-jira-security.log" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2022-01-03 15:09:06,179+0000 http-nio-8080-exec-22 admin 909x255x1 b79ysw 10.136.158.250 /secure/admin/WebSudoAuthenticate.jspa HttpSession [b79ysw] destroyed for 'admin']]></raw>
+    <cim>
+      <models>
+        <model>Change:Account_Management</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="logoff" />
+        <field name="change_type" value="AAA" />
+        <field name="dvc" value="so1" />
+        <field name="object" value="user session" />
+        <field name="object_category" value="session" />
+        <field name="object_id" value="b79ysw" />
+        <field name="result" value="HttpSession [b79ysw] destroyed for 'admin'" />
+        <field name="src" value="10.136.158.250" />
+        <field name="status" value="success" />
+        <field name="user" value="admin" />
+        <field name="user_type" value="admin" />
+        <field name="vendor_product" value="Jira Data Center" />
+        <field name="dest" value="so1" />
+      </cim_fields>
+      <missing_recommended_fields>
+        <field>command</field>
+        <field>object_attrs</field>
+        <field>object_path</field>
+        <field>result_id</field>
+        <field>dest_nt_domain</field>
+        <field>src_nt_domain</field>
+        <field>src_user</field>
+        <field>user_name</field>
+        <field>src_user_name</field>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+  <event code="" name="HttpSessionDestroyedContainerBackgroundProcessor" format="">
+    <transport type="modinput" sourcetype="jira:datacenter:security:log" source="/var/atlassian/application-data/jira/log/atlassian-jira-security.log" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2022-01-03 10:30:02,172+0000 ContainerBackgroundProcessor[StandardEngine[Catalina]]      HttpSession [1gca2wc] destroyed for 'someone']]></raw>
+    <cim />
+  </event>
+</device>

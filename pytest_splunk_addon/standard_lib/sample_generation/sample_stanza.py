@@ -20,6 +20,7 @@ from . import Rule
 from . import raise_warning
 from . import SampleEvent
 import logging
+import xmltodict
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -270,34 +271,39 @@ class SampleStanza(object):
         """
         with open(self.sample_path, "r", encoding="utf-8") as sample_file:
             sample_raw = sample_file.read()
-            if self.metadata.get("breaker"):
-                for each_event in self.break_events(sample_raw):
-                    if each_event:
-                        event_metadata = self.get_eventmetadata()
-                        yield SampleEvent(each_event, event_metadata, self.sample_name)
-            elif self.input_type in ["modinput", "windows_input"]:
-                for each_line in sample_raw.split("\n"):
-                    if each_line:
-                        event_metadata = self.get_eventmetadata()
-                        yield SampleEvent(each_line, event_metadata, self.sample_name)
-            elif self.input_type in [
-                "file_monitor",
-                "uf_file_monitor",
-                "scripted_input",
-                "syslog_tcp",
-                "syslog_udp",
-                "default",
-            ]:
-                event = sample_raw.strip()
-                if not event:
-                    raise_warning("sample file: '{}' is empty".format(self.sample_path))
-                else:
-                    yield SampleEvent(event, self.metadata, self.sample_name)
 
-            if not self.input_type:
-                # TODO: input_type not found scenario
-                pass
-            # More input types to be added here.
+        if self.metadata.get("requirement_test_sample"):
+            samples = xmltodict.parse(sample_raw)
+            for each_event in samples["device"]["event"]:
+                event = each_event["raw"]
+                yield SampleEvent(event, self.metadata, self.sample_name)
+        elif self.metadata.get("breaker"):
+            for each_event in self.break_events(sample_raw):
+                if each_event:
+                    event_metadata = self.get_eventmetadata()
+                    yield SampleEvent(each_event, event_metadata, self.sample_name)
+        elif self.input_type in ["modinput", "windows_input"]:
+            for each_line in sample_raw.split("\n"):
+                if each_line:
+                    event_metadata = self.get_eventmetadata()
+                    yield SampleEvent(each_line, event_metadata, self.sample_name)
+        elif self.input_type in [
+            "file_monitor",
+            "uf_file_monitor",
+            "scripted_input",
+            "syslog_tcp",
+            "syslog_udp",
+            "default",
+        ]:
+            event = sample_raw.strip()
+            if not event:
+                raise_warning("sample file: '{}' is empty".format(self.sample_path))
+            else:
+                yield SampleEvent(event, self.metadata, self.sample_name)
+        if not self.input_type:
+            # TODO: input_type not found scenario
+            pass
+        # More input types to be added here.
 
     def break_events(self, sample_raw):
         """
