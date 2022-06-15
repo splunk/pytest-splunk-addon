@@ -19,13 +19,13 @@ Module include class to generate the test cases
 to test the knowledge objects of an Add-on.
 """
 import pytest
-import json
 import logging
 from itertools import chain
 
-from ..addon_parser import Field
 from ..addon_parser import AddonParser
 from . import FieldBank
+from .sample_parser import parse_sample_files
+
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -43,9 +43,10 @@ class FieldTestGenerator(object):
         field_bank (str): Path of the fields Json file
     """
 
-    def __init__(self, app_path, field_bank=None):
+    def __init__(self, app_path, requirement_files_path, field_bank=None):
         LOGGER.debug("initializing AddonParser to parse the app")
         self.addon_parser = AddonParser(app_path)
+        self.folder_path = requirement_files_path
         self.field_bank = field_bank
 
     def generate_tests(self, fixture):
@@ -73,6 +74,8 @@ class FieldTestGenerator(object):
             yield from self.generate_eventtype_tests()
         elif fixture.endswith("savedsearches"):
             yield from self.generate_savedsearches_tests()
+        elif fixture.endswith("requirements"):
+            yield from self.generate_requirements_tests()
 
     def generate_field_tests(self, is_positive):
         """
@@ -144,6 +147,16 @@ class FieldTestGenerator(object):
                 each_tag_group, id="{stanza}::tag::{tag}".format(**each_tag_group)
             )
 
+        for event in parse_sample_files(self.folder_path):
+            for model in event.list_model_dataset_subdataset:
+                yield pytest.param(
+                    {
+                        "tag": model,
+                        "stanza": event.event_string,
+                    },
+                    id=f"{model}::event_name::{event.name}",
+                )
+
     def generate_eventtype_tests(self):
         """
         Generate test case for eventtypes
@@ -168,6 +181,19 @@ class FieldTestGenerator(object):
             yield pytest.param(
                 each_savedsearch, id="{stanza}".format(**each_savedsearch)
             )
+
+    def generate_requirements_tests(self):
+        for event in parse_sample_files(self.folder_path):
+            for key, value in event.cim_fields.items():
+                if key not in event.exceptions:
+                    yield pytest.param(
+                        {
+                            "escaped_event": event.event_string,
+                            "field": (key, value),
+                            "modinput_params": event.transport_type_params,
+                        },
+                        id=f"{key}-{value}:::event_name::{event.name}",
+                    )
 
     def _contains_classname(self, fields_group, criteria):
         """

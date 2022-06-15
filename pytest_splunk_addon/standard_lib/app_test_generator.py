@@ -49,6 +49,7 @@ class AppTestGenerator(object):
         LOGGER.debug("Initializing FieldTestGenerator to generate the test cases")
         self.fieldtest_generator = FieldTestGenerator(
             self.pytest_config.getoption("splunk_app"),
+            self.pytest_config.getoption("requirement_test"),
             field_bank=self.pytest_config.getoption("field_bank", False),
         )
 
@@ -87,11 +88,12 @@ class AppTestGenerator(object):
             yield from self.dedup_tests(
                 self.cim_test_generator.generate_tests(fixture), fixture
             )
-        elif fixture.startswith("splunk_searchtime_requirement"):
-            if self.pytest_config.getoption("requirement_test") != "None":
-                yield from self.dedup_tests(
-                    self.requirement_test_generator.generate_tests(fixture), fixture
-                )
+        # elif fixture.startswith("splunk_searchtime_requirement"):
+        #     if self.pytest_config.getoption("requirement_test") != "None":
+        #         yield from self.dedup_tests(
+        #             self.requirement_test_generator.generate_tests(fixture), fixture
+        #         )
+
         elif fixture.startswith("splunk_indextime"):
             # TODO: What should be the id of the test case?
             # Sourcetype + Host + Key field + _count

@@ -26,3 +26,10 @@ def docker_compose_files(request):
     # LOGGER.info("docker-compose path: %s", docker_compose_path)
 
     return [docker_compose_path]
+
+
+@pytest.fixture(scope="session")
+def docker_services_project_name(pytestconfig):
+    rootdir = str(pytestconfig.rootdir)
+    docker_compose_v2_rootdir = rootdir.lower().replace("/", "")
+    return f"pytest{docker_compose_v2_rootdir}"

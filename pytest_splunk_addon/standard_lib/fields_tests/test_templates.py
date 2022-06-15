@@ -123,6 +123,66 @@ class FieldTestTemplates(object):
         )
 
     @pytest.mark.splunk_searchtime_fields
+    @pytest.mark.splunk_searchtime_fields_requirements
+    def test_requirements_fields(
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_setup,
+        splunk_searchtime_fields_requirements,
+        record_property,
+    ):
+        """
+        This test case checks that a field value has the expected values.
+
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            splunk_searchtime_fields_positive (fixture): Test for stanza field.
+            record_property (fixture): Document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        """
+
+        # Search Query
+        record_property("stanza_name", splunk_searchtime_fields_requirements["escaped_event"])
+        record_property("stanza_type", splunk_searchtime_fields_requirements["field"])
+        record_property("fields", splunk_searchtime_fields_requirements["modinput_params"])
+
+        escaped_event = splunk_searchtime_fields_requirements["escaped_event"]
+        key, value = splunk_searchtime_fields_requirements["field"]
+        modinput_params = splunk_searchtime_fields_requirements["modinput_params"]
+
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
+
+        basic_search = ""
+        for key, value in modinput_params.items():
+            if value is not None:
+                basic_search += f" {key}={value}"
+
+        search = (
+            f"search {index_list} {basic_search} {escaped_event} AND {key}={value}"
+        )
+
+        self.logger.info(f"Executing the search query: {search}")
+
+        # run search
+        result = splunk_search_util.checkQueryCount(
+            search,
+            targetCount=1,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
+        )
+        record_property("search", search)
+
+        assert result, (
+            f"No result found for the search.\nsearch={search}\n"
+            f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
+        )
+
+    @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
     def test_props_fields_no_dash_not_empty(
         self,
