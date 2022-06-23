@@ -276,7 +276,52 @@ class SampleStanza(object):
             samples = xmltodict.parse(sample_raw)
             for each_event in samples["device"]["event"]:
                 event = each_event["raw"]
-                yield SampleEvent(event, self.metadata, self.sample_name)
+                requirement_test_data = {}
+                if "cim" in each_event.keys() and each_event["cim"] is not None:
+                    requirement_test_data["datamodels"] = each_event["cim"]["models"]
+
+                    fields = each_event["cim"]["cim_fields"]
+                    cim_fields = {}
+                    for field in fields["field"]:
+                        cim_fields[field["@name"]] = field["@value"]
+                    requirement_test_data["cim_fields"] = cim_fields
+
+                    missing_recommended_fields = []
+                    if (
+                        "missing_recommended_fields" in each_event["cim"].keys()
+                        and each_event["cim"]["missing_recommended_fields"] is not None
+                    ):
+                        fields = each_event["cim"]["missing_recommended_fields"]
+                        missing_recommended_fields = (
+                            fields["field"]
+                            if each_event["cim"]["missing_recommended_fields"]
+                            is not None
+                            else []
+                        )
+                        if type(missing_recommended_fields) != list:
+                            missing_recommended_fields = [missing_recommended_fields]
+                    requirement_test_data[
+                        "missing_recommended_fields"
+                    ] = missing_recommended_fields
+
+                    exceptions = []
+                    if (
+                        "exceptions" in each_event["cim"].keys()
+                        and each_event["cim"]["exceptions"] is not None
+                    ):
+                        fields = each_event["cim"]["exceptions"]
+                        for field in fields["field"]:
+                            exceptions.append(
+                                {
+                                    "name": field["@name"],
+                                    "value": field["@value"],
+                                    "reason": field["@reason"],
+                                }
+                            )
+                    requirement_test_data["exceptions"] = exceptions
+                yield SampleEvent(
+                    event, self.metadata, self.sample_name, requirement_test_data
+                )
         elif self.metadata.get("breaker"):
             for each_event in self.break_events(sample_raw):
                 if each_event:

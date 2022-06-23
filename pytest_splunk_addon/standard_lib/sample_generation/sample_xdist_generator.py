@@ -107,6 +107,7 @@ class SampleXdistGenerator:
                             "event": each_event.event,
                             "key_fields": each_event.key_fields,
                             "time_values": each_event.time_values,
+                            "requirement_test_data": each_event.requirement_test_data,
                         }
                     ],
                 }
@@ -116,6 +117,7 @@ class SampleXdistGenerator:
                         "event": each_event.event,
                         "key_fields": each_event.key_fields,
                         "time_values": each_event.time_values,
+                        "requirement_test_data": each_event.requirement_test_data,
                     }
                 )
 

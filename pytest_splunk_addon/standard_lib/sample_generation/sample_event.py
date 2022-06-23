@@ -61,13 +61,14 @@ class SampleEvent(object):
         sample_name (str): Name of the file containing this event
     """
 
-    def __init__(self, event_string, metadata, sample_name):
+    def __init__(self, event_string, metadata, sample_name, requirement_test_data=None):
         self.event = event_string
         self.key_fields = dict()
         self.time_values = list()
         self.metadata = metadata
         self.sample_name = sample_name
         self.host_count = 0
+        self.requirement_test_data = requirement_test_data
 
     def update(self, new_event):
         """
