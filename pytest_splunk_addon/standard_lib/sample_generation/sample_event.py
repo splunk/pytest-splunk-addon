@@ -335,6 +335,30 @@ class SampleEvent(object):
             else:
                 self.key_fields.setdefault(field, []).append(str(token_values.key))
 
+    def update_requirement_test_field(self, field, token, token_values):
+        if field != "_time":
+            if (
+                self.requirement_test_data is not None
+                and "cim_fields" in self.requirement_test_data.keys()
+            ):
+                for cim_field, value in self.requirement_test_data[
+                    "cim_fields"
+                ].items():
+                    if value == token:
+                        if isinstance(token_values, list):
+                            if len(token_values) == 1:
+                                self.requirement_test_data["cim_fields"][
+                                    cim_field
+                                ] = token_values[0].key
+                            else:
+                                self.requirement_test_data["cim_fields"][cim_field] = [
+                                    token_value.key for token_value in token_values
+                                ]
+                        else:
+                            self.requirement_test_data["cim_fields"][
+                                cim_field
+                            ] = token_values.key
+
     def get_key_fields(self):
         """
         Returns the key field value from event
