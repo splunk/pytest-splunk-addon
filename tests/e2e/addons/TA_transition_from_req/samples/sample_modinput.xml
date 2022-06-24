@@ -9,7 +9,7 @@
       <jira id="" />
       <comment>lab</comment>
     </source>
-    <raw><![CDATA[2021-12-31 15:15:30,340+0000 ip=10.0.0.1 tester=admin result=success]]></raw>
+    <raw><![CDATA[2021-12-31 15:15:30,340+0000 ip=##dest_ipv4## tester=admin result=success]]></raw>
     <cim>
       <models>
         <model>Authentication</model>
@@ -17,7 +17,7 @@
       <cim_fields>
         <field name="action" value="success" />
         <field name="app" value="psa" />
-        <field name="src" value="10.0.0.1" />
+        <field name="src" value="##dest_ipv4##" />
         <field name="user" value="admin" />
         <field name="dest" value="so1" />
       </cim_fields>
@@ -32,7 +32,7 @@
       <jira id="" />
       <comment>lab</comment>
     </source>
-    <raw><![CDATA[2021-12-31 15:15:30,340+0000 ip=10.0.0.1 tester=admin result=fail]]></raw>
+    <raw><![CDATA[2021-12-31 15:15:30,340+0000 ip=##dest_ipv4## tester=admin result=fail]]></raw>
     <cim>
       <models>
         <model>Authentication</model>
@@ -40,7 +40,7 @@
       <cim_fields>
         <field name="action" value="fail" />
         <field name="app" value="psa" />
-        <field name="src" value="10.0.0.1" />
+        <field name="src" value="##dest_ipv4##" />
         <field name="user" value="admin" />
         <field name="dest" value="so1" />
       </cim_fields>
