@@ -281,49 +281,7 @@ class SampleStanza(object):
             )
             for each_event in events:
                 event = each_event["raw"]
-                requirement_test_data = {}
-                if "cim" in each_event.keys() and each_event["cim"] is not None:
-                    requirement_test_data["datamodels"] = each_event["cim"]["models"]
-
-                    fields = each_event["cim"]["cim_fields"]
-                    cim_fields = {}
-                    for field in fields["field"]:
-                        cim_fields[field["@name"]] = field["@value"]
-                    requirement_test_data["cim_fields"] = cim_fields
-
-                    missing_recommended_fields = []
-                    if (
-                        "missing_recommended_fields" in each_event["cim"].keys()
-                        and each_event["cim"]["missing_recommended_fields"] is not None
-                    ):
-                        fields = each_event["cim"]["missing_recommended_fields"]
-                        missing_recommended_fields = (
-                            fields["field"]
-                            if each_event["cim"]["missing_recommended_fields"]
-                            is not None
-                            else []
-                        )
-                        if type(missing_recommended_fields) != list:
-                            missing_recommended_fields = [missing_recommended_fields]
-                    requirement_test_data[
-                        "missing_recommended_fields"
-                    ] = missing_recommended_fields
-
-                    exceptions = []
-                    if (
-                        "exceptions" in each_event["cim"].keys()
-                        and each_event["cim"]["exceptions"] is not None
-                    ):
-                        fields = each_event["cim"]["exceptions"]
-                        for field in fields["field"]:
-                            exceptions.append(
-                                {
-                                    "name": field["@name"],
-                                    "value": field["@value"],
-                                    "reason": field["@reason"],
-                                }
-                            )
-                    requirement_test_data["exceptions"] = exceptions
+                requirement_test_data = self.populate_requirement_test_data(each_event)
                 yield SampleEvent(
                     event, self.metadata, self.sample_name, requirement_test_data
                 )
@@ -399,3 +357,58 @@ class SampleStanza(object):
             else:
                 token_list.append(token)
         return token_list
+
+    @staticmethod
+    def populate_requirement_test_data(event):
+        """
+        Analyze event's datamodels, cim_fields, missing_recommended_fields, exception
+
+        Args:
+            event (dict): event data from xml file
+
+        Return:
+            requirement_test_data (dict): datamodels, cim_fields, missing_recommended_fields, exception
+        """
+        requirement_test_data = {}
+        if "cim" in event.keys() and event["cim"] is not None:
+            requirement_test_data["datamodels"] = event["cim"]["models"]
+
+            fields = event["cim"]["cim_fields"]
+            cim_fields = {}
+            for field in fields["field"]:
+                cim_fields[field["@name"]] = field["@value"]
+            requirement_test_data["cim_fields"] = cim_fields
+
+            missing_recommended_fields = []
+            if (
+                "missing_recommended_fields" in event["cim"].keys()
+                and event["cim"]["missing_recommended_fields"] is not None
+            ):
+                fields = event["cim"]["missing_recommended_fields"]
+                missing_recommended_fields = (
+                    fields["field"]
+                    if event["cim"]["missing_recommended_fields"] is not None
+                    else []
+                )
+                if type(missing_recommended_fields) != list:
+                    missing_recommended_fields = [missing_recommended_fields]
+            requirement_test_data[
+                "missing_recommended_fields"
+            ] = missing_recommended_fields
+
+            exceptions = []
+            if (
+                "exceptions" in event["cim"].keys()
+                and event["cim"]["exceptions"] is not None
+            ):
+                fields = event["cim"]["exceptions"]
+                for field in fields["field"]:
+                    exceptions.append(
+                        {
+                            "name": field["@name"],
+                            "value": field["@value"],
+                            "reason": field["@reason"],
+                        }
+                    )
+            requirement_test_data["exceptions"] = exceptions
+            return requirement_test_data
