@@ -274,7 +274,12 @@ class SampleStanza(object):
 
         if self.metadata.get("requirement_test_sample"):
             samples = xmltodict.parse(sample_raw)
-            for each_event in samples["device"]["event"]:
+            events = (
+                samples["device"]["event"]
+                if type(samples["device"]["event"]) == list
+                else [samples["device"]["event"]]
+            )
+            for each_event in events:
                 event = each_event["raw"]
                 requirement_test_data = {}
                 if "cim" in each_event.keys() and each_event["cim"] is not None:
