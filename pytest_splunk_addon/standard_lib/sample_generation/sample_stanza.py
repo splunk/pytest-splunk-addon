@@ -149,7 +149,8 @@ class SampleStanza(object):
         metadata = {
             key: psa_data_params[key] for key in psa_data_params if key != "tokens"
         }
-        metadata.update(host=self.sample_name)
+        host = metadata.get("host") or self.sample_name
+        metadata.update(host=host)
         if (
             metadata.get("input_type")
             not in [
@@ -401,8 +402,9 @@ class SampleStanza(object):
                 "exceptions" in event["cim"].keys()
                 and event["cim"]["exceptions"] is not None
             ):
-                fields = event["cim"]["exceptions"]
-                for field in fields["field"]:
+                fields = event["cim"]["exceptions"]["field"]
+                fields = fields if type(fields) == list else [fields]
+                for field in fields:
                     exceptions.append(
                         {
                             "name": field["@name"],
