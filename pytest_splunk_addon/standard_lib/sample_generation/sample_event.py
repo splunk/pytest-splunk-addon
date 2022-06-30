@@ -352,7 +352,8 @@ class SampleEvent(object):
                                 ] = value.replace(token, str(token_values[0].key))
                             else:
                                 self.requirement_test_data["cim_fields"][cim_field] = [
-                                    value.replace(token, str(token_value.key)) for token_value in token_values
+                                    value.replace(token, str(token_value.key))
+                                    for token_value in token_values
                                 ]
                         else:
                             self.requirement_test_data["cim_fields"][

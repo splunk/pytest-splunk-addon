@@ -283,7 +283,7 @@ class SampleStanza(object):
             for each_event in events:
                 event = each_event["raw"].strip()
                 if self.metadata.get("sample_count") is None:
-                    self.metadata.update(sample_count='1')
+                    self.metadata.update(sample_count="1")
                 requirement_test_data = self.populate_requirement_test_data(each_event)
                 yield SampleEvent(
                     event, self.metadata, self.sample_name, requirement_test_data
