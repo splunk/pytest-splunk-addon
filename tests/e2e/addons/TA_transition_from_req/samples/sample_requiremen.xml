@@ -12,7 +12,7 @@
          <comment>Got this event form Juniper document.</comment>
       </source>
       <raw>
-         <![CDATA[<111> 2020-02-12T03:27:09+10:00 sample.dvc RT_FLOW: RT_FLOW_SESSION_CREATE: session created 1.1.1.1/34667->10.0.0.1/5048 0x0 junos-http 1.1.1.2/34667->10.0.0.2/5048 0x0 sample_src_rule_type sample_src_rule_name sample_dst_rule_type sample_dest_rule_n**ame 6 1660(global) SAMPLE-SERVER-ZONE DUMMY_ZONE 113256 user2(admin) gg-0/0/0.1 SNMP DUMMY_APP UNKNOWN]]>
+         <![CDATA[<111> 2020-02-12T03:27:09+10:00 ##dvc## RT_FLOW: RT_FLOW_SESSION_CREATE: session created ##Src_Addr##/##Src_Port##->##Dest_Addr##/##Dest_Port## ##Connection_Tag## ##Service## ##Src_Addr1##/##Src_Port1##->##Dest_Addr1##/##Dest_Port1## ##Connection_Tag## ##Src_Translated_Rule_Type_custom## ##Src_Translated_Rule_Name## ##Dst_Translated_Rule_Type## ##Dest_Translated_Rule_Name## ##Protocol_Id## ##Policy_Name## ##Src_Zone## ##Dest_Zone## ##Session_Id_32## ##User##(##User_Roles##) ##Interface_Name## ##Vendor_App## ##Nested_App## ##Encrypted## ##Application_Category## ##Application_Sub_Category## ##Application_Risk## ##Application_Characteristics##]]>
       </raw>
       <cim>
          <models>
@@ -20,12 +20,12 @@
          </models>
          <cim_fields>
             <field name="action" value="allowed"/>
-            <field name="dest" value="10.0.0.1"/>
-            <field name="dest_ip" value="10.0.0.1"/>
-            <field name="dest_port" value="5048"/>
-            <field name="dest_zone" value="DUMMY_ZONE"/>
-            <field name="dvc" value="sample.dvc"/>
-            <field name="rule" value="sample_src_rule_name sample_dest_rule_n**ame 1660(global)"/>
+            <field name="dest" value="##Dest_Addr##"/>
+            <field name="dest_ip" value="##Dest_Addr##"/>
+            <field name="dest_port" value="##Dest_Port##"/>
+            <field name="dest_zone" value="##Dest_Zone##"/>
+            <field name="dvc" value="##dvc##"/>
+            <field name="rule" value="##Src_Translated_Rule_Name## ##Dest_Translated_Rule_Name## ##Policy_Name##"/>
          </cim_fields>
          <missing_recommended_fields>
             <field>bytes</field>

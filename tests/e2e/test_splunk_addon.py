@@ -748,7 +748,7 @@ def test_splunk_app_req(testdir):
         "--search-retry=4",
         "--search-index=*,_internal",
         "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
-        "--requirement-test=package/samples",
+        # "--requirement-test=package/samples",
     )
     logger.info(result.outlines)
     logger.info(len(constants.TA_REQUIREMENTS_PASSED))

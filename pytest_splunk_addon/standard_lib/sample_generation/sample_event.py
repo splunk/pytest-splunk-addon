@@ -344,20 +344,20 @@ class SampleEvent(object):
                 for cim_field, value in self.requirement_test_data[
                     "cim_fields"
                 ].items():
-                    if value == token:
+                    if token in value:
                         if isinstance(token_values, list):
                             if len(token_values) == 1:
                                 self.requirement_test_data["cim_fields"][
                                     cim_field
-                                ] = token_values[0].key
+                                ] = value.replace(token, str(token_values[0].key))
                             else:
                                 self.requirement_test_data["cim_fields"][cim_field] = [
-                                    token_value.key for token_value in token_values
+                                    value.replace(token, str(token_value.key)) for token_value in token_values
                                 ]
                         else:
                             self.requirement_test_data["cim_fields"][
                                 cim_field
-                            ] = token_values.key
+                            ] = value.replace(token, str(token_values.key))
 
     def get_key_fields(self):
         """
@@ -380,6 +380,7 @@ class SampleEvent(object):
         new_event.key_fields = event.key_fields.copy()
         new_event.time_values = event.time_values[:]
         new_event.metadata = deepcopy(event.metadata)
+        new_event.requirement_test_data = deepcopy(event.requirement_test_data)
         return new_event
 
     def update_metadata(self, event, metadata, key_fields):
