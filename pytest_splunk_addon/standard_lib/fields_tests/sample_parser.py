@@ -30,16 +30,22 @@ def parse_sample_files(folder_path):
             if file.endswith(".log") or file.endswith(".xml"):
                 filename = os.path.join(folder_path, file)
                 LOGGER.info(filename)
-                try:
-                    tree = ET.parse(filename)
-                    if not tree:
-                        break
-                except ParseError:
-                    LOGGER.error("Invalid XML")
-                    continue
-                root = tree.getroot()
-                for event_tag in root.iter("event"):
-                    yield EventXML(event_tag)
+                for event_tag in parse_file(filename):
+                    if event_tag is not None:
+                        yield EventXML(event_tag)
+
+
+def parse_file(filename):
+    try:
+        tree = ET.parse(filename)
+    except ParseError:
+        LOGGER.error("Invalid XML")
+        tree = None
+    if not tree:
+        return None
+    root = tree.getroot()
+    for event_tag in root.iter("event"):
+        yield event_tag
 
 
 class XMLParser:

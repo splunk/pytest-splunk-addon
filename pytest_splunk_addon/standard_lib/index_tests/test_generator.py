@@ -16,7 +16,7 @@
 import logging
 import pytest
 
-from ..sample_generation import SampleXdistGenerator
+# from ..sample_generation import SampleXdistGenerator
 from ..sample_generation.rule import raise_warning
 from ..sample_generation.sample_event import SampleEvent
 
@@ -32,7 +32,7 @@ class IndexTimeTestGenerator(object):
       for the Add-on.
     """
 
-    def generate_tests(self, store_events, app_path, config_path, test_type):
+    def generate_tests(self, store_events, sample_generator, test_type):
         """
         Generates the test cases based on test_type
 
@@ -45,7 +45,7 @@ class IndexTimeTestGenerator(object):
             pytest.params for the test templates
 
         """
-        sample_generator = SampleXdistGenerator(app_path, config_path)
+        # sample_generator = SampleXdistGenerator(app_path, config_path)
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         if not store_sample.get("conf_name") == "psa-data-gen":
