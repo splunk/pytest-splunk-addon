@@ -285,8 +285,9 @@ class SampleStanza(object):
                 if self.metadata.get("sample_count") is None:
                     self.metadata.update(sample_count="1")
                 requirement_test_data = self.populate_requirement_test_data(each_event)
+                event_metadata = self.get_eventmetadata()
                 yield SampleEvent(
-                    event, self.metadata, self.sample_name, requirement_test_data
+                    event, event_metadata, self.sample_name, requirement_test_data
                 )
         elif self.metadata.get("breaker"):
             for each_event in self.break_events(sample_raw):
