@@ -219,8 +219,11 @@ class FieldTestGenerator(object):
                 continue
             exceptions = event.requirement_test_data.get("exceptions", {})
             metadata = event.metadata
-            modinput_params = {"host": metadata.get("host"), "source": metadata.get("source"),
-                               "sourcetype": metadata.get("sourcetype_to_search")}
+            modinput_params = {
+                "host": metadata.get("host"),
+                "source": metadata.get("source"),
+                "sourcetype": metadata.get("sourcetype_to_search"),
+            }
             for key, value in event.requirement_test_data.get("cim_fields", {}).items():
                 if key not in exceptions:
                     yield pytest.param(
