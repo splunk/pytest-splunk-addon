@@ -26,6 +26,7 @@ from itertools import chain
 from ..addon_parser import AddonParser
 from . import FieldBank
 from .sample_parser import parse_sample_files
+from ..utilities import escape_char_event
 
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
@@ -156,6 +157,7 @@ class FieldTestGenerator(object):
         for event in tokenized_events:
             if not event.requirement_test_data:
                 continue
+            escaped_event = escape_char_event(event.event)
             datamodels = event.requirement_test_data.get("datamodels")
             if datamodels:
                 if type(datamodels) is dict:
@@ -170,7 +172,7 @@ class FieldTestGenerator(object):
                 yield pytest.param(
                     {
                         "tag": tag,
-                        "stanza": event.requirement_test_data.get("escaped_event"),
+                        "stanza": escaped_event,
                     },
                     id=f"{tag}::sample_name::{event.sample_name}",
                 )
@@ -212,6 +214,7 @@ class FieldTestGenerator(object):
 
     def generate_requirements_tests(self, tokenized_events):
         for event in tokenized_events:
+            escaped_event = escape_char_event(event.event)
             if not event.requirement_test_data:
                 continue
             exceptions = event.requirement_test_data.get("exceptions", {})
@@ -222,7 +225,7 @@ class FieldTestGenerator(object):
                 if key not in exceptions:
                     yield pytest.param(
                         {
-                            "escaped_event": event.requirement_test_data.get("escaped_event"),
+                            "escaped_event": escaped_event,
                             "field": (key, value),
                             "modinput_params": modinput_params,
                         },

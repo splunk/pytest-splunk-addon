@@ -362,7 +362,8 @@ class SampleStanza(object):
                 token_list.append(token)
         return token_list
 
-    def populate_requirement_test_data(self, event):
+    @staticmethod
+    def populate_requirement_test_data(event):
         """
         Analyze event's datamodels, cim_fields, missing_recommended_fields, exception
 
@@ -415,61 +416,4 @@ class SampleStanza(object):
                         }
                     )
             requirement_test_data["exceptions"] = exceptions
-            requirement_test_data["escaped_event"] = self.escape_char_event(event["raw"])
             return requirement_test_data
-
-    @staticmethod
-    def escape_char_event(event):
-        """
-        Input: Event getting parsed
-        Function to escape special characters in Splunk
-        https://docs.splunk.com/Documentation/StyleGuide/current/StyleGuide/Specialcharacters
-        """
-        escape_splunk_chars = [
-            "`",
-            "~",
-            "!",
-            "@",
-            "#",
-            "$",
-            "%",
-            "^",
-            "&",
-            "(",
-            ")",
-            "-",
-            "=",
-            "+",
-            "[",
-            "]",
-            "}",
-            "{",
-            "|",
-            ";",
-            ":",
-            "'",
-            r"\,",
-            "<",
-            ">",
-            r"\/",
-            "?",
-            "IN",
-            "AS",
-            "BY",
-            "OVER",
-            "WHERE",
-            "LIKE",
-            "NOT",
-        ]
-        event = event.replace("\\", "\\\\")
-        # bounded_asterisk = re.search(
-        #     r"\"[\s*\w*\.\-\,\\\?\_\]\[\']*\*+[\s*\w*\.\-\,\\\?\_\[\]\']*\"", event
-        # )
-        bounded_asterisk = re.search(r"\".*?\*+.*?\"", event)
-        if bounded_asterisk:
-            event = event.replace("*", "\\*")
-        else:
-            event = event.replace("*", " ")
-        for character in escape_splunk_chars:
-            event = event.replace(character, "\\" + character)
-        return event
