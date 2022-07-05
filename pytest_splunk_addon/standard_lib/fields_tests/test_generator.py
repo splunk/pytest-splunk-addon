@@ -170,7 +170,7 @@ class FieldTestGenerator(object):
                 yield pytest.param(
                     {
                         "tag": tag,
-                        "stanza": event.event,
+                        "stanza": event.requirement_test_data.get("escaped_event"),
                     },
                     id=f"{tag}::sample_name::{event.sample_name}",
                 )
@@ -222,7 +222,7 @@ class FieldTestGenerator(object):
                 if key not in exceptions:
                     yield pytest.param(
                         {
-                            "escaped_event": event.event,
+                            "escaped_event": event.requirement_test_data.get("escaped_event"),
                             "field": (key, value),
                             "modinput_params": modinput_params,
                         },
