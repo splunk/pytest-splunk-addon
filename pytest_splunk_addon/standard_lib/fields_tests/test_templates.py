@@ -168,11 +168,11 @@ class FieldTestTemplates(object):
 
         if value.startswith("[") and value.endswith("]"):
             # replacing \ and " because of json format
-            value = value.replace("\\", "\\\\").replace("\"", "\\\"").replace("'", "\"")
+            value = value.replace("\\", "\\\\").replace("\"", "\\\\\\\"").replace("'", "\"")
             values = json.loads(value)
             key_search = ""
             for v in values:
-                key_search += f"AND {key}=\"{v}\" "
+                key_search += f"AND {key} IN (\"{v}\") "
             key_search += f"| eval n=mvcount({key}) | search n={len(values)}"
         else:
             key_search = f"AND {key}=\"{value}\""
