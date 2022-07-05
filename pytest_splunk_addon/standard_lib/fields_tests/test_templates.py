@@ -166,7 +166,18 @@ class FieldTestTemplates(object):
             if param_value is not None:
                 basic_search += f" {param}={param_value}"
 
-        search = f"search {index_list} {basic_search} {escaped_event} AND {key}=\"{value}\""
+        if value.startswith("[") and value.endswith("]"):
+            # replacing \ and " because of json format
+            value = value.replace("\\", "\\\\").replace("\"", "\\\"").replace("'", "\"")
+            values = json.loads(value)
+            key_search = ""
+            for v in values:
+                key_search += f"AND {key}=\"{v}\" "
+            key_search += f"| eval n=mvcount({key}) | search n={len(values)}"
+        else:
+            key_search = f"AND {key}=\"{value}\""
+
+        search = f"search {index_list} {basic_search} {escaped_event} {key_search}"
 
         self.logger.info(f"Executing the search query: {search}")
 
