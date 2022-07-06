@@ -174,7 +174,7 @@ class FieldTestGenerator(object):
                         "tag": tag,
                         "stanza": escaped_event,
                     },
-                    id=f"{tag}::sample_name::{event.sample_name}",
+                    id=f"{tag}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )
 
         # for event in parse_sample_files(self.folder_path):
@@ -232,7 +232,7 @@ class FieldTestGenerator(object):
                             "field": (key, value),
                             "modinput_params": modinput_params,
                         },
-                        id=f"{key}-{value}::sample_name::{event.sample_name}",
+                        id=f"{key}-{value}::sample_name::{event.sample_name}::host::{modinput_params['host']}",
                     )
 
     def _contains_classname(self, fields_group, criteria):

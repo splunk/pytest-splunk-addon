@@ -282,10 +282,10 @@ class SampleStanza(object):
             )
             for each_event in events:
                 event = each_event["raw"].strip()
+                event_metadata = self.get_eventmetadata()
                 if self.metadata.get("sample_count") is None:
                     self.metadata.update(sample_count="1")
-                requirement_test_data = self.populate_requirement_test_data(each_event)
-                event_metadata = self.get_eventmetadata()
+                requirement_test_data = self.populate_requirement_test_data(each_event, event_metadata.get("host"))
                 yield SampleEvent(
                     event, event_metadata, self.sample_name, requirement_test_data
                 )
@@ -363,7 +363,7 @@ class SampleStanza(object):
         return token_list
 
     @staticmethod
-    def populate_requirement_test_data(event):
+    def populate_requirement_test_data(event, event_host):
         """
         Analyze event's datamodels, cim_fields, missing_recommended_fields, exception
 
@@ -380,7 +380,10 @@ class SampleStanza(object):
             fields = event["cim"]["cim_fields"]
             cim_fields = {}
             for field in fields["field"]:
-                cim_fields[field["@name"]] = field["@value"]
+                value = field["@value"]
+                if value == "##host##":
+                    value = value.replace("##host##", event_host)
+                cim_fields[field["@name"]] = value
             requirement_test_data["cim_fields"] = cim_fields
 
             missing_recommended_fields = []
