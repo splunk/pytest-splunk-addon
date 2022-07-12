@@ -167,7 +167,9 @@ class Rule:
         """
         new_events = []
         for each_event in events:
-            token_count = each_event.get_token_count(self.token)
+            token_count = each_event.get_token_count(
+                self.token
+            ) or each_event.get_token_extractions_count(self.token)
             token_values = list(self.replace(each_event, token_count))
             if token_count > 0:
                 if self.replacement_type == "all":
@@ -179,7 +181,7 @@ class Rule:
                         global event_host_count
                         event_host_count += 1
                         new_event.metadata["host"] = "{}-{}".format(
-                            each_event.sample_name.replace("_", "-").replace(".", "-"),
+                            each_event.metadata["host"],
                             event_host_count,
                         )
                         new_event.metadata["id"] = "{}_{}".format(

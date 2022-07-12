@@ -773,3 +773,59 @@ TA_REQUIREMENTS_SCRIPTED_PASSED = [
 TA_REQUIREMENTS_SCRIPTED_FAILED = [
     "*test_splunk_app_requirements_scripted.py::Test_App::test_requirement_params* FAILED*",
 ]
+
+TA_REQ_TRANSITION_PASSED = [
+    "*test_splunk_app_req.py::Test_App::test_events_with_untokenised_values* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_indextime_time[test:data:1::* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_indextime_line_breaker[test:data:1::sample_modinput.xml* PASSED*",
+    '*test_splunk_app_req.py::Test_App::test_cim_fields_not_allowed_in_search[eventtype="test_auth"::Authenti*cation*',
+    "*test_splunk_app_req.py::Test_App::test_cim_fields_not_allowed_in_props[searchtime_cim_fields* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel[mapped_datamodel_tests* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_splunk_internal_errors* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::action* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::app* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::dvc* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::host* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::ip* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::result* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::src* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::status* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::tester* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::user* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_requirements_fields[action-*::sample_name::sample_modinput.xml::host::* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_requirements_fields[app-psa::sample_name::sample_modinput.xml::host::* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_requirements_fields[dest-so1_1::sample_name::sample_modinput.xml::host::* FAILED*",
+    "*test_splunk_app_req.py::Test_App::test_requirements_fields[src-10.100.0.1::sample_name::sample_modinput.xml::host::* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_requirements_fields[user-admin::sample_name::sample_modinput.xml::host::* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::action* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::app* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::dvc* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::host* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::ip* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::result* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::src* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::status* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::tester* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::user* PASSED*",
+]
+
+TA_REQ_TRANSITION_SKIPPED = [
+    "*test_splunk_app_req.py::Test_App::test_savedsearches[splunk_searchtime_fields_savedsearches0* SKIPPED*",
+    "*test_splunk_app_req.py::Test_App::test_indextime_key_fields[splunk_indextime_key_fields0* SKIPPED*"
+]
+
+TA_REQ_TRANSITION_FAILED = [
+    '*test_splunk_app_req.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication* FAILED*',
+    '*test_splunk_app_req.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication::action* FAILED*',
+    '*test_splunk_app_req.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication::app* FAILED*',
+    '*test_splunk_app_req.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication::dest* FAILED*',
+    '*test_splunk_app_req.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication::src_user* PASSED*',
+    '*test_splunk_app_req.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication::user* FAILED*',
+    '*test_splunk_app_req.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Failed_Authentication* FAILED*',
+    '*test_splunk_app_req.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Successful_Authentication* FAILED*',
+    "*test_splunk_app_req.py::Test_App::test_requirements_fields[status-##result_mapping##::sample_name::sample_modinput.xml::host::* FAILED*",
+    "*test_splunk_app_req.py::Test_App::test_tags[authentication::sample_name::sample_modinput.xml::host::* FAILED*",
+    '*test_splunk_app_req.py::Test_App::test_tags[eventtype="test_auth"::tag::authentication* FAILED*',
+    "*test_splunk_app_req.py::Test_App::test_eventtype[eventtype::test_auth* FAILED*",
+]

@@ -744,19 +744,18 @@ def test_splunk_app_req(testdir):
     result = testdir.runpytest(
         "--splunk-type=docker",
         "-v",
-        "--search-interval=4",
+        "--search-interval=2",
         "--search-retry=4",
         "--search-index=*,_internal",
         "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
         # "--requirement-test=package/samples",
     )
     logger.info(result.outlines)
-    logger.info(len(constants.TA_REQUIREMENTS_PASSED))
+    logger.info(len(constants.TA_REQ_TRANSITION_PASSED))
     result.stdout.fnmatch_lines_random(
-        constants.TA_REQUIREMENTS_PASSED + constants.TA_REQUIREMENTS_FAILED
+        constants.TA_REQ_TRANSITION_PASSED + constants.TA_REQ_TRANSITION_FAILED + constants.TA_REQ_TRANSITION_SKIPPED
     )
-    result.assert_outcomes(passed=2, failed=1)
-    #   passed=2 as the successful data comes from 2 sources (log & xml)
+    result.assert_outcomes(passed=len(constants.TA_REQ_TRANSITION_PASSED), failed=len(constants.TA_REQ_TRANSITION_FAILED), skipped=len(constants.TA_REQ_TRANSITION_SKIPPED))
 
     # make sure that that we get a non '0' exit code for the testsuite as it contains failure
-    assert result.ret != 0
+    assert result.ret != 0, "result equal to 0"

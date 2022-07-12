@@ -282,6 +282,22 @@ class SampleEvent(object):
         """
         return len(re.findall(token, self.event, flags=re.MULTILINE))
 
+    def get_token_extractions_count(self, token):
+        """
+        Returns minimum number of occurrence count if token not found in event but is in extracted fields
+
+        Args:
+            token (str): Token name
+        """
+        tokens_in_extractions = 0
+        if (
+            self.requirement_test_data is not None
+            and "cim_fields" in self.requirement_test_data.keys()
+        ):
+            for extracted_field in self.requirement_test_data["cim_fields"].values():
+                tokens_in_extractions += len(re.findall(token, extracted_field))
+        return 1 if tokens_in_extractions > 0 else 0
+
     def replace_token(self, token, token_values):
         """
         Replaces the token value in event

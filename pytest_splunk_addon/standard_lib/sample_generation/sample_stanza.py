@@ -21,11 +21,14 @@ from . import raise_warning
 from . import SampleEvent
 import logging
 import xmltodict
+from collections import namedtuple
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 TIMEZONE_REX = "((\+1[0-2])|(-1[0-4])|[+|-][0][0-9])([0-5][0-9])"
 BULK_EVENT_COUNT = 250
+
+token_value = namedtuple("token_value", ["key", "value"])
 
 
 class SampleStanza(object):
@@ -98,6 +101,10 @@ class SampleStanza(object):
             for each_rule in self.sample_rules:
                 if each_rule:
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
+            for event in raw_event[event_counter]:
+                host_value = event.metadata.get("host")
+                host = token_value(key=host_value, value=host_value)
+                event.update_requirement_test_field("host", "##host##", host)
             bulk_event.extend(raw_event[event_counter])
             event_counter = event_counter + 1
 
@@ -285,7 +292,7 @@ class SampleStanza(object):
                 event_metadata = self.get_eventmetadata()
                 if self.metadata.get("sample_count") is None:
                     self.metadata.update(sample_count="1")
-                requirement_test_data = self.populate_requirement_test_data(each_event, event_metadata.get("host"))
+                requirement_test_data = self.populate_requirement_test_data(each_event)
                 yield SampleEvent(
                     event, event_metadata, self.sample_name, requirement_test_data
                 )
@@ -363,7 +370,7 @@ class SampleStanza(object):
         return token_list
 
     @staticmethod
-    def populate_requirement_test_data(event, event_host):
+    def populate_requirement_test_data(event):
         """
         Analyze event's datamodels, cim_fields, missing_recommended_fields, exception
 
@@ -380,10 +387,7 @@ class SampleStanza(object):
             fields = event["cim"]["cim_fields"]
             cim_fields = {}
             for field in fields["field"]:
-                value = field["@value"]
-                if value == "##host##":
-                    value = value.replace("##host##", event_host)
-                cim_fields[field["@name"]] = value
+                cim_fields[field["@name"]] = field["@value"]
             requirement_test_data["cim_fields"] = cim_fields
 
             missing_recommended_fields = []

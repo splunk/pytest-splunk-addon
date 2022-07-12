@@ -9,44 +9,23 @@
       <jira id="" />
       <comment>lab</comment>
     </source>
-    <raw><![CDATA[2021-12-31 15:15:30,340+0000 ip=##dest_ipv4## tester=admin result=success]]></raw>
+    <raw><![CDATA[2021-12-31 15:15:30,340+0000 ip=##dest_ipv4## tester=admin result=##result##]]></raw>
     <cim>
       <models>
         <model>Authentication</model>
       </models>
       <cim_fields>
-        <field name="action" value="success" />
+        <field name="action" value="##result##" />
+        <field name="status" value="##result_mapping##" />
         <field name="app" value="psa" />
         <field name="src" value="##dest_ipv4##" />
         <field name="user" value="admin" />
-        <field name="dest" value="so1" />
+        <field name="dest" value="##host##" />
       </cim_fields>
       <missing_recommended_fields>
         <field>src_user</field>
       </missing_recommended_fields>
     </cim>
   </event>
-  <event code="" name="AuthenticationPassed" format="">
-    <transport type="modinput" sourcetype="test:data:1" source="test_data.1" host="so1" />
-    <source>
-      <jira id="" />
-      <comment>lab</comment>
-    </source>
-    <raw><![CDATA[2021-12-31 15:15:30,340+0000 ip=##dest_ipv4## tester=admin result=fail]]></raw>
-    <cim>
-      <models>
-        <model>Authentication</model>
-      </models>
-      <cim_fields>
-        <field name="action" value="fail" />
-        <field name="app" value="psa" />
-        <field name="src" value="##dest_ipv4##" />
-        <field name="user" value="admin" />
-        <field name="dest" value="so1" />
-      </cim_fields>
-      <missing_recommended_fields>
-        <field>src_user</field>
-      </missing_recommended_fields>
-    </cim>
-  </event>
+
 </device>
