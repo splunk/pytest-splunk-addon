@@ -746,12 +746,12 @@ def test_splunk_app_req(testdir):
         "-v",
         "--search-interval=2",
         "--search-retry=4",
-        "--search-index=*,_internal",
+        "--search-index=*",
         "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
         # "--requirement-test=package/samples",
     )
     logger.info(result.outlines)
-    logger.info(len(constants.TA_REQ_TRANSITION_PASSED))
+
     result.stdout.fnmatch_lines_random(
         constants.TA_REQ_TRANSITION_PASSED
         + constants.TA_REQ_TRANSITION_FAILED
@@ -764,4 +764,4 @@ def test_splunk_app_req(testdir):
     )
 
     # make sure that that we get a non '0' exit code for the testsuite as it contains failure
-    assert result.ret != 0, "result equal to 0"
+    assert result.ret == 0, "result not equal to 0"
