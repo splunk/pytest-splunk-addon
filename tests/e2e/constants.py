@@ -812,7 +812,7 @@ TA_REQ_TRANSITION_PASSED = [
 
 TA_REQ_TRANSITION_SKIPPED = [
     "*test_splunk_app_req.py::Test_App::test_savedsearches[splunk_searchtime_fields_savedsearches0* SKIPPED*",
-    "*test_splunk_app_req.py::Test_App::test_indextime_key_fields[splunk_indextime_key_fields0* SKIPPED*"
+    "*test_splunk_app_req.py::Test_App::test_indextime_key_fields[splunk_indextime_key_fields0* SKIPPED*",
 ]
 
 TA_REQ_TRANSITION_FAILED = [

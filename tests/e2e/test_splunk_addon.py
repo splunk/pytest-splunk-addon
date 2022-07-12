@@ -753,9 +753,15 @@ def test_splunk_app_req(testdir):
     logger.info(result.outlines)
     logger.info(len(constants.TA_REQ_TRANSITION_PASSED))
     result.stdout.fnmatch_lines_random(
-        constants.TA_REQ_TRANSITION_PASSED + constants.TA_REQ_TRANSITION_FAILED + constants.TA_REQ_TRANSITION_SKIPPED
+        constants.TA_REQ_TRANSITION_PASSED
+        + constants.TA_REQ_TRANSITION_FAILED
+        + constants.TA_REQ_TRANSITION_SKIPPED
     )
-    result.assert_outcomes(passed=len(constants.TA_REQ_TRANSITION_PASSED), failed=len(constants.TA_REQ_TRANSITION_FAILED), skipped=len(constants.TA_REQ_TRANSITION_SKIPPED))
+    result.assert_outcomes(
+        passed=len(constants.TA_REQ_TRANSITION_PASSED),
+        failed=len(constants.TA_REQ_TRANSITION_FAILED),
+        skipped=len(constants.TA_REQ_TRANSITION_SKIPPED),
+    )
 
     # make sure that that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0, "result equal to 0"
