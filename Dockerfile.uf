@@ -20,3 +20,7 @@ ARG SPLUNK_APP_ID=TA_UNKNOWN
 ARG SPLUNK_APP_PACKAGE=package
 RUN echo ${SPLUNK_VERSION} $SPLUNK_APP_PACKAGE
 COPY ${SPLUNK_APP_PACKAGE} /opt/splunkforwarder/etc/apps/${SPLUNK_APP_ID}
+USER splunk
+RUN mkdir -p /opt/splunkforwarder/etc/system/local/
+RUN touch /opt/splunkforwarder/etc/system/local/web.conf
+RUN echo -e '[settings]\nmgmtHostPort=:8089' >> /opt/splunkforwarder/etc/system/local/web.conf
