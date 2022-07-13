@@ -181,7 +181,9 @@ class Rule:
                         global event_host_count
                         event_host_count += 1
                         new_event.metadata["host"] = "{}-{}".format(
-                            each_event.metadata["host"],
+                            each_event.metadata["host"]
+                            .replace("_", "-")
+                            .replace(".", "-"),
                             event_host_count,
                         )
                         new_event.metadata["id"] = "{}_{}".format(
