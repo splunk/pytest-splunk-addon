@@ -185,7 +185,11 @@ def test_splunk_app_fiction(testdir):
     result.stdout.fnmatch_lines_random(
         constants.TA_FICTION_PASSED + constants.TA_FICTION_SKIPPED
     )
-    result.assert_outcomes(passed=len(constants.TA_FICTION_PASSED), failed=0)
+    result.assert_outcomes(
+        passed=len(constants.TA_FICTION_PASSED),
+        failed=0,
+        skipped=len(constants.TA_FICTION_SKIPPED),
+    )
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
