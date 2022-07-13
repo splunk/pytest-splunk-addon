@@ -40,6 +40,8 @@ user_email_count = 0
 # ["name", "email", "domain_user", "distinquised_name"] in each token
 
 event_host_count = 0
+
+
 # event_host_count is used to generate unique host for each event in
 # case of replacementType = all
 
@@ -180,11 +182,16 @@ class Rule:
                         new_event = SampleEvent.copy(each_event)
                         global event_host_count
                         event_host_count += 1
+                        host = (
+                            each_event.metadata.get("host")
+                                .replace("_", "-")
+                                .replace(".", "-")
+                        )
+                        host_split = host.split("-")
+                        if re.match("\d+", host_split[-1]):
+                            host = "-".join(host_split[:-1])
                         new_event.metadata["host"] = "{}-{}".format(
-                            each_event.metadata["host"]
-                            .replace("_", "-")
-                            .replace(".", "-"),
-                            event_host_count,
+                            host, event_host_count
                         )
                         new_event.metadata["id"] = "{}_{}".format(
                             each_event.sample_name,
@@ -200,8 +207,8 @@ class Rule:
                     each_event.replace_token(self.token, token_values)
 
                     if not (
-                        each_event.metadata.get("timestamp_type") != "event"
-                        and self.field == "_time"
+                            each_event.metadata.get("timestamp_type") != "event"
+                            and self.field == "_time"
                     ):
                         each_event.register_field_value(self.field, token_values)
                         each_event.update_requirement_test_field(
@@ -327,13 +334,13 @@ class FloatRule(Rule):
             for _ in range(token_count):
                 yield self.token_value(
                     *(
-                        [
-                            round(
-                                uniform(float(lower_limit), float(upper_limit)),
-                                len(precision),
-                            )
-                        ]
-                        * 2
+                            [
+                                round(
+                                    uniform(float(lower_limit), float(upper_limit)),
+                                    len(precision),
+                                )
+                            ]
+                            * 2
                     )
                 )
         else:
@@ -414,13 +421,13 @@ class FileRule(Rule):
             try:
                 index = int(index)
                 for i in self.indexed_sample_file(
-                    sample, relative_file_path, index, token_count
+                        sample, relative_file_path, index, token_count
                 ):
                     yield self.token_value(*([i] * 2))
 
             except ValueError:
                 for i in self.lookupfile(
-                    sample, relative_file_path, index, token_count
+                        sample, relative_file_path, index, token_count
                 ):
                     yield self.token_value(*([i] * 2))
 
@@ -430,8 +437,8 @@ class FileRule(Rule):
                     txt = f.read()
                     lines = [each.strip() for each in txt.split("\n") if each]
                     if (
-                        self.replacement_type == "random"
-                        or self.replacement_type == "file"
+                            self.replacement_type == "random"
+                            or self.replacement_type == "file"
                     ):
                         for _ in range(token_count):
                             yield self.token_value(*([choice(lines)] * 2))
@@ -505,8 +512,8 @@ class FileRule(Rule):
                         all_data.append(i.strip())
 
                 if (
-                    hasattr(sample, "replacement_map")
-                    and file_path in sample.replacement_map
+                        hasattr(sample, "replacement_map")
+                        and file_path in sample.replacement_map
                 ):
                     index = int(index)
                     file_values = sample.replacement_map[file_path]["data"][
@@ -574,28 +581,28 @@ class FileRule(Rule):
                         all_data.append(line.strip())
             for _ in range(token_count):
                 if (
-                    hasattr(sample, "replacement_map")
-                    and file_path in sample.replacement_map
+                        hasattr(sample, "replacement_map")
+                        and file_path in sample.replacement_map
                 ):
                     index = (
                         sample.replacement_map[file_path][0]
-                        .strip()
-                        .split(",")
-                        .index(index)
+                            .strip()
+                            .split(",")
+                            .index(index)
                     )
                     file_values = sample.replacement_map[file_path][1].split(",")
                     for _ in range(token_count):
                         yield file_values[index]
                 else:
                     if (
-                        hasattr(sample, "replacement_map")
-                        and file_path in sample.replacement_map
+                            hasattr(sample, "replacement_map")
+                            and file_path in sample.replacement_map
                     ):
                         sample.replacement_map[file_path].append(all_data)
                     else:
                         if (
-                            self.replacement_type == "random"
-                            or self.replacement_type == "file"
+                                self.replacement_type == "random"
+                                or self.replacement_type == "file"
                         ):
                             self.file_count = random.randint(0, len(all_data) - 1)
                             sample.__setattr__(
@@ -803,9 +810,9 @@ class UserRule(Rule):
 
             for i in range(token_count):
                 if (
-                    hasattr(sample, "replacement_map")
-                    and "email" in sample.replacement_map
-                    and i < len(sample.replacement_map["email"])
+                        hasattr(sample, "replacement_map")
+                        and "email" in sample.replacement_map
+                        and i < len(sample.replacement_map["email"])
                 ):
                     index_list = [
                         i
@@ -853,9 +860,9 @@ class EmailRule(Rule):
 
         for i in range(token_count):
             if (
-                hasattr(sample, "replacement_map")
-                and "user" in sample.replacement_map
-                and i < len(sample.replacement_map["user"])
+                    hasattr(sample, "replacement_map")
+                    and "user" in sample.replacement_map
+                    and i < len(sample.replacement_map["user"])
             ):
                 csv_rows = sample.replacement_map["user"]
                 yield self.token_value(
@@ -912,7 +919,7 @@ class UrlRule(Rule):
             if replace_token:
                 for _ in range(token_count):
                     if bool(
-                        set(["ip_host", "fqdn_host", "full"]).intersection(value_list)
+                            set(["ip_host", "fqdn_host", "full"]).intersection(value_list)
                     ):
                         url = ""
                         domain_name = []
@@ -928,14 +935,14 @@ class UrlRule(Rule):
 
                     if bool(set(["full", "path"]).intersection(value_list)):
                         url = (
-                            url
-                            + "/"
-                            + choice(
-                                [
-                                    self.fake.uri_path(),
-                                    self.fake.uri_page() + self.fake.uri_extension(),
-                                ]
-                            )
+                                url
+                                + "/"
+                                + choice(
+                            [
+                                self.fake.uri_path(),
+                                self.fake.uri_page() + self.fake.uri_extension(),
+                            ]
+                        )
                         )
 
                     if bool(set(["full", "query"]).intersection(value_list)):
