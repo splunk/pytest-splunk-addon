@@ -182,7 +182,9 @@ def test_splunk_app_fiction(testdir):
         "--search-index=*,_internal",
     )
 
-    result.stdout.fnmatch_lines_random(constants.TA_FICTION_PASSED)
+    result.stdout.fnmatch_lines_random(
+        constants.TA_FICTION_PASSED + constants.TA_FICTION_SKIPPED
+    )
     result.assert_outcomes(passed=len(constants.TA_FICTION_PASSED), failed=0)
 
     # make sure that that we get a '0' exit code for the testsuite
@@ -231,11 +233,14 @@ def test_splunk_app_broken(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines_random(
-        constants.TA_BROKEN_PASSED + constants.TA_BROKEN_FAILED
+        constants.TA_BROKEN_PASSED
+        + constants.TA_BROKEN_FAILED
+        + constants.TA_BROKEN_SKIPPED
     )
     result.assert_outcomes(
         passed=len(constants.TA_BROKEN_PASSED),
         failed=len(constants.TA_BROKEN_FAILED),
+        skipped=len(constants.TA_BROKEN_SKIPPED),
     )
 
     # The test suite should fail as this is a negative test
