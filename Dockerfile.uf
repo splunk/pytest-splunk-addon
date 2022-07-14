@@ -13,13 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-ARG SPLUNK_VERSION=latest
+#ARG SPLUNK_VERSION=latest
+ARG SPLUNK_VERSION=8.2.6
 FROM splunk/universalforwarder:$SPLUNK_VERSION
 ARG SPLUNK_VERSION=latest
 ARG SPLUNK_APP_ID=TA_UNKNOWN
 ARG SPLUNK_APP_PACKAGE=package
 RUN echo ${SPLUNK_VERSION} $SPLUNK_APP_PACKAGE
 COPY ${SPLUNK_APP_PACKAGE} /opt/splunkforwarder/etc/apps/${SPLUNK_APP_ID}
-USER splunk
-RUN touch /opt/splunkforwarder-etc/system/local/web.conf
-RUN echo -e '[settings]\nmgmtHostPort=:8089' >> /opt/splunkforwarder-etc/system/local/web.conf
+#USER splunk
+#RUN touch /opt/splunkforwarder-etc/system/local/web.conf
+#RUN echo -e '[settings]\nmgmtHostPort=:8089' >> /opt/splunkforwarder-etc/system/local/web.conf
