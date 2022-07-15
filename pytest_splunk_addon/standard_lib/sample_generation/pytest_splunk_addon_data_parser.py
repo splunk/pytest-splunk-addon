@@ -20,11 +20,13 @@ from .rule import raise_warning
 from . import SampleStanza
 
 import addonfactory_splunk_conf_parser_lib as conf_parser
+from xmlschema import XMLSchema, XMLSchemaValidationError
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 PSA_DATA_CONFIG_FILE = "pytest-splunk-addon-data.conf"
+SCHEMA_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "schema.xsd")
 
 
 class PytestSplunkAddonDataParser:
@@ -43,6 +45,7 @@ class PytestSplunkAddonDataParser:
         self._psa_data = None
         self.addon_path = addon_path
         self.match_stanzas = set()
+        self._path_to_samples = self._path_to_samples()
 
     def _path_to_samples(self):
         if os.path.exists(os.path.join(self.config_path, "samples")):
@@ -95,7 +98,7 @@ class PytestSplunkAddonDataParser:
         self._check_samples()
         results = []
         for sample_name, stanza_params in sorted(_psa_data.items()):
-            sample_path = os.path.join(self._path_to_samples(), sample_name)
+            sample_path = os.path.join(self._path_to_samples, sample_name)
             results.append(SampleStanza(sample_path, stanza_params))
         return results
 
@@ -125,8 +128,11 @@ class PytestSplunkAddonDataParser:
             Dictionary representing pytest-splunk-addon-data.conf in the above format.
         """
         psa_data_dict = {}
-        if os.path.exists(self._path_to_samples()):
-            for sample_file in os.listdir(self._path_to_samples()):
+        schema = XMLSchema(SCHEMA_PATH)
+        if os.path.exists(self._path_to_samples):
+            for sample_file in os.listdir(self._path_to_samples):
+                if sample_file.endswith(".xml") or sample_file.endswith(".log"):
+                    schema.validate(os.path.join(self._path_to_samples, sample_file))
                 for stanza, fields in sorted(self.psa_data.items()):
                     stanza_match_obj = re.search(stanza, sample_file)
                     if stanza_match_obj and stanza_match_obj.group(0) == sample_file:
@@ -153,7 +159,7 @@ class PytestSplunkAddonDataParser:
         Gives a user warning when sample file is not found for the stanza
         present in the configuration file.
         """
-        if os.path.exists(self._path_to_samples()):
+        if os.path.exists(self._path_to_samples):
             for stanza in self.psa_data.keys():
                 if stanza not in self.match_stanzas:
                     raise_warning(f"No sample file found for stanza : {stanza}")

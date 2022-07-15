@@ -81,13 +81,10 @@ class AppTestGenerator(object):
             fixture(str): fixture name
         """
         store_events = self.pytest_config.getoption("store_events")
-        if fixture.startswith("splunk_searchtime_fields") or fixture.startswith(
-            "splunk_indextime"
-        ):
-            config_path = self.pytest_config.getoption("splunk_data_generator")
-            sample_generator = SampleXdistGenerator(
-                self.pytest_config.getoption("splunk_app"), config_path
-            )
+        config_path = self.pytest_config.getoption("splunk_data_generator")
+        sample_generator = SampleXdistGenerator(
+            self.pytest_config.getoption("splunk_app"), config_path
+        )
         if fixture.startswith("splunk_searchtime_fields"):
             yield from self.dedup_tests(
                 self.fieldtest_generator.generate_tests(
@@ -97,7 +94,7 @@ class AppTestGenerator(object):
             )
         elif fixture.startswith("splunk_searchtime_cim"):
             yield from self.dedup_tests(
-                self.cim_test_generator.generate_tests(fixture), fixture
+                self.cim_test_generator.generate_tests(fixture, sample_generator, store_events), fixture
             )
         # elif fixture.startswith("splunk_searchtime_requirement"):
         #     if self.pytest_config.getoption("requirement_test") != "None":

@@ -46,11 +46,11 @@ class CIMTestGenerator(object):
     COMMON_FIELDS_PATH = "CommonFields.json"
 
     def __init__(
-        self,
-        addon_path,
-        data_model_path,
-        test_field_type=["required", "conditional"],
-        common_fields_path=None,
+            self,
+            addon_path,
+            data_model_path,
+            test_field_type=["required", "conditional"],
+            common_fields_path=None,
     ):
 
         self.data_model_handler = DataModelHandler(data_model_path)
@@ -60,7 +60,7 @@ class CIMTestGenerator(object):
             op.dirname(op.abspath(__file__)), self.COMMON_FIELDS_PATH
         )
 
-    def generate_tests(self, fixture):
+    def generate_tests(self, fixture, sample_generator, store_events):
         """
         Generate the test cases based on the fixture provided
         supported fixtures:
@@ -72,6 +72,7 @@ class CIMTestGenerator(object):
         Args:
             fixture(str): fixture name
         """
+
         if fixture.endswith("fields"):
             yield from self.generate_cim_fields_tests()
         elif fixture.endswith("not_allowed_in_props"):
@@ -80,6 +81,10 @@ class CIMTestGenerator(object):
             yield from self.generate_fields_event_count_test()
         elif fixture.endswith("mapped_datamodel"):
             yield from self.generate_mapped_datamodel_tests()
+        elif fixture.endswith("fields_recommended"):
+            store_sample = sample_generator.get_samples(store_events)
+            tokenized_events = store_sample.get("tokenized_events")
+            yield from self.generate_recommended_fields_tests(tokenized_events)
 
     def get_mapped_datasets(self):
         """
@@ -158,8 +163,8 @@ class CIMTestGenerator(object):
                     each_field
                     for each_field in test_dataset.fields
                     if each_field.type
-                    in ["not_allowed_in_search_and_props", "not_allowed_in_props"]
-                    and each_field not in common_fields_list
+                       in ["not_allowed_in_search_and_props", "not_allowed_in_props"]
+                       and each_field not in common_fields_list
                 ]
             )
 
@@ -177,7 +182,7 @@ class CIMTestGenerator(object):
                     for each in test_group["fields"]
                     for each_common_field in common_fields_list
                     if each_common_field.name == each.name
-                    and each_common_field not in not_allowed_fields
+                       and each_common_field not in not_allowed_fields
                 ]
             )
 
@@ -211,8 +216,8 @@ class CIMTestGenerator(object):
                     each_field
                     for each_field in test_dataset.fields
                     if each_field.type
-                    in ["not_allowed_in_search_and_props", "not_allowed_in_search"]
-                    and each_field not in test_fields
+                       in ["not_allowed_in_search_and_props", "not_allowed_in_search"]
+                       and each_field not in test_fields
                 ]
             )
             yield pytest.param(
@@ -252,3 +257,27 @@ class CIMTestGenerator(object):
             {"eventtypes": eventtypes},
             id=f"mapped_datamodel_tests",
         )
+
+    def generate_recommended_fields_tests(self, tokenized_events):
+        for event in tokenized_events:
+            if not event.requirement_test_data:
+                continue
+            for _, datamodel in event.requirement_test_data["datamodels"].items():
+                model, *datasets = datamodel.split(":")
+                model = model.replace(" ", "_")
+                if datasets:
+                    datasets = [dataset.replace(" ", "_") for dataset in datasets]
+
+                fields = list(event.requirement_test_data["cim_fields"].keys()) + event.requirement_test_data[
+                    "missing_recommended_fields"]
+                for exception in event.requirement_test_data["exceptions"]:
+                    fields.append(exception["name"])
+
+                yield pytest.param(
+                    {
+                        "datamodel": model,
+                        "datasets": datasets,
+                        "fields": fields
+                    },
+                    id=f"{model}-{datasets}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
+                )

@@ -39,12 +39,12 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_fields
     def test_cim_required_fields(
-        self,
-        splunk_search_util,
-        splunk_ingest_data,
-        splunk_setup,
-        splunk_searchtime_cim_fields,
-        record_property,
+            self,
+            splunk_search_util,
+            splunk_ingest_data,
+            splunk_setup,
+            splunk_searchtime_cim_fields,
+            record_property,
     ):
         """
         Test the the required fields in the data models are extracted with valid values.
@@ -65,9 +65,9 @@ class CIMTestTemplates(object):
         cim_data_model = cim_data_set[-1].data_model
         data_set = str(cim_data_set[-1])
         index_list = (
-            "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
-            + ")"
+                "(index="
+                + " OR index=".join(splunk_search_util.search_index.split(","))
+                + ")"
         )
 
         # Search Query
@@ -152,12 +152,12 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_fields_not_allowed_in_search
     def test_cim_fields_not_allowed_in_search(
-        self,
-        splunk_ingest_data,
-        splunk_search_util,
-        splunk_setup,
-        splunk_searchtime_cim_fields_not_allowed_in_search,
-        record_property,
+            self,
+            splunk_ingest_data,
+            splunk_search_util,
+            splunk_setup,
+            splunk_searchtime_cim_fields_not_allowed_in_search,
+            record_property,
     ):
         """
         This test case checks the event_count for the cim fields of type ["not_allowed_in_search_and_props", "not_allowed_in_search"].
@@ -173,9 +173,9 @@ class CIMTestTemplates(object):
 
         # Search Query
         index_list = (
-            "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
-            + ")"
+                "(index="
+                + " OR index=".join(splunk_search_util.search_index.split(","))
+                + ")"
         )
 
         base_search = "search {}".format(index_list)
@@ -229,7 +229,7 @@ class CIMTestTemplates(object):
                 for each_elem in results
                 for field in cim_fields
                 if not each_elem.get(field.name) == "0"
-                and not each_elem.get(field.name) == each_elem["sourcetype"]
+                   and not each_elem.get(field.name) == each_elem["sourcetype"]
             ]
 
             violation_str = (
@@ -249,11 +249,11 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_fields_not_allowed_in_props
     def test_cim_fields_not_allowed_in_props(
-        self,
-        splunk_ingest_data,
-        splunk_setup,
-        splunk_searchtime_cim_fields_not_allowed_in_props,
-        record_property,
+            self,
+            splunk_ingest_data,
+            splunk_setup,
+            splunk_searchtime_cim_fields_not_allowed_in_props,
+            record_property,
     ):
         """
         This testcase checks for cim field of type ["not_allowed_in_search_and_props", "not_allowed_in_props"] if an extraction is defined in the configuration file.
@@ -280,13 +280,13 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_cim_mapped_datamodel
     def test_eventtype_mapped_multiple_cim_datamodel(
-        self,
-        splunk_search_util,
-        splunk_ingest_data,
-        splunk_setup,
-        splunk_searchtime_cim_mapped_datamodel,
-        record_property,
-        caplog,
+            self,
+            splunk_search_util,
+            splunk_ingest_data,
+            splunk_setup,
+            splunk_searchtime_cim_mapped_datamodel,
+            record_property,
+            caplog,
     ):
         """
         This test case check that event type is not be mapped with more than one data model
@@ -430,9 +430,9 @@ class CIMTestTemplates(object):
             {"name": "Web", "tags": [["web"], ["web", "proxy"]]},
         ]
         index_list = (
-            "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
-            + ")"
+                "(index="
+                + " OR index=".join(splunk_search_util.search_index.split(","))
+                + ")"
         )
         search = "search {} ".format(index_list)
         # search = "search "
@@ -482,3 +482,19 @@ class CIMTestTemplates(object):
             f"\nQuery result greater than 0.\nsearch=\n{search} \n \n"
             f"Event type which associated with multiple data model \n{result_str}"
         )
+
+    @pytest.mark.splunk_searchtime_cim
+    @pytest.mark.splunk_requirements
+    @pytest.mark.splunk_requirements_unit
+    def test_fields_recommended(self, splunk_dm_recommended_fields, splunk_searchtime_cim_fields_recommended):
+        datamodel = splunk_searchtime_cim_fields_recommended["datamodel"]
+        datasets = splunk_searchtime_cim_fields_recommended["datasets"]
+        fields = splunk_searchtime_cim_fields_recommended["fields"]
+
+        fields_from_splunk = splunk_dm_recommended_fields(datamodel, datasets)
+        model_key = f"{datamodel}:{':'.join(datasets)}".strip(":")
+
+        model_fields = fields_from_splunk[model_key]
+
+        assert all(item in set(fields) for item in set(
+            model_fields)), f"Not all fields from datamodel - {model_fields} found for event definition {fields}"

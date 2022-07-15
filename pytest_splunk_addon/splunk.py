@@ -23,6 +23,8 @@ Module usage:
 import logging
 import os
 import shutil
+from collections import defaultdict
+from itertools import chain
 from time import sleep
 import json
 import pytest
@@ -798,6 +800,40 @@ def file_system_prerequisite():
         if os.path.exists(monitor_dir):
             shutil.rmtree(monitor_dir, ignore_errors=True)
         os.mkdir(monitor_dir)
+
+
+@pytest.fixture(scope="session")
+def splunk_dm_recommended_fields(splunk_search_util):
+    recommended_fields = defaultdict(list)
+
+    def _find(name, dictionary):
+        for key, value in dictionary.items():
+            if key == name:
+                yield value
+            elif isinstance(value, dict):
+                yield from _find(name, value)
+            elif isinstance(value, list):
+                for element in value:
+                    if isinstance(element, dict):
+                        yield from _find(name, element)
+
+    def update_recommended_fields(model, datasets):
+        model_key = f"{model}:{':'.join(datasets)}".strip(":")
+        if model_key not in recommended_fields:
+            for cim_model in splunk_search_util.getFieldValuesList(f'| rest /servicesNS/-/-/data/models/{model} | fields "eai:data"'):
+                model_definition = json.loads(cim_model["eai:data"])
+                for object in model_definition["objects"]:
+                    object_name = object["objectName"]
+                    if object["parentName"] == "BaseEvent" or object_name in datasets or object_name == model:
+                        for fields in chain(_find("fields", object), _find("outputFields", object)):
+                            for field in fields:
+                                recommended = field["comment"].get("recommended")
+                                if recommended:
+                                    recommended_fields[model_key].append(field["fieldName"])
+
+        return recommended_fields
+
+    return update_recommended_fields
 
 
 def is_responsive_uf(uf):
