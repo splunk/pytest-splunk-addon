@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 ARG SPLUNK_VERSION=8.2.6
-FROM splunk/universalforwarder:$SPLUNK_VERSION
+FROM splunk/universalforwarder:8.2.6
 ARG SPLUNK_VERSION=latest
 ARG SPLUNK_APP_ID=TA_UNKNOWN
 ARG SPLUNK_APP_PACKAGE=package
