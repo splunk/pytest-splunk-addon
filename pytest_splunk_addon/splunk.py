@@ -820,16 +820,26 @@ def splunk_dm_recommended_fields(splunk_search_util):
     def update_recommended_fields(model, datasets):
         model_key = f"{model}:{':'.join(datasets)}".strip(":")
         if model_key not in recommended_fields:
-            for cim_model in splunk_search_util.getFieldValuesList(f'| rest /servicesNS/-/-/data/models/{model} | fields "eai:data"'):
+            for cim_model in splunk_search_util.getFieldValuesList(
+                f'| rest /servicesNS/-/-/data/models/{model} | fields "eai:data"'
+            ):
                 model_definition = json.loads(cim_model["eai:data"])
                 for object in model_definition["objects"]:
                     object_name = object["objectName"]
-                    if object["parentName"] == "BaseEvent" or object_name in datasets or object_name == model:
-                        for fields in chain(_find("fields", object), _find("outputFields", object)):
+                    if (
+                        object["parentName"] == "BaseEvent"
+                        or object_name in datasets
+                        or object_name == model
+                    ):
+                        for fields in chain(
+                            _find("fields", object), _find("outputFields", object)
+                        ):
                             for field in fields:
                                 recommended = field["comment"].get("recommended")
                                 if recommended:
-                                    recommended_fields[model_key].append(field["fieldName"])
+                                    recommended_fields[model_key].append(
+                                        field["fieldName"]
+                                    )
 
         return recommended_fields
 

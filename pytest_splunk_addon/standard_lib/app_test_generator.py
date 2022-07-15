@@ -94,7 +94,10 @@ class AppTestGenerator(object):
             )
         elif fixture.startswith("splunk_searchtime_cim"):
             yield from self.dedup_tests(
-                self.cim_test_generator.generate_tests(fixture, sample_generator, store_events), fixture
+                self.cim_test_generator.generate_tests(
+                    fixture, sample_generator, store_events
+                ),
+                fixture,
             )
         # elif fixture.startswith("splunk_searchtime_requirement"):
         #     if self.pytest_config.getoption("requirement_test") != "None":

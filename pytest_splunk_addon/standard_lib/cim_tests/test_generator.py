@@ -46,11 +46,11 @@ class CIMTestGenerator(object):
     COMMON_FIELDS_PATH = "CommonFields.json"
 
     def __init__(
-            self,
-            addon_path,
-            data_model_path,
-            test_field_type=["required", "conditional"],
-            common_fields_path=None,
+        self,
+        addon_path,
+        data_model_path,
+        test_field_type=["required", "conditional"],
+        common_fields_path=None,
     ):
 
         self.data_model_handler = DataModelHandler(data_model_path)
@@ -163,8 +163,8 @@ class CIMTestGenerator(object):
                     each_field
                     for each_field in test_dataset.fields
                     if each_field.type
-                       in ["not_allowed_in_search_and_props", "not_allowed_in_props"]
-                       and each_field not in common_fields_list
+                    in ["not_allowed_in_search_and_props", "not_allowed_in_props"]
+                    and each_field not in common_fields_list
                 ]
             )
 
@@ -182,7 +182,7 @@ class CIMTestGenerator(object):
                     for each in test_group["fields"]
                     for each_common_field in common_fields_list
                     if each_common_field.name == each.name
-                       and each_common_field not in not_allowed_fields
+                    and each_common_field not in not_allowed_fields
                 ]
             )
 
@@ -216,8 +216,8 @@ class CIMTestGenerator(object):
                     each_field
                     for each_field in test_dataset.fields
                     if each_field.type
-                       in ["not_allowed_in_search_and_props", "not_allowed_in_search"]
-                       and each_field not in test_fields
+                    in ["not_allowed_in_search_and_props", "not_allowed_in_search"]
+                    and each_field not in test_fields
                 ]
             )
             yield pytest.param(
@@ -268,16 +268,14 @@ class CIMTestGenerator(object):
                 if datasets:
                     datasets = [dataset.replace(" ", "_") for dataset in datasets]
 
-                fields = list(event.requirement_test_data["cim_fields"].keys()) + event.requirement_test_data[
-                    "missing_recommended_fields"]
+                fields = (
+                    list(event.requirement_test_data["cim_fields"].keys())
+                    + event.requirement_test_data["missing_recommended_fields"]
+                )
                 for exception in event.requirement_test_data["exceptions"]:
                     fields.append(exception["name"])
 
                 yield pytest.param(
-                    {
-                        "datamodel": model,
-                        "datasets": datasets,
-                        "fields": fields
-                    },
+                    {"datamodel": model, "datasets": datasets, "fields": fields},
                     id=f"{model}-{datasets}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )
