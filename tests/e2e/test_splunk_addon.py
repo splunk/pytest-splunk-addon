@@ -346,12 +346,11 @@ def test_splunk_app_cim_broken(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines_random(
-        constants.TA_CIM_BROKEN_PASSED
-        + constants.TA_CIM_BROKEN_FAILED
+        constants.TA_CIM_BROKEN_PASSED + constants.TA_CIM_BROKEN_FAILED
     )
     result.assert_outcomes(
         passed=len(constants.TA_CIM_BROKEN_PASSED),
-        failed=len(constants.TA_CIM_BROKEN_FAILED)
+        failed=len(constants.TA_CIM_BROKEN_FAILED),
     )
 
     # The test suite should fail as this is a negative test
@@ -763,7 +762,7 @@ def test_splunk_app_req(testdir):
         "--search-interval=2",
         "--search-retry=4",
         "--search-index=*",
-        "--splunk-data-generator=tests/addons/TA_transition_from_req/default"
+        "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
     )
     logger.info(result.outlines)
 
