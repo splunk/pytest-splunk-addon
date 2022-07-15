@@ -277,5 +277,5 @@ class CIMTestGenerator(object):
 
                 yield pytest.param(
                     {"datamodel": model, "datasets": datasets, "fields": fields},
-                    id=f"{model}-{datasets}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
+                    id=f"{model}-{'-'.join(datasets)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )

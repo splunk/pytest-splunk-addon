@@ -486,7 +486,7 @@ class CIMTestTemplates(object):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_requirements
     @pytest.mark.splunk_requirements_unit
-    def test_fields_recommended(
+    def test_cim_fields_recommended(
         self, splunk_dm_recommended_fields, splunk_searchtime_cim_fields_recommended
     ):
         datamodel = splunk_searchtime_cim_fields_recommended["datamodel"]
