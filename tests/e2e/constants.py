@@ -249,8 +249,8 @@ TA_FICTION_PASSED = [
 
 TA_FICTION_SKIPPED = [
     "*test_splunk_app_fiction.py::Test_App::test_requirements_fields[splunk_searchtime_fields_requirements0* SKIPPED*",
-    "*test_splunk_app_fiction.py::Test_App::test_fields_recommended[splunk_searchtime_cim_fields_recommended0* SKIPPED*",
 ]
+
 """
 Define the TA_broken add-on passed test case list.
 """
@@ -811,9 +811,9 @@ TA_REQ_TRANSITION_PASSED = [
     '*test_splunk_app_req.py::Test_App::test_cim_fields_not_allowed_in_search[eventtype="test_auth"::Authentication* PASSED*',
     "*test_splunk_app_req.py::Test_App::test_cim_fields_not_allowed_in_props[searchtime_cim_fields* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel[mapped_datamodel_tests* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_fields_recommended[Authentication-[]::sample_name::sample_modinput.xml::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_fields_recommended[Authentication-[]::sample_name::sample_modinput.xml::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_fields_recommended[Authentication-[]::sample_name::sample_modinput.xml::* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_fields_recommended[Authentication-*::sample_name::sample_modinput.xml::* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_fields_recommended[Authentication-*::sample_name::sample_modinput.xml::* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_fields_recommended[Authentication-*::sample_name::sample_modinput.xml::* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_splunk_internal_errors PASSED*",
     "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1* PASSED *",
     "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::action* PASSED*",
