@@ -479,10 +479,6 @@ TA_CIM_BROKEN_FAILED = [
     '*test_splunk_app_cim_broken.py::Test_App::test_cim_required_fields*eventtype="eventtype_splunkd_broken_with_eval"::Broken_Eval::fail_multi_value_field* FAILED*',
 ]
 
-TA_CIM_BROKEN_SKIPPED = [
-    "*test_splunk_app_cim_broken.py::Test_App::test_fields_recommended[splunk_searchtime_cim_fields_recommended0* SKIPPED*"
-]
-
 """
 Define the TA_fiction_indextime add-on passed test case list.
 """
