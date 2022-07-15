@@ -291,8 +291,14 @@ def test_splunk_app_cim_fiction(testdir):
         "--search-index=*,_internal",
     )
 
-    result.stdout.fnmatch_lines_random(constants.TA_CIM_FICTION_PASSED)
-    result.assert_outcomes(passed=len(constants.TA_CIM_FICTION_PASSED), failed=0)
+    result.stdout.fnmatch_lines_random(
+        constants.TA_CIM_FICTION_PASSED + constants.TA_CIM_FICTION_SKIPPED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_CIM_FICTION_PASSED),
+        failed=0,
+        skipped=len(constants.TA_CIM_FICTION_SKIPPED),
+    )
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
@@ -340,11 +346,14 @@ def test_splunk_app_cim_broken(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines_random(
-        constants.TA_CIM_BROKEN_PASSED + constants.TA_CIM_BROKEN_FAILED
+        constants.TA_CIM_BROKEN_PASSED
+        + constants.TA_CIM_BROKEN_FAILED
+        + constants.TA_CIM_BROKEN_SKIPPED
     )
     result.assert_outcomes(
         passed=len(constants.TA_CIM_BROKEN_PASSED),
         failed=len(constants.TA_CIM_BROKEN_FAILED),
+        skipped=len(constants.TA_CIM_BROKEN_SKIPPED),
     )
 
     # The test suite should fail as this is a negative test
@@ -757,7 +766,6 @@ def test_splunk_app_req(testdir):
         "--search-retry=4",
         "--search-index=*",
         "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
-        # "--requirement-test=package/samples",
     )
     logger.info(result.outlines)
 
