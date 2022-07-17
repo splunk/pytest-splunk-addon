@@ -70,7 +70,7 @@ class AppTestGenerator(object):
         self.cim_test_generator = CIMTestGenerator(
             self.pytest_config.getoption("splunk_app"),
             self.pytest_config.getoption("splunk_dm_path") or data_model_path,
-            self.tokenized_events
+            self.tokenized_events,
         )
         self.indextime_test_generator = IndexTimeTestGenerator(self.tokenized_events)
 
@@ -88,14 +88,12 @@ class AppTestGenerator(object):
         """
         if fixture.startswith("splunk_searchtime_fields"):
             yield from self.dedup_tests(
-                self.fieldtest_generator.generate_tests(
-                    fixture),
+                self.fieldtest_generator.generate_tests(fixture),
                 fixture,
             )
         elif fixture.startswith("splunk_searchtime_cim"):
             yield from self.dedup_tests(
-                self.cim_test_generator.generate_tests(
-                    fixture),
+                self.cim_test_generator.generate_tests(fixture),
                 fixture,
             )
 

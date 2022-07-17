@@ -31,6 +31,7 @@ class IndexTimeTestGenerator(object):
     * Supports key_fields: List of fields which should be tested
       for the Add-on.
     """
+
     def __init__(self, tokenized_events):
         self.tokenized_events = tokenized_events
 
