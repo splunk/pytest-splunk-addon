@@ -804,6 +804,16 @@ def file_system_prerequisite():
 
 @pytest.fixture(scope="session")
 def splunk_dm_recommended_fields(splunk_search_util):
+    """
+    Returns function which gets recommended fields from Splunk for given datamodel
+
+    Note that data is being dynamically retrieved from Splunk. When CIM add-on version changes
+    retrieved data may differ
+
+    Args:
+        splunk_search_util: Other fixture preparing connection to Splunk Search.
+
+    """
     recommended_fields = defaultdict(list)
 
     def _find(name, dictionary):

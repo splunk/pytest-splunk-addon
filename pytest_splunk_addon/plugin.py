@@ -27,7 +27,6 @@ test_generator = None
 
 
 def pytest_configure(config):
-    global test_generator
     """
     Setup configuration after command-line options are parsed
     """
@@ -78,8 +77,6 @@ def pytest_configure(config):
         "markers",
         "splunk_searchtime_requirements: Test an requirement test only  is mapped with only one data models",
     )
-    if config.getoption("splunk_app", None):
-        test_generator = AppTestGenerator(config)
 
     cim_report = config.getoption("cim_report")
     if cim_report and not hasattr(config, "slaveinput"):
@@ -96,7 +93,7 @@ def pytest_unconfigure(config):
 
 
 def pytest_sessionstart(session):
-
+    global test_generator
     SampleXdistGenerator.event_path = session.config.getoption("event_path")
     SampleXdistGenerator.event_stored = False
     SampleXdistGenerator.tokenized_event_source = session.config.getoption(
@@ -114,6 +111,8 @@ def pytest_sessionstart(session):
         store_events = session.config.getoption("store_events")
         sample_generator = SampleXdistGenerator(app_path, config_path)
         sample_generator.get_samples(store_events)
+    if session.config.getoption("splunk_app", None):
+        test_generator = AppTestGenerator(session.config)
 
 
 def pytest_generate_tests(metafunc):
