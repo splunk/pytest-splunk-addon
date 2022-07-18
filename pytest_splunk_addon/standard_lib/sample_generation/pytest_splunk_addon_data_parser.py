@@ -131,12 +131,18 @@ class PytestSplunkAddonDataParser:
         schema = XMLSchema(SCHEMA_PATH)
         if os.path.exists(self._path_to_samples):
             for sample_file in os.listdir(self._path_to_samples):
-                if sample_file.endswith(".xml") or sample_file.endswith(".log"):
-                    schema.validate(os.path.join(self._path_to_samples, sample_file))
                 for stanza, fields in sorted(self.psa_data.items()):
                     stanza_match_obj = re.search(stanza, sample_file)
                     if stanza_match_obj and stanza_match_obj.group(0) == sample_file:
                         self.match_stanzas.add(stanza)
+                        if (
+                            "requirement_test_sample" in self.psa_data[stanza].keys()
+                            and int(self.psa_data[stanza]["requirement_test_sample"])
+                            > 0
+                        ):
+                            schema.validate(
+                                os.path.join(self._path_to_samples, sample_file)
+                            )
                         psa_data_dict.setdefault(sample_file, {"tokens": {}})
                         for key, value in fields.items():
                             if key.startswith("token"):
