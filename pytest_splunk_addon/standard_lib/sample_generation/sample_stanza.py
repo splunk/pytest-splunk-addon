@@ -386,8 +386,11 @@ class SampleStanza(object):
 
             fields = event["cim"]["cim_fields"]
             cim_fields = {}
-            for field in fields["field"]:
-                cim_fields[field["@name"]] = field["@value"]
+            if type(fields["field"]) == list:
+                for field in fields["field"]:
+                    cim_fields[field["@name"]] = field["@value"]
+            elif type(fields["field"]) == dict:
+                cim_fields[fields["field"]["@name"]] = fields["field"]["@value"]
             requirement_test_data["cim_fields"] = cim_fields
 
             missing_recommended_fields = []
