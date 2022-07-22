@@ -87,10 +87,13 @@ class SampleXdistGenerator:
                     "modinput",
                     "windows_input",
                 ]:
-                    sample_multiplication = int(each_event.metadata.get("sample_count") or 1)
-                    expected_count = int(
-                        each_event.metadata.get("expected_event_count")
-                    ) * sample_multiplication
+                    sample_multiplication = int(
+                        each_event.metadata.get("sample_count") or 1
+                    )
+                    expected_count = (
+                        int(each_event.metadata.get("expected_event_count"))
+                        * sample_multiplication
+                    )
                 else:
                     expected_count = each_event.metadata.get("expected_event_count")
                 tokenized_samples_dict[each_event.sample_name] = {
