@@ -114,9 +114,16 @@ class SampleStanza(object):
                 each.metadata.update(sample_count=1)
 
         if self.metadata.get("expected_event_count") is None:
-            self.metadata.update(expected_event_count=len(bulk_event))
+            breaker = self.metadata.get("breaker")
+            if breaker is not None:
+                expected_events = 0
+                for each_event in bulk_event:
+                    expected_events += len(list(filter(lambda x: x, self.break_events(each_event.event))))
+            else:
+                expected_events = len(bulk_event)
+            self.metadata.update(expected_event_count=expected_events)
             for each in bulk_event:
-                each.metadata.update(expected_event_count=len(bulk_event))
+                each.metadata.update(expected_event_count=expected_events)
         else:
             self.metadata.update(sample_count=1)
             for each in bulk_event:
