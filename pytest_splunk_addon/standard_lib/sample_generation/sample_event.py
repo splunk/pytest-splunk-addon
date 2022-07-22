@@ -295,11 +295,11 @@ class SampleEvent(object):
             and "cim_fields" in self.requirement_test_data.keys()
         ):
             for extracted_field in self.requirement_test_data["cim_fields"].values():
-                if extracted_field is str:
+                if isinstance(extracted_field, str):
                     tokens_in_extractions += len(re.findall(token, extracted_field))
-                elif extracted_field is list:
+                elif isinstance(extracted_field, list):
                     for each_filed in extracted_field:
-                        tokens_in_extractions += len(re.findall(token, extracted_field))
+                        tokens_in_extractions += len(re.findall(token, each_filed))
         return 1 if tokens_in_extractions > 0 else 0
 
     def replace_token(self, token, token_values):
