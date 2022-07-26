@@ -49,18 +49,20 @@ class CIMTestGenerator(object):
         self,
         addon_path,
         data_model_path,
+        tokenized_events,
         test_field_type=["required", "conditional"],
         common_fields_path=None,
     ):
 
         self.data_model_handler = DataModelHandler(data_model_path)
         self.addon_parser = AddonParser(addon_path)
+        self.tokenized_events = tokenized_events
         self.test_field_type = test_field_type
         self.common_fields_path = common_fields_path or op.join(
             op.dirname(op.abspath(__file__)), self.COMMON_FIELDS_PATH
         )
 
-    def generate_tests(self, fixture, sample_generator, store_events):
+    def generate_tests(self, fixture):
         """
         Generate the test cases based on the fixture provided
         supported fixtures:
@@ -82,9 +84,7 @@ class CIMTestGenerator(object):
         elif fixture.endswith("mapped_datamodel"):
             yield from self.generate_mapped_datamodel_tests()
         elif fixture.endswith("fields_recommended"):
-            store_sample = sample_generator.get_samples(store_events)
-            tokenized_events = store_sample.get("tokenized_events")
-            yield from self.generate_recommended_fields_tests(tokenized_events)
+            yield from self.generate_recommended_fields_tests()
 
     def get_mapped_datasets(self):
         """
@@ -258,8 +258,8 @@ class CIMTestGenerator(object):
             id=f"mapped_datamodel_tests",
         )
 
-    def generate_recommended_fields_tests(self, tokenized_events):
-        for event in tokenized_events:
+    def generate_recommended_fields_tests(self):
+        for event in self.tokenized_events:
             if not event.requirement_test_data:
                 continue
             for _, datamodel in event.requirement_test_data["datamodels"].items():

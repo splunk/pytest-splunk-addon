@@ -47,10 +47,19 @@ class AppTestGenerator(object):
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
         self.seen_tests = set()
+
+        store_events = self.pytest_config.getoption("store_events")
+        config_path = self.pytest_config.getoption("splunk_data_generator")
+        sample_generator = SampleXdistGenerator(
+            self.pytest_config.getoption("splunk_app"), config_path
+        )
+        store_sample = sample_generator.get_samples(store_events)
+        self.tokenized_events = store_sample.get("tokenized_events")
         LOGGER.debug("Initializing FieldTestGenerator to generate the test cases")
         self.fieldtest_generator = FieldTestGenerator(
             self.pytest_config.getoption("splunk_app"),
             self.pytest_config.getoption("requirement_test"),
+            self.tokenized_events,
             field_bank=self.pytest_config.getoption("field_bank", False),
         )
 
@@ -61,12 +70,9 @@ class AppTestGenerator(object):
         self.cim_test_generator = CIMTestGenerator(
             self.pytest_config.getoption("splunk_app"),
             self.pytest_config.getoption("splunk_dm_path") or data_model_path,
+            self.tokenized_events,
         )
-        LOGGER.debug("Initializing ReqsTestGenerator to generate the test cases")
-        self.requirement_test_generator = ReqsTestGenerator(
-            self.pytest_config.getoption("requirement_test"),
-        )
-        self.indextime_test_generator = IndexTimeTestGenerator()
+        self.indextime_test_generator = IndexTimeTestGenerator(self.tokenized_events)
 
     def generate_tests(self, fixture):
         """
@@ -80,30 +86,16 @@ class AppTestGenerator(object):
         Args:
             fixture(str): fixture name
         """
-        store_events = self.pytest_config.getoption("store_events")
-        config_path = self.pytest_config.getoption("splunk_data_generator")
-        sample_generator = SampleXdistGenerator(
-            self.pytest_config.getoption("splunk_app"), config_path
-        )
         if fixture.startswith("splunk_searchtime_fields"):
             yield from self.dedup_tests(
-                self.fieldtest_generator.generate_tests(
-                    fixture, sample_generator, store_events
-                ),
+                self.fieldtest_generator.generate_tests(fixture),
                 fixture,
             )
         elif fixture.startswith("splunk_searchtime_cim"):
             yield from self.dedup_tests(
-                self.cim_test_generator.generate_tests(
-                    fixture, sample_generator, store_events
-                ),
+                self.cim_test_generator.generate_tests(fixture),
                 fixture,
             )
-        # elif fixture.startswith("splunk_searchtime_requirement"):
-        #     if self.pytest_config.getoption("requirement_test") != "None":
-        #         yield from self.dedup_tests(
-        #             self.requirement_test_generator.generate_tests(fixture), fixture
-        #         )
 
         elif fixture.startswith("splunk_indextime"):
             # TODO: What should be the id of the test case?
@@ -117,8 +109,6 @@ class AppTestGenerator(object):
             if "key_fields" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
-                        store_events,
-                        sample_generator,
                         test_type="key_fields",
                     )
                 )
@@ -126,8 +116,6 @@ class AppTestGenerator(object):
             elif "_time" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
-                        store_events,
-                        sample_generator,
                         test_type="_time",
                     )
                 )
@@ -135,8 +123,6 @@ class AppTestGenerator(object):
             elif "line_breaker" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
-                        store_events,
-                        sample_generator,
                         test_type="line_breaker",
                     )
                 )

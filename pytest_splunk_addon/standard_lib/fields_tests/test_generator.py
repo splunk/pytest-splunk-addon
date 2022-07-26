@@ -22,10 +22,8 @@ import pytest
 import logging
 from itertools import chain
 
-# from ..sample_generation import SampleXdistGenerator
 from ..addon_parser import AddonParser
 from . import FieldBank
-from .sample_parser import parse_sample_files
 from ..utilities import escape_char_event
 
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
@@ -46,43 +44,46 @@ class FieldTestGenerator(object):
         field_bank (str): Path of the fields Json file
     """
 
-    def __init__(self, app_path, requirement_files_path, field_bank=None):
+    def __init__(
+        self, app_path, requirement_files_path, tokenized_events, field_bank=None
+    ):
         LOGGER.debug("initializing AddonParser to parse the app")
         self.app_path = app_path
         self.addon_parser = AddonParser(self.app_path)
         self.folder_path = requirement_files_path
+        self.tokenized_events = tokenized_events
         self.field_bank = field_bank
 
-    def generate_tests(self, fixture, sample_generator, store_events):
+    def generate_tests(self, fixture):
         """
         Generate the test cases based on the fixture provided
         supported fixtures:
 
-            * splunk_app_searchtime_fields
-            * splunk_app_searchtime_negative
-            * splunk_app_searchtime_eventtypes
-            * splunk_app_searchtime_tags
-            * splunk_app_searchtime_savedsearches
+            * splunk_searchtime_fields_positive
+            * splunk_searchtime_fields_negative
+            * splunk_searchtime_fields_tags
+            * splunk_searchtime_fields_eventtypes
+            * splunk_searchtime_fields_savedsearches
+            * splunk_searchtime_fields_requirements
 
         Args:
             fixture(str): fixture name
+            sample_generator(SampleGenerator): sample objects generator
+            store_events(bool): variable to define if events should be stored
 
         """
-        # sample_generator = SampleXdistGenerator(self.app_path, config_path)
-        store_sample = sample_generator.get_samples(store_events)
-        tokenized_events = store_sample.get("tokenized_events")
         if fixture.endswith("positive"):
             yield from self.generate_field_tests(is_positive=True)
         elif fixture.endswith("negative"):
             yield from self.generate_field_tests(is_positive=False)
         elif fixture.endswith("tags"):
-            yield from self.generate_tag_tests(tokenized_events)
+            yield from self.generate_tag_tests()
         elif fixture.endswith("eventtypes"):
             yield from self.generate_eventtype_tests()
         elif fixture.endswith("savedsearches"):
             yield from self.generate_savedsearches_tests()
         elif fixture.endswith("requirements"):
-            yield from self.generate_requirements_tests(tokenized_events)
+            yield from self.generate_requirements_tests()
 
     def generate_field_tests(self, is_positive):
         """
@@ -142,7 +143,7 @@ class FieldTestGenerator(object):
                     one_field_group, id=f"{stanza}::{test_type}::{each_field}"
                 )
 
-    def generate_tag_tests(self, tokenized_events):
+    def generate_tag_tests(self):
         """
         Generate test case for tags
 
@@ -154,7 +155,7 @@ class FieldTestGenerator(object):
                 each_tag_group, id="{stanza}::tag::{tag}".format(**each_tag_group)
             )
 
-        for event in tokenized_events:
+        for event in self.tokenized_events:
             if not event.requirement_test_data:
                 continue
             escaped_event = escape_char_event(event.event)
@@ -176,16 +177,6 @@ class FieldTestGenerator(object):
                     },
                     id=f"{tag}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )
-
-        # for event in parse_sample_files(self.folder_path):
-        #     for tag in event.tags_to_check:
-        #         yield pytest.param(
-        #             {
-        #                 "tag": tag,
-        #                 "stanza": event.event_string,
-        #             },
-        #             id=f"{tag}::event_name::{event.name}",
-        #         )
 
     def generate_eventtype_tests(self):
         """
@@ -212,8 +203,15 @@ class FieldTestGenerator(object):
                 each_savedsearch, id="{stanza}".format(**each_savedsearch)
             )
 
-    def generate_requirements_tests(self, tokenized_events):
-        for event in tokenized_events:
+    def generate_requirements_tests(self):
+        """
+        Generate test cases for fields defined for datamodel
+        These function generates tests previously covered by requirement tests
+
+        Yields:
+            pytest.params for the test templates
+        """
+        for event in self.tokenized_events:
             escaped_event = escape_char_event(event.event)
             if not event.requirement_test_data:
                 continue
