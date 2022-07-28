@@ -346,12 +346,14 @@ def test_splunk_app_cim_broken(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines_random(
-        constants.TA_CIM_BROKEN_PASSED + constants.TA_CIM_BROKEN_FAILED + constants.TA_CIM_BROKEN_SKIPPED
+        constants.TA_CIM_BROKEN_PASSED
+        + constants.TA_CIM_BROKEN_FAILED
+        + constants.TA_CIM_BROKEN_SKIPPED
     )
     result.assert_outcomes(
         passed=len(constants.TA_CIM_BROKEN_PASSED),
         failed=len(constants.TA_CIM_BROKEN_FAILED),
-        skipped=len(constants.TA_CIM_BROKEN_SKIPPED)
+        skipped=len(constants.TA_CIM_BROKEN_SKIPPED),
     )
 
     # The test suite should fail as this is a negative test
