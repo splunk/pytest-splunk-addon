@@ -479,7 +479,7 @@ TA_CIM_BROKEN_FAILED = [
 ]
 
 TA_CIM_BROKEN_SKIPPED = [
-    "*test_splunk_app_cim_fiction.py::Test_App::test_cim_fields_recommended[splunk_searchtime_cim_fields_recommended0* SKIPPED*"
+    "*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_recommended[splunk_searchtime_cim_fields_recommended0* SKIPPED*"
 ]
 
 """
