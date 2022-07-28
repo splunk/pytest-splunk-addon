@@ -498,6 +498,11 @@ class CIMTestTemplates(object):
 
         model_fields = fields_from_splunk[model_key]
 
-        assert all(
-            item in set(fields) for item in set(model_fields)
-        ), f"Not all fields from datamodel - {model_fields} found for event definition {fields}"
+        missing_fields = []
+        for field in set(model_fields):
+            if field not in fields:
+                missing_fields.append(field)
+
+        assert (
+            missing_fields == []
+        ), f"Not all fields from datamodel found for event definition. Missing fields {missing_fields}"

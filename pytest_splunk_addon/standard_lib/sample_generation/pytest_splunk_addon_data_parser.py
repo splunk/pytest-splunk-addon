@@ -45,9 +45,9 @@ class PytestSplunkAddonDataParser:
         self._psa_data = None
         self.addon_path = addon_path
         self.match_stanzas = set()
-        self._path_to_samples = self._path_to_samples()
+        self._path_to_samples = self._get_path_to_samples()
 
-    def _path_to_samples(self):
+    def _get_path_to_samples(self):
         if os.path.exists(os.path.join(self.config_path, "samples")):
             LOGGER.info(
                 "Samples path is: {}".format(os.path.join(self.config_path, "samples"))
