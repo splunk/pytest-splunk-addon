@@ -31,6 +31,7 @@ class IndexTimeTestGenerator(object):
     * Supports key_fields: List of fields which should be tested
       for the Add-on.
     """
+
     def generate_tests(self, store_events, app_path, config_path, test_type):
         """
         Generates the test cases based on test_type
