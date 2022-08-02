@@ -146,13 +146,13 @@ class FieldTestTemplates(object):
         record_property(
             "stanza_name", splunk_searchtime_fields_requirements["escaped_event"]
         )
-        record_property("stanza_type", splunk_searchtime_fields_requirements["field"])
+        record_property("fields", splunk_searchtime_fields_requirements["fields"])
         record_property(
-            "fields", splunk_searchtime_fields_requirements["modinput_params"]
+            "modinput_params", splunk_searchtime_fields_requirements["modinput_params"]
         )
 
         escaped_event = splunk_searchtime_fields_requirements["escaped_event"]
-        key, value = splunk_searchtime_fields_requirements["field"]
+        fields = splunk_searchtime_fields_requirements["fields"]
         modinput_params = splunk_searchtime_fields_requirements["modinput_params"]
 
         index_list = (
@@ -166,36 +166,41 @@ class FieldTestTemplates(object):
             if param_value is not None:
                 basic_search += f" {param}={param_value}"
 
-        if value.startswith("[") and value.endswith("]"):
-            # replacing \ and " because of json format
-            value = (
-                value.replace("\\", "\\\\").replace('"', '\\\\\\"').replace("'", '"')
-            )
-            values = json.loads(value)
-            key_search = ""
-            for v in values:
-                key_search += f'AND {key} IN ("{v}") '
-            key_search += f"| eval n=mvcount({key}) | search n={len(values)}"
-        else:
-            key_search = f'AND {key}="{value}"'
-
-        search = f"search {index_list} {basic_search} {escaped_event} {key_search}"
+        search = f"search {index_list} {basic_search} {escaped_event} | fields *"
 
         self.logger.info(f"Executing the search query: {search}")
 
-        # run search
-        result = splunk_search_util.checkQueryCount(
+        fields_from_splunk = splunk_search_util.getFieldValuesDict(
             search,
-            targetCount=1,
             interval=splunk_search_util.search_interval,
             retries=splunk_search_util.search_retry,
         )
-        record_property("search", search)
 
-        assert result, (
-            f"No result found for the search.\nsearch={search}\n"
-            f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
-        )
+        missing_fields = []
+        wrong_value_fields = {}
+
+        for field, value in fields.items():
+            if field not in fields_from_splunk:
+                missing_fields.append(field)
+
+            if value != fields_from_splunk.get(field):
+                wrong_value_fields[field] = fields_from_splunk[field]
+
+        failure_message = ""
+
+        for field, value in wrong_value_fields.items():
+            failure_message += (
+                f"Field {field} has value {value} and should has {fields[field]}\n"
+            )
+
+        self.logger.error(f"Fields with wrong values: {failure_message}")
+
+        assert (
+            missing_fields == []
+        ), f"Not all required fields found in Splunk. Missing fields: {', '.join(missing_fields)}"
+        assert (
+            wrong_value_fields == {}
+        ), f"Not all required fields have correct values in Splunk. Wrong field values: {failure_message}"
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative

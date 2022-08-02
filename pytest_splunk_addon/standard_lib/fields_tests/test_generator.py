@@ -222,16 +222,23 @@ class FieldTestGenerator(object):
                 "source": metadata.get("source"),
                 "sourcetype": metadata.get("sourcetype_to_search"),
             }
-            for key, value in event.requirement_test_data.get("cim_fields", {}).items():
-                if key not in exceptions:
-                    yield pytest.param(
-                        {
-                            "escaped_event": escaped_event,
-                            "field": (key, value),
-                            "modinput_params": modinput_params,
-                        },
-                        id=f"{key}-{value}::sample_name::{event.sample_name}::host::{modinput_params['host']}",
-                    )
+
+            cim_fields = event.requirement_test_data.get("cim_fields", {})
+
+            if cim_fields:
+                cim_fields = {
+                    field: value
+                    for field, value in cim_fields.items()
+                    if field not in exceptions
+                }
+                yield pytest.param(
+                    {
+                        "escaped_event": escaped_event,
+                        "fields": cim_fields,
+                        "modinput_params": modinput_params,
+                    },
+                    id=f"sample_name::{event.sample_name}::host::{modinput_params['host']}",
+                )
 
     def _contains_classname(self, fields_group, criteria):
         """
