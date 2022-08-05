@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-ARG SPLUNK_VERSION=latest
+ARG SPLUNK_VERSION=8.2.6
 FROM splunk/universalforwarder:$SPLUNK_VERSION
 ARG SPLUNK_VERSION=latest
 ARG SPLUNK_APP_ID=TA_UNKNOWN
