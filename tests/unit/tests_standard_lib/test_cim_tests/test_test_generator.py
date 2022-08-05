@@ -72,8 +72,18 @@ def fake_addon_parser():
 @pytest.mark.parametrize(
     "args",
     [
-        ("addon_path", "data_model_path"),
-        ("addon_path", "data_model_path", ["optional"], "fake_common_fields_path"),
+        (
+            "addon_path",
+            "data_model_path",
+            [],
+        ),
+        (
+            "addon_path",
+            "data_model_path",
+            [],
+            ["optional"],
+            "fake_common_fields_path",
+        ),
     ],
 )
 def test_cim_test_generator_instantiation(args):
@@ -89,15 +99,15 @@ def test_cim_test_generator_instantiation(args):
         assert cim.addon_parser == "ADDON_PARSER_RETURN_VALUE"
         dtm_mock.assert_called_once_with("data_model_path")
         ap_mock.assert_called_once_with("addon_path")
-        if len(args) == 2:
+        if len(args) == 3:
             assert cim.test_field_type == ["required", "conditional"]
             assert (
                 "pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json"
                 in cim.common_fields_path
             )
         else:
-            assert cim.test_field_type == args[2]
-            assert cim.common_fields_path == args[3]
+            assert cim.test_field_type == args[3]
+            assert cim.common_fields_path == args[4]
 
 
 @pytest.mark.parametrize(

@@ -13,7 +13,7 @@ tokens = {
     "token_1": {"replacementType": "all"},
     "token_2": {"replacementType": "random"},
 }
-rule_obj = namedtuple("rule_obj", ["metadata"])
+rule_obj = namedtuple("rule_obj", ["metadata", "update_requirement_test_field"])
 
 
 def get_params_for_get_raw_sample():
@@ -103,34 +103,41 @@ class TestSampleStanza:
             (
                 {"tokens": tokens},
                 "something",
-                [rule_obj({"breaker": 1, "expected_event_count": 1})],
+                [{"breaker": 1, "expected_event_count": 1}],
             ),
             (
                 {"tokens": tokens, "count": "1"},
                 "psa_data",
-                [rule_obj({"breaker": 1, "expected_event_count": 1})],
+                [{"breaker": 1, "expected_event_count": 1}],
             ),
             (
                 {"tokens": tokens, "expected_event_count": "1", "breaker": "4"},
                 "som",
-                [rule_obj({"breaker": 1, "sample_count": 1})],
+                [{"breaker": 1, "sample_count": 1}],
             ),
         ],
     )
     def test_tokenize(self, sample_stanza, psa_data_params, conf_name, expected):
         ss = sample_stanza(psa_data_params=psa_data_params)
-        ss._get_raw_sample = MagicMock(return_value=[rule_obj({})])
+        ss._get_raw_sample = MagicMock(return_value=[rule_obj({}, "")])
         rule = MagicMock()
-        rule.apply.return_value = [rule_obj({"breaker": 1})]
+        rule.apply.return_value = [
+            rule_obj(
+                {
+                    "breaker": 1,
+                },
+                MagicMock(),
+            )
+        ]
         ss.sample_rules = [rule]
         ss.tokenize(conf_name)
-        assert ss.tokenized_events == expected
+        assert [e.metadata for e in ss.tokenized_events] == expected
 
     def test_tokenize_empty_raw_event(self, sample_stanza):
         ss = sample_stanza()
         ss._get_raw_sample = MagicMock(return_value=[])
         rule = MagicMock()
-        rule.apply.return_value = [rule_obj({"breaker": 1})]
+        rule.apply.return_value = [rule_obj({"breaker": 1}, MagicMock())]
         ss.sample_rules = [rule]
         ss.tokenize("conf_name")
         assert ss.tokenized_events == []
