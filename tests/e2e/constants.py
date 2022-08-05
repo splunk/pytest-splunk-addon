@@ -653,7 +653,6 @@ TA_FICTION_INDEXTIME_PASSED = [
 """
 Define the TA_fiction_indextime add-on failed test case list.
 """
-
 TA_FICTION_INDEXTIME_FAILED = []
 
 """
@@ -666,7 +665,9 @@ TA_FICTION_INDEXTIME_SKIPPED = [
     "*test_splunk_fiction_indextime.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*",
     "*test_splunk_fiction_indextime.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*",
     "*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_recommended[splunk_searchtime_cim_fields_recommended0* SKIPPED*",
+    "*test_splunk_fiction_indextime.py::Test_App::test_requirements_fields[splunk_searchtime_fields_requirements0* SKIPPED*",
 ]
+
 """
 Define the TA_fiction_indextime_broken add-on passed test case list.
 """
