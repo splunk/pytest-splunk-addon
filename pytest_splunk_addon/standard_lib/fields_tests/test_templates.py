@@ -200,7 +200,7 @@ class FieldTestTemplates(object):
         ), f"Not all required fields found in Splunk. Missing fields: {', '.join(missing_fields)}"
         assert (
             wrong_value_fields == {}
-        ), f"Not all required fields have correct values in Splunk. Wrong field values: {failure_message}"
+        ), f"Not all required fields have correct values in Splunk. Wrong field values: {failure_message} Search string: {search}"
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative

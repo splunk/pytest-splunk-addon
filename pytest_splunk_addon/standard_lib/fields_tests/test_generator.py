@@ -24,7 +24,7 @@ from itertools import chain
 
 from ..addon_parser import AddonParser
 from . import FieldBank
-from ..utilities import escape_char_event
+from ..utilities import xml_event_parser
 
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
@@ -158,7 +158,14 @@ class FieldTestGenerator(object):
         for event in self.tokenized_events:
             if not event.requirement_test_data:
                 continue
-            escaped_event = escape_char_event(event.event)
+            if event.metadata.get("input_type", "").startswith("syslog"):
+                stripped_event = xml_event_parser.strip_syslog_header(event.event)
+                if stripped_event is None:
+                    LOGGER.error(
+                        "Syslog event do not match CEF, RFC_3164, RFC_5424 format"
+                    )
+                    continue
+            escaped_event = xml_event_parser.escape_char_event(stripped_event)
             datamodels = event.requirement_test_data.get("datamodels")
             if datamodels:
                 if type(datamodels) is dict:
@@ -212,14 +219,19 @@ class FieldTestGenerator(object):
             pytest.params for the test templates
         """
         for event in self.tokenized_events:
-            escaped_event = escape_char_event(event.event)
             if not event.requirement_test_data:
                 continue
+            if event.metadata.get("input_type", "").startswith("syslog"):
+                stripped_event = xml_event_parser.strip_syslog_header(event.event)
+                if stripped_event is None:
+                    LOGGER.error(
+                        "Syslog event do not match CEF, RFC_3164, RFC_5424 format"
+                    )
+                    continue
+            escaped_event = xml_event_parser.escape_char_event(stripped_event)
             exceptions = event.requirement_test_data.get("exceptions", {})
             metadata = event.metadata
             modinput_params = {
-                "host": metadata.get("host"),
-                "source": metadata.get("source"),
                 "sourcetype": metadata.get("sourcetype_to_search"),
             }
 
@@ -237,7 +249,7 @@ class FieldTestGenerator(object):
                         "fields": cim_fields,
                         "modinput_params": modinput_params,
                     },
-                    id=f"sample_name::{event.sample_name}::host::{modinput_params['host']}",
+                    id=f"sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )
 
     def _contains_classname(self, fields_group, criteria):
