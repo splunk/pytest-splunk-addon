@@ -87,20 +87,6 @@ def test_generate_tests_without_conf_file(mock_object, caplog):
                 )
             ],
         ),
-        (
-            "_time",
-            [
-                sample_event(
-                    metadata={
-                        "identifier": "sample.2",
-                        "host": "localhost",
-                        "timestamp_type": "event",
-                    },
-                    time_values=[],
-                )
-            ],
-            [],
-        ),
     ],
 )
 def test_generate_tests_triggers_generate_params(
