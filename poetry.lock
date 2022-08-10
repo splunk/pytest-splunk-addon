@@ -222,7 +222,7 @@ format_nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-
 
 [[package]]
 name = "junitparser"
-version = "2.5.0"
+version = "2.6.0"
 description = "Manipulates JUnit/xUnit Result XML files"
 category = "main"
 optional = false
@@ -437,7 +437,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "splunk-sdk"
-version = "1.6.19"
+version = "1.6.20"
 description = "The Splunk Software Development Kit for Python."
 category = "main"
 optional = false
@@ -599,8 +599,8 @@ jsonschema = [
     {file = "jsonschema-4.5.1.tar.gz", hash = "sha256:7c6d882619340c3347a1bf7315e147e6d3dae439033ae6383d6acb908c101dfc"},
 ]
 junitparser = [
-    {file = "junitparser-2.5.0-py2.py3-none-any.whl", hash = "sha256:c6b09dd3e6bf933f60dd3fecd6581210645298980ca7b5331a0b448de9feb714"},
-    {file = "junitparser-2.5.0.tar.gz", hash = "sha256:47f97aeb7e08db7fad3311b70c19f63a54f6149499d64f488524b9dc10961ff6"},
+    {file = "junitparser-2.6.0-py2.py3-none-any.whl", hash = "sha256:777a8ff9c118e5e97b209d1c6f3f24e6ee414d84f1b8cbbfab14d322d6bac5ed"},
+    {file = "junitparser-2.6.0.tar.gz", hash = "sha256:6aee8e7c74258775a1aab6de50b907d966b9128e29205340d0fffee186c04cd8"},
 ]
 lovely-pytest-docker = [
     {file = "lovely-pytest-docker-0.3.0.tar.gz", hash = "sha256:b8333ae52faefc92ffaeed3e02d7664b7b02df999f621f1635cb6e3fbb7e145c"},
@@ -686,7 +686,7 @@ six = [
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
 ]
 splunk-sdk = [
-    {file = "splunk-sdk-1.6.19.tar.gz", hash = "sha256:db0e6183e2994e341d7ee81c05ea96acee6e8ee0d7a6d37ac5448c3761effc2b"},
+    {file = "splunk-sdk-1.6.20.tar.gz", hash = "sha256:cac4954bdd94443f180baa9fce9208dd0ce67ad1ef125e3b7f9aa91e52e94101"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
