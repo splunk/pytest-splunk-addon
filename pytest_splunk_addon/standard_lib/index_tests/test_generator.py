@@ -16,7 +16,7 @@
 import logging
 import pytest
 
-from ..sample_generation import SampleGenerator
+from ..sample_generation import SampleXdistGenerator
 from ..sample_generation.rule import raise_warning
 from ..sample_generation.sample_event import SampleEvent
 
@@ -32,10 +32,7 @@ class IndexTimeTestGenerator(object):
       for the Add-on.
     """
 
-    def __init__(self, tokenized_events):
-        self.tokenized_events = tokenized_events
-
-    def generate_tests(self, test_type):
+    def generate_tests(self, store_events, app_path, config_path, test_type):
         """
         Generates the test cases based on test_type
 
@@ -48,7 +45,10 @@ class IndexTimeTestGenerator(object):
             pytest.params for the test templates
 
         """
-        if not SampleGenerator.conf_name == "psa-data-gen":
+        sample_generator = SampleXdistGenerator(app_path, config_path)
+        store_sample = sample_generator.get_samples(store_events)
+        tokenized_events = store_sample.get("tokenized_events")
+        if not store_sample.get("conf_name") == "psa-data-gen":
             msg = (
                 "Index time tests cannot be executed without "
                 "pytest-splunk-addon-data.conf"
@@ -58,11 +58,11 @@ class IndexTimeTestGenerator(object):
 
         if test_type == "line_breaker":
             LOGGER.info("Generating line breaker test")
-            yield from self.generate_line_breaker_tests()
+            yield from self.generate_line_breaker_tests(tokenized_events)
 
         else:
 
-            for tokenized_event in self.tokenized_events:
+            for tokenized_event in tokenized_events:
 
                 identifier_key = tokenized_event.metadata.get("identifier")
 
@@ -99,7 +99,7 @@ class IndexTimeTestGenerator(object):
                         tokenized_event, identifier_key, hosts
                     )
 
-    def generate_line_breaker_tests(self):
+    def generate_line_breaker_tests(self, tokenized_events):
         """
         Generates test case for testing line breaker
 
@@ -114,7 +114,7 @@ class IndexTimeTestGenerator(object):
         # As all the sample events would have same properties except Host
         # Assigning those values outside the loop
 
-        for event in self.tokenized_events:
+        for event in tokenized_events:
             try:
                 sample_count = int(event.metadata.get("sample_count", 1))
                 expected_count = int(event.metadata.get("expected_event_count", 1))

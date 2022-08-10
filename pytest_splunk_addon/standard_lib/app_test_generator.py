@@ -72,7 +72,7 @@ class AppTestGenerator(object):
             self.pytest_config.getoption("splunk_dm_path") or data_model_path,
             self.tokenized_events,
         )
-        self.indextime_test_generator = IndexTimeTestGenerator(self.tokenized_events)
+        self.indextime_test_generator = IndexTimeTestGenerator()
 
     def generate_tests(self, fixture):
         """
@@ -103,12 +103,16 @@ class AppTestGenerator(object):
 
             pytest_params = None
 
+            store_events = self.pytest_config.getoption("store_events")
             app_path = self.pytest_config.getoption("splunk_app")
             config_path = self.pytest_config.getoption("splunk_data_generator")
 
             if "key_fields" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
+                        store_events,
+                        app_path=app_path,
+                        config_path=config_path,
                         test_type="key_fields",
                     )
                 )
@@ -116,6 +120,9 @@ class AppTestGenerator(object):
             elif "_time" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
+                        store_events,
+                        app_path=app_path,
+                        config_path=config_path,
                         test_type="_time",
                     )
                 )
@@ -123,6 +130,9 @@ class AppTestGenerator(object):
             elif "line_breaker" in fixture:
                 pytest_params = list(
                     self.indextime_test_generator.generate_tests(
+                        store_events,
+                        app_path=app_path,
+                        config_path=config_path,
                         test_type="line_breaker",
                     )
                 )

@@ -21,7 +21,7 @@ def test_path_to_samples():
         path,
         path,
     )
-    assert os.path.join(path, "samples") == psa_data_parser._path_to_samples()
+    assert os.path.join(path, "samples") == psa_data_parser._path_to_samples
 
 
 def test_get_psa_data_stanzas_with_samples():
