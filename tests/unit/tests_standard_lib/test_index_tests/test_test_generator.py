@@ -8,7 +8,9 @@ from pytest_splunk_addon.standard_lib.index_tests.test_generator import (
 
 module = "pytest_splunk_addon.standard_lib.index_tests.test_generator"
 sample_event = namedtuple(
-    "SampleEvent", ["metadata", "key_fields", "sample_name"], defaults=[{}, {}, ""]
+    "SampleEvent",
+    ["metadata", "key_fields", "sample_name", "time_values"],
+    defaults=[{}, {}, "", [1]],
 )
 
 
@@ -84,6 +86,20 @@ def test_generate_tests_without_conf_file(mock_object, caplog):
                     ["localhost"],
                 )
             ],
+        ),
+        (
+            "_time",
+            [
+                sample_event(
+                    metadata={
+                        "identifier": "sample.2",
+                        "host": "localhost",
+                        "timestamp_type": "event",
+                    },
+                    time_values=[],
+                )
+            ],
+            [],
         ),
     ],
 )
