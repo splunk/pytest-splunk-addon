@@ -24,7 +24,7 @@ from itertools import chain
 
 from ..addon_parser import AddonParser
 from . import FieldBank
-from ..utilities import escape_char_event
+from ..utilities import xml_event_parser
 
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
@@ -169,7 +169,6 @@ class FieldTestGenerator(object):
             else:
                 stripped_event = event.event
             escaped_event = xml_event_parser.escape_char_event(stripped_event)
-
             datamodels = event.requirement_test_data.get("datamodels")
             if datamodels:
                 if type(datamodels) is dict:
@@ -223,7 +222,6 @@ class FieldTestGenerator(object):
             pytest.params for the test templates
         """
         for event in self.tokenized_events:
-            escaped_event = escape_char_event(event.event)
             if not event.requirement_test_data:
                 continue
             if event.metadata.get("input_type", "").startswith("syslog"):
@@ -240,20 +238,25 @@ class FieldTestGenerator(object):
             exceptions = event.requirement_test_data.get("exceptions", {})
             metadata = event.metadata
             modinput_params = {
-                "host": metadata.get("host"),
-                "source": metadata.get("source"),
                 "sourcetype": metadata.get("sourcetype_to_search"),
             }
-            for key, value in event.requirement_test_data.get("cim_fields", {}).items():
-                if key not in exceptions:
-                    yield pytest.param(
-                        {
-                            "escaped_event": escaped_event,
-                            "field": (key, value),
-                            "modinput_params": modinput_params,
-                        },
-                        id=f"{key}-{value}::sample_name::{event.sample_name}::host::{modinput_params['host']}",
-                    )
+
+            cim_fields = event.requirement_test_data.get("cim_fields", {})
+
+            if cim_fields:
+                cim_fields = {
+                    field: value
+                    for field, value in cim_fields.items()
+                    if field not in exceptions
+                }
+                yield pytest.param(
+                    {
+                        "escaped_event": escaped_event,
+                        "fields": cim_fields,
+                        "modinput_params": modinput_params,
+                    },
+                    id=f"sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
+                )
 
     def _contains_classname(self, fields_group, criteria):
         """

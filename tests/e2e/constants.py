@@ -653,7 +653,6 @@ TA_FICTION_INDEXTIME_PASSED = [
 """
 Define the TA_fiction_indextime add-on failed test case list.
 """
-
 TA_FICTION_INDEXTIME_FAILED = []
 
 """
@@ -666,7 +665,9 @@ TA_FICTION_INDEXTIME_SKIPPED = [
     "*test_splunk_fiction_indextime.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*",
     "*test_splunk_fiction_indextime.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*",
     "*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_recommended[splunk_searchtime_cim_fields_recommended0* SKIPPED*",
+    "*test_splunk_fiction_indextime.py::Test_App::test_requirements_fields[splunk_searchtime_fields_requirements0* SKIPPED*",
 ]
+
 """
 Define the TA_fiction_indextime_broken add-on passed test case list.
 """
@@ -825,24 +826,9 @@ TA_REQ_TRANSITION_PASSED = [
     "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::status* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::tester* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_props_fields[test:data:1::field::user* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[action-error::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[action-failure::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[action-success::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[app-psa::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[app-psa::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[app-psa::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[dest-*::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[dest-*::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[dest-*::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[src-10.100.0.1::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[src-10.100.0.2::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[src-10.100.0.3::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[status-FAIL::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[status-OTHER::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[status-PASS::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[user-admin::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[user-admin::sample_name::sample_modinput.xml::host::* PASSED*",
-    "*test_splunk_app_req.py::Test_App::test_requirements_fields[user-admin::sample_name::sample_modinput.xml::host::* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_requirements_fields[sample_name::sample_modinput.xml::host::so1-4* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_requirements_fields[sample_name::sample_modinput.xml::host::so1-5* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_requirements_fields[sample_name::sample_modinput.xml::host::so1-6* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::action* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::app* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::dest* PASSED*",
