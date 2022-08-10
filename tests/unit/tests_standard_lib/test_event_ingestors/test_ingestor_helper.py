@@ -140,20 +140,3 @@ def test_events_can_be_ingested(
     get_ingestor_mock.ingest.assert_has_calls(
         [call(file_monitor_events, 20), call(modinput_events, 20)]
     )
-
-
-def test_requirement_tests_can_be_run(
-    get_ingestor_mock, sample_mock, requirement_mock, requirement_events
-):
-    event_ingestors.ingestor_helper.IngestorHelper.ingest_events(
-        ingest_meta_data={},
-        addon_path="fake_path",
-        config_path="tests/unit/event_ingestors",
-        thread_count=20,
-        store_events=False,
-        run_requirement_test="fake_requirement_path",
-    )
-    requirement_mock.assert_called_once_with("fake_requirement_path")
-    requirement_mock.get_events.assert_called_once()
-    assert get_ingestor_mock.ingest.call_count == 3
-    get_ingestor_mock.ingest.assert_has_calls([call(requirement_events, 20)])
