@@ -165,6 +165,9 @@ class FieldTestGenerator(object):
                         "Syslog event do not match CEF, RFC_3164, RFC_5424 format"
                     )
                     continue
+            else:
+                stripped_event = event.event
+
             escaped_event = xml_event_parser.escape_char_event(stripped_event)
             datamodels = event.requirement_test_data.get("datamodels")
             if datamodels:
@@ -228,6 +231,9 @@ class FieldTestGenerator(object):
                         "Syslog event do not match CEF, RFC_3164, RFC_5424 format"
                     )
                     continue
+            else:
+                stripped_event = event.event
+
             escaped_event = xml_event_parser.escape_char_event(stripped_event)
             exceptions = event.requirement_test_data.get("exceptions", {})
             metadata = event.metadata
