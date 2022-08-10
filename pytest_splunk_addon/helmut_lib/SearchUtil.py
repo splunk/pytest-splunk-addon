@@ -38,7 +38,7 @@ except ImportError:
     # We're assuming here that pytest is unavailable
     print("Pytest unavailable, running tests in dev context")
 
-TIMEOUT = 120
+TIMEOUT = 30
 
 
 class SearchUtilException(Exception):

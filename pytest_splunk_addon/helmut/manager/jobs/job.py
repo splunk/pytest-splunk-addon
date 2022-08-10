@@ -34,7 +34,7 @@ class Job(ItemFromManager):
     different data about the job such as event count.
     """
 
-    _SECONDS_BETWEEN_JOB_IS_DONE_CHECKS = 1
+    _SECONDS_BETWEEN_JOB_IS_DONE_CHECKS = 0.4
 
     @abstractmethod
     def get_results(self, **kwargs):
