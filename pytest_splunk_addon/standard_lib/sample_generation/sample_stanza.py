@@ -296,11 +296,11 @@ class SampleStanza(object):
                 if type(samples["device"]["event"]) == list
                 else [samples["device"]["event"]]
             )
+            if self.metadata.get("sample_count") is None:
+                self.metadata.update(sample_count="1")
             for each_event in events:
                 event = each_event["raw"].strip()
                 event_metadata = self.get_eventmetadata()
-                if self.metadata.get("sample_count") is None:
-                    self.metadata.update(sample_count="1")
                 requirement_test_data = self.populate_requirement_test_data(each_event)
                 yield SampleEvent(
                     event, event_metadata, self.sample_name, requirement_test_data

@@ -140,10 +140,10 @@ class IndexTimeTestGenerator(object):
                 ] = self.get_sourcetype(event)
 
             if not line_breaker_params[event.sample_name].get("expected_event_count"):
-                if event.metadata.get("input_type") not in [
+                if (event.metadata.get("input_type") not in [
                     "modinput",
                     "windows_input",
-                ]:
+                ]) and (event.metadata.get("requirement_test_sample") != "1"):
                     expected_count = expected_count * sample_count
                 line_breaker_params[event.sample_name][
                     "expected_event_count"

@@ -83,10 +83,10 @@ class SampleXdistGenerator:
         tokenized_samples_dict = {}
         for each_event in tokenized_events:
             if each_event.sample_name not in tokenized_samples_dict:
-                if each_event.metadata.get("input_type") not in [
+                if (each_event.metadata.get("input_type") not in [
                     "modinput",
                     "windows_input",
-                ]:
+                ]) and (event.metadata.get("requirement_test_sample") != "1"):
                     sample_multiplication = int(
                         each_event.metadata.get("sample_count") or 1
                     )
