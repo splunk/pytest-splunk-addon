@@ -192,7 +192,7 @@ jobs:
       - fossa-scan
       - compliance-copyrights
       - test-splunk-doc
-#      - test-splunk-unit
+      - test-splunk-unit
       - review_secrets
       - review-dog-misspell
     runs-on: ubuntu-latest
@@ -210,11 +210,8 @@ jobs:
           "splunk_fiction_indextime",
           "splunk_fiction_indextime_broken",
           "splunk_setup_fixture",
-#          "splunk_app_requirements",
-#          "splunk_app_requirements_modinput",
-#          "splunk_app_requirements_uf",
-#          "splunk_app_requirements_scripted",
-          "splunk_app_req"
+          "splunk_app_req",
+          "splunk_app_req_broken",
         ]
     steps:
       - uses: actions/checkout@v3

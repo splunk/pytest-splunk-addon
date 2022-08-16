@@ -545,192 +545,6 @@ def test_docstrings(testdir):
 
 
 @pytest.mark.docker
-@pytest.mark.splunk_app_requirements
-def test_splunk_app_requirements(testdir):
-    """Make sure that pytest accepts our fixture."""
-
-    testdir.makepyfile(
-        """
-        from pytest_splunk_addon.standard_lib.addon_requirements_basic import RequirementBasic
-        class Test_App(RequirementBasic):
-            def empty_method():
-                pass
-    """
-    )
-
-    shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_requirement_test"),
-        os.path.join(testdir.tmpdir, "package"),
-    )
-
-    setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
-    Rule.clean_rules()
-
-    # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-type=docker",
-        "-v",
-        "-m splunk_searchtime_requirements",
-        "--search-interval=4",
-        "--search-retry=4",
-        "--search-index=*,_internal",
-        "--requirement-test=tests/requirement_test",
-    )
-    logger.info(result.outlines)
-    logger.info(len(constants.TA_REQUIREMENTS_PASSED))
-    result.stdout.fnmatch_lines_random(
-        constants.TA_REQUIREMENTS_PASSED + constants.TA_REQUIREMENTS_FAILED
-    )
-    result.assert_outcomes(passed=2, failed=1)
-    #   passed=2 as the successful data comes from 2 sources (log & xml)
-
-    # make sure that that we get a non '0' exit code for the testsuite as it contains failure
-    assert result.ret != 0
-
-
-@pytest.mark.docker
-@pytest.mark.splunk_app_requirements_modinput
-def test_splunk_app_requirements_modinput(testdir):
-    """Make sure that pytest accepts our fixture."""
-
-    testdir.makepyfile(
-        """
-        from pytest_splunk_addon.standard_lib.addon_requirements_basic import RequirementBasic
-        class Test_App(RequirementBasic):
-            def empty_method():
-                pass
-    """
-    )
-
-    shutil.copytree(
-        os.path.join(
-            testdir.request.fspath.dirname, "addons/TA_requirement_test_modinput"
-        ),
-        os.path.join(testdir.tmpdir, "package"),
-    )
-
-    setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
-    Rule.clean_rules()
-
-    # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-type=docker",
-        "-v",
-        "-m splunk_searchtime_requirements",
-        "--search-interval=4",
-        "--search-retry=4",
-        "--search-index=*,_internal",
-        "--requirement-test=tests/requirement_test_modinput",
-    )
-    logger.info(result.outlines)
-    logger.info(len(constants.TA_REQUIREMENTS_MODINPUT_PASSED))
-    result.stdout.fnmatch_lines_random(
-        constants.TA_REQUIREMENTS_MODINPUT_PASSED
-        + constants.TA_REQUIREMENTS_MODINPUT_FAILED
-    )
-    result.assert_outcomes(
-        passed=len(constants.TA_REQUIREMENTS_MODINPUT_PASSED), failed=1
-    )
-
-    # make sure that that we get a non '0' exit code for the testsuite as it contains failure
-    assert result.ret != 0
-
-
-@pytest.mark.docker
-@pytest.mark.splunk_app_requirements_uf
-def test_splunk_app_requirements_uf(testdir):
-    """Make sure that pytest accepts our fixture."""
-
-    testdir.makepyfile(
-        """
-        from pytest_splunk_addon.standard_lib.addon_requirements_basic import RequirementBasic
-        class Test_App(RequirementBasic):
-            def empty_method():
-                pass
-    """
-    )
-
-    shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_requirement_test_uf"),
-        os.path.join(testdir.tmpdir, "package"),
-    )
-
-    setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
-    Rule.clean_rules()
-
-    # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-type=docker",
-        "-v",
-        "-m splunk_searchtime_requirements",
-        "--search-interval=4",
-        "--search-retry=4",
-        "--search-index=*,_internal",
-        "--requirement-test=tests/requirement_test_uf",
-    )
-    logger.info(result.outlines)
-    logger.info(len(constants.TA_REQUIREMENTS_UF_PASSED))
-    result.stdout.fnmatch_lines_random(
-        constants.TA_REQUIREMENTS_UF_PASSED + constants.TA_REQUIREMENTS_UF_FAILED
-    )
-    result.assert_outcomes(passed=len(constants.TA_REQUIREMENTS_UF_PASSED), failed=1)
-
-    # make sure that that we get a non '0' exit code for the testsuite as it contains failure
-    assert result.ret != 0
-
-
-@pytest.mark.docker
-@pytest.mark.splunk_app_requirements_scripted
-def test_splunk_app_requirements_scripted(testdir):
-    """Make sure that pytest accepts our fixture."""
-
-    testdir.makepyfile(
-        """
-        from pytest_splunk_addon.standard_lib.addon_requirements_basic import RequirementBasic
-        class Test_App(RequirementBasic):
-            def empty_method():
-                pass
-    """
-    )
-
-    shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_requirement_test_uf"),
-        os.path.join(testdir.tmpdir, "package"),
-    )
-
-    setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
-    Rule.clean_rules()
-
-    # run pytest with the following cmd args
-    result = testdir.runpytest(
-        "--splunk-type=docker",
-        "-v",
-        "-m splunk_searchtime_requirements",
-        "--search-interval=4",
-        "--search-retry=4",
-        "--search-index=*,_internal",
-        "--requirement-test=tests/requirement_test_scripted",
-    )
-    logger.info(result.outlines)
-    logger.info(len(constants.TA_REQUIREMENTS_SCRIPTED_PASSED))
-    logger.info(len(constants.TA_REQUIREMENTS_SCRIPTED_FAILED))
-    result.stdout.fnmatch_lines_random(
-        constants.TA_REQUIREMENTS_SCRIPTED_PASSED
-        + constants.TA_REQUIREMENTS_SCRIPTED_FAILED
-    )
-    result.assert_outcomes(
-        passed=len(constants.TA_REQUIREMENTS_SCRIPTED_PASSED), failed=1
-    )
-
-    # make sure that that we get a non '0' exit code for the testsuite as it contains failure
-    assert result.ret != 0
-
-
-@pytest.mark.docker
 @pytest.mark.splunk_app_req
 def test_splunk_app_req(testdir):
     """Make sure that pytest accepts our fixture."""
@@ -762,7 +576,7 @@ def test_splunk_app_req(testdir):
     result = testdir.runpytest(
         "--splunk-type=docker",
         "-v",
-        "--search-interval=2",
+        "--search-interval=4",
         "--search-retry=4",
         "--search-index=*",
         "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
@@ -782,3 +596,57 @@ def test_splunk_app_req(testdir):
 
     # make sure that that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret == 0, "result not equal to 0"
+
+
+@pytest.mark.docker
+@pytest.mark.splunk_app_req_broken
+def test_splunk_app_req_broken(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_req_broken"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+        os.path.join(testdir.tmpdir, "tests/data_models"),
+    )
+
+    setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        "--splunk-type=docker",
+        "-v",
+        "--search-interval=4",
+        "--search-retry=4",
+        "--search-index=*",
+        "--splunk-data-generator=tests/addons/TA_req_broken/default",
+    )
+    logger.info(result.outlines)
+
+    result.stdout.fnmatch_lines_random(
+        constants.TA_REQ_BROKEN_PASSED
+        + constants.TA_REQ_BROKEN_FAILED
+        + constants.TA_REQ_BROKEN_SKIPPED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_REQ_BROKEN_PASSED),
+        failed=len(constants.TA_REQ_BROKEN_FAILED),
+        skipped=len(constants.TA_REQ_BROKEN_SKIPPED),
+    )
+
+    # make sure that that we get a non '0' exit code for the testsuite as it contains failure
+    assert result.ret != 0, "result not equal to 0"
