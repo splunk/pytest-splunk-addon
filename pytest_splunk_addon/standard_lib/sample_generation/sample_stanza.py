@@ -407,7 +407,9 @@ class SampleStanza(object):
 
             missing_recommended_fields = cim.get("missing_recommended_fields") or []
             if missing_recommended_fields:
-                missing_recommended_fields = missing_recommended_fields.get("field") or []
+                missing_recommended_fields = (
+                    missing_recommended_fields.get("field") or []
+                )
                 if type(missing_recommended_fields) != list:
                     missing_recommended_fields = [missing_recommended_fields]
             requirement_test_data[
