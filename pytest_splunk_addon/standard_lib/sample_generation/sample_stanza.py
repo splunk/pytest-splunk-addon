@@ -392,9 +392,9 @@ class SampleStanza(object):
         requirement_test_data = {}
         cim = event.get("cim")
         if cim:
-            requirement_test_data["datamodels"] = cim.get("models", {})
+            requirement_test_data["datamodels"] = cim.get("models") or {}
 
-            defined_fields = cim.get("cim_fields", {})
+            defined_fields = cim.get("cim_fields") or {}
             cim_fields = {}
             if defined_fields:
                 fields = defined_fields["field"]
@@ -405,16 +405,16 @@ class SampleStanza(object):
                     cim_fields[fields["@name"]] = fields["@value"]
             requirement_test_data["cim_fields"] = cim_fields
 
-            missing_recommended_fields = cim.get("missing_recommended_fields", [])
+            missing_recommended_fields = cim.get("missing_recommended_fields") or []
             if missing_recommended_fields:
-                missing_recommended_fields = missing_recommended_fields.get("field", [])
+                missing_recommended_fields = missing_recommended_fields.get("field") or []
                 if type(missing_recommended_fields) != list:
                     missing_recommended_fields = [missing_recommended_fields]
             requirement_test_data[
                 "missing_recommended_fields"
             ] = missing_recommended_fields
 
-            defined_exceptions = cim.get("exceptions", [])
+            defined_exceptions = cim.get("exceptions") or []
             exceptions = []
             if defined_exceptions:
                 defined_fields = defined_exceptions["field"]
