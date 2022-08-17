@@ -40,6 +40,8 @@ user_email_count = 0
 # ["name", "email", "domain_user", "distinquised_name"] in each token
 
 event_host_count = 0
+
+
 # event_host_count is used to generate unique host for each event in
 # case of replacementType = all
 
@@ -167,7 +169,9 @@ class Rule:
         """
         new_events = []
         for each_event in events:
-            token_count = each_event.get_token_count(self.token)
+            token_count = each_event.get_token_count(
+                self.token
+            ) or each_event.get_token_extractions_count(self.token)
             token_values = list(self.replace(each_event, token_count))
             if token_count > 0:
                 if self.replacement_type == "all":
@@ -178,9 +182,16 @@ class Rule:
                         new_event = SampleEvent.copy(each_event)
                         global event_host_count
                         event_host_count += 1
+                        host = (
+                            each_event.metadata.get("host")
+                            .replace("_", "-")
+                            .replace(".", "-")
+                        )
+                        host_split = host.split("-")
+                        if re.match("\d+", host_split[-1]):
+                            host = "-".join(host_split[:-1])
                         new_event.metadata["host"] = "{}-{}".format(
-                            each_event.sample_name.replace("_", "-").replace(".", "-"),
-                            event_host_count,
+                            host, event_host_count
                         )
                         new_event.metadata["id"] = "{}_{}".format(
                             each_event.sample_name,
@@ -188,6 +199,9 @@ class Rule:
                         )
                         new_event.replace_token(self.token, each_token_value.value)
                         new_event.register_field_value(self.field, each_token_value)
+                        new_event.update_requirement_test_field(
+                            self.field, self.token, each_token_value
+                        )
                         new_events.append(new_event)
                 else:
                     each_event.replace_token(self.token, token_values)
@@ -197,6 +211,9 @@ class Rule:
                         and self.field == "_time"
                     ):
                         each_event.register_field_value(self.field, token_values)
+                        each_event.update_requirement_test_field(
+                            self.field, self.token, token_values
+                        )
                     new_events.append(each_event)
             else:
                 new_events.append(each_event)

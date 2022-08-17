@@ -49,12 +49,14 @@ class CIMTestGenerator(object):
         self,
         addon_path,
         data_model_path,
+        tokenized_events,
         test_field_type=["required", "conditional"],
         common_fields_path=None,
     ):
 
         self.data_model_handler = DataModelHandler(data_model_path)
         self.addon_parser = AddonParser(addon_path)
+        self.tokenized_events = tokenized_events
         self.test_field_type = test_field_type
         self.common_fields_path = common_fields_path or op.join(
             op.dirname(op.abspath(__file__)), self.COMMON_FIELDS_PATH
@@ -72,6 +74,7 @@ class CIMTestGenerator(object):
         Args:
             fixture(str): fixture name
         """
+
         if fixture.endswith("fields"):
             yield from self.generate_cim_fields_tests()
         elif fixture.endswith("not_allowed_in_props"):
@@ -80,6 +83,8 @@ class CIMTestGenerator(object):
             yield from self.generate_fields_event_count_test()
         elif fixture.endswith("mapped_datamodel"):
             yield from self.generate_mapped_datamodel_tests()
+        elif fixture.endswith("fields_recommended"):
+            yield from self.generate_recommended_fields_tests()
 
     def get_mapped_datasets(self):
         """
@@ -252,3 +257,25 @@ class CIMTestGenerator(object):
             {"eventtypes": eventtypes},
             id=f"mapped_datamodel_tests",
         )
+
+    def generate_recommended_fields_tests(self):
+        for event in self.tokenized_events:
+            if not event.requirement_test_data:
+                continue
+            for _, datamodel in event.requirement_test_data["datamodels"].items():
+                model, *datasets = datamodel.split(":")
+                model = model.replace(" ", "_")
+                if datasets:
+                    datasets = [dataset.replace(" ", "_") for dataset in datasets]
+
+                fields = (
+                    list(event.requirement_test_data["cim_fields"].keys())
+                    + event.requirement_test_data["missing_recommended_fields"]
+                )
+                for exception in event.requirement_test_data["exceptions"]:
+                    fields.append(exception["name"])
+
+                yield pytest.param(
+                    {"datamodel": model, "datasets": datasets, "fields": fields},
+                    id=f"{model}-{'-'.join(datasets)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
+                )

@@ -34,3 +34,4 @@ The test generation mechanism is divided into 3 types of class
 
 from .app_test_generator import AppTestGenerator
 from .addon_basic import Basic
+from .utilities import escape_char_event

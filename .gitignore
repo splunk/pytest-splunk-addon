@@ -31,3 +31,4 @@ docs/_build/
 .vscode
 test_report.md
 .idea/
+.python-version

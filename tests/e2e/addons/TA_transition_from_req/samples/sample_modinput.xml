@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<device>
+  <vendor>Alassian</vendor>
+  <product>Jira Data Center</product>
+  <version id="8.21.0" />
+  <event code="" name="AuthenticationPassed" format="">
+    <transport type="modinput" sourcetype="test:data:1" source="test_data.1" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2021-12-31 15:15:30,340+0000 ip=##dest_ipv4## tester=admin result=##result##]]></raw>
+    <cim>
+      <models>
+        <model>Authentication</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="##result##" />
+        <field name="status" value="##result_mapping##" />
+        <field name="app" value="psa" />
+        <field name="src" value="##dest_ipv4##" />
+        <field name="user" value="admin" />
+        <field name="dest" value="##host##" />
+      </cim_fields>
+      <missing_recommended_fields>
+        <field>src_user</field>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+</device>

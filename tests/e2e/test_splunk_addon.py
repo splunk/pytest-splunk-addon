@@ -182,8 +182,14 @@ def test_splunk_app_fiction(testdir):
         "--search-index=*,_internal",
     )
 
-    result.stdout.fnmatch_lines_random(constants.TA_FICTION_PASSED)
-    result.assert_outcomes(passed=len(constants.TA_FICTION_PASSED), failed=0)
+    result.stdout.fnmatch_lines_random(
+        constants.TA_FICTION_PASSED + constants.TA_FICTION_SKIPPED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_FICTION_PASSED),
+        failed=0,
+        skipped=len(constants.TA_FICTION_SKIPPED),
+    )
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
@@ -231,11 +237,14 @@ def test_splunk_app_broken(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines_random(
-        constants.TA_BROKEN_PASSED + constants.TA_BROKEN_FAILED
+        constants.TA_BROKEN_PASSED
+        + constants.TA_BROKEN_FAILED
+        + constants.TA_BROKEN_SKIPPED
     )
     result.assert_outcomes(
         passed=len(constants.TA_BROKEN_PASSED),
         failed=len(constants.TA_BROKEN_FAILED),
+        skipped=len(constants.TA_BROKEN_SKIPPED),
     )
 
     # The test suite should fail as this is a negative test
@@ -282,8 +291,14 @@ def test_splunk_app_cim_fiction(testdir):
         "--search-index=*,_internal",
     )
 
-    result.stdout.fnmatch_lines_random(constants.TA_CIM_FICTION_PASSED)
-    result.assert_outcomes(passed=len(constants.TA_CIM_FICTION_PASSED), failed=0)
+    result.stdout.fnmatch_lines_random(
+        constants.TA_CIM_FICTION_PASSED + constants.TA_CIM_FICTION_SKIPPED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_CIM_FICTION_PASSED),
+        failed=0,
+        skipped=len(constants.TA_CIM_FICTION_SKIPPED),
+    )
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
@@ -331,11 +346,14 @@ def test_splunk_app_cim_broken(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines_random(
-        constants.TA_CIM_BROKEN_PASSED + constants.TA_CIM_BROKEN_FAILED
+        constants.TA_CIM_BROKEN_PASSED
+        + constants.TA_CIM_BROKEN_FAILED
+        + constants.TA_CIM_BROKEN_SKIPPED
     )
     result.assert_outcomes(
         passed=len(constants.TA_CIM_BROKEN_PASSED),
         failed=len(constants.TA_CIM_BROKEN_FAILED),
+        skipped=len(constants.TA_CIM_BROKEN_SKIPPED),
     )
 
     # The test suite should fail as this is a negative test
@@ -710,3 +728,57 @@ def test_splunk_app_requirements_scripted(testdir):
 
     # make sure that that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0
+
+
+@pytest.mark.docker
+@pytest.mark.splunk_app_req
+def test_splunk_app_req(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_transition_from_req"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+        os.path.join(testdir.tmpdir, "tests/data_models"),
+    )
+
+    setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        "--splunk-type=docker",
+        "-v",
+        "--search-interval=2",
+        "--search-retry=4",
+        "--search-index=*",
+        "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
+    )
+    logger.info(result.outlines)
+
+    result.stdout.fnmatch_lines_random(
+        constants.TA_REQ_TRANSITION_PASSED
+        + constants.TA_REQ_TRANSITION_FAILED
+        + constants.TA_REQ_TRANSITION_SKIPPED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_REQ_TRANSITION_PASSED),
+        failed=len(constants.TA_REQ_TRANSITION_FAILED),
+        skipped=len(constants.TA_REQ_TRANSITION_SKIPPED),
+    )
+
+    # make sure that that we get a non '0' exit code for the testsuite as it contains failure
+    assert result.ret == 0, "result not equal to 0"

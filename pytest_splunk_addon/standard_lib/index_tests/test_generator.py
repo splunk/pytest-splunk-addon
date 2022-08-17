@@ -103,9 +103,6 @@ class IndexTimeTestGenerator(object):
         """
         Generates test case for testing line breaker
 
-        Args:
-            tokenized_events (list): List of tokenized events
-
         Yields:
             pytest.params for the test templates
         """

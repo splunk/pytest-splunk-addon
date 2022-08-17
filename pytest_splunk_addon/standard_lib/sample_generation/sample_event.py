@@ -61,13 +61,14 @@ class SampleEvent(object):
         sample_name (str): Name of the file containing this event
     """
 
-    def __init__(self, event_string, metadata, sample_name):
+    def __init__(self, event_string, metadata, sample_name, requirement_test_data=None):
         self.event = event_string
         self.key_fields = dict()
         self.time_values = list()
         self.metadata = metadata
         self.sample_name = sample_name
         self.host_count = 0
+        self.requirement_test_data = requirement_test_data
 
     def update(self, new_event):
         """
@@ -281,6 +282,26 @@ class SampleEvent(object):
         """
         return len(re.findall(token, self.event, flags=re.MULTILINE))
 
+    def get_token_extractions_count(self, token):
+        """
+        Returns minimum number of occurrence count if token not found in event but is in extracted fields
+
+        Args:
+            token (str): Token name
+        """
+        tokens_in_extractions = 0
+        if (
+            self.requirement_test_data is not None
+            and "cim_fields" in self.requirement_test_data.keys()
+        ):
+            for extracted_field in self.requirement_test_data["cim_fields"].values():
+                if isinstance(extracted_field, str):
+                    tokens_in_extractions += len(re.findall(token, extracted_field))
+                elif isinstance(extracted_field, list):
+                    for each_filed in extracted_field:
+                        tokens_in_extractions += len(re.findall(token, each_filed))
+        return 1 if tokens_in_extractions > 0 else 0
+
     def replace_token(self, token, token_values):
         """
         Replaces the token value in event
@@ -334,6 +355,31 @@ class SampleEvent(object):
             else:
                 self.key_fields.setdefault(field, []).append(str(token_values.key))
 
+    def update_requirement_test_field(self, field, token, token_values):
+        if field != "_time":
+            if (
+                self.requirement_test_data is not None
+                and "cim_fields" in self.requirement_test_data.keys()
+            ):
+                for cim_field, value in self.requirement_test_data[
+                    "cim_fields"
+                ].items():
+                    if token in value:
+                        if isinstance(token_values, list):
+                            if len(token_values) == 1:
+                                self.requirement_test_data["cim_fields"][
+                                    cim_field
+                                ] = value.replace(token, str(token_values[0].key))
+                            else:
+                                self.requirement_test_data["cim_fields"][cim_field] = [
+                                    value.replace(token, str(token_value.key))
+                                    for token_value in token_values
+                                ]
+                        else:
+                            self.requirement_test_data["cim_fields"][
+                                cim_field
+                            ] = value.replace(token, str(token_values.key))
+
     def get_key_fields(self):
         """
         Returns the key field value from event
@@ -355,6 +401,7 @@ class SampleEvent(object):
         new_event.key_fields = event.key_fields.copy()
         new_event.time_values = event.time_values[:]
         new_event.metadata = deepcopy(event.metadata)
+        new_event.requirement_test_data = deepcopy(event.requirement_test_data)
         return new_event
 
     def update_metadata(self, event, metadata, key_fields):

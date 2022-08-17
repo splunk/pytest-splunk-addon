@@ -104,18 +104,18 @@ class IngestorHelper(object):
             event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
             event_ingestor.ingest(events, thread_count)
 
-        if run_requirement_test != "None":
-            requirement_events = RequirementEventIngestor(run_requirement_test)
-            requirement_events_get = requirement_events.get_events()
-            requirement_events_dict = cls.get_consolidated_events(
-                requirement_events_get
-            )
-            for input_type, events in requirement_events_dict.items():
-                LOGGER.debug(
-                    "Received the following input type for HEC event: {}".format(
-                        input_type
-                    )
-                )
-                event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
-                event_ingestor.ingest(events, thread_count)
-            LOGGER.info("Ingestion Done")
+        # if run_requirement_test != "None":
+        #     requirement_events = RequirementEventIngestor(run_requirement_test)
+        #     requirement_events_get = requirement_events.get_events()
+        #     requirement_events_dict = cls.get_consxolidated_events(
+        #         requirement_events_get
+        #     )
+        #     for input_type, events in requirement_events_dict.items():
+        #         LOGGER.debug(
+        #             "Received the following input type for HEC event: {}".format(
+        #                 input_type
+        #             )
+        #         )
+        #         event_ingestor = cls.get_event_ingestor(input_type, ingest_meta_data)
+        #         event_ingestor.ingest(events, thread_count)
+        #     LOGGER.info("Ingestion Done")

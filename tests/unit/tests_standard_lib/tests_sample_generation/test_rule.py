@@ -108,6 +108,8 @@ def event():
         eve.sample_name = SAMPLE_NAME
         eve.get_token_count.return_value = token_count
         eve.replacement_map = {}
+        eve.metadata = {"host": "host_1"}
+        eve.get_token_extractions_count.return_value = token_count
         return eve
 
     return func

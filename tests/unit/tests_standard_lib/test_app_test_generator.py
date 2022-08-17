@@ -49,10 +49,12 @@ def test_app_test_generator_instantiation(
     os_path_dirname_mock.return_value = "/fake_dir"
     atg = AppTestGenerator(simple_config)
     atg.fieldtest_generator.assert_called_once_with(
-        config["splunk_app"], field_bank=config["field_bank"]
+        config["splunk_app"],
+        config["requirement_test"],
+        [],
+        field_bank=config["field_bank"],
     )
-    atg.cim_test_generator.assert_called_once_with(config["splunk_app"], path)
-    atg.requirement_test_generator.assert_called_once_with(config["requirement_test"])
+    atg.cim_test_generator.assert_called_once_with(config["splunk_app"], path, [])
     atg.indextime_test_generator.assert_called_once_with()
 
 
@@ -82,19 +84,6 @@ def test_app_test_generator_instantiation(
                 "splunk_searchtime_cim_test_1",
                 "splunk_searchtime_cim_test_2",
                 "splunk_searchtime_cim_test_3",
-            ],
-            1,
-        ),
-        (
-            "splunk_searchtime_requirement",
-            "requirement_test_generator",
-            lambda fixture: (f"{fixture}_test_{i + 1}" for i in range(3)),
-            ["splunk_searchtime_requirement"],
-            {},
-            [
-                "splunk_searchtime_requirement_test_1",
-                "splunk_searchtime_requirement_test_2",
-                "splunk_searchtime_requirement_test_3",
             ],
             1,
         ),

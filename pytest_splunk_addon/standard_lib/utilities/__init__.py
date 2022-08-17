@@ -23,3 +23,4 @@ There are 2 utilities included:
 """
 
 from .junit_parser import JunitParser
+from .xml_event_parser import escape_char_event

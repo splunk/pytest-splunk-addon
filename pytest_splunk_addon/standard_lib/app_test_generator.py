@@ -24,6 +24,7 @@ from .fields_tests import FieldTestGenerator
 from .cim_tests import CIMTestGenerator
 from .index_tests import IndexTimeTestGenerator
 from .requirement_tests import ReqsTestGenerator
+from .sample_generation import SampleXdistGenerator
 import pytest
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -46,9 +47,19 @@ class AppTestGenerator(object):
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
         self.seen_tests = set()
+
+        store_events = self.pytest_config.getoption("store_events")
+        config_path = self.pytest_config.getoption("splunk_data_generator")
+        sample_generator = SampleXdistGenerator(
+            self.pytest_config.getoption("splunk_app"), config_path
+        )
+        store_sample = sample_generator.get_samples(store_events)
+        self.tokenized_events = store_sample.get("tokenized_events")
         LOGGER.debug("Initializing FieldTestGenerator to generate the test cases")
         self.fieldtest_generator = FieldTestGenerator(
             self.pytest_config.getoption("splunk_app"),
+            self.pytest_config.getoption("requirement_test"),
+            self.tokenized_events,
             field_bank=self.pytest_config.getoption("field_bank", False),
         )
 
@@ -59,10 +70,7 @@ class AppTestGenerator(object):
         self.cim_test_generator = CIMTestGenerator(
             self.pytest_config.getoption("splunk_app"),
             self.pytest_config.getoption("splunk_dm_path") or data_model_path,
-        )
-        LOGGER.debug("Initializing ReqsTestGenerator to generate the test cases")
-        self.requirement_test_generator = ReqsTestGenerator(
-            self.pytest_config.getoption("requirement_test"),
+            self.tokenized_events,
         )
         self.indextime_test_generator = IndexTimeTestGenerator()
 
@@ -78,30 +86,26 @@ class AppTestGenerator(object):
         Args:
             fixture(str): fixture name
         """
-        store_events = self.pytest_config.getoption("store_events")
         if fixture.startswith("splunk_searchtime_fields"):
             yield from self.dedup_tests(
-                self.fieldtest_generator.generate_tests(fixture), fixture
+                self.fieldtest_generator.generate_tests(fixture),
+                fixture,
             )
         elif fixture.startswith("splunk_searchtime_cim"):
             yield from self.dedup_tests(
-                self.cim_test_generator.generate_tests(fixture), fixture
+                self.cim_test_generator.generate_tests(fixture),
+                fixture,
             )
-        elif fixture.startswith("splunk_searchtime_requirement"):
-            if self.pytest_config.getoption("requirement_test") != "None":
-                yield from self.dedup_tests(
-                    self.requirement_test_generator.generate_tests(fixture), fixture
-                )
+
         elif fixture.startswith("splunk_indextime"):
             # TODO: What should be the id of the test case?
             # Sourcetype + Host + Key field + _count
 
             pytest_params = None
 
+            store_events = self.pytest_config.getoption("store_events")
             app_path = self.pytest_config.getoption("splunk_app")
-            config_path = config_path = self.pytest_config.getoption(
-                "splunk_data_generator"
-            )
+            config_path = self.pytest_config.getoption("splunk_data_generator")
 
             if "key_fields" in fixture:
                 pytest_params = list(

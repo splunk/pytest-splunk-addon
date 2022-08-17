@@ -123,6 +123,86 @@ class FieldTestTemplates(object):
         )
 
     @pytest.mark.splunk_searchtime_fields
+    @pytest.mark.splunk_searchtime_fields_requirements
+    def test_requirements_fields(
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_setup,
+        splunk_searchtime_fields_requirements,
+        record_property,
+    ):
+        """
+        This test case checks that a field value has the expected values.
+
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            splunk_searchtime_fields_positive (fixture): Test for stanza field.
+            record_property (fixture): Document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        """
+
+        # Search Query
+        record_property(
+            "stanza_name", splunk_searchtime_fields_requirements["escaped_event"]
+        )
+        record_property("fields", splunk_searchtime_fields_requirements["fields"])
+        record_property(
+            "modinput_params", splunk_searchtime_fields_requirements["modinput_params"]
+        )
+
+        escaped_event = splunk_searchtime_fields_requirements["escaped_event"]
+        fields = splunk_searchtime_fields_requirements["fields"]
+        modinput_params = splunk_searchtime_fields_requirements["modinput_params"]
+
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
+
+        basic_search = ""
+        for param, param_value in modinput_params.items():
+            if param_value is not None:
+                basic_search += f" {param}={param_value}"
+
+        search = f"search {index_list} {basic_search} {escaped_event} | fields *"
+
+        self.logger.info(f"Executing the search query: {search}")
+
+        fields_from_splunk = splunk_search_util.getFieldValuesDict(
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
+        )
+
+        missing_fields = []
+        wrong_value_fields = {}
+
+        for field, value in fields.items():
+            if field not in fields_from_splunk:
+                missing_fields.append(field)
+
+            if value != fields_from_splunk.get(field):
+                wrong_value_fields[field] = fields_from_splunk[field]
+
+        failure_message = ""
+
+        for field, value in wrong_value_fields.items():
+            failure_message += (
+                f"Field {field} has value {value} and should has {fields[field]}\n"
+            )
+
+        self.logger.error(f"Fields with wrong values: {failure_message}")
+
+        assert (
+            missing_fields == []
+        ), f"Not all required fields found in Splunk. Missing fields: {', '.join(missing_fields)}"
+        assert (
+            wrong_value_fields == {}
+        ), f"Not all required fields have correct values in Splunk. Wrong field values: {failure_message} Search string: {search}"
+
+    @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
     def test_props_fields_no_dash_not_empty(
         self,
