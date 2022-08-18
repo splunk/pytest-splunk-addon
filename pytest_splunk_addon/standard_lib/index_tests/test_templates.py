@@ -252,8 +252,8 @@ class IndexTimeTestTemplate(object):
         record_property("time_values", key_time)
         record_property("result_time", result_fields)
 
-        assert (
-            all(timestamp in result_fields["e_time"] for timestamp in key_time)
+        assert all(
+            timestamp in result_fields["e_time"] for timestamp in key_time
         ), "Actual time {} :: Time in result {}".format(
             key_time, result_fields["e_time"]
         )
