@@ -39,6 +39,15 @@ class FieldTestTemplates(object):
     def test_splunk_internal_errors(
         self, splunk_search_util, ignore_internal_errors, record_property, caplog
     ):
+        """
+        This test case checks that there are not any unexpected internal errors
+
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            ignore_internal_errors (fixture): common list of errors to be ignored
+            record_property (fixture): Document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        """
         search = """
             search index=_internal log_level=ERROR
             sourcetype!=splunkd_ui_access

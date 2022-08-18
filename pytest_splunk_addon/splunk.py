@@ -815,7 +815,9 @@ def splunk_dm_recommended_fields(splunk_search_util):
 
     """
     recommended_fields = defaultdict(list)
-    cim_path = os.path.join(os.path.dirname(__file__), "standard_lib", "CIM_Models", "5.0.0")
+    cim_path = os.path.join(
+        os.path.dirname(__file__), "standard_lib", "CIM_Models", "5.0.0"
+    )
 
     def _find(name, dictionary):
         for key, value in dictionary.items():
@@ -848,9 +850,7 @@ def splunk_dm_recommended_fields(splunk_search_util):
                         for field in fields:
                             recommended = field["comment"].get("recommended")
                             if recommended:
-                                recommended_fields[model_key].append(
-                                    field["fieldName"]
-                                )
+                                recommended_fields[model_key].append(field["fieldName"])
 
         if not recommended_fields.get(model_key) or []:
             raise ValueError(f"Model {model_key} definition was not fetched")
