@@ -4,3 +4,4 @@ deps/.*
 .*\.lock
 tests/
 NOTICE
+pytest_splunk_addon/standard_lib/CIM_Models/*/*.json
