@@ -815,6 +815,7 @@ def splunk_dm_recommended_fields(splunk_search_util):
 
     """
     recommended_fields = defaultdict(list)
+    cim_path = os.path.join(os.path.dirname(__file__), "standard_lib", "CIM_Models", "5.0.0")
 
     def _find(name, dictionary):
         for key, value in dictionary.items():
@@ -829,28 +830,30 @@ def splunk_dm_recommended_fields(splunk_search_util):
 
     def update_recommended_fields(model, datasets):
         model_key = f"{model}:{':'.join(datasets)}".strip(":")
-        if model_key not in recommended_fields:
-            for cim_model in splunk_search_util.getFieldValuesList(
-                f'| rest /servicesNS/-/-/data/models/{model} | fields "eai:data"'
-            ):
-                model_definition = json.loads(cim_model["eai:data"])
-                for object in model_definition["objects"]:
-                    object_name = object["objectName"]
-                    if (
-                        object["parentName"] == "BaseEvent"
-                        or object_name in datasets
-                        or object_name == model
-                    ):
-                        for fields in chain(
-                            _find("fields", object), _find("outputFields", object)
-                        ):
-                            for field in fields:
-                                recommended = field["comment"].get("recommended")
-                                if recommended:
-                                    recommended_fields[model_key].append(
-                                        field["fieldName"]
-                                    )
 
+        if model_key not in recommended_fields:
+            LOGGER.info(f"Fetching {model_key} definition")
+            with open(os.path.join(cim_path, f"{model}.json")) as f:
+                defined_models = json.load(f)
+            for _object in defined_models["objects"]:
+                object_name = _object["objectName"]
+                if (
+                    _object["parentName"] == "BaseEvent"
+                    or object_name in datasets
+                    or object_name == model
+                ):
+                    for fields in chain(
+                        _find("fields", _object), _find("outputFields", _object)
+                    ):
+                        for field in fields:
+                            recommended = field["comment"].get("recommended")
+                            if recommended:
+                                recommended_fields[model_key].append(
+                                    field["fieldName"]
+                                )
+
+        if not recommended_fields.get(model_key) or []:
+            raise ValueError(f"Model {model_key} definition was not fetched")
         return recommended_fields
 
     return update_recommended_fields
