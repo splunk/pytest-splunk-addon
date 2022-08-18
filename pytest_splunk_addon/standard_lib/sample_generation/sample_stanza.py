@@ -296,12 +296,16 @@ class SampleStanza(object):
                 if type(samples["device"]["event"]) == list
                 else [samples["device"]["event"]]
             )
+            if self.metadata.get("sample_count") is None:
+                self.metadata.update(sample_count="1")
             for each_event in events:
                 event = each_event["raw"].strip()
                 event_metadata = self.get_eventmetadata()
-                if self.metadata.get("sample_count") is None:
-                    self.metadata.update(sample_count="1")
                 requirement_test_data = self.populate_requirement_test_data(each_event)
+                if "transport" in each_event.keys():
+                    static_host = each_event["transport"].get("@host")
+                    if static_host:
+                        event_metadata.update(host=static_host)
                 yield SampleEvent(
                     event, event_metadata, self.sample_name, requirement_test_data
                 )
