@@ -492,8 +492,11 @@ class CIMTestTemplates(object):
         datamodel = splunk_searchtime_cim_fields_recommended["datamodel"]
         datasets = splunk_searchtime_cim_fields_recommended["datasets"]
         fields = splunk_searchtime_cim_fields_recommended["fields"]
+        cim_version = splunk_searchtime_cim_fields_recommended["cim_version"]
 
-        fields_from_splunk = splunk_dm_recommended_fields(datamodel, datasets)
+        fields_from_splunk = splunk_dm_recommended_fields(
+            datamodel, datasets, cim_version
+        )
         self.logger.debug(f"Fields from Splunk: {fields_from_splunk}")
 
         model_key = f"{datamodel}:{':'.join(datasets)}".strip(":")

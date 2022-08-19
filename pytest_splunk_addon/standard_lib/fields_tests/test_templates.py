@@ -193,7 +193,7 @@ class FieldTestTemplates(object):
                 missing_fields.append(field)
 
             if value != fields_from_splunk.get(field):
-                wrong_value_fields[field] = fields_from_splunk[field]
+                wrong_value_fields[field] = fields_from_splunk.get(field)
 
         failure_message = ""
 

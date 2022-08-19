@@ -396,6 +396,7 @@ class SampleStanza(object):
         requirement_test_data = {}
         cim = event.get("cim")
         if cim:
+            requirement_test_data["cim_version"] = cim.get("@version", "latest")
             requirement_test_data["datamodels"] = cim.get("models") or {}
 
             defined_fields = cim.get("cim_fields") or {}
