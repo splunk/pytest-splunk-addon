@@ -23,6 +23,8 @@ import pytest
 from ..addon_parser import Field
 import json
 
+from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
+
 TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART = " | dedup punct | head 5"
 COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART = " | stats count by sourcetype"
 
@@ -132,6 +134,7 @@ class FieldTestTemplates(object):
         )
 
     @pytest.mark.splunk_searchtime_fields
+    @pytest.mark.splunk_requirements
     @pytest.mark.splunk_searchtime_fields_requirements
     def test_requirements_fields(
         self,
@@ -349,6 +352,79 @@ class FieldTestTemplates(object):
                 f"\nsearch={search}"
                 f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
             )
+
+    @pytest.mark.splunk_searchtime_fields
+    @pytest.mark.splunk_requirements
+    @pytest.mark.splunk_searchtime_fields_datamodels
+    def test_datamodels(
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_setup,
+        splunk_searchtime_fields_datamodels,
+        record_property,
+        caplog,
+    ):
+        """
+        Test case to check tags mentioned in tags.conf
+
+        This test case checks if a tag is assigned to the event if enabled,
+        and also checks that a tag is not assigned to the event if disabled.
+
+        Args:
+            splunk_search_util (helmut_lib.SearchUtil.SearchUtil):
+                object that helps to search on Splunk.
+            splunk_searchtime_fields_datamodels (fixture): pytest parameters to test.
+            record_property (fixture): pytest fixture to document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        """
+        esacaped_event = splunk_searchtime_fields_datamodels["stanza"]
+        datamodels = splunk_searchtime_fields_datamodels["datamodels"]
+        self.logger.info(
+            f"Testing for tag {datamodels} with tag_query {esacaped_event}"
+        )
+
+        record_property("Event_with", esacaped_event)
+        record_property("datamodels", datamodels)
+
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
+        search = f"search {index_list} {esacaped_event} | fields *"
+
+        self.logger.info(f"Search: {search}")
+
+        fields_from_splunk = splunk_search_util.getFieldValuesDict(
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
+        )
+
+        extracted_tags = fields_from_splunk.get("tag", "")
+        extracted_tags = extracted_tags.strip("][").split(", ")
+        extracted_tags = [tag.replace("'", "") for tag in extracted_tags]
+
+        extracted_datamodels = []
+        for datamodel, tags in dict_datamodel_tag.items():
+            if all(tag in tags for tag in extracted_tags):
+                extracted_datamodels += datamodel
+
+        self.logger.debug(f"Tags extracted from Splunk {extracted_tags}")
+
+        record_property("search", search)
+
+        missing_datamodels = [dm for dm in datamodels if dm not in extracted_datamodels]
+        wrong_datamodels = [dm for dm in extracted_datamodels if dm not in datamodels]
+
+        self.logger.debug(
+            f"List of missing tags {missing_datamodels}. List of wrongly assigned tags {wrong_datamodels}"
+        )
+
+        assert (
+            missing_datamodels == [] and wrong_datamodels == []
+        ), f"Tags were not assigned to event - missing tags {missing_datamodels} and/or too many tags found in splunk {wrong_datamodels}"
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_eventtypes
