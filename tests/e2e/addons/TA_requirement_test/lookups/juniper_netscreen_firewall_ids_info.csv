@@ -1,9 +1,0 @@
-alert_id,ids_type,signature
-00027,host,account is locked
-00004,network,WinNuke attack
-00008,network,IP spoofing
-00010,network,Land attack
-00011,network,ICMP flood
-00012,network,UDP flood
-00016,network,Port scan
-00017,network,Address sweep
