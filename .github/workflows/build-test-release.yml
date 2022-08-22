@@ -199,7 +199,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: [8.1, 8.2]
+#        splunk-version: [8.1, 8.2]
+        splunk-version: [8.2]
         test-marker: [
           "splunk_connection_docker",
           "splunk_app_fiction",
