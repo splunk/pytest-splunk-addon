@@ -89,7 +89,11 @@ class IndexTimeTestGenerator(object):
                 elif (
                     test_type == "_time"
                     and tokenized_event.metadata.get("timestamp_type") == "event"
-                    and not (int(tokenized_event.metadata.get("requirement_test_sample", 0)) > 0 and tokenized_event.time_values ==[])
+                    and not (
+                        int(tokenized_event.metadata.get("requirement_test_sample", 0))
+                        > 0
+                        and tokenized_event.time_values == []
+                    )
                 ):
                     LOGGER.debug(
                         "Generating time field test with the following params:\ntokenized_event={e}\nidentifier_key={k}\nhosts={h}".format(
