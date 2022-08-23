@@ -26,7 +26,6 @@ from ..addon_parser import AddonParser
 from . import FieldBank
 from ..utilities import xml_event_parser
 
-from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -84,6 +83,8 @@ class FieldTestGenerator(object):
             yield from self.generate_savedsearches_tests()
         elif fixture.endswith("requirements"):
             yield from self.generate_requirements_tests()
+        elif fixture.endswith("datamodels"):
+            yield from self.generate_requirements_datamodels_tests()
 
     def generate_field_tests(self, is_positive):
         """
@@ -155,6 +156,13 @@ class FieldTestGenerator(object):
                 each_tag_group, id="{stanza}::tag::{tag}".format(**each_tag_group)
             )
 
+    def generate_requirements_datamodels_tests(self):
+        """
+        Generate test case for tags
+
+        Yields:
+            pytest.params for the test templates
+        """
         for event in self.tokenized_events:
             if not event.requirement_test_data:
                 continue
@@ -176,17 +184,17 @@ class FieldTestGenerator(object):
                 datamodels = [dm["model"] for dm in datamodels]
             else:
                 datamodels = []
-            tags = []
-            for model in datamodels:
-                tags += dict_datamodel_tag[model.replace(" ", "_").replace(":", "_")]
-            for tag in tags:
-                yield pytest.param(
-                    {
-                        "tag": tag,
-                        "stanza": escaped_event,
-                    },
-                    id=f"{tag}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
-                )
+            datamodels = [
+                datamodel.replace(" ", "_").replace(":", "_")
+                for datamodel in datamodels
+            ]
+            yield pytest.param(
+                {
+                    "datamodels": datamodels,
+                    "stanza": escaped_event,
+                },
+                id=f"{'-'.join(datamodels)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
+            )
 
     def generate_eventtype_tests(self):
         """

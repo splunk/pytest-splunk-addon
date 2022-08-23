@@ -817,7 +817,8 @@ def splunk_dm_recommended_fields():
 
         if model_key not in recommended_fields:
             LOGGER.info(f"Fetching {model_key} definition")
-            datamodel = datamodels.get(cim_version) or datamodels["latest"]
+            datamodel_per_cim = datamodels.get(cim_version) or datamodels["latest"]
+            datamodel = datamodel_per_cim[model]
             for object_name, value in datamodel.items():
                 if (
                     object_name == "BaseEvent"

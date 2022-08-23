@@ -494,14 +494,14 @@ class CIMTestTemplates(object):
         fields = splunk_searchtime_cim_fields_recommended["fields"]
         cim_version = splunk_searchtime_cim_fields_recommended["cim_version"]
 
-        fields_from_splunk = splunk_dm_recommended_fields(
+        fields_from_model_definition = splunk_dm_recommended_fields(
             datamodel, datasets, cim_version
         )
-        self.logger.debug(f"Fields from Splunk: {fields_from_splunk}")
+        self.logger.debug(f"Fields from Splunk: {fields_from_model_definition}")
 
-        model_key = f"{datamodel}:{':'.join(datasets)}".strip(":")
+        model_key = f"{cim_version}:{datamodel}:{':'.join(datasets)}".strip(":")
 
-        model_fields = fields_from_splunk[model_key]
+        model_fields = fields_from_model_definition[model_key]
         self.logger.debug(f"Fields from CIM definition: {model_fields}")
 
         missing_fields = []

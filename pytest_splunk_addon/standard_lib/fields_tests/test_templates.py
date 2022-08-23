@@ -408,8 +408,8 @@ class FieldTestTemplates(object):
 
         extracted_datamodels = []
         for datamodel, tags in dict_datamodel_tag.items():
-            if all(tag in tags for tag in extracted_tags):
-                extracted_datamodels += datamodel
+            if all(tag in extracted_tags for tag in tags):
+                extracted_datamodels.append(datamodel)
 
         self.logger.debug(f"Tags extracted from Splunk {extracted_tags}")
 
