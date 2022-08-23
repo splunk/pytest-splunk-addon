@@ -36,35 +36,6 @@ def setup_test_dir(testdir):
         os.path.join(testdir.tmpdir, ""),
     )
 
-    shutil.copytree(
-        os.path.join(
-            testdir.request.config.invocation_dir, "tests/e2e/requirement_test"
-        ),
-        os.path.join(testdir.tmpdir, "tests/requirement_test"),
-    )
-
-    shutil.copytree(
-        os.path.join(
-            testdir.request.config.invocation_dir,
-            "tests/e2e/requirement_test_modinput",
-        ),
-        os.path.join(testdir.tmpdir, "tests/requirement_test_modinput"),
-    )
-
-    shutil.copytree(
-        os.path.join(
-            testdir.request.config.invocation_dir, "tests/e2e/requirement_test_uf"
-        ),
-        os.path.join(testdir.tmpdir, "tests/requirement_test_uf"),
-    )
-    shutil.copytree(
-        os.path.join(
-            testdir.request.config.invocation_dir,
-            "tests/e2e/requirement_test_scripted",
-        ),
-        os.path.join(testdir.tmpdir, "tests/requirement_test_scripted"),
-    )
-
     shutil.copy(
         os.path.join(testdir.request.config.invocation_dir, "Dockerfile.splunk"),
         testdir.tmpdir,
