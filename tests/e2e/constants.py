@@ -249,7 +249,7 @@ TA_FICTION_PASSED = [
 
 TA_FICTION_SKIPPED = [
     "*test_splunk_app_fiction.py::Test_App::test_requirements_fields[splunk_searchtime_fields_requirements0* SKIPPED*",
-    "*test_splunk_app_fiction.py::Test_App::test_datamodels[splunk_searchtime_fields_datamodels0* SKIPPED*"
+    "*test_splunk_app_fiction.py::Test_App::test_datamodels[splunk_searchtime_fields_datamodels0* SKIPPED*",
 ]
 
 """
@@ -391,7 +391,7 @@ TA_BROKEN_FAILED = [
 
 TA_BROKEN_SKIPPED = [
     "*test_splunk_app_broken.py::Test_App::test_requirements_fields[splunk_searchtime_fields_requirements0* SKIPPED*",
-    "*test_splunk_app_broken.py::Test_App::test_datamodels[splunk_searchtime_fields_datamodels0* SKIPPED*"
+    "*test_splunk_app_broken.py::Test_App::test_datamodels[splunk_searchtime_fields_datamodels0* SKIPPED*",
 ]
 
 """
