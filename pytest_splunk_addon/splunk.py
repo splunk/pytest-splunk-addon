@@ -24,7 +24,6 @@ import logging
 import os
 import shutil
 from collections import defaultdict
-from itertools import chain
 from time import sleep
 import json
 import pytest
@@ -34,6 +33,7 @@ from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
+from .standard_lib.CIM_Models.datamodel_definition import datamodels
 import configparser
 from filelock import FileLock
 
@@ -803,54 +803,29 @@ def file_system_prerequisite():
 
 
 @pytest.fixture(scope="session")
-def splunk_dm_recommended_fields(splunk_search_util):
+def splunk_dm_recommended_fields():
     """
     Returns function which gets recommended fields from Splunk for given datamodel
 
     Note that data is being dynamically retrieved from Splunk. When CIM add-on version changes
     retrieved data may differ
-
-    Args:
-        splunk_search_util: Other fixture preparing connection to Splunk Search.
-
     """
     recommended_fields = defaultdict(list)
-    cim_path = os.path.join(
-        os.path.dirname(__file__), "standard_lib", "CIM_Models", "5.0.0"
-    )
 
-    def _find(name, dictionary):
-        for key, value in dictionary.items():
-            if key == name:
-                yield value
-            elif isinstance(value, dict):
-                yield from _find(name, value)
-            elif isinstance(value, list):
-                for element in value:
-                    if isinstance(element, dict):
-                        yield from _find(name, element)
-
-    def update_recommended_fields(model, datasets):
-        model_key = f"{model}:{':'.join(datasets)}".strip(":")
+    def update_recommended_fields(model, datasets, cim_version):
+        model_key = f"{cim_version}:{model}:{':'.join(datasets)}".strip(":")
 
         if model_key not in recommended_fields:
             LOGGER.info(f"Fetching {model_key} definition")
-            with open(os.path.join(cim_path, f"{model}.json")) as f:
-                defined_models = json.load(f)
-            for _object in defined_models["objects"]:
-                object_name = _object["objectName"]
+            datamodel_per_cim = datamodels.get(cim_version) or datamodels["latest"]
+            datamodel = datamodel_per_cim[model]
+            for object_name, value in datamodel.items():
                 if (
-                    _object["parentName"] == "BaseEvent"
+                    object_name == "BaseEvent"
                     or object_name in datasets
                     or object_name == model
                 ):
-                    for fields in chain(
-                        _find("fields", _object), _find("outputFields", _object)
-                    ):
-                        for field in fields:
-                            recommended = field["comment"].get("recommended")
-                            if recommended:
-                                recommended_fields[model_key].append(field["fieldName"])
+                    recommended_fields[model_key] += value
 
         if not recommended_fields.get(model_key) or []:
             raise ValueError(f"Model {model_key} definition was not fetched")

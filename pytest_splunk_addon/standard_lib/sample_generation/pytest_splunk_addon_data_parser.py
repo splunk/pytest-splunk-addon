@@ -140,9 +140,9 @@ class PytestSplunkAddonDataParser:
                             and int(self.psa_data[stanza]["requirement_test_sample"])
                             > 0
                         ):
-                            schema.validate(
-                                os.path.join(self._path_to_samples, sample_file)
-                            )
+                            filename = os.path.join(self._path_to_samples, sample_file)
+                            schema.validate(filename)
+                            test_unicode_char(filename)
                         psa_data_dict.setdefault(sample_file, {"tokens": {}})
                         for key, value in fields.items():
                             if key.startswith("token"):
@@ -170,3 +170,20 @@ class PytestSplunkAddonDataParser:
                 if stanza not in self.match_stanzas:
                     raise_warning(f"No sample file found for stanza : {stanza}")
                 LOGGER.info(f"Sample file found for stanza : {stanza}")
+
+
+def test_unicode_char(filename):
+    invalid = False
+    # pattern = re.compile("[^\x00-\x7F]") #do ot want to replace printable chars like €¢ etc
+    pattern = re.compile(
+        "[\u200B-\u200E\uFEFF\u202c\u202D\u2063\u2062]"
+    )  # zero width characters
+    error_message = ""
+    for i, line in enumerate(open(filename)):
+        for match in re.finditer(pattern, line):
+            err = f"Unicode char in FILE {filename} Line {i+1}: {match.group().encode('utf-8')}"
+            error_message += f"{err}\n"
+            LOGGER.debug(err)
+            invalid = True
+    if invalid:
+        raise ValueError(error_message)

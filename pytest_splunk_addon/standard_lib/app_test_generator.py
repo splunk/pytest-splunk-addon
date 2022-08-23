@@ -86,7 +86,14 @@ class AppTestGenerator(object):
         Args:
             fixture(str): fixture name
         """
-        if fixture.startswith("splunk_searchtime_fields"):
+        if fixture in (
+            "splunk_searchtime_fields_requirements",
+            "splunk_searchtime_fields_datamodels",
+        ):
+            yield from self.fieldtest_generator.generate_tests(fixture)
+        elif fixture == "splunk_searchtime_cim_fields_recommended":
+            yield from self.cim_test_generator.generate_tests(fixture)
+        elif fixture.startswith("splunk_searchtime_fields"):
             yield from self.dedup_tests(
                 self.fieldtest_generator.generate_tests(fixture),
                 fixture,

@@ -316,6 +316,7 @@ class TestSampleStanza:
                     }
                 },
                 {
+                    "cim_version": "latest",
                     "cim_fields": {
                         "dest": "192.168.0.1",
                         "severity": "low",
@@ -331,6 +332,7 @@ class TestSampleStanza:
             (
                 {
                     "cim": {
+                        "@version": "4.20.2",
                         "models": {},
                         "exceptions": {
                             "field": [
@@ -349,6 +351,7 @@ class TestSampleStanza:
                     }
                 },
                 {
+                    "cim_version": "4.20.2",
                     "cim_fields": {},
                     "datamodels": {},
                     "exceptions": [

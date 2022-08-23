@@ -276,6 +276,11 @@ class CIMTestGenerator(object):
                     fields.append(exception["name"])
 
                 yield pytest.param(
-                    {"datamodel": model, "datasets": datasets, "fields": fields},
+                    {
+                        "datamodel": model,
+                        "datasets": datasets,
+                        "fields": fields,
+                        "cim_version": event.requirement_test_data["cim_version"],
+                    },
                     id=f"{model}-{'-'.join(datasets)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )
