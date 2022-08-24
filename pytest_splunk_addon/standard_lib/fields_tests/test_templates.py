@@ -424,7 +424,7 @@ class FieldTestTemplates(object):
 
         assert (
             missing_datamodels == []
-        ), f"Desired datamodels were not assigned to the event - missing datamodels {missing_datamodels} Search: {search}"
+        ), f"Desired datamodels were not assigned to the event in Splunk - missing datamodels {missing_datamodels} Search: {search}"
 
         assert (
             wrong_datamodels == []
