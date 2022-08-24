@@ -423,8 +423,12 @@ class FieldTestTemplates(object):
         )
 
         assert (
-            missing_datamodels == [] and wrong_datamodels == []
-        ), f"Tags were not assigned to event - missing tags {missing_datamodels} and/or too many tags found in splunk {wrong_datamodels}"
+            missing_datamodels == []
+        ), f"Desired datamodels were not assigned to the event - missing datamodels {missing_datamodels} Search: {search}"
+
+        assert (
+            wrong_datamodels == []
+        ), f"Wrong datamodels were assigned to the event in Splunk {wrong_datamodels} Search: {search}"
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_eventtypes
