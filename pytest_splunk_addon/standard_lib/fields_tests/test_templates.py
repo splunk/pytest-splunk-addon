@@ -22,6 +22,7 @@ import logging
 import pytest
 from ..addon_parser import Field
 import json
+from itertools import chain
 
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
@@ -39,7 +40,7 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_internal_errors
     def test_splunk_internal_errors(
-        self, splunk_search_util, ignore_internal_errors, record_property, caplog
+            self, splunk_search_util, ignore_internal_errors, record_property, caplog
     ):
         """
         This test case checks that there are not any unexpected internal errors
@@ -75,12 +76,12 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_positive
     def test_props_fields(
-        self,
-        splunk_search_util,
-        splunk_ingest_data,
-        splunk_setup,
-        splunk_searchtime_fields_positive,
-        record_property,
+            self,
+            splunk_search_util,
+            splunk_ingest_data,
+            splunk_setup,
+            splunk_searchtime_fields_positive,
+            record_property,
     ):
         """
         This test case checks that a field value has the expected values.
@@ -98,9 +99,9 @@ class FieldTestTemplates(object):
         record_property("fields", splunk_searchtime_fields_positive["fields"])
 
         index_list = (
-            "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
-            + ")"
+                "(index="
+                + " OR index=".join(splunk_search_util.search_index.split(","))
+                + ")"
         )
         search = (
             f"search {index_list}"
@@ -113,8 +114,8 @@ class FieldTestTemplates(object):
             negative_values = ", ".join([f'"{each}"' for each in field.negative_values])
 
             search = (
-                search + f" AND ({field} IN ({expected_values})"
-                f" AND NOT {field} IN ({negative_values}))"
+                    search + f" AND ({field} IN ({expected_values})"
+                             f" AND NOT {field} IN ({negative_values}))"
             )
         search += COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART
 
@@ -137,12 +138,12 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_requirements
     @pytest.mark.splunk_searchtime_fields_requirements
     def test_requirements_fields(
-        self,
-        splunk_search_util,
-        splunk_ingest_data,
-        splunk_setup,
-        splunk_searchtime_fields_requirements,
-        record_property,
+            self,
+            splunk_search_util,
+            splunk_ingest_data,
+            splunk_setup,
+            splunk_searchtime_fields_requirements,
+            record_property,
     ):
         """
         This test case checks that a field value has the expected values.
@@ -168,9 +169,9 @@ class FieldTestTemplates(object):
         modinput_params = splunk_searchtime_fields_requirements["modinput_params"]
 
         index_list = (
-            "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
-            + ")"
+                "(index="
+                + " OR index=".join(splunk_search_util.search_index.split(","))
+                + ")"
         )
 
         basic_search = ""
@@ -208,21 +209,21 @@ class FieldTestTemplates(object):
         self.logger.error(f"Fields with wrong values: {failure_message}")
 
         assert (
-            missing_fields == []
+                missing_fields == []
         ), f"Not all required fields found in Splunk. Missing fields: {', '.join(missing_fields)}"
         assert (
-            wrong_value_fields == {}
+                wrong_value_fields == {}
         ), f"Not all required fields have correct values in Splunk. Wrong field values: {failure_message} Search string: {search}"
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
     def test_props_fields_no_dash_not_empty(
-        self,
-        splunk_search_util,
-        splunk_ingest_data,
-        splunk_setup,
-        splunk_searchtime_fields_negative,
-        record_property,
+            self,
+            splunk_search_util,
+            splunk_ingest_data,
+            splunk_setup,
+            splunk_searchtime_fields_negative,
+            record_property,
     ):
         """
         This test case checks negative scenario for the field value.
@@ -244,9 +245,9 @@ class FieldTestTemplates(object):
         record_property("fields", splunk_searchtime_fields_negative["fields"])
 
         index_list = (
-            "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
-            + ")"
+                "(index="
+                + " OR index=".join(splunk_search_util.search_index.split(","))
+                + ")"
         )
         base_search = (
             f"search {index_list}"
@@ -274,7 +275,7 @@ class FieldTestTemplates(object):
             result_str = pp.pformat(results.as_list[:10])
 
             query_for_unique_events = (
-                base_search + TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART
+                    base_search + TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART
             )
             query_results = splunk_search_util.get_search_results(
                 query_for_unique_events
@@ -291,13 +292,13 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_tags
     def test_tags(
-        self,
-        splunk_search_util,
-        splunk_ingest_data,
-        splunk_setup,
-        splunk_searchtime_fields_tags,
-        record_property,
-        caplog,
+            self,
+            splunk_search_util,
+            splunk_ingest_data,
+            splunk_setup,
+            splunk_searchtime_fields_tags,
+            record_property,
+            caplog,
     ):
         """
         Test case to check tags mentioned in tags.conf
@@ -323,9 +324,9 @@ class FieldTestTemplates(object):
         record_property("is_tag_enabled", is_tag_enabled)
 
         index_list = (
-            "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
-            + ")"
+                "(index="
+                + " OR index=".join(splunk_search_util.search_index.split(","))
+                + ")"
         )
         search = f"search {index_list} {tag_query} AND tag={tag}"
         search += COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART
@@ -357,23 +358,25 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_requirements
     @pytest.mark.splunk_searchtime_fields_datamodels
     def test_datamodels(
-        self,
-        splunk_search_util,
-        splunk_ingest_data,
-        splunk_setup,
-        splunk_searchtime_fields_datamodels,
-        record_property,
-        caplog,
+            self,
+            splunk_search_util,
+            splunk_ingest_data,
+            splunk_setup,
+            splunk_searchtime_fields_datamodels,
+            record_property,
+            caplog,
     ):
         """
-        Test case to check tags mentioned in tags.conf
+        Test case to check if correct datamodels are assigned to the event.
 
-        This test case checks if a tag is assigned to the event if enabled,
-        and also checks that a tag is not assigned to the event if disabled.
+        This test case checks if tags assigned to the event match assigned datamodel
+        and also checks if there is no additional wrongly assigned datamodel.
 
         Args:
             splunk_search_util (helmut_lib.SearchUtil.SearchUtil):
                 object that helps to search on Splunk.
+            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
+            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
             splunk_searchtime_fields_datamodels (fixture): pytest parameters to test.
             record_property (fixture): pytest fixture to document facts of test cases.
             caplog (fixture): fixture to capture logs.
@@ -388,9 +391,9 @@ class FieldTestTemplates(object):
         record_property("datamodels", datamodels)
 
         index_list = (
-            "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
-            + ")"
+                "(index="
+                + " OR index=".join(splunk_search_util.search_index.split(","))
+                + ")"
         )
         search = f"search {index_list} {esacaped_event} | fields *"
 
@@ -405,37 +408,38 @@ class FieldTestTemplates(object):
         extracted_tags = fields_from_splunk.get("tag", "")
         extracted_tags = extracted_tags.strip("][").split(", ")
         extracted_tags = [tag.replace("'", "") for tag in extracted_tags]
-
-        extracted_datamodels = []
-        for datamodel, tags in dict_datamodel_tag.items():
-            if all(tag in extracted_tags for tag in tags):
-                extracted_datamodels.append(datamodel)
-
         self.logger.debug(f"Tags extracted from Splunk {extracted_tags}")
+
+        matched_datamodels = {dm: tags for dm, tags in dict_datamodel_tag.items()
+                              if all(tag in extracted_tags for tag in tags)}
+        assigned_datamodels = {dm: tags for dm, tags in matched_datamodels.items()
+                               if not any(set(tags).issubset(set(matched_tags)) and dm != matched_datamodel
+                                          for matched_datamodel, matched_tags in matched_datamodels.items())}
 
         record_property("search", search)
 
-        missing_datamodels = [dm for dm in datamodels if dm not in extracted_datamodels]
-        wrong_datamodels = [dm for dm in extracted_datamodels if dm not in datamodels]
+        missing_datamodels = {dm: tags for dm, tags in datamodels.items() if dm not in assigned_datamodels}
+        wrong_datamodels = {dm: tags for dm, tags in assigned_datamodels.items() if dm not in datamodels}
 
         self.logger.debug(
-            f"List of missing tags {missing_datamodels}. List of wrongly assigned tags {wrong_datamodels}"
+            f"List of missing datamodels {missing_datamodels.keys()} and tags {[chain.from_iterable(missing_datamodels.values())]}"
+            f"List of wrongly assigned datamodels {wrong_datamodels.keys()} and tags {[chain.from_iterable(wrong_datamodels.values())]}"
         )
 
         assert (
-            missing_datamodels == [] and wrong_datamodels == []
+                missing_datamodels == [] and wrong_datamodels == []
         ), f"Tags were not assigned to event - missing tags {missing_datamodels} and/or too many tags found in splunk {wrong_datamodels}"
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_eventtypes
     def test_eventtype(
-        self,
-        splunk_search_util,
-        splunk_ingest_data,
-        splunk_setup,
-        splunk_searchtime_fields_eventtypes,
-        record_property,
-        caplog,
+            self,
+            splunk_search_util,
+            splunk_ingest_data,
+            splunk_setup,
+            splunk_searchtime_fields_eventtypes,
+            record_property,
+            caplog,
     ):
         """
         Tests if all eventtypes in eventtypes.conf are generated in Splunk.
@@ -455,9 +459,9 @@ class FieldTestTemplates(object):
         """
         record_property("eventtype", splunk_searchtime_fields_eventtypes["stanza"])
         index_list = (
-            "(index="
-            + " OR index=".join(splunk_search_util.search_index.split(","))
-            + ")"
+                "(index="
+                + " OR index=".join(splunk_search_util.search_index.split(","))
+                + ")"
         )
         search = (
             f"search {index_list} AND "
@@ -487,13 +491,13 @@ class FieldTestTemplates(object):
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_savedsearches
     def test_savedsearches(
-        self,
-        splunk_search_util,
-        splunk_ingest_data,
-        splunk_setup,
-        splunk_searchtime_fields_savedsearches,
-        record_property,
-        caplog,
+            self,
+            splunk_search_util,
+            splunk_ingest_data,
+            splunk_setup,
+            splunk_searchtime_fields_savedsearches,
+            record_property,
+            caplog,
     ):
         """
         Tests if all savedsearches in savedsearches.conf are being executed properly to generate proper results.
@@ -517,7 +521,7 @@ class FieldTestTemplates(object):
 
         temp_search_query = search_query.split("|")
         if temp_search_query[0].find("savedsearch") == -1 and (
-            len(temp_search_query) < 2 or temp_search_query[1].find("savedsearch") == -1
+                len(temp_search_query) < 2 or temp_search_query[1].find("savedsearch") == -1
         ):
             temp_search_query[0] += " earliest_time = {0} latest_time = {1} ".format(
                 earliest_time, latest_time
