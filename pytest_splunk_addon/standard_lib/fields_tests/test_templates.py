@@ -22,6 +22,7 @@ import logging
 import pytest
 from ..addon_parser import Field
 import json
+from itertools import chain
 
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
@@ -366,14 +367,16 @@ class FieldTestTemplates(object):
         caplog,
     ):
         """
-        Test case to check tags mentioned in tags.conf
+        Test case to check if correct datamodels are assigned to the event.
 
-        This test case checks if a tag is assigned to the event if enabled,
-        and also checks that a tag is not assigned to the event if disabled.
+        This test case checks if tags assigned to the event match assigned datamodel
+        and also checks if there is no additional wrongly assigned datamodel.
 
         Args:
             splunk_search_util (helmut_lib.SearchUtil.SearchUtil):
                 object that helps to search on Splunk.
+            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
+            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
             splunk_searchtime_fields_datamodels (fixture): pytest parameters to test.
             record_property (fixture): pytest fixture to document facts of test cases.
             caplog (fixture): fixture to capture logs.
@@ -405,26 +408,37 @@ class FieldTestTemplates(object):
         extracted_tags = fields_from_splunk.get("tag", "")
         extracted_tags = extracted_tags.strip("][").split(", ")
         extracted_tags = [tag.replace("'", "") for tag in extracted_tags]
+        dm_tags = list(
+            chain.from_iterable(
+                [tags for dm, tags in dict_datamodel_tag.items() if dm in datamodels]
+            )
+        )
+        self.logger.info(f"Tags extracted from Splunk {extracted_tags}")
+        self.logger.info(f"Tags assigned to datamodels {dm_tags}")
 
-        extracted_datamodels = []
-        for datamodel, tags in dict_datamodel_tag.items():
-            if all(tag in extracted_tags for tag in tags):
-                extracted_datamodels.append(datamodel)
-
-        self.logger.debug(f"Tags extracted from Splunk {extracted_tags}")
+        matched_datamodels = {
+            dm: tags
+            for dm, tags in dict_datamodel_tag.items()
+            if all(tag in extracted_tags for tag in tags)
+        }
+        assigned_datamodels = {
+            dm: tags
+            for dm, tags in matched_datamodels.items()
+            if not any(
+                set(tags).issubset(set(matched_tags)) and dm != matched_datamodel
+                for matched_datamodel, matched_tags in matched_datamodels.items()
+            )
+        }
 
         record_property("search", search)
 
-        missing_datamodels = [dm for dm in datamodels if dm not in extracted_datamodels]
-        wrong_datamodels = [dm for dm in extracted_datamodels if dm not in datamodels]
+        missing_datamodels = [dm for dm in datamodels if dm not in assigned_datamodels]
+        wrong_datamodels = [dm for dm in assigned_datamodels if dm not in datamodels]
 
-        self.logger.debug(
-            f"List of missing tags {missing_datamodels}. List of wrongly assigned tags {wrong_datamodels}"
+        assert missing_datamodels == [] and wrong_datamodels == [], (
+            f"Missing datamodels: {missing_datamodels} and/or too many datamodels found in splunk: {wrong_datamodels}"
+            f"Tags found in splunk: {extracted_tags}. Tags assigned to datamodels: {dm_tags}"
         )
-
-        assert (
-            missing_datamodels == [] and wrong_datamodels == []
-        ), f"Tags were not assigned to event - missing tags {missing_datamodels} and/or too many tags found in splunk {wrong_datamodels}"
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_eventtypes
