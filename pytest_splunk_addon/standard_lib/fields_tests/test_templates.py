@@ -408,7 +408,13 @@ class FieldTestTemplates(object):
         extracted_tags = fields_from_splunk.get("tag", "")
         extracted_tags = extracted_tags.strip("][").split(", ")
         extracted_tags = [tag.replace("'", "") for tag in extracted_tags]
-        self.logger.debug(f"Tags extracted from Splunk {extracted_tags}")
+        dm_tags = list(
+            chain.from_iterable(
+                [tags for dm, tags in dict_datamodel_tag.items() if dm in datamodels]
+            )
+        )
+        self.logger.info(f"Tags extracted from Splunk {extracted_tags}")
+        self.logger.info(f"Tags assigned to datamodels {dm_tags}")
 
         matched_datamodels = {
             dm: tags
@@ -426,21 +432,13 @@ class FieldTestTemplates(object):
 
         record_property("search", search)
 
-        missing_datamodels = {
-            dm: tags for dm, tags in datamodels.items() if dm not in assigned_datamodels
-        }
-        wrong_datamodels = {
-            dm: tags for dm, tags in assigned_datamodels.items() if dm not in datamodels
-        }
+        missing_datamodels = [dm for dm in datamodels if dm not in assigned_datamodels]
+        wrong_datamodels = [dm for dm in assigned_datamodels if dm not in datamodels]
 
-        self.logger.debug(
-            f"List of missing datamodels {missing_datamodels.keys()} and tags {[chain.from_iterable(missing_datamodels.values())]}"
-            f"List of wrongly assigned datamodels {wrong_datamodels.keys()} and tags {[chain.from_iterable(wrong_datamodels.values())]}"
+        assert missing_datamodels == [] and wrong_datamodels == [], (
+            f"Missing datamodels: {missing_datamodels} and/or too many datamodels found in splunk: {wrong_datamodels}"
+            f"Tags found in splunk: {extracted_tags}. Tags assigned to datamodels: {dm_tags}"
         )
-
-        assert (
-            missing_datamodels == [] and wrong_datamodels == []
-        ), f"Tags were not assigned to event - missing tags {missing_datamodels} and/or too many tags found in splunk {wrong_datamodels}"
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_eventtypes
