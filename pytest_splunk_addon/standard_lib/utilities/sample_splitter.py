@@ -8,9 +8,9 @@ def split_samples(sample_path, output_dir=None, splitter="sourcetype"):
     Splits events to separate files based on provided field
 
     Args:
-        sample_path: path to file with samples
-        output_dir: path to directory where separated files will be stored. Default the same dir as input file
-        splitter: depend on what filed samples are split. Default: sourcetype, allowed source and host
+        sample_path:  path to file with samples
+        output_dir:   path to directory where separated files will be stored. Default the same dir as input file
+        splitter:     depend on what field samples are split. Default sourcetype, allowed source and host
     """
     if output_dir is None:
         output_dir = os.path.dirname(sample_path)
@@ -72,5 +72,4 @@ def main():
 
 
 if __name__ == "__main__":
-    os.getcwd()
     main()
