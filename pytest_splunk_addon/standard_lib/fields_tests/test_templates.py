@@ -241,9 +241,9 @@ class FieldTestTemplates(object):
         assert (
             wrong_value_fields == {}
         ), f"Not all required fields have correct values in Splunk. Wrong field values:\n{exc_message}\nSearch string:\n{search}"
-        assert (
-            missing_fields == []
-        ), f"Not all required fields found in Splunk. Missing fields: {', '.join(missing_fields)}"
+        # assert (
+        #     missing_fields == []
+        # ), f"Not all required fields found in Splunk. Missing fields: {', '.join(missing_fields)}"
 
 
     @pytest.mark.splunk_searchtime_fields
@@ -466,11 +466,19 @@ class FieldTestTemplates(object):
         missing_datamodels = [dm for dm in datamodels if dm not in assigned_datamodels]
         wrong_datamodels = [dm for dm in assigned_datamodels if dm not in datamodels]
 
-
-        assert missing_datamodels == [] and wrong_datamodels == [], (
-            f"Missing datamodels: {missing_datamodels} and/or too many datamodels found in splunk: {wrong_datamodels}"
-            f"Tags found in splunk: {extracted_tags}. Tags assigned to datamodels: {dm_tags}"
+        exc_message = get_table_output(
+            headers=["Expected tags", "Found tags", "Expected datamodel", "Found datamodel"],
+            value_list=[dm_tags, extracted_tags, datamodels, assigned_datamodels],
         )
+
+        assert missing_datamodels == [] and wrong_datamodels == [] ,(
+            f"Incorrect datamodels found:\n{exc_message}"
+        )
+
+        # assert missing_datamodels == [] and wrong_datamodels == [], (
+        #     f"Missing datamodels: {missing_datamodels} and/or too many datamodels found in splunk: {wrong_datamodels}"
+        #     f"Tags found in splunk: {extracted_tags}. Tags assigned to datamodels: {dm_tags}"
+        # )
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_eventtypes
