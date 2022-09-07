@@ -40,9 +40,7 @@ def split_samples(sample_path, output_dir=None, splitter="sourcetype"):
     )
     separate_events = {}
     for each_event in events:
-        if "transport" in each_event.keys() and each_event["transport"].get(
-            f"@{splitter}"
-        ):
+        if each_event.get("transport", {}).get(f"@{splitter}"):
             splitter_name = each_event["transport"].get(f"@{splitter}")
             if splitter_name in separate_events.keys():
                 separate_events[splitter_name].append(each_event)
