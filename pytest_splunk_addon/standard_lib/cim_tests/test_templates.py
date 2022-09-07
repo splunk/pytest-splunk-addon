@@ -511,4 +511,4 @@ class CIMTestTemplates(object):
 
         assert (
             missing_fields == []
-        ), f"Not all fields from datamodel found for event definition. Missing fields {missing_fields}"
+        ), f"Not all fields from datamodel found for event definition. Missing fields: {','.join(missing_fields)}"

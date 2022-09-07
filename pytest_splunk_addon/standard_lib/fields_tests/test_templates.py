@@ -240,7 +240,7 @@ class FieldTestTemplates(object):
         self.logger.error(exc_message)
         assert (
             wrong_value_fields == {}
-        ), f"Not all required fields have correct values in Splunk. Wrong field values:\n{exc_message}\nSearch string:\n{search}"
+        ), f"Not all required fields have correct values or some fields are missing in Splunk. Wrong field values:\n{exc_message}\nSearch string:\n{search}"
         # assert (
         #     missing_fields == []
         # ), f"Not all required fields found in Splunk. Missing fields: {', '.join(missing_fields)}"
@@ -467,8 +467,8 @@ class FieldTestTemplates(object):
         wrong_datamodels = [dm for dm in assigned_datamodels if dm not in datamodels]
 
         exc_message = get_table_output(
-            headers=["Expected tags", "Found tags", "Expected datamodel", "Found datamodel"],
-            value_list=[dm_tags, extracted_tags, datamodels, assigned_datamodels],
+            headers=["Expected datamodel", "Expected tags", "Found datamodel", "Found tags"],
+            value_list=[[",".join(datamodels), ",".join(dm_tags), ",".join(assigned_datamodels.keys()), ",".join(extracted_tags)]]
         )
 
         assert missing_datamodels == [] and wrong_datamodels == [] ,(
