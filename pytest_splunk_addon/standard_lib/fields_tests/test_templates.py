@@ -29,6 +29,32 @@ from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART = " | dedup punct | head 5"
 COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART = " | stats count by sourcetype"
 
+def get_table_output(headers, value_list):
+    """
+    Generate a table output of the following format::
+
+        Header1 | Header2
+        ---------------
+        One     | Value1
+        Two     | Value2
+        --------------
+
+    Args:
+        headers (list): list of headers
+        value_list (list of list): list of rows for the table
+    """
+    table_output = ""
+    table_list = [headers] + value_list
+    col_length = [
+        max(map(lambda cell: len(str(cell)), col)) for col in zip(*table_list)
+    ]
+    format_str = " | ".join(["{{:<{}}}".format(i) for i in col_length])
+    # Separating line
+    table_list.insert(1, ["-" * i for i in col_length])
+    for each_value in table_list:
+        table_output += format_str.format(*each_value) + "\n"
+    return table_output
+
 
 class FieldTestTemplates(object):
     """
@@ -199,23 +225,25 @@ class FieldTestTemplates(object):
             if value != fields_from_splunk.get(field):
                 wrong_value_fields[field] = fields_from_splunk.get(field)
 
-        failure_message = ""
+        exc_message = get_table_output(
+            headers=["Field", "Splunk value", "Expected value"],
+            value_list=[
+                [
+                    str(field),
+                    str(value),
+                    str(fields[field]),
+                ]
+                for field, value in wrong_value_fields.items()
+            ],
+        )
 
-        for field, value in wrong_value_fields.items():
-            failure_message += (
-                f"Field {field} has value {value} and should has {fields[field]}\n"
-            )
-
-        if failure_message:
-            self.logger.error(f"Fields with wrong values: {failure_message}")
-
+        self.logger.error(exc_message)
+        assert (
+            wrong_value_fields == {}
+        ), f"Not all required fields have correct values in Splunk. Wrong field values:\n{exc_message}\nSearch string:\n{search}"
         assert (
             missing_fields == []
         ), f"Not all required fields found in Splunk. Missing fields: {', '.join(missing_fields)}"
-        assert (
-            wrong_value_fields == {}
-        ), f"Not all required fields have correct values in Splunk. Wrong field values: {failure_message} Search string: {search}"
-
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
     def test_props_fields_no_dash_not_empty(
