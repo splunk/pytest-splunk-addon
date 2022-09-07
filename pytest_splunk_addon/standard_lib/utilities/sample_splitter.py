@@ -33,11 +33,8 @@ def split_samples(sample_path, output_dir=None, splitter="sourcetype"):
     with open(sample_path, "r", encoding="utf-8") as sample_file:
         sample_raw = sample_file.read()
     samples = xmltodict.parse(sample_raw)
-    events = (
-        samples["device"]["event"]
-        if type(samples["device"]["event"]) == list
-        else [samples["device"]["event"]]
-    )
+    events = samples["device"]["event"]
+    events = events if type(events) == list else [events]
     separate_events = {}
     for each_event in events:
         if each_event.get("transport", {}).get(f"@{splitter}"):
