@@ -206,7 +206,8 @@ class FieldTestTemplates(object):
                 f"Field {field} has value {value} and should has {fields[field]}\n"
             )
 
-        self.logger.error(f"Fields with wrong values: {failure_message}")
+        if failure_message:
+            self.logger.error(f"Fields with wrong values: {failure_message}")
 
         assert (
             missing_fields == []
