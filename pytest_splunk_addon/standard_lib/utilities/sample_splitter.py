@@ -17,6 +17,7 @@
 import xmltodict
 import os
 import argparse
+from collections import defaultdict
 
 
 def split_samples(sample_path, output_dir=None, splitter="sourcetype"):
@@ -35,20 +36,13 @@ def split_samples(sample_path, output_dir=None, splitter="sourcetype"):
     samples = xmltodict.parse(sample_raw)
     events = samples["device"]["event"]
     events = events if type(events) == list else [events]
-    separate_events = {}
+    separate_events = defaultdict(list)
     for each_event in events:
         if each_event.get("transport", {}).get(f"@{splitter}"):
             splitter_name = each_event["transport"].get(f"@{splitter}")
-            if splitter_name in separate_events.keys():
-                separate_events[splitter_name].append(each_event)
-            else:
-                separate_events[splitter_name] = [each_event]
+            separate_events[splitter_name].append(each_event)
         else:
-            separate_events["undefined"].append(
-                each_event
-            ) if "undefined" in separate_events.keys() else separate_events.update(
-                undefined=[each_event]
-            )
+            separate_events["undefined"].append(each_event)
     sample_file_name = os.path.basename(sample_path)
     for splitter_name, events in separate_events.items():
         samples["device"].update(event=events)
