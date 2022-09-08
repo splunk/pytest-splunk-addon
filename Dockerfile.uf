@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# TODO: go back to latest version when fixed
 ARG SPLUNK_VERSION=8.2.6
 FROM splunk/universalforwarder:8.2.6
 ARG SPLUNK_VERSION=8.2.6
