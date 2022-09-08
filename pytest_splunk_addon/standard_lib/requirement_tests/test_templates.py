@@ -195,7 +195,7 @@ class ReqsTestTemplates(object):
                 search, interval=INTERVAL, retries=RETRIES
             )
 
-        assert ingestion_check, f"ingestion failure \nsearch={search}\n"
+        assert ingestion_check, f"\ningestion failure \nSearch query: {search}\n"
         self.logger.info(f"ingestion_check: {ingestion_check}")
         keyValue_dict_SPL = splunk_search_util.getFieldValuesDict(
             search, interval=INTERVAL, retries=RETRIES
@@ -217,12 +217,12 @@ class ReqsTestTemplates(object):
         self.logger.info(f"Field mapping check: {field_extraction_check}")
 
         assert datamodel_check and field_extraction_check, (
-            f" Issue with either field extraction or data model.\nsearch={search}\n"
-            f" data model check: {datamodel_check} \n"
-            f" data model in requirement file  {model_datalist}\n "
-            f" data model extracted by TA {list(datamodel_based_on_tag.keys())}\n"
-            f" Field_extraction_check: {field_extraction_check} \n"
-            f" Field extraction errors: {json.dumps(missing_key_value, indent=4)} \n"
-            f" sourcetype of ingested event: {sourcetype} \n"
-            f" sourcetype in requirement file event: {sourcetype_req_file} \n"
+            f"\nIssue with either field extraction or data model.\nSearch query: {search}\n"
+            f"\ndata model check: {datamodel_check} \n"
+            f"data model in requirement file  {model_datalist}\n "
+            f"data model extracted by TA {list(datamodel_based_on_tag.keys())}\n"
+            f"Field_extraction_check: {field_extraction_check} \n"
+            f"Field extraction errors: {json.dumps(missing_key_value, indent=4)} \n"
+            f"sourcetype of ingested event: {sourcetype} \n"
+            f"sourcetype in requirement file event: {sourcetype_req_file} \n"
         )
