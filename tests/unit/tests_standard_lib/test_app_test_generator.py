@@ -25,12 +25,10 @@ def app_test_generator(mock_object):
     fieldtest_generator = mock_object(f"{module}.FieldTestGenerator")
     cim_test_generator = mock_object(f"{module}.CIMTestGenerator")
     indextime_test_generator = mock_object(f"{module}.IndexTimeTestGenerator")
-    requirement_test_generator = mock_object(f"{module}.ReqsTestGenerator")
     for mock_element in [
         fieldtest_generator,
         cim_test_generator,
         indextime_test_generator,
-        requirement_test_generator,
     ]:
         setattr(mock_element, "return_value", mock_element)
 
@@ -50,7 +48,6 @@ def test_app_test_generator_instantiation(
     atg = AppTestGenerator(simple_config)
     atg.fieldtest_generator.assert_called_once_with(
         config["splunk_app"],
-        config["requirement_test"],
         [],
         field_bank=config["field_bank"],
     )

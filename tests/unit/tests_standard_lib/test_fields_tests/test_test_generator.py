@@ -45,7 +45,6 @@ def test_field_test_generator_instantiation(addon_parser_mock):
     addon_parser_mock.return_value = "ADDON_PARSER_RETURN_VALUE"
     ftg = FieldTestGenerator(
         "app_path",
-        "requirement_files_path",
         [],
         "field_bank",
     )
@@ -97,7 +96,6 @@ def test_generate_tests(addon_parser_mock, fixture_name, expected_ouptput):
         assert list(
             FieldTestGenerator(
                 "app_path",
-                "requirement_files_path",
                 [],
                 "field_bank",
             ).generate_tests(fixture_name)
@@ -122,7 +120,6 @@ def test_generate_tag_tests(addon_parser_mock):
         out = list(
             FieldTestGenerator(
                 "app_path",
-                "requirement_files_path",
                 [],
                 "field_bank",
             ).generate_tag_tests()
@@ -147,7 +144,6 @@ def test_generate_eventtype_tests(addon_parser_mock):
         out = list(
             FieldTestGenerator(
                 "app_path",
-                "requirement_files_path",
                 [],
                 "field_bank",
             ).generate_eventtype_tests()
@@ -175,7 +171,6 @@ def test_generate_savedsearches_tests(addon_parser_mock):
         out = list(
             FieldTestGenerator(
                 "app_path",
-                "requirement_files_path",
                 [],
                 "field_bank",
             ).generate_savedsearches_tests()
@@ -198,7 +193,6 @@ def test_contains_classname(fields_group, criteria, expected_result):
     assert (
         FieldTestGenerator(
             "app_path",
-            "requirement_files_path",
             [],
             "field_bank",
         )._contains_classname(fields_group, criteria)
@@ -393,7 +387,6 @@ def test_generate_field_tests(
         out = list(
             FieldTestGenerator(
                 "app_path",
-                "requirement_files_path",
                 [],
                 "field_bank",
             ).generate_field_tests(is_positive)

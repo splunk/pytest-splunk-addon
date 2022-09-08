@@ -130,7 +130,6 @@ def test_events_can_be_ingested(
         config_path="tests/unit/event_ingestors",
         thread_count=20,
         store_events=False,
-        run_requirement_test="None",
     )
     assert get_ingestor_mock.call_count == 2
     get_ingestor_mock.assert_has_calls(
