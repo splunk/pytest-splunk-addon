@@ -482,3 +482,33 @@ class CIMTestTemplates(object):
             f"\nQuery result greater than 0.\nsearch=\n{search} \n \n"
             f"Event type which associated with multiple data model \n{result_str}"
         )
+
+    @pytest.mark.splunk_searchtime_cim
+    @pytest.mark.splunk_requirements
+    @pytest.mark.splunk_requirements_unit
+    def test_cim_fields_recommended(
+        self, splunk_dm_recommended_fields, splunk_searchtime_cim_fields_recommended
+    ):
+        datamodel = splunk_searchtime_cim_fields_recommended["datamodel"]
+        datasets = splunk_searchtime_cim_fields_recommended["datasets"]
+        fields = splunk_searchtime_cim_fields_recommended["fields"]
+        cim_version = splunk_searchtime_cim_fields_recommended["cim_version"]
+
+        fields_from_model_definition = splunk_dm_recommended_fields(
+            datamodel, datasets, cim_version
+        )
+        self.logger.debug(f"Fields from Splunk: {fields_from_model_definition}")
+
+        model_key = f"{cim_version}:{datamodel}:{':'.join(datasets)}".strip(":")
+
+        model_fields = fields_from_model_definition[model_key]
+        self.logger.debug(f"Fields from CIM definition: {model_fields}")
+
+        missing_fields = []
+        for field in set(model_fields):
+            if field not in fields:
+                missing_fields.append(field)
+
+        assert (
+            missing_fields == []
+        ), f"Not all fields from datamodel found for event definition. Missing fields {missing_fields}"

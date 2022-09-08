@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<device>
+    <vendor>Test</vendor>
+    <product>Test product</product>
+    <version id="8.21.0"/>
+    <event code="" name="SyslogEvent" format="syslog" >
+        <transport type="syslog" host="10.0.0.3"/>
+        <source>
+            <comment/>
+        </source>
+        <raw>
+            <![CDATA[<111> 2020-02-12T03:27:09+10:00 10.0.0.3 RT_FLOW: RT_FLOW_SESSION_CREATE: action=allowed transport=ICMP dest=10.0.0.1 dest_ip=10.0.0.1 dest_port=5048 dest_zone=DUMMY_ZONE app=app1]]>
+        </raw>
+        <cim>
+            <models>
+                <model>Network Traffic</model>
+            </models>
+            <cim_fields>
+                <field name="action" value="allowed"/>
+                <field name="dest" value="10.0.0.1"/>
+                <field name="dest_ip" value="10.0.0.1"/>
+                <field name="dest_port" value="5048"/>
+                <field name="dest_zone" value="DUMMY_ZONE"/>
+                <field name="app" value="app1"/>
+                <field name="transport" value="ICMP"/>
+            </cim_fields>
+            <missing_recommended_fields>
+                <field>bytes</field>
+                <field>bytes_in</field>
+                <field>bytes_out</field>
+                <field>dvc</field>
+                <field>rule</field>
+                <field>session_id</field>
+                <field>src</field>
+                <field>src_ip</field>
+                <field>src_port</field>
+                <field>src_zone</field>
+                <field>src_interface</field>
+                <field>user</field>
+                <field>protocol</field>
+                <field>vendor_product</field>
+            </missing_recommended_fields>
+            <exceptions>
+                <field name="vendor_product" value="Incorrect vendor product" reason="testing exceptions"/>
+            </exceptions>
+        </cim>
+    </event>
+        <event code="" name="SyslogEventMissingTag" format="syslog">
+        <transport type="syslog" host="10.0.0.3"/>
+        <source>
+            <comment/>
+        </source>
+        <raw>
+            <![CDATA[<111> 2020-02-12T03:27:09+10:00 10.0.0.3 RT_FLOW: RT_FLOW_SESSION_CREATE: action=not_allowed transport=ICMP dest=10.0.0.1 dest_ip=10.0.0.1 dest_port=5048 dest_zone=DUMMY_ZONE app=app2]]>
+        </raw>
+        <cim>
+            <models>
+                <model>Network Traffic</model>
+            </models>
+            <cim_fields>
+                <field name="action" value="not_allowed"/>
+                <field name="dest" value="10.0.0.1"/>
+                <field name="dest_ip" value="10.0.0.1"/>
+                <field name="dest_port" value="5048"/>
+                <field name="dest_zone" value="DUMMY_ZONE"/>
+                <field name="app" value="app2"/>
+                <field name="transport" value="ICMP"/>
+            </cim_fields>
+            <missing_recommended_fields>
+                <field>bytes</field>
+                <field>bytes_in</field>
+                <field>bytes_out</field>
+                <field>dvc</field>
+                <field>rule</field>
+                <field>session_id</field>
+                <field>src</field>
+                <field>src_ip</field>
+                <field>src_port</field>
+                <field>src_zone</field>
+                <field>src_interface</field>
+                <field>user</field>
+                <field>protocol</field>
+                <field>vendor_product</field>
+            </missing_recommended_fields>
+            <exceptions>
+                <field name="vendor_product" value="Incorrect vendor product" reason="testing exceptions"/>
+            </exceptions>
+        </cim>
+    </event>
+</device>

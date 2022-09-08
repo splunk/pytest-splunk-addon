@@ -23,6 +23,7 @@ Module usage:
 import logging
 import os
 import shutil
+from collections import defaultdict
 from time import sleep
 import json
 import pytest
@@ -32,6 +33,7 @@ from .helmut.manager.jobs import Jobs
 from .helmut.splunk.cloud import CloudSplunk
 from .helmut_lib.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
+from .standard_lib.CIM_Models.datamodel_definition import datamodels
 import configparser
 from filelock import FileLock
 
@@ -264,13 +266,6 @@ def pytest_addoption(parser):
         action="store",
         dest="ignore_errors_not_related_to_addon",
         help=("Path to file where list of errors not related to addon are suppressed."),
-    )
-    group.addoption(
-        "--requirement-test",
-        action="store",
-        dest="requirement_test",
-        default="None",
-        help="Default None, path to --requirement-test files if requirement tests need to be run",
     )
     group.addoption(
         "--splunk-uf-host",
@@ -733,7 +728,6 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
     ):
         addon_path = request.config.getoption("splunk_app")
         config_path = request.config.getoption("splunk_data_generator")
-        run_requirement_test = request.config.getoption("requirement_test")
         ingest_meta_data = {
             "uf_host": uf.get("uf_host"),
             "uf_port": uf.get("uf_port"),
@@ -752,7 +746,6 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
             config_path,
             thread_count,
             store_events,
-            run_requirement_test,
         )
         sleep(50)
         if "PYTEST_XDIST_WORKER" in os.environ:
@@ -798,6 +791,38 @@ def file_system_prerequisite():
         if os.path.exists(monitor_dir):
             shutil.rmtree(monitor_dir, ignore_errors=True)
         os.mkdir(monitor_dir)
+
+
+@pytest.fixture(scope="session")
+def splunk_dm_recommended_fields():
+    """
+    Returns function which gets recommended fields from Splunk for given datamodel
+
+    Note that data is being dynamically retrieved from Splunk. When CIM add-on version changes
+    retrieved data may differ
+    """
+    recommended_fields = defaultdict(list)
+
+    def update_recommended_fields(model, datasets, cim_version):
+        model_key = f"{cim_version}:{model}:{':'.join(datasets)}".strip(":")
+
+        if model_key not in recommended_fields:
+            LOGGER.info(f"Fetching {model_key} definition")
+            datamodel_per_cim = datamodels.get(cim_version) or datamodels["latest"]
+            datamodel = datamodel_per_cim[model]
+            for object_name, value in datamodel.items():
+                if (
+                    object_name == "BaseEvent"
+                    or object_name in datasets
+                    or object_name == model
+                ):
+                    recommended_fields[model_key] += value
+
+        if not recommended_fields.get(model_key) or []:
+            raise ValueError(f"Model {model_key} definition was not fetched")
+        return recommended_fields
+
+    return update_recommended_fields
 
 
 def is_responsive_uf(uf):

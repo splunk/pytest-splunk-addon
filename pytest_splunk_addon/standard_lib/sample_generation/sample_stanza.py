@@ -20,11 +20,15 @@ from . import Rule
 from . import raise_warning
 from . import SampleEvent
 import logging
+import xmltodict
+from collections import namedtuple
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 TIMEZONE_REX = "((\+1[0-2])|(-1[0-4])|[+|-][0][0-9])([0-5][0-9])"
 BULK_EVENT_COUNT = 250
+
+token_value = namedtuple("token_value", ["key", "value"])
 
 
 class SampleStanza(object):
@@ -97,6 +101,10 @@ class SampleStanza(object):
             for each_rule in self.sample_rules:
                 if each_rule:
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
+            for event in raw_event[event_counter]:
+                host_value = event.metadata.get("host")
+                host = token_value(key=host_value, value=host_value)
+                event.update_requirement_test_field("host", "##host##", host)
             bulk_event.extend(raw_event[event_counter])
             event_counter = event_counter + 1
 
@@ -106,9 +114,18 @@ class SampleStanza(object):
                 each.metadata.update(sample_count=1)
 
         if self.metadata.get("expected_event_count") is None:
-            self.metadata.update(expected_event_count=len(bulk_event))
+            breaker = self.metadata.get("breaker")
+            if breaker is not None:
+                expected_events = 0
+                for each_event in bulk_event:
+                    expected_events += len(
+                        list(filter(lambda x: x, self.break_events(each_event.event)))
+                    )
+            else:
+                expected_events = len(bulk_event)
+            self.metadata.update(expected_event_count=expected_events)
             for each in bulk_event:
-                each.metadata.update(expected_event_count=len(bulk_event))
+                each.metadata.update(expected_event_count=expected_events)
         else:
             self.metadata.update(sample_count=1)
             for each in bulk_event:
@@ -148,7 +165,8 @@ class SampleStanza(object):
         metadata = {
             key: psa_data_params[key] for key in psa_data_params if key != "tokens"
         }
-        metadata.update(host=self.sample_name)
+        host = metadata.get("host") or self.sample_name
+        metadata.update(host=host)
         if (
             metadata.get("input_type")
             not in [
@@ -270,34 +288,54 @@ class SampleStanza(object):
         """
         with open(self.sample_path, "r", encoding="utf-8") as sample_file:
             sample_raw = sample_file.read()
-            if self.metadata.get("breaker"):
-                for each_event in self.break_events(sample_raw):
-                    if each_event:
-                        event_metadata = self.get_eventmetadata()
-                        yield SampleEvent(each_event, event_metadata, self.sample_name)
-            elif self.input_type in ["modinput", "windows_input"]:
-                for each_line in sample_raw.split("\n"):
-                    if each_line:
-                        event_metadata = self.get_eventmetadata()
-                        yield SampleEvent(each_line, event_metadata, self.sample_name)
-            elif self.input_type in [
-                "file_monitor",
-                "uf_file_monitor",
-                "scripted_input",
-                "syslog_tcp",
-                "syslog_udp",
-                "default",
-            ]:
-                event = sample_raw.strip()
-                if not event:
-                    raise_warning("sample file: '{}' is empty".format(self.sample_path))
-                else:
-                    yield SampleEvent(event, self.metadata, self.sample_name)
 
-            if not self.input_type:
-                # TODO: input_type not found scenario
-                pass
-            # More input types to be added here.
+        if self.metadata.get("requirement_test_sample"):
+            samples = xmltodict.parse(sample_raw)
+            events = (
+                samples["device"]["event"]
+                if type(samples["device"]["event"]) == list
+                else [samples["device"]["event"]]
+            )
+            if self.metadata.get("sample_count") is None:
+                self.metadata.update(sample_count="1")
+            for each_event in events:
+                event = each_event["raw"].strip()
+                event_metadata = self.get_eventmetadata()
+                requirement_test_data = self.populate_requirement_test_data(each_event)
+                if "transport" in each_event.keys():
+                    static_host = each_event["transport"].get("@host")
+                    if static_host:
+                        event_metadata.update(host=static_host)
+                yield SampleEvent(
+                    event, event_metadata, self.sample_name, requirement_test_data
+                )
+        elif self.metadata.get("breaker"):
+            for each_event in self.break_events(sample_raw):
+                if each_event:
+                    event_metadata = self.get_eventmetadata()
+                    yield SampleEvent(each_event, event_metadata, self.sample_name)
+        elif self.input_type in ["modinput", "windows_input"]:
+            for each_line in sample_raw.split("\n"):
+                if each_line:
+                    event_metadata = self.get_eventmetadata()
+                    yield SampleEvent(each_line, event_metadata, self.sample_name)
+        elif self.input_type in [
+            "file_monitor",
+            "uf_file_monitor",
+            "scripted_input",
+            "syslog_tcp",
+            "syslog_udp",
+            "default",
+        ]:
+            event = sample_raw.strip()
+            if not event:
+                raise_warning("sample file: '{}' is empty".format(self.sample_path))
+            else:
+                yield SampleEvent(event, self.metadata, self.sample_name)
+        if not self.input_type:
+            # TODO: input_type not found scenario
+            pass
+        # More input types to be added here.
 
     def break_events(self, sample_raw):
         """
@@ -343,3 +381,60 @@ class SampleStanza(object):
             else:
                 token_list.append(token)
         return token_list
+
+    @staticmethod
+    def populate_requirement_test_data(event):
+        """
+        Analyze event's datamodels, cim_fields, missing_recommended_fields, exception
+
+        Args:
+            event (dict): event data from xml file
+
+        Return:
+            requirement_test_data (dict): datamodels, cim_fields, missing_recommended_fields, exception
+        """
+        requirement_test_data = {}
+        cim = event.get("cim")
+        if cim:
+            requirement_test_data["cim_version"] = cim.get("@version", "latest")
+            requirement_test_data["datamodels"] = cim.get("models") or {}
+
+            defined_fields = cim.get("cim_fields") or {}
+            cim_fields = {}
+            if defined_fields:
+                fields = defined_fields["field"]
+                if type(fields) == list:
+                    for field in fields:
+                        cim_fields[field["@name"]] = field["@value"]
+                elif type(fields) == dict:
+                    cim_fields[fields["@name"]] = fields["@value"]
+            requirement_test_data["cim_fields"] = cim_fields
+
+            missing_recommended_fields = cim.get("missing_recommended_fields") or []
+            if missing_recommended_fields:
+                missing_recommended_fields = (
+                    missing_recommended_fields.get("field") or []
+                )
+                if type(missing_recommended_fields) != list:
+                    missing_recommended_fields = [missing_recommended_fields]
+            requirement_test_data[
+                "missing_recommended_fields"
+            ] = missing_recommended_fields
+
+            defined_exceptions = cim.get("exceptions") or []
+            exceptions = []
+            if defined_exceptions:
+                defined_fields = defined_exceptions["field"]
+                defined_fields = (
+                    defined_fields if type(defined_fields) == list else [defined_fields]
+                )
+                for field in defined_fields:
+                    exceptions.append(
+                        {
+                            "name": field["@name"],
+                            "value": field["@value"],
+                            "reason": field["@reason"],
+                        }
+                    )
+            requirement_test_data["exceptions"] = exceptions
+        return requirement_test_data

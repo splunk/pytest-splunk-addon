@@ -13,7 +13,7 @@ tokens = {
     "token_1": {"replacementType": "all"},
     "token_2": {"replacementType": "random"},
 }
-rule_obj = namedtuple("rule_obj", ["metadata"])
+rule_obj = namedtuple("rule_obj", ["metadata", "update_requirement_test_field"])
 
 
 def get_params_for_get_raw_sample():
@@ -103,34 +103,41 @@ class TestSampleStanza:
             (
                 {"tokens": tokens},
                 "something",
-                [rule_obj({"breaker": 1, "expected_event_count": 1})],
+                [{"breaker": 1, "expected_event_count": 1}],
             ),
             (
                 {"tokens": tokens, "count": "1"},
                 "psa_data",
-                [rule_obj({"breaker": 1, "expected_event_count": 1})],
+                [{"breaker": 1, "expected_event_count": 1}],
             ),
             (
                 {"tokens": tokens, "expected_event_count": "1", "breaker": "4"},
                 "som",
-                [rule_obj({"breaker": 1, "sample_count": 1})],
+                [{"breaker": 1, "sample_count": 1}],
             ),
         ],
     )
     def test_tokenize(self, sample_stanza, psa_data_params, conf_name, expected):
         ss = sample_stanza(psa_data_params=psa_data_params)
-        ss._get_raw_sample = MagicMock(return_value=[rule_obj({})])
+        ss._get_raw_sample = MagicMock(return_value=[rule_obj({}, "")])
         rule = MagicMock()
-        rule.apply.return_value = [rule_obj({"breaker": 1})]
+        rule.apply.return_value = [
+            rule_obj(
+                {
+                    "breaker": 1,
+                },
+                MagicMock(),
+            )
+        ]
         ss.sample_rules = [rule]
         ss.tokenize(conf_name)
-        assert ss.tokenized_events == expected
+        assert [e.metadata for e in ss.tokenized_events] == expected
 
     def test_tokenize_empty_raw_event(self, sample_stanza):
         ss = sample_stanza()
         ss._get_raw_sample = MagicMock(return_value=[])
         rule = MagicMock()
-        rule.apply.return_value = [rule_obj({"breaker": 1})]
+        rule.apply.return_value = [rule_obj({"breaker": 1}, MagicMock())]
         ss.sample_rules = [rule]
         ss.tokenize("conf_name")
         assert ss.tokenized_events == []
@@ -284,3 +291,84 @@ class TestSampleStanza:
         with patch("builtins.enumerate", MagicMock(side_effect=ValueError)):
             assert ss.break_events("aasampaale_raaw") == ["aasampaale_raaw"]
             assert "Invalid breaker for stanza path_to.file" in caplog.messages
+
+    @pytest.mark.parametrize(
+        "event, expected",
+        [
+            ({}, {}),
+            ({"field": "field", "dummy": 1}, {}),
+            (
+                {
+                    "cim": {
+                        "models": {"model": "Alerts"},
+                        "cim_fields": {
+                            "field": [
+                                {"@name": "dest", "@value": "192.168.0.1"},
+                                {"@name": "signature_id", "@value": "405001"},
+                                {"@name": "severity", "@value": "low"},
+                                {"@name": "src", "@value": "192.168.0.1"},
+                                {"@name": "type", "@value": "event"},
+                            ]
+                        },
+                        "missing_recommended_fields": {
+                            "field": ["app", "id", "user", "user_name"]
+                        },
+                    }
+                },
+                {
+                    "cim_version": "latest",
+                    "cim_fields": {
+                        "dest": "192.168.0.1",
+                        "severity": "low",
+                        "signature_id": "405001",
+                        "src": "192.168.0.1",
+                        "type": "event",
+                    },
+                    "datamodels": {"model": "Alerts"},
+                    "exceptions": [],
+                    "missing_recommended_fields": ["app", "id", "user", "user_name"],
+                },
+            ),
+            (
+                {
+                    "cim": {
+                        "@version": "4.20.2",
+                        "models": {},
+                        "exceptions": {
+                            "field": [
+                                {
+                                    "@name": "mane_1",
+                                    "@value": "value_1",
+                                    "@reason": "reason_1",
+                                },
+                                {
+                                    "@name": "dest",
+                                    "@value": "192.168.0.1",
+                                    "@reason": "reason",
+                                },
+                            ]
+                        },
+                    }
+                },
+                {
+                    "cim_version": "4.20.2",
+                    "cim_fields": {},
+                    "datamodels": {},
+                    "exceptions": [
+                        {"name": "mane_1", "value": "value_1", "reason": "reason_1"},
+                        {"name": "dest", "value": "192.168.0.1", "reason": "reason"},
+                    ],
+                    "missing_recommended_fields": [],
+                },
+            ),
+        ],
+        ids=[
+            "event-empty-directory",
+            "event-no-cim",
+            "event-full-cim",
+            "event-with-exceptions",
+        ],
+    )
+    def test_populate_requirement_test_data(self, sample_stanza, event, expected):
+        ss = sample_stanza()
+        assert ss.populate_requirement_test_data(event) == expected

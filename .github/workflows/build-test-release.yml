@@ -8,7 +8,8 @@ on:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
   pull_request:
-    branches: [main, develop]
+    branches:
+      - "**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
@@ -146,7 +147,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: ["8.1","8.2"]
+        splunk-version: ["8.1", "9.0"]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -198,7 +199,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: [8.1, 8.2]
+        splunk-version: ["8.1", "9.0"]
         test-marker: [
           "splunk_connection_docker",
           "splunk_app_fiction",
@@ -208,10 +209,8 @@ jobs:
           "splunk_fiction_indextime",
           "splunk_fiction_indextime_broken",
           "splunk_setup_fixture",
-          "splunk_app_requirements",
-          "splunk_app_requirements_modinput",
-          "splunk_app_requirements_uf",
-          "splunk_app_requirements_scripted"
+          "splunk_app_req",
+          "splunk_app_req_broken",
         ]
     steps:
       - uses: actions/checkout@v3

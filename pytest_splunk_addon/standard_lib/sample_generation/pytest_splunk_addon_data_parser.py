@@ -20,11 +20,13 @@ from .rule import raise_warning
 from . import SampleStanza
 
 import addonfactory_splunk_conf_parser_lib as conf_parser
+from xmlschema import XMLSchema, XMLSchemaValidationError
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 PSA_DATA_CONFIG_FILE = "pytest-splunk-addon-data.conf"
+SCHEMA_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "schema.xsd")
 
 
 class PytestSplunkAddonDataParser:
@@ -43,8 +45,9 @@ class PytestSplunkAddonDataParser:
         self._psa_data = None
         self.addon_path = addon_path
         self.match_stanzas = set()
+        self._path_to_samples = self._get_path_to_samples()
 
-    def _path_to_samples(self):
+    def _get_path_to_samples(self):
         if os.path.exists(os.path.join(self.config_path, "samples")):
             LOGGER.info(
                 "Samples path is: {}".format(os.path.join(self.config_path, "samples"))
@@ -95,7 +98,7 @@ class PytestSplunkAddonDataParser:
         self._check_samples()
         results = []
         for sample_name, stanza_params in sorted(_psa_data.items()):
-            sample_path = os.path.join(self._path_to_samples(), sample_name)
+            sample_path = os.path.join(self._path_to_samples, sample_name)
             results.append(SampleStanza(sample_path, stanza_params))
         return results
 
@@ -125,12 +128,21 @@ class PytestSplunkAddonDataParser:
             Dictionary representing pytest-splunk-addon-data.conf in the above format.
         """
         psa_data_dict = {}
-        if os.path.exists(self._path_to_samples()):
-            for sample_file in os.listdir(self._path_to_samples()):
+        schema = XMLSchema(SCHEMA_PATH)
+        if os.path.exists(self._path_to_samples):
+            for sample_file in os.listdir(self._path_to_samples):
                 for stanza, fields in sorted(self.psa_data.items()):
                     stanza_match_obj = re.search(stanza, sample_file)
                     if stanza_match_obj and stanza_match_obj.group(0) == sample_file:
                         self.match_stanzas.add(stanza)
+                        if (
+                            "requirement_test_sample" in self.psa_data[stanza].keys()
+                            and int(self.psa_data[stanza]["requirement_test_sample"])
+                            > 0
+                        ):
+                            filename = os.path.join(self._path_to_samples, sample_file)
+                            schema.validate(filename)
+                            test_unicode_char(filename)
                         psa_data_dict.setdefault(sample_file, {"tokens": {}})
                         for key, value in fields.items():
                             if key.startswith("token"):
@@ -153,8 +165,25 @@ class PytestSplunkAddonDataParser:
         Gives a user warning when sample file is not found for the stanza
         present in the configuration file.
         """
-        if os.path.exists(self._path_to_samples()):
+        if os.path.exists(self._path_to_samples):
             for stanza in self.psa_data.keys():
                 if stanza not in self.match_stanzas:
                     raise_warning(f"No sample file found for stanza : {stanza}")
                 LOGGER.info(f"Sample file found for stanza : {stanza}")
+
+
+def test_unicode_char(filename):
+    invalid = False
+    # pattern = re.compile("[^\x00-\x7F]") #do ot want to replace printable chars like €¢ etc
+    pattern = re.compile(
+        "[\u200B-\u200E\uFEFF\u202c\u202D\u2063\u2062]"
+    )  # zero width characters
+    error_message = ""
+    for i, line in enumerate(open(filename)):
+        for match in re.finditer(pattern, line):
+            err = f"Unicode char in FILE {filename} Line {i+1}: {match.group().encode('utf-8')}"
+            error_message += f"{err}\n"
+            LOGGER.debug(err)
+            invalid = True
+    if invalid:
+        raise ValueError(error_message)

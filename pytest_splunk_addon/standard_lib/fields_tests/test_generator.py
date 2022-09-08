@@ -19,13 +19,13 @@ Module include class to generate the test cases
 to test the knowledge objects of an Add-on.
 """
 import pytest
-import json
 import logging
 from itertools import chain
 
-from ..addon_parser import Field
 from ..addon_parser import AddonParser
 from . import FieldBank
+from ..utilities import xml_event_parser
+
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -43,9 +43,11 @@ class FieldTestGenerator(object):
         field_bank (str): Path of the fields Json file
     """
 
-    def __init__(self, app_path, field_bank=None):
+    def __init__(self, app_path, tokenized_events, field_bank=None):
         LOGGER.debug("initializing AddonParser to parse the app")
-        self.addon_parser = AddonParser(app_path)
+        self.app_path = app_path
+        self.addon_parser = AddonParser(self.app_path)
+        self.tokenized_events = tokenized_events
         self.field_bank = field_bank
 
     def generate_tests(self, fixture):
@@ -53,14 +55,17 @@ class FieldTestGenerator(object):
         Generate the test cases based on the fixture provided
         supported fixtures:
 
-            * splunk_app_searchtime_fields
-            * splunk_app_searchtime_negative
-            * splunk_app_searchtime_eventtypes
-            * splunk_app_searchtime_tags
-            * splunk_app_searchtime_savedsearches
+            * splunk_searchtime_fields_positive
+            * splunk_searchtime_fields_negative
+            * splunk_searchtime_fields_tags
+            * splunk_searchtime_fields_eventtypes
+            * splunk_searchtime_fields_savedsearches
+            * splunk_searchtime_fields_requirements
 
         Args:
             fixture(str): fixture name
+            sample_generator(SampleGenerator): sample objects generator
+            store_events(bool): variable to define if events should be stored
 
         """
         if fixture.endswith("positive"):
@@ -73,6 +78,10 @@ class FieldTestGenerator(object):
             yield from self.generate_eventtype_tests()
         elif fixture.endswith("savedsearches"):
             yield from self.generate_savedsearches_tests()
+        elif fixture.endswith("requirements"):
+            yield from self.generate_requirements_tests()
+        elif fixture.endswith("datamodels"):
+            yield from self.generate_requirements_datamodels_tests()
 
     def generate_field_tests(self, is_positive):
         """
@@ -144,6 +153,46 @@ class FieldTestGenerator(object):
                 each_tag_group, id="{stanza}::tag::{tag}".format(**each_tag_group)
             )
 
+    def generate_requirements_datamodels_tests(self):
+        """
+        Generate test case for tags
+
+        Yields:
+            pytest.params for the test templates
+        """
+        for event in self.tokenized_events:
+            if not event.requirement_test_data:
+                continue
+            if event.metadata.get("input_type", "").startswith("syslog"):
+                stripped_event = xml_event_parser.strip_syslog_header(event.event)
+                if stripped_event is None:
+                    LOGGER.error(
+                        "Syslog event do not match CEF, RFC_3164, RFC_5424 format"
+                    )
+                    continue
+            else:
+                stripped_event = event.event
+
+            escaped_event = xml_event_parser.escape_char_event(stripped_event)
+            datamodels = event.requirement_test_data.get("datamodels")
+            if datamodels:
+                if type(datamodels) is dict:
+                    datamodels = [datamodels]
+                datamodels = [dm["model"] for dm in datamodels]
+            else:
+                datamodels = []
+            datamodels = [
+                datamodel.replace(" ", "_").replace(":", "_")
+                for datamodel in datamodels
+            ]
+            yield pytest.param(
+                {
+                    "datamodels": datamodels,
+                    "stanza": escaped_event,
+                },
+                id=f"{'-'.join(datamodels)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
+            )
+
     def generate_eventtype_tests(self):
         """
         Generate test case for eventtypes
@@ -168,6 +217,51 @@ class FieldTestGenerator(object):
             yield pytest.param(
                 each_savedsearch, id="{stanza}".format(**each_savedsearch)
             )
+
+    def generate_requirements_tests(self):
+        """
+        Generate test cases for fields defined for datamodel
+        These function generates tests previously covered by requirement tests
+
+        Yields:
+            pytest.params for the test templates
+        """
+        for event in self.tokenized_events:
+            if not event.requirement_test_data:
+                continue
+            if event.metadata.get("input_type", "").startswith("syslog"):
+                stripped_event = xml_event_parser.strip_syslog_header(event.event)
+                if stripped_event is None:
+                    LOGGER.error(
+                        "Syslog event do not match CEF, RFC_3164, RFC_5424 format"
+                    )
+                    continue
+            else:
+                stripped_event = event.event
+
+            escaped_event = xml_event_parser.escape_char_event(stripped_event)
+            exceptions = event.requirement_test_data.get("exceptions", {})
+            metadata = event.metadata
+            modinput_params = {
+                "sourcetype": metadata.get("sourcetype_to_search"),
+            }
+
+            cim_fields = event.requirement_test_data.get("cim_fields", {})
+
+            if cim_fields:
+                cim_fields = {
+                    field: value
+                    for field, value in cim_fields.items()
+                    if field not in exceptions
+                }
+                yield pytest.param(
+                    {
+                        "escaped_event": escaped_event,
+                        "fields": cim_fields,
+                        "modinput_params": modinput_params,
+                    },
+                    id=f"sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
+                )
 
     def _contains_classname(self, fields_group, criteria):
         """

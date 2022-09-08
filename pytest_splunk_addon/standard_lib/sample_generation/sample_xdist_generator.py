@@ -87,9 +87,13 @@ class SampleXdistGenerator:
                     "modinput",
                     "windows_input",
                 ]:
-                    expected_count = int(
-                        each_event.metadata.get("expected_event_count")
-                    ) * int(each_event.metadata.get("sample_count"))
+                    sample_multiplication = int(
+                        each_event.metadata.get("sample_count") or 1
+                    )
+                    expected_count = (
+                        int(each_event.metadata.get("expected_event_count"))
+                        * sample_multiplication
+                    )
                 else:
                     expected_count = each_event.metadata.get("expected_event_count")
                 tokenized_samples_dict[each_event.sample_name] = {
@@ -107,6 +111,7 @@ class SampleXdistGenerator:
                             "event": each_event.event,
                             "key_fields": each_event.key_fields,
                             "time_values": each_event.time_values,
+                            "requirement_test_data": each_event.requirement_test_data,
                         }
                     ],
                 }
@@ -116,6 +121,7 @@ class SampleXdistGenerator:
                         "event": each_event.event,
                         "key_fields": each_event.key_fields,
                         "time_values": each_event.time_values,
+                        "requirement_test_data": each_event.requirement_test_data,
                     }
                 )
 

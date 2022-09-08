@@ -22,6 +22,9 @@ import logging
 import pytest
 from ..addon_parser import Field
 import json
+from itertools import chain
+
+from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
 TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART = " | dedup punct | head 5"
 COUNT_BY_SOURCE_TYPE_SEARCH_QUERY_PART = " | stats count by sourcetype"
@@ -39,6 +42,15 @@ class FieldTestTemplates(object):
     def test_splunk_internal_errors(
         self, splunk_search_util, ignore_internal_errors, record_property, caplog
     ):
+        """
+        This test case checks that there are not any unexpected internal errors
+
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            ignore_internal_errors (fixture): common list of errors to be ignored
+            record_property (fixture): Document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        """
         search = """
             search index=_internal log_level=ERROR
             sourcetype!=splunkd_ui_access
@@ -121,6 +133,88 @@ class FieldTestTemplates(object):
             f"No result found for the search.\nsearch={search}\n"
             f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
         )
+
+    @pytest.mark.splunk_searchtime_fields
+    @pytest.mark.splunk_requirements
+    @pytest.mark.splunk_searchtime_fields_requirements
+    def test_requirements_fields(
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_setup,
+        splunk_searchtime_fields_requirements,
+        record_property,
+    ):
+        """
+        This test case checks that a field value has the expected values.
+
+        Args:
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            splunk_searchtime_fields_positive (fixture): Test for stanza field.
+            record_property (fixture): Document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        """
+
+        # Search Query
+        record_property(
+            "stanza_name", splunk_searchtime_fields_requirements["escaped_event"]
+        )
+        record_property("fields", splunk_searchtime_fields_requirements["fields"])
+        record_property(
+            "modinput_params", splunk_searchtime_fields_requirements["modinput_params"]
+        )
+
+        escaped_event = splunk_searchtime_fields_requirements["escaped_event"]
+        fields = splunk_searchtime_fields_requirements["fields"]
+        modinput_params = splunk_searchtime_fields_requirements["modinput_params"]
+
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
+
+        basic_search = ""
+        for param, param_value in modinput_params.items():
+            if param_value is not None:
+                basic_search += f" {param}={param_value}"
+
+        search = f"search {index_list} {basic_search} {escaped_event} | fields *"
+
+        self.logger.info(f"Executing the search query: {search}")
+
+        fields_from_splunk = splunk_search_util.getFieldValuesDict(
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
+        )
+
+        missing_fields = []
+        wrong_value_fields = {}
+
+        for field, value in fields.items():
+            if field not in fields_from_splunk:
+                missing_fields.append(field)
+
+            if value != fields_from_splunk.get(field):
+                wrong_value_fields[field] = fields_from_splunk.get(field)
+
+        failure_message = ""
+
+        for field, value in wrong_value_fields.items():
+            failure_message += (
+                f"Field {field} has value {value} and should has {fields[field]}\n"
+            )
+
+        if failure_message:
+            self.logger.error(f"Fields with wrong values: {failure_message}")
+
+        assert (
+            missing_fields == []
+        ), f"Not all required fields found in Splunk. Missing fields: {', '.join(missing_fields)}"
+        assert (
+            wrong_value_fields == {}
+        ), f"Not all required fields have correct values in Splunk. Wrong field values: {failure_message} Search string: {search}"
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
@@ -260,6 +354,92 @@ class FieldTestTemplates(object):
                 f"\nsearch={search}"
                 f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
             )
+
+    @pytest.mark.splunk_searchtime_fields
+    @pytest.mark.splunk_requirements
+    @pytest.mark.splunk_searchtime_fields_datamodels
+    def test_datamodels(
+        self,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_setup,
+        splunk_searchtime_fields_datamodels,
+        record_property,
+        caplog,
+    ):
+        """
+        Test case to check if correct datamodels are assigned to the event.
+
+        This test case checks if tags assigned to the event match assigned datamodel
+        and also checks if there is no additional wrongly assigned datamodel.
+
+        Args:
+            splunk_search_util (helmut_lib.SearchUtil.SearchUtil):
+                object that helps to search on Splunk.
+            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
+            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
+            splunk_searchtime_fields_datamodels (fixture): pytest parameters to test.
+            record_property (fixture): pytest fixture to document facts of test cases.
+            caplog (fixture): fixture to capture logs.
+        """
+        esacaped_event = splunk_searchtime_fields_datamodels["stanza"]
+        datamodels = splunk_searchtime_fields_datamodels["datamodels"]
+        self.logger.info(
+            f"Testing for tag {datamodels} with tag_query {esacaped_event}"
+        )
+
+        record_property("Event_with", esacaped_event)
+        record_property("datamodels", datamodels)
+
+        index_list = (
+            "(index="
+            + " OR index=".join(splunk_search_util.search_index.split(","))
+            + ")"
+        )
+        search = f"search {index_list} {esacaped_event} | fields *"
+
+        self.logger.info(f"Search: {search}")
+
+        fields_from_splunk = splunk_search_util.getFieldValuesDict(
+            search,
+            interval=splunk_search_util.search_interval,
+            retries=splunk_search_util.search_retry,
+        )
+
+        extracted_tags = fields_from_splunk.get("tag", "")
+        extracted_tags = extracted_tags.strip("][").split(", ")
+        extracted_tags = [tag.replace("'", "") for tag in extracted_tags]
+        dm_tags = list(
+            chain.from_iterable(
+                [tags for dm, tags in dict_datamodel_tag.items() if dm in datamodels]
+            )
+        )
+        self.logger.info(f"Tags extracted from Splunk {extracted_tags}")
+        self.logger.info(f"Tags assigned to datamodels {dm_tags}")
+
+        matched_datamodels = {
+            dm: tags
+            for dm, tags in dict_datamodel_tag.items()
+            if all(tag in extracted_tags for tag in tags)
+        }
+        assigned_datamodels = {
+            dm: tags
+            for dm, tags in matched_datamodels.items()
+            if not any(
+                set(tags).issubset(set(matched_tags)) and dm != matched_datamodel
+                for matched_datamodel, matched_tags in matched_datamodels.items()
+            )
+        }
+
+        record_property("search", search)
+
+        missing_datamodels = [dm for dm in datamodels if dm not in assigned_datamodels]
+        wrong_datamodels = [dm for dm in assigned_datamodels if dm not in datamodels]
+
+        assert missing_datamodels == [] and wrong_datamodels == [], (
+            f"Missing datamodels: {missing_datamodels} and/or too many datamodels found in splunk: {wrong_datamodels}"
+            f"Tags found in splunk: {extracted_tags}. Tags assigned to datamodels: {dm_tags}"
+        )
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_eventtypes

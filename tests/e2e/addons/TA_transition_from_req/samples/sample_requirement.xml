@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<device>
+   <vendor>Juniper</vendor>
+   <product>JunOS</product>
+   <version id="16.2R1" />
+   <version id="17.1R1" />
+   <version id="17.2R1" />
+   <event code="" name="RT_FLOW_SESSION_CREATE" format="syslog">
+      <transport type="syslog" />
+      <source>
+         <jira id="ADDON-25170"/>
+         <comment>Got this event form Juniper document.</comment>
+      </source>
+      <raw>
+         <![CDATA[<111> 2020-02-12T03:27:09+10:00 ##dvc## RT_FLOW: RT_FLOW_SESSION_CREATE: session created ##Src_Addr##/##Src_Port##->##Dest_Addr##/##Dest_Port## ##Connection_Tag## ##Service## ##Src_Addr1##/##Src_Port1##->##Dest_Addr1##/##Dest_Port1## ##Connection_Tag## ##Src_Translated_Rule_Type_custom## ##Src_Translated_Rule_Name## ##Dst_Translated_Rule_Type## ##Dest_Translated_Rule_Name## ##Protocol_Id## ##Policy_Name## ##Src_Zone## ##Dest_Zone## ##Session_Id_32## ##User##(##User_Roles##) ##Interface_Name## ##Vendor_App## ##Nested_App## ##Encrypted## ##Application_Category## ##Application_Sub_Category## ##Application_Risk## ##Application_Characteristics##]]>
+      </raw>
+      <cim>
+         <models>
+            <model>Network Traffic</model>
+         </models>
+         <cim_fields>
+            <field name="action" value="allowed"/>
+            <field name="dest" value="##Dest_Addr##"/>
+            <field name="dest_ip" value="##Dest_Addr##"/>
+            <field name="dest_port" value="##Dest_Port##"/>
+            <field name="dest_zone" value="##Dest_Zone##"/>
+            <field name="dvc" value="##dvc##"/>
+            <field name="rule" value="##Src_Translated_Rule_Name## ##Dest_Translated_Rule_Name## ##Policy_Name##"/>
+         </cim_fields>
+         <missing_recommended_fields>
+            <field>bytes</field>
+            <field>bytes_in</field>
+            <field>bytes_out</field>
+         </missing_recommended_fields>
+         <exceptions>
+            <field name="vendor_product" value="Incorrect vendor product" reason="testing exceptions"/>
+         </exceptions>
+      </cim>
+      <test></test>
+   </event>
+</device>
