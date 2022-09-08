@@ -42,10 +42,22 @@ def pytest_configure(config):
     )
     config.addinivalue_line(
         "markers",
+        "splunk_requirements: Tests that cover old requirement tests",
+    )
+    config.addinivalue_line(
+        "markers",
+        "splunk_searchtime_fields_requirements: Test checking fields from cim_fields",
+    )
+    config.addinivalue_line(
+        "markers",
         "splunk_searchtime_fields_negative: Test search time fields negative scenarios only",
     )
     config.addinivalue_line(
         "markers", "splunk_searchtime_fields_tags: Test search time tags only"
+    )
+    config.addinivalue_line(
+        "markers",
+        "splunk_searchtime_fields_datamodels: Test checking datamodel defined in model",
     )
     config.addinivalue_line(
         "markers",
@@ -76,6 +88,10 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers",
         "splunk_searchtime_requirements: Test an requirement test only  is mapped with only one data models",
+    )
+    config.addinivalue_line(
+        "markers",
+        "splunk_requirements_unit: Test checking if all fields for datamodel are defined in cim_fields and missing_recommended_fields",
     )
 
     cim_report = config.getoption("cim_report")

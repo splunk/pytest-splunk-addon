@@ -43,13 +43,10 @@ class FieldTestGenerator(object):
         field_bank (str): Path of the fields Json file
     """
 
-    def __init__(
-        self, app_path, requirement_files_path, tokenized_events, field_bank=None
-    ):
+    def __init__(self, app_path, tokenized_events, field_bank=None):
         LOGGER.debug("initializing AddonParser to parse the app")
         self.app_path = app_path
         self.addon_parser = AddonParser(self.app_path)
-        self.folder_path = requirement_files_path
         self.tokenized_events = tokenized_events
         self.field_bank = field_bank
 

@@ -23,9 +23,7 @@ import os
 from .fields_tests import FieldTestGenerator
 from .cim_tests import CIMTestGenerator
 from .index_tests import IndexTimeTestGenerator
-from .requirement_tests import ReqsTestGenerator
 from .sample_generation import SampleXdistGenerator
-import pytest
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -58,7 +56,6 @@ class AppTestGenerator(object):
         LOGGER.debug("Initializing FieldTestGenerator to generate the test cases")
         self.fieldtest_generator = FieldTestGenerator(
             self.pytest_config.getoption("splunk_app"),
-            self.pytest_config.getoption("requirement_test"),
             self.tokenized_events,
             field_bank=self.pytest_config.getoption("field_bank", False),
         )
