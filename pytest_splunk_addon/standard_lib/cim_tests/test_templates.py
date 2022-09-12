@@ -501,7 +501,7 @@ class CIMTestTemplates(object):
 
         model_key = f"{cim_version}:{datamodel}:{':'.join(datasets)}".strip(":")
 
-        model_fields = fields_from_model_definition[model_key]
+        model_fields = fields_from_model_definition.get(model_key, [])
         self.logger.debug(f"Fields from CIM definition: {model_fields}")
 
         missing_fields = []
