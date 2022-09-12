@@ -809,7 +809,9 @@ def splunk_dm_recommended_fields():
         if model_key not in recommended_fields:
             LOGGER.info(f"Fetching {model_key} definition")
             datamodel_per_cim = datamodels.get(cim_version) or datamodels["latest"]
-            datamodel = datamodel_per_cim[model]
+            datamodel = datamodel_per_cim.get(model, {})
+            if datamodel == {}:
+                LOGGER.info(f"No recommended fields for {model}")
             for object_name, value in datamodel.items():
                 if (
                     object_name == "BaseEvent"
@@ -818,8 +820,6 @@ def splunk_dm_recommended_fields():
                 ):
                     recommended_fields[model_key] += value
 
-        if not recommended_fields.get(model_key) or []:
-            raise ValueError(f"Model {model_key} definition was not fetched")
         return recommended_fields
 
     return update_recommended_fields
