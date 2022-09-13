@@ -47,7 +47,8 @@ def split_samples(sample_path, output_dir=None, splitter="sourcetype"):
     for splitter_name, events in separate_events.items():
         samples["device"].update(event=events)
         output_file = sample_file_name.split(".")
-        output_file.insert(-2, splitter_name)
+        parsed_splitter_name = splitter_name.replace("/", "").replace("\\", "")
+        output_file.insert(-2, parsed_splitter_name)
         output_file_name = ".".join(output_file)
         with open(
             os.path.join(output_dir, output_file_name), "w", encoding="utf-8"
