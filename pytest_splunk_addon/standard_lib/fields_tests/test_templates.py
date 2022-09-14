@@ -203,7 +203,7 @@ class FieldTestTemplates(object):
             if value != fields_from_splunk.get(field):
                 wrong_value_fields[field] = fields_from_splunk.get(field)
 
-        exc_message = get_table_output(
+        wrong_values_table = get_table_output(
             headers=["Field", "Splunk value", "Expected value"],
             value_list=[
                 [
@@ -215,12 +215,13 @@ class FieldTestTemplates(object):
             ],
         )
 
-        self.logger.error(exc_message)
+        if not wrong_value_fields == {}:
+            self.logger.error("Wrong field values:\n" + wrong_values_table)
+
         assert wrong_value_fields == {}, (
-            f"\nNot all required fields have correct values or some fields are missing in Splunk. Wrong field values:\n{exc_message}"
+            f"\nNot all required fields have correct values or some fields are missing in Splunk. Wrong field values:\n{wrong_values_table}"
             f"{format_search_query_log(search)}"
         )
-
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
     def test_props_fields_no_dash_not_empty(
