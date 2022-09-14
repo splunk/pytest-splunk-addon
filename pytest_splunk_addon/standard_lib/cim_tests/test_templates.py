@@ -21,6 +21,7 @@ import logging
 import pytest
 from .field_test_helper import FieldTestHelper
 from ..utilities.log_helper import get_table_output
+from ..utilities.log_helper import format_search_query_log
 
 
 class CIMTestTemplates(object):
@@ -100,7 +101,7 @@ class CIMTestTemplates(object):
             # with the data model
             assert results, (
                 "\n0 Events mapped with the dataset.\n"
-                f"Search query: {test_helper.search}"
+                f"\n{test_helper.format_exc_message()}"
             )
         if len(cim_fields) == 1:
             test_field = cim_fields[0]
@@ -111,7 +112,7 @@ class CIMTestTemplates(object):
             if not test_field.type == "conditional":
                 assert results, (
                     "\n0 Events mapped with the dataset.\n"
-                    f"Search query: {test_helper.search}"
+                    f"\n{test_helper.format_exc_message()}"
                 )
             # The field should be extracted if event count > 0
             for each_field in results:
@@ -479,7 +480,8 @@ class CIMTestTemplates(object):
 
         assert not results, (
             "Multiple data models are mapped with an eventtype"
-            f"\nQuery result greater than 0.\nSearch query: {search}\n"
+            f"\nQuery result greater than 0."
+            f"{format_search_query_log(search)}"
             f"\nEvent type which associated with multiple data model \n{result_str}"
         )
 

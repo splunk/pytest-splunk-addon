@@ -21,6 +21,7 @@ import logging
 import json
 from .field_test_adapter import FieldTestAdapater
 from ..utilities.log_helper import get_table_output
+from ..utilities.log_helper import format_search_query_log
 
 
 class FieldTestHelper(object):
@@ -97,11 +98,10 @@ class FieldTestHelper(object):
         for each_field in self.fields:
             self.search += each_field.gen_validity_query()
 
-        self.search += "| stats count as event_count"
+        self.search += " \n| stats count as event_count"
         for each_field in self.fields:
             self.search += each_field.get_stats_query()
         self.search += " by sourcetype, source"
-        self.search += "\n"
 
     def _parse_result(self, results):
         """
@@ -234,7 +234,7 @@ class FieldTestHelper(object):
                     for each_result in self.parsed_result
                 ],
             )
-        exc_message += f"\n\nSearch query:\n{self.search}"
+        exc_message += f"{format_search_query_log(self.search)}"
         for each_field in self.fields:
             exc_message += (
                 f"\n\nProperties for the field :: {each_field.get_properties()}"
