@@ -22,6 +22,7 @@ import copy
 
 from math import ceil
 from ..cim_tests import FieldTestHelper
+from ..utilities.log_helper import format_search_query_log
 
 MAX_TIME_DIFFERENCE = 45
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -108,7 +109,9 @@ class IndexTimeTestTemplate(object):
         LOGGER.debug("Results:{}".format(results))
 
         if not results:
-            assert False, "No Events found for query " + search
+            assert False, (
+                f"\nNo Events found for query." f"{format_search_query_log(search)}"
+            )
         result_fields = dict()
         for result in results:
             for key, val in result.items():
@@ -171,7 +174,7 @@ class IndexTimeTestTemplate(object):
 
             assert (
                 int(len(value_list)) == 0 and int(len(missing_keys)) == 0
-            ), f"For this search query: '{search}'\n{final_str}"
+            ), f"\nSearch query: {search}{final_str}\n"
 
     @pytest.mark.first
     @pytest.mark.splunk_indextime
@@ -237,7 +240,9 @@ class IndexTimeTestTemplate(object):
         results = list(results)
         LOGGER.debug("Results:{}".format(results))
         if not results:
-            assert False, "No Events found for query: " + search
+            assert False, (
+                f"\nNo Events found for query." f"{format_search_query_log(search)}"
+            )
         result_fields = {
             key: [ceil(float(item[key])) for item in results]
             for key in results[0].keys()
@@ -303,6 +308,7 @@ class IndexTimeTestTemplate(object):
         )
         count_from_results = int(results[0].get("count"))
         LOGGER.debug("Resulting count:{}".format(count_from_results))
-        assert (
-            count_from_results == expected_events_count
-        ), f"Query: {query} \nExpected count: {expected_events_count} Actual Count: {count_from_results}"
+        assert count_from_results == expected_events_count, (
+            f"{format_search_query_log(search)}"
+            f"\nExpected count: {expected_events_count} Actual Count: {count_from_results}"
+        )

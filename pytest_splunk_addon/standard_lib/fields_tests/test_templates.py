@@ -23,6 +23,8 @@ import pytest
 from ..addon_parser import Field
 import json
 from itertools import chain
+from ..utilities.log_helper import get_table_output
+from ..utilities.log_helper import format_search_query_log
 
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
@@ -69,8 +71,9 @@ class FieldTestTemplates(object):
             pp = pprint.PrettyPrinter(indent=4)
             result_str = pp.pformat(results.as_list[:10])
         assert result, (
-            f"Query result greater than 0.\nsearch={search}\n"
-            f"found result={result_str}"
+            f"\nQuery result greater than 0."
+            f"{format_search_query_log(search)}"
+            f"\nfound result={result_str}"
         )
 
     @pytest.mark.splunk_searchtime_fields
@@ -130,8 +133,9 @@ class FieldTestTemplates(object):
         record_property("search", search)
 
         assert result, (
-            f"No result found for the search.\nsearch={search}\n"
-            f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
+            f"\nNo result found for the search."
+            f"{format_search_query_log(search)}"
+            f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
         )
 
     @pytest.mark.splunk_searchtime_fields
@@ -199,22 +203,23 @@ class FieldTestTemplates(object):
             if value != fields_from_splunk.get(field):
                 wrong_value_fields[field] = fields_from_splunk.get(field)
 
-        failure_message = ""
+        exc_message = get_table_output(
+            headers=["Field", "Splunk value", "Expected value"],
+            value_list=[
+                [
+                    str(field),
+                    str(value),
+                    str(fields[field]),
+                ]
+                for field, value in wrong_value_fields.items()
+            ],
+        )
 
-        for field, value in wrong_value_fields.items():
-            failure_message += (
-                f"Field {field} has value {value} and should has {fields[field]}\n"
-            )
-
-        if failure_message:
-            self.logger.error(f"Fields with wrong values: {failure_message}")
-
-        assert (
-            missing_fields == []
-        ), f"Not all required fields found in Splunk. Missing fields: {', '.join(missing_fields)}"
-        assert (
-            wrong_value_fields == {}
-        ), f"Not all required fields have correct values in Splunk. Wrong field values: {failure_message} Search string: {search}"
+        self.logger.error(exc_message)
+        assert wrong_value_fields == {}, (
+            f"\nNot all required fields have correct values or some fields are missing in Splunk. Wrong field values:\n{exc_message}"
+            f"{format_search_query_log(search)}"
+        )
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
@@ -283,8 +288,9 @@ class FieldTestTemplates(object):
             )
             results_formatted_str = pp.pformat(query_results.as_list)
         assert result, (
-            f"Query result greater than 0.\nsearch={search}\n"
-            f"found result={result_str}\n"
+            f"\nQuery result greater than 0."
+            f"{format_search_query_log(search)}"
+            f"\nfound result={result_str}\n"
             " === STRUCTURALLY UNIQUE EVENTS:\n"
             f"query={query_for_unique_events}\n"
             f"events= {results_formatted_str}"
@@ -344,14 +350,14 @@ class FieldTestTemplates(object):
 
         if is_tag_enabled:
             assert result, (
-                f"No events found for the enabled Tag={tag}."
-                f"\nsearch={search}"
+                f"\nNo events found for the enabled Tag={tag}."
+                f"{format_search_query_log(search)}"
                 f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
             )
         else:
             assert not result, (
-                f"Events found for the disabled Tag={tag}."
-                f"\nsearch={search}"
+                f"\nEvents found for the disabled Tag={tag}."
+                f"{format_search_query_log(search)}"
                 f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
             )
 
@@ -436,10 +442,26 @@ class FieldTestTemplates(object):
         missing_datamodels = [dm for dm in datamodels if dm not in assigned_datamodels]
         wrong_datamodels = [dm for dm in assigned_datamodels if dm not in datamodels]
 
-        assert missing_datamodels == [] and wrong_datamodels == [], (
-            f"Missing datamodels: {missing_datamodels} and/or too many datamodels found in splunk: {wrong_datamodels}"
-            f"Tags found in splunk: {extracted_tags}. Tags assigned to datamodels: {dm_tags}"
+        exc_message = get_table_output(
+            headers=[
+                "Expected datamodel",
+                "Expected tags",
+                "Found datamodel",
+                "Found tags",
+            ],
+            value_list=[
+                [
+                    ",".join(datamodels),
+                    ",".join(dm_tags),
+                    ",".join(assigned_datamodels.keys()),
+                    ",".join(extracted_tags),
+                ]
+            ],
         )
+
+        assert (
+            missing_datamodels == [] and wrong_datamodels == []
+        ), f"Incorrect datamodels found:\n{exc_message}"
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_eventtypes
@@ -495,8 +517,9 @@ class FieldTestTemplates(object):
         )
         record_property("search", search)
         assert result, (
-            f"No result found for the search.\nsearch={search}\n"
-            f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
+            f"\nNo result found for the search."
+            f"{format_search_query_log(search)}"
+            f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
         )
 
     @pytest.mark.splunk_searchtime_fields
@@ -552,6 +575,7 @@ class FieldTestTemplates(object):
 
         record_property("search", search)
         assert result, (
-            f"No result found for the search.\nsearch={search}\n"
-            f"interval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
+            f"\nNo result found for the search."
+            f"{format_search_query_log(search)}"
+            f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
         )
