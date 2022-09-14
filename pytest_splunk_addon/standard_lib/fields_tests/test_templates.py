@@ -222,6 +222,7 @@ class FieldTestTemplates(object):
             f"\nNot all required fields have correct values or some fields are missing in Splunk. Wrong field values:\n{wrong_values_table}"
             f"{format_search_query_log(search)}"
         )
+
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
     def test_props_fields_no_dash_not_empty(
