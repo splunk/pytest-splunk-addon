@@ -40,3 +40,9 @@ def get_table_output(headers, value_list):
     for each_value in table_list:
         table_output += format_str.format(*each_value) + "\n"
     return table_output
+
+
+def format_search_query_log(search_query):
+    search_query_to_copy = search_query.replace("\n", "")
+    search_query = search_query_to_copy.replace("|", "\n|")
+    return f"\nSearch query:\n{search_query}\n\nSearch query to copy:\n{search_query_to_copy}\n"

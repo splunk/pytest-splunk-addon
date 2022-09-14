@@ -18,6 +18,7 @@ import logging
 import pytest
 import re
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
+from ..utilities.log_helper import format_search_query_log
 
 INTERVAL = 3
 RETRIES = 3
@@ -195,7 +196,7 @@ class ReqsTestTemplates(object):
                 search, interval=INTERVAL, retries=RETRIES
             )
 
-        assert ingestion_check, f"\ningestion failure \nSearch query: {search}\n"
+        assert ingestion_check, f"\ningestion failure " f""
         self.logger.info(f"ingestion_check: {ingestion_check}")
         keyValue_dict_SPL = splunk_search_util.getFieldValuesDict(
             search, interval=INTERVAL, retries=RETRIES
@@ -217,7 +218,8 @@ class ReqsTestTemplates(object):
         self.logger.info(f"Field mapping check: {field_extraction_check}")
 
         assert datamodel_check and field_extraction_check, (
-            f"\nIssue with either field extraction or data model.\nSearch query: {search}\n"
+            f"\nIssue with either field extraction or data model."
+            f"{format_search_query_log(search)}"
             f"\ndata model check: {datamodel_check} \n"
             f"data model in requirement file  {model_datalist}\n "
             f"data model extracted by TA {list(datamodel_based_on_tag.keys())}\n"

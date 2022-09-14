@@ -24,6 +24,7 @@ from ..addon_parser import Field
 import json
 from itertools import chain
 from ..utilities.log_helper import get_table_output
+from ..utilities.log_helper import format_search_query_log
 
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
@@ -70,7 +71,8 @@ class FieldTestTemplates(object):
             pp = pprint.PrettyPrinter(indent=4)
             result_str = pp.pformat(results.as_list[:10])
         assert result, (
-            f"\nQuery result greater than 0.\nSearch query: {search}\n"
+            f"\nQuery result greater than 0."
+            f"{format_search_query_log(search)}"
             f"\nfound result={result_str}"
         )
 
@@ -131,7 +133,8 @@ class FieldTestTemplates(object):
         record_property("search", search)
 
         assert result, (
-            f"\nNo result found for the search.\nSearch query: {search}\n"
+            f"\nNo result found for the search."
+            f"{format_search_query_log(search)}"
             f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
         )
 
@@ -213,9 +216,10 @@ class FieldTestTemplates(object):
         )
 
         self.logger.error(exc_message)
-        assert (
-            wrong_value_fields == {}
-        ), f"\nNot all required fields have correct values or some fields are missing in Splunk. Wrong field values:\n{exc_message}\nSearch query: {search}\n"
+        assert wrong_value_fields == {}, (
+            f"\nNot all required fields have correct values or some fields are missing in Splunk. Wrong field values:\n{exc_message}"
+            f"{format_search_query_log(search)}"
+        )
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
@@ -284,7 +288,8 @@ class FieldTestTemplates(object):
             )
             results_formatted_str = pp.pformat(query_results.as_list)
         assert result, (
-            f"\nQuery result greater than 0.\nSearch query: {search}\n"
+            f"\nQuery result greater than 0."
+            f"{format_search_query_log(search)}"
             f"\nfound result={result_str}\n"
             " === STRUCTURALLY UNIQUE EVENTS:\n"
             f"query={query_for_unique_events}\n"
@@ -346,13 +351,13 @@ class FieldTestTemplates(object):
         if is_tag_enabled:
             assert result, (
                 f"\nNo events found for the enabled Tag={tag}."
-                f"\nSearch query: {search}\n"
+                f"{format_search_query_log(search)}"
                 f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
             )
         else:
             assert not result, (
                 f"\nEvents found for the disabled Tag={tag}."
-                f"\nSearch query: {search}\n"
+                f"{format_search_query_log(search)}"
                 f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
             )
 
@@ -512,7 +517,8 @@ class FieldTestTemplates(object):
         )
         record_property("search", search)
         assert result, (
-            f"\nNo result found for the search.\nSearch query: {search}\n"
+            f"\nNo result found for the search."
+            f"{format_search_query_log(search)}"
             f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
         )
 
@@ -569,6 +575,7 @@ class FieldTestTemplates(object):
 
         record_property("search", search)
         assert result, (
-            f"\nNo result found for the search.\nSearch query: {search}\n"
+            f"\nNo result found for the search."
+            f"{format_search_query_log(search)}"
             f"\ninterval={splunk_search_util.search_interval}, retries={splunk_search_util.search_retry}"
         )
