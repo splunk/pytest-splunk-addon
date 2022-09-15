@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
 from pytest_splunk_addon.standard_lib.cim_tests.field_test_adapter import (
-    FieldTestAdapater,
+    FieldTestAdapter,
 )
 
 
@@ -25,10 +25,10 @@ def field_instance():
 
 @pytest.fixture()
 def mocked_field_test_adapter(field_instance):
-    with patch.object(FieldTestAdapater, "__init__", return_value=None), patch.object(
-        FieldTestAdapater, "get_query_from_values", side_effect=lambda x: ", ".join(x)
+    with patch.object(FieldTestAdapter, "__init__", return_value=None), patch.object(
+        FieldTestAdapter, "get_query_from_values", side_effect=lambda x: ", ".join(x)
     ):
-        fta = FieldTestAdapater("field")
+        fta = FieldTestAdapter("field")
         fta.valid_field = "component_valid"
         fta.invalid_field = "component_invalid"
         fta.validity_query = None
@@ -39,13 +39,13 @@ def mocked_field_test_adapter(field_instance):
 
 def test_get_query_from_values():
     assert (
-        FieldTestAdapater.get_query_from_values(["field1", "field2", "unknown_field"])
+        FieldTestAdapter.get_query_from_values(["field1", "field2", "unknown_field"])
         == '\\"field1\\", \\"field2\\", \\"unknown_field\\"'
     )
 
 
 def test_field_test_adapter_instantiation(field_mock, field_instance):
-    fta = FieldTestAdapater(field_instance)
+    fta = FieldTestAdapter(field_instance)
     assert fta.field_key_1 == 1
     assert fta.field_key_2 == "2"
     assert fta.valid_field == "test_field_valid"
@@ -116,10 +116,10 @@ def test_validity_query_already_exists(mocked_field_test_adapter):
 
 
 def test_gen_stats_query():
-    with patch.object(FieldTestAdapater, "__init__", return_value=None), patch.object(
-        FieldTestAdapater, "gen_validity_query", return_value=True
+    with patch.object(FieldTestAdapter, "__init__", return_value=None), patch.object(
+        FieldTestAdapter, "gen_validity_query", return_value=True
     ):
-        fta = FieldTestAdapater("field")
+        fta = FieldTestAdapter("field")
         fta.name = "component_name"
         fta.valid_field = "valid_field"
         fta.invalid_field = "invalid_field"
@@ -132,11 +132,11 @@ def test_gen_stats_query():
 
 def test_get_test_fields():
     with patch.object(
-        FieldTestAdapater,
+        FieldTestAdapter,
         "__new__",
         side_effect=lambda cls, f: f"{f}_return_value".upper(),
     ):
-        assert FieldTestAdapater.get_test_fields(["field_1", "field_2"]) == [
+        assert FieldTestAdapter.get_test_fields(["field_1", "field_2"]) == [
             "FIELD_1_RETURN_VALUE",
             "FIELD_2_RETURN_VALUE",
         ]

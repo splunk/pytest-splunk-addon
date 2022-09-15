@@ -26,7 +26,7 @@ def field_test_adapter_mock(monkeypatch):
     fta_mock.VALID_FIELD_COUNT = "{}_valid_count"
     fta_mock.INVALID_FIELD_VALUES = "{}_invalid_values"
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.cim_tests.field_test_helper.FieldTestAdapater",
+        "pytest_splunk_addon.standard_lib.cim_tests.field_test_helper.FieldTestAdapter",
         fta_mock,
     )
 
