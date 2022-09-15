@@ -16,7 +16,7 @@
 from ..addon_parser import Field
 
 
-class FieldTestAdapater(Field):
+class FieldTestAdapter(Field):
     """
     Field adapter to include the testing related properties on top of Field
 

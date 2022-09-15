@@ -20,6 +20,8 @@ Includes the test scenarios to check the CIM compatibility of an Add-on.
 import logging
 import pytest
 from .field_test_helper import FieldTestHelper
+from ..utilities.log_helper import get_table_output
+from ..utilities.log_helper import format_search_query_log
 
 
 class CIMTestTemplates(object):
@@ -90,7 +92,6 @@ class CIMTestTemplates(object):
         record_property("fields_type", cim_fields_type)
         # Execute the query and get the results
         results = test_helper.test_field(base_search, record_property)
-
         # All assertion are made in the same tests to make the test report with
         # very clear order of scenarios. with this approach, a user will be able to identify
         # what went wrong very quickly.
@@ -99,7 +100,7 @@ class CIMTestTemplates(object):
             # If no fields are there, check that the events are mapped
             # with the data model
             assert results, (
-                "0 Events mapped with the dataset."
+                "\n0 Events mapped with the dataset.\n"
                 f"\n{test_helper.format_exc_message()}"
             )
         if len(cim_fields) == 1:
@@ -110,28 +111,28 @@ class CIMTestTemplates(object):
             #   It's fine if no events matched the condition
             if not test_field.type == "conditional":
                 assert results, (
-                    "0 Events mapped with the dataset."
+                    "\n0 Events mapped with the dataset.\n"
                     f"\n{test_helper.format_exc_message()}"
                 )
             # The field should be extracted if event count > 0
             for each_field in results:
                 assert not each_field["field_count"] == 0, (
-                    f"Field {test_field} is not extracted in any events."
+                    f"\nField {test_field} is not extracted in any events."
                     f"\n{test_helper.format_exc_message()}"
                 )
                 if each_field["field_count"] > each_field["event_count"]:
                     raise AssertionError(
-                        f"Field {test_field} should not be multi-value."
+                        f"\nField {test_field} should not be multi-value."
                         f"\n{test_helper.format_exc_message()}"
                     )
                 elif each_field["field_count"] < each_field["event_count"]:
                     # The field should be extracted in all events mapped
                     raise AssertionError(
-                        f"Field {test_field} is not extracted in some events."
+                        f"\nField {test_field} is not extracted in some events."
                         f"\n{test_helper.format_exc_message()}"
                     )
                 assert each_field["field_count"] == each_field["valid_field_count"], (
-                    f"Field {test_field} has invalid values."
+                    f"\nField {test_field} has invalid values."
                     f"\n{test_helper.format_exc_message()}"
                 )
         elif len(cim_fields) > 1:
@@ -239,7 +240,7 @@ class CIMTestTemplates(object):
                 "\nDo not define extractions for these fields when writing add-ons."
                 "\nExpected eventcount: 0 \n\n"
             )
-            violation_str += FieldTestHelper.get_table_output(
+            violation_str += get_table_output(
                 headers=["Source", "Sourcetype", "Fields", "Event Count"],
                 value_list=violations,
             )
@@ -265,7 +266,7 @@ class CIMTestTemplates(object):
             "\nDo not define extractions for these fields when writing add-ons.\n\n"
         )
 
-        result_str += FieldTestHelper.get_table_output(
+        result_str += get_table_output(
             headers=["Stanza", "Classname", "Fieldname"],
             value_list=[
                 [data["stanza"], data["classname"], data["name"]]
@@ -465,7 +466,7 @@ class CIMTestTemplates(object):
         )
         if results:
             record_property("results", results)
-            result_str = FieldTestHelper.get_table_output(
+            result_str = get_table_output(
                 headers=["Count", "Eventtype", "Datamodels"],
                 value_list=[
                     [
@@ -479,8 +480,9 @@ class CIMTestTemplates(object):
 
         assert not results, (
             "Multiple data models are mapped with an eventtype"
-            f"\nQuery result greater than 0.\nsearch=\n{search} \n \n"
-            f"Event type which associated with multiple data model \n{result_str}"
+            f"\nQuery result greater than 0."
+            f"{format_search_query_log(search)}"
+            f"\nEvent type which associated with multiple data model \n{result_str}"
         )
 
     @pytest.mark.splunk_searchtime_cim
@@ -501,7 +503,7 @@ class CIMTestTemplates(object):
 
         model_key = f"{cim_version}:{datamodel}:{':'.join(datasets)}".strip(":")
 
-        model_fields = fields_from_model_definition[model_key]
+        model_fields = fields_from_model_definition.get(model_key, [])
         self.logger.debug(f"Fields from CIM definition: {model_fields}")
 
         missing_fields = []
@@ -511,4 +513,4 @@ class CIMTestTemplates(object):
 
         assert (
             missing_fields == []
-        ), f"Not all fields from datamodel found for event definition. Missing fields {missing_fields}"
+        ), f"Not all fields from datamodel found for event definition. Missing fields: {', '.join(missing_fields)}"

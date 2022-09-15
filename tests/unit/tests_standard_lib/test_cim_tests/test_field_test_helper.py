@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import patch, MagicMock
 from collections import namedtuple
 from pytest_splunk_addon.standard_lib.cim_tests.field_test_helper import FieldTestHelper
+from pytest_splunk_addon.standard_lib.utilities.log_helper import get_table_output
 
 
 field = namedtuple(
@@ -25,7 +26,7 @@ def field_test_adapter_mock(monkeypatch):
     fta_mock.VALID_FIELD_COUNT = "{}_valid_count"
     fta_mock.INVALID_FIELD_VALUES = "{}_invalid_values"
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.cim_tests.field_test_helper.FieldTestAdapater",
+        "pytest_splunk_addon.standard_lib.cim_tests.field_test_helper.FieldTestAdapter",
         fta_mock,
     )
 
@@ -234,7 +235,7 @@ def test_make_search_query(mocked_field_test_helper, fields, expected_output):
     [
         (
             None,
-            "Source, Sourcetype, Event Count\nutility.log, splunkd, 12\nsys.log, sc4s, 69\n\nSearch = base_search",
+            "Source, Sourcetype, Event Count\nutility.log, splunkd, 12\nsys.log, sc4s, 69\nSearch query:\nbase_search\n\nSearch query to copy:\nbase_search\n",
         ),
         (
             [
@@ -247,7 +248,7 @@ def test_make_search_query(mocked_field_test_helper, fields, expected_output):
             "Source, Sourcetype, Field, Event Count, Field Count, Invalid Field Count, Invalid Values\n"
             "utility.log, splunkd, field_1, 12, 10, 0, -\n"
             "sys.log, sc4s, unknown_field, 69, 9, 8, ['null', 'none']"
-            "\n\nSearch = base_search"
+            "\nSearch query:\nbase_search\n\nSearch query to copy:\nbase_search\n"
             "\n\nProperties for the field :: field_1_properties"
             "\n\nProperties for the field :: unknown_field_properties",
         ),
@@ -283,24 +284,8 @@ def test_format_exc_message(mocked_field_test_helper, fields, expected_output):
         output = "\n".join([header] + rows)
         return output
 
-    with patch.object(FieldTestHelper, "get_table_output", side_effect=table_output):
+    with patch(
+        "pytest_splunk_addon.standard_lib.cim_tests.field_test_helper.get_table_output",
+        side_effect=table_output,
+    ):
         assert mocked_field_test_helper.format_exc_message() == expected_output
-
-
-@pytest.mark.parametrize(
-    "headers, value_list, expected_output",
-    [
-        (
-            ["Header1", "Header2"],
-            [["One", "Value1"], ["Two", "Value2"]],
-            "Header1 | Header2\n------- | -------\nOne     | Value1 \nTwo     | Value2 \n",
-        ),
-        (
-            ["header", "long header"],
-            [["field", "val1"], ["long field", "val2"]],
-            "header     | long header\n---------- | -----------\nfield      | val1       \nlong field | val2       \n",
-        ),
-    ],
-)
-def test_get_table_output(headers, value_list, expected_output):
-    assert FieldTestHelper.get_table_output(headers, value_list) == expected_output
