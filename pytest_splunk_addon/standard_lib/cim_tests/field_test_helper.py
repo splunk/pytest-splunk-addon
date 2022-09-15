@@ -19,7 +19,7 @@ Provides the helper methods to test addon_parser.Field object
 """
 import logging
 import json
-from .field_test_adapter import FieldTestAdapater
+from .field_test_adapter import FieldTestAdapter
 from ..utilities.log_helper import get_table_output
 from ..utilities.log_helper import format_search_query_log
 
@@ -39,7 +39,7 @@ class FieldTestHelper(object):
 
     def __init__(self, search_util, fields, interval=10, retries=4):
         self.search_util = search_util
-        self.fields = FieldTestAdapater.get_test_fields(fields)
+        self.fields = FieldTestAdapter.get_test_fields(fields)
         self.interval = interval
         self.retries = retries
 
@@ -127,18 +127,18 @@ class FieldTestHelper(object):
                     "field": each_field,
                     "field_count": int(
                         each_result.get(
-                            FieldTestAdapater.FIELD_COUNT.format(each_field.name)
+                            FieldTestAdapter.FIELD_COUNT.format(each_field.name)
                         )
                     ),
                 }
                 if each_field.gen_validity_query():
                     field_dict["valid_field_count"] = int(
                         each_result.get(
-                            FieldTestAdapater.VALID_FIELD_COUNT.format(each_field.name)
+                            FieldTestAdapter.VALID_FIELD_COUNT.format(each_field.name)
                         )
                     )
                     field_dict["invalid_values"] = each_result.get(
-                        FieldTestAdapater.INVALID_FIELD_VALUES.format(each_field.name),
+                        FieldTestAdapter.INVALID_FIELD_VALUES.format(each_field.name),
                         "-",
                     )
                 field_dict.update(
