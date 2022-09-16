@@ -309,6 +309,6 @@ class IndexTimeTestTemplate(object):
         count_from_results = int(results[0].get("count"))
         LOGGER.debug("Resulting count:{}".format(count_from_results))
         assert count_from_results == expected_events_count, (
-            f"{format_search_query_log(search)}"
+            f"{format_search_query_log(query)}"
             f"\nExpected count: {expected_events_count} Actual Count: {count_from_results}"
         )
