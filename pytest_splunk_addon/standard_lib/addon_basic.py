@@ -20,8 +20,9 @@ field extractions and CIM compatibility.
 """
 
 from .fields_tests import FieldTestTemplates
-from .cim_tests import CIMTestTemplates, FieldTestHelper
+from .cim_tests import CIMTestTemplates
 from .index_tests import IndexTimeTestTemplate
+from .utilities.log_helper import get_table_output
 import pytest
 
 
@@ -60,7 +61,7 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
         )
         if results:
             record_property("results", results)
-            result_str = FieldTestHelper.get_table_output(
+            result_str = get_table_output(
                 headers=["Source", "Sourcetype"],
                 value_list=[
                     [

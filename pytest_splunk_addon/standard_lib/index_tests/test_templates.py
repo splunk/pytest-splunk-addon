@@ -23,6 +23,7 @@ import copy
 from math import ceil
 from ..cim_tests import FieldTestHelper
 from ..utilities.log_helper import format_search_query_log
+from ..utilities.log_helper import get_table_output
 
 MAX_TIME_DIFFERENCE = 45
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -145,7 +146,7 @@ class IndexTimeTestTemplate(object):
                     missing_keys.append([each_field, fields_to_check[each_field]])
             final_str = ""
             if value_list:
-                result_str = FieldTestHelper.get_table_output(
+                result_str = get_table_output(
                     headers=["Key_field", "Expected_values", "Actual_values"],
                     value_list=[
                         [
@@ -159,7 +160,7 @@ class IndexTimeTestTemplate(object):
                 final_str += f"Some values for the following key fields are missing\n\n{result_str}"
 
             if missing_keys:
-                missing_keys_result_str = FieldTestHelper.get_table_output(
+                missing_keys_result_str = get_table_output(
                     headers=["Key_field", "Expected_values"],
                     value_list=[
                         [
@@ -309,6 +310,6 @@ class IndexTimeTestTemplate(object):
         count_from_results = int(results[0].get("count"))
         LOGGER.debug("Resulting count:{}".format(count_from_results))
         assert count_from_results == expected_events_count, (
-            f"{format_search_query_log(search)}"
+            f"{format_search_query_log(query)}"
             f"\nExpected count: {expected_events_count} Actual Count: {count_from_results}"
         )
