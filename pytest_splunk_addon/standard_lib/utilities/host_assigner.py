@@ -18,6 +18,7 @@ import os
 import argparse
 from lxml import etree
 
+
 def assign_host(sample_path, pattern, output_dir=None):
     """
     Assigns host value to transport stanza in xml format file based on provided pattern.
@@ -48,11 +49,19 @@ def assign_host(sample_path, pattern, output_dir=None):
             else:
                 if len(extracted_hosts) == 1:
                     host = extracted_hosts[0]
-                    print(f"Found matching unique host value. Assigning host value to: {host}")
+                    print(
+                        f"Found matching unique host value. Assigning host value to: {host}"
+                    )
                     transport.set("host", host)
                 else:
-                    print(f"Unexpected behavior for pattern: {pattern} and sample {raw.text}")
-    tree.write(os.path.join(output_dir, output_filename), encoding="utf-8", xml_declaration=True)
+                    print(
+                        f"Unexpected behavior for pattern: {pattern} and sample {raw.text}"
+                    )
+    tree.write(
+        os.path.join(output_dir, output_filename),
+        encoding="utf-8",
+        xml_declaration=True,
+    )
 
 
 def main():
@@ -60,8 +69,15 @@ def main():
         description="Assign host value to transport stanza based on provided regular expression"
     )
     parser.add_argument("file", help="xml file with samples that need host assignment")
-    parser.add_argument("-r", "--regex", help="Regular expression needed for host assignment")
-    parser.add_argument("-o", "--output_dir", default=None, help="Output dir for xml file with assigned host")
+    parser.add_argument(
+        "-r", "--regex", help="Regular expression needed for host assignment"
+    )
+    parser.add_argument(
+        "-o",
+        "--output_dir",
+        default=None,
+        help="Output dir for xml file with assigned host",
+    )
     args = parser.parse_args()
     sample_path = args.file
     pattern = args.regex
@@ -69,6 +85,5 @@ def main():
     assign_host(sample_path, pattern, output_dir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
-
