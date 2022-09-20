@@ -1,4 +1,4 @@
-name: OSS Scan test
+name: OSS Scan test1
 jobs:
   fossa-scan:
    uses: splunk/oss-scanning/.github/workflows/oss-scan.yml@main
