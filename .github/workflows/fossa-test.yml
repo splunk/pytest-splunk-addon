@@ -4,6 +4,6 @@ jobs:
    uses: splunk/oss-scanning/.github/workflows/oss-scan.yml@main
    secrets: inherit
 on:
-  pull_request:
+  push:
     branches:
       - "fossa-test"
