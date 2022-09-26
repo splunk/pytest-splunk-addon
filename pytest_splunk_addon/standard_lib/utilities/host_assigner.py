@@ -43,6 +43,7 @@ def assign_host(sample_path, pattern, output_dir=None):
         if raw is not None and transport is not None:
             try:
                 extracted_hosts = re.search(pattern, raw.text).groups()
+                extracted_hosts = [h for h in extracted_hosts if h]
             except Exception as e:
                 print(f"Exception occured for event: {raw.text}")
                 print(e)
