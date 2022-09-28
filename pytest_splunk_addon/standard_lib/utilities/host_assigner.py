@@ -45,7 +45,7 @@ def assign_host(sample_path, pattern, output_dir=None):
                 extracted_hosts = re.search(pattern, raw.text).groups()
                 extracted_hosts = [h for h in extracted_hosts if h]
             except Exception as e:
-                print(f"Exception occured for event: {raw.text}")
+                print(f"Exception occurred for event: {raw.text}")
                 print(e)
             else:
                 if len(extracted_hosts) == 1:
