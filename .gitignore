@@ -32,3 +32,6 @@ docs/_build/
 test_report.md
 .idea/
 .python-version
+*.pickle
+*_events.lock
+*_events

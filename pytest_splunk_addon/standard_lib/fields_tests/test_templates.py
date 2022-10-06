@@ -193,6 +193,8 @@ class FieldTestTemplates(object):
             retries=splunk_search_util.search_retry,
         )
 
+        assert fields_from_splunk, f"Event was not returned with search: {search}"
+
         missing_fields = []
         wrong_value_fields = {}
 
@@ -413,6 +415,8 @@ class FieldTestTemplates(object):
             interval=splunk_search_util.search_interval,
             retries=splunk_search_util.search_retry,
         )
+
+        assert fields_from_splunk, f"Event was not returned with search: {search}"
 
         extracted_tags = fields_from_splunk.get("tag", "")
         extracted_tags = extracted_tags.strip("][").split(", ")
