@@ -177,8 +177,11 @@ class FieldTestGenerator(object):
             datamodels = event.requirement_test_data.get("datamodels")
             if datamodels:
                 if type(datamodels) is dict:
-                    datamodels = [datamodels]
-                datamodels = [dm["model"] for dm in datamodels]
+                    if type(datamodels["model"]) == list:
+                        datamodels = datamodels["model"]
+                    else:
+                        datamodels = [datamodels]
+                        datamodels = [dm["model"] for dm in datamodels]
             else:
                 datamodels = []
             datamodels = [

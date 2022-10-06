@@ -262,25 +262,30 @@ class CIMTestGenerator(object):
         for event in self.tokenized_events:
             if not event.requirement_test_data:
                 continue
-            for _, datamodel in event.requirement_test_data["datamodels"].items():
-                model, *datasets = datamodel.split(":")
-                model = model.replace(" ", "_")
-                if datasets:
-                    datasets = [dataset.replace(" ", "_") for dataset in datasets]
+            for _, datamodels in event.requirement_test_data["datamodels"].items():
+                if type(datamodels) is not list:
+                    datamodels = [datamodels]
+                for datamodel in datamodels:
+                    model, *datasets = datamodel.split(":")
+                    model = model.replace(" ", "_")
+                    if datasets:
+                        datasets = [dataset.replace(" ", "_") for dataset in datasets]
 
-                fields = (
-                    list(event.requirement_test_data["cim_fields"].keys())
-                    + event.requirement_test_data["missing_recommended_fields"]
-                )
-                for exception in event.requirement_test_data["exceptions"]:
-                    fields.append(exception["name"])
+                    fields = (
+                        list(event.requirement_test_data["cim_fields"].keys())
+                        + event.requirement_test_data["missing_recommended_fields"]
+                    )
+                    for exception, _ in event.requirement_test_data[
+                        "exceptions"
+                    ].items():
+                        fields.append(exception)
 
-                yield pytest.param(
-                    {
-                        "datamodel": model,
-                        "datasets": datasets,
-                        "fields": fields,
-                        "cim_version": event.requirement_test_data["cim_version"],
-                    },
-                    id=f"{model}-{'-'.join(datasets)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
-                )
+                    yield pytest.param(
+                        {
+                            "datamodel": model,
+                            "datasets": datasets,
+                            "fields": fields,
+                            "cim_version": event.requirement_test_data["cim_version"],
+                        },
+                        id=f"{model}-{'-'.join(datasets)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
+                    )

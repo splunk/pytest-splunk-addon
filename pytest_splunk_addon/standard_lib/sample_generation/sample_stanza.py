@@ -421,20 +421,14 @@ class SampleStanza(object):
                 "missing_recommended_fields"
             ] = missing_recommended_fields
 
-            defined_exceptions = cim.get("exceptions") or []
-            exceptions = []
+            defined_exceptions = cim.get("exceptions") or {}
+            exceptions = {}
             if defined_exceptions:
                 defined_fields = defined_exceptions["field"]
                 defined_fields = (
                     defined_fields if type(defined_fields) == list else [defined_fields]
                 )
                 for field in defined_fields:
-                    exceptions.append(
-                        {
-                            "name": field["@name"],
-                            "value": field["@value"],
-                            "reason": field["@reason"],
-                        }
-                    )
+                    exceptions[field["@name"]] = field["@value"]
             requirement_test_data["exceptions"] = exceptions
         return requirement_test_data
