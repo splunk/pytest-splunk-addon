@@ -272,8 +272,8 @@ class CIMTestGenerator(object):
                     list(event.requirement_test_data["cim_fields"].keys())
                     + event.requirement_test_data["missing_recommended_fields"]
                 )
-                for exception in event.requirement_test_data["exceptions"]:
-                    fields.append(exception["name"])
+                for exception, _ in event.requirement_test_data["exceptions"].items():
+                    fields.append(exception)
 
                 yield pytest.param(
                     {
