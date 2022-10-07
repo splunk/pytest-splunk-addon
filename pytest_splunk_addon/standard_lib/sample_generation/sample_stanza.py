@@ -306,6 +306,9 @@ class SampleStanza(object):
                     static_host = each_event["transport"].get("@host")
                     if static_host:
                         event_metadata.update(host=static_host)
+                    static_source = each_event["transport"].get("@source")
+                    if static_source:
+                        event_metadata.update(source=static_source)
                 yield SampleEvent(
                     event, event_metadata, self.sample_name, requirement_test_data
                 )
