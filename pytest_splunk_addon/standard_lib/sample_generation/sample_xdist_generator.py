@@ -50,27 +50,18 @@ class SampleXdistGenerator:
                     with open(file_path, "rb") as file_obj:
                         store_sample = pickle.load(file_obj)
                 else:
-                    sample_generator = SampleGenerator(
-                        self.addon_path, self.config_path
-                    )
-                    tokenized_events = list(sample_generator.get_samples())
-                    store_sample = {
-                        "conf_name": SampleGenerator.conf_name,
-                        "tokenized_events": tokenized_events,
-                    }
+                    sample_generator = SampleGenerator(self.addon_path, self.config_path)
+
+                    store_sample = sample_generator.get_samples_store()
                     if store_events:
-                        self.store_events(tokenized_events)
+                        self.store_events(store_sample["tokenized_events"])
                     with open(file_path, "wb") as file_obj:
                         pickle.dump(store_sample, file_obj)
         else:
             sample_generator = SampleGenerator(self.addon_path, self.config_path)
-            tokenized_events = list(sample_generator.get_samples())
-            store_sample = {
-                "conf_name": SampleGenerator.conf_name,
-                "tokenized_events": tokenized_events,
-            }
+            store_sample = sample_generator.get_samples_store()
             if store_events:
-                self.store_events(tokenized_events)
+                self.store_events(store_sample["tokenized_events"])
         if self.tokenized_event_source == "store_new" and not self.event_stored:
             with open(self.event_path, "wb") as file_obj:
                 pickle.dump(store_sample, file_obj)
