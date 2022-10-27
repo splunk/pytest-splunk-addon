@@ -61,12 +61,13 @@ class TestSampleStanza:
         def func(
             psa_data_params={"tokens": tokens},
             rule_mock_value="Test_rule",
+            conf_name="sample_conf_name"
         ):
             with patch.object(os, "sep", "/"), patch(
                 "pytest_splunk_addon.standard_lib.sample_generation.sample_stanza.Rule",
                 MagicMock(return_value=rule_mock_value),
             ):
-                ss = SampleStanza(SAMPLE_PATH, psa_data_params)
+                ss = SampleStanza(SAMPLE_PATH, psa_data_params, conf_name)
             return ss
 
         return func
@@ -118,7 +119,7 @@ class TestSampleStanza:
         ],
     )
     def test_tokenize(self, sample_stanza, psa_data_params, conf_name, expected):
-        ss = sample_stanza(psa_data_params=psa_data_params)
+        ss = sample_stanza(psa_data_params=psa_data_params, conf_name=conf_name)
         ss._get_raw_sample = MagicMock(return_value=[rule_obj({}, "")])
         rule = MagicMock()
         rule.apply.return_value = [
@@ -130,7 +131,7 @@ class TestSampleStanza:
             )
         ]
         ss.sample_rules = [rule]
-        ss.tokenize(conf_name)
+        ss.tokenize()
         assert [e.metadata for e in ss.tokenized_events] == expected
 
     def test_tokenize_empty_raw_event(self, sample_stanza):
@@ -139,7 +140,7 @@ class TestSampleStanza:
         rule = MagicMock()
         rule.apply.return_value = [rule_obj({"breaker": 1}, MagicMock())]
         ss.sample_rules = [rule]
-        ss.tokenize("conf_name")
+        ss.tokenize()
         assert ss.tokenized_events == []
 
     @pytest.mark.parametrize(

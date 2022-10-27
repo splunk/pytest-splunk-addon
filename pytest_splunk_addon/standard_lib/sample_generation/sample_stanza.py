@@ -45,9 +45,11 @@ class SampleStanza(object):
     Args:
         sample_path (str): Path to the sample file
         psa_data_params (dict): Dictionary representing pytest-splunk-addon-data.conf
+        conf_name (str): Name of the conf file, "psa-data-gen", "eventgen"
     """
 
-    def __init__(self, sample_path, psa_data_params):
+    def __init__(self, sample_path, psa_data_params, conf_name):
+        self.conf_name = conf_name
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
         self.metadata = self._parse_meta(psa_data_params)
@@ -72,24 +74,12 @@ class SampleStanza(object):
             )
             yield event
 
-    def tokenize(self, conf_name):
+    def tokenize(self):
         """
         Tokenizes the raw events by replacing all the tokens in it.
 
-        Args:
-            conf_name (str): Name of the conf file, "psa-data-gen"
         """
-        if conf_name == "eventgen":
-            required_event_count = self.metadata.get("count")
-        else:
-            required_event_count = 1
-
-        if (
-            required_event_count is None
-            or int(required_event_count) == 0
-            or int(required_event_count) > BULK_EVENT_COUNT
-        ):
-            required_event_count = BULK_EVENT_COUNT
+        required_event_count = self._required_events_count()
 
         bulk_event = []
         raw_event = []
@@ -132,6 +122,20 @@ class SampleStanza(object):
                 each.metadata.update(sample_count=1)
 
         self.tokenized_events = bulk_event
+
+    def _required_events_count(self):
+        if self.conf_name == "eventgen":
+            required_event_count = self.metadata.get("count")
+            if (
+                    required_event_count is None
+                    or int(required_event_count) == 0
+                    or int(required_event_count) > BULK_EVENT_COUNT
+            ):
+                required_event_count = BULK_EVENT_COUNT
+        else:
+            required_event_count = 1
+
+        return required_event_count
 
     def _parse_rules(self, psa_data_params, sample_path):
         """
