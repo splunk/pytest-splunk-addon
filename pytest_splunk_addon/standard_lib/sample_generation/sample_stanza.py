@@ -116,6 +116,7 @@ class SampleStanza(object):
         if self.metadata.get("expected_event_count") is None:
             breaker = self.metadata.get("breaker")
             if breaker is not None:
+                raise_warning("'breaker' parameter is obsolete; use 'expected_event_count' parameter instead.")
                 expected_events = 0
                 for each_event in bulk_event:
                     expected_events += len(
@@ -123,6 +124,7 @@ class SampleStanza(object):
                     )
             else:
                 expected_events = len(bulk_event)
+                raise_warning("'expected_event_count' parameter is missing.")
             self.metadata.update(expected_event_count=expected_events)
             for each in bulk_event:
                 each.metadata.update(expected_event_count=expected_events)
@@ -202,7 +204,7 @@ class SampleStanza(object):
             )
             metadata.update(timestamp_type="plugin")
         if metadata.get("timezone") not in ["local", "0000", None] and not re.match(
-            TIMEZONE_REX, metadata.get("timezone")
+                TIMEZONE_REX, metadata.get("timezone")
         ):
             raise_warning(
                 "Invalid value for timezone: '{}' using timezone = 0000.".format(
@@ -219,8 +221,8 @@ class SampleStanza(object):
             )
             metadata.update(timestamp_type="plugin")
         if (
-            metadata.get("sample_count")
-            and not metadata.get("sample_count").isnumeric()
+                metadata.get("sample_count")
+                and not metadata.get("sample_count").isnumeric()
         ):
             raise_warning(
                 "Invalid value for sample_count: '{}' using sample_count = 1.".format(
@@ -229,8 +231,8 @@ class SampleStanza(object):
             )
             metadata.update(sample_count="1")
         if (
-            metadata.get("expected_event_count")
-            and not metadata.get("expected_event_count").isnumeric()
+                metadata.get("expected_event_count")
+                and not metadata.get("expected_event_count").isnumeric()
         ):
             raise_warning(
                 "Invalid value for expected_event_count: '{}' using expected_event_count = 1.".format(
@@ -310,6 +312,8 @@ class SampleStanza(object):
                     event, event_metadata, self.sample_name, requirement_test_data
                 )
         elif self.metadata.get("breaker"):
+            raise_warning("'breaker' variable is obsolete. "
+                          "Use of 'breaker' variable is discouraged since event-breaking shall be executed by add-on.")
             for each_event in self.break_events(sample_raw):
                 if each_event:
                     event_metadata = self.get_eventmetadata()
@@ -356,10 +360,10 @@ class SampleStanza(object):
             match_obj = next(sample_match)
             event_list = list()
             if match_obj.start() != 0:
-                event_list.append(sample_raw[pos : match_obj.start()].strip())
+                event_list.append(sample_raw[pos: match_obj.start()].strip())
                 pos = match_obj.start()
             for _, match in enumerate(sample_match):
-                event_list.append(sample_raw[pos : match.start()].strip())
+                event_list.append(sample_raw[pos: match.start()].strip())
                 pos = match.start()
             event_list.append(sample_raw[pos:].strip())
             return event_list
@@ -413,7 +417,7 @@ class SampleStanza(object):
             missing_recommended_fields = cim.get("missing_recommended_fields") or []
             if missing_recommended_fields:
                 missing_recommended_fields = (
-                    missing_recommended_fields.get("field") or []
+                        missing_recommended_fields.get("field") or []
                 )
                 if type(missing_recommended_fields) != list:
                     missing_recommended_fields = [missing_recommended_fields]
