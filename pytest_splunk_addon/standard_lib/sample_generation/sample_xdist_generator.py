@@ -22,9 +22,15 @@ import pytest
 
 
 class SampleXdistGenerator:
+    # Static variables defined in pytest_splunk_addon/plugin.py
+    # FIXME: Static global variables are EVIL
+    event_path: str
+    event_stored: bool  # True/False
+    tokenized_event_source: str  # One of (new|pregenerated|store_new)
+
     def __init__(self, addon_path, config_path=None, process_count=4):
         self.addon_path = addon_path
-        self.process_count = process_count
+        self.process_count = process_count  # TODO: Probably never used
         self.config_path = config_path
 
     def get_samples(self, store_events):
@@ -33,8 +39,8 @@ class SampleXdistGenerator:
             with open(self.event_path, "rb") as file_obj:
                 store_sample = pickle.load(file_obj)
                 if store_events and (
-                    "PYTEST_XDIST_WORKER" not in os.environ
-                    or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
+                        "PYTEST_XDIST_WORKER" not in os.environ
+                        or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
                 ):
                     try:
                         tokenized_events = store_sample.get("tokenized_events")
@@ -82,8 +88,8 @@ class SampleXdistGenerator:
                         each_event.metadata.get("sample_count") or 1
                     )
                     expected_count = (
-                        int(each_event.metadata.get("expected_event_count"))
-                        * sample_multiplication
+                            int(each_event.metadata.get("expected_event_count"))
+                            * sample_multiplication
                     )
                 else:
                     expected_count = each_event.metadata.get("expected_event_count")
@@ -118,10 +124,10 @@ class SampleXdistGenerator:
 
         for sample_name, tokenized_sample in tokenized_samples_dict.items():
             with open(
-                "{}.json".format(
-                    os.path.join(os.getcwd(), ".tokenized_events", sample_name)
-                ),
-                "w",
+                    "{}.json".format(
+                        os.path.join(os.getcwd(), ".tokenized_events", sample_name)
+                    ),
+                    "w",
             ) as eventfile:
                 eventfile.write(
                     json.dumps({sample_name: tokenized_sample}, indent="\t")

@@ -1,11 +1,13 @@
-import pytest
 from collections import namedtuple
 from unittest.mock import MagicMock, patch, mock_open, call
 
-from pytest_splunk_addon.standard_lib.sample_generation import SampleGenerator
+import pytest
+
 from pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator import (
     SampleXdistGenerator,
 )
+
+SAMPLES = {"conf_name": "x-name", "tokenized_events": "pickle Rick"}
 
 tokenized_event = namedtuple(
     "tokenized_event",
@@ -147,6 +149,44 @@ class TestSampleXdistGenerator:
             sample_xdist_generator.get_samples(True)
             sample_generator_mock.return_value.get_samples_store.assert_called_once()
 
+    @pytest.mark.parametrize(
+        "store_events",
+        [
+            (False),
+            (True),
+        ],
+    )
+    def test_get_pregenerated_events(self, store_events):
+        with patch(
+                "builtins.open", mock_open()), patch(
+                "os.path.exists", MagicMock(return_value=True)), patch(
+                "pickle.load", MagicMock(return_value=SAMPLES)) as pickle_mock:
+            SampleXdistGenerator.tokenized_event_source = "pregenerated"
+            sample_xdist_generator = SampleXdistGenerator("path")
+            sample_xdist_generator.store_events = MagicMock(name="store_events")
+            # Execution
+            returnedValue = sample_xdist_generator.get_samples(store_events)
+            # Validation
+            if store_events:
+                sample_xdist_generator.store_events.assert_called_once_with(SAMPLES["tokenized_events"])
+            else:
+                sample_xdist_generator.store_events.assert_not_called()
+
+            assert returnedValue == SAMPLES
+
+    def test_get_pregenerated_events_store_throws_exception(self):
+        with patch(
+                "builtins.open", mock_open()), patch(
+                "os.path.exists", MagicMock(return_value=True)), patch(
+                "pickle.load", MagicMock(return_value=SAMPLES)), patch(
+                "pytest.exit", MagicMock()) as exit_mock:
+            SampleXdistGenerator.tokenized_event_source = "pregenerated"
+            sample_xdist_generator = SampleXdistGenerator("path")
+            sample_xdist_generator.store_events = MagicMock(side_effect=Exception("HA!"))
+            # Execution
+            sample_xdist_generator.get_samples(True)
+            # Validation
+            exit_mock.assert_called_once_with("HA!")
 
     @pytest.mark.parametrize(
         "exists_value, makedirs_calls",
