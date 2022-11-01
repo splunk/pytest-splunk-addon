@@ -1,7 +1,7 @@
 name: OSS Scan test2
 jobs:
   fossa-scan:
-   uses: splunk/oss-scanning/.github/workflows/oss-scan.yml@main
+   uses: splunk/oss-scanning-public/.github/workflows/oss-scan.yml@main
    secrets: inherit
 on:
   push:
