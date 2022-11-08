@@ -13,10 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import logging
 from concurrent.futures import ThreadPoolExecutor
 
 from . import PytestSplunkAddonDataParser
 from . import SampleStanza
+
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class SampleGenerator(object):
@@ -52,6 +55,14 @@ class SampleGenerator(object):
             SampleGenerator.sample_stanzas = sample_stanzas
         for each_sample in SampleGenerator.sample_stanzas:
             yield from each_sample.get_tokenized_events()
+
+    @classmethod
+    def clean_samples(cls):
+        """
+        For backward compatibility only. This method is obsolete.
+        TODO: to be removed in 2023
+        """
+        LOGGER.warning("clean_samples is obsolete. Please remove the invocation of this method.")
 
     def get_samples_store(self):
         tokenized_events = list(self.get_samples())
