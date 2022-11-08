@@ -22,9 +22,15 @@ import pytest
 
 
 class SampleXdistGenerator:
+    # Static variables defined in pytest_splunk_addon/plugin.py
+    # FIXME: Static global variables are EVIL
+    event_path: str
+    event_stored: bool  # True/False
+    tokenized_event_source: str  # One of (new|pregenerated|store_new)
+
     def __init__(self, addon_path, config_path=None, process_count=4):
         self.addon_path = addon_path
-        self.process_count = process_count
+        self.process_count = process_count  # TODO: Probably never used
         self.config_path = config_path
 
     def get_samples(self, store_events):
@@ -53,24 +59,17 @@ class SampleXdistGenerator:
                     sample_generator = SampleGenerator(
                         self.addon_path, self.config_path
                     )
-                    tokenized_events = list(sample_generator.get_samples())
-                    store_sample = {
-                        "conf_name": SampleGenerator.conf_name,
-                        "tokenized_events": tokenized_events,
-                    }
+
+                    store_sample = sample_generator.get_samples_store()
                     if store_events:
-                        self.store_events(tokenized_events)
+                        self.store_events(store_sample["tokenized_events"])
                     with open(file_path, "wb") as file_obj:
                         pickle.dump(store_sample, file_obj)
         else:
             sample_generator = SampleGenerator(self.addon_path, self.config_path)
-            tokenized_events = list(sample_generator.get_samples())
-            store_sample = {
-                "conf_name": SampleGenerator.conf_name,
-                "tokenized_events": tokenized_events,
-            }
+            store_sample = sample_generator.get_samples_store()
             if store_events:
-                self.store_events(tokenized_events)
+                self.store_events(store_sample["tokenized_events"])
         if self.tokenized_event_source == "store_new" and not self.event_stored:
             with open(self.event_path, "wb") as file_obj:
                 pickle.dump(store_sample, file_obj)

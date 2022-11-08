@@ -13,11 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import logging
 from concurrent.futures import ThreadPoolExecutor
 
 from . import PytestSplunkAddonDataParser
 from . import SampleStanza
-from itertools import cycle
+
+LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 class SampleGenerator(object):
@@ -26,38 +28,30 @@ class SampleGenerator(object):
     Generate sample objects
     """
 
-    sample_stanzas = []
-    conf_name = " "
-
-    def __init__(self, addon_path, config_path=None, process_count=4):
+    def __init__(self, addon_path, config_path=None):
         """
         init method for the class
 
         Args:
             addon_path(str): path to the addon
-            process_count(no): generate {no} process for execution
         """
-        self.addon_path = addon_path
-        self.process_count = process_count
-        self.config_path = config_path
+        self._sample_stanzas = []
+        self._psa_data_parser = PytestSplunkAddonDataParser(
+            addon_path, config_path=config_path
+        )
 
     def get_samples(self):
         """
         Generate SampleEvent object
         """
-        if not SampleGenerator.sample_stanzas:
-            psa_data_parser = PytestSplunkAddonDataParser(
-                self.addon_path, config_path=self.config_path
-            )
-            sample_stanzas = psa_data_parser.get_sample_stanzas()
-            SampleGenerator.conf_name = psa_data_parser.conf_name
+        if not self._sample_stanzas:
+            sample_stanzas = self._psa_data_parser.get_sample_stanzas()
             with ThreadPoolExecutor(min(20, max(len(sample_stanzas), 1))) as t:
                 t.map(SampleStanza.get_raw_events, sample_stanzas)
             _ = list(
                 map(
                     SampleStanza.tokenize,
                     sample_stanzas,
-                    cycle([SampleGenerator.conf_name]),
                 )
             )
             SampleGenerator.sample_stanzas = sample_stanzas
@@ -66,5 +60,17 @@ class SampleGenerator(object):
 
     @classmethod
     def clean_samples(cls):
-        cls.sample_stanzas = list()
-        cls.conf_name = str()
+        """
+        For backward compatibility only. This method is obsolete.
+        TODO: to be removed in 2023
+        """
+        LOGGER.warning(
+            "clean_samples is obsolete. Please remove the invocation of this method."
+        )
+
+    def get_samples_store(self):
+        tokenized_events = list(self.get_samples())
+        return {
+            "conf_name": self._psa_data_parser.conf_name,
+            "tokenized_events": tokenized_events,
+        }

@@ -1,10 +1,13 @@
-import pytest
 from collections import namedtuple
 from unittest.mock import MagicMock, patch, mock_open, call
+
+import pytest
 
 from pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator import (
     SampleXdistGenerator,
 )
+
+SAMPLES = {"conf_name": "x-name", "tokenized_events": "pickle Rick"}
 
 tokenized_event = namedtuple(
     "tokenized_event",
@@ -92,6 +95,35 @@ class TestSampleXdistGenerator:
                 {"PYTEST_XDIST_WORKER": "", "PYTEST_XDIST_TESTRUNUID": "fake_id"},
                 "pickle_loaded",
             ),
+        ],
+    )
+    def test_get_samples_from_pickle(
+        self, pickle_mock, exists_value, environ, expected
+    ):
+        pickle_mock.load.return_value = "pickle_loaded"
+        sample_xdist_generator = SampleXdistGenerator("path")
+        sample_xdist_generator.store_events = MagicMock()
+        with patch("os.path.exists", MagicMock(return_value=exists_value)), patch(
+            "os.environ",
+            environ,
+        ), patch(
+            "pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator.SampleGenerator",
+            MagicMock(),
+        ) as sample_generator_mock:
+            assert sample_xdist_generator.get_samples(True) == expected
+            sample_generator_mock.assert_not_called()
+
+    @patch(
+        "pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator.FileLock",
+        MagicMock(),
+    )
+    @patch("builtins.open", mock_open())
+    @patch(
+        "pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator.pickle"
+    )
+    @pytest.mark.parametrize(
+        "exists_value, environ, expected",
+        [
             (
                 False,
                 {"PYTEST_XDIST_WORKER": "", "PYTEST_XDIST_TESTRUNUID": "fake_id"},
@@ -104,7 +136,9 @@ class TestSampleXdistGenerator:
             ),
         ],
     )
-    def test_get_samples(self, pickle_mock, exists_value, environ, expected):
+    def test_get_samples_from_generator(
+        self, pickle_mock, exists_value, environ, expected
+    ):
         pickle_mock.load.return_value = "pickle_loaded"
         sample_xdist_generator = SampleXdistGenerator("path")
         sample_xdist_generator.store_events = MagicMock()
@@ -115,9 +149,50 @@ class TestSampleXdistGenerator:
             "pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator.SampleGenerator",
             MagicMock(),
         ) as sample_generator_mock:
-            sample_generator_mock.conf_name = "conf_name"
-            sample_generator_mock.tokenized_events = "tokenized_events"
-            assert sample_xdist_generator.get_samples(True) == expected
+            sample_xdist_generator.get_samples(True)
+            sample_generator_mock.return_value.get_samples_store.assert_called_once()
+
+    @pytest.mark.parametrize(
+        "store_events",
+        [
+            (False),
+            (True),
+        ],
+    )
+    def test_get_pregenerated_events(self, store_events):
+        with patch("builtins.open", mock_open()), patch(
+            "os.path.exists", MagicMock(return_value=True)
+        ), patch("pickle.load", MagicMock(return_value=SAMPLES)) as pickle_mock:
+            SampleXdistGenerator.tokenized_event_source = "pregenerated"
+            sample_xdist_generator = SampleXdistGenerator("path")
+            sample_xdist_generator.store_events = MagicMock(name="store_events")
+            # Execution
+            returnedValue = sample_xdist_generator.get_samples(store_events)
+            # Validation
+            if store_events:
+                sample_xdist_generator.store_events.assert_called_once_with(
+                    SAMPLES["tokenized_events"]
+                )
+            else:
+                sample_xdist_generator.store_events.assert_not_called()
+
+            assert returnedValue == SAMPLES
+
+    def test_get_pregenerated_events_store_throws_exception(self):
+        with patch("builtins.open", mock_open()), patch(
+            "os.path.exists", MagicMock(return_value=True)
+        ), patch("pickle.load", MagicMock(return_value=SAMPLES)), patch(
+            "pytest.exit", MagicMock()
+        ) as exit_mock:
+            SampleXdistGenerator.tokenized_event_source = "pregenerated"
+            sample_xdist_generator = SampleXdistGenerator("path")
+            sample_xdist_generator.store_events = MagicMock(
+                side_effect=Exception("HA!")
+            )
+            # Execution
+            sample_xdist_generator.get_samples(True)
+            # Validation
+            exit_mock.assert_called_once_with("HA!")
 
     @pytest.mark.parametrize(
         "exists_value, makedirs_calls",
