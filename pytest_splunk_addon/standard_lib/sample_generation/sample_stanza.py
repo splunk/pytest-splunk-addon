@@ -127,9 +127,9 @@ class SampleStanza(object):
         if self.conf_name == "eventgen":
             required_event_count = self.metadata.get("count")
             if (
-                    required_event_count is None
-                    or int(required_event_count) == 0
-                    or int(required_event_count) > BULK_EVENT_COUNT
+                required_event_count is None
+                or int(required_event_count) == 0
+                or int(required_event_count) > BULK_EVENT_COUNT
             ):
                 required_event_count = BULK_EVENT_COUNT
         else:

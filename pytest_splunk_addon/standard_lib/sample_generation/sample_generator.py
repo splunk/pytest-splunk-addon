@@ -36,7 +36,9 @@ class SampleGenerator(object):
             addon_path(str): path to the addon
         """
         self._sample_stanzas = []
-        self._psa_data_parser = PytestSplunkAddonDataParser(addon_path, config_path=config_path)
+        self._psa_data_parser = PytestSplunkAddonDataParser(
+            addon_path, config_path=config_path
+        )
 
     def get_samples(self):
         """
@@ -62,7 +64,9 @@ class SampleGenerator(object):
         For backward compatibility only. This method is obsolete.
         TODO: to be removed in 2023
         """
-        LOGGER.warning("clean_samples is obsolete. Please remove the invocation of this method.")
+        LOGGER.warning(
+            "clean_samples is obsolete. Please remove the invocation of this method."
+        )
 
     def get_samples_store(self):
         tokenized_events = list(self.get_samples())
