@@ -58,6 +58,8 @@ pytest-cov = "^3.0.0"
 requests-mock = "^1.8.0"
 freezegun = "^1.2.1"
 pytz = "^2022.1"
+black = "^22.10.0"
+pre-commit = "^2.20.0"
 
 [tool.poetry.plugins]
 pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_addon.splunk" }
