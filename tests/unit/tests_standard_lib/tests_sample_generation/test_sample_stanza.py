@@ -61,7 +61,7 @@ class TestSampleStanza:
         def func(
             psa_data_params={"tokens": tokens},
             rule_mock_value="Test_rule",
-            conf_name="sample_conf_name"
+            conf_name="sample_conf_name",
         ):
             with patch.object(os, "sep", "/"), patch(
                 "pytest_splunk_addon.standard_lib.sample_generation.sample_stanza.Rule",
