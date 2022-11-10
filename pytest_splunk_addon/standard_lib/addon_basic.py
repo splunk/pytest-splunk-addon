@@ -50,7 +50,7 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
             record_property (fixture): Document facts of test cases.
 
         """
-        query = f"search index=* ##*## | stats count by source, sourcetype"
+        query = f"""search index=* | regex "##[a-zA-Z0-9_-]+##" | stats count by source, sourcetype"""
         record_property("Query", query)
         results = list(
             splunk_search_util.getFieldValuesList(
