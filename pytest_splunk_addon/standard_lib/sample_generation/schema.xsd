@@ -97,7 +97,7 @@
                     <xs:element name="cim_fields" maxOccurs="1" minOccurs="0">
                       <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="field" maxOccurs="unbounded" minOccurs="1">
+                          <xs:element name="field" maxOccurs="unbounded" minOccurs="0">
                             <xs:complexType>
                               <xs:simpleContent>
                                 <xs:extension base="xs:string">
