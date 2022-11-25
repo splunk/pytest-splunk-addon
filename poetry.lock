@@ -516,7 +516,7 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "a7f02df741895420cd6cd17f561b70ba8412da671c17985e7959f1bb7fd3d8ec"
+content-hash = "dadb4a9174dd4732c5b4e7fd6bb72b17cf4b66c9191fd09c47c57e56ed59ef7a"
 
 [metadata.files]
 addonfactory-splunk-conf-parser-lib = [
