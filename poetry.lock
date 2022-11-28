@@ -488,7 +488,7 @@ python-versions = ">=3.4"
 
 [[package]]
 name = "zipp"
-version = "3.10.0"
+version = "3.11.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 category = "main"
 optional = false
@@ -504,7 +504,7 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "dadb4a9174dd4732c5b4e7fd6bb72b17cf4b66c9191fd09c47c57e56ed59ef7a"
+content-hash = "352991cda1ce948438e23f7a8cb8a0034418a3679b9ce523b2d2af33761ae01c"
 
 [metadata.files]
 addonfactory-splunk-conf-parser-lib = [
@@ -742,6 +742,6 @@ xmltodict = [
     {file = "xmltodict-0.13.0.tar.gz", hash = "sha256:341595a488e3e01a85a9d8911d8912fd922ede5fecc4dce437eb4b6c8d037e56"},
 ]
 zipp = [
-    {file = "zipp-3.10.0-py3-none-any.whl", hash = "sha256:4fcb6f278987a6605757302a6e40e896257570d11c51628968ccb2a47e80c6c1"},
-    {file = "zipp-3.10.0.tar.gz", hash = "sha256:7a7262fd930bd3e36c50b9a64897aec3fafff3dfdeec9623ae22b40e93f99bb8"},
+    {file = "zipp-3.11.0-py3-none-any.whl", hash = "sha256:83a28fcb75844b5c0cdaf5aa4003c2d728c77e05f5aeabe8e95e56727005fbaa"},
+    {file = "zipp-3.11.0.tar.gz", hash = "sha256:a7a22e05929290a67401440b39690ae6563279bced5f314609d9d03798f56766"},
 ]
