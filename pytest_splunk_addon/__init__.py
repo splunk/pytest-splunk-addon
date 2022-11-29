@@ -17,5 +17,5 @@
 """Top-level package for splunk-app-test-lib."""
 
 __author__ = """Splunk Inc."""
-__email__ = "rfaircloth@splunk.com"
+__email__ = "addonfactory@splunk.com"
 __version__ = "4.1.0-beta.3"
