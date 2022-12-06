@@ -69,7 +69,7 @@ def test_escape_char_event(escape_char, expected_output):
         ),
         (
             '10.0.1.1 - - [04/Jan/2021:18:37:21 +0530] "GET /tomcat.svg HTTP/1.1" 200 67795',
-            '"GET /tomcat.svg HTTP/1.1" 200 67795'
+            '"GET /tomcat.svg HTTP/1.1" 200 67795',
         ),
         ("- cisco dummy", None),
     ],
