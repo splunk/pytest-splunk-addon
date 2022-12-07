@@ -67,7 +67,11 @@ def test_escape_char_event(escape_char, expected_output):
             "Jan 11 10:25:39 host CEF:Version|Device Vendor|Device Product|Device Version|Device Event Class ID|Name|Severity|[Extension]",
             "Version|Device Vendor|Device Product|Device Version|Device Event Class ID|Name|Severity|[Extension]",
         ),
-        ("dummy string", None),
+        (
+            '10.0.1.1 - - [04/Jan/2021:18:37:21 +0530] "GET /tomcat.svg HTTP/1.1" 200 67795',
+            '"GET /tomcat.svg HTTP/1.1" 200 67795',
+        ),
+        ("- cisco dummy", None),
     ],
     ids=[
         "rfc5424-format",
@@ -75,6 +79,7 @@ def test_escape_char_event(escape_char, expected_output):
         "rfc3164-format-longer",
         "CEF-checkpoint-foramt",
         "CEF-format",
+        "httpd-format",
         "wrong-format",
     ],
 )
