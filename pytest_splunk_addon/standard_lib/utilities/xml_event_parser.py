@@ -100,6 +100,7 @@ def escape_char_event(event):
         "WHERE",
         "LIKE",
         "NOT",
+        '"',
     ]
     event = event.replace("\\", "\\\\")
     bounded_asterisk = re.search(r"\".*?\*+.*?\"", event)
