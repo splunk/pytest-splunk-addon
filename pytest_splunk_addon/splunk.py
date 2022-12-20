@@ -611,7 +611,9 @@ def splunk_external(request):
         )
 
     for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
-        if is_responsive_splunk(splunk_info) and is_responsive_hec(request, splunk_info):
+        if is_responsive_splunk(splunk_info) and is_responsive_hec(
+            request, splunk_info
+        ):
             break
         sleep(1)
 
