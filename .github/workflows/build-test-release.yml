@@ -252,7 +252,7 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
       - name: Semantic Release
-        uses: splunk/semantic-release-action@test-extra-plugins
+        uses: splunk/semantic-release-action@v1.2
         with:
           extra_plugins: |
             @google/semantic-release-replace-plugin
