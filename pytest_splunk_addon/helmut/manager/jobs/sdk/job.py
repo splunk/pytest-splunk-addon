@@ -241,7 +241,8 @@ def _build_results_from_sdk_response(response):
     reader = results.JSONResultsReader(response)
     events = []
     for result in reader:
-        events.append(_build_event_from_results_reader(result))
+        if type(result) == dict:
+            events.append(_build_event_from_results_reader(result))
     return Results(events)
 
 
@@ -252,7 +253,8 @@ def _build_results_dict_from_sdk_response(response):
     reader = results.JSONResultsReader(response)
     resultset = []
     for result in reader:
-        resultset.append(result)
+        if type(result) == dict:
+            resultset.append(result)
     return resultset
 
 
@@ -263,7 +265,8 @@ def _build_events_from_sdk_response(response):
     reader = results.JSONResultsReader(response)
     events = []
     for result in reader:
-        events.append(_build_event_from_results_reader(result))
+        if type(result) == dict:
+            events.append(_build_event_from_results_reader(result))
     return events
 
 
