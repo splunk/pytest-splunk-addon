@@ -166,14 +166,17 @@ class SDKJobWrapper(Job):
         return self
 
     def get_events(self, **kwargs):
+        kwargs.update(output_mode="json")
         response = self.raw_sdk_job.events(**kwargs)
         return _build_results_from_sdk_response(response)
 
     def get_events_dict(self, **kwargs):
+        kwargs.update(output_mode="json")
         response = self.raw_sdk_job.events(**kwargs)
         return _build_events_from_sdk_response(response)
 
     def get_results_dict(self, **kwargs):
+        kwargs.update(output_mode="json")
         response = self.raw_sdk_job.results(**kwargs)
         return _build_results_dict_from_sdk_response(response)
 
@@ -198,10 +201,12 @@ class SDKJobWrapper(Job):
         return self
 
     def get_preview(self, **kwargs):
+        kwargs.update(output_mode="json")
         response = self.raw_sdk_job.preview(**kwargs)
         return _build_results_from_sdk_response(response)
 
     def get_results(self, **kwargs):
+        kwargs.update(output_mode="json")
         response = self.raw_sdk_job.results(**kwargs)
         return _build_results_from_sdk_response(response)
 
@@ -233,7 +238,7 @@ def _build_results_from_sdk_response(response):
     """
     Get results from the SDK and return them.
     """
-    reader = results.JSONResultsReader(response(output_mode="json"))
+    reader = results.JSONResultsReader(response)
     events = []
     for result in reader:
         events.append(_build_event_from_results_reader(result))
@@ -244,7 +249,7 @@ def _build_results_dict_from_sdk_response(response):
     """
     Get results from the SDK and return them.
     """
-    reader = results.JSONResultsReader(response(output_mode="json"))
+    reader = results.JSONResultsReader(response)
     resultset = []
     for result in reader:
         resultset.append(result)
@@ -255,7 +260,7 @@ def _build_events_from_sdk_response(response):
     """
     Get results from the SDK and return them.
     """
-    reader = results.JSONResultsReader(response(output_mode="json"))
+    reader = results.JSONResultsReader(response)
     events = []
     for result in reader:
         events.append(_build_event_from_results_reader(result))
