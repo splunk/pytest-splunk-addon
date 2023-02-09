@@ -233,7 +233,7 @@ def _build_results_from_sdk_response(response):
     """
     Get results from the SDK and return them.
     """
-    reader = results.ResultsReader(response)
+    reader = results.JSONResultsReader(response(output_mode="json"))
     events = []
     for result in reader:
         events.append(_build_event_from_results_reader(result))
@@ -244,7 +244,7 @@ def _build_results_dict_from_sdk_response(response):
     """
     Get results from the SDK and return them.
     """
-    reader = results.ResultsReader(response)
+    reader = results.JSONResultsReader(response(output_mode="json"))
     resultset = []
     for result in reader:
         resultset.append(result)
@@ -255,7 +255,7 @@ def _build_events_from_sdk_response(response):
     """
     Get results from the SDK and return them.
     """
-    reader = results.ResultsReader(response)
+    reader = results.JSONResultsReader(response(output_mode="json"))
     events = []
     for result in reader:
         events.append(_build_event_from_results_reader(result))
