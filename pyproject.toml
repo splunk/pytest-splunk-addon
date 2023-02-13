@@ -59,6 +59,12 @@ requests-mock = "^1.8.0"
 freezegun = "^1.2.1"
 pytz = "^2022.1"
 
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+sphinx-rtd-theme = "1.1.1"
+
 [tool.poetry.plugins]
 pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_addon.splunk" }
 
