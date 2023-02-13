@@ -63,7 +63,7 @@ pytz = "^2022.1"
 optional = true
 
 [tool.poetry.group.docs.dependencies]
-sphinx-rtd-theme = "1.1.1"
+jinja2="3.0.3"
 
 [tool.poetry.plugins]
 pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_addon.splunk" }
