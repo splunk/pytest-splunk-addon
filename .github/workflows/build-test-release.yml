@@ -128,9 +128,7 @@ jobs:
       - name: Install and run tests
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          poetry install -E docker
-          poetry add --group dev sphinx-rtd-theme
-          poetry add --group dev sphinx-panels
+          poetry install --with docs -E docker
           poetry run pytest -v -m doc tests/e2e
 
   test-splunk-external:
