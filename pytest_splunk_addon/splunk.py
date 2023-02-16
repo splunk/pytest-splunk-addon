@@ -13,13 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# -*- coding: utf-8 -*-
-"""
-Module usage:
-- helmut : To connect to a Splunk instance. source: splunk-sdk
-- helmut_lib: Provides various Utility functions to search on Splunk. Source: splunk-sdk
-"""
-
 import logging
 import os
 import shutil
@@ -29,9 +22,9 @@ import json
 import pytest
 import requests
 import splunklib.client as client
-from .helmut.manager.jobs import Jobs
-from .helmut.splunk.cloud import CloudSplunk
-from .helmut_lib.SearchUtil import SearchUtil
+from splunksplwrapper.manager.jobs import Jobs
+from splunksplwrapper.splunk.cloud import CloudSplunk
+from splunksplwrapper.SearchUtil import SearchUtil
 from .standard_lib.event_ingestors import IngestorHelper
 from .standard_lib.CIM_Models.datamodel_definition import datamodels
 import configparser
@@ -358,7 +351,7 @@ def splunk_search_util(splunk, request):
     This is a simple connection to Splunk via the SplunkSDK
 
     Returns:
-        helmut_lib.SearchUtil.SearchUtil: The SearchUtil object
+        splunksplwrapper.SearchUtil.SearchUtil: The SearchUtil object
     """
     LOGGER.info("Initializing SearchUtil for the Splunk instace.")
     cloud_splunk = CloudSplunk(
