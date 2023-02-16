@@ -182,12 +182,11 @@ jobs:
       - test-splunk-doc
       - test-splunk-unit
       - review_secrets
-      - review-dog-misspell
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: ["8.1", "9.0"]
+        splunk-version: ["8.1", "8.2", "9.0"]
         test-marker: [
           "splunk_connection_docker",
           "splunk_app_fiction",
