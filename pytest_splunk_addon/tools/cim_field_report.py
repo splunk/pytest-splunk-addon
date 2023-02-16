@@ -23,8 +23,8 @@ import traceback
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from pytest_splunk_addon.helmut.manager.jobs import Jobs
-from pytest_splunk_addon.helmut.splunk.cloud import CloudSplunk
+from splunksplwrapper.manager.jobs import Jobs
+from splunksplwrapper.splunk.cloud import CloudSplunk
 from pytest_splunk_addon.standard_lib.addon_parser import AddonParser
 
 from splunklib import binding
@@ -145,7 +145,7 @@ def collect_job_results(job, acc, fn):
 
     Parameters
     ----------
-    job : pytest_splunk_addon.helmut.manager.jobs.job
+    job : splunksplwrapper.manager.jobs.job
         Finished job ready to collect results
     acc : any
         An accumulator object that collects job results
@@ -205,7 +205,7 @@ def get_punct_by_eventtype(jobs, eventtypes, config):
 
     Parameters
     ----------
-    jobs : pytest_splunk_addon.helmut.manager.jobs.Jobs
+    jobs : splunksplwrapper.manager.jobs.Jobs
         Jobs object capable to create a new splunk search job
     eventtypes : list
         List of splunk eventtypes names taken from TA configurations
@@ -246,7 +246,7 @@ def get_field_names(jobs, eventtypes, config):
 
     Parameters
     ----------
-    jobs : pytest_splunk_addon.helmut.manager.jobs.Jobs
+    jobs : splunksplwrapper.manager.jobs.Jobs
         Jobs object capable to create a new splunk search job
     eventtypes : list
         List of splunk eventtypes names taken from TA configurations
@@ -311,7 +311,7 @@ def get_fieldsummary(jobs, punct_by_eventtype, config):
 
     Parameters
     ----------
-    jobs : pytest_splunk_addon.helmut.manager.jobs.Jobs
+    jobs : splunksplwrapper.manager.jobs.Jobs
         Jobs object capable to create a new splunk search job
     punct_by_eventtype : list
         List of tuples of 2 elements, representing collected unique pairs of eventtype+punct
@@ -362,7 +362,7 @@ def get_fieldsreport(jobs, eventtypes, fields, config):
 
     Parameters
     ----------
-    jobs : pytest_splunk_addon.helmut.manager.jobs.Jobs
+    jobs : splunksplwrapper.manager.jobs.Jobs
         Jobs object capable to create a new splunk search job
     eventtypes : list
         List of splunk eventtypes names taken from TA configurations
@@ -445,7 +445,7 @@ def build_report(jobs, eventtypes, config):
 
     Parameters
     ----------
-    jobs : pytest_splunk_addon.helmut.manager.jobs.Jobs
+    jobs : splunksplwrapper.manager.jobs.Jobs
         Jobs object capable to create a new splunk search job
     eventtypes : list
         List of splunk eventtypes names taken from TA configurations
