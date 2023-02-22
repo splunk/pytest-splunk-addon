@@ -23,7 +23,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache
 pytest_splunk_addon.log
-helmut.log
+splunksplwrapper.log
 !tests/e2e/addons/*/.log
 docs/_build/
 /site/

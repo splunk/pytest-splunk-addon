@@ -82,15 +82,6 @@ jobs:
         uses: edplato/trufflehog-actions-scan@v0.9j-beta
         with:
           scanArguments: "--max_dept 50 -x .github/workflows/exclude-patterns.txt"
-  
-  review-dog-misspell:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Run misspell with reviewdog
-      uses: reviewdog/action-misspell@v1.12
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
 
   test-splunk-unit:
     name: Unit tests
@@ -141,11 +132,10 @@ jobs:
       - test-splunk-doc
       - test-splunk-unit
       - review_secrets
-      - review-dog-misspell
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: ["8.1", "9.0"]
+        splunk-version: ["8.1", "8.2", "9.0"]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -192,12 +182,11 @@ jobs:
       - test-splunk-doc
       - test-splunk-unit
       - review_secrets
-      - review-dog-misspell
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        splunk-version: ["8.1", "9.0"]
+        splunk-version: ["8.1", "8.2", "9.0"]
         test-marker: [
           "splunk_connection_docker",
           "splunk_app_fiction",
