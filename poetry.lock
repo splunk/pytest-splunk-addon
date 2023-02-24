@@ -233,19 +233,19 @@ testing = ["pre-commit"]
 
 [[package]]
 name = "faker"
-version = "13.16.0"
+version = "17.3.0"
 description = "Faker is a Python package that generates fake data for you."
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "Faker-13.16.0-py3-none-any.whl", hash = "sha256:920f94d5aa865fd922bc29f2cf75c75b4d86b30eec23e7174d7513241b759b05"},
-    {file = "Faker-13.16.0.tar.gz", hash = "sha256:25c5be99bc5fd8676eea8c1490e0de87f6d9734651c7af2cefc99b322b2936f4"},
+    {file = "Faker-17.3.0-py3-none-any.whl", hash = "sha256:1dfffa43b4492b899a839619f2056060b585ba0bc76f329525194ca04dde0988"},
+    {file = "Faker-17.3.0.tar.gz", hash = "sha256:26b2864a5332094f2c7f3968deebabce69be39ed5db4dbf22b4fa0ba3d1acdae"},
 ]
 
 [package.dependencies]
 python-dateutil = ">=2.4"
-typing-extensions = {version = ">=3.10.0.2", markers = "python_version < \"3.8\""}
+typing-extensions = {version = ">=3.10.0.1", markers = "python_version < \"3.8\""}
 
 [[package]]
 name = "filelock"
@@ -1089,4 +1089,4 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "8036aff2674aa29d7cbc8da9abc8930cf9d1e68afe8e8c457db62510b1535208"
+content-hash = "112fd1755d40c551b3187795220c6ad4c851c26d8074a1666a69da5bed0f802c"
