@@ -968,13 +968,13 @@ test = ["pytest"]
 
 [[package]]
 name = "splunk-sdk"
-version = "1.7.2"
+version = "1.7.3"
 description = "The Splunk Software Development Kit for Python."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "splunk-sdk-1.7.2.tar.gz", hash = "sha256:36d27f83e7cc8309be6e3b92e46c547caea566b0c006238025073843e586e5a8"},
+    {file = "splunk-sdk-1.7.3.tar.gz", hash = "sha256:21c4564095e04857b8c206db8197cdda64708bf7b6cefddf2fd9ac88cfd45196"},
 ]
 
 [[package]]
