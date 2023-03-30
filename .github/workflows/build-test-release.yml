@@ -239,7 +239,7 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
       - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v3.0.0
+        uses: cycjimmy/semantic-release-action@v3.4.2
         with:
           semantic_version: 19.0.2
           extra_plugins: |
