@@ -682,14 +682,14 @@ pytest = "*"
 
 [[package]]
 name = "pytest-xdist"
-version = "3.0.2"
-description = "pytest xdist plugin for distributed testing and loop-on-failing modes"
+version = "3.3.0"
+description = "pytest xdist plugin for distributed testing, most importantly across multiple CPUs"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "pytest-xdist-3.0.2.tar.gz", hash = "sha256:688da9b814370e891ba5de650c9327d1a9d861721a524eb917e620eec3e90291"},
-    {file = "pytest_xdist-3.0.2-py3-none-any.whl", hash = "sha256:9feb9a18e1790696ea23e1434fa73b325ed4998b0e9fcb221f16fd1945e6df1b"},
+    {file = "pytest-xdist-3.3.0.tar.gz", hash = "sha256:d42c9efb388da35480878ef4b2993704c6cea800c8bafbe85a8cdc461baf0748"},
+    {file = "pytest_xdist-3.3.0-py3-none-any.whl", hash = "sha256:76f7683d4f993eaff91c9cb0882de0465c4af9c6dd3debc903833484041edc1a"},
 ]
 
 [package.dependencies]
