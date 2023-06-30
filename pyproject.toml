@@ -65,7 +65,7 @@ optional = true
 
 [tool.poetry.group.docs.dependencies]
 jinja2 = "3.0.3"
-sphinx-rtd-theme = "1.1.1"
+sphinx-rtd-theme = "1.2.2"
 sphinx-panels = "0.6.0"
 
 [tool.poetry.plugins]
