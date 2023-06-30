@@ -33,9 +33,9 @@ include = ["pytest_splunk_addon/**/*.json", "pytest_splunk_addon/**/*.txt"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-pytest = ">5.4.0,<7.3"
+pytest = ">5.4.0,<8"
 splunk-sdk = "^1.6"
-requests = "^2"
+requests = "^2.31.0"
 jsonschema = "^4.2.1"
 pytest-xdist = ">=2.3.0"
 filelock = "^3.0"
@@ -48,6 +48,7 @@ Faker = ">=13.12,<18.0"
 xmltodict = "^0.13.0"
 xmlschema = "^1.11.3"
 splunksplwrapper = "^1.0.1"
+urllib3 = "<2"
 
 [tool.poetry.extras]
 docker = ['lovely-pytest-docker']
