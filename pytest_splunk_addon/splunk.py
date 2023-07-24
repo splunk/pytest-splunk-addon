@@ -870,18 +870,6 @@ def is_responsive_splunk(splunk):
             host=splunk["host"],
             port=splunk["port"],
         )
-        LOGGER.info("Checking KVStore status...")
-        server_info = f"https://{splunk['host']}:{splunk['port']}/services/server/info?output_mode=json"
-        response = requests.get(  # nosemgrep: splunk.disabled-cert-validation
-            server_info,
-            auth=(splunk["username"], splunk["password"]),
-            verify=False,
-        )
-        response.raise_for_status()
-        kvstore_status = response.json()["entry"][0]["content"]["kvStoreStatus"]
-        LOGGER.info(f"Splunk KVStore status: {kvstore_status}")
-        if kvstore_status != "ready":
-            return False
 
         LOGGER.info("Connected to Splunk instance.")
         return True
