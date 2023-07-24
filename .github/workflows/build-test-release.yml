@@ -96,17 +96,7 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
           poetry install
-          poetry run coverage run --source=./pytest_splunk_addon/standard_lib -m pytest -v tests/unit
-          poetry run coverage xml
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          directory: ./coverage/reports/
-          env_vars: OS,PYTHON
-          fail_ci_if_error: true
-          verbose: true
+          poetry run pytest -v tests/unit
 
   test-splunk-doc:
     name: Test Docs
