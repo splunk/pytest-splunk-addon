@@ -872,8 +872,9 @@ def is_responsive_splunk(splunk):
         )
         LOGGER.info("Checking KVStore status...")
         server_info = f"https://{splunk['host']}:{splunk['port']}/services/server/info?output_mode=json"
-        response = requests.get(
+        response = requests.get(   # nosemgrep: splunk.disabled-cert-validation
             server_info,
+            auth=(splunk["username"], splunk["password"]),
             verify=False,
         )
         response.raise_for_status()
