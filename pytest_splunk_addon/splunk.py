@@ -878,7 +878,7 @@ def is_responsive_splunk(splunk):
             verify=False,
         )
         response.raise_for_status()
-        kvstore_status = response["entry"][0]["content"]["kvStoreStatus"]
+        kvstore_status = response.json()["entry"][0]["content"]["kvStoreStatus"]
         LOGGER.info(f"Splunk KVStore status: {kvstore_status}")
         if kvstore_status != "ready":
             return False
