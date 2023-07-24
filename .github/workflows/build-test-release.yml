@@ -165,7 +165,6 @@ jobs:
             test-results-${{ matrix.splunk-version }}
 
   test-splunk-matrix:
-    name: Test Matrix
     needs:
       - meta
       - pre-commit

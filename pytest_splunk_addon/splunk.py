@@ -431,8 +431,7 @@ def splunk(request, file_system_prerequisite):
                 )
             )
             os.environ["SPLUNK_APP_ID"] = config["package"]["id"]
-        except Exception as e:
-            pass
+        except Exception:
             os.environ["SPLUNK_APP_ID"] = "TA_package"
         os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
@@ -852,7 +851,7 @@ def is_responsive_uf(uf):
 
 def is_responsive_splunk(splunk):
     """
-    Verify if the management port of Splunk is responsive or not
+    Verify if the management port of Splunk is responsive or not.
 
     Args:
         splunk (dict): details of the Splunk instance
@@ -871,8 +870,19 @@ def is_responsive_splunk(splunk):
             host=splunk["host"],
             port=splunk["port"],
         )
-        LOGGER.info("Connected to Splunk instance.")
+        LOGGER.info("Checking KVStore status...")
+        server_info = f"https://{splunk['host']}:{splunk['port']}/services/server/info?output_mode=json"
+        response = requests.get(
+            server_info,
+            verify=False,
+        )
+        response.raise_for_status()
+        kvstore_status = response["entry"][0]["content"]["kvStoreStatus"]
+        LOGGER.info(f"Splunk KVStore status: {kvstore_status}")
+        if kvstore_status != "ready":
+            return False
 
+        LOGGER.info("Connected to Splunk instance.")
         return True
     except Exception as e:
         LOGGER.warning(
