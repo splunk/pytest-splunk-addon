@@ -1174,4 +1174,4 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "fee729318428c0fbdd30094888d93ad666bc2a0f623f5cadd13546490851ab96"
+content-hash = "311179a67f96d04babb629af5b668c205ad0f3a633b0d9d067ccda4e23331e2f"
