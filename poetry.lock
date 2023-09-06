@@ -375,14 +375,14 @@ files = [
 
 [[package]]
 name = "httplib2"
-version = "0.21.0"
+version = "0.22.0"
 description = "A comprehensive HTTP client library."
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
-    {file = "httplib2-0.21.0-py3-none-any.whl", hash = "sha256:987c8bb3eb82d3fa60c68699510a692aa2ad9c4bd4f123e51dfb1488c14cdd01"},
-    {file = "httplib2-0.21.0.tar.gz", hash = "sha256:fc144f091c7286b82bec71bdbd9b27323ba709cc612568d3000893bfd9cb4b34"},
+    {file = "httplib2-0.22.0-py3-none-any.whl", hash = "sha256:14ae0a53c1ba8f3d37e9e27cf37eabb0fb9980f435ba405d546948b009dd64dc"},
+    {file = "httplib2-0.22.0.tar.gz", hash = "sha256:d7a10bc5ef5ab08322488bde8c726eeee5c8618723fdb399597ec58f3d82df81"},
 ]
 
 [package.dependencies]
@@ -1064,20 +1064,20 @@ files = [
 
 [[package]]
 name = "splunksplwrapper"
-version = "1.0.2"
+version = "1.1.1"
 description = "Package to interact with Splunk"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "splunksplwrapper-1.0.2-py3-none-any.whl", hash = "sha256:39f335a37a6c178a50ad1a077239dd2321a22c8ce1dddb54249723d7ca4fbce6"},
-    {file = "splunksplwrapper-1.0.2.tar.gz", hash = "sha256:871665df2cfe5774f86cd22adb44966b0e589119765fbf3b04044fe0dd3aa751"},
+    {file = "splunksplwrapper-1.1.1-py3-none-any.whl", hash = "sha256:6dd93a144c77f78d7b756a05659da76ee5e44773378336d44365e4a046e7cd1c"},
+    {file = "splunksplwrapper-1.1.1.tar.gz", hash = "sha256:71d5fc3d37a9105d804d95bd9778023d3f4e7b3d5d2dc71cdcf8019a258395a8"},
 ]
 
 [package.dependencies]
 defusedxml = ">=0.7.1,<0.8.0"
-httplib2 = ">=0.21.0,<0.22.0"
-splunk-sdk = ">=1.6"
+httplib2 = ">=0.22.0,<0.23.0"
+splunk-sdk = ">=1.6.20"
 
 [[package]]
 name = "tomli"
@@ -1174,4 +1174,4 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "311179a67f96d04babb629af5b668c205ad0f3a633b0d9d067ccda4e23331e2f"
+content-hash = "3991846ee08d8361150ea70124cda97fdb6ceb243f8fa2e3865b89e6ace8056a"
