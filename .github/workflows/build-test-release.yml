@@ -94,7 +94,7 @@ jobs:
           submodules: true
       - name: Install dependencies
         run: |
-          curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
           poetry run pytest -v tests/unit
 
@@ -110,7 +110,7 @@ jobs:
           python-version: 3.7
       - name: Install and run tests
         run: |
-          curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install --with docs -E docker
           poetry run pytest -v -m doc tests/e2e
 
@@ -198,7 +198,7 @@ jobs:
         with:
           python-version: 3.7
       - run: |
-          curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install -E docker
           poetry run pytest -v --splunk-version=${{ matrix.splunk.version }} -m docker -m ${{ matrix.test-marker }} tests/e2e
 
@@ -224,7 +224,7 @@ jobs:
         run: cp -f THIRDPARTY NOTICE
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
       - id: semantic
         uses: splunk/semantic-release-action@v1.3
         with:
