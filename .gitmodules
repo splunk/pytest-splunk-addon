@@ -1,6 +1,3 @@
-[submodule "deps/build/addonfactory_test_matrix_splunk"]
-	path = deps/build/addonfactory_test_matrix_splunk
-	url = https://github.com/splunk/addonfactory_test_matrix_splunk.git
 [submodule "deps/apps/Splunk_SA_CIM"]
 	path = deps/apps/Splunk_SA_CIM
 	url = git@github.com:splunk/addonfactory-splunk_sa_cim.git
