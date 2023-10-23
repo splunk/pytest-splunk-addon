@@ -7,9 +7,9 @@
 
 The following 3rd-party software packages may be used by or distributed with pytest-splunk-addon. Any information relevant to third-party vendors listed below are collected using common, reasonable means.
 
-Date generated: 2023-9-6
+Date generated: 2023-10-23
 
-Revision ID: 573a0b380812273e9154aa47e3121c5f8377ed78
+Revision ID: 8249d9d55cbc153ddd665379c4bcca202e249e31
 
 ================================================================================
 ================================================================================
@@ -50,6 +50,8 @@ No licenses found
 
 --------------------------------------------------------------------------------
 Package Title: addonfactory-splunk-conf-parser-lib (0.3.4)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -73,6 +75,8 @@ See the License for the specific language governing permissions and limitations 
 
 --------------------------------------------------------------------------------
 Package Title: attrs (23.1.0)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -105,6 +109,8 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 Package Title: certifi (2023.7.22)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -137,6 +143,8 @@ one at http://mozilla.org/MPL/2.0/.
 
 --------------------------------------------------------------------------------
 Package Title: charset-normalizer (3.2.0)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -168,6 +176,8 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 Package Title: colorama (0.4.6)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -206,6 +216,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
 Package Title: defusedxml (0.7.1)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -266,6 +278,8 @@ Agreement.
 
 --------------------------------------------------------------------------------
 Package Title: elementpath (2.5.3)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -298,6 +312,8 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 Package Title: exceptiongroup (1.1.2)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -413,6 +429,8 @@ Agreement.
 
 --------------------------------------------------------------------------------
 Package Title: execnet (2.0.2)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -442,6 +460,8 @@ MIT
 
 --------------------------------------------------------------------------------
 Package Title: Faker (18.13.0)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -472,6 +492,8 @@ THE SOFTWARE.
 
 --------------------------------------------------------------------------------
 Package Title: filelock (3.12.2)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -507,6 +529,8 @@ For more information, please refer to <http://unlicense.org>
 
 --------------------------------------------------------------------------------
 Package Title: future (0.18.3)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -595,6 +619,8 @@ SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTW
 
 --------------------------------------------------------------------------------
 Package Title: httplib2 (0.22.0)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -685,6 +711,8 @@ You should have received a copy of the GNU General Public License along with thi
 
 --------------------------------------------------------------------------------
 Package Title: idna (3.4)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -725,6 +753,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
 Package Title: importlib-metadata (6.7.0)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -938,6 +968,8 @@ Apache-2.0
 
 --------------------------------------------------------------------------------
 Package Title: importlib-resources (5.12.0)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1151,6 +1183,8 @@ Apache-2.0
 
 --------------------------------------------------------------------------------
 Package Title: iniconfig (2.0.0)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1181,6 +1215,8 @@ MIT
 
 --------------------------------------------------------------------------------
 Package Title: jsonschema (4.17.3)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1230,6 +1266,8 @@ See the License for the specific language governing permissions and limitations 
 
 --------------------------------------------------------------------------------
 Package Title: junitparser (2.8.0)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1253,6 +1291,8 @@ Copyright 2020 Joel Wang
 
 --------------------------------------------------------------------------------
 Package Title: lovely-pytest-docker (0.3.1)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1466,6 +1506,8 @@ Apache-2.0
 
 --------------------------------------------------------------------------------
 Package Title: packaging (23.1)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1537,6 +1579,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
 Package Title: pkgutil_resolve_name (1.3.10)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1654,6 +1698,8 @@ Agreement.
 
 --------------------------------------------------------------------------------
 Package Title: pluggy (1.2.0)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1686,6 +1732,8 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 Package Title: pyparsing (3.1.0)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1763,6 +1811,8 @@ You should have received a copy of the GNU General Public License along with thi
 
 --------------------------------------------------------------------------------
 Package Title: pyrsistent (0.19.3)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1827,6 +1877,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
 Package Title: pytest (7.4.0)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1859,6 +1911,8 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 Package Title: pytest-ordering (0.6)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1887,6 +1941,8 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 Package Title: pytest-xdist (3.3.1)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -1916,6 +1972,8 @@ MIT
 
 --------------------------------------------------------------------------------
 Package Title: python-dateutil (2.8.2)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -2043,6 +2101,8 @@ STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFT
 
 --------------------------------------------------------------------------------
 Package Title: requests (2.31.0)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -2229,6 +2289,8 @@ Apache-2.0
 
 --------------------------------------------------------------------------------
 Package Title: six (1.16.0)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -2257,11 +2319,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 --------------------------------------------------------------------------------
-Package Title: Sphinx ()
+Package Title: Sphinx (7.2.6)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
-Multi-license: BSD-2-Clause OR BSD-3-Clause OR MIT
+BSD-2-Clause
 
 
 License for Sphinx
@@ -2270,7 +2334,7 @@ License for Sphinx
 Unless otherwise indicated, all code in the Sphinx project is licenced under the
 two clause BSD licence below.
 
-Copyright (c) 2007-2022 by the Sphinx team (see AUTHORS file).
+Copyright (c) 2007-2023 by the Sphinx team (see AUTHORS file).
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -2299,134 +2363,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Licenses for incorporated software
 ==================================
-
-The included smartypants module, included as sphinx.util.smartypants,
-is available under the following license:
-
-----------------------------------------------------------------------
-SmartyPants_ license::
-
-    Copyright (c) 2003 John Gruber
-    (https://daringfireball.net/projects/smartypants/)
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-    *   Redistributions of source code must retain the above copyright
-        notice, this list of conditions and the following disclaimer.
-
-    *   Redistributions in binary form must reproduce the above
-        copyright notice, this list of conditions and the following
-        disclaimer in the documentation and/or other materials
-        provided with the distribution.
-
-    *   Neither the name "SmartyPants" nor the names of its
-        contributors may be used to endorse or promote products
-        derived from this software without specific prior written
-        permission.
-
-    This software is provided by the copyright holders and
-    contributors "as is" and any express or implied warranties,
-    including, but not limited to, the implied warranties of
-    merchantability and fitness for a particular purpose are
-    disclaimed. In no event shall the copyright owner or contributors
-    be liable for any direct, indirect, incidental, special,
-    exemplary, or consequential damages (including, but not limited
-    to, procurement of substitute goods or services; loss of use,
-    data, or profits; or business interruption) however caused and on
-    any theory of liability, whether in contract, strict liability, or
-    tort (including negligence or otherwise) arising in any way out of
-    the use of this software, even if advised of the possibility of
-    such damage.
-
-
-smartypants.py license::
-
-    smartypants.py is a derivative work of SmartyPants.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-    *   Redistributions of source code must retain the above copyright
-        notice, this list of conditions and the following disclaimer.
-
-    *   Redistributions in binary form must reproduce the above
-        copyright notice, this list of conditions and the following
-        disclaimer in the documentation and/or other materials
-        provided with the distribution.
-
-    This software is provided by the copyright holders and
-    contributors "as is" and any express or implied warranties,
-    including, but not limited to, the implied warranties of
-    merchantability and fitness for a particular purpose are
-    disclaimed. In no event shall the copyright owner or contributors
-    be liable for any direct, indirect, incidental, special,
-    exemplary, or consequential damages (including, but not limited
-    to, procurement of substitute goods or services; loss of use,
-    data, or profits; or business interruption) however caused and on
-    any theory of liability, whether in contract, strict liability, or
-    tort (including negligence or otherwise) arising in any way out of
-    the use of this software, even if advised of the possibility of
-    such damage.
-----------------------------------------------------------------------
-
-The included JQuery JavaScript library is available under the MIT
-license:
-
-----------------------------------------------------------------------
-Copyright (c) 2008 John Resig, https://jquery.com/
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-----------------------------------------------------------------------
-
-The included Underscore JavaScript library is available under the MIT
-license:
-
-----------------------------------------------------------------------
-Copyright (c) 2009 Jeremy Ashkenas, DocumentCloud
-
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-
--------------------------------------------------------------------------------
 
 The included implementation of NumpyDocstring._parse_numpydoc_see_also_section
 was derived from code under the following license:
@@ -2460,265 +2396,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 -------------------------------------------------------------------------------
 
-
-
-* Other Licenses *
-BSD-2-Clause, MIT, Multi-license: BSD-2-Clause OR FSFAP
-
-* BSD-2-Clause *
-
-Copyright (c) 2007-2022 by the Sphinx team (see AUTHORS file).
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-   1. Redistributions of source code must retain the above copyright notice, this
-      list of conditions and the following disclaimer.
-
-   2. Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-
-      and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-* MIT *
-
-License for Sphinx
-==================
-
-Unless otherwise indicated, all code in the Sphinx project is licenced under the
-two clause BSD licence below.
-
-Copyright (c) 2007-2022 by the Sphinx team (see AUTHORS file).
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-* Redistributions of source code must retain the above copyright
-  notice, this list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright
-  notice, this list of conditions and the following disclaimer in the
-  documentation and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-Licenses for incorporated software
-==================================
-
-The included smartypants module, included as sphinx.util.smartypants,
-is available under the following license:
-
-----------------------------------------------------------------------
-SmartyPants_ license::
-
-    Copyright (c) 2003 John Gruber
-    (https://daringfireball.net/projects/smartypants/)
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-    *   Redistributions of source code must retain the above copyright
-        notice, this list of conditions and the following disclaimer.
-
-    *   Redistributions in binary form must reproduce the above
-        copyright notice, this list of conditions and the following
-        disclaimer in the documentation and/or other materials
-        provided with the distribution.
-
-    *   Neither the name "SmartyPants" nor the names of its
-        contributors may be used to endorse or promote products
-        derived from this software without specific prior written
-        permission.
-
-    This software is provided by the copyright holders and
-    contributors "as is" and any express or implied warranties,
-    including, but not limited to, the implied warranties of
-    merchantability and fitness for a particular purpose are
-    disclaimed. In no event shall the copyright owner or contributors
-    be liable for any direct, indirect, incidental, special,
-    exemplary, or consequential damages (including, but not limited
-    to, procurement of substitute goods or services; loss of use,
-    data, or profits; or business interruption) however caused and on
-    any theory of liability, whether in contract, strict liability, or
-    tort (including negligence or otherwise) arising in any way out of
-    the use of this software, even if advised of the possibility of
-    such damage.
-
-
-smartypants.py license::
-
-    smartypants.py is a derivative work of SmartyPants.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-    *   Redistributions of source code must retain the above copyright
-        notice, this list of conditions and the following disclaimer.
-
-    *   Redistributions in binary form must reproduce the above
-        copyright notice, this list of conditions and the following
-        disclaimer in the documentation and/or other materials
-        provided with the distribution.
-
-    This software is provided by the copyright holders and
-    contributors "as is" and any express or implied warranties,
-    including, but not limited to, the implied warranties of
-    merchantability and fitness for a particular purpose are
-    disclaimed. In no event shall the copyright owner or contributors
-    be liable for any direct, indirect, incidental, special,
-    exemplary, or consequential damages (including, but not limited
-    to, procurement of substitute goods or services; loss of use,
-    data, or profits; or business interruption) however caused and on
-    any theory of liability, whether in contract, strict liability, or
-    tort (including negligence or otherwise) arising in any way out of
-    the use of this software, even if advised of the possibility of
-    such damage.
-----------------------------------------------------------------------
-
-The included JQuery JavaScript library is available under the MIT
-license:
-
-----------------------------------------------------------------------
-Copyright (c) 2008 John Resig, https://jquery.com/
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-----------------------------------------------------------------------
-
-The included Underscore JavaScript library is available under the MIT
-license:
-
-----------------------------------------------------------------------
-Copyright (c) 2009 Jeremy Ashkenas, DocumentCloud
-
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-
--------------------------------------------------------------------------------
-
-The included implementation of NumpyDocstring._parse_numpydoc_see_also_section
-was derived from code under the following license:
-
--------------------------------------------------------------------------------
-
-Copyright (C) 2008 Stefan van der Walt <stefan@mentat.za.net>, Pauli Virtanen <pav@iki.fi>
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
- 1. Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
- 2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in
-    the documentation and/or other materials provided with the
-    distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
-IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
--------------------------------------------------------------------------------
-
-
-* Multi-license: BSD-2-Clause OR FSFAP *
-
-Copyright (c) 2007-2022 by the Sphinx team (see AUTHORS file).
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-   1. Redistributions of source code must retain the above copyright notice, this
-      list of conditions and the following disclaimer.
-
-   2. Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-
-      and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 --------------------------------------------------------------------------------
 Package Title: sphinx-panels (0.6.0)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -2750,7 +2433,9 @@ SOFTWARE.
 
 
 --------------------------------------------------------------------------------
-Package Title: sphinx-rtd-theme ()
+Package Title: sphinx-rtd-theme (1.3.0)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -2781,7 +2466,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 * Other Licenses *
-OFL-1.1, Multi-license: MIT OR OFL-1.1, Apache-2.0
+Apache-2.0, OFL-1.1
+
+* Apache-2.0 *
+
+Copyright [yyyy] [name of copyright owner]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+See the License for the specific language governing permissions and limitations under the License.
 
 * OFL-1.1 *
 
@@ -2806,49 +2507,11 @@ This license becomes null and void if any of the above conditions are not met.
 DISCLAIMER
 THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.
 
-* Multi-license: MIT OR OFL-1.1 *
-
-The MIT License (MIT)
-
-Copyright (c) 2013-2018 Dave Snider, Read the Docs, Inc. & contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-* Apache-2.0 *
-
-Copyright  yyyy] [name of copyright owner]
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-See the License for the specific language governing permissions and limitations under the License.
-
 
 --------------------------------------------------------------------------------
 Package Title: splunk-sdk (1.7.4)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -2895,7 +2558,9 @@ SOFTWARE.
 
 
 --------------------------------------------------------------------------------
-Package Title: splunksplwrapper (1.1.1)
+Package Title: splunksplwrapper (1.1.4b1)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -3108,6 +2773,8 @@ Apache-2.0
 
 --------------------------------------------------------------------------------
 Package Title: tomli (2.0.1)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -3140,6 +2807,8 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 Package Title: typing-extensions (4.7.1)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -3460,7 +3129,9 @@ PERFORMANCE OF THIS SOFTWARE.
 
 
 --------------------------------------------------------------------------------
-Package Title: urllib3 (1.26.16)
+Package Title: urllib3 (1.26.18)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -3492,9 +3163,8 @@ SOFTWARE.
 
 
 * Other Licenses *
-Apache-2.0, Python-2.0
+Apache-2.0
 
-* Apache-2.0 *
 
 Copyright 2015 Google Inc. All rights reserved.
 
@@ -3510,39 +3180,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 See the License for the specific language governing permissions and limitations under the License.
 
-* Python-2.0 *
-
-1. This LICENSE AGREEMENT is between the Python Software Foundation ("PSF"), and the Individual or Organization ("Licensee") accessing and otherwise using this software ("Python") in source or binary form and its associated documentation.
-   2. Subject to the terms and conditions of this License Agreement, PSF hereby grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use Python alone or in any derivative version, provided, however, that PSF's License Agreement and PSF's notice of copyright, i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation; All Rights Reserved" are retained in Python alone or in any derivative version prepared by Licensee.
-   3. In the event Licensee prepares a derivative work that is based on or incorporates Python or any part thereof, and wants to make the derivative work available to others as provided herein, then Licensee hereby agrees to include in any such work a brief summary of the changes made to Python.
-   4. PSF is making Python available to Licensee on an "AS IS" basis. PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
-   5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-   6. This License Agreement will automatically terminate upon a material breach of its terms and conditions.
-   7. Nothing in this License Agreement shall be deemed to create any relationship of agency, partnership, or joint venture between PSF and Licensee. This License Agreement does not grant permission to use PSF trademarks or trade name in a trademark sense to endorse or promote products or services of Licensee, or any third party.
-   8. By copying, installing or otherwise using Python, Licensee agrees to be bound by the terms and conditions of this License Agreement.
-   1. This LICENSE AGREEMENT is between BeOpen.com ("BeOpen"), having an office at 160 Saratoga Avenue, Santa Clara, CA 95051, and the Individual or Organization ("Licensee") accessing and otherwise using this software in source or binary form and its associated documentation ("the Software").
-   2. Subject to the terms and conditions of this BeOpen Python License Agreement, BeOpen hereby grants Licensee a non-exclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use the Software alone or in any derivative version, provided, however, that the BeOpen Python License is retained in the Software, alone or in any derivative version prepared by Licensee.
-   3. BeOpen is making the Software available to Licensee on an "AS IS" basis. BEOPEN MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT LIMITATION, BEOPEN MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
-   4. BEOPEN SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE SOFTWARE FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THE SOFTWARE, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-   5. This License Agreement will automatically terminate upon a material breach of its terms and conditions.
-   6. This License Agreement shall be governed by and interpreted in all respects by the law of the State of California, excluding conflict of law provisions. Nothing in this License Agreement shall be deemed to create any relationship of agency, partnership, or joint venture between BeOpen and Licensee. This License Agreement does not grant permission to use BeOpen trademarks or trade names in a trademark sense to endorse or promote products or services of Licensee, or any third party. As an exception, the "BeOpen Python" logos available at http://www.pythonlabs.com/logos.html may be used according to the permissions granted on that web page.
-   7. By copying, installing or otherwise using the software, Licensee agrees to be bound by the terms and conditions of this License Agreement.
-   1. This LICENSE AGREEMENT is between the Corporation for National Research Initiatives, having an office at 1895 Preston White Drive, Reston, VA 20191 ("CNRI"), and the Individual or Organization ("Licensee") accessing and otherwise using Python 1.6, beta 1 software in source or binary form and its associated documentation, as released at the www.python.org Internet site on August 4, 2000 ("Python 1.6b1").
-   2. Subject to the terms and conditions of this License Agreement, CNRI hereby grants Licensee a non-exclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use Python 1.6b1 alone or in any derivative version, provided, however, that CNRIs License Agreement is retained in Python 1.6b1, alone or in any derivative version prepared by Licensee.
-   Alternately, in lieu of CNRIs License Agreement, Licensee may substitute the following text (omitting the quotes): "Python 1.6, beta 1, is made available subject to the terms and conditions in CNRIs License Agreement. This Agreement may be located on the Internet using the following unique, persistent identifier (known as a handle): 1895.22/1011. This Agreement may also be obtained from a proxy server on the Internet using the URL:http://hdl.handle.net/1895.22/1011".
-   3. In the event Licensee prepares a derivative work that is based on or incorporates Python 1.6b1 or any part thereof, and wants to make the derivative work available to the public as provided herein, then Licensee hereby agrees to indicate in any such work the nature of the modifications made to Python 1.6b1.
-   4. CNRI is making Python 1.6b1 available to Licensee on an "AS IS" basis. CNRI MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT LIMITATION, CNRI MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 1.6b1 WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
-   5. CNRI SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE SOFTWARE FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF USING, MODIFYING OR DISTRIBUTING PYTHON 1.6b1, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-   6. This License Agreement will automatically terminate upon a material breach of its terms and conditions.
-   7. This License Agreement shall be governed by and interpreted in all respects by the law of the State of Virginia, excluding conflict of law provisions. Nothing in this License Agreement shall be deemed to create any relationship of agency, partnership, or joint venture between CNRI and Licensee. This License Agreement does not grant permission to use CNRI trademarks or trade name in a trademark sense to endorse or promote products or services of Licensee, or any third party.
-   8. By clicking on the "ACCEPT" button where indicated, or by copying, installing or otherwise using Python 1.6b1, Licensee agrees to be bound by the terms and conditions of this License Agreement.
-Copyright (c) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam, The Netherlands. All rights reserved.
-Permission to use, copy, modify, and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation, and that the name of Stichting Mathematisch Centrum or CWI not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission.
-STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
 
 --------------------------------------------------------------------------------
 Package Title: xmlschema (1.11.3)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -3590,6 +3232,8 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
 
 --------------------------------------------------------------------------------
 Package Title: xmltodict (0.13.0)
+
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -3608,6 +3252,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 --------------------------------------------------------------------------------
 Package Title: zipp (3.15.0)
+
+Package Depth: Transitive
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -4851,33 +4497,6 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-* BSD-2-Clause *
-
-Copyright (c) <year> <owner>
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-   1. Redistributions of source code must retain the above copyright notice, this
-      list of conditions and the following disclaimer.
-
-   2. Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-
-      and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 * BSD-3-Clause *
 
 Copyright (c) <year> <owner>
@@ -5189,10 +4808,6 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 
 
-* FSFAP *
-
-Copying and distribution of this file, with or without modification, are permitted in any medium without royalty provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
-
 * GPL-1.0-or-later *
 
 GNU GENERAL PUBLIC LICENSE
@@ -5343,7 +4958,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-* MIT *
+* BSD-2-Clause *
 
 License for Sphinx
 ==================
@@ -5351,7 +4966,7 @@ License for Sphinx
 Unless otherwise indicated, all code in the Sphinx project is licenced under the
 two clause BSD licence below.
 
-Copyright (c) 2007-2022 by the Sphinx team (see AUTHORS file).
+Copyright (c) 2007-2023 by the Sphinx team (see AUTHORS file).
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -5380,134 +4995,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Licenses for incorporated software
 ==================================
-
-The included smartypants module, included as sphinx.util.smartypants,
-is available under the following license:
-
-----------------------------------------------------------------------
-SmartyPants_ license::
-
-    Copyright (c) 2003 John Gruber
-    (https://daringfireball.net/projects/smartypants/)
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-    *   Redistributions of source code must retain the above copyright
-        notice, this list of conditions and the following disclaimer.
-
-    *   Redistributions in binary form must reproduce the above
-        copyright notice, this list of conditions and the following
-        disclaimer in the documentation and/or other materials
-        provided with the distribution.
-
-    *   Neither the name "SmartyPants" nor the names of its
-        contributors may be used to endorse or promote products
-        derived from this software without specific prior written
-        permission.
-
-    This software is provided by the copyright holders and
-    contributors "as is" and any express or implied warranties,
-    including, but not limited to, the implied warranties of
-    merchantability and fitness for a particular purpose are
-    disclaimed. In no event shall the copyright owner or contributors
-    be liable for any direct, indirect, incidental, special,
-    exemplary, or consequential damages (including, but not limited
-    to, procurement of substitute goods or services; loss of use,
-    data, or profits; or business interruption) however caused and on
-    any theory of liability, whether in contract, strict liability, or
-    tort (including negligence or otherwise) arising in any way out of
-    the use of this software, even if advised of the possibility of
-    such damage.
-
-
-smartypants.py license::
-
-    smartypants.py is a derivative work of SmartyPants.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-    *   Redistributions of source code must retain the above copyright
-        notice, this list of conditions and the following disclaimer.
-
-    *   Redistributions in binary form must reproduce the above
-        copyright notice, this list of conditions and the following
-        disclaimer in the documentation and/or other materials
-        provided with the distribution.
-
-    This software is provided by the copyright holders and
-    contributors "as is" and any express or implied warranties,
-    including, but not limited to, the implied warranties of
-    merchantability and fitness for a particular purpose are
-    disclaimed. In no event shall the copyright owner or contributors
-    be liable for any direct, indirect, incidental, special,
-    exemplary, or consequential damages (including, but not limited
-    to, procurement of substitute goods or services; loss of use,
-    data, or profits; or business interruption) however caused and on
-    any theory of liability, whether in contract, strict liability, or
-    tort (including negligence or otherwise) arising in any way out of
-    the use of this software, even if advised of the possibility of
-    such damage.
-----------------------------------------------------------------------
-
-The included JQuery JavaScript library is available under the MIT
-license:
-
-----------------------------------------------------------------------
-Copyright (c) 2008 John Resig, https://jquery.com/
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-----------------------------------------------------------------------
-
-The included Underscore JavaScript library is available under the MIT
-license:
-
-----------------------------------------------------------------------
-Copyright (c) 2009 Jeremy Ashkenas, DocumentCloud
-
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-
--------------------------------------------------------------------------------
 
 The included implementation of NumpyDocstring._parse_numpydoc_see_also_section
 was derived from code under the following license:
@@ -6202,4 +5689,4 @@ No license text available
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
-Report Generated by FOSSA on 2023-9-6
+Report Generated by FOSSA on 2023-10-23
