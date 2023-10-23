@@ -11,7 +11,7 @@ pytest-splunk-addon
     :alt: Python versions
 
 
-A Dynamic test tool for Splunk Apps and Add-ons
+A Dynamic test tool for Splunk Apps and Add-ons.
 
 Documentation
 ---------------
