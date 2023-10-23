@@ -47,7 +47,7 @@ defusedxml = "^0.7.1"
 Faker = ">=13.12,<19.0.0"
 xmltodict = "^0.13.0"
 xmlschema = "^1.11.3"
-splunksplwrapper = "^1.1.1"
+splunksplwrapper = "1.1.4b1"
 urllib3 = "<2"
 
 [tool.poetry.extras]

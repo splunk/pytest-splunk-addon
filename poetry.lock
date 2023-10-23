@@ -1020,18 +1020,18 @@ files = [
 
 [[package]]
 name = "splunksplwrapper"
-version = "1.1.1"
+version = "1.1.4b1"
 description = "Package to interact with Splunk"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "splunksplwrapper-1.1.1-py3-none-any.whl", hash = "sha256:6dd93a144c77f78d7b756a05659da76ee5e44773378336d44365e4a046e7cd1c"},
-    {file = "splunksplwrapper-1.1.1.tar.gz", hash = "sha256:71d5fc3d37a9105d804d95bd9778023d3f4e7b3d5d2dc71cdcf8019a258395a8"},
+    {file = "splunksplwrapper-1.1.4b1-py3-none-any.whl", hash = "sha256:d25d5700a3d9dae3f10482468144597e60b3d554c950bfad9a6d4d77c55de3bd"},
+    {file = "splunksplwrapper-1.1.4b1.tar.gz", hash = "sha256:b98ec4afd5fc4b389a6d9b19a7f19cc042dfa6064e299aa6cf1cc69d4b6e6c8c"},
 ]
 
 [package.dependencies]
 defusedxml = ">=0.7.1,<0.8.0"
-httplib2 = ">=0.22.0,<0.23.0"
+httplib2 = ">=0.20.0"
 splunk-sdk = ">=1.6.20"
 
 [[package]]
@@ -1123,4 +1123,4 @@ docker = ["lovely-pytest-docker"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "3991846ee08d8361150ea70124cda97fdb6ceb243f8fa2e3865b89e6ace8056a"
+content-hash = "a39ac3db7014c22094090088f342d724e647db935016d2208d13440b7c1939e2"
