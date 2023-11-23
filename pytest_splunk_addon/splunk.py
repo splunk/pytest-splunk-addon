@@ -200,6 +200,13 @@ def pytest_addoption(parser):
         help="SC4S Port. default is 514",
     )
     group.addoption(
+        "--sc4s-version",
+        action="store",
+        dest="sc4s_version",
+        default="latest",
+        help="SC4S version. default is latest",
+    )
+    group.addoption(
         "--thread-count",
         action="store",
         default=20,
@@ -437,6 +444,7 @@ def splunk(request, file_system_prerequisite):
         os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
         os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
         os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
+        os.environ["SC4S_VERSION"] = request.config.getoption("sc4s_version")
 
         request.fixturenames.append("splunk_docker")
         splunk_info = request.getfixturevalue("splunk_docker")
