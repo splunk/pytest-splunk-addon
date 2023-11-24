@@ -423,33 +423,12 @@ def splunk(request, file_system_prerequisite):
     """
     splunk_type = request.config.getoption("splunk_type")
     LOGGER.info("Get the Splunk instance of splunk_type=%s", splunk_type)
-    if splunk_type == "external":
-        request.fixturenames.append("splunk_external")
-        splunk_info = request.getfixturevalue("splunk_external")
-    elif splunk_type == "docker":
-        os.environ["SPLUNK_APP_PACKAGE"] = request.config.getoption("splunk_app")
-        try:
-            config = configparser.ConfigParser()
-            config.read(
-                os.path.join(
-                    request.config.getoption("splunk_app"),
-                    "default",
-                    "app.conf",
-                )
-            )
-            os.environ["SPLUNK_APP_ID"] = config["package"]["id"]
-        except Exception:
-            os.environ["SPLUNK_APP_ID"] = "TA_package"
-        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
-        os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
-        os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
-        os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
-        os.environ["SC4S_VERSION"] = request.config.getoption("sc4s_version")
-
-        request.fixturenames.append("splunk_docker")
-        splunk_info = request.getfixturevalue("splunk_docker")
-    else:
-        raise Exception
+    splunk_fixture = f"splunk_{splunk_type}"
+    try:
+        request.fixturenames.append(splunk_fixture)
+        splunk_info = request.getfixturevalue(f"splunk_{splunk_type}")
+    except Exception as e:
+        raise Exception(f"Failed to get Splunk fixture ({splunk_fixture}): {e}")
 
     yield splunk_info
 
@@ -548,6 +527,26 @@ def splunk_docker(
     Returns:
         dict: Details of the splunk instance including host, port, username & password.
     """
+    # configuration of environment variables needed by docker-compose file
+    os.environ["SPLUNK_APP_PACKAGE"] = request.config.getoption("splunk_app")
+    try:
+        config = configparser.ConfigParser()
+        config.read(
+            os.path.join(
+                request.config.getoption("splunk_app"),
+                "default",
+                "app.conf",
+            )
+        )
+        os.environ["SPLUNK_APP_ID"] = config["package"]["id"]
+    except Exception:
+        os.environ["SPLUNK_APP_ID"] = "TA_package"
+    os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
+    os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
+    os.environ["SPLUNK_PASSWORD"] = request.config.getoption("splunk_password")
+    os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
+    os.environ["SC4S_VERSION"] = request.config.getoption("sc4s_version")
+
     LOGGER.info("Starting docker_service=splunk")
     if worker_id:
         # get the temp directory shared by all workers
