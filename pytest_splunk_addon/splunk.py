@@ -426,7 +426,7 @@ def splunk(request, file_system_prerequisite):
     splunk_fixture = f"splunk_{splunk_type}"
     try:
         request.fixturenames.append(splunk_fixture)
-        splunk_info = request.getfixturevalue(f"splunk_{splunk_type}")
+        splunk_info = request.getfixturevalue(splunk_fixture)
     except Exception as e:
         raise Exception(f"Failed to get Splunk fixture ({splunk_fixture}): {e}")
 
