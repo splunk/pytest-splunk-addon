@@ -25,6 +25,9 @@ LOG_FILE = "pytest_splunk_addon.log"
 
 test_generator = None
 
+EXC_MAP = {
+        Exception: 1
+    }
 
 def pytest_configure(config):
     """
@@ -115,6 +118,7 @@ def pytest_sessionstart(session):
     SampleXdistGenerator.tokenized_event_source = session.config.getoption(
         "tokenized_event_source"
     ).lower()
+    session.__exc_limits = EXC_MAP
     if (
         SampleXdistGenerator.tokenized_event_source == "store_new"
         and session.config.getoption("ingest_events").lower()
@@ -198,5 +202,15 @@ def init_pytest_splunk_addon_logger():
     return logger
 
 
+def pytest_exception_interact(node, call, report):
+    session = node.session
+    type_ = call.excinfo.type
+
+    if type_ in session.__exc_limits:
+        if session.__exc_limits[type_] == 0:
+            pytest.exit(f"Reached max exception for type: {type_}")
+        else:
+            session.__exc_limits[type_] -= 1
+            
 init_pytest_splunk_addon_logger()
 LOGGER = logging.getLogger("pytest-splunk-addon")
