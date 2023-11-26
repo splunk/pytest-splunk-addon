@@ -721,7 +721,7 @@ def create_hec_token(request, splunk_inputs_uri):
 
 def _create_new_token(request, splunk_inputs_uri, splunk_token_name):
     try:
-        response = requests.post(
+        response = requests.post(  # nosemgrep: splunk.disabled-cert-validation
             splunk_inputs_uri,
             verify=False,
             auth=(
@@ -747,7 +747,7 @@ def _create_new_token(request, splunk_inputs_uri, splunk_token_name):
 
 def _get_existing_token(request, splunk_inputs_uri, splunk_token_name):
     try:
-        response = requests.get(
+        response = requests.get(  # nosemgrep: splunk.disabled-cert-validation
             f"{splunk_inputs_uri}/{splunk_token_name}",
             verify=False,
             auth=(
