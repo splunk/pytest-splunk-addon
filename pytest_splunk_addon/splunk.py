@@ -29,9 +29,11 @@ from .standard_lib.event_ingestors import IngestorHelper
 from .standard_lib.CIM_Models.datamodel_definition import datamodels
 import configparser
 from filelock import FileLock
-import xml.etree.ElementTree as ET
+import defusedxml.ElementTree as ET
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
+# Default splunk HEC token name, matching token name when token created via env variable for CI purposes
+SPLUNK_HEC_TOKEN_NAME = "splunk_hec_token"
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 PYTEST_XDIST_TESTRUNUID = ""
@@ -569,11 +571,12 @@ def splunk_docker(
         docker_services.port_for("splunk", 9997),
     )
 
-    docker_services.wait_until_responsive(
-        timeout=180.0,
-        pause=0.5,
-        check=lambda: is_responsive_splunk(splunk_info),
-    )
+    for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
+        if is_responsive_splunk(splunk_info) and is_responsive_hec(
+            request, splunk_info
+        ):
+            break
+        sleep(1)
 
     return splunk_info
 
@@ -603,9 +606,9 @@ def splunk_external(request):
         )
 
     for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
-        if is_responsive_splunk(splunk_info):
-            break
-        if is_responsive_hec(request, splunk_info):
+        if is_responsive_splunk(splunk_info) and is_responsive_hec(
+            request, splunk_info
+        ):
             break
         sleep(1)
 
@@ -697,11 +700,11 @@ def create_hec_token(request, splunk_inputs_uri):
     Returns:
         requests.Session: A session with headers containing Authorization: Splunk <HEC token>.
     """
-    # Default splunk HEC token name
-    splunk_token_name = "splunk_hec_token"
+    LOGGER.info(f"Attempting to create HEC token")
     try:
-        response = _create_new_token(request, splunk_inputs_uri, splunk_token_name)
+        response = _create_new_token(request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME)
         token_value = _extract_token_from_xml(response.text)
+        LOGGER.info(f"Created HEC token: {token_value}")
 
     except Exception as e:
         logging.error(f"Failed to create HEC token: {e}")
@@ -718,7 +721,7 @@ def create_hec_token(request, splunk_inputs_uri):
 
 def _create_new_token(request, splunk_inputs_uri, splunk_token_name):
     try:
-        response = requests.post(
+        response = requests.post(  # nosemgrep: splunk.disabled-cert-validation
             splunk_inputs_uri,
             verify=False,
             auth=(
@@ -744,7 +747,7 @@ def _create_new_token(request, splunk_inputs_uri, splunk_token_name):
 
 def _get_existing_token(request, splunk_inputs_uri, splunk_token_name):
     try:
-        response = requests.get(
+        response = requests.get(  # nosemgrep: splunk.disabled-cert-validation
             f"{splunk_inputs_uri}/{splunk_token_name}",
             verify=False,
             auth=(
@@ -964,6 +967,7 @@ def is_responsive_splunk(splunk):
         )
 
         LOGGER.info("Connected to Splunk instance.")
+        # sleep(30)
         return True
     except Exception as e:
         LOGGER.warning(
@@ -985,8 +989,7 @@ def is_responsive_hec(request, splunk):
     """
     try:
         LOGGER.info(
-            "Trying to connect Splunk HEC...  splunk=%s",
-            json.dumps(splunk),
+            f"Trying to connect Splunk HEC...  splunk={splunk['forwarder_host']}:{splunk['port_hec']}/services/collector/health/1.0"
         )
         response = requests.get(  # nosemgrep: splunk.disabled-cert-validation
             f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/health/1.0',
@@ -995,36 +998,12 @@ def is_responsive_hec(request, splunk):
         LOGGER.debug("Status code: {}".format(response.status_code))
         if response.status_code in (200, 201):
             LOGGER.info("Splunk HEC is responsive.")
+            sleep(10)
             return True
         return False
     except Exception as e:
         LOGGER.warning(
             "Could not connect to Splunk HEC. Will try again. exception=%s",
-            str(e),
-        )
-        return False
-
-
-def is_responsive(url):
-    """
-    This function is called to verify the connection is accepted
-    used to prevent tests from running before Splunk is ready
-
-    Args:
-        url (str): url to check if it's responsive or not
-
-    Returns:
-        bool: True if Splunk is responsive. False otherwise
-    """
-    try:
-        LOGGER.info("Trying to connect with url=%s", url)
-        response = requests.get(url)
-        if response.status_code != 500:
-            LOGGER.info("Connected to the url")
-            return True
-    except ConnectionError as e:
-        LOGGER.warning(
-            "Could not connect to url yet. Will try again. exception=%s",
             str(e),
         )
         return False
