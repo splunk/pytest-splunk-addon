@@ -318,6 +318,7 @@ def pytest_addoption(parser):
         help="SC4S version. default is latest",
     )
 
+
 @pytest.fixture(scope="session")
 def splunk_setup(splunk):
     """
@@ -674,8 +675,9 @@ def splunk_hec_uri(request, splunk):
     """
     uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector'
     LOGGER.info("Fetched splunk_hec_uri=%s", uri)
-    
+
     return uri
+
 
 @pytest.fixture(scope="session")
 def splunk_inputs_uri(request, splunk):
@@ -696,7 +698,7 @@ def create_hec_token(request, splunk_inputs_uri):
         requests.Session: A session with headers containing Authorization: Splunk <HEC token>.
     """
     # Default splunk HEC token name
-    splunk_token_name = "splunk_hec_token" 
+    splunk_token_name = "splunk_hec_token"
     try:
         response = _create_new_token(request, splunk_inputs_uri, splunk_token_name)
         token_value = _extract_token_from_xml(response.text)
@@ -706,17 +708,23 @@ def create_hec_token(request, splunk_inputs_uri):
         raise
 
     splunk_session = requests.Session()
-    splunk_session.headers = {"Authorization": f'Splunk {token_value}'}
-    os.environ["SPLUNK_HEC_TOKEN"] = splunk_session.headers.get("Authorization", "").split(" ")[1]
+    splunk_session.headers = {"Authorization": f"Splunk {token_value}"}
+    os.environ["SPLUNK_HEC_TOKEN"] = splunk_session.headers.get(
+        "Authorization", ""
+    ).split(" ")[1]
 
     return splunk_session
+
 
 def _create_new_token(request, splunk_inputs_uri, splunk_token_name):
     try:
         response = requests.post(
             splunk_inputs_uri,
             verify=False,
-            auth=(request.config.getoption("splunk_user"), request.config.getoption("splunk_password")),
+            auth=(
+                request.config.getoption("splunk_user"),
+                request.config.getoption("splunk_password"),
+            ),
             data=f"name={splunk_token_name}",
         )
         response.raise_for_status()
@@ -733,12 +741,16 @@ def _create_new_token(request, splunk_inputs_uri, splunk_token_name):
         logging.error(f"An error occurred during HEC token creation: {e}")
         raise Exception(f"HEC token creation failed: {e}") from e
 
+
 def _get_existing_token(request, splunk_inputs_uri, splunk_token_name):
     try:
         response = requests.get(
             f"{splunk_inputs_uri}/{splunk_token_name}",
             verify=False,
-            auth=(request.config.getoption("splunk_user"), request.config.getoption("splunk_password")),
+            auth=(
+                request.config.getoption("splunk_user"),
+                request.config.getoption("splunk_password"),
+            ),
         )
         response.raise_for_status()
         return response
@@ -746,13 +758,16 @@ def _get_existing_token(request, splunk_inputs_uri, splunk_token_name):
     except Exception as e:
         logging.error(f"Failed to retrieve existing HEC token: {e}")
         raise Exception(f"Failed to retrieve existing HEC token: {e}") from e
-    
+
+
 def _extract_token_from_xml(xml_content):
     """
     Extracts token value from a xml formatted content
     """
     root = ET.fromstring(xml_content)
-    elements_with_name_attrib = [element for element in root.iter() if 'name' in element.attrib]
+    elements_with_name_attrib = [
+        element for element in root.iter() if "name" in element.attrib
+    ]
     for element in elements_with_name_attrib:
         if element.attrib["name"] == "token":
             return element.text
@@ -769,7 +784,9 @@ def splunk_web_uri(request, splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup, create_hec_token):
+def splunk_ingest_data(
+    request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup, create_hec_token
+):
     """
     Generates events for the add-on and ingests into Splunk.
     The ingestion can be done using the following methods:

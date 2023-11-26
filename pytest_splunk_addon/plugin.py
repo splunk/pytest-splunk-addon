@@ -25,9 +25,8 @@ LOG_FILE = "pytest_splunk_addon.log"
 
 test_generator = None
 
-EXC_MAP = {
-        Exception: 1
-    }
+EXC_MAP = {Exception: 1}
+
 
 def pytest_configure(config):
     """
@@ -211,6 +210,7 @@ def pytest_exception_interact(node, call, report):
             pytest.exit(f"Reached max exception for type: {type_}")
         else:
             session.__exc_limits[type_] -= 1
-            
+
+
 init_pytest_splunk_addon_logger()
 LOGGER = logging.getLogger("pytest-splunk-addon")
