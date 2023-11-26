@@ -721,7 +721,7 @@ def create_hec_token(request, splunk_inputs_uri):
 
 def _create_new_token(request, splunk_inputs_uri, splunk_token_name):
     try:
-        response = requests.post(  # nosemgrep: splunk.disabled-cert-validation
+        response = requests.post(
             splunk_inputs_uri,
             verify=False,
             auth=(
@@ -747,7 +747,7 @@ def _create_new_token(request, splunk_inputs_uri, splunk_token_name):
 
 def _get_existing_token(request, splunk_inputs_uri, splunk_token_name):
     try:
-        response = requests.get(  # nosemgrep: splunk.disabled-cert-validation
+        response = requests.get(
             f"{splunk_inputs_uri}/{splunk_token_name}",
             verify=False,
             auth=(
@@ -967,7 +967,6 @@ def is_responsive_splunk(splunk):
         )
 
         LOGGER.info("Connected to Splunk instance.")
-        # sleep(30)
         return True
     except Exception as e:
         LOGGER.warning(
@@ -998,12 +997,37 @@ def is_responsive_hec(request, splunk):
         LOGGER.debug("Status code: {}".format(response.status_code))
         if response.status_code in (200, 201):
             LOGGER.info("Splunk HEC is responsive.")
-            sleep(10)
+            sleep(20)
             return True
         return False
     except Exception as e:
         LOGGER.warning(
             "Could not connect to Splunk HEC. Will try again. exception=%s",
+            str(e),
+        )
+        return False
+
+
+def is_responsive(url):
+    """
+    This function is called to verify the connection is accepted
+    used to prevent tests from running before Splunk is ready
+
+    Args:
+        url (str): url to check if it's responsive or not
+
+    Returns:
+        bool: True if Splunk is responsive. False otherwise
+    """
+    try:
+        LOGGER.info("Trying to connect with url=%s", url)
+        response = requests.get(url)
+        if response.status_code != 500:
+            LOGGER.info("Connected to the url")
+            return True
+    except ConnectionError as e:
+        LOGGER.warning(
+            "Could not connect to url yet. Will try again. exception=%s",
             str(e),
         )
         return False
