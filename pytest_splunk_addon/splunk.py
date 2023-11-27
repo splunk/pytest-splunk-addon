@@ -39,6 +39,11 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 PYTEST_XDIST_TESTRUNUID = ""
 
 
+class HecTokenNotExistingError(Exception):
+    def __init__(self, message="An error occurred while getting HEC token."):
+        self.message = message
+        super().__init__(self.message)
+
 def pytest_addoption(parser):
     """Add options for interaction with Splunk this allows the tool to work in two modes
     1) docker mode which is typically used by developers on their workstation
@@ -430,7 +435,7 @@ def splunk(request, file_system_prerequisite):
 
 
 @pytest.fixture(scope="session")
-def sc4s(request, create_hec_token):
+def sc4s(request, get_hec_token):
     """
     This fixture based on the passed option will provide a real fixture
     for external or docker sc4s configuration
@@ -451,7 +456,7 @@ def sc4s(request, create_hec_token):
 
 
 @pytest.fixture(scope="session")
-def uf(request, create_hec_token):
+def uf(request, get_hec_token):
     """
     This fixture based on the passed option will provide a real fixture
     for external or docker uf configuration
@@ -575,6 +580,7 @@ def splunk_docker(
         if is_responsive_splunk(splunk_info) and is_responsive_hec(
             request, splunk_info
         ):
+            sleep(20)
             break
         sleep(1)
 
@@ -694,20 +700,25 @@ def splunk_inputs_uri(request, splunk):
 
 
 @pytest.fixture(scope="session")
-def create_hec_token(request, splunk_inputs_uri):
+def get_hec_token(request, splunk_inputs_uri):
     """
-    Creates an HEC token in Splunk instance. Exports its value to SPLUNK_HEC_TOKEN env variable.
+    Gets HEC token. If HEC token doesn't exist, creates it in Splunk instance. Exports token value to SPLUNK_HEC_TOKEN env variable.
     Returns:
         requests.Session: A session with headers containing Authorization: Splunk <HEC token>.
     """
     LOGGER.info(f"Attempting to create HEC token")
     try:
-        response = _create_new_token(request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME)
+        response = _get_existing_token(request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME)
+        token_value = _extract_token_from_xml(response.text)
+        LOGGER.info(f"Retrieved HEC token: {token_value}")
+    except HecTokenNotExistingError:
+        _create_new_token(request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME)
+        response = _get_existing_token(request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME)
         token_value = _extract_token_from_xml(response.text)
         LOGGER.info(f"Created HEC token: {token_value}")
-
     except Exception as e:
-        logging.error(f"Failed to create HEC token: {e}")
+        sleep(5)
+        LOGGER.error(f"Failed to create HEC token: {e}")
         raise
 
     splunk_session = requests.Session()
@@ -741,7 +752,7 @@ def _create_new_token(request, splunk_inputs_uri, splunk_token_name):
             raise Exception(f"HTTP error during token creation: {e}") from e
 
     except Exception as e:
-        logging.error(f"An error occurred during HEC token creation: {e}")
+        LOGGER.error(f"An error occurred during HEC token creation: {e}")
         raise Exception(f"HEC token creation failed: {e}") from e
 
 
@@ -759,8 +770,8 @@ def _get_existing_token(request, splunk_inputs_uri, splunk_token_name):
         return response
 
     except Exception as e:
-        logging.error(f"Failed to retrieve existing HEC token: {e}")
-        raise Exception(f"Failed to retrieve existing HEC token: {e}") from e
+        LOGGER.error(f"Failed to retrieve existing HEC token: {e}")
+        raise HecTokenNotExistingError(f"Failed to retrieve existing HEC token: {e}") from e
 
 
 def _extract_token_from_xml(xml_content):
@@ -788,7 +799,7 @@ def splunk_web_uri(request, splunk):
 
 @pytest.fixture(scope="session")
 def splunk_ingest_data(
-    request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup, create_hec_token
+    request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup, get_hec_token
 ):
     """
     Generates events for the add-on and ingests into Splunk.
@@ -820,7 +831,7 @@ def splunk_ingest_data(
             "uf_port": uf.get("uf_port"),
             "uf_username": uf.get("uf_username"),
             "uf_password": uf.get("uf_password"),
-            "session_headers": create_hec_token.headers,
+            "session_headers": get_hec_token.headers,
             "splunk_hec_uri": splunk_hec_uri,
             "sc4s_host": sc4s[0],  # for sc4s
             "sc4s_port": sc4s[1][514],  # for sc4s
@@ -997,7 +1008,6 @@ def is_responsive_hec(request, splunk):
         LOGGER.debug("Status code: {}".format(response.status_code))
         if response.status_code in (200, 201):
             LOGGER.info("Splunk HEC is responsive.")
-            sleep(20)
             return True
         return False
     except Exception as e:
