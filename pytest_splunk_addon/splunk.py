@@ -115,6 +115,12 @@ def pytest_addoption(parser):
         help="Splunk HTTP event collector port. default is 8088.",
     )
     group.addoption(
+        "--splunk-hec-token",
+        action="store",
+        dest="splunk_hec_token",
+        help="Deprecated option. Splunk HTTP event collector token. If an external forwarder is used provide HEC token of forwarder.",
+    )
+    group.addoption(
         "--splunk-port",
         action="store",
         dest="splunkd_port",
@@ -707,30 +713,36 @@ def get_hec_token(request, splunk_inputs_uri):
     Returns:
         requests.Session: A session with headers containing Authorization: Splunk <HEC token>.
     """
-    LOGGER.info(f"Attempting to create HEC token")
-    try:
-        response = _get_existing_token(
-            request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME
-        )
-        token_value = _extract_token_from_xml(response.text)
-        LOGGER.info(f"Retrieved HEC token: {token_value}")
-    except HecTokenNotExistingError:
-        _create_new_token(request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME)
-        response = _get_existing_token(
-            request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME
-        )
-        token_value = _extract_token_from_xml(response.text)
-        LOGGER.info(f"Created HEC token: {token_value}")
-    except Exception as e:
-        sleep(5)
-        LOGGER.error(f"Failed to create HEC token: {e}")
-        raise
-
     splunk_session = requests.Session()
-    splunk_session.headers = {"Authorization": f"Splunk {token_value}"}
-    os.environ["SPLUNK_HEC_TOKEN"] = splunk_session.headers.get(
-        "Authorization", ""
-    ).split(" ")[1]
+    if request.config.getoption("splunk_hec_token"):
+        os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
+        splunk_session.headers = {
+            "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
+        }
+    else:
+        LOGGER.info(f"Attempting to create HEC token")
+        try:
+            response = _get_existing_token(
+                request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME
+            )
+            token_value = _extract_token_from_xml(response.text)
+            LOGGER.info(f"Retrieved HEC token: {token_value}")
+        except HecTokenNotExistingError:
+            _create_new_token(request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME)
+            response = _get_existing_token(
+                request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME
+            )
+            token_value = _extract_token_from_xml(response.text)
+            LOGGER.info(f"Created HEC token: {token_value}")
+        except Exception as e:
+            sleep(5)
+            LOGGER.error(f"Failed to create HEC token: {e}")
+            raise
+
+        splunk_session.headers = {"Authorization": f"Splunk {token_value}"}
+        os.environ["SPLUNK_HEC_TOKEN"] = splunk_session.headers.get(
+            "Authorization", ""
+        ).split(" ")[1]
 
     return splunk_session
 
