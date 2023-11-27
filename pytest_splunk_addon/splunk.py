@@ -44,6 +44,7 @@ class HecTokenNotExistingError(Exception):
         self.message = message
         super().__init__(self.message)
 
+
 def pytest_addoption(parser):
     """Add options for interaction with Splunk this allows the tool to work in two modes
     1) docker mode which is typically used by developers on their workstation
@@ -708,12 +709,16 @@ def get_hec_token(request, splunk_inputs_uri):
     """
     LOGGER.info(f"Attempting to create HEC token")
     try:
-        response = _get_existing_token(request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME)
+        response = _get_existing_token(
+            request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME
+        )
         token_value = _extract_token_from_xml(response.text)
         LOGGER.info(f"Retrieved HEC token: {token_value}")
     except HecTokenNotExistingError:
         _create_new_token(request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME)
-        response = _get_existing_token(request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME)
+        response = _get_existing_token(
+            request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME
+        )
         token_value = _extract_token_from_xml(response.text)
         LOGGER.info(f"Created HEC token: {token_value}")
     except Exception as e:
@@ -771,7 +776,9 @@ def _get_existing_token(request, splunk_inputs_uri, splunk_token_name):
 
     except Exception as e:
         LOGGER.error(f"Failed to retrieve existing HEC token: {e}")
-        raise HecTokenNotExistingError(f"Failed to retrieve existing HEC token: {e}") from e
+        raise HecTokenNotExistingError(
+            f"Failed to retrieve existing HEC token: {e}"
+        ) from e
 
 
 def _extract_token_from_xml(xml_content):
