@@ -208,6 +208,13 @@ def pytest_addoption(parser):
         help="SC4S Port. default is 514",
     )
     group.addoption(
+        "--sc4s-version",
+        action="store",
+        dest="sc4s_version",
+        default="latest",
+        help="SC4S version. default is latest",
+    )
+    group.addoption(
         "--thread-count",
         action="store",
         default=20,
@@ -323,13 +330,6 @@ def pytest_addoption(parser):
         dest="execute_test",
         help="Should execute test or not (True|False)",
         default="True",
-    )
-    group.addoption(
-        "--sc4s-version",
-        action="store",
-        dest="sc4s_version",
-        default="latest",
-        help="SC4S version. default is latest",
     )
 
 
@@ -722,17 +722,15 @@ def get_hec_token(request, splunk_inputs_uri):
     else:
         LOGGER.info(f"Attempting to create HEC token")
         try:
-            response = _get_existing_token(
+            token_value = _get_existing_token(
                 request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME
             )
-            token_value = _extract_token_from_xml(response.text)
             LOGGER.info(f"Retrieved HEC token: {token_value}")
         except HecTokenNotExistingError:
             _create_new_token(request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME)
-            response = _get_existing_token(
+            token_value = _get_existing_token(
                 request, splunk_inputs_uri, SPLUNK_HEC_TOKEN_NAME
             )
-            token_value = _extract_token_from_xml(response.text)
             LOGGER.info(f"Created HEC token: {token_value}")
         except Exception as e:
             sleep(5)
@@ -740,9 +738,7 @@ def get_hec_token(request, splunk_inputs_uri):
             raise
 
         splunk_session.headers = {"Authorization": f"Splunk {token_value}"}
-        os.environ["SPLUNK_HEC_TOKEN"] = splunk_session.headers.get(
-            "Authorization", ""
-        ).split(" ")[1]
+        os.environ["SPLUNK_HEC_TOKEN"] = token_value
 
     return splunk_session
 
@@ -757,9 +753,11 @@ def _create_new_token(request, splunk_inputs_uri, splunk_token_name):
                 request.config.getoption("splunk_password"),
             ),
             data=f"name={splunk_token_name}",
+            params={"output_mode": "json"},
         )
         response.raise_for_status()
-        return response
+        token_value = response.json()["entry"][0]["content"]["token"]
+        return token_value
 
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 409:
@@ -782,28 +780,17 @@ def _get_existing_token(request, splunk_inputs_uri, splunk_token_name):
                 request.config.getoption("splunk_user"),
                 request.config.getoption("splunk_password"),
             ),
+            params={"output_mode": "json"},
         )
         response.raise_for_status()
-        return response
+        token_value = response.json()["entry"][0]["content"]["token"]
+        return token_value
 
     except Exception as e:
         LOGGER.error(f"Failed to retrieve existing HEC token: {e}")
         raise HecTokenNotExistingError(
             f"Failed to retrieve existing HEC token: {e}"
         ) from e
-
-
-def _extract_token_from_xml(xml_content):
-    """
-    Extracts token value from a xml formatted content
-    """
-    root = ET.fromstring(xml_content)
-    elements_with_name_attrib = [
-        element for element in root.iter() if "name" in element.attrib
-    ]
-    for element in elements_with_name_attrib:
-        if element.attrib["name"] == "token":
-            return element.text
 
 
 @pytest.fixture(scope="session")

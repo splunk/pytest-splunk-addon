@@ -202,6 +202,11 @@ def init_pytest_splunk_addon_logger():
 
 
 def pytest_exception_interact(node, call, report):
+    """
+    Hook called when an exception is raised during a test.
+    If the number of occurrences for a specific exception exceeds the limit in session.__exc_limits, pytest exits
+    https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_exception_interact
+    """
     session = node.session
     type_ = call.excinfo.type
 
