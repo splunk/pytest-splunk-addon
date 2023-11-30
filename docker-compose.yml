@@ -25,6 +25,7 @@ version: "3.7"
 services:
 
   sc4s:
+    platform: linux/amd64
     image: ghcr.io/splunk/splunk-connect-for-syslog/container2:latest
     hostname: sc4s
     #When this is enabled test_common will fail
@@ -38,8 +39,6 @@ services:
       - "6514"
     stdin_open: true
     tty: true
-    links:
-      - splunk
     environment:
       - SPLUNK_HEC_URL=https://splunk:8088
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
@@ -62,6 +61,7 @@ services:
       - SC4S_LISTEN_CHECKPOINT_SPLUNK_NOISE_CONTROL=yes
 
   splunk:
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile.splunk
@@ -81,6 +81,7 @@ services:
       - TEST_SC4S_ACTIVATE_EXAMPLES=yes
 
   uf:
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile.uf
@@ -92,8 +93,6 @@ services:
     ports:
       - "9997"
       - "8089"
-    links:
-      - splunk
     environment:
       - SPLUNK_PASSWORD=Chang3d!
       - SPLUNK_START_ARGS=--accept-license
