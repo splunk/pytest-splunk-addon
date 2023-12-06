@@ -167,6 +167,53 @@ def test_splunk_app_fiction(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_app_fiction_wrong_hec_token
+def test_splunk_app_fiction_wrong_hec_token(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
+
+    setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
+
+    # HEC token provided is different from the default one.
+    result = testdir.runpytest(
+        "--splunk-type=docker",
+        "--splunk-hec-token=9b741d03-43e8-4165-908b-e09102327d22" "-v",
+        "-m splunk_searchtime_fields",
+        "--search-interval=4",
+        "--search-retry=4",
+        "--search-index=*,_internal",
+    )
+
+    result.stdout.fnmatch_lines_random(
+        constants.TA_FICTION_PASSED + constants.TA_FICTION_SKIPPED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_FICTION_PASSED),
+        failed=0,
+        skipped=len(constants.TA_FICTION_SKIPPED),
+    )
+
+    # make sure that that we get a '0' exit code for the testsuite
+    assert result.ret == 0
+
+
+@pytest.mark.docker
 @pytest.mark.splunk_app_broken
 def test_splunk_app_broken(testdir):
     """Make sure that pytest accepts our fixture."""

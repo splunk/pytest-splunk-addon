@@ -181,6 +181,7 @@ jobs:
         test-marker: [
           "splunk_connection_docker",
           "splunk_app_fiction",
+          "splunk_app_fiction_wrong_hec_token",
           "splunk_app_broken",
           "splunk_app_cim_fiction",
           "splunk_app_cim_broken",
