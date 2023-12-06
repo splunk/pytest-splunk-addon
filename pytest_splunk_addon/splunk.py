@@ -110,7 +110,7 @@ def pytest_addoption(parser):
         action="store",
         dest="splunk_hec_token",
         default="9b741d03-43e9-4164-908b-e09102327d22",
-        help='Splunk HTTP event collector token. default is "9b741d03-43e9-4164-908b-e09102327d22" If an external forwarder is used provide HEC token of forwarder.',
+        help="Splunk HTTP event collector token. If an external forwarder is used provide HEC token of forwarder. Please specify it as default value is going to be deprecated.",
     )
     group.addoption(
         "--splunk-port",
@@ -576,11 +576,12 @@ def splunk_docker(
         docker_services.port_for("splunk", 9997),
     )
 
-    docker_services.wait_until_responsive(
-        timeout=180.0,
-        pause=0.5,
-        check=lambda: is_responsive_splunk(splunk_info),
-    )
+    for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
+        if is_responsive_splunk(splunk_info) and is_responsive_hec(
+            request, splunk_info
+        ):
+            break
+        sleep(1)
 
     return splunk_info
 
@@ -610,9 +611,9 @@ def splunk_external(request):
         )
 
     for _ in range(RESPONSIVE_SPLUNK_TIMEOUT):
-        if is_responsive_splunk(splunk_info):
-            break
-        if is_responsive_hec(request, splunk_info):
+        if is_responsive_splunk(splunk_info) and is_responsive_hec(
+            request, splunk_info
+        ):
             break
         sleep(1)
 
