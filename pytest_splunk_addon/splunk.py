@@ -552,6 +552,7 @@ def splunk_docker(
         # get the temp directory shared by all workers
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
         fn = root_tmp_dir / "pytest_docker"
+        # if you encounter docker-compose not found modify shell path in your IDE to use /bin/bash
         with FileLock(str(fn) + ".lock"):
             docker_services.start("splunk")
 

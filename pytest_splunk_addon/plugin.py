@@ -25,7 +25,7 @@ LOG_FILE = "pytest_splunk_addon.log"
 
 test_generator = None
 
-EXC_MAP = {Exception: 1}
+EXC_MAP = {Exception: 0}
 
 
 def pytest_configure(config):
@@ -95,7 +95,7 @@ def pytest_configure(config):
         "markers",
         "splunk_requirements_unit: Test checking if all fields for datamodel are defined in cim_fields and missing_recommended_fields",
     )
-    if config.getoption("splunk-hec-token", "9b741d03-43e9-4164-908b-e09102327d22"):
+    if config.getoption("splunk_hec_token") == "9b741d03-43e9-4164-908b-e09102327d22":
         LOGGER.warning(
             "Using the default value for --splunk-hec-token which is going to be deprecated. Please provide --splunk-hec-token argument when executing tests."
         )

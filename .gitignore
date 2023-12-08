@@ -35,3 +35,4 @@ test_report.md
 *.pickle
 *_events.lock
 *_events
+.venv

@@ -167,8 +167,8 @@ def test_splunk_app_fiction(testdir):
 
 
 @pytest.mark.docker
-@pytest.mark.splunk_app_fiction_wrong_hec_token
-def test_splunk_app_fiction_wrong_hec_token(testdir):
+@pytest.mark.splunk_fiction_indextime_wrong_hec_token
+def test_splunk_fiction_indextime_wrong_hec_token(testdir):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -182,35 +182,40 @@ def test_splunk_app_fiction_wrong_hec_token(testdir):
     )
 
     shutil.copytree(
-        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction_indextime"),
         os.path.join(testdir.tmpdir, "package"),
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+        os.path.join(testdir.tmpdir, "tests/data_models"),
     )
 
     setup_test_dir(testdir)
     SampleGenerator.clean_samples()
     Rule.clean_rules()
+    with open(
+        os.path.join(testdir.request.fspath.dirname, "incorrect_hec_token_conftest.py")
+    ) as conf_test_file:
+        testdir.makeconftest(conf_test_file.read())
 
-    # HEC token provided is different from the default one.
+    # run pytest with the following cmd args
     result = testdir.runpytest(
         "--splunk-type=docker",
-        "--splunk-hec-token=9b741d03-43e8-4165-908b-e09102327d22" "-v",
-        "-m splunk_searchtime_fields",
-        "--search-interval=4",
-        "--search-retry=4",
+        "-v",
+        "--splunk-hec-token=9b741d03-43e9-4164-908b-e09102327d44",
+        "--search-interval=0",
+        "--search-retry=0",
+        "--splunk-data-generator=tests/addons/TA_fiction_indextime/default",
         "--search-index=*,_internal",
     )
 
-    result.stdout.fnmatch_lines_random(
-        constants.TA_FICTION_PASSED + constants.TA_FICTION_SKIPPED
-    )
-    result.assert_outcomes(
-        passed=len(constants.TA_FICTION_PASSED),
-        failed=0,
-        skipped=len(constants.TA_FICTION_SKIPPED),
+    result.assert_outcomes(errors=1, passed=0, failed=0, xfailed=0)
+    result.stdout.fnmatch_lines(
+        "!! _pytest.outcomes.Exit: Reached max exception for type: <class 'Exception'> !!"
     )
 
-    # make sure that that we get a '0' exit code for the testsuite
-    assert result.ret == 0
+    assert result.ret != 0
 
 
 @pytest.mark.docker
