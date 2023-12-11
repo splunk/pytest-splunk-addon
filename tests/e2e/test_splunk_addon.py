@@ -167,6 +167,57 @@ def test_splunk_app_fiction(testdir):
 
 
 @pytest.mark.docker
+@pytest.mark.splunk_fiction_indextime_wrong_hec_token
+def test_splunk_fiction_indextime_wrong_hec_token(testdir):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction_indextime"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+        os.path.join(testdir.tmpdir, "tests/data_models"),
+    )
+
+    setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
+    with open(
+        os.path.join(testdir.request.fspath.dirname, "incorrect_hec_token_conftest.py")
+    ) as conf_test_file:
+        testdir.makeconftest(conf_test_file.read())
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        "--splunk-type=docker",
+        "-v",
+        "--search-interval=0",
+        "--search-retry=0",
+        "--splunk-data-generator=tests/addons/TA_fiction_indextime/default",
+        "--search-index=*,_internal",
+    )
+
+    result.assert_outcomes(errors=1, passed=0, failed=0, xfailed=0)
+    result.stdout.fnmatch_lines(
+        "!!!!!! _pytest.outcomes.Exit: Exiting pytest due to: <class 'Exception'> !!!!!!!"
+    )
+
+    assert result.ret != 0
+
+
+@pytest.mark.docker
 @pytest.mark.splunk_app_broken
 def test_splunk_app_broken(testdir):
     """Make sure that pytest accepts our fixture."""
