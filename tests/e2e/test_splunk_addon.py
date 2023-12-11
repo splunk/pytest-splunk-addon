@@ -203,7 +203,6 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir):
     result = testdir.runpytest(
         "--splunk-type=docker",
         "-v",
-        "--splunk-hec-token=9b741d03-43e9-4164-908b-e09102327d44",
         "--search-interval=0",
         "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime/default",

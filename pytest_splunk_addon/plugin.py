@@ -25,7 +25,7 @@ LOG_FILE = "pytest_splunk_addon.log"
 
 test_generator = None
 
-EXC_MAP = {Exception: 0}
+EXC_MAP = [Exception]
 
 
 def pytest_configure(config):
@@ -219,11 +219,6 @@ def pytest_exception_interact(node, call, report):
     If the number of occurrences for a specific exception exceeds the limit in session.__exc_limits, pytest exits
     https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_exception_interact
     """
-    session = node.session
-    type_ = call.excinfo.type
-
-    if type_ in session.__exc_limits:
-        if session.__exc_limits[type_] == 0:
-            pytest.exit(f"Reached max exception for type: {type_}")
-        else:
-            session.__exc_limits[type_] -= 1
+    if call.excinfo.type in node.session.__exc_limits:
+        # pytest exits only for exceptions defined in EXC_MAP
+        pytest.exit(f"Exitting pytest due to: {call.excinfo.type}")
