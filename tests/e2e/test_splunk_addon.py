@@ -211,7 +211,7 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir):
 
     result.assert_outcomes(errors=1, passed=0, failed=0, xfailed=0)
     result.stdout.fnmatch_lines(
-        "!! _pytest.outcomes.Exit: Reached max exception for type: <class 'Exception'> !!"
+        "!!!!!! _pytest.outcomes.Exit: Exiting pytest due to: <class 'Exception'> !!!!!!!"
     )
 
     assert result.ret != 0
