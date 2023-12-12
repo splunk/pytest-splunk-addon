@@ -769,8 +769,12 @@ def splunk_events_cleanup(request, splunk_search_util):
 
     """
     if request.config.getoption("splunk_cleanup"):
-        LOGGER.info("Running the old events cleanup")
-        splunk_search_util.deleteEventsFromIndex()
+        if (
+            "PYTEST_XDIST_WORKER" not in os.environ
+            or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
+        ):
+            LOGGER.info("Running the old events cleanup")
+            splunk_search_util.deleteEventsFromIndex()
     else:
         LOGGER.info("Events cleanup was disabled.")
 
