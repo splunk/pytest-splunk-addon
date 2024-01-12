@@ -1,11 +1,11 @@
 #
-# Copyright 2024 Splunk Inc.
+# Copyright 2021 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,7 @@
 
 [tool.poetry]
 name = "pytest-splunk-addon"
-version = "5.2.6-beta.1"
+version = "5.2.5"
 description = "A Dynamic test tool for Splunk Apps and Add-ons"
 authors = ["Splunk <addonfactory@splunk.com>"]
 license = "APACHE-2.0"
@@ -40,6 +40,7 @@ jsonschema = ">=4,<5"
 pytest-xdist = ">=2.3.0"
 filelock = "^3.0"
 pytest-ordering = "~0.6"
+lovely-pytest-docker = { version="^0", optional = true }
 junitparser = "^2.2.0"
 addonfactory-splunk-conf-parser-lib = "*"
 defusedxml = "^0.7.1"
@@ -49,8 +50,11 @@ xmlschema = "^1.11.3"
 splunksplwrapper = "^1.1.1"
 urllib3 = "<2"
 
+[tool.poetry.extras]
+docker = ['lovely-pytest-docker']
 
 [tool.poetry.group.dev.dependencies]
+lovely-pytest-docker = "~0.3.0"
 pytest-cov = "^3.0.0"
 requests-mock = "^1.8.0"
 freezegun = "^1.2.1"
