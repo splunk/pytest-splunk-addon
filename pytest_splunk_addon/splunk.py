@@ -741,18 +741,21 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
         }
         thread_count = int(request.config.getoption("thread_count"))
         store_events = request.config.getoption("store_events")
-        IngestorHelper.ingest_events(
-            ingest_meta_data,
-            addon_path,
-            config_path,
-            thread_count,
-            store_events,
-        )
-        sleep(50)
-        if "PYTEST_XDIST_WORKER" in os.environ:
-            with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait", "w+"):
-                PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
-
+        try:
+            IngestorHelper.ingest_events(
+                ingest_meta_data,
+                addon_path,
+                config_path,
+                thread_count,
+                store_events,
+            )
+            sleep(50)
+        except Exception as e:
+            raise e
+        finally:
+            if "PYTEST_XDIST_WORKER" in os.environ:
+                with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait", "w+"):
+                    PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
     else:
         while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait"):
             sleep(1)
