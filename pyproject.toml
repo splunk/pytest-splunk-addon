@@ -40,7 +40,6 @@ jsonschema = ">=4,<5"
 pytest-xdist = ">=2.3.0"
 filelock = "^3.0"
 pytest-ordering = "~0.6"
-lovely-pytest-docker = { version="^0", optional = true }
 junitparser = "^2.2.0"
 addonfactory-splunk-conf-parser-lib = "*"
 defusedxml = "^0.7.1"
@@ -51,10 +50,10 @@ splunksplwrapper = "^1.1.1"
 urllib3 = "<2"
 
 [tool.poetry.extras]
-docker = ['lovely-pytest-docker']
+docker = ['pytest-docker']
 
 [tool.poetry.group.dev.dependencies]
-lovely-pytest-docker = "~0.3.0"
+pytest-docker = "2"
 pytest-cov = "^3.0.0"
 requests-mock = "^1.8.0"
 freezegun = "^1.2.1"
