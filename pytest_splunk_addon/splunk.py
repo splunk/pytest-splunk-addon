@@ -516,7 +516,7 @@ def uf_external(request):
 
 @pytest.fixture(scope="session")
 def splunk_docker(
-    request, docker_services, docker_compose_files, tmp_path_factory, worker_id
+    request, docker_services, docker_compose_file, tmp_path_factory, worker_id
 ):
     """
     Splunk docker depends on lovely-pytest-docker to create the docker instance

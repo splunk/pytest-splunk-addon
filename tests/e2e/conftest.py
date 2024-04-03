@@ -11,7 +11,7 @@ def pytest_configure(config):
 
 
 @pytest.fixture(scope="session")
-def docker_compose_files(request):
+def docker_compose_file(request):
     """
     Get an absolute path to the  `docker-compose.yml` file. Override this
     fixture in your tests if you need a custom location.
