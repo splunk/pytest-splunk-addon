@@ -49,8 +49,6 @@ xmlschema = "^1.11.3"
 splunksplwrapper = "^1.1.1"
 urllib3 = "<2"
 
-[tool.poetry.extras]
-docker = ['lovely-pytest-docker']
 
 [tool.poetry.group.dev.dependencies]
 lovely-pytest-docker = "~0.3.0"
