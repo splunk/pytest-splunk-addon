@@ -21,6 +21,7 @@ from time import sleep
 import json
 import pytest
 import requests
+import re
 import splunklib.client as client
 from splunksplwrapper.manager.jobs import Jobs
 from splunksplwrapper.splunk.cloud import CloudSplunk
