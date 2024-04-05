@@ -113,7 +113,7 @@ jobs:
       - name: Install and run tests
         run: |
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
-          poetry install --with docs -E docker
+          poetry install --with docs
           poetry run pytest -v -m doc tests/e2e
 
   test-splunk-external:
@@ -202,7 +202,7 @@ jobs:
           python-version: 3.7
       - run: |
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
-          poetry install -E docker
+          poetry install
           poetry run pytest -v --splunk-version=${{ matrix.splunk.version }} -m docker -m ${{ matrix.test-marker }} tests/e2e
 
   publish:
