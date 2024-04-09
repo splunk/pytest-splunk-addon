@@ -34,7 +34,7 @@ def execute(command, success_codes=(0,)):
         output = subprocess.check_output(
             command,
             stderr=subprocess.STDOUT,
-            shell=False,
+            shell=True,
         )
         status = 0
     except subprocess.CalledProcessError as error:
