@@ -201,8 +201,10 @@ jobs:
         with:
           python-version: 3.7
       - run: |
+          docker-compose -v
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
+          docker-compose -v
           poetry run pytest -v --splunk-version=${{ matrix.splunk.version }} -m docker -m ${{ matrix.test-marker }} tests/e2e
 
   publish:
