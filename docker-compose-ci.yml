@@ -85,7 +85,7 @@ services:
       - "9997"
     environment:
       - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
-      - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
+      - SPLUNK_HEC_TOKEN=9b741d03-43e9-4164-908b-e09102327d22
       - SPLUNK_START_ARGS=--accept-license
       - TEST_SC4S_ACTIVATE_EXAMPLES=yes
 volumes:
