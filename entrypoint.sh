@@ -10,5 +10,5 @@ curl -sSL https://install.python-poetry.org | python
 export PATH="/root/.local/bin:$PATH"
 source ~/.poetry/env
 sleep 15
-poetry install -E docker
+poetry install
 exec poetry run pytest -vv $@
