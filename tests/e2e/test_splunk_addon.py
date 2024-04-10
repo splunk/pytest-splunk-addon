@@ -56,7 +56,7 @@ def setup_test_dir(testdir):
 
 
 @pytest.mark.external
-def test_splunk_connection_external(testdir):
+def test_splunk_connection_external(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     # create a temporary pytest test module
@@ -72,6 +72,7 @@ def test_splunk_connection_external(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-app=addons/TA_fiction",
         "--splunk-type=external",
         "--splunk-host=splunk",
@@ -89,7 +90,7 @@ def test_splunk_connection_external(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_connection_docker
-def test_splunk_connection_docker(testdir):
+def test_splunk_connection_docker(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     # create a temporary pytest test module
@@ -108,6 +109,7 @@ def test_splunk_connection_docker(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "-v",
     )
@@ -121,7 +123,7 @@ def test_splunk_connection_docker(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_app_fiction
-def test_splunk_app_fiction(testdir):
+def test_splunk_app_fiction(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -145,6 +147,7 @@ def test_splunk_app_fiction(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "-v",
         "-m splunk_searchtime_fields",
@@ -168,7 +171,7 @@ def test_splunk_app_fiction(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_fiction_indextime_wrong_hec_token
-def test_splunk_fiction_indextime_wrong_hec_token(testdir):
+def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -201,6 +204,7 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "-v",
         "--search-interval=0",
@@ -219,9 +223,8 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_app_broken
-def test_splunk_app_broken(testdir):
+def test_splunk_app_broken(testdir, request):
     """Make sure that pytest accepts our fixture."""
-
     testdir.makepyfile(
         """
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
@@ -248,6 +251,7 @@ def test_splunk_app_broken(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "-v",
         "-m splunk_searchtime_fields",
@@ -275,7 +279,7 @@ def test_splunk_app_broken(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_app_cim_fiction
-def test_splunk_app_cim_fiction(testdir):
+def test_splunk_app_cim_fiction(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -304,6 +308,7 @@ def test_splunk_app_cim_fiction(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "--splunk-dm-path=tests/data_models",
         "-v",
@@ -328,7 +333,7 @@ def test_splunk_app_cim_fiction(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_app_cim_broken
-def test_splunk_app_cim_broken(testdir):
+def test_splunk_app_cim_broken(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -357,6 +362,7 @@ def test_splunk_app_cim_broken(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "--splunk-dm-path=tests/data_models",
         "-v",
@@ -384,7 +390,7 @@ def test_splunk_app_cim_broken(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_fiction_indextime
-def test_splunk_fiction_indextime(testdir):
+def test_splunk_fiction_indextime(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -413,6 +419,7 @@ def test_splunk_fiction_indextime(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "-v",
         "--search-interval=0",
@@ -437,7 +444,7 @@ def test_splunk_fiction_indextime(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_fiction_indextime_broken
-def test_splunk_fiction_indextime_broken(testdir):
+def test_splunk_fiction_indextime_broken(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -468,6 +475,7 @@ def test_splunk_fiction_indextime_broken(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "-v",
         "--search-interval=0",
@@ -494,7 +502,7 @@ def test_splunk_fiction_indextime_broken(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_setup_fixture
-def test_splunk_setup_fixture(testdir):
+def test_splunk_setup_fixture(testdir, request):
     testdir.makepyfile(
         """
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
@@ -518,6 +526,7 @@ def test_splunk_setup_fixture(testdir):
     )
 
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "-v",
         "-k saved_search_lookup",
@@ -568,7 +577,7 @@ def test_docstrings(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_app_req
-def test_splunk_app_req(testdir):
+def test_splunk_app_req(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -596,6 +605,7 @@ def test_splunk_app_req(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "-v",
         "--search-interval=4",
@@ -622,7 +632,7 @@ def test_splunk_app_req(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_app_req_broken
-def test_splunk_app_req_broken(testdir):
+def test_splunk_app_req_broken(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -650,6 +660,7 @@ def test_splunk_app_req_broken(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "-v",
         "--search-interval=4",
@@ -676,7 +687,7 @@ def test_splunk_app_req_broken(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_app_req
-def test_splunk_app_req(testdir):
+def test_splunk_app_req(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -704,6 +715,7 @@ def test_splunk_app_req(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=docker",
         "-v",
         "--search-interval=2",
