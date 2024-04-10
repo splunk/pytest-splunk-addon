@@ -417,6 +417,7 @@ def test_splunk_fiction_indextime(testdir):
         "-v",
         "--search-interval=0",
         "--search-retry=0",
+        "--splunk-hec-token=4a8a737d-5452-426c-a6f7-106dca4e813f",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime/default",
         "--search-index=*,_internal",
     )
