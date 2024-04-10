@@ -586,7 +586,7 @@ def splunk_docker(
 
     LOGGER.info("checking hec token")
     import subprocess
-    p = subprocess.Popen(f"curl {request.config.getoption('splunk_hec_scheme')}://{splunk_info['forwarder_host']}:{splunk_info['port_hec']}/services/collector/event –insecure -H 'Authorization: Splunk {request.config.getoption('splunk_hec_token')}' -d '{{\"event\": \"hello world\"}}'", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(f"curl {request.config.getoption('splunk_hec_scheme')}://{splunk_info['forwarder_host']}:{splunk_info['port_hec']}/services/collector/event -H 'Authorization: Splunk {request.config.getoption('splunk_hec_token')}' -d '{{\"event\": \"hello world\"}}' -k ", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
         print(line)
         LOGGER.info(line)
