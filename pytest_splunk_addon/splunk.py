@@ -543,8 +543,10 @@ def splunk_docker(
         os.environ["SPLUNK_APP_ID"] = config["package"]["id"]
     except Exception:
         os.environ["SPLUNK_APP_ID"] = "TA_package"
-    LOGGER.info(f"debug SPLUNK_HEC_TOKEN={request.config.getoption("splunk_hec_token")}")
-    LOGGER.info(f"debug SPLUNK_VERSION={request.config.getoption("splunk_version")}")
+    LOGGER.info(
+        f"debug SPLUNK_HEC_TOKEN={request.config.getoption('splunk_hec_token')}"
+    )
+    LOGGER.info(f"debug SPLUNK_VERSION={request.config.getoption('splunk_version')}")
 
     os.environ["SPLUNK_HEC_TOKEN"] = request.config.getoption("splunk_hec_token")
     os.environ["SPLUNK_USER"] = request.config.getoption("splunk_user")
