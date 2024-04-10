@@ -34,7 +34,7 @@ def execute(command, success_codes=(0,)):
         output = subprocess.check_output(
             command,
             stderr=subprocess.STDOUT,
-            shell=True,
+            shell=False,
         )
         status = 0
     except subprocess.CalledProcessError as error:
@@ -69,7 +69,6 @@ class Services(object):
         :param services: the names of the services as defined in compose file
         """
         self._docker_compose.execute('up', '--build', '-d', *services)
-
 
     def stop(self, *services):
         """Ensures that the given services are stopped via docker compose.
@@ -162,7 +161,7 @@ class DockerComposeExecutor(object):
         self.project_directory = os.path.dirname(os.path.realpath(compose_files[0]))
 
     def execute(self, *subcommand):
-        command = ["docker compose"]
+        command = ["docker", "compose"]
         for compose_file in self._compose_files:
             command.append('-f')
             command.append(compose_file)
