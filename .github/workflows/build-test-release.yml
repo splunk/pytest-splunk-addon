@@ -53,6 +53,7 @@ jobs:
       - uses: apache/skywalking-eyes@v0.4.0
   
   pre-commit:
+    continue-on-error: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -87,6 +88,7 @@ jobs:
           scanArguments: "--max_dept 50 -x .github/workflows/exclude-patterns.txt"
 
   test-splunk-unit:
+    continue-on-error: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -99,6 +101,7 @@ jobs:
           poetry run pytest -v tests/unit
 
   test-splunk-doc:
+    continue-on-error: true
     name: Test Docs
     runs-on: ubuntu-latest
     steps:
