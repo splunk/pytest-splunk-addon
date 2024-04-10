@@ -11,13 +11,13 @@ import timeit
 from requests import HTTPError
 
 
-def check_url(docker_ip, public_port, path='/'):
+def check_url(docker_ip, public_port, path="/"):
     """Check if a service is reachable.
 
     Makes a simple GET request to path of the HTTP endpoint. Service is
     available if returned status code is < 500.
     """
-    url = 'http://{}:{}{}'.format(docker_ip, public_port, path)
+    url = "http://{}:{}{}".format(docker_ip, public_port, path)
     try:
         r = urlopen(url)
         return r.code < 500
@@ -27,6 +27,7 @@ def check_url(docker_ip, public_port, path='/'):
     except Exception:
         # Possible service not yet started
         return False
+
 
 def execute(command, success_codes=(0,)):
     """Run a shell command."""
@@ -38,14 +39,12 @@ def execute(command, success_codes=(0,)):
         )
         status = 0
     except subprocess.CalledProcessError as error:
-        output = error.output or b''
+        output = error.output or b""
         status = error.returncode
         command = error.cmd
-    output = output.decode('utf-8')
+    output = output.decode("utf-8")
     if status not in success_codes:
-        raise Exception(
-            'Command %r returned %d: """%s""".' % (command, status, output)
-        )
+        raise Exception('Command %r returned %d: """%s""".' % (command, status, output))
     return output
 
 
@@ -56,10 +55,8 @@ class Services(object):
     https://github.com/AndreLouisCaron/pytest-docker
     """
 
-    def __init__(self, compose_files, docker_ip, project_name='pytest'):
-        self._docker_compose = DockerComposeExecutor(
-            compose_files, project_name
-        )
+    def __init__(self, compose_files, docker_ip, project_name="pytest"):
+        self._docker_compose = DockerComposeExecutor(compose_files, project_name)
         self._services = {}
         self.docker_ip = docker_ip
 
@@ -68,15 +65,14 @@ class Services(object):
 
         :param services: the names of the services as defined in compose file
         """
-        self._docker_compose.execute('up', '--build', '-d', *services)
+        self._docker_compose.execute("up", "--build", "-d", *services)
 
     def stop(self, *services):
         """Ensures that the given services are stopped via docker compose.
 
         :param services: the names of the services as defined in compose file
         """
-        self._docker_compose.execute('stop', *services)
-
+        self._docker_compose.execute("stop", *services)
 
     def execute(self, service, *cmd):
         """Execute a command inside a docker container.
@@ -84,9 +80,11 @@ class Services(object):
         :param service: the name of the service as defined in compose file
         :param cmd: list of command parts to execute
         """
-        return self._docker_compose.execute('exec', '-T', service, *cmd)
+        return self._docker_compose.execute("exec", "-T", service, *cmd)
 
-    def wait_for_service(self, service, private_port, check_server=check_url, timeout=30.0, pause=0.1):
+    def wait_for_service(
+        self, service, private_port, check_server=check_url, timeout=30.0, pause=0.1
+    ):
         """
         Waits for the given service to response to a http GET.
 
@@ -109,7 +107,7 @@ class Services(object):
         return public_port
 
     def shutdown(self):
-        self._docker_compose.execute('down', '-v')
+        self._docker_compose.execute("down", "-v")
 
     def port_for(self, service, port):
         """Get the effective bind port for a service."""
@@ -119,17 +117,13 @@ class Services(object):
         if cache is not None:
             return cache
 
-        output = self._docker_compose.execute(
-            'port', service, str(port)
-        )
+        output = self._docker_compose.execute("port", service, str(port))
         endpoint = output.strip()
         if not endpoint:
-            raise ValueError(
-                'Could not detect port for "%s:%d".' % (service, port)
-            )
+            raise ValueError('Could not detect port for "%s:%d".' % (service, port))
 
         # Usually, the IP address here is 0.0.0.0, so we don't use it.
-        match = int(endpoint.split(':', 1)[1])
+        match = int(endpoint.split(":", 1)[1])
 
         # Store it in cache in case we request it multiple times.
         self._services.setdefault(service, {})[port] = match
@@ -137,8 +131,7 @@ class Services(object):
         return match
 
     @staticmethod
-    def wait_until_responsive(check, timeout, pause,
-                              clock=timeit.default_timer):
+    def wait_until_responsive(check, timeout, pause, clock=timeit.default_timer):
         """Wait until a service is responsive."""
 
         ref = clock()
@@ -149,9 +142,7 @@ class Services(object):
             time.sleep(pause)
             now = clock()
 
-        raise Exception(
-            'Timeout reached while waiting on service!'
-        )
+        raise Exception("Timeout reached while waiting on service!")
 
 
 class DockerComposeExecutor(object):
@@ -163,9 +154,9 @@ class DockerComposeExecutor(object):
     def execute(self, *subcommand):
         command = ["docker", "compose"]
         for compose_file in self._compose_files:
-            command.append('-f')
+            command.append("-f")
             command.append(compose_file)
-        command.append('-p')
+        command.append("-p")
         command.append(self._project_name)
         command += subcommand
         return execute(command)
@@ -176,5 +167,10 @@ def pytest_addoption(parser):
 
     Add the --keepalive option for pytest.
     """
-    parser.addoption("--keepalive", "-K", action="store_true",
-                     default=False, help="Keep docker containers alive")
+    parser.addoption(
+        "--keepalive",
+        "-K",
+        action="store_true",
+        default=False,
+        help="Keep docker containers alive",
+    )

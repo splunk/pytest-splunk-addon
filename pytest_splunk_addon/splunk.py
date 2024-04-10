@@ -832,58 +832,52 @@ def splunk_dm_recommended_fields():
     return update_recommended_fields
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def docker_ip():
     """Determine IP address for TCP connections to Docker containers."""
 
     # When talking to the Docker daemon via a UNIX socket, route all TCP
     # traffic to docker containers via the TCP loopback interface.
-    docker_host = os.environ.get('DOCKER_HOST', '').strip()
+    docker_host = os.environ.get("DOCKER_HOST", "").strip()
     if not docker_host:
-        return '127.0.0.1'
+        return "127.0.0.1"
 
-    match = re.match('^tcp://(.+?):\d+$', docker_host)
+    match = re.match("^tcp://(.+?):\d+$", docker_host)
     if not match:
-        raise ValueError(
-            'Invalid value for DOCKER_HOST: "%s".' % (docker_host,)
-        )
+        raise ValueError('Invalid value for DOCKER_HOST: "%s".' % (docker_host,))
     return match.group(1)
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def docker_compose_files(pytestconfig):
     """Get the docker-compose.yml absolute path.
     Override this fixture in your tests if you need a custom location.
     """
-    return [
-        os.path.join(str(pytestconfig.rootdir), 'tests', 'docker-compose.yml')
-    ]
+    return [os.path.join(str(pytestconfig.rootdir), "tests", "docker-compose.yml")]
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def docker_services_project_name(pytestconfig):
     """
     Create unique project name for docker compose based on the pytestconfig root directory.
     Characters prohibited by Docker compose project names are replaced with hyphens.
     """
-    slug = re.sub(r'[^a-z0-9]+', '-', str(pytestconfig.rootdir).lower())
+    slug = re.sub(r"[^a-z0-9]+", "-", str(pytestconfig.rootdir).lower())
     project_name = "pytest{}".format(slug)
     return project_name
 
 
-@pytest.fixture(scope='session')
-def docker_services(request, docker_compose_files, docker_ip, docker_services_project_name):
+@pytest.fixture(scope="session")
+def docker_services(
+    request, docker_compose_files, docker_ip, docker_services_project_name
+):
     """Provide the docker services as a pytest fixture.
 
     The services will be stopped after all tests are run.
     """
     print("in fixture")
     keep_alive = request.config.getoption("--keepalive", False)
-    services = Services(
-        docker_compose_files,
-        docker_ip,
-        docker_services_project_name
-    )
+    services = Services(docker_compose_files, docker_ip, docker_services_project_name)
     yield services
     if not keep_alive:
         services.shutdown()
