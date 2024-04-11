@@ -190,6 +190,7 @@ jobs:
           "splunk_setup_fixture",
           "splunk_app_req",
           "splunk_app_req_broken",
+          "splunk_infinite_loop_test"
         ]
     steps:
       - uses: actions/checkout@v3
