@@ -1,2 +1,2 @@
-* @artemrys
-pytest_splunk_addon/standard_lib/data_models @splunk/products-gdi-sme
+* @splunk/products-gdi-addons-adminrepo
+pytest_splunk_addon/standard_lib/data_models @splunk/products-gdi-addons-adminrepo @splunk/products-gdi-sme
