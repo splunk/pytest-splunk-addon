@@ -176,4 +176,3 @@ class DockerComposeExecutor(object):
         command.append(self._project_name)
         command += subcommand
         return execute(command)
-
