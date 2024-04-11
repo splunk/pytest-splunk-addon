@@ -764,7 +764,7 @@ def test_splunk_infinite_loop_with_multiple_workers(testdir):
     result = testdir.runpytest(
         "--splunk-type=docker",
         "-v",
-        "--sc4s-host=invalid_host"
+        "--sc4s-host=invalid_host",
         "--search-interval=0",
         "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime_broken/default",
