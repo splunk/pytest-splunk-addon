@@ -140,13 +140,13 @@ jobs:
           docker container create --name dummy \
                               -v pytest-splunk-addon_results:/work/test-results \
                               registry.access.redhat.com/ubi7/ubi
-          docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.splunk-version }}
+          docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.splunk.version }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: splunk ${{ matrix.splunk-version }} external test artifacts
+          name: splunk ${{ matrix.splunk.version }} external test artifacts
           path: |
-            test-results-${{ matrix.splunk-version }}
+            test-results-${{ matrix.splunk.version }}
 
   test-splunk-matrix:
     needs:
