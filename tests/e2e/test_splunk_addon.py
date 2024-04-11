@@ -769,7 +769,7 @@ def test_splunk_infinite_loop_with_multiple_workers(testdir):
         "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime_broken/default",
         "--search-index=*,_internal",
-        "-s"
+        "-s",
     )
     print(str(result.stdout))
     # fnmatch_lines does an assertion internally
