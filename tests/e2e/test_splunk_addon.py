@@ -730,7 +730,7 @@ def test_splunk_app_req(testdir):
 
 @pytest.mark.docker
 @pytest.mark.splunk_infinite_loop_test
-def test_splunk_infinite_loop_with_multiple_workers(testdir):
+def test_splunk_infinite_loop_with_multiple_workers(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -765,6 +765,7 @@ def test_splunk_infinite_loop_with_multiple_workers(testdir):
         "--splunk-type=docker",
         "-v",
         "--sc4s-host=invalid_host",
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--search-interval=0",
         "--search-retry=0",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime_broken/default",
