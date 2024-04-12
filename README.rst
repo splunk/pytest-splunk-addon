@@ -142,7 +142,7 @@ Run pytest with the add-on and SA-eventgen installed and enabled in docker
 For full usage instructions, please visit the `pytest-splunk-addon documentation pages over at readthedocs`_.
 
 Run e2e tests locally
------
+---------------------
 
 * For e2e tests we are using a functionality of pytest which creates a temp dir and copies all the required file to that dir and then runs the pytest cmd from the tests.
 * e2e tests can be found under /tests/e2e
