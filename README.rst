@@ -159,6 +159,21 @@ Prerequisites:
     $ poetry install
     $ poetry run pytest -v --splunk-version=${splunk-version} -m docker -m ${test-marker} tests/e2e
 
+Troubleshooting:
+
+1. If you face an error like this 'argparse.ArgumentError: argument -K/--keepalive: conflicting option strings: -K, --keepalive'
+
+    This is likely to happen if you have older version of PSA requriements install, to solve this try to uninstall lovely-pytest-docker and pull the latest main branch
+
+2. If while running the tests you face error as below
+
+.. code:: bash
+    Exception: Command ['docker', 'compose', '-f', '/private/var/folders/vy/wrrmvpdj0hl68t1fql_x84rw0000gp/T/pytest-of-kdoroszko/pytest-9/test_splunk_fiction_indextime_broken0/docker-compose.yml', '-p', 'pytestprivatevarfoldersvywrrmvpdj0hl68t1fql_x84rw0000gptpytest-of-kdoroszkopytest-9test_splunk_fiction_indextime_broken0', 'down', '-v'] returned 125: """unknown shorthand flag: 'f' in -f
+
+    This happends due to misconfigurations in docker try to follow below steps 
+    sudo mkdir -p /usr/local/lib/docker
+    sudo ln -s /Applications/Docker.app/Contents/Resources/cli-plugins /usr/local/lib/docker/cli-plugins
+
 
 Contributing
 ------------
