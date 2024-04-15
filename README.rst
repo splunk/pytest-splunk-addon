@@ -148,6 +148,7 @@ Run e2e tests locally
 * e2e tests can be found under /tests/e2e
 
 Prerequisites:
+
 * Docker version: 25.0.3
 * Docker Compose version: v2.24.6-desktop.1
 
