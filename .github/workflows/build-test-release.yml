@@ -128,6 +128,10 @@ jobs:
       fail-fast: false
       matrix:
         splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
+        test-marker: [
+          "external",
+          "test_infinite_loop_fixture"
+          ]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -148,8 +152,17 @@ jobs:
           sleep 90
       - name: Test
         run: |
-          SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
-          docker volume ls
+          if [ "${{ matrix.test-marker }}" = "test_infinite_loop_fixture" ]
+          then
+            curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
+            poetry install -E docker
+            poetry run pytest -m ${{ matrix.test-marker }} tests/e2e
+          else
+            # Command to execute if the condition is false
+            SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
+            docker volume ls
+          fi
+
       - name: Collect Results
         run: |
           docker volume ls
