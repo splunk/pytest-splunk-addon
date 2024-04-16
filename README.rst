@@ -162,14 +162,12 @@ Prerequisites:
 Troubleshooting:
 
 1. If you face an error like this: 
-.. code::: bash
 
         argparse.ArgumentError: argument -K/--keepalive: conflicting option strings: -K, --keepalive
 
     * This is likely to happen if you have older version of PSA requirements installed, to solve this try to uninstall lovely-pytest-docker and pull the latest main branch and then do `poetry install`
 
 2. If while running the tests you face error like this: 
-.. code::: bash
 
         `Exception: Command ['docker', 'compose', '-f', '<path>/docker-compose.yml', '-p', '<projectname>', 'down', '-v'] returned 125: """unknown shorthand flag: 'f' in -f`
 
