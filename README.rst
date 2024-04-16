@@ -175,6 +175,11 @@ Troubleshooting:
         * sudo mkdir -p /usr/local/lib/docker
         * sudo ln -s /Applications/Docker.app/Contents/Resources/cli-plugins /usr/local/lib/docker/cli-plugins
 
+3. If you face error like this:
+
+        ERROR: no match for platform in manifest: not found
+
+    * Try adding platform: `linux/amd64` to docker-compose.yml file
 
 Contributing
 ------------
