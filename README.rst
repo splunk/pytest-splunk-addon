@@ -165,13 +165,11 @@ Troubleshooting:
 
     * This is likely to happen if you have older version of PSA requirements installed, to solve this try to uninstall lovely-pytest-docker and pull the latest main branch and then do `poetry install`
 
-2. If while running the tests you face error as below:
+2. If while running the tests you face error like this :`Exception: Command ['docker', 'compose', '-f', '/private/var/folders/vy/wrrmvpdj0hl68t1fql_x84rw0000gp/T/pytest-of-kdoroszko/pytest-9/test_splunk_fiction_indextime_broken0/docker-compose.yml', '-p', 'pytestprivatevarfoldersvywrrmvpdj0hl68t1fql_x84rw0000gptpytest-of-kdoroszkopytest-9test_splunk_fiction_indextime_broken0', 'down', '-v'] returned 125: """unknown shorthand flag: 'f' in -f`
 
-`Exception: Command ['docker', 'compose', '-f', '/private/var/folders/vy/wrrmvpdj0hl68t1fql_x84rw0000gp/T/pytest-of-kdoroszko/pytest-9/test_splunk_fiction_indextime_broken0/docker-compose.yml', '-p', 'pytestprivatevarfoldersvywrrmvpdj0hl68t1fql_x84rw0000gptpytest-of-kdoroszkopytest-9test_splunk_fiction_indextime_broken0', 'down', '-v'] returned 125: """unknown shorthand flag: 'f' in -f`
-
-* This happens due to misconfigurations in docker try to follow below steps:
-    * sudo mkdir -p /usr/local/lib/docker
-    * sudo ln -s /Applications/Docker.app/Contents/Resources/cli-plugins /usr/local/lib/docker/cli-plugins
+    * This happens due to misconfigurations in docker try to follow below steps:
+        * sudo mkdir -p /usr/local/lib/docker
+        * sudo ln -s /Applications/Docker.app/Contents/Resources/cli-plugins /usr/local/lib/docker/cli-plugins
 
 
 Contributing
