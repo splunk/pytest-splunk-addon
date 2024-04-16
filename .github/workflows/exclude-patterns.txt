@@ -1,7 +1,0 @@
-.github/workflows/
-.circleci/
-deps/.*
-.*\.lock
-tests/
-NOTICE
-pytest_splunk_addon/standard_lib/CIM_Models/5.0.0/Ticket_Management.json
