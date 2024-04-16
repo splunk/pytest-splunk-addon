@@ -744,7 +744,7 @@ def test_splunk_app_req(testdir, request):
 @pytest.mark.test_infinite_loop_fixture
 @pytest.mark.docker
 @pytest.mark.external
-def test_infinite_loop_in_ingest_data_fixture(testdir):
+def test_infinite_loop_in_ingest_data_fixture(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -773,6 +773,7 @@ def test_infinite_loop_in_ingest_data_fixture(testdir):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-app=addons/TA_fiction_indextime",
         "--splunk-type=external",
         "--splunk-host=splunk",
