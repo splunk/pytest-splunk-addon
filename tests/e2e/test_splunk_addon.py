@@ -769,10 +769,10 @@ def test_infinite_loop_in_ingest_data_fixture(testdir):
         "--splunk-port=8089",
         "-n 2",
         "-v",
-        "-s"
+        "-s",
     )
 
     # fnmatch_lines does an assertion internally Here we are not interested in the failures or errors,
     # we are basically checking that we get results and test execution does not get stuck
-    assert result.parseoutcomes().get("passed")>0
+    assert result.parseoutcomes().get("passed") > 0
     # result.assert_outcomes(passed=2, failed=17, errors=118, skipped=10)
