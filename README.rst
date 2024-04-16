@@ -167,7 +167,7 @@ Troubleshooting:
 
     * This is likely to happen if you have older version of PSA requirements installed, to solve this try to uninstall lovely-pytest-docker and pull the latest main branch and then do `poetry install`
 
-2. If while running the tests you face error like this: 
+2. If while running the tests you face an exception like this: 
 
         `Exception: Command ['docker', 'compose', '-f', '<path>/docker-compose.yml', '-p', '<projectname>', 'down', '-v'] returned 125: """unknown shorthand flag: 'f' in -f`
 
