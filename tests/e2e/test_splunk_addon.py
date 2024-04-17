@@ -773,14 +773,11 @@ def test_infinite_loop_in_ingest_data_fixture(testdir, request):
 
     # run pytest with the following cmd args
     result = testdir.runpytest(
-        f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-app=addons/TA_fiction_indextime",
         "--splunk-type=external",
-        "--splunk-host=splunk",
         "--splunk-data-generator=tests/addons/TA_fiction_indextime/default",
         "--sc4s-host=splunk",
         "--sc4s-port=100",
-        "--splunk-port=8089",
         "-n 2",
         "-v",
         "-s",
