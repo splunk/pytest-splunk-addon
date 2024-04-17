@@ -144,7 +144,7 @@ jobs:
             poetry run pytest -m ${{ matrix.test-marker }} tests/e2e
           else
             # Command to execute if the condition is false
-            SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up test --abort-on-container-exit
+            SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
             docker volume ls
           fi
       - name: Collect Results
