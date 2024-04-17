@@ -136,9 +136,6 @@ jobs:
           sleep 90
       - name: Test
         run: |
-#          curl http://127.0.0.1:8000 || true
-#          SPLUNK_PASSWORD=Chang3d! docker compose -f docker-compose-ci.yml up --abort-on-container-exit
-#          docker volume ls
           if [ "${{ matrix.test-marker }}" = "test_infinite_loop_fixture" ]
           then
             curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
