@@ -136,8 +136,7 @@ jobs:
           sleep 90
       - name: Test
         run: |
-          # Command to execute if the condition is false
-          SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
+          SPLUNK_PASSWORD=Chang3d! docker compose -f docker-compose-ci.yml up --abort-on-container-exit
           docker volume ls
       - name: Collect Results
         run: |
