@@ -142,10 +142,6 @@ jobs:
             poetry install
             poetry run pytest -m ${{ matrix.test-marker }} tests/e2e
           else
-            export SPLUNK_APP_PACKAGE=./tests/e2e/addons/TA_fiction
-            export SPLUNK_ADDON=TA_fiction
-            export SPLUNK_APP_ID=TA_fiction
-            export SPLUNK_VERSION=${{ matrix.splunk.version }}
             # Command to execute if the condition is false
             SPLUNK_PASSWORD=Chang3d! docker-compose -f docker-compose-ci.yml up --abort-on-container-exit
             docker volume ls
