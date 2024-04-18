@@ -130,7 +130,7 @@ jobs:
           export SPLUNK_ADDON=TA_fiction_indextime
           export SPLUNK_APP_ID=TA_fiction_indextime
           export SPLUNK_VERSION=${{ matrix.splunk.version }}
-          export splunk_hec_token="9b741d03-43e9-4164-908b-e09102327d22"
+          export SPLUNK_HEC_TOKEN="9b741d03-43e9-4164-908b-e09102327d22"
           echo $SPLUNK_VERSION
           docker compose -f "docker-compose-ci.yml" build
           SPLUNK_PASSWORD=Chang3d! docker compose -f docker-compose-ci.yml up -d splunk
