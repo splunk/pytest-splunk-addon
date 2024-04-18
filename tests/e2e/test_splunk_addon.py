@@ -83,7 +83,7 @@ def test_splunk_connection_external(testdir):
     # fnmatch_lines does an assertion internally
     result.assert_outcomes(passed=1, failed=0)
 
-    # make sure that that we get a '0' exit code for the testsuite
+    # make sure that we get a '0' exit code for the testsuite
     assert result.ret == 0
 
 
@@ -115,7 +115,7 @@ def test_splunk_connection_docker(testdir):
     # fnmatch_lines does an assertion internally
     result.assert_outcomes(passed=1, failed=0)
 
-    # make sure that that we get a '0' exit code for the testsuite
+    # make sure that we get a '0' exit code for the testsuite
     assert result.ret == 0
 
 
@@ -162,7 +162,7 @@ def test_splunk_app_fiction(testdir):
         skipped=len(constants.TA_FICTION_SKIPPED),
     )
 
-    # make sure that that we get a '0' exit code for the testsuite
+    # make sure that we get a '0' exit code for the testsuite
     assert result.ret == 0
 
 
@@ -322,7 +322,7 @@ def test_splunk_app_cim_fiction(testdir):
         skipped=len(constants.TA_CIM_FICTION_SKIPPED),
     )
 
-    # make sure that that we get a '0' exit code for the testsuite
+    # make sure that we get a '0' exit code for the testsuite
     assert result.ret == 0
 
 
@@ -431,7 +431,7 @@ def test_splunk_fiction_indextime(testdir):
         failed=0,
     )
 
-    # make sure that that we get a '0' exit code for the testsuite
+    # make sure that we get a '0' exit code for the testsuite
     assert result.ret == 0
 
 
@@ -616,7 +616,7 @@ def test_splunk_app_req(testdir):
         skipped=len(constants.TA_REQ_TRANSITION_SKIPPED),
     )
 
-    # make sure that that we get a non '0' exit code for the testsuite as it contains failure
+    # make sure that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret == 0, "result not equal to 0"
 
 
@@ -670,7 +670,7 @@ def test_splunk_app_req_broken(testdir):
         skipped=len(constants.TA_REQ_BROKEN_SKIPPED),
     )
 
-    # make sure that that we get a non '0' exit code for the testsuite as it contains failure
+    # make sure that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0
 
 
@@ -724,5 +724,49 @@ def test_splunk_app_req(testdir):
         skipped=len(constants.TA_REQ_TRANSITION_SKIPPED),
     )
 
-    # make sure that that we get a non '0' exit code for the testsuite as it contains failure
+    # make sure that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret == 0, "result not equal to 0"
+
+@pytest.mark.test_infinite_loop_fixture
+@pytest.mark.docker
+@pytest.mark.external
+def test_infinite_loop_in_ingest_data_fixture(testdir, request):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction_indextime"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+        os.path.join(testdir.tmpdir, "tests/data_models"),
+    )
+
+    setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        "--splunk-app=addons/TA_fiction_indextime",
+        "--splunk-type=external",
+        "--splunk-host=splunk",
+        "--splunk-data-generator=tests/addons/TA_fiction_indextime/default",
+        "--sc4s-host=splunk",
+        "--sc4s-port=100",
+        "-n 2",
+    )
+
+    # fnmatch_lines does an assertion internally Here we are not interested in the failures or errors,
+    # we are basically checking that we get results and test execution does not get stuck
+    assert result.parseoutcomes().get("passed") > 0
