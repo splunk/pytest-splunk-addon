@@ -740,6 +740,7 @@ def test_splunk_app_req(testdir, request):
     # make sure that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret == 0, "result not equal to 0"
 
+
 @pytest.mark.test_infinite_loop_fixture
 @pytest.mark.docker
 @pytest.mark.external
