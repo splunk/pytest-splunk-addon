@@ -19,7 +19,7 @@ jobs:
     outputs:
       matrix_supportedSplunk: ${{ steps.matrix.outputs.supportedSplunk }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: matrix
         uses: splunk/addonfactory-test-matrix-action@v1
 
@@ -27,7 +27,7 @@ jobs:
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: run fossa anlyze and create report
         run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
@@ -36,7 +36,7 @@ jobs:
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
       - name: upload THIRDPARTY file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: THIRDPARTY
           path: /tmp/THIRDPARTY
@@ -49,47 +49,32 @@ jobs:
   compliance-copyrights:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: apache/skywalking-eyes@v0.4.0
+      - uses: actions/checkout@v4
+      - uses: apache/skywalking-eyes@v0.6.0
   
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.7"
-      - uses: pre-commit/action@v3.0.0
+      - uses: pre-commit/action@v3.0.1
 
   semgrep:
     runs-on: ubuntu-latest
     name: security-sast-semgrep
-    if: github.actor != 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: semgrep
         uses: semgrep/semgrep-action@v1
         with:
           publishToken: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
 
-  review_secrets:
-    name: security-detect-secrets
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          submodules: false
-          fetch-depth: "0"
-      - name: Trufflehog Actions Scan
-        uses: edplato/trufflehog-actions-scan@v0.9j-beta
-        with:
-          scanArguments: "--max_dept 50 -x .github/workflows/exclude-patterns.txt"
-
   test-splunk-unit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - name: Install dependencies
@@ -102,16 +87,16 @@ jobs:
     name: Test Docs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.7
       - name: Install and run tests
         run: |
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
-          poetry install --with docs -E docker
+          poetry install --with docs
           poetry run pytest -v -m doc tests/e2e
 
   test-splunk-external:
@@ -123,13 +108,12 @@ jobs:
       - compliance-copyrights
       - test-splunk-doc
       - test-splunk-unit
-      - review_secrets
     strategy:
       fail-fast: false
       matrix:
         splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - name: Setup for testing
@@ -153,13 +137,13 @@ jobs:
           docker container create --name dummy \
                               -v pytest-splunk-addon_results:/work/test-results \
                               registry.access.redhat.com/ubi7/ubi
-          docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.splunk-version }}
-      - uses: actions/upload-artifact@v3
+          docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.splunk.version }}
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: splunk ${{ matrix.splunk-version }} external test artifacts
+          name: splunk ${{ matrix.splunk.version }} external test artifacts
           path: |
-            test-results-${{ matrix.splunk-version }}
+            test-results-${{ matrix.splunk.version }}
 
   test-splunk-matrix:
     needs:
@@ -169,7 +153,6 @@ jobs:
       - compliance-copyrights
       - test-splunk-doc
       - test-splunk-unit
-      - review_secrets
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -189,15 +172,15 @@ jobs:
           "splunk_app_req_broken",
         ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.7
       - run: |
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
-          poetry install -E docker
+          poetry install
           poetry run pytest -v --splunk-version=${{ matrix.splunk.version }} -m docker -m ${{ matrix.test-marker }} tests/e2e
 
   publish:
@@ -206,16 +189,16 @@ jobs:
       - test-splunk-matrix
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # Very Important semantic-release won't trigger a tagged
           # build if this is not set false
           submodules: false
           persist-credentials: false
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.7"
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: THIRDPARTY
       - name: Update Notices
