@@ -133,8 +133,6 @@ jobs:
           export SPLUNK_HEC_TOKEN="9b741d03-43e9-4164-908b-e09102327d22"
           echo $SPLUNK_VERSION
           docker compose -f "docker-compose-ci.yml" build
-          SPLUNK_PASSWORD=Chang3d! docker compose -f docker-compose-ci.yml up -d splunk
-          sleep 90
           SPLUNK_PASSWORD=Chang3d! docker compose -f docker-compose-ci.yml up --abort-on-container-exit
           docker volume ls
       - name: Collect Results
