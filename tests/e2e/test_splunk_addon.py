@@ -742,7 +742,6 @@ def test_splunk_app_req(testdir, request):
 
 
 @pytest.mark.test_infinite_loop_fixture
-@pytest.mark.docker
 @pytest.mark.external
 def test_infinite_loop_in_ingest_data_fixture(testdir, request):
     """Make sure that pytest accepts our fixture."""
@@ -771,6 +770,7 @@ def test_infinite_loop_in_ingest_data_fixture(testdir, request):
     Rule.clean_rules()
 
     # run pytest with the following cmd args
+    # we are providing wrong sc4s service details here so that we can recreate scenario where first worked raises execption and other workers get stuck
     result = testdir.runpytest(
         "--splunk-app=addons/TA_fiction_indextime",
         "--splunk-type=external",
@@ -781,6 +781,6 @@ def test_infinite_loop_in_ingest_data_fixture(testdir, request):
         "-n 2",
     )
 
-    # fnmatch_lines does an assertion internally Here we are not interested in the failures or errors,
+    # Here we are not interested in the failures or errors,
     # we are basically checking that we get results and test execution does not get stuck
     assert result.parseoutcomes().get("passed") > 0
