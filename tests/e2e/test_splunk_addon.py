@@ -742,7 +742,6 @@ def test_splunk_app_req(testdir, request):
 
 
 @pytest.mark.test_infinite_loop_fixture
-@pytest.mark.docker
 @pytest.mark.external
 def test_infinite_loop_in_ingest_data_fixture(testdir, request):
     """Make sure that pytest accepts our fixture."""
