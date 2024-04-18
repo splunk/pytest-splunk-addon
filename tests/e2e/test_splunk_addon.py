@@ -770,7 +770,7 @@ def test_infinite_loop_in_ingest_data_fixture(testdir, request):
     Rule.clean_rules()
 
     # run pytest with the following cmd args
-    # we are providing wrong sc4s service details here so that we can recreate scenario where first worked raises execption and other workers get stuck
+    # we are providing wrong sc4s service details here so that we can recreate scenario where first worked raises exception and other workers get stuck
     result = testdir.runpytest(
         "--splunk-app=addons/TA_fiction_indextime",
         "--splunk-type=external",
