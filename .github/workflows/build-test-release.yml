@@ -120,18 +120,15 @@ jobs:
         run: |
           pip install git+https://github.com/pixelb/crudini
           mkdir test-results-${{ matrix.splunk.version }}
-      - name: Splunk Up
-        run: |
-          export SPLUNK_APP_PACKAGE=./tests/e2e/addons/TA_fiction
-          export SPLUNK_ADDON=TA_fiction
-          export SPLUNK_APP_ID=TA_fiction
-          export SPLUNK_VERSION=${{ matrix.splunk.version }}
-          echo $SPLUNK_VERSION
-          docker compose -f "docker-compose-ci.yml" build
-          SPLUNK_PASSWORD=Chang3d! docker compose -f docker-compose-ci.yml up -d splunk
-          sleep 90
       - name: Test
         run: |
+          export SPLUNK_APP_PACKAGE=./tests/e2e/addons/TA_fiction_indextime
+          export SPLUNK_ADDON=TA_fiction_indextime
+          export SPLUNK_APP_ID=TA_fiction_indextime
+          export SPLUNK_VERSION=${{ matrix.splunk.version }}
+          export SPLUNK_HEC_TOKEN="9b741d03-43e9-4164-908b-e09102327d22"
+          echo $SPLUNK_VERSION
+          docker compose -f "docker-compose-ci.yml" build
           SPLUNK_PASSWORD=Chang3d! docker compose -f docker-compose-ci.yml up --abort-on-container-exit
           docker volume ls
       - name: Collect Results
