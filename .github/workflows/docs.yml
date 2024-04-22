@@ -1,0 +1,22 @@
+name: docs
+on:
+  push:
+    branches:
+      - main
+      - migrating-docs
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.7
+      - run: |
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
+          poetry install
+      - run: poetry run mkdocs gh-deploy --force

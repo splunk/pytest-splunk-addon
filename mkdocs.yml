@@ -1,0 +1,52 @@
+site_name: Pytest Splunk Addon
+site_author: Splunk
+site_url: "https://splunk.github.io/addonfactory-ucc-generator/"
+edit_uri: "tree/main/docs/"
+remote_branch: gh-pages
+
+repo_name: Pytest Splunk Addon
+repo_url: "https://github.com/splunk/pytest-splunk-addon"
+
+markdown_extensions:
+  - toc:
+      permalink: True
+  - smarty
+  - fenced_code
+  - sane_lists
+  - codehilite
+  - pymdownx.superfences
+
+theme:
+  name: "material"
+  palette:
+    primary: "black"
+    accent: "orange"
+  features:
+    - content.code.copy
+    - navigation.indexes
+
+extra_css:
+    - css/extra.css
+
+nav:
+  - Home: "index.md"
+  - Overview: "overview.md"
+  - How to use: "how_to_use.md"
+  - Common Tests:
+    - Test Scenarios: "common_tests.md"
+  - CIM Compatibility Tests: "cim_tests.md"
+  - CIM Compliance Report: "cim_compliance.md"
+  - Knowledge Object Tests: "field_tests.md"
+  - Index Time Tests: "index_time_tests.md"
+  - Data Generator: "sample_generator.md"
+  - Generate Conf Utility: "generate_conf.md"
+  - API Documentation:
+      - API Overview: "api_reference/api_reference.md"
+      - AddonParser: "api_reference/addon_parser.md"
+      - CimTests: "api_reference/cim_tests.md"
+      - FieldsTests: "api_reference/fields_tests.md"
+      - IndexTimeTests: "api_reference/index_time_tests.md"
+      - AppTestGenerator: "api_reference/app_test_generator.md"
+      - DataGenerator: "api_reference/sample_generation.md"
+      - EventIngestor: "api_reference/event_ingestion.md"
+  - Troubleshooting: "troubleshoot.md"
