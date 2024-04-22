@@ -1,7 +1,7 @@
 site_name: Pytest Splunk Addon
 site_author: Splunk
 site_url: "https://splunk.github.io/addonfactory-ucc-generator/"
-edit_uri: "tree/main/docs/"
+edit_uri: "tree/migrating-docs/docs/"
 remote_branch: gh-pages
 
 repo_name: Pytest Splunk Addon
