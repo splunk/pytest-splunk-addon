@@ -1,6 +1,5 @@
 # How To Use
 
-(test-file)=
 
 Create a test file in the tests folder
 
@@ -11,7 +10,7 @@ Create a test file in the tests folder
                 pass
 ```
 
-(test-execution)=
+## Test Execution
 
 There are three ways to execute the tests:
 

@@ -1,31 +1,23 @@
 # FieldsTests
 
-```{eval-rst}
-.. automodule:: standard_lib.fields_tests
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.fields_tests
+    handler: python
+
 
 ## TestTemplates
 
-```{eval-rst}
-.. automodule:: standard_lib.fields_tests.test_templates
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.fields_tests.test_templates
+    handler: python
+
 
 ## TestGenerator
 
-```{eval-rst}
-.. automodule:: standard_lib.fields_tests.test_generator
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.fields_tests.test_generator
+    handler: python
+
 
 ## FieldBank
 
-```{eval-rst}
-.. automodule:: standard_lib.fields_tests.field_bank
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.fields_tests.field_bank
+    handler: python
+

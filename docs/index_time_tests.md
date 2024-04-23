@@ -8,7 +8,7 @@
 
 - The index time properties which are tested are as follows:
      1. Key Fields Extraction
-     2. Timestamp (\_time)
+     2. Timestamp (_time)
      3. LINE_BREAKER
 
 ### Prerequisites
@@ -34,7 +34,7 @@ To generate test cases only for index time properties, append the following mark
 **1. Test case for key fields extraction:**
 
  ```python
- test_indextime_key_fields[<sourcetype::<host_name]
+ test_indextime_key_fields[<sourcetype>::<host_name>]
  ```
 
  - Test case verifies if all the key fields are extracted properly,
@@ -53,7 +53,7 @@ To generate test cases only for index time properties, append the following mark
 
 
  - This test case will not be generated if there are no key fields specified for the event.
- - Key field can be assign to token using field property. `i.e token.n.field = <KEY_FIELD`
+ - Key field can be assign to token using field property. `i.e token.n.field = <KEY_FIELD>`
 
  Testcase assertions:
 
@@ -74,40 +74,40 @@ To generate test cases only for index time properties, append the following mark
 
  - Assert the test case results as mentioned in {ref}`testcase assertions<test_assertions_key_field`.
 
-**2. Test case for \_time property:**
+**2. Test case for _time property:**
 
  ```python
- test_indextime_time[<sourcetype::<host_name]
+ test_indextime_time[<sourcetype>::<host_name>]
  ```
 
  - Test case verifies if the timestamp for the event is assigned properly.
- - The timestamp is assigned to the \_time field which is validated by the test case.
+ - The timestamp is assigned to the _time field which is validated by the test case.
  - This test case will be generated if timestamp_type = event in stanza.
- - \_time field can be assign to token using field property. i.e `token.n.field = _time`
+ - _time field can be assign to token using field property. i.e `token.n.field = _time`
 
  Testcase assertions:
 
  - There should be at least 1 event with the sourcetype and host.
- - There should be at least 1 token with field \_time in stanza.
- - One event should have only one token with token.n.field = \_time.
- - Every event should have token with token.n.field = \_time.
- - The values of the \_time fields obtained from the event
+ - There should be at least 1 token with field _time in stanza.
+ - One event should have only one token with token.n.field = _time.
+ - Every event should have token with token.n.field = _time.
+ - The values of the _time fields obtained from the event
    must match with the values of the time values which was used in generating and ingesting the event.
 
  **Workflow:**
 
  - Generates an SPL query using sourcetype and host from the event.
  - Execute the SPL query in a Splunk instance.
- - The value of \_time obtained from the search query is matched
-   with the \_time value assigned to the event before ingesting it.
+ - The value of _time obtained from the search query is matched
+   with the _time value assigned to the event before ingesting it.
 
-> **_NOTE:_** The test case for \_time field will not be generated if `timestamp_type = plugin` in
+> **_NOTE:_** The test case for _time field will not be generated if `timestamp_type = plugin` in
  pytest-splunk-addon-data.conf
 
 **3. Test case for line-breaker property:**
 
  ```python
- test_indextime_line_breaker[<sourcetype::<host_name]
+ test_indextime_line_breaker[<sourcetype>::<host_name>]
  ```
 
  - Test case verifies if the LINE_BREAKER property used in props.conf works properly.
@@ -138,7 +138,7 @@ In the case test-case failure check if:
  - Splunk instance's management port is accessible from the test machine.
 
 If all the above conditions are satisfied, further analysis of the test is required.
-For every test case failure, there is a defined structure for the stack trace [^footnote-1].
+For every test case failure, there is a defined structure for the stack trace.
 
  ```text
  AssertionError: <<error_message
@@ -153,9 +153,9 @@ Get the search query from the stack trace and execute it on the Splunk instance 
 
       - pytest-splunk-addon relies on samples available in addon folder under path provided `--splunk-app` or `--splunk-data-generator` options.
 
-2. When do I assign timestamp_type = event to test the time extraction (\_time) for a stanza?
+2. When do I assign timestamp_type = event to test the time extraction (_time) for a stanza?
 
-      - When the Splunk assigns \_time value from a timestamp present in event based on props configurations, you should assign `timestamp_type=event` for that sample stanza.
+      - When the Splunk assigns _time value from a timestamp present in event based on props configurations, you should assign `timestamp_type=event` for that sample stanza.
 
       - Example :
         : For this sample, Splunk assigns the value `2020-06-23T00:00:00.000Z` to `_time`.
@@ -173,10 +173,10 @@ Get the search query from the stack trace and execute it on the Splunk instance 
           token.0.field = _time
           ```
 
-3. When do I assign timestamp_type = plugin to test the time extraction (\_time) for a stanza?
+3. When do I assign timestamp_type = plugin to test the time extraction (_time) for a stanza?
 
      - When there is no timestamp available in event or the props configurations are written to have the Splunk default timestamp assigned instead timestamp present in event, you should assign `timestamp_type=plugin` for that sample stanza.
-     - No \_time test generates for the sample stanza when `timestamp_type = plugin`.
+     - No _time test generates for the sample stanza when `timestamp_type = plugin`.
      - Example:
        - For this sample, Splunk assigns the default time value to `_time`.
 
@@ -243,7 +243,3 @@ Get the search query from the stack trace and execute it on the Splunk instance 
          token.0.replacement = src["ipv4"]
          token.0.field = src
          ```
-
-______________________________________________________________________
-
-[^1]: Stacktrace is the text displayed in the Exception block when the Test fails.

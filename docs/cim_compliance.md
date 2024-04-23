@@ -1,10 +1,10 @@
 # CIM Compliance Report
 
-## **Overview**
+## Overview
 
 - CIM compliance report provides insights to an user about the compatibility of the add-on with the supported CIM Data Models, which helps in identifying CIM coverage gaps and helps in understanding those gaps which can be fixed in the add-on.
 
-## **What does the report contain?**
+## What does the report contain?
 
 The report is divided into the following sections:
 
@@ -20,13 +20,13 @@ The report is divided into the following sections:
 
 4. A list of data models which are not supported by the plugin.
 
-## **How to generate the report?**
+## How to generate the report?
 
 There are two ways to generate the CIM Compliance report:
 
 **1. Generating the report while executing the test cases**
 
-- Append the following to {ref}`any one of the commands <test_execution` used for executing the test cases:
+- Append the following to [any one of the commands][how_to_use.md#test-execution] used for executing the test cases:
 
   ```console
   --cim-report <file_name.md
@@ -40,7 +40,7 @@ There are two ways to generate the CIM Compliance report:
   cim-report <junit_report.xml<report.md
   ```
 
-## **Report Generation Troubleshooting**
+## Report Generation Troubleshooting
 
 If the CIM Compliance report is not generated, check for the following:
 
@@ -49,12 +49,12 @@ If the CIM Compliance report is not generated, check for the following:
 2. If the report was generated using a JUnit report, check if the provided JUnit report:
 
      - Exists at the given location.
-   
+
      - Has a valid format.
    
      - Has all the required properties which includes the following:
-       1. Tag_stanza
-       2. Data Model
-       3. Data Set
-       4. Field name
-       5. Field type
+          1. Tag_stanza
+          2. Data Model
+          3. Data Set
+          4. Field name
+          5. Field type

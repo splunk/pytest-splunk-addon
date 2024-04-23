@@ -1,81 +1,57 @@
 # CimTests
 
-```{eval-rst}
-.. automodule:: standard_lib.cim_tests
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.cim_tests
+    handler: python
 
 ## TestTemplates
 
-```{eval-rst}
-.. automodule:: standard_lib.cim_tests.test_templates
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.cim_tests.test_templates
+    handler: python
+
 
 ## TestGenerator
 
-```{eval-rst}
-.. automodule:: standard_lib.cim_tests.test_generator
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.cim_tests.test_generator
+    handler: python
+
 
 ## DataModelHandler
 
-```{eval-rst}
-.. automodule:: standard_lib.cim_tests.data_model_handler
-   :members:
-   :show-inheritance:
+::: pytest_splunk_addon.standard_lib.cim_tests.data_model_handler
+    handler: python
 
-```
 
 ## DataModel
 
-```{eval-rst}
-.. automodule:: standard_lib.cim_tests.data_model
-   :members:
-   :show-inheritance:
+::: pytest_splunk_addon.standard_lib.cim_tests.data_model
+    handler: python
 
-```
 
 ## DataSet
 
-```{eval-rst}
-.. automodule:: standard_lib.cim_tests.data_set
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.cim_tests.data_set
+    handler: python
+
 
 ## FieldTestAdapter
 
-```{eval-rst}
-.. automodule:: standard_lib.cim_tests.field_test_adapter
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.cim_tests.field_test_adapter
+    handler: python
+
 
 ## FieldTestHelper
 
-```{eval-rst}
-.. automodule:: standard_lib.cim_tests.field_test_helper
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.cim_tests.field_test_helper
+    handler: python
+
 
 ## JsonSchema
 
-```{eval-rst}
-.. automodule:: standard_lib.cim_tests.json_schema
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.cim_tests.json_schema
+    handler: python
+
 
 ## BaseSchema
 
-```{eval-rst}
-.. automodule:: standard_lib.cim_tests.base_schema
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.cim_tests.base_schema
+    handler: python

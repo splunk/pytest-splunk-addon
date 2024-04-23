@@ -2,32 +2,22 @@
 
 ## PytestSplunkAddonDataParser
 
-```{eval-rst}
-.. automodule:: standard_lib.sample_generation.pytest_splunk_addon_data_parser
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.sample_generation.pytest_splunk_addon_data_parser
+    handler: python
 
 ## SampleStanza
 
-```{eval-rst}
-.. automodule:: standard_lib.sample_generation.sample_stanza
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.sample_generation.sample_stanza
+    handler: python
+
 
 ## SampleEvent
 
-```{eval-rst}
-.. automodule:: standard_lib.sample_generation.sample_event
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.sample_generation.sample_event
+    handler: python
+
 
 ## Rule
 
-```{eval-rst}
-.. automodule:: standard_lib.sample_generation.rule
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.sample_generation.rule
+    handler: python

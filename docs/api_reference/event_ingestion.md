@@ -2,32 +2,25 @@
 
 ## HEC Event Ingestor
 
-```{eval-rst}
-.. automodule:: standard_lib.event_ingestors.hec_event_ingestor
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.event_ingestors.hec_event_ingestor
+    handler: python
+
 
 ## HEC Raw Ingestor
 
-```{eval-rst}
-.. automodule:: standard_lib.event_ingestors.hec_raw_ingestor
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.event_ingestors.hec_raw_ingestor
+    handler: python
+
 
 ## SC4S Event Ingestor
 
-```{eval-rst}
-.. automodule:: standard_lib.event_ingestors.sc4s_event_ingestor
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.event_ingestors.sc4s_event_ingestor
+    handler: python
+
 
 ## File Monitor Ingestor
 
-```{eval-rst}
-.. automodule:: standard_lib.event_ingestors.file_monitor_ingestor
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.event_ingestors.file_monitor_ingestor
+    handler: python
+
+

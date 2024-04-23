@@ -10,11 +10,24 @@ repo_url: "https://github.com/splunk/pytest-splunk-addon"
 markdown_extensions:
   - toc:
       permalink: True
+      toc_depth: 3
   - smarty
   - fenced_code
   - sane_lists
   - codehilite
   - pymdownx.superfences
+
+plugins:
+    - mkdocstrings:
+        handlers:
+            python:
+                setup_commands:
+                    - import sys
+                    - sys.path.append('../')
+                selection:
+                    new_path_syntax: true
+                options:
+                  inherited_members: false
 
 theme:
   name: "material"
@@ -24,16 +37,15 @@ theme:
   features:
     - content.code.copy
     - navigation.indexes
+    - navigation.expand
 
 extra_css:
     - css/extra.css
 
 nav:
-  - Home: "index.md"
-  - Overview: "overview.md"
+  - Home: "overview.md"
   - How to use: "how_to_use.md"
-  - Common Tests:
-    - Test Scenarios: "common_tests.md"
+  - Common Tests: "common_tests.md"
   - CIM Compatibility Tests: "cim_tests.md"
   - CIM Compliance Report: "cim_compliance.md"
   - Knowledge Object Tests: "field_tests.md"

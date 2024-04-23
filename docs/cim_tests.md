@@ -16,7 +16,7 @@ To generate test cases only for CIM compatibility, append the following marker t
  -m  splunk_searchtime_cim
  ```
 
-## **Test Scenarios**
+## Test Scenarios
 
 
 **1. Testcase for each eventtype mapped with a dataset.**
@@ -102,16 +102,13 @@ To generate test cases only for CIM compatibility, append the following marker t
 
 **5. Testcase to check that eventtype is not be mapped with multiple datamodels.**
 
- ```python
- test_eventtype_mapped_multiple_cim_datamodel
- ```
 
  **Workflow:**
 
  - Parsing tags.conf it already has a list of eventtype mapped with the datasets.
  - Using SPL we check that each eventtype is not be mapped with multiple datamodels.
 
-## **Testcase Troubleshooting**
+## Testcase Troubleshooting
 
 In case of test case failure check if:
 

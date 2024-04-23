@@ -1,7 +1,4 @@
 # AppTestGenerator
 
-```{eval-rst}
-.. automodule:: standard_lib.app_test_generator
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.app_test_generator
+    handler: python

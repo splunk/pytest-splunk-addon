@@ -1,55 +1,41 @@
 # AddonParser
 
-```{eval-rst}
-.. automodule:: standard_lib.addon_parser
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.addon_parser
+    handler: python
+
 
 ## PropsParser
 
-```{eval-rst}
-.. automodule:: standard_lib.addon_parser.props_parser
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.addon_parser.props_parser
+    handler: python
+
 
 ## EventtypeParser
 
-```{eval-rst}
-.. automodule:: standard_lib.addon_parser.eventtype_parser
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.addon_parser.eventtype_parser
+    handler: python
+
 
 ## Field
 
-```{eval-rst}
-.. automodule:: standard_lib.addon_parser.fields
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.addon_parser.fields
+    handler: python
+
 
 ## TagsParser
 
-```{eval-rst}
-.. automodule:: standard_lib.addon_parser.tags_parser
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.addon_parser.tags_parser
+    handler: python
+
 
 ## TransformsParser
 
-```{eval-rst}
-.. automodule:: standard_lib.addon_parser.transforms_parser
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.addon_parser.transforms_parser
+    handler: python
+
 
 ## SavedsearchesParser
 
-```{eval-rst}
-.. automodule:: standard_lib.addon_parser.savedsearches_parser
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.addon_parser.savedsearches_parser
+    handler: python
+

@@ -1,23 +1,17 @@
 # IndexTimeTests
 
-```{eval-rst}
-.. automodule:: standard_lib.index_tests
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.index_tests
+    handler: python
+
 
 ## TestTemplates
 
-```{eval-rst}
-.. automodule:: standard_lib.index_tests.test_templates
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.index_tests.test_templates
+    handler: python
+
 
 ## TestGenerator
 
-```{eval-rst}
-.. automodule:: standard_lib.index_tests.test_generator
-   :members:
-   :show-inheritance:
-```
+::: pytest_splunk_addon.standard_lib.index_tests.test_generator
+    handler: python
+

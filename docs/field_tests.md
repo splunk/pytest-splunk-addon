@@ -29,7 +29,7 @@ To generate test cases only for knowledge objects, append the following marker t
 **1. Events should be present in source/sourcetype defined in props.conf stanza.**
 
  ```python
- test_props_fields[<stanza]
+ test_props_fields[<stanza>]
  ```
 
  Testcase verifies that there are events mapped with source/sourcetype.
@@ -43,7 +43,7 @@ To generate test cases only for knowledge objects, append the following marker t
 **2. Fields mentioned under source/sourcetype should be extracted**
 
  ```python
- test_props_fields[<stanza::field::<fieldname]
+ test_props_fields[<stanza::field::<fieldname>]
  ```
 
  Testcase verifies that the field should be extracted in the source/sourcetype.
@@ -58,7 +58,7 @@ To generate test cases only for knowledge objects, append the following marker t
 **3. Negative scenarios for field values**
 
  ```python
- test_props_fields_no_dash_not_empty[<stanza::field::<fieldname]
+ test_props_fields_no_dash_not_empty[<stanza>::field::<fieldname>]
  ```
 
  Testcase verifies that the field should not have "-" (dash) or "" (empty) as a value.
@@ -74,9 +74,9 @@ To generate test cases only for knowledge objects, append the following marker t
 **4. All the fields mentioned in an EXTRACT, REPORT, LOOKUP should be extracted in a single event.**
 
  ```python
- test_props_fields[<stanza::EXTRACT-<classname]
- test_props_fields[<stanza::LOOKUP-<classname]
- test_props_fields[<stanza::REPORT-<classname::<transforms_stanza]
+ test_props_fields[<stanza>::EXTRACT-<classname>]
+ test_props_fields[<stanza>::LOOKUP-<classname>]
+ test_props_fields[<stanza>::REPORT-<classname>::<transforms_stanza>]
  ```
 
  All the fields mentioned in EXTRACT, REPORT or LOOKUP can be interdependent.
@@ -96,7 +96,7 @@ To generate test cases only for knowledge objects, append the following marker t
 **5. Events should be present in each eventtype**
 
  ```python
- test_eventtype[eventtype=<eventtype]
+ test_eventtype[eventtype=<eventtype>]
  ```
 
  Test case verifies that there are events mapped with the eventtype.
@@ -109,7 +109,7 @@ To generate test cases only for knowledge objects, append the following marker t
 **6. Tags defined in tags.conf should be applied to the events.**
 
  ```python
- test_tags[<tags_stanza::tag::<tag]
+ test_tags[<tags_stanza>::tag::<tag>]
  ```
 
  Test case verifies that the there are events mapped with the tag.
@@ -124,7 +124,7 @@ To generate test cases only for knowledge objects, append the following marker t
 **7. Search query should be present in each savedsearches.**
 
  ```python
- test_savedsearches[<savedsearch_stanza]
+ test_savedsearches[<savedsearch_stanza>]
  ```
 
  Test case verifies that the search mentioned in savedsearch.conf generates valid search results.
