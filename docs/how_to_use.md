@@ -37,35 +37,37 @@ There are three ways to execute the tests:
 
  Create a Dockerfile.splunk file
 
-         ARG SPLUNK_VERSION=latest
-         FROM splunk/splunk:$SPLUNK_VERSION
-         ARG SPLUNK_VERSION=latest
-         ARG SPLUNK_APP_ID=TA_UNKNOWN
-         ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
-         RUN echo Splunk VERSION=$SPLUNK_VERSION
-         COPY deps/apps /opt/splunk/etc/apps/
-         COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
+     ARG SPLUNK_VERSION=latest
+     FROM splunk/splunk:$SPLUNK_VERSION
+     ARG SPLUNK_VERSION=latest
+     ARG SPLUNK_APP_ID=TA_UNKNOWN
+     ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
+     RUN echo Splunk VERSION=$SPLUNK_VERSION
+     COPY deps/apps /opt/splunk/etc/apps/
+     COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
  ```
 
  Create a Dockerfile.uf file
 
-         ARG SPLUNK_VERSION=latest
-         FROM splunk/universalforwarder:$SPLUNK_VERSION
-         ARG SPLUNK_VERSION=latest
-         ARG SPLUNK_APP_ID=TA_UNKNOWN
-         ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
-         COPY $SPLUNK_APP_PACKAGE /opt/splunkforwarder/etc/apps/$SPLUNK_APP_ID
+     ARG SPLUNK_VERSION=latest
+     FROM splunk/universalforwarder:$SPLUNK_VERSION
+     ARG SPLUNK_VERSION=latest
+     ARG SPLUNK_APP_ID=TA_UNKNOWN
+     ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
+     COPY $SPLUNK_APP_PACKAGE /opt/splunkforwarder/etc/apps/$SPLUNK_APP_ID
  ```
 
  Create docker-compose.yml
 
- ```{eval-rst}
- .. dropdown:: Example docker-compose file
-
-     .. literalinclude:: ../docker-compose.yml
-         :language: YAML
-         :lines: 9-
+     ARG SPLUNK_VERSION=latest
+     FROM splunk/universalforwarder:$SPLUNK_VERSION
+     ARG SPLUNK_VERSION=latest
+     ARG SPLUNK_APP_ID=TA_UNKNOWN
+     ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
+     COPY $SPLUNK_APP_PACKAGE /opt/splunkforwarder/etc/apps/$SPLUNK_APP_ID
  ```
+
+ ```{eval-rst}
 
 (conftest-file)=
 
@@ -258,9 +260,8 @@ The following optional arguments are available to modify the default settings in
 
  This will create the mentioned amount of processes and divide the test cases amongst them.
 
- :::{Note}
- Make sure there is enough data on the Splunk instance before running tests with pytest-xdist because faster the execution, lesser the time to generate enough data.
- :::
+> **_NOTE:_** Make sure there is enough data on the Splunk instance before running tests with pytest-xdist because faster the execution, lesser the time to generate enough data..
+
 
 **2. Want flaky/known failures to not fail the execution**
 

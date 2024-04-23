@@ -4,10 +4,6 @@ To ingest samples into Splunk, plugin takes `pytest-splunk-addon-data.conf` as i
 The sample generation & ingestion takes place before executing the testcases.
 For index-time test cases, there are multiple metadata required about the sample file for which `pytest-splunk-addon-data.conf` must be created and provided to the pytest command.
 
-To create the `pytest-splunk-addon-data.conf` file, a utility can be used.
-Detailed steps on how to create the conf using utility can be found {ref}`here <generate_conf>`.
-
-(conf-spec)=
 
 ## pytest-splunk-addon-data.conf.spec
 
@@ -31,24 +27,24 @@ breaker = {{regex}}
 host_prefix = {{host_prefix}}
 ```
 
-**[\<sample file name\>]**
+**[<sample file name\>]**
 
 - The stanza can contain the sample File Name or Regex to match multiple sample files.
 - The sample file should be located in samples folder under the Add-on package.
 - Example1: \[sample_file.samples\] would collect samples from file sample_file.samples
 - Example2: \[sample\_\*.samples\] would collect samples from both sample_file.samples and sample_sample.samples.
 
-**sourcetype = \<sourcetype\>**
+**sourcetype = <sourcetype\>**
 
 - sourcetype to be assigned to the sample events
 
-**source = \<source>**
+**source = <source\>**
 
 - source to be assigned to the sample events
   - default value: pytest-splunk-addon:{\{input_type}}
 
 
-**sourcetype_to_search = \<sourcetype>**
+**sourcetype_to_search = <sourcetype\>**
 
 - The sourcetype used to search events
   - This would be different then sourcetype= param in cases where TRANSFORMS is used to update the sourcetype index time.
@@ -57,7 +53,7 @@ host_prefix = {{host_prefix}}
 
 - This key determines if host is assigned from event or default host should be assigned by plugin.
 - If the value is plugin, the plugin will generate host with format of "stanza\_\{count}" to uniquely identify the events.
-- If the value is event, the host field should be provided for a token using "token.\<n>.field = host".
+- If the value is event, the host field should be provided for a token using "token.<n\>.field = host".
 
 **input_type = modinput | scripted_input | syslog_tcp | file_monitor | windows_input | uf_file_monitor | default**
 - 
@@ -66,25 +62,23 @@ host_prefix = {{host_prefix}}
 - In input_type=uf_file_monitor, universal forwarder will use file monitor to read event and then it will send data to indexer.
 - For example, in an Add-on, a sourcetype "alert" is ingested through syslog in live environment, provide input_type=syslog_tcp.
 
+> **_warning:_**  uf_file_monitor input_type will only work with splunk-type=docker.
 
-  :::{warning}
-  uf_file_monitor input_type will only work with splunk-type=docker.
-  :::
 
-**index = \<index>**
+**index = <index\>**
 
 - The index used to ingest the data.
 - The index must be configured beforehand.
 - If the index is not available then the data will not get ingested into Splunk and a warning message will be printed.
 - Custom index is not supported for syslog_tcp or syslog_udp
 
-**sample_count = \<count>**
+**sample_count = <count\>**
 
 - The no. of events present in the sample file.
 - This parameter will be used to calculate the total number of events which will be generated from the sample file.
 - If `input_type = modinput`, do not provide this parameter.
 
-**expected_event_count = \<count>**
+**expected_event_count = <count\>**
 
 - The no. of events this sample stanza should generate.
 - The parameter will be used to test the line breaking in index-time tests.
@@ -97,15 +91,15 @@ host_prefix = {{host_prefix}}
 - This key determines if \_time is assigned from event or default \_time should be assigned by plugin.
 - The parameter will be used to test the time extraction in index-time tests.
 - If value is plugin, the plugin will assign the time while ingesting the event.
-- If value is event, that means the time will be extracted from event and therfore, there should be a token provided with token.\<n>.field = \_time.
+- If value is event, that means the time will be extracted from event and therfore, there should be a token provided with token.<n\>.field = \_time.
 
-**breaker = \<regex>**
+**breaker = <regex\>**
 
 - The breaker is used to breakdown the sample file into multiple events, based on the regex provided.
 - This parameter is optional. If it is not provided by the user, the events will be ingested into Splunk,
 as per the *input_type* provided.
 
-**host_prefix = \<host_prefix>**
+**host_prefix = <host_prefix\>**
 - This param is used as an identification for the **host** field, for the events which are ingested using SC4S.
 
 ## Token replacement settings
@@ -114,17 +108,17 @@ The following replacementType -> replacement values are supported
 
 | ReplacementType | Replacement                                                                       |
 | --------------- | --------------------------------------------------------------------------------- |
-| static          | \<string>                                                                         |
-| timestamp       | \<strptime>                                                                       |
+| static          | <string\>                                                                         |
+| timestamp       | <strptime\>                                                                       |
 | random          | ipv4                                                                              |
 | random          | ipv6                                                                              |
 | random          | mac                                                                               |
 | random          | guid                                                                              |
-| random          | integer\[\<start>:\<end>\]                                                        |
-| random          | float\[\<start.numzerosforprecision>:\<end.numzerosforprecision>\]                |
-| random          | list\[\< "," separated list>\]                                                    |
+| random          | integer\[<start\>:<end\>\]                                                        |
+| random          | float\[<start.numzerosforprecision\>:<end.numzerosforprecision\>\]                |
+| random          | list\[< "," separated list\>\]                                                    |
 | random          | hex(\[integer\])                                                                  |
-| random          | file\[\<replacment file name, CSV file supported>:\<column number / CSV header>\] |
+| random          | file\[<replacment file name, CSV file supported\>:<column number / CSV header\>\] |
 | random          | dest\["host", "ipv4", "ipv6", "fqdn"\]                                            |
 | random          | src\["host", "ipv4", "ipv6", "fqdn"\]                                             |
 | random          | host\["host", "ipv4", "ipv6", "fqdn"\]                                            |
@@ -134,33 +128,33 @@ The following replacementType -> replacement values are supported
 | random          | email                                                                             |
 | random          | src_port                                                                          |
 | random          | dest_port                                                                         |
-| file            | \<replacment file name, CSV file supported>:\<column number / CSV header>         |
-| all             | integer\[\<start>:\<end>\]                                                        |
-| all             | list\[\< , separated list>\]                                                      |
-| all             | file\[\<replacment file name, CSV file supported>:\<column number / CSV header>\] |
+| file            | <replacment file name, CSV file supported\>:<column number / CSV header\>         |
+| all             | integer\[<start\>:<end\>\]                                                        |
+| all             | list\[< , separated list\>\]                                                      |
+| all             | file\[<replacment file name, CSV file supported\>:<column number / CSV header\>\] |
 
-**token.\<n>.token = \<regular expression>**
+**token.<n\>.token = <regular expression\>**
 
 - "n" is a number starting at 0, and increasing by 1.
 - PCRE expression used to identify segment for replacement.
 - If one or more capture groups are present the replacement will be performed on group 1.
 
-**token.\<n>.replacementType = static | timestamp | random | all | file**
+**token.<n\>.replacementType = static | timestamp | random | all | file**
 
 - "n" is a number starting at 0, and increasing by 1.
 - For static, the token will be replaced with the value specified in the replacement setting.
-- For timestamp, the token will be replaced with the strptime specified in the replacement setting. Strptime directive: <https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior>
+- For timestamp, the token will be replaced with the strptime specified in the replacement setting. Strptime directive: <https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior\>
 - For random, the token will be replaced with a randomly picked type-aware value
 - For all, For each possible replacement value, a new event will be generated and the token will be replaced with it. The configuration can be used where a token replacement contains multiple templates/values and all of the values are important and should be ingested at least once. The number of events will be multiplied by the number of values in the replacement. For example, if sample contains 3 lines & a token replacement has list of 2 values, then 6 events will be generated. For a replacement if replacementType='all' is not supported, then be default plugin will consider replacementType="random".
 - For file, the token will be replaced with a random value retrieved from a file specified in the replacement setting.
 
-**token.\<n>.replacement = \<string> | \<strptime> | \["list","of","values"\] | guid | ipv4 | ipv6 | mac | integer\[\<start>:\<end>\] | float\[\<start>:\<end>\] | hex(\<i>) | \<file name> | \<file name>:\<column number> | host | src | dest | dvc | user | url | email | src_port | dest_port**
+**token.<n\>.replacement = <string\> | <strptime\> | \["list","of","values"\] | guid | ipv4 | ipv6 | mac | integer\[<start\>:<end\>\] | float\[<start\>:<end\>\] | hex(<i\>) | <file name\> | <file name\>:<column number\> | host | src | dest | dvc | user | url | email | src_port | dest_port**
 
 - "n" is a number starting at 0, and increasing by 1.
 
-- For \<string>, the token will be replaced with the value specified.
+- For <string\>, the token will be replaced with the value specified.
 
-- For \<strptime>, a strptime formatted string to replace the timestamp with
+- For <strptime\>, a strptime formatted string to replace the timestamp with
 
 - For guid, the token will be replaced with a random GUID value.
 
@@ -170,15 +164,15 @@ The following replacementType -> replacement values are supported
 
 - For mac, the token will be replaced with a random valid MAC Address (i.e. 6e:0c:51:c6:c6:3a).
 
-- For integer\[\<start>:\<end>\], the token will be replaced with a random integer between start and end values where \<start> is a number greater than 0 and \<end> is a number greater than 0 and greater than or equal to \<start>. For replacement=all, one event will be generated for each value of integer within range \<start> and \<end>.
+- For integer\[<start\>:<end\>\], the token will be replaced with a random integer between start and end values where <start\> is a number greater than 0 and <end\> is a number greater than 0 and greater than or equal to <start\>. For replacement=all, one event will be generated for each value of integer within range <start\> and <end\>.
 
-- For float\[\<start>:\<end>\], the token will be replaced with a random float between start and end values where \<end> is a number greater than or equal to \<start>. For floating point numbers, precision will be based off the precision specified in \<start>. For example, if we specify 1.0, precision will be one digit, if we specify 1.0000, precision will be four digits.
+- For float\[<start\>:<end\>\], the token will be replaced with a random float between start and end values where <end\> is a number greater than or equal to <start\>. For floating point numbers, precision will be based off the precision specified in <start\>. For example, if we specify 1.0, precision will be one digit, if we specify 1.0000, precision will be four digits.
 
-- For hex(\<i>), the token will be replaced with i number of Hexadecimal characters \[0-9A-F\] where "i" is a number greater than 0.
+- For hex(<i\>), the token will be replaced with i number of Hexadecimal characters \[0-9A-F\] where "i" is a number greater than 0.
 
 - For list, the token will be replaced with a random member of the JSON list provided. For replacement=all, one event will be generated for each value within the list
 
-- For \<replacement file name>, the token will be replaced with a random line in the replacement file.
+- For <replacement file name\>, the token will be replaced with a random line in the replacement file.
 
      - Replacement file name should be a fully qualified path (i.e. \$SPLUNK_HOME/etc/apps/windows/samples/users.list).
      - Windows separators should contain double forward slashes "\\" (i.e. \$SPLUNK_HOME\\etc\\apps\\windows\\samples\\users.list).
@@ -187,50 +181,50 @@ The following replacementType -> replacement values are supported
 
 - For host\["host", "ipv4", "ipv6", "fqdn"\], 4 types of host replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.
 
-   - For host\["host"\], the token will be replaced with a sequential host value with pattern "host_sample_host\_\<number>".
+   - For host\["host"\], the token will be replaced with a sequential host value with pattern "host_sample_host\_<number\>".
    - For host\["ipv4"\], the token will be replaced with a random valid IPv4 Address.
    - For host\["ipv6"\], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3264:0:0:0:0 range.
-   - For host\["fqdn"\], the token will be replaced with a sequential fqdn value with pattern "host_sample_host.sample_domain\<number>.com".
+   - For host\["fqdn"\], the token will be replaced with a sequential fqdn value with pattern "host_sample_host.sample_domain<number\>.com".
 
 - For src\["host", "ipv4", "ipv6", "fqdn"\], 4 types of src replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.
 
-     - For src\["host"\], the token will be replaced with a sequential host value with pattern "src_sample_host\_\<number>".
+     - For src\["host"\], the token will be replaced with a sequential host value with pattern "src_sample_host\_<number\>".
      - For src\["ipv4"\], the token will be replaced with a random valid IPv4 Address from 10.1.0.0 range.
      - For src\["ipv6"\], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3261:0:0:0:0 range.
-     - For src\["fqdn"\], the token will be replaced with a sequential fqdn value with pattern "src_sample_host.sample_domain\<number>.com".
+     - For src\["fqdn"\], the token will be replaced with a sequential fqdn value with pattern "src_sample_host.sample_domain<number\>.com".
 
 - For dest\["host", "ipv4", "ipv6", "fqdn"\], 4 types of dest replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.
 
-     - For dest\["host"\], the token will be replaced with a sequential host value with pattern "dest_sample_host\_\<number>".
+     - For dest\["host"\], the token will be replaced with a sequential host value with pattern "dest_sample_host\_<number\>".
      - For dest\["ipv4"\], the token will be replaced with a random valid IPv4 Address from 10.100.0.0 range.
      - For dest\["ipv6"\], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3262:0:0:0:0 range.
-     - For dest\["fqdn"\], the token will be replaced with a sequential fqdn value with pattern "dest_sample_host.sample_domain\<number>.com".
+     - For dest\["fqdn"\], the token will be replaced with a sequential fqdn value with pattern "dest_sample_host.sample_domain<number\>.com".
 
 - For dvc\["host", "ipv4", "ipv6", "fqdn"\], 4 types of dvc replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.
 
-     - For dvc\["host"\], the token will be replaced with a sequential host value with pattern "dvc_sample_host\_\<number>".
+     - For dvc\["host"\], the token will be replaced with a sequential host value with pattern "dvc_sample_host\_<number\>".
      - For dvc\["ipv4"\], the token will be replaced with a random valid IPv4 Address from 172.16.0-50.0 range.
      - For dvc\["ipv6"\], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3263:0:0:0:0 range.
-     - For dvc\["fqdn"\], the token will be replaced with a sequential fqdn value with pattern "dvc_sample_host.sample_domain\<number>.com".
+     - For dvc\["fqdn"\], the token will be replaced with a sequential fqdn value with pattern "dvc_sample_host.sample_domain<number\>.com".
 
 - For user\["name", "email", "domain_user", "distinquised_name"\], 4 types of user replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.
 
-     - For user\["name"\], the token will be replaced with a random name with pattern "user\<number>".
-     - For user\["email"\], the token will be replaced with a random email with pattern "user\<number>@email.com".
-     - For user\["domain_user"\], the token will be replaced with a random domain user pattern sample_domain.comuser\<number>.
-     - For user\["distinquised_name"\], the token will be replaced with a distinquised user with pattern CN=user\<number>.
+     - For user\["name"\], the token will be replaced with a random name with pattern "user<number\>".
+     - For user\["email"\], the token will be replaced with a random email with pattern "user<number\>@email.com".
+     - For user\["domain_user"\], the token will be replaced with a random domain user pattern sample_domain.comuser<number\>.
+     - For user\["distinquised_name"\], the token will be replaced with a distinquised user with pattern CN=user<number\>.
 
 - For url\["full", "ip_host", "fqdn_host", "path", "query", "protocol"\], 6 types of url replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.
 
      - For url\["ip_host"\], the url to be replaced will contain ip based address.
      - For url\["fqdn_host"\], the url to be replaced will contain fqdn address.
-     - For path\["path"\], the url to be replaced will contain path with pattern "/\<path>".
-     - For url\["query"\], the url to be replaced will contain query with pattern "?\<query>=\<value>".
-     - For url\["protocol"\], the url to be replaced will contain protocol with pattern "\<https or http>://".
+     - For path\["path"\], the url to be replaced will contain path with pattern "<path\>".
+     - For url\["query"\], the url to be replaced will contain query with pattern "?<query\>=<value\>".
+     - For url\["protocol"\], the url to be replaced will contain protocol with pattern "<https or http\>://".
      - For url\["full"\], the url contain all the parts mentioned above i.e. ip_host, fqdn_host, path, query, protocol.
-     - Example 1: url\["ip_host", "path", "query"\], will be replaced with pattern \<ip_address>/\<path>?\<query>=\<value>
-     - Example 2: url\["fqdn_host", "path", "protocol"\], will be replaced with pattern \<https or http>://\<fqdn_address>/\<path>
-     - Example 3: url\["ip_host", "fqdn_host", "path", "query", "protocol"\], will be replaced with pattern \<https or http>://\<ip_address or fqdn_address>/\<path>?\<query>=\<value>
+     - Example 1: url\["ip_host", "path", "query"\], will be replaced with pattern <ip_address\>/<path\>?<query\>=<value\>
+     - Example 2: url\["fqdn_host", "path", "protocol"\], will be replaced with pattern <https or http\>://<fqdn_address\>/<path\>
+     - Example 3: url\["ip_host", "fqdn_host", "path", "query", "protocol"\], will be replaced with pattern <https or http\>://<ip_address or fqdn_address\>/<path\>?<query\>=<value\>
      - Example 4: url\["full"\], will be replaced same as example 3.
 
   - For email, the token will be replaced with a random email. If the same sample has a user token as well, the email and user tokens will be replaced with co-related values.
@@ -239,15 +233,15 @@ The following replacementType -> replacement values are supported
 
   - For dest_port, the token will be replaced with a random dest port value from (80,443,25,22,21)
 
-**token.\<n>.field = \<field_name>**
+**token.<n\>.field = <field_name\>**
 
 - "n" is a number starting at 0, and increasing by 1.
 - Assign the field_name for which the tokenized value will be extracted.
-- For this {ref}`key fields <key_fields>`, the index time test cases will be generated.
+- For this [key field](index_time_tests.md#test-scenarios), the index time test cases will be generated.
 - Make sure props.conf contains extractions to extract the value from the field.
 - If this parameter is not provided, the default value will be same as the token name.
 
-> **_NOTE:_** Make sure token name is not same as that any of {ref}`key field <key_fields>` values.
+> **_NOTE:_** Make sure token name is not same as that any of [key field](index_time_tests.md#test-scenarios) values.
 
 
 ## Example

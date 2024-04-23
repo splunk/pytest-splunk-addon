@@ -33,7 +33,7 @@ To generate test cases only for knowledge objects, append the following marker t
  ```
 
  Testcase verifies that there are events mapped with source/sourcetype.
- Here \<stanza is the source/sourcetype that is defined in the stanza.
+ Here <stanza is the source/sourcetype that is defined in the stanza.
 
  **Workflow:**
 
@@ -47,8 +47,8 @@ To generate test cases only for knowledge objects, append the following marker t
  ```
 
  Testcase verifies that the field should be extracted in the source/sourcetype.
- Here \<stanza is the source/sourcetype that is defined in the stanza and
- \<fieldname is the name of a field which is extracted under source/sourcetype.
+ Here <stanza is the source/sourcetype that is defined in the stanza and
+ <fieldname is the name of a field which is extracted under source/sourcetype.
 
  **Workflow:**
 
@@ -62,8 +62,8 @@ To generate test cases only for knowledge objects, append the following marker t
  ```
 
  Testcase verifies that the field should not have "-" (dash) or "" (empty) as a value.
- Here \<stanza is the source/sourcetype that is defined in the stanza and
- \<fieldname is name of field which is extracted under source/sourcetype.
+ Here <stanza is the source/sourcetype that is defined in the stanza and
+ <fieldname is name of field which is extracted under source/sourcetype.
 
  **Workflow:**
 
@@ -100,7 +100,7 @@ To generate test cases only for knowledge objects, append the following marker t
  ```
 
  Test case verifies that there are events mapped with the eventtype.
- Here \<eventtype is an eventtype mentioned in eventtypes.conf.
+ Here eventtype is an eventtype mentioned in eventtypes.conf.
 
  **Workflow:**
 
@@ -113,7 +113,7 @@ To generate test cases only for knowledge objects, append the following marker t
  ```
 
  Test case verifies that the there are events mapped with the tag.
- Here \<tag_stanza is a stanza mentioned in tags.conf and \<tag is an individual tag
+ Here <tag_stanza is a stanza mentioned in tags.conf and <tag is an individual tag
  applied to that stanza.
 
  **Workflow:**
@@ -128,7 +128,7 @@ To generate test cases only for knowledge objects, append the following marker t
  ```
 
  Test case verifies that the search mentioned in savedsearch.conf generates valid search results.
- Here \<savedsearch_stanza is a stanza mentioned in savedsearches.conf file.
+ Here savedsearch_stanza is a stanza mentioned in savedsearches.conf file.
 
  **Workflow:**
 

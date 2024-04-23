@@ -26,7 +26,7 @@ There are two ways to generate the CIM Compliance report:
 
 **1. Generating the report while executing the test cases**
 
-- Append the following to [any one of the commands][how_to_use.md#test-execution] used for executing the test cases:
+- Append the following to [any one of the commands](how_to_use.md#test-execution) used for executing the test cases:
 
   ```console
   --cim-report <file_name.md

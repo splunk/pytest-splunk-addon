@@ -51,7 +51,6 @@ nav:
   - Knowledge Object Tests: "field_tests.md"
   - Index Time Tests: "index_time_tests.md"
   - Data Generator: "sample_generator.md"
-  - Generate Conf Utility: "generate_conf.md"
   - API Documentation:
       - API Overview: "api_reference/api_reference.md"
       - AddonParser: "api_reference/addon_parser.md"

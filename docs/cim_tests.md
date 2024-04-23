@@ -22,7 +22,7 @@ To generate test cases only for CIM compatibility, append the following marker t
 **1. Testcase for each eventtype mapped with a dataset.**
 
  ```python
- test_cim_required_fields[<tags_stanza::<dataset]
+ test_cim_required_fields[<tags_stanza>::<dataset>]
  ```
 
  Testcase verifies if an eventtype is mapped with the dataset, events must follow the search constraints of the dataset.
@@ -37,11 +37,11 @@ To generate test cases only for CIM compatibility, append the following marker t
 **2. Testcases for all required, conditional and cluster fields in dataset.**
 
  ```python
- test_cim_required_fields[<tags_stanza::<dataset::<field_name]
+ test_cim_required_fields[<tags_stanza>::<dataset>::<field_name>]
  ```
 
 
- Testcase assertions:
+ #### Testcase Assertions:
 
  - There should be at least 1 event mapped with the dataset.
  - Each required field should be extracted in all the events mapped with the datasets.
@@ -52,7 +52,7 @@ To generate test cases only for CIM compatibility, append the following marker t
 
  **Workflow:**
 
- - For an eventtype, mapped dataset will be identified as mentioned in {ref}`#2 scenario<mapped_datasets`.
+ - For an eventtype, mapped dataset will be identified as mentioned in [#2 scenario](cim_tests.md#test-scenarios).
 
  - Test case will be generated for each required fields of a dataset.
 
@@ -67,12 +67,12 @@ To generate test cases only for CIM compatibility, append the following marker t
 
  - Search the query to the Splunk instance.
 
- - Assert the assertions mentioned in {ref}`Testcase assertions<test_assertions`.
+ - Assert the assertions mentioned in [Testcase assertions](cim_tests.md#testcase-assertions).
 
 **3. Testcase for all not_allowed_in_search fields**
 
  ```python
- test_cim_fields_not_allowed_in_search[<tags_stanza::<dataset]
+ test_cim_fields_not_allowed_in_search[<tags_stanza>::<dataset>]
  ```
 
  These fields are not allowed to be extracted for the eventtype
