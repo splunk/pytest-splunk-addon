@@ -4,10 +4,10 @@
 Create a test file in the tests folder
 
 ```python
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
-        class Test_App(Basic):
-            def empty_method():
-                pass
+from pytest_splunk_addon.standard_lib.addon_basic import Basic
+class Test_App(Basic):
+    def empty_method():
+        pass
 ```
 
 ## Test Execution
@@ -36,50 +36,159 @@ There are three ways to execute the tests:
  ```
 
  Create a Dockerfile.splunk file
+```
+ ARG SPLUNK_VERSION=latest
+ FROM splunk/splunk:$SPLUNK_VERSION
+ ARG SPLUNK_VERSION=latest
+ ARG SPLUNK_APP_ID=TA_UNKNOWN
+ ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
+ RUN echo Splunk VERSION=$SPLUNK_VERSION
+ COPY deps/apps /opt/splunk/etc/apps/
+ COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
+```
 
-     ARG SPLUNK_VERSION=latest
-     FROM splunk/splunk:$SPLUNK_VERSION
-     ARG SPLUNK_VERSION=latest
-     ARG SPLUNK_APP_ID=TA_UNKNOWN
-     ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
-     RUN echo Splunk VERSION=$SPLUNK_VERSION
-     COPY deps/apps /opt/splunk/etc/apps/
-     COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
- ```
 
  Create a Dockerfile.uf file
-
-     ARG SPLUNK_VERSION=latest
-     FROM splunk/universalforwarder:$SPLUNK_VERSION
-     ARG SPLUNK_VERSION=latest
-     ARG SPLUNK_APP_ID=TA_UNKNOWN
-     ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
-     COPY $SPLUNK_APP_PACKAGE /opt/splunkforwarder/etc/apps/$SPLUNK_APP_ID
+ ```
+ ARG SPLUNK_VERSION=latest
+ FROM splunk/universalforwarder:$SPLUNK_VERSION
+ ARG SPLUNK_VERSION=latest
+ ARG SPLUNK_APP_ID=TA_UNKNOWN
+ ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
+ COPY $SPLUNK_APP_PACKAGE /opt/splunkforwarder/etc/apps/$SPLUNK_APP_ID
  ```
 
- Create docker-compose.yml
+<details>
+<summary>Create docker-compose.yml</summary>
 
-     ARG SPLUNK_VERSION=latest
-     FROM splunk/universalforwarder:$SPLUNK_VERSION
-     ARG SPLUNK_VERSION=latest
-     ARG SPLUNK_APP_ID=TA_UNKNOWN
-     ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
-     COPY $SPLUNK_APP_PACKAGE /opt/splunkforwarder/etc/apps/$SPLUNK_APP_ID
+```commandline
+version: "3.7"
+services:
+
+  sc4s:
+    image: ghcr.io/splunk/splunk-connect-for-syslog/container2:latest
+    hostname: sc4s
+    #When this is enabled test_common will fail
+    #    command: -det
+    ports:
+      - "514"
+      - "601"
+      - "514/udp"
+      - "5000-5050"
+      - "5000-5050/udp"
+      - "6514"
+    stdin_open: true
+    tty: true
+    links:
+      - splunk
+    environment:
+      - SPLUNK_HEC_URL=https://splunk:8088
+      - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
+      - SC4S_SOURCE_TLS_ENABLE=no
+      - SC4S_DEST_SPLUNK_HEC_TLS_VERIFY=no
+      - SC4S_LISTEN_JUNIPER_NETSCREEN_TCP_PORT=5000
+      - SC4S_LISTEN_CISCO_ASA_TCP_PORT=5001
+      - SC4S_LISTEN_CISCO_IOS_TCP_PORT=5002
+      - SC4S_LISTEN_CISCO_MERAKI_TCP_PORT=5003
+      - SC4S_LISTEN_JUNIPER_IDP_TCP_PORT=5004
+      - SC4S_LISTEN_PALOALTO_PANOS_TCP_PORT=5005
+      - SC4S_LISTEN_PFSENSE_TCP_PORT=5006
+      - SC4S_LISTEN_CISCO_ASA_UDP_PORT=5001
+      - SC4S_LISTEN_CISCO_IOS_UDP_PORT=5002
+      - SC4S_LISTEN_CISCO_MERAKI_UDP_PORT=5003
+      - SC4S_LISTEN_JUNIPER_IDP_UDP_PORT=5004
+      - SC4S_LISTEN_PALOALTO_PANOS_UDP_PORT=5005
+      - SC4S_LISTEN_PFSENSE_UDP_PORT=5006
+      - SC4S_ARCHIVE_GLOBAL=no
+      - SC4S_LISTEN_CHECKPOINT_SPLUNK_NOISE_CONTROL=yes
+
+  splunk:
+    build:
+      context: .
+      dockerfile: Dockerfile.splunk
+      args:
+        SPLUNK_APP_ID: ${SPLUNK_APP_ID}
+        SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
+        SPLUNK_VERSION: ${SPLUNK_VERSION}
+    ports:
+      - "8000"
+      - "8088"
+      - "8089"
+      - "9997"
+    environment:
+      - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
+      - TEST_SC4S_ACTIVATE_EXAMPLES=yes
+
+  uf:
+    build:
+      context: .
+      dockerfile: Dockerfile.uf
+      args:
+        SPLUNK_APP_ID: ${SPLUNK_APP_ID}
+        SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
+        SPLUNK_VERSION: ${SPLUNK_VERSION}
+    hostname: uf
+    ports:
+      - "9997"
+      - "8089"
+    links:
+      - splunk
+    environment:
+      - SPLUNK_PASSWORD=Chang3d!
+      - SPLUNK_START_ARGS=--accept-license
+    volumes:
+      - ${CURRENT_DIR}/uf_files:${CURRENT_DIR}/uf_files
+
+volumes:
+  splunk-sc4s-var:
+    external: false
+```
+</details>
+
+<details>
+<summary>Create conftest.py file</summary>
+
  ```
+ import os
+import pytest
 
- ```{eval-rst}
+pytest_plugins = "pytester"
 
-(conftest-file)=
 
- Create conftest.py in the test folder along with {ref}`the test file <test_file`
+def pytest_configure(config):
+    config.addinivalue_line("markers", "external: Test search time only")
+    config.addinivalue_line("markers", "docker: Test search time only")
+    config.addinivalue_line("markers", "doc: Test Sphinx docs")
 
- ```{eval-rst}
- .. dropdown:: Example conftest file
 
-     .. literalinclude:: ../tests/e2e/conftest.py
-         :language: python
-         :lines: 1-2,12-
+@pytest.fixture(scope="session")
+def docker_compose_files(request):
+    """
+    Get an absolute path to the  `docker-compose.yml` file. Override this
+    fixture in your tests if you need a custom location.
+
+    Returns:
+        string: the path of the `docker-compose.yml` file
+
+    """
+    docker_compose_path = os.path.join(
+        str(request.config.invocation_dir), "docker-compose.yml"
+    )
+    # LOGGER.info("docker-compose path: %s", docker_compose_path)
+
+    return [docker_compose_path]
+
+
+@pytest.fixture(scope="session")
+def docker_services_project_name(pytestconfig):
+    rootdir = str(pytestconfig.rootdir)
+    docker_compose_v2_rootdir = rootdir.lower().replace("/", "")
+    return f"pytest{docker_compose_v2_rootdir}"
+
  ```
+</details>
 
  Run pytest with the add-on, using the following command:
 
@@ -206,12 +315,10 @@ The following optional arguments are available to modify the default settings in
      SearchMessages - orig_component="SearchStatusEnforcer"
      message_key="" message=NOT requires an argument
      ```
-    
-     :::{Note}
-     *Each line in the file will be considered a separate string to be ignored in the events.*
-     :::
-    
-     - Sample Event which will be ignored by the search query.
+   
+    > **_NOTE:_** *Each line in the file will be considered a separate string to be ignored in the events.*
+ 
+    - Sample Event which will be ignored by the search query.
     
      ```console
      11-04-2020 13:26:01.026 +0000 ERROR SearchMessages - orig_component="SearchStatusEnforcer" app="search" sid="ta_1604496283.232" peer_name="" message_key="" message=NOT requires an argument
@@ -272,12 +379,11 @@ The following optional arguments are available to modify the default settings in
   - pip install pytest-expect
   - Add `--update-xfail` to the pytest command to generate a `.pytest.expect` file, which is a list of failures while execution.
   - Make sure that the `.pytest.expect` file is in the root directory from where the test cases are executed.
-  - When the test cases are executed the next time, all the tests in the `.pytest.expect` file will be marked as `xfail` [^footnote-1]
+  - When the test cases are executed the next time, all the tests in the `.pytest.expect` file will be marked as `xfail`.
   - If there is a custom file containing the list of failed test cases, it can be used by adding `--xfail-file custom_file` to the pytest command.
  
-  :::{Note}
-  Test cases should be added to .pytest.expect only after proper validation.
-  :::
+> **_NOTE:_** Test cases should be added to .pytest.expect only after proper validation
+
 
 **3. Setup test environment before executing the test cases**
 
@@ -299,14 +405,40 @@ The following optional arguments are available to modify the default settings in
 
  The following snippet shows an example in which the setup fixture is used to enable a saved search.
 
- ```{eval-rst}
- .. dropdown:: enable_saved_search_conftest.py
-
-     .. literalinclude:: ../tests/e2e/enable_saved_search_conftest.py
-         :language: python
-         :lines: 2,31-
+<details>
+<summary>Example conftest file</summary>
 
  ```
+ from splunklib import binding, client, results
+
+class TASetup(object):
+    def __init__(self, splunk):
+        self.splunk = splunk
+
+    def wait_for_lookup(self, lookup):
+        splunk_client = client.connect(**self.splunk)
+        for _ in range(60):
+            job_result = splunk_client.jobs.oneshot(f" | inputlookup {lookup}")
+            for _ in results.ResultsReader(job_result):
+                return
+            time.sleep(1)
+
+    def enable_savedsearch(self, addon_name, savedsearch):
+        splunk_binding = binding.connect(**self.splunk)
+        splunk_binding.post(
+            f"/servicesNS/nobody/{addon_name}/saved/searches/{savedsearch}/enable",
+            data="",
+        )
+
+
+@pytest.fixture(scope="session")
+def splunk_setup(splunk):
+    ta_setup = TASetup(splunk)
+    ta_setup.enable_savedsearch("TA_SavedSearch", "ta_saved_search_one")
+    ta_setup.wait_for_lookup("ta_saved_search_lookup")
+ ```
+</details>
+
 
 **4. Check mapping of an add-on with custom data models**
 
@@ -317,9 +449,3 @@ The following optional arguments are available to modify the default settings in
   - Make json representation of the data models, which satisfies this [DataModelSchema](https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/standard_lib/cim_tests/DatamodelSchema.json).
   - Provide the path to the directory having all the data models by adding `--splunk_dm_path path_to_dir` to the pytest command
   - The test cases will now be generated for the data models provided to the plugin and not for the [default data models](https://github.com/splunk/pytest-splunk-addon/tree/main/pytest_splunk_addon/standard_lib/data_models).
-
-```{raw} html
-<hr width=100%
-```
-
-[^footnote-1]: xfail indicates that you expect a test to fail for some reason. A common example is a test for a feature not yet implemented, or a bug not yet fixed. When a test passes despite being expected to fail, it's an xpass and will be reported in the test summary.

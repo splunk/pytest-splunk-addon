@@ -16,6 +16,8 @@ markdown_extensions:
   - sane_lists
   - codehilite
   - pymdownx.superfences
+  - markdown_include.include:
+        base_path: docs
 
 plugins:
     - mkdocstrings:
