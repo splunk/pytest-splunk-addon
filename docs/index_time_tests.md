@@ -196,18 +196,22 @@ Get the search query from the stack trace and execute it on the Splunk instance 
      - Example:
             : For this sample, Splunk assigns the value sample_host to host based on the props configurations present in addon
 
-              ```text
-              test_modinput_1 host=sample_host static_value_2=##static_value_2## . . .
-              ```
+     ```
+         test_modinput_1 host=sample_host static_value_2=##static_value_2## . . .
+     ```
+   
+     ```
+         test_modinput_1 host=sample_host static_value_2=##static_value_2## . . .
+     ```
 
-              In this scenario the value "sample_host" should be tokenized, stanza should have `host_type=event` and the token should also have `token.0.field = host` as shown below:
-
-              ```text
-              token.0.token = ##host_value##
-              token.0.replacementType = random
-              token.0.replacement = host["host"]
-              token.0.field = host
-              ```
+    In this scenario the value "sample_host" should be tokenized, stanza should have `host_type=event` and the token should also have `token.0.field = host` as shown below:
+     
+   ```
+         token.0.token = ##host_value##
+         token.0.replacementType = random
+         token.0.replacement = host["host"]
+         token.0.field = host
+     ```
 
 6. Can I test any field present in my event as Key Field in Key Fields tests?
 
