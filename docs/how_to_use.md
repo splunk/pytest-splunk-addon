@@ -150,8 +150,8 @@ volumes:
 <details>
 <summary>Create conftest.py file</summary>
 
- ```
- import os
+```
+import os
 import pytest
 
 pytest_plugins = "pytester"
@@ -187,7 +187,7 @@ def docker_services_project_name(pytestconfig):
     docker_compose_v2_rootdir = rootdir.lower().replace("/", "")
     return f"pytest{docker_compose_v2_rootdir}"
 
- ```
+```
 </details>
 
  Run pytest with the add-on, using the following command:
@@ -324,8 +324,10 @@ The following optional arguments are available to modify the default settings in
      11-04-2020 13:26:01.026 +0000 ERROR SearchMessages - orig_component="SearchStatusEnforcer" app="search" sid="ta_1604496283.232" peer_name="" message_key="" message=NOT requires an argument
      ```
 
- 6. Options to separate event generation, event ingestion and test execution stage
-    : ```console
+6. Options to separate event generation, event ingestion and test execution stage
+    :
+
+    ```console
       --tokenized-event-source=new|store_new|pregenerated
       ```
 
@@ -408,8 +410,8 @@ The following optional arguments are available to modify the default settings in
 <details>
 <summary>Example conftest file</summary>
 
- ```
- from splunklib import binding, client, results
+```
+from splunklib import binding, client, results
 
 class TASetup(object):
     def __init__(self, splunk):
@@ -436,7 +438,7 @@ def splunk_setup(splunk):
     ta_setup = TASetup(splunk)
     ta_setup.enable_savedsearch("TA_SavedSearch", "ta_saved_search_one")
     ta_setup.wait_for_lookup("ta_saved_search_lookup")
- ```
+```
 </details>
 
 
