@@ -16,9 +16,6 @@ There are three ways to execute the tests:
 
 **1. Running tests with an external Splunk instance**
 
- ```python3
- pip3 install pytest-splunk-addon
- ```
 
  Run pytest with the add-on, in an external Splunk deployment
 
@@ -28,12 +25,6 @@ There are three ways to execute the tests:
 
 **2. Running tests with docker splunk**
 
- ```bash
- git clone git@github.com:splunk/pytest-splunk-addon.git
- cd pytest-splunk-addon
- pip install poetry
- poetry install
- ```
 
  Create a Dockerfile.splunk file
 ```

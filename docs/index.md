@@ -26,12 +26,3 @@ pytest-splunk-addon can be installed via pip from PyPI:
 ```console
 pip3 install pytest-splunk-addon
 ```
-
-Or, in any case, if pip is unavailable:
-
-```console
-1. git clone https://github.com/splunk/pytest-splunk-addon.git
-2. cd pytest-splunk-addon
-3. pip install poetry
-4. poetry install
-```
