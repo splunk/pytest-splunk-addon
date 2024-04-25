@@ -91,7 +91,6 @@ jobs:
       - pre-commit
       - fossa-scan
       - compliance-copyrights
-      - test-splunk-doc
       - test-splunk-unit
     strategy:
       fail-fast: false
@@ -139,7 +138,6 @@ jobs:
       - pre-commit
       - fossa-scan
       - compliance-copyrights
-      - test-splunk-doc
       - test-splunk-unit
     runs-on: ubuntu-latest
     strategy:
