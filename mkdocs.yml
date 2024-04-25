@@ -18,6 +18,17 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.snippets
 
+plugins:
+    - mkdocstrings:
+        handlers:
+            python:
+                setup_commands:
+                    - import sys
+                    - sys.path.append('../')
+                selection:
+                    new_path_syntax: true
+                options:
+                  inherited_members: false
 
 theme:
   name: "material"
