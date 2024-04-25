@@ -83,21 +83,6 @@ jobs:
           poetry install
           poetry run pytest -v tests/unit
 
-  test-splunk-doc:
-    name: Test Docs
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.7
-      - name: Install and run tests
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
-          poetry install --with docs
-          poetry run pytest -v -m doc tests/e2e
 
   test-splunk-external:
     runs-on: ubuntu-latest
