@@ -3,9 +3,12 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  deploy:
+  docs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -18,4 +21,9 @@ jobs:
       - run: |
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           pip install mkdocs mkdocs-material mkdocstrings-python
-      - run: poetry run mkdocs gh-deploy --force
+      - name: Deploy to GitHub Pages
+        if: github.ref_name == 'main'
+        run: mkdocs gh-deploy --force --strict
+      - name: Build Docs
+        if: github.ref_name != 'main'
+        run: mkdocs build --strict

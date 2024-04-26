@@ -55,9 +55,6 @@ theme:
     - navigation.indexes
     - navigation.expand
 
-extra_css:
-    - css/extra.css
-
 nav:
   - Home: "index.md"
   - How to use: "how_to_use.md"
