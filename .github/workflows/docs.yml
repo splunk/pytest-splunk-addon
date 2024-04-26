@@ -1,0 +1,29 @@
+name: docs
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+      - run: |
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
+          pip install mkdocs mkdocs-material mkdocstrings-python
+      - name: Deploy to GitHub Pages
+        if: github.ref_name == 'main'
+        run: mkdocs gh-deploy --force --strict
+      - name: Build Docs
+        if: github.ref_name != 'main'
+        run: mkdocs build
