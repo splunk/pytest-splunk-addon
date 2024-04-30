@@ -953,3 +953,5 @@ def pytest_unconfigure(config):
             os.remove(PYTEST_XDIST_TESTRUNUID + "_wait")
         if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_events"):
             os.remove(PYTEST_XDIST_TESTRUNUID + "_events")
+        if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_events.lock"):
+            os.remove(PYTEST_XDIST_TESTRUNUID + "_events.lock")

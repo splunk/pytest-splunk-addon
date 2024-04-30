@@ -48,7 +48,7 @@ class SampleStanza(object):
         conf_name (str): Name of the conf file, "psa-data-gen", "eventgen"
     """
 
-    def __init__(self, sample_path, psa_data_params, conf_name):
+    def __init__(self, sample_path, psa_data_params, conf_name=None):
         self.conf_name = conf_name
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
