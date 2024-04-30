@@ -67,7 +67,7 @@ def test_splunk_connection_external(testdir, request):
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
         os.path.join(testdir.tmpdir, "package"),
     )
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
@@ -104,7 +104,7 @@ def test_splunk_connection_docker(testdir, request):
     )
 
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
@@ -142,7 +142,7 @@ def test_splunk_app_fiction(testdir, request):
     )
 
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
@@ -195,7 +195,7 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
     )
 
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
     with open(
         os.path.join(testdir.request.fspath.dirname, "incorrect_hec_token_conftest.py")
@@ -247,7 +247,7 @@ def test_splunk_app_broken(testdir, request):
         testdir.tmpdir,
     )
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
@@ -304,7 +304,7 @@ def test_splunk_app_cim_fiction(testdir, request):
     )
 
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
@@ -358,7 +358,7 @@ def test_splunk_app_cim_broken(testdir, request):
     )
 
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
@@ -415,7 +415,7 @@ def test_splunk_fiction_indextime(testdir, request):
     )
 
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
@@ -471,7 +471,7 @@ def test_splunk_fiction_indextime_broken(testdir, request):
     )
 
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
@@ -514,7 +514,7 @@ def test_splunk_setup_fixture(testdir, request):
         """
     )
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
     with open(
         os.path.join(testdir.request.fspath.dirname, "enable_saved_search_conftest.py")
@@ -601,7 +601,7 @@ def test_splunk_app_req(testdir, request):
     )
 
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
@@ -656,7 +656,7 @@ def test_splunk_app_req_broken(testdir, request):
     )
 
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
@@ -711,7 +711,7 @@ def test_splunk_app_req(testdir, request):
     )
 
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
@@ -766,7 +766,7 @@ def test_infinite_loop_in_ingest_data_fixture(testdir, request):
     )
 
     setup_test_dir(testdir)
-    SampleGenerator.clean_samples()
+
     Rule.clean_rules()
 
     # run pytest with the following cmd args
