@@ -95,7 +95,9 @@ class TestSampleXdistGenerator:
             ),
         ],
     )
-    def test_get_samples_from_pickle(self, pickle_mock, exists_value, environ, expected):
+    def test_get_samples_from_pickle(
+        self, pickle_mock, exists_value, environ, expected
+    ):
         pickle_mock.load.return_value = "pickle_loaded"
         sample_xdist_generator = SampleXdistGenerator("path")
         sample_xdist_generator.store_events = MagicMock()
@@ -108,7 +110,6 @@ class TestSampleXdistGenerator:
         ) as sample_generator_mock:
             assert sample_xdist_generator.get_samples(True) == expected
             sample_generator_mock.assert_not_called()
-
 
     @patch(
         "pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator.FileLock",
@@ -133,7 +134,9 @@ class TestSampleXdistGenerator:
             ),
         ],
     )
-    def test_get_samples_from_generator(self, pickle_mock, exists_value, environ, expected):
+    def test_get_samples_from_generator(
+        self, pickle_mock, exists_value, environ, expected
+    ):
         pickle_mock.load.return_value = "pickle_loaded"
         sample_xdist_generator = SampleXdistGenerator("path")
         sample_xdist_generator.store_events = MagicMock()
@@ -146,7 +149,6 @@ class TestSampleXdistGenerator:
         ) as sample_generator_mock:
             sample_xdist_generator.get_samples(True)
             sample_generator_mock.return_value.get_samples_store.assert_called_once()
-
 
     @pytest.mark.parametrize(
         "exists_value, makedirs_calls",

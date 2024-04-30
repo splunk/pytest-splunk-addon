@@ -33,4 +33,3 @@ class TestSampleGenerator:
             psa_data_mock.conf_name = CONFIG_PATH
             sg = SampleGenerator(ADDON_PATH)
             assert list(sg.get_samples()) == [tks_1, tks_2, tks_1, tks_2]
-

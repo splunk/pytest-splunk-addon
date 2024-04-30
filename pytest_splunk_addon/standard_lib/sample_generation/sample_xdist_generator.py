@@ -50,7 +50,9 @@ class SampleXdistGenerator:
                     with open(file_path, "rb") as file_obj:
                         store_sample = pickle.load(file_obj)
                 else:
-                    sample_generator = SampleGenerator(self.addon_path, self.config_path)
+                    sample_generator = SampleGenerator(
+                        self.addon_path, self.config_path
+                    )
 
                     store_sample = sample_generator.get_samples_store()
                     if store_events:

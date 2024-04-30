@@ -33,7 +33,9 @@ class SampleGenerator(object):
             addon_path(str): path to the addon
         """
         self._sample_stanzas = []
-        self._psa_data_parser = PytestSplunkAddonDataParser(addon_path, config_path=config_path)
+        self._psa_data_parser = PytestSplunkAddonDataParser(
+            addon_path, config_path=config_path
+        )
 
     def get_samples(self):
         """
