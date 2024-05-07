@@ -740,12 +740,13 @@ def test_splunk_app_req(testdir, request):
     # make sure that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret == 0, "result not equal to 0"
 
+
 @pytest.mark.docker
 @pytest.mark.splunk_cim_model_ipv6_regex
 def test_splunk_cim_model_ipv6_regex(testdir, request):
     """
-     In this test we are only checking if src_ip and dest_ip are extracted and are valid and tests are passing
-     Both these fields contains diff advanced form of ipv6 formats which would then be extracted via fields in data modles
+    In this test we are only checking if src_ip and dest_ip are extracted and are valid and tests are passing
+    Both these fields contains diff advanced form of ipv6 formats which would then be extracted via fields in data modles
     """
     testdir.makepyfile(
         """
@@ -783,9 +784,7 @@ def test_splunk_cim_model_ipv6_regex(testdir, request):
     )
     logger.info(result.outlines)
 
-    result.stdout.fnmatch_lines_random(
-        constants.TA_CIM_MODEL_RESULT
-    )
+    result.stdout.fnmatch_lines_random(constants.TA_CIM_MODEL_RESULT)
 
     # make sure that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0, "result not equal to 0"
