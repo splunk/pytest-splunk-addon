@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<device>
+  <vendor>OKTA</vendor>
+  <product>OKTA Identity Cloud</product>
+  <version id="2022.03.01"/>
+  <version id="2023.10.0"/>
+  <event code="" name="security.request.blocked" format="json">
+    <version>2023.10.0</version>
+    <transport type="modinput" sourcetype="test:ipv6" source="test_okta" host="test_ipv6"/>
+    <source>
+      <jira id=""/>
+      <comment>generated, Generated from lab environment</comment>
+    </source>
+    <raw><![CDATA[{"actor": {"id": "spr6w8a2l2V88E3nk5d7", "type": "SystemPrincipal", "alternateId": "system@okta.com", "displayName": "Okta System", "detailEntry": null}, "client": {"userAgent": {"rawUserAgent": "Splunk Add-on for Okta Identity Cloud", "os": "Unknown", "browser": "UNKNOWN"}, "zone": "null", "device": "Unknown", "id": null, "ipAddress": "68c6:7554::89",  "destadd": "0:0:0:0:0:0:0:1", "geographicalContext": null}, "device": null, "authenticationContext": {"authenticationProvider": null, "credentialProvider": null, "credentialType": null, "issuer": null, "interface": null, "authenticationStep": 0, "externalSessionId": null}, "displayMessage": "Blocked request from IP: 68c6:7554::89", "eventType": "security.request.blocked", "outcome": {"result": "SUCCESS", "reason": "NETWORK_ZONE_BLACKLIST"}, "published": "2023-10-11T10:28:27.114Z", "securityContext": {"asNumber": null, "asOrg": null, "isp": null, "domain": null, "isProxy": null}, "severity": "WARN", "debugContext": {"debugData": {"requestId": "ZSZ4y03BLKYbIGjkjkgRvgAADhk", "requestUri": "/api/v1/logs", "url": "/api/v1/logs?limit=1000&since=2023-10-11T09%3A01%3A17.417Z&until=2023-10-11T10%3A27%3A56.967Z"}}, "legacyEventType": "security.zone.request.blocked", "transaction": {"type": "WEB", "id": "ZSZ4y03BLKYbIGjkjkgRvgAADhk", "detail": {}}, "uuid": "ea1dfcef-6820-11ee-bb11-f3c3bf8f14d1", "version": "0", "request": {"ipChain": [{"ip": "68c6:7554::89", "geographicalContext": null, "version": "V4", "source": null}]}, "target": null}]]></raw>
+    <cim>
+      <models>
+        <model>Network_Traffic</model>
+      </models>
+      <cim_fields>
+        <field name="src_ip" value="68c6:7554::89"/>
+        <field name="dest_ip" value="0:0:0:0:0:0:0:1"/>
+      </cim_fields>
+      <missing_recommended_fields>
+        <field>bytes</field>
+        <field>bytes_in</field>
+        <field>bytes_out</field>
+        <field>dest_port</field>
+        <field>dest_zone</field>
+        <field>src_port</field>
+        <field>src_translated_ip</field>
+        <field>src_zone</field>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+    <event code="" name="security.request.blocked" format="json">
+    <version>2023.10.0</version>
+    <transport type="modinput" sourcetype="test:ipv6" source="test_okta" host="test_ipv6"/>
+    <source>
+      <jira id=""/>
+      <comment>generated, Generated from lab environment</comment>
+    </source>
+    <raw><![CDATA[{"actor": {"id": "spr6w8a2l2V88E3nk5d7", "type": "SystemPrincipal", "alternateId": "system@okta.com", "displayName": "Okta System", "detailEntry": null}, "client": {"userAgent": {"rawUserAgent": "Splunk Add-on for Okta Identity Cloud", "os": "Unknown", "browser": "UNKNOWN"}, "zone": "null", "device": "Unknown", "id": null, "ipAddress": "ab01::12aa",  "destadd": "::ffff:192.168.10.10", "geographicalContext": null}, "device": null, "authenticationContext": {"authenticationProvider": null, "credentialProvider": null, "credentialType": null, "issuer": null, "interface": null, "authenticationStep": 0, "externalSessionId": null}, "displayMessage": "Blocked request from IP: 68c6:7554::89", "eventType": "security.request.blocked", "outcome": {"result": "SUCCESS", "reason": "NETWORK_ZONE_BLACKLIST"}, "published": "2023-10-11T10:28:27.114Z", "securityContext": {"asNumber": null, "asOrg": null, "isp": null, "domain": null, "isProxy": null}, "severity": "WARN", "debugContext": {"debugData": {"requestId": "ZSZ4y03BLKYbIGjkjkgRvgAADhk", "requestUri": "/api/v1/logs", "url": "/api/v1/logs?limit=1000&since=2023-10-11T09%3A01%3A17.417Z&until=2023-10-11T10%3A27%3A56.967Z"}}, "legacyEventType": "security.zone.request.blocked", "transaction": {"type": "WEB", "id": "ZSZ4y03BLKYbIGjkjkgRvgAADhk", "detail": {}}, "uuid": "ea1dfcef-6820-11ee-bb11-f3c3bf8f14d1", "version": "0", "request": {"ipChain": [{"ip": "68c6:7554::89", "geographicalContext": null, "version": "V4", "source": null}]}, "target": null}]]></raw>
+    <cim>
+      <models>
+        <model>Network_Traffic</model>
+      </models>
+      <cim_fields>
+        <field name="src_ip" value="ab01::12aa"/>
+        <field name="dest_ip" value="::ffff:192.168.10.10"/>
+      </cim_fields>
+      <missing_recommended_fields>
+        <field>bytes</field>
+        <field>bytes_in</field>
+        <field>bytes_out</field>
+        <field>dest_port</field>
+        <field>dest_zone</field>
+        <field>src_port</field>
+        <field>src_translated_ip</field>
+        <field>src_zone</field>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+    <event code="" name="security.request.blocked" format="json">
+    <version>2023.10.0</version>
+    <transport type="modinput" sourcetype="test:ipv6" source="test_okta" host="test_ipv6"/>
+    <source>
+      <jira id=""/>
+      <comment>generated, Generated from lab environment</comment>
+    </source>
+    <raw><![CDATA[{"actor": {"id": "spr6w8a2l2V88E3nk5d7", "type": "SystemPrincipal", "alternateId": "system@okta.com", "displayName": "Okta System", "detailEntry": null}, "client": {"userAgent": {"rawUserAgent": "Splunk Add-on for Okta Identity Cloud", "os": "Unknown", "browser": "UNKNOWN"}, "zone": "null", "device": "Unknown", "id": null, "ipAddress": "2001:db80:1000:a000:0000:bc00:abcd:d0b0",  "destadd": "::", "geographicalContext": null}, "device": null, "authenticationContext": {"authenticationProvider": null, "credentialProvider": null, "credentialType": null, "issuer": null, "interface": null, "authenticationStep": 0, "externalSessionId": null}, "displayMessage": "Blocked request from IP: 68c6:7554::89", "eventType": "security.request.blocked", "outcome": {"result": "SUCCESS", "reason": "NETWORK_ZONE_BLACKLIST"}, "published": "2023-10-11T10:28:27.114Z", "securityContext": {"asNumber": null, "asOrg": null, "isp": null, "domain": null, "isProxy": null}, "severity": "WARN", "debugContext": {"debugData": {"requestId": "ZSZ4y03BLKYbIGjkjkgRvgAADhk", "requestUri": "/api/v1/logs", "url": "/api/v1/logs?limit=1000&since=2023-10-11T09%3A01%3A17.417Z&until=2023-10-11T10%3A27%3A56.967Z"}}, "legacyEventType": "security.zone.request.blocked", "transaction": {"type": "WEB", "id": "ZSZ4y03BLKYbIGjkjkgRvgAADhk", "detail": {}}, "uuid": "ea1dfcef-6820-11ee-bb11-f3c3bf8f14d1", "version": "0", "request": {"ipChain": [{"ip": "68c6:7554::89", "geographicalContext": null, "version": "V4", "source": null}]}, "target": null}]]></raw>
+    <cim>
+      <models>
+        <model>Network_Traffic</model>
+      </models>
+      <cim_fields>
+        <field name="src_ip" value="2001:db80:1000:a000:0000:bc00:abcd:d0b0"/>
+        <field name="dest_ip" value="::"/>
+      </cim_fields>
+      <missing_recommended_fields>
+        <field>bytes</field>
+        <field>bytes_in</field>
+        <field>bytes_out</field>
+        <field>dest_port</field>
+        <field>dest_zone</field>
+        <field>src_port</field>
+        <field>src_translated_ip</field>
+        <field>src_zone</field>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+</device>
