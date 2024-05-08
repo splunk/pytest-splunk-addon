@@ -779,7 +779,7 @@ def test_splunk_cim_model_ipv6_regex(testdir, request):
         "--search-interval=2",
         "--search-retry=4",
         "--search-index=*",
-        "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
+        "--splunk-data-generator=tests/addons/TA_cim_addon/default",
         "-k test_cim_required_fields",
     )
     logger.info(result.outlines)
