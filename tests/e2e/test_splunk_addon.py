@@ -746,7 +746,7 @@ def test_splunk_app_req(testdir, request):
 def test_splunk_cim_model_ipv6_regex(testdir, request):
     """
     In this test we are only checking if src_ip and dest_ip are extracted and are valid and tests are passing
-    Both these fields contains diff advanced form of ipv6 formats which would then be extracted via fields in data modles
+    scr_ip contains ~35 diff advanced form of ipv6 combinations that are tested in this case.
     """
     testdir.makepyfile(
         """
