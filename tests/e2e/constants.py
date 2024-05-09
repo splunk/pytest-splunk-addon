@@ -923,6 +923,5 @@ TA_REQ_BROKEN_SKIPPED = [
 ]
 
 TA_CIM_MODEL_RESULT = [
-    '*test_splunk_cim_model_ipv6_regex.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest_ip* PASSED*',
     '*test_splunk_cim_model_ipv6_regex.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::src_ip* PASSED*',
 ]
