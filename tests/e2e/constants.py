@@ -761,7 +761,6 @@ TA_FICTION_INDEXTIME_BROKEN_SKIPPED = [
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_requirements_fields[splunk_searchtime_fields_requirements0* SKIPPED*",
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_cim_fields_recommended[splunk_searchtime_cim_fields_recommended0* SKIPPED*",
 ]
-
 TA_REQ_TRANSITION_PASSED = [
     "*test_splunk_app_req.py::Test_App::test_events_with_untokenised_values PASSED*",
     "*test_splunk_app_req.py::Test_App::test_indextime_time[test:data:1::* PASSED*",
@@ -921,4 +920,8 @@ TA_REQ_BROKEN_SKIPPED = [
     "*test_splunk_app_req_broken.py::Test_App::test_props_fields[splunk_searchtime_fields_positive0* SKIPPED*",
     "*test_splunk_app_req_broken.py::Test_App::test_props_fields_no_dash_not_empty[splunk_searchtime_fields_negative0* SKIPPED*",
     "*test_splunk_app_req_broken.py::Test_App::test_savedsearches[splunk_searchtime_fields_savedsearches0* SKIPPED*",
+]
+
+TA_CIM_MODEL_RESULT = [
+    '*test_splunk_cim_model_ipv6_regex.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::src_ip* PASSED*',
 ]

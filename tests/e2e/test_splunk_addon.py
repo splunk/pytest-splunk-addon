@@ -741,6 +741,55 @@ def test_splunk_app_req(testdir, request):
     assert result.ret == 0, "result not equal to 0"
 
 
+@pytest.mark.docker
+@pytest.mark.splunk_cim_model_ipv6_regex
+def test_splunk_cim_model_ipv6_regex(testdir, request):
+    """
+    In this test we are only checking if src_ip and dest_ip are extracted and are valid and tests are passing
+    scr_ip contains ~35 diff advanced form of ipv6 combinations that are tested in this case.
+    """
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_cim_addon"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+        os.path.join(testdir.tmpdir, "tests/data_models"),
+    )
+
+    setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
+        "--splunk-type=docker",
+        "-v",
+        "--search-interval=2",
+        "--search-retry=4",
+        "--search-index=*",
+        "--splunk-data-generator=tests/addons/TA_cim_addon/default",
+        "-k test_cim_required_fields",
+    )
+    logger.info(result.outlines)
+
+    result.stdout.fnmatch_lines_random(constants.TA_CIM_MODEL_RESULT)
+
+    # make sure that we get a non '0' exit code for the testsuite as it contains failure
+    assert result.ret != 0, "result not equal to 0"
+
+
 @pytest.mark.test_infinite_loop_fixture
 @pytest.mark.external
 def test_infinite_loop_in_ingest_data_fixture(testdir, request):
