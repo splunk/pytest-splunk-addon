@@ -20,7 +20,7 @@ There are three ways to execute the tests:
  Run pytest with the add-on, in an external Splunk deployment
 
  ```bash
- pytest --splunk-type=external --splunk-app=<path-to-addon-package --splunk-data-generator=<path to pytest-splunk-addon-data.conf file --splunk-host=<hostname --splunk-port=<splunk-management-port --splunk-user=<username --splunk-password=<password --splunk-hec-token=<splunk_hec_token
+ pytest --splunk-type=external --splunk-app=<path-to-addon-package> --splunk-data-generator=<path to pytest-splunk-addon-data.conf file> --splunk-host=<hostname> --splunk-port=<splunk-management-port> --splunk-user=<username> --splunk-password=<password> --splunk-hec-token=<splunk_hec_token>
  ```
 
 **2. Running tests with docker splunk**
@@ -138,7 +138,7 @@ volumes:
 ```
 </details>
 
-<details>
+<details id="conftest">
 <summary>Create conftest.py file</summary>
 
 ```
@@ -184,7 +184,7 @@ def docker_services_project_name(pytestconfig):
  Run pytest with the add-on, using the following command:
 
  ```bash
- pytest --splunk-type=docker --splunk-data-generator=<path to pytest-splunk-addon-data.conf file
+ pytest --splunk-type=docker --splunk-data-generator=<path to pytest-splunk-addon-data.conf file>
  ```
 
 The tool assumes the Splunk Add-on is located in a folder "package" in the project root.
@@ -209,15 +209,15 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
 
  ```bash
  pytest --splunk-type=external                                   # Whether you want to run the addon with docker or an external Splunk instance
-     --splunk-app=<path-to-addon-package                        # Path to Splunk app package. The package should have the configuration files in the default folder.
-     --splunk-host=<hostname                                    # Receiver Splunk instance where events are searchable.
-     --splunk-port=<splunk_management_port                      # default 8089
-     --splunk-user=<username                                    # default admin
-     --splunk-password=<password                                # default Chang3d!
-     --splunk-forwarder-host=<splunk_forwarder_host             # Splunk instance where forwarding to receiver instance is configured.
-     --splunk-hec-port=<splunk_forwarder_hec_port               # HEC port of the forwarder instance.
-     --splunk-hec-token=<splunk_forwarder_hec_token             # HEC token configured in forwarder instance.
-     --splunk-data-generator=<pytest_splunk_addon_conf_path     # Path to pytest-splunk-addon-data.conf
+     --splunk-app=<path-to-addon-package>                        # Path to Splunk app package. The package should have the configuration files in the default folder.
+     --splunk-host=<hostname>                                    # Receiver Splunk instance where events are searchable.
+     --splunk-port=<splunk_management_port>                      # default 8089
+     --splunk-user=<username>                                    # default admin
+     --splunk-password=<password>                                # default Chang3d!
+     --splunk-forwarder-host=<splunk_forwarder_host>             # Splunk instance where forwarding to receiver instance is configured.
+     --splunk-hec-port=<splunk_forwarder_hec_port>               # HEC port of the forwarder instance.
+     --splunk-hec-token=<splunk_forwarder_hec_token>             # HEC token configured in forwarder instance.
+     --splunk-data-generator=<pytest_splunk_addon_conf_path>     # Path to pytest-splunk-addon-data.conf
  ```
 
 > **_NOTE:_** 
@@ -243,10 +243,10 @@ There are 3 types of tests included in pytest-splunk-addon are:
  3. To generate test cases only for index time properties, append the following marker to pytest command:
 
      ```console
-     -m  splunk_indextime --splunk-data-generator=<Path to the conf file
+     -m  splunk_indextime --splunk-data-generator=<Path to the conf file>
      ```
     
-     For detailed information on index time test execution, please refer {ref}`here <index_time_tests`.
+     For detailed information on index time test execution, please refer [here](./index_time_tests.md).
 
  - To execute all the searchtime tests together, i.e both Knowledge objects and CIM compatibility tests,
    append the following marker to the pytest command:
@@ -262,7 +262,7 @@ The following optional arguments are available to modify the default settings in
  1. To search for events in a specific index, user can provide following additional arguments:
 
      ```console
-     --search-index=<index
+     --search-index=<index>
     
          Splunk index of which the events will be searched while testing. Default value: "*, _internal".
      ```
@@ -270,11 +270,11 @@ The following optional arguments are available to modify the default settings in
  2. To increase/decrease time interval and retries for flaky tests, user can provide following additional arguments:
 
      ```console
-     --search-retry=<retry
+     --search-retry=<retry>
     
          Number of retries to make if there are no events found while searching in the Splunk instance. Default value: 0.
     
-     --search-interval=<interval
+     --search-interval=<interval>
     
          Time interval to wait before retrying the search query.Default value: 0.
      ```
@@ -297,7 +297,7 @@ The following optional arguments are available to modify the default settings in
       - **Addon related errors:** To suppress these user can create a file with the list of strings and provide the file in the **--ignore-addon-errors** param while test execution.
     
      ```console
-     --ignore-addon-errors=<path_to_file
+     --ignore-addon-errors=<path_to_file>
      ```
     
      - Sample strings in the file.
@@ -328,7 +328,7 @@ The following optional arguments are available to modify the default settings in
       - Default value for this parameter is *store_new*
 
       ```console
-      --event-file-path=<path_to_file
+      --event-file-path=<path_to_file>
       ```
 
       - Path to tokenized events file
@@ -380,7 +380,7 @@ The following optional arguments are available to modify the default settings in
 
 **3. Setup test environment before executing the test cases**
 
- If any setup is required in the Splunk/test environment before executing the test cases, implement a fixture in {ref}`conftest.py <conftest_file`.
+ If any setup is required in the Splunk/test environment before executing the test cases, implement a fixture in [conftest.py](#conftest).
 
  ```python
  @pytest.fixture(scope="session")

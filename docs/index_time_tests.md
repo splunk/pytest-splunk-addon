@@ -14,7 +14,7 @@
 ### Prerequisites
 
 - `pytest-splunk-addon-data.conf` file which contains all the required data
-  executing the tests. The conf file should follow the specifications as mentioned {ref}`here <conf_spec`.
+  executing the tests. The conf file should follow the specifications as mentioned [here](./sample_generator.md#pytest-splunk-addon-dataconfspec).
 
 ______________________________________________________________________
 
@@ -22,7 +22,7 @@ ______________________________________________________________________
 To generate test cases only for index time properties, append the following marker to pytest command:
 
  ```console
- -m  splunk_indextime --splunk-data-generator=<Path to the conf file
+ -m  splunk_indextime --splunk-data-generator=<Path to the conf file>
  ```
 
 > **_NOTE:_** --splunk-data-generator should contain the path to *pytest-splunk-addon-data.conf*,
@@ -55,7 +55,7 @@ To generate test cases only for index time properties, append the following mark
  - This test case will not be generated if there are no key fields specified for the event.
  - Key field can be assign to token using field property. `i.e token.n.field = <KEY_FIELD>`
 
- Testcase assertions:
+#### Testcase Assertions:
 
  - There should be at least 1 event with the sourcetype and host.
  - The values of the key fields obtained from the event
@@ -72,7 +72,7 @@ To generate test cases only for index time properties, append the following mark
 
  - Execute the SPL query in a Splunk instance.
 
- - Assert the test case results as mentioned in {ref}`testcase assertions<test_assertions_key_field`.
+ - Assert the test case results as mentioned in [testcase assertions](#testcase-assertions).
 
 **2. Test case for _time property:**
 
@@ -141,8 +141,8 @@ If all the above conditions are satisfied, further analysis of the test is requi
 For every test case failure, there is a defined structure for the stack trace.
 
  ```text
- AssertionError: <<error_message
-     Search =  <Query
+ AssertionError: <<error_message>>
+     Search =  <Query>
  ```
 
 Get the search query from the stack trace and execute it on the Splunk instance and verify which specific type of events are causing failure.
@@ -229,9 +229,9 @@ Get the search query from the stack trace and execute it on the Splunk instance 
 
      - No test would generate to test Key Fields for that particular stanza and thus won't be correctly tested. 
  
-8. When do I assign token.\<n.field = \<field_name to test the Key Fields for an event?
+8. When do I assign token.&lt;n&gt;.field = &lt;field_name&gt; to test the Key Fields for an event?
 
-     - When there props configurations written in props to extract any of the field present in Key Fields list, you should add `token.<n.field = <field_name` to the token for that field value.
+     - When there props configurations written in props to extract any of the field present in Key Fields list, you should add `token.<n>.field = <field_name>` to the token for that field value.
      - Example:
        : For this sample, there is report written in props that extracts `127.0.0.1` as `src`,
 

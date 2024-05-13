@@ -29,7 +29,7 @@ There are two ways to generate the CIM Compliance report:
 - Append the following to [any one of the commands](how_to_use.md#test-execution) used for executing the test cases:
 
   ```console
-  --cim-report <file_name.md
+  --cim-report <file_name.md>
   ```
 
 **2. Generating the report using the test results stored in the junit-xml file**
@@ -37,7 +37,7 @@ There are two ways to generate the CIM Compliance report:
 - Execute the following command:
 
   ```console
-  cim-report <junit_report.xml<report.md
+  cim-report <junit_report.xml> <report.md>
   ```
 
 ## Report Generation Troubleshooting

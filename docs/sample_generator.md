@@ -56,7 +56,7 @@ host_prefix = {{host_prefix}}
 - If the value is event, the host field should be provided for a token using "token.<n\>.field = host".
 
 **input_type = modinput | scripted_input | syslog_tcp | file_monitor | windows_input | uf_file_monitor | default**
-- 
+ 
 - The input_type used in addon to ingest data of a sourcetype used in stanza.
 - The way with which the sample data is ingested in Splunk depends on Splunk. The most similar ingesting approach is used for each input_type to get accurate index-time testing.
 - In input_type=uf_file_monitor, universal forwarder will use file monitor to read event and then it will send data to indexer.
@@ -143,7 +143,7 @@ The following replacementType -> replacement values are supported
 
 - "n" is a number starting at 0, and increasing by 1.
 - For static, the token will be replaced with the value specified in the replacement setting.
-- For timestamp, the token will be replaced with the strptime specified in the replacement setting. Strptime directive: <https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior\>
+- For timestamp, the token will be replaced with the strptime specified in the replacement setting. Strptime directive: [https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior](https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior)
 - For random, the token will be replaced with a randomly picked type-aware value
 - For all, For each possible replacement value, a new event will be generated and the token will be replaced with it. The configuration can be used where a token replacement contains multiple templates/values and all of the values are important and should be ingested at least once. The number of events will be multiplied by the number of values in the replacement. For example, if sample contains 3 lines & a token replacement has list of 2 values, then 6 events will be generated. For a replacement if replacementType='all' is not supported, then be default plugin will consider replacementType="random".
 - For file, the token will be replaced with a random value retrieved from a file specified in the replacement setting.
@@ -174,8 +174,8 @@ The following replacementType -> replacement values are supported
 
 - For <replacement file name\>, the token will be replaced with a random line in the replacement file.
 
-     - Replacement file name should be a fully qualified path (i.e. \$SPLUNK_HOME/etc/apps/windows/samples/users.list).
-     - Windows separators should contain double forward slashes "\\" (i.e. \$SPLUNK_HOME\\etc\\apps\\windows\\samples\\users.list).
+     - Replacement file name should be a fully qualified path (i.e. $SPLUNK_HOME/etc/apps/windows/samples/users.list).
+     - Windows separators should contain double forward slashes "\\" (i.e. $SPLUNK_HOME\\etc\\apps\\windows\\samples\\users.list).
      - Unix separators will work on Windows and vice-versa.
      - Column numbers in mvfile references are indexed at 1, meaning the first column is column 1, not 0.
 

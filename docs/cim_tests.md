@@ -41,7 +41,7 @@ To generate test cases only for CIM compatibility, append the following marker t
  ```
 
 
- #### Testcase Assertions:
+#### Testcase Assertions:
 
  - There should be at least 1 event mapped with the dataset.
  - Each required field should be extracted in all the events mapped with the datasets.
@@ -122,14 +122,14 @@ If all the above conditions are satisfied, further analysis of the test is requi
 For every CIM validation test case there is a defined structure for the stack trace.
 
  ```text
- AssertionError: <<error_message
+ AssertionError: <<error_message>>
      Source   | Sourcetype      | Field | Event Count | Field Count | Invalid Field Count | Invalid Values
      -------- | --------------- | ------| ----------- | ----------- | ------------------- | --------------
        str    |       str       |  str  |     int     |     int     |         int         |       str
 
-     Search =  <Query
+     Search =  <Query>
 
-     Properties for the field :: <field_name
+     Properties for the field :: <field_name>
      type= Required/Conditional
      condition= Condition for field
      validity= EVAL conditions

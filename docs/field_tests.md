@@ -33,7 +33,7 @@ To generate test cases only for knowledge objects, append the following marker t
  ```
 
  Testcase verifies that there are events mapped with source/sourcetype.
- Here <stanza is the source/sourcetype that is defined in the stanza.
+ Here &lt;stanza&gt; is the source/sourcetype that is defined in the stanza.
 
  **Workflow:**
 
@@ -43,12 +43,12 @@ To generate test cases only for knowledge objects, append the following marker t
 **2. Fields mentioned under source/sourcetype should be extracted**
 
  ```python
- test_props_fields[<stanza::field::<fieldname>]
+ test_props_fields[<stanza>::field::<fieldname>]
  ```
 
  Testcase verifies that the field should be extracted in the source/sourcetype.
- Here <stanza is the source/sourcetype that is defined in the stanza and
- <fieldname is the name of a field which is extracted under source/sourcetype.
+ Here &lt;stanza&gt; is the source/sourcetype that is defined in the stanza and
+ &lt;fieldname&gt; is the name of a field which is extracted under source/sourcetype.
 
  **Workflow:**
 
@@ -62,8 +62,8 @@ To generate test cases only for knowledge objects, append the following marker t
  ```
 
  Testcase verifies that the field should not have "-" (dash) or "" (empty) as a value.
- Here <stanza is the source/sourcetype that is defined in the stanza and
- <fieldname is name of field which is extracted under source/sourcetype.
+ Here &lt;stanza&gt; is the source/sourcetype that is defined in the stanza and
+ &lt;fieldname&gt; is name of field which is extracted under source/sourcetype.
 
  **Workflow:**
 
@@ -90,7 +90,7 @@ To generate test cases only for knowledge objects, append the following marker t
 
  - While parsing the conf file when the plugin finds one of EXTRACT, REPORT, LOOKUP
    the plugin gets the list of fields extracted and generates a test case.
- - For all the fields in the test case it generates a single SPL search query including the stanza and asserts event_count  0.
+ - For all the fields in the test case it generates a single SPL search query including the stanza and asserts event_count > 0.
  - This verifies that all the fields are extracted in the same event.
 
 **5. Events should be present in each eventtype**
@@ -104,7 +104,7 @@ To generate test cases only for knowledge objects, append the following marker t
 
  **Workflow:**
 
- - For each eventtype mentioned in eventtypes.conf plugin generates an SPL search query and asserts event_count  0 for the eventtype.
+ - For each eventtype mentioned in eventtypes.conf plugin generates an SPL search query and asserts event_count > 0 for the eventtype.
 
 **6. Tags defined in tags.conf should be applied to the events.**
 
@@ -113,13 +113,13 @@ To generate test cases only for knowledge objects, append the following marker t
  ```
 
  Test case verifies that the there are events mapped with the tag.
- Here <tag_stanza is a stanza mentioned in tags.conf and <tag is an individual tag
+ Here &lt;tag_stanza&gt; is a stanza mentioned in tags.conf and &lt;tag&gt; is an individual tag
  applied to that stanza.
 
  **Workflow:**
 
  - In tags.conf for each tag defined in the stanza, the plugin generates a test case.
- - For each tag, the plugin generates a search query including the stanza and the tag and asserts event_count  0.
+ - For each tag, the plugin generates a search query including the stanza and the tag and asserts event_count > 0.
 
 **7. Search query should be present in each savedsearches.**
 
@@ -133,7 +133,7 @@ To generate test cases only for knowledge objects, append the following marker t
  **Workflow:**
 
  - In savedsearches.conf for each stanza, the plugin generates a test case.
- - For each stanza mentioned in savedsearches.conf plugin generates an SPL search query and asserts event_count  0 for the savedsearch.
+ - For each stanza mentioned in savedsearches.conf plugin generates an SPL search query and asserts event_count > 0 for the savedsearch.
 
 ## Testcase Troubleshooting
 
@@ -150,8 +150,8 @@ If all the above conditions are satisfied, further analysis of the test is requi
 For every test case failure, there is a defined structure for the stack trace.
 
  ```text
- AssertionError: <<error_message
-     Search =  <Query
+ AssertionError: <<error_message>>
+     Search =  <Query>
  ```
 
 Get the search query from the stack trace and execute it on the Splunk instance and verify which specific type of events are causing failure.
