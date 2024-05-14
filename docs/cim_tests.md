@@ -100,13 +100,13 @@ To generate test cases only for CIM compatibility, append the following marker t
  - Plugin gets a list of fields whose extractions are defined in props using addon_parser.
  - By comparing we obtain a list of fields whose extractions are not allowed but defined.
 
-**5. Testcase to check that eventtype is not be mapped with multiple datamodels.**
+**5. Testcase to check that eventtype is not mapped with multiple datamodels.**
 
 
  **Workflow:**
 
  - Parsing tags.conf it already has a list of eventtype mapped with the datasets.
- - Using SPL we check that each eventtype is not be mapped with multiple datamodels.
+ - Using SPL we check that each eventtype is not mapped with multiple datamodels.
 
 ## Testcase Troubleshooting
 

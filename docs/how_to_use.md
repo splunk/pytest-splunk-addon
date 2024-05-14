@@ -101,6 +101,7 @@ services:
         SPLUNK_APP_ID: ${SPLUNK_APP_ID}
         SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
         SPLUNK_VERSION: ${SPLUNK_VERSION}
+    platform: linux/amd64
     ports:
       - "8000"
       - "8088"
@@ -120,6 +121,7 @@ services:
         SPLUNK_APP_ID: ${SPLUNK_APP_ID}
         SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
         SPLUNK_VERSION: ${SPLUNK_VERSION}
+    platform: linux/amd64
     hostname: uf
     ports:
       - "9997"
@@ -132,9 +134,6 @@ services:
     volumes:
       - ${CURRENT_DIR}/uf_files:${CURRENT_DIR}/uf_files
 
-volumes:
-  splunk-sc4s-var:
-    external: false
 ```
 </details>
 
