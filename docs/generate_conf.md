@@ -45,7 +45,7 @@
  - Execute the following command:
 
     ```console
-    generate-indextime-conf <path-to-addon [<path-to-the-new-conf-file]
+    generate-indextime-conf <path-to-addon [<path-to-the-new-conf-file>]
     ```
    
     For example:
