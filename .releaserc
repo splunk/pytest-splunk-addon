@@ -43,7 +43,7 @@
             },
             {
               "files": ["pyproject.toml"],
-              "from": "version = \"[0-9]+.[0-9]+.[0-9]+\"",
+              "from": "version = \".*\"",
               "to": "version = \"${nextRelease.version}\"",
               "results": [
                 {
