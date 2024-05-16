@@ -176,7 +176,7 @@
           "Private use",
           "Reserved"
         ],
-        "comment": "The DNS resource record type. For details, see the List of DNS record types on IANA web site."
+        "comment": "The DNS resource record type. For details, see the List of DNS record types on Internet Assigned Numbers Authority (IANA) web site."
       },
       {
         "name": "reply_code",
