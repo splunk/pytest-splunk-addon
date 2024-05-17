@@ -10,13 +10,23 @@
         {
           "name": "action",
           "type": "required",
-          "expected_values": ["success", "failure", "error"],
+          "expected_values": ["success", "failure", "pending", "error"],
           "comment": "The action performed on the resource."
         },
         {
           "name": "app",
           "type": "required",
           "comment": "The application involved in the event (such as ssh, splunk, win:local)."
+        },
+        {
+          "name": "authentication_method",
+          "type": "optional",
+          "comment": "The method used to authenticate the request"
+        },
+        {
+          "name": "authentication_service",
+          "type": "optional",
+          "comment": "The service used to authenticate the request"
         },
         {
           "name": "dest",
@@ -57,10 +67,26 @@
           "comment": "The name of the user involved in the event, or who initiated the event. For authentication privilege escalation events, this should represent the user targeted by the escalation."
         },
         {
+          "name": "user_id",
+          "type": "optional",
+          "comment": "The unique id of the user involved in the event."
+        },
+        {
+          "name": "reason",
+          "type": "optional",
+          "validity": "if(action in ['success', 'failure'], action, null())",
+          "comment": "The human-readable message associated with the authentication action (success or failure)."
+        },
+        {
           "name": "src_user",
           "condition": "src_user=*",
           "type": "conditional",
           "comment": "In privilege escalation events, src_user represents the user who initiated the privilege escalation. This field is unnecessary when an escalation has not been performed. If present it must be a valid user."
+        },
+        {
+          "name": "vendor_account",
+          "type": "optional",
+          "comment": "The account that manages the user that initiated the request. The account represents the organization, a Cloud customer, or a Cloud account."
         }
       ],
       "child_dataset": [

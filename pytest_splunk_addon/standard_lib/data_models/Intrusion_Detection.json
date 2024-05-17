@@ -68,6 +68,11 @@
           "comment": "The severity of the network protection event. This field is a string. Use a severity_id field (not included in this data model) for severity ID fields that are integer data types. Also, specific values are required for this field. Use vendor_severity for the vendor's own human readable severity strings, such as Good, Bad, and Really Bad."
         },
         {
+          "name": "severity_id",
+          "type": "optional",
+          "comment": "The numeric or vendor specific severity indicator corresponding to the event severity."
+        },
+        {
           "name": "signature",
           "type": "required",
           "comment": "The name of the intrusion detected on the client (the src), such as PlugAndPlay_BO and JavaScript_Obfuscation_Fre. This is a string value. Use a signature_id field (not included in this data model) for numeric indicators."

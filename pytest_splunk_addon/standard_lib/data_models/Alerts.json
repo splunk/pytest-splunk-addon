@@ -21,14 +21,39 @@
                 "comment":"The body of a message." 
             },
             {
+                "name": "description",
+                "type": "optional",
+                "comment": "The description of the alert event."
+            },
+            {
                 "name": "dest",
                 "type": "required",
                 "comment":"The destination of the alert message, such as an email address or SNMP trap. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."                
             },
             {
+                "name": "dest_type",
+                "type": "optional",
+                "comment": "The type of the destination object, such as instance, storage, firewall."
+            },
+            {
                 "name": "id",
                 "type": "required",
                 "comment":"The unique identifier of a message." 
+            },
+            {
+                "name": "mitre_technique_id",
+                "type": "optional",
+                "comment": "The MITRE ATT&CK technique ID of the alert event."
+            },
+            {
+                "name": "signature",
+                "type": "optional",
+                "comment": "A human-readable signature name."
+            },
+            {
+                "name": "signature_id",
+                "type": "optional",
+                "comment": "The unique identifier or event code of the event signature."
             },
             {
                 "name": "severity",
@@ -53,6 +78,11 @@
                 "comment":"The source of the message. You can alias this from more specific fields, such as src_host, src_ip, or src_name." 
             },
             {
+                "name": "src_type",
+                "type": "optional",
+                "comment": "The type of the source object, such as instance, storage, firewall."
+            },
+            {
                 "name": "subject",
                 "type": "optional",
                 "comment":"The message subject." 
@@ -68,6 +98,26 @@
                     "warning"
                 ],
                 "comment":"The message type." 
+            },
+            {
+                "name": "src",
+                "type": "optional",
+                "comment": "The user involved in the alert event."
+            },
+            {
+                "name": "user_name",
+                "type": "optional",
+                "comment": "The name of the user involved in the alert event."
+            },
+            {
+                "name": "vendor_account",
+                "type": "optional",
+                "comment": "The account associated with the alert event. The account represents the organization, or a Cloud customer or a Cloud account."
+            },
+            {
+                "name": "vendor_region",
+                "type": "optional",
+                "comment": "The data center region involved in the alert event, such as us-west-2."
             }
         ],
         "child_dataset": []

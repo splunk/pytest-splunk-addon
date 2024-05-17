@@ -24,6 +24,16 @@
           "comment": "Network port listening on the endpoint, such as 53."
         },
         {
+          "name": "loaded_file",
+          "type": "optional",
+          "comment": "File that was loaded."
+        },
+        {
+          "name": "original_file_name",
+          "type": "optional",
+          "comment": "Original name of the file, not including path."
+        },
+        {
           "name": "process_guid",
           "type": "optional",
           "comment": "The globally unique identifier of the process assigned by the vendor_product."

@@ -70,9 +70,19 @@
                 "comment":"The severity of the vulnerability detection event. Specific values are required." 
             },
             {
+                "name": "severity_id",
+                "type": "optional",
+                "comment": "The numeric or vendor specific severity indicator corresponding to the event severity."
+            },
+            {
                 "name": "signature",
                 "type": "required",
                 "comment":"The name of the vulnerability detected on the host, such as HPSBMU02785 SSRT100526 rev.2 - HP LoadRunner Running on Windows, Remote Execution of Arbitrary Code, Denial of Service (DoS)." 
+            },
+            {
+                "name": "signature_id",
+                "type": "optional",
+                "comment": "The unique identifier or event code of the event signature."
             },
             {
                 "name": "url",
