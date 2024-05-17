@@ -69,6 +69,11 @@
           "comment": "The severity of the DLP event."
         },
         {
+          "name": "severity_id",
+          "type": "optional",
+          "comment": "The numeric or vendor specific severity indicator corresponding to the event severity."
+        },
+        {
           "name": "signature",
           "type": "required",
           "comment": "The name of the DLP event."
