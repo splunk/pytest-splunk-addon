@@ -11,7 +11,7 @@
         {
           "name": "action",
           "type": "required",
-          "expected_values": ["added", "blocked"],
+          "expected_values": ["added", "ended", "blocked"],
           "comment": "The action taken by the reporting device."
         },
         {
@@ -28,6 +28,11 @@
           "name": "signature",
           "type": "required",
           "comment": "An indication of the type of network session event."
+        },
+        {
+          "name": "signature_id",
+          "type": "optional",
+          "comment": "The unique identifier or event code of the event signature."
         },
         {
           "name": "dest_priority",
