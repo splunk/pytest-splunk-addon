@@ -234,7 +234,9 @@
               "type": "optional",
               "comment": "For create instance events, this field represents the type of instance to build such as the combination of CPU, memory, storage, and network capacity."
             }
-          ]
+          ],
+          "child_dataset": [],
+          "search_constraints": "tag=instance"
         },
         {
           "name": "Network_Changes",
