@@ -111,7 +111,7 @@
                         "comment":"The certificate issuer's email address."
                     },
                     {
-                        "name": "ssl_subject_email_domain",
+                        "name": "ssl_issuer_email_domain",
                         "type": "optional",
                         "comment":"The domain name contained within the certificate issuer's email address."
                     },
@@ -189,6 +189,11 @@
                         "name": "ssl_subject_email",
                         "type": "optional",
                         "comment":"The certificate owner's e-mail address."
+                    },
+                    {
+                        "name": "ssl_subject_email_domain",
+                        "type": "optional",
+                        "comment":"The domain name contained within the certificate subject's email address."
                     },
                     {
                         "name": "ssl_subject_locality",
