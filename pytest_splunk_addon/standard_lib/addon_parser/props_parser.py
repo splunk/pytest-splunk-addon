@@ -110,10 +110,9 @@ class PropsParser(object):
                 LOGGER.info(f"Matched method of type={each_type}")
                 return method_mapping[each_type]
         else:
-            if (
-                not os.environ.get("PYTEST_XDIST_WORKER")
-                or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
-            ):
+            from ...splunk import check_first_worker  # avoiding circular import
+
+            if check_first_worker():
                 LOGGER.warning(f"No parser available for {class_name}. Skipping...")
 
     def _get_props_stanzas(self) -> Optional[Generator]:

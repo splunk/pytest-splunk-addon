@@ -28,14 +28,12 @@ class SampleXdistGenerator:
         self.config_path = config_path
 
     def get_samples(self, store_events):
+        from ...splunk import check_first_worker  # avoiding circular import
 
         if self.tokenized_event_source == "pregenerated":
             with open(self.event_path, "rb") as file_obj:
                 store_sample = pickle.load(file_obj)
-                if store_events and (
-                    "PYTEST_XDIST_WORKER" not in os.environ
-                    or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
-                ):
+                if store_events and check_first_worker():
                     try:
                         tokenized_events = store_sample.get("tokenized_events")
                         self.store_events(tokenized_events)
