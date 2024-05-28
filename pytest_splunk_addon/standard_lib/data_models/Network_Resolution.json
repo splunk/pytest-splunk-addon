@@ -184,27 +184,27 @@
                     "name": "reply_code",
                     "type": "required",
                     "expected_values": [
-                      "No Error",
-                      "Format Error",
-                      "Server Failure",
-                      "Non-Existent Domain",
-                      "NotImp",
-                      "Refused",
-                      "YXDomain",
-                      "YXRRSet",
-                      "NXRRSet",
-                      "NotAuth",
-                      "NotZone",
-                      "DSOTYPENI",
-                      "BADVERS",
-                      "BADSIG",
-                      "BADKEY",
-                      "BADTIME",
-                      "BADMODE",
-                      "BADNAME",
-                      "BADALG",
-                      "BADTRUNC",
-                      "BADCOOKIE"
+                        "No Error",
+                        "Format Error",
+                        "Server Failure",
+                        "Non-Existent Domain",
+                        "NotImp",
+                        "Refused",
+                        "YXDomain",
+                        "YXRRSet",
+                        "NXRRSet",
+                        "NotAuth",
+                        "NotZone",
+                        "DSOTYPENI",
+                        "BADVERS",
+                        "BADSIG",
+                        "BADKEY",
+                        "BADTIME",
+                        "BADMODE",
+                        "BADNAME",
+                        "BADALG",
+                        "BADTRUNC",
+                        "BADCOOKIE"
                     ],
                     "comment": "The return code for the response. For details, see the Domain Name System Parameters on the Internet Assigned Numbers Authority (IANA) web site."
                 },
@@ -285,3 +285,4 @@
         }
     ]
 }
+
