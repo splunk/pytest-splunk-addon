@@ -110,7 +110,10 @@ class PropsParser(object):
                 LOGGER.info(f"Matched method of type={each_type}")
                 return method_mapping[each_type]
         else:
-            if not os.environ.get("PYTEST_XDIST_WORKER") or os.environ.get("PYTEST_XDIST_WORKER") == "gw0":
+            if (
+                not os.environ.get("PYTEST_XDIST_WORKER")
+                or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
+            ):
                 LOGGER.warning(f"No parser available for {class_name}. Skipping...")
 
     def _get_props_stanzas(self) -> Optional[Generator]:
@@ -301,7 +304,7 @@ class PropsParser(object):
         """
         parsed_fields = self._parse_lookup(value)
         lookup_field_list = (
-                parsed_fields["input_fields"] + parsed_fields["output_fields"]
+            parsed_fields["input_fields"] + parsed_fields["output_fields"]
         )
 
         # If the OUTPUT or OUTPUTNEW argument is never used, then get the fields from the csv file
