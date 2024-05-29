@@ -32,6 +32,8 @@ from .standard_lib.CIM_Models.datamodel_definition import datamodels
 import configparser
 from filelock import FileLock
 
+from pytest_splunk_addon.standard_lib import utils
+
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -388,16 +390,6 @@ def splunk_search_util(splunk, request):
     return search_util
 
 
-def check_first_worker() -> bool:
-    """
-    returns True if the current execution is under gw0 (first worker)
-    """
-    return (
-        "PYTEST_XDIST_WORKER" not in os.environ
-        or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
-    )
-
-
 @pytest.fixture(scope="session")
 def ignore_internal_errors(request):
     """
@@ -742,7 +734,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
     if request.config.getoption("ingest_events").lower() in ["n", "no", "false", "f"]:
         return
     global PYTEST_XDIST_TESTRUNUID
-    if check_first_worker():
+    if utils.check_first_worker():
         addon_path = request.config.getoption("splunk_app")
         config_path = request.config.getoption("splunk_data_generator")
         ingest_meta_data = {
@@ -790,7 +782,7 @@ def splunk_events_cleanup(request, splunk_search_util):
 
     """
     if request.config.getoption("splunk_cleanup"):
-        if check_first_worker():
+        if utils.check_first_worker():
             LOGGER.info("Running the old events cleanup")
             splunk_search_util.deleteEventsFromIndex()
     else:
@@ -805,7 +797,7 @@ def file_system_prerequisite():
     """
     UF_FILE_MONTOR_DIR = "uf_files"
     monitor_dir = os.path.join(os.getcwd(), UF_FILE_MONTOR_DIR)
-    if check_first_worker():
+    if utils.check_first_worker():
         if os.path.exists(monitor_dir):
             shutil.rmtree(monitor_dir, ignore_errors=True)
         os.mkdir(monitor_dir)
