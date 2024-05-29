@@ -20,6 +20,8 @@ from filelock import FileLock
 import json
 import pytest
 
+from pytest_splunk_addon.standard_lib import utils
+
 
 class SampleXdistGenerator:
     def __init__(self, addon_path, config_path=None, process_count=4):
@@ -28,14 +30,10 @@ class SampleXdistGenerator:
         self.config_path = config_path
 
     def get_samples(self, store_events):
-
         if self.tokenized_event_source == "pregenerated":
             with open(self.event_path, "rb") as file_obj:
                 store_sample = pickle.load(file_obj)
-                if store_events and (
-                    "PYTEST_XDIST_WORKER" not in os.environ
-                    or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
-                ):
+                if store_events and utils.check_first_worker():
                     try:
                         tokenized_events = store_sample.get("tokenized_events")
                         self.store_events(tokenized_events)
