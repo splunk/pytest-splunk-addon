@@ -19,10 +19,6 @@ repos:
     hooks:
     -   id: check-merge-conflict
     -   id: debug-statements
-    -   id: check-json
-    -   id: pretty-format-json
-        args: [--autofix, --no-sort-keys, --indent, '4']
-        files: ^pytest_splunk_addon/standard_lib/data_models/
 -   repo: https://github.com/psf/black
     rev: 22.8.0
     hooks:
