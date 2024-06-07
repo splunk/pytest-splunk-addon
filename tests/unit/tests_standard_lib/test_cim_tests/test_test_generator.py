@@ -100,7 +100,7 @@ def test_cim_test_generator_instantiation(args):
         if len(args) == 3:
             assert cim.test_field_type == ["required", "conditional"]
             assert (
-                "pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json"
+                "pytest_splunk_addon/cim_tests/CommonFields.json"
                 in cim.common_fields_path
             )
         else:
