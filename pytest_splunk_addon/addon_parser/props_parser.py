@@ -28,7 +28,7 @@ import addonfactory_splunk_conf_parser_lib as conf_parser
 
 from .fields import convert_to_fields
 from .transforms_parser import TransformsParser
-from pytest_splunk_addon.standard_lib import utils
+from pytest_splunk_addon import utils
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
