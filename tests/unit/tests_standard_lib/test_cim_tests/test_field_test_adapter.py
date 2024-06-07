@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from pytest_splunk_addon.standard_lib.cim_tests.field_test_adapter import (
+from pytest_splunk_addon.cim_tests.field_test_adapter import (
     FieldTestAdapter,
 )
 
@@ -9,7 +9,7 @@ from pytest_splunk_addon.standard_lib.cim_tests.field_test_adapter import (
 def field_mock(monkeypatch):
     field = MagicMock()
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.cim_tests.field_test_adapter.Field", field
+        "pytest_splunk_addon.cim_tests.field_test_adapter.Field", field
     )
     return field
 

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, call
 
-from pytest_splunk_addon.standard_lib.addon_parser.fields import (
+from pytest_splunk_addon.addon_parser.fields import (
     Field,
     convert_to_fields,
 )
@@ -54,7 +54,7 @@ def field_mock(monkeypatch):
     field_mock = MagicMock()
     field_mock.return_value = TEST_VALUE
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.addon_parser.fields.Field", field_mock
+        "pytest_splunk_addon.addon_parser.fields.Field", field_mock
     )
     return field_mock
 

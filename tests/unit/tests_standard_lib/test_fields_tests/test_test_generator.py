@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from pytest_splunk_addon.standard_lib.fields_tests.test_generator import (
+from pytest_splunk_addon.fields_tests.test_generator import (
     FieldTestGenerator,
 )
 
@@ -27,7 +27,7 @@ def addon_parser_mock(monkeypatch):
     ap = MagicMock()
     ap.return_value = ap
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.fields_tests.test_generator.AddonParser", ap
+        "pytest_splunk_addon.fields_tests.test_generator.AddonParser", ap
     )
     return ap
 
@@ -36,7 +36,7 @@ def addon_parser_mock(monkeypatch):
 def field_bank_mock(monkeypatch):
     fb = MagicMock()
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.fields_tests.test_generator.FieldBank", fb
+        "pytest_splunk_addon.fields_tests.test_generator.FieldBank", fb
     )
     return fb
 

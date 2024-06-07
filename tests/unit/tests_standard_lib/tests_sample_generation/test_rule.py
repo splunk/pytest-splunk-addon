@@ -5,7 +5,7 @@ from collections import namedtuple
 from freezegun import freeze_time
 from unittest.mock import MagicMock, call, patch, mock_open, ANY
 
-import pytest_splunk_addon.standard_lib.sample_generation.rule
+import pytest_splunk_addon.sample_generation.rule
 
 TOKEN_DATA = "token_data"
 FIELD = "Field"
@@ -61,21 +61,21 @@ def token(replacement=REPL, replacement_type=STATIC):
 
 def get_patch(func, return_value):
     return patch(
-        f"pytest_splunk_addon.standard_lib.sample_generation.rule.{func}",
+        f"pytest_splunk_addon.sample_generation.rule.{func}",
         MagicMock(return_value=return_value),
     )
 
 
 def test_raise_warning(caplog):
     warning_message = "Warning_message"
-    pytest_splunk_addon.standard_lib.sample_generation.rule.raise_warning(
+    pytest_splunk_addon.sample_generation.rule.raise_warning(
         warning_message
     )
     assert caplog.messages == [warning_message]
 
 
 def get_rule_class(name):
-    rule_module = pytest_splunk_addon.standard_lib.sample_generation.rule
+    rule_module = pytest_splunk_addon.sample_generation.rule
     rule_classes = {
         INT: rule_module.IntRule,
         FLOAT: rule_module.FloatRule,
@@ -118,7 +118,7 @@ def event():
 class TestRule:
     @pytest.fixture
     def rule(self):
-        return pytest_splunk_addon.standard_lib.sample_generation.rule.Rule(token())
+        return pytest_splunk_addon.sample_generation.rule.Rule(token())
 
     @pytest.fixture
     def mock_class(self, monkeypatch):
@@ -126,7 +126,7 @@ class TestRule:
             class_mock = MagicMock()
             class_mock.return_value = RETURN_VALUE
             monkeypatch.setattr(
-                f"pytest_splunk_addon.standard_lib.sample_generation.rule.{class_to_mock}",
+                f"pytest_splunk_addon.sample_generation.rule.{class_to_mock}",
                 class_mock,
             )
             return class_mock
@@ -198,7 +198,7 @@ class TestRule:
         replace_mock = MagicMock()
         token_values = [[TokenValue(1)], [TokenValue(2)]]
         replace_mock.side_effect = token_values
-        rule = pytest_splunk_addon.standard_lib.sample_generation.rule.Rule(
+        rule = pytest_splunk_addon.sample_generation.rule.Rule(
             token(replacement_type=ALL)
         )
         rule.replace = replace_mock
@@ -207,7 +207,7 @@ class TestRule:
         events = [event1, event2]
         assert rule.apply(events) == [return_event_1, return_event_2]
         assert (
-            pytest_splunk_addon.standard_lib.sample_generation.rule.event_host_count
+            pytest_splunk_addon.sample_generation.rule.event_host_count
             == 2
         )
         for e, tv in zip(
@@ -220,7 +220,7 @@ class TestRule:
         replace_mock = MagicMock()
         token_values = [[TokenValue(1)], [TokenValue(2)], [TokenValue(3)]]
         replace_mock.side_effect = token_values
-        rule = pytest_splunk_addon.standard_lib.sample_generation.rule.Rule(
+        rule = pytest_splunk_addon.sample_generation.rule.Rule(
             token(replacement_type=RANDOM)
         )
         rule.replace = replace_mock
@@ -256,7 +256,7 @@ class TestRule:
                 index_list,
                 csv,
             )
-            pytest_splunk_addon.standard_lib.sample_generation.rule.user_email_count = (
+            pytest_splunk_addon.sample_generation.rule.user_email_count = (
                 email_count
             )
             assert eve.replacement_map == {test_key: result_csv}
@@ -284,14 +284,14 @@ class TestRule:
         assert rule.get_rule_replacement_values(sample, value_list, ANY) == expected
 
     def test_clean_rules(self, rule):
-        pytest_splunk_addon.standard_lib.sample_generation.rule.event_host_count = 25
+        pytest_splunk_addon.sample_generation.rule.event_host_count = 25
         assert (
-            pytest_splunk_addon.standard_lib.sample_generation.rule.event_host_count
+            pytest_splunk_addon.sample_generation.rule.event_host_count
             == 25
         )
         rule.clean_rules()
         assert (
-            pytest_splunk_addon.standard_lib.sample_generation.rule.event_host_count
+            pytest_splunk_addon.sample_generation.rule.event_host_count
             == 0
         )
 
@@ -358,7 +358,7 @@ def test_rule(
     )
     eve = event()
     monkeypatch.setattr(
-        pytest_splunk_addon.standard_lib.sample_generation.rule,
+        pytest_splunk_addon.sample_generation.rule,
         to_mock,
         MagicMock(return_value=ret_value),
     )

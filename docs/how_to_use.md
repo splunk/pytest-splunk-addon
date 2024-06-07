@@ -4,7 +4,7 @@
 Create a test file in the tests folder
 
 ```python
-from pytest_splunk_addon.standard_lib.addon_basic import Basic
+from pytest_splunk_addon.addon_basic import Basic
 class Test_App(Basic):
     def empty_method():
         pass

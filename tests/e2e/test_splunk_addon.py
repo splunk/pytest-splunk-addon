@@ -4,7 +4,7 @@ import shutil
 import logging
 import pytest
 from tests.e2e import constants
-from pytest_splunk_addon.standard_lib.sample_generation import SampleGenerator, Rule
+from pytest_splunk_addon.sample_generation import SampleGenerator, Rule
 
 logger = logging.getLogger("test_pytest_splunk_addon")
 
@@ -128,7 +128,7 @@ def test_splunk_app_fiction(testdir, request):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -176,7 +176,7 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -228,7 +228,7 @@ def test_splunk_app_broken(testdir, request):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -285,7 +285,7 @@ def test_splunk_app_cim_fiction(testdir, request):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -339,7 +339,7 @@ def test_splunk_app_cim_broken(testdir, request):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -396,7 +396,7 @@ def test_splunk_fiction_indextime(testdir, request):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -450,7 +450,7 @@ def test_splunk_fiction_indextime_broken(testdir, request):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -506,7 +506,7 @@ def test_splunk_fiction_indextime_broken(testdir, request):
 def test_splunk_setup_fixture(testdir, request):
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -546,7 +546,7 @@ def test_splunk_app_req(testdir, request):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -601,7 +601,7 @@ def test_splunk_app_req_broken(testdir, request):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -656,7 +656,7 @@ def test_splunk_app_req(testdir, request):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -713,7 +713,7 @@ def test_splunk_cim_model_ipv6_regex(testdir, request):
     """
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
@@ -760,7 +760,7 @@ def test_infinite_loop_in_ingest_data_fixture(testdir, request):
 
     testdir.makepyfile(
         """
-        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        from pytest_splunk_addon.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass

@@ -1,5 +1,5 @@
 from unittest.mock import patch, mock_open
-from pytest_splunk_addon.standard_lib.addon_parser.savedsearches_parser import (
+from pytest_splunk_addon.addon_parser.savedsearches_parser import (
     SavedSearchParser,
 )
 

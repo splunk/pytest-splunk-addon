@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock, call
 from collections import namedtuple
-from pytest_splunk_addon.standard_lib.cim_tests.data_model import DataModel
+from pytest_splunk_addon.cim_tests.data_model import DataModel
 
 
 @pytest.fixture()
@@ -10,7 +10,7 @@ def data_set_mock(monkeypatch):
     data_set_mock.return_value = data_set_mock
     data_set_mock.load_dataset.return_value = ["dataset1", "dataset2"]
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.cim_tests.data_model.DataSet", data_set_mock
+        "pytest_splunk_addon.cim_tests.data_model.DataSet", data_set_mock
     )
     return data_set_mock
 

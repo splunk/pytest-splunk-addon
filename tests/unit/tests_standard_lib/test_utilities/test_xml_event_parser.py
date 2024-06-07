@@ -1,6 +1,6 @@
 import pytest
 
-from pytest_splunk_addon.standard_lib.utilities.xml_event_parser import (
+from pytest_splunk_addon.utilities.xml_event_parser import (
     strip_syslog_header,
     escape_char_event,
 )

@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import call
-from pytest_splunk_addon.standard_lib.cim_compliance.markdown_report import (
+from pytest_splunk_addon.cim_compliance.markdown_report import (
     MarkDownReport,
 )
 
