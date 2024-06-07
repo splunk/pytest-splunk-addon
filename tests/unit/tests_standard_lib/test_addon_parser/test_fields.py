@@ -53,9 +53,7 @@ def default_field(field_json):
 def field_mock(monkeypatch):
     field_mock = MagicMock()
     field_mock.return_value = TEST_VALUE
-    monkeypatch.setattr(
-        "pytest_splunk_addon.addon_parser.fields.Field", field_mock
-    )
+    monkeypatch.setattr("pytest_splunk_addon.addon_parser.fields.Field", field_mock)
     return field_mock
 
 

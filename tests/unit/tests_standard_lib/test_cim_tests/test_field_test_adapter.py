@@ -8,9 +8,7 @@ from pytest_splunk_addon.cim_tests.field_test_adapter import (
 @pytest.fixture()
 def field_mock(monkeypatch):
     field = MagicMock()
-    monkeypatch.setattr(
-        "pytest_splunk_addon.cim_tests.field_test_adapter.Field", field
-    )
+    monkeypatch.setattr("pytest_splunk_addon.cim_tests.field_test_adapter.Field", field)
     return field
 
 

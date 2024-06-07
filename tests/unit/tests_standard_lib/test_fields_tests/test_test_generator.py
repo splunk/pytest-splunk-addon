@@ -35,9 +35,7 @@ def addon_parser_mock(monkeypatch):
 @pytest.fixture()
 def field_bank_mock(monkeypatch):
     fb = MagicMock()
-    monkeypatch.setattr(
-        "pytest_splunk_addon.fields_tests.test_generator.FieldBank", fb
-    )
+    monkeypatch.setattr("pytest_splunk_addon.fields_tests.test_generator.FieldBank", fb)
     return fb
 
 

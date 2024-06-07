@@ -7,9 +7,7 @@ from pytest_splunk_addon.fields_tests.field_bank import FieldBank
 def field_mock(monkeypatch):
     field_mock = MagicMock()
     field_mock.parse_fields.return_value = ["field1", "field_3"]
-    monkeypatch.setattr(
-        "pytest_splunk_addon.fields_tests.field_bank.Field", field_mock
-    )
+    monkeypatch.setattr("pytest_splunk_addon.fields_tests.field_bank.Field", field_mock)
     return field_mock
 
 

@@ -25,9 +25,7 @@ def samp_eve():
     ip_mock.ipv6.return_value = FAKE_IPV6
     with patch("faker.Faker") as faker_mock:
         faker_mock.return_value = ip_mock
-        importlib.reload(
-            pytest_splunk_addon.sample_generation.sample_event
-        )
+        importlib.reload(pytest_splunk_addon.sample_generation.sample_event)
     return pytest_splunk_addon.sample_generation.sample_event.SampleEvent(
         event_string=EVENT_STRING,
         metadata=METADATA,
@@ -36,17 +34,11 @@ def samp_eve():
 
 
 def check_host_count(value):
-    assert (
-        pytest_splunk_addon.sample_generation.sample_event.host_count
-        == value
-    )
+    assert pytest_splunk_addon.sample_generation.sample_event.host_count == value
 
 
 def check_fqdn_count(value):
-    assert (
-        pytest_splunk_addon.sample_generation.sample_event.fqdn_count
-        == value
-    )
+    assert pytest_splunk_addon.sample_generation.sample_event.fqdn_count == value
 
 
 def test_update(samp_eve):

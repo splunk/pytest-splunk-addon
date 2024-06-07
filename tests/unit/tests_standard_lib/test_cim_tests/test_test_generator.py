@@ -28,9 +28,7 @@ def mocked_cim_test_generator():
 @pytest.fixture()
 def field_mock(monkeypatch):
     field = MagicMock()
-    monkeypatch.setattr(
-        "pytest_splunk_addon.cim_tests.test_generator.Field", field
-    )
+    monkeypatch.setattr("pytest_splunk_addon.cim_tests.test_generator.Field", field)
     return field
 
 

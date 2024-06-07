@@ -81,9 +81,7 @@ class TestSampleXdistGenerator:
         MagicMock(),
     )
     @patch("builtins.open", mock_open())
-    @patch(
-        "pytest_splunk_addon.sample_generation.sample_xdist_generator.pickle"
-    )
+    @patch("pytest_splunk_addon.sample_generation.sample_xdist_generator.pickle")
     @pytest.mark.parametrize(
         "exists_value, environ, expected",
         [

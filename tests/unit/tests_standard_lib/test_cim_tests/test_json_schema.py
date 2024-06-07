@@ -9,9 +9,7 @@ error = namedtuple("ValidationError", ["path", "instance", "message"])
 
 @pytest.fixture()
 def validator_mock(monkeypatch):
-    with patch(
-        "pytest_splunk_addon.cim_tests.json_schema.Draft7Validator"
-    ):
+    with patch("pytest_splunk_addon.cim_tests.json_schema.Draft7Validator"):
         yield
 
 

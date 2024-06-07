@@ -68,9 +68,7 @@ def get_patch(func, return_value):
 
 def test_raise_warning(caplog):
     warning_message = "Warning_message"
-    pytest_splunk_addon.sample_generation.rule.raise_warning(
-        warning_message
-    )
+    pytest_splunk_addon.sample_generation.rule.raise_warning(warning_message)
     assert caplog.messages == [warning_message]
 
 
@@ -206,10 +204,7 @@ class TestRule:
         event2 = event()
         events = [event1, event2]
         assert rule.apply(events) == [return_event_1, return_event_2]
-        assert (
-            pytest_splunk_addon.sample_generation.rule.event_host_count
-            == 2
-        )
+        assert pytest_splunk_addon.sample_generation.rule.event_host_count == 2
         for e, tv in zip(
             [return_event_1, return_event_2], [TokenValue(1), TokenValue(2)]
         ):
@@ -256,9 +251,7 @@ class TestRule:
                 index_list,
                 csv,
             )
-            pytest_splunk_addon.sample_generation.rule.user_email_count = (
-                email_count
-            )
+            pytest_splunk_addon.sample_generation.rule.user_email_count = email_count
             assert eve.replacement_map == {test_key: result_csv}
 
         csv_row_1 = create_csv("1")
@@ -285,15 +278,9 @@ class TestRule:
 
     def test_clean_rules(self, rule):
         pytest_splunk_addon.sample_generation.rule.event_host_count = 25
-        assert (
-            pytest_splunk_addon.sample_generation.rule.event_host_count
-            == 25
-        )
+        assert pytest_splunk_addon.sample_generation.rule.event_host_count == 25
         rule.clean_rules()
-        assert (
-            pytest_splunk_addon.sample_generation.rule.event_host_count
-            == 0
-        )
+        assert pytest_splunk_addon.sample_generation.rule.event_host_count == 0
 
 
 @pytest.mark.parametrize(
