@@ -110,5 +110,5 @@ services:
       - ${CURRENT_DIR}/uf_files:${CURRENT_DIR}/uf_files
 
 volumes:
-  splunk-sc4s-var:
+  results:
     external: false
