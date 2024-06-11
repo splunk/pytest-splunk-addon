@@ -11,4 +11,4 @@ export PATH="/root/.local/bin:$PATH"
 source ~/.poetry/env
 sleep 15
 poetry install
-exec poetry run pytest -vv $@
+exec poetry run pytest -vv --junitxml=/work/test-results/test.xml $@
