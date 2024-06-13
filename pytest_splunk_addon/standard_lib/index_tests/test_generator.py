@@ -145,6 +145,8 @@ class IndexTimeTestGenerator(object):
                 ] = self.get_sourcetype(event)
 
             if not line_breaker_params[event.sample_name].get("expected_event_count"):
+                LOGGER.warning("'expected_event_count' parameter is missing. "
+                               "Value will be calculated on a best effort basis.")
                 if event.metadata.get("input_type") not in [
                     "modinput",
                     "windows_input",
