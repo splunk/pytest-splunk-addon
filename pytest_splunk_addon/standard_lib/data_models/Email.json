@@ -108,6 +108,11 @@
           "comment": "The total number of intended message recipients."
         },
         {
+          "name": "recipient_domain",
+          "type": "optional",
+          "comment": "The domain name contained within the recipient email addresses."
+        },
+        {
           "name": "recipient_status",
           "type": "optional",
           "comment": "The recipient delivery status, if available."
@@ -150,6 +155,11 @@
           "type": "conditional",
           "condition": "protocol=smtp",
           "comment": "The status code associated with the message."
+        },
+        {
+          "name": "src_user_domain",
+          "type": "optional",
+          "comment": "The domain name contained within the email address of the message sender."
         },
         {
           "name": "subject",

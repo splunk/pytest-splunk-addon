@@ -116,6 +116,11 @@
           "comment": "The URL of the requested HTTP resource."
         },
         {
+          "name": "url_domain",
+          "type": "optional",
+          "comment": "The domain name contained within the URL of the requested HTTP resource."
+        },
+        {
           "name": "url_length",
           "type": "optional",
           "validity": "if(url_length == len(url), url_length, null())",
@@ -232,6 +237,31 @@
           "fields": [],
           "child_dataset": [],
           "search_constraints": "tag=proxy"
+        },
+        {
+          "name": "Storage",
+          "tags": [["storage", "web"]],
+          "fields_cluster": [],
+          "fields":[
+            {
+              "name": "error_code",
+              "type": "optional",
+              "comment": "The error code that occurred while accessing the storage account"
+            },
+            {
+              "name": "operation",
+              "type": "optional",
+              "comment": "The operation performed on the storage account."
+            },
+            {
+              "name": "storage_name",
+              "type": "optional",
+              "comment": "The name of the bucket or storage account."
+            }
+          ],
+          "child_dataset": [],
+          "search_constraints": "tag=storage"
+
         }
       ],
       "search_constraints": "tag=web"
