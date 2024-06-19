@@ -19,5 +19,5 @@ ARG SPLUNK_APP_ID=TA_UNKNOWN
 ARG SPLUNK_APP_PACKAGE=package
 COPY ${SPLUNK_APP_PACKAGE} /opt/splunk/etc/apps/${SPLUNK_APP_ID}
 COPY deps/apps /opt/splunk/etc/apps/
-COPY deps/build/addonfactory_test_matrix_splunk/packages/all/common /opt/splunk/etc/apps/
-COPY deps/build/addonfactory_test_matrix_splunk/packages/all/sh /opt/splunk/etc/apps/
+COPY indexes.conf /opt/splunk/etc/apps/$SPLUNK_APP_ID/local/indexes.conf
+COPY authorize.conf /opt/splunk/etc/system/local/authorize.conf
