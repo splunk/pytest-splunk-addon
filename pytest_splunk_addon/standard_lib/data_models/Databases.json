@@ -1,0 +1,490 @@
+{
+    "model_name": "Databases",
+    "version": "1.0.0",
+    "objects": [
+        {
+            "name": "All_Databases",
+            "tags": [["database"]],
+            "fields_cluster": [],
+            "search_constraints": "tag=database",
+            "fields": [
+                {
+                    "name": "dest",
+                    "type": "optional",
+                    "comment": "The destination of the database event. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
+                },
+                {
+                    "name": "dest_bunit",
+                    "type": "optional",
+                    "comment": "The business unit of the destination."
+                },
+                {
+                    "name": "dest_category",
+                    "type": "optional",
+                    "comment": "The category of the destination."
+                },
+                {
+                    "name": "dest_priority",
+                    "type": "optional",
+                    "comment": "The priority of the destination."
+                },
+                {
+                    "name": "duration",
+                    "type": "optional",
+                    "comment": "The amount of time for the completion of the database event, in seconds."
+                },
+                {
+                    "name": "object",
+                    "type": "optional",
+                    "comment": "The name of the database object."
+                },
+                {
+                    "name": "response_time",
+                    "type": "optional",
+                    "comment": "The amount of time it took to receive a response in the database event, in seconds."
+                },
+                {
+                    "name": "src",
+                    "type": "optional",
+                    "comment": "The source of the database event. You can alias this from more specific fields, such as src_host, src_ip, or src_name."
+                },
+                {
+                    "name": "src_bunit",
+                    "type": "optional",
+                    "comment": "The business unit of the source."
+                },
+                {
+                    "name": "src_category",
+                    "type": "optional",
+                    "comment": "The category of the source."
+                },
+                {
+                    "name": "src_priority",
+                    "type": "optional",
+                    "comment": "The priority of the source."
+                },
+                {
+                    "name": "tag",
+                    "type": "optional",
+                    "comment": "This automatically generated field is used to access tags from within data models. Add-on builders do not need to populate it."
+                },
+                {
+                    "name": "user",
+                    "type": "optional",
+                    "comment": "Name of the database process user."
+                },
+                {
+                    "name": "user_bunit",
+                    "type": "optional",
+                    "comment": "The business unit of the user."
+                },
+                {
+                    "name": "user_category",
+                    "type": "optional",
+                    "comment": "The category associated with the user."
+                },
+                {
+                    "name": "user_priority",
+                    "type": "optional",
+                    "comment": "The priority of the user."
+                },
+                {
+                    "name": "vendor_product",
+                    "type": "optional",
+                    "comment": "The vendor and product name of the database system. This field can be automatically populated by vendor and product fields in your data."
+                } 
+            ],
+            "child_dataset": [
+                {
+                    "name": "Database_Instance",
+                    "tags": [
+                        ["instance", "database"]
+                    ],
+                    "search_constraints":"tag=instance",
+                    "fields_cluster":[],
+                    "fields":[
+                        {
+                            "name": "instance_name",
+                            "type": "optional",
+                            "comment": "The name of the database instance."
+                        },
+                        {
+                            "name": "instance_version",
+                            "type": "optional",
+                            "comment": "The version of the database instance."
+                        },
+                        {
+                            "name": "session_limit",
+                            "type": "optional",
+                            "comment": "The maximum number of sessions that the database instance can handle."
+                        },
+                        {
+                            "name": "process_limit",
+                            "type": "optional",
+                            "comment": "The maximum number of processes that the database instance can handle."
+                        }
+                    ],
+                    "child_dataset": [
+                        {
+                            "name": "Instance_Stats",
+                            "tags": [
+                                ["stats", "instance", "database"]
+                            ],
+                            "search_constraints":"tag=stats",
+                            "fields_cluster":[],
+                            "fields":[
+                                {
+                                    "name": "availability",
+                                    "type": "optional",
+                                    "expected_values": [
+                                        "Available",
+                                        "Not Available"
+                                    ],
+                                    "comment": "The status of the database server."
+                                },
+                                {
+                                    "name": "avg_executions",
+                                    "type": "optional",
+                                    "comment": "The average number of executions for the database instance."
+                                },
+                                {
+                                    "name": "dump_area_used",
+                                    "type": "optional",
+                                    "comment": "The amount of the database dump area that has been used."
+                                },
+                                {
+                                    "name": "number_of_users",
+                                    "type": "optional",
+                                    "comment": "The total number of users for the database instance."
+                                },
+                                {
+                                    "name": "start_time",
+                                    "type": "optional",
+                                    "comment": "The total amount of uptime for the database instance."
+                                },
+                                {
+                                    "name": "sessions",
+                                    "type": "optional",
+                                    "comment": "The total number of sessions currently in use for the database instance."
+                                },
+                                {
+                                    "name": "processes",
+                                    "type": "optional",
+                                    "comment": "The number of processes currently running for the database instance."
+                                },
+                                {
+                                    "name": "tablespace_used",
+                                    "type": "optional",
+                                    "comment": "The total amount of tablespace used for the database instance, in bytes."
+                                },
+                                {
+                                    "name": "instance_reads",
+                                    "type": "optional",
+                                    "comment": "The total number of reads for the database instance."
+                                },
+                                {
+                                    "name": "instance_writes",
+                                    "type": "optional",
+                                    "comment": "The total number of writes for the database instance."
+                                },
+                                {
+                                    "name": "sga_buffer_cache_size",
+                                    "type": "optional",
+                                    "comment": "The total size of the buffer cache for the database instance, in bytes."
+                                },
+                                {
+                                    "name": "sga_data_dict_hit_ratio",
+                                    "type": "optional",
+                                    "comment": "The hit-to-miss ratio for the database instance's data dictionary."
+                                },
+                                {
+                                    "name": "sga_buffer_hit_limit",
+                                    "type": "optional",
+                                    "comment": "The maximum number of buffers that can be hit in the database instance without finding a free buffer."
+                                },
+                                {
+                                    "name": "sga_library_cache_size",
+                                    "type": "optional",
+                                    "comment": "The total library cache size for the database instance, in bytes."
+                                },
+                                {
+                                    "name": "sga_fixed_area_size",
+                                    "type": "optional",
+                                    "comment": "The size of the fixed area (also referred to as the fixed SGA) for the database instance, in bytes."
+                                },
+                                {
+                                    "name": "sga_free_memory",
+                                    "type": "optional",
+                                    "comment": "The total amount of free memory in the database instance SGA, in bytes."
+                                },
+                                {
+                                    "name": "sga_shared_pool_size",
+                                    "type": "optional",
+                                    "comment": "The total size of the shared pool for this database instance, in bytes."
+                                },
+                                {
+                                    "name": "sga_redo_log_buffer_size",
+                                    "type": "optional",
+                                    "comment": "The total size of the redo log buffer for the database instance, in bytes."
+                                },
+                                {
+                                    "name": "sga_sql_area_size",
+                                    "type": "optional",
+                                    "comment": "The total size of the SQL area for this database instance, in bytes."
+                                }
+                            ],
+                            "child_dataset": []
+                        },
+                        {
+                            "name": "Session_Info",
+                            "tags": [
+                                ["session", "database", "database"]
+                            ],
+                            "search_constraints":"tag=session",
+                            "fields_cluster":[],
+                            "fields":[
+                                {
+                                    "name": "session_id",
+                                    "type": "optional",
+                                    "comment": "The unique id that identifies the session."
+                                },
+                                {
+                                    "name": "session_status",
+                                    "type": "optional",
+                                    "expected_values": [
+                                        "Online",
+                                        "Offline"
+                                    ],
+                                    "comment": "The current status of the session."
+                                },
+                                {
+                                    "name": "machine",
+                                    "type": "optional",
+                                    "comment": "The name of the logical host associated with the database instance."
+                                },
+                                {
+                                    "name": "elapsed_time",
+                                    "type": "optional",
+                                    "comment": "The total amount of time elapsed since the user started the session by logging into the database server, in seconds."
+                                },
+                                {
+                                    "name": "cpu_used",
+                                    "type": "optional",
+                                    "comment": "The number of CPU centiseconds used by the session. Divide this value by 100 to get the CPU seconds."
+                                },
+                                {
+                                    "name": "memory_sorts",
+                                    "type": "optional",
+                                    "comment": "The total number of memory sorts performed during the session."
+                                },
+                                {
+                                    "name": "table_scans",
+                                    "type": "optional",
+                                    "comment": "Number of table scans performed during the session."
+                                },
+                                {
+                                    "name": "physical_reads",
+                                    "type": "optional",
+                                    "comment": "The total number of physical reads performed during the session."
+                                },
+                                {
+                                    "name": "logical_reads",
+                                    "type": "optional",
+                                    "comment": "The total number of consistent gets and database block gets performed during the session."
+                                },
+                                {
+                                    "name": "commits",
+                                    "type": "optional",
+                                    "comment": "The number of commits per second performed by the user associated with the session."
+                                },
+                                {
+                                    "name": "cursor",
+                                    "type": "optional",
+                                    "comment": "The number of the cursor currently in use by the session."
+                                },
+                                {
+                                    "name": "buffer_cache_hit_ratio",
+                                    "type": "optional",
+                                    "comment": "The percentage of logical reads from the buffer during the session (1-physical reads\/session logical reads*100)."
+                                },
+                                {
+                                    "name": "wait_state",
+                                    "type": "optional",
+                                    "expected_values": [
+                                        "WAITING",
+                                        "WAITED UNKNOWN",
+                                        "WAITED SHORT TIME",
+                                        "WAITED KNOWN TIME"
+                                    ],
+                                    "comment": "Provides the current wait state for the session. Can indicate that the session is currently waiting or provide information about the session's last wait. WAITING indicates the session is currently waiting, WAITED UNKNOWN TIME indicates the duration of the last session wait is unknown, WAITED SHORT TIME indicates the last session wait was < 1\/100th of a second, WAITED KNOWN TIME indicates the wait_time is the duration of the last session wait."
+                                },
+                                {
+                                    "name": "wait_time",
+                                    "type": "optional",
+                                    "comment": "When wait_time = 0, the session is waiting. When wait_time has a nonzero value, it is displaying the last wait time for the session."
+                                },
+                                {
+                                    "name": "seconds_in_wait",
+                                    "type": "optional",
+                                    "comment": "The seconds_in_wait depends on the value of wait_time. If wait_time = 0, seconds_in_wait is the number of seconds spent in the current wait condition. If wait_time has a nonzero value, seconds_in_wait is the number of seconds that have elapsed since the start of the last wait. You can get the active seconds that have elapsed since the last wait ended by calculating seconds_in_wait - wait_time \/ 100."
+                                }
+                            ],
+                            "child_dataset": []
+                            
+                        },
+                        {
+                            "name": "Lock_Info",
+                            "tags": [
+                                ["lock", "instance", "database"]
+                            ],
+                            "search_constraints":"tag=lock",
+                            "fields_cluster":[],
+                            "fields":[
+                                {
+                                    "name": "obj_name",
+                                    "type": "optional",
+                                    "comment": "The name of the locked object."
+                                },
+                                {
+                                    "name": "lock_session_id",
+                                    "type": "optional",
+                                    "comment": "The session identifier of the locked object."
+                                },
+                                {
+                                    "name": "serial_num",
+                                    "type": "optional",
+                                    "comment": "The serial number of the object."
+                                },
+                                {
+                                    "name": "lock_mode",
+                                    "type": "optional",
+                                    "comment": "The mode of the lock on the object."
+                                },
+                                {
+                                    "name": "os_pid",
+                                    "type": "optional",
+                                    "comment": "The process identifier for the operating system."
+                                },
+                                {
+                                    "name": "last_call_minute",
+                                    "type": "optional",
+                                    "comment": "Represents the amount of time elapsed since the session_status changed to its current status. The definition of this field depends on the session_status value. If session_status = ONLINE, the last_call_minute value represents the time elapsed since the session became active. If session_status = OFFLINE, the last_call_minute value represents the time elapsed since the session became inactive."
+                                },
+                                {
+                                    "name": "logon_time",
+                                    "type": "optional",
+                                    "comment": "The database logon time for the session."
+                                }
+                            ],
+                            "child_dataset": []
+                        }
+                    ]
+                    
+                },
+                {
+                    "name": "Database_Query",
+                    "tags": [
+                        ["query", "database"]
+                    ],
+                    "search_constraints":"tag=query",
+                    "fields_cluster":[],
+                    "fields":[
+                        {
+                            "name": "query",
+                            "type": "optional",
+                            "comment": "The full database query."
+                        },
+                        {
+                            "name": "query_id",
+                            "type": "optional",
+                            "comment": "The identifier for the database query."
+                        },
+                        {
+                            "name": "query_time",
+                            "type": "optional",
+                            "comment": "The time the system initiated the database query."
+                        },
+                        {
+                            "name": "records_affected",
+                            "type": "optional",
+                            "comment": "The number of records affected by the database query."
+                        }
+                    ],
+                    "child_dataset": [
+                        {
+                            "name": "Tablespace",
+                            "tags": [
+                                ["tablespace", "query", "database"]
+                            ],
+                            "search_constraints":"tag=tablespace",
+                            "fields_cluster":[],
+                            "fields":[
+                                {
+                                    "name": "tablespace_name",
+                                    "type": "optional",
+                                    "comment": "The name of the tablespace."
+                                },
+                                {
+                                    "name": "tablespace_status",
+                                    "type": "optional",
+                                    "expected_values": [
+                                        "Offline",
+                                        "Online",
+                                        "Read Only"
+                                    ],
+                                    "comment": "The status of the tablespace."
+                                },
+                                {
+                                    "name": "free_bytes",
+                                    "type": "optional",
+                                    "comment": "The total amount of free space in the tablespace, in bytes."
+                                },
+                                {
+                                    "name": "tablespace_reads",
+                                    "type": "optional",
+                                    "comment": "The number of tablespace reads carried out by the query."
+                                },
+                                {
+                                    "name": "tablespace_writes",
+                                    "type": "optional",
+                                    "comment": "The number of tablespace writes carried out by the query."
+                                }
+                            ],
+                            "child_dataset": []
+                        },
+                        {
+                            "name": "Query_Stats",
+                            "tags": [["stats", "query", "stats"]],
+                            "search_constraints":"tag=stats",
+                            "fields_cluster":[],
+                            "fields":[
+                                {
+                                    "name": "stored_procedures_called",
+                                    "type": "optional",
+                                    "comment": "The names of the stored procedures called by the query."
+                                },
+                                {
+                                    "name": "tables_hit",
+                                    "type": "optional",
+                                    "comment": "The names of the tables hit by the query."
+                                },
+                                {
+                                    "name": "indexes_hit",
+                                    "type": "optional",
+                                    "comment": "The names of the indexes hit by the database query."
+                                },
+                                {
+                                    "name": "query_plan_hit",
+                                    "type": "optional",
+                                    "comment": "The name of the query plan hit by the query."
+                                }
+                            ],
+                            "child_dataset": []
+                        }
+                    ]
+                    
+                }
+            ]
+        }
+    ]
+}

@@ -67,9 +67,19 @@
           "comment": "The severity of the network protection event. This field is a string. Use a severity_id field (not included in this data model) for severity ID fields that are integer data types. Also, specific values are required for this field. Use vendor_severity for the vendor's own human readable severity strings, such as Good, Bad, and Really Bad."
         },
         {
+          "name": "severity_id",
+          "type": "optional",
+          "comment": "The numeric or vendor specific severity indicator corresponding to the event severity."
+        },
+        {
           "name": "signature",
           "type": "required",
           "comment": "The name of the intrusion detected on the client (the src), such as PlugAndPlay_BO and JavaScript_Obfuscation_Fre. This is a string value. Use a signature_id field (not included in this data model) for numeric indicators."
+        },
+        {
+          "name": "signature_id",
+          "type": "optional",
+          "comment": "The unique identifier or event code of the event signature."
         },
         {
           "name": "src",
@@ -99,12 +109,12 @@
         },
         {
           "name": "user",
-          "type": "optional",
+          "type": "required",
           "comment": "The user involved with the intrusion detection event."
         },
         {
           "name": "vendor_product",
-          "type": "optional",
+          "type": "required",
           "comment": "The vendor and product name of the IDS or IPS system that detected the vulnerability, such as HP Tipping Point. This field can be automatically populated by vendor and product fields in your data."
         }
       ],

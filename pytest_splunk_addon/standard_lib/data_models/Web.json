@@ -116,6 +116,11 @@
           "comment": "The URL of the requested HTTP resource."
         },
         {
+          "name": "url_domain",
+          "type": "required",
+          "comment": "The domain name contained within the URL of the requested HTTP resource."
+        },
+        {
           "name": "url_length",
           "type": "optional",
           "validity": "if(url_length == len(url), url_length, null())",
@@ -145,6 +150,21 @@
           "comment": "The number of outbound bytes transferred."
         },
         {
+          "name": "http_method",
+          "type": "required",
+          "expected_values": [
+            "GET",
+            "PUT",
+            "POST",
+            "DELETE",
+            "HEAD",
+            "OPTIONS",
+            "CONNECT",
+            "TRACE"
+          ],
+          "comment": "The HTTP method used in the request."
+        },
+        {
           "name": "http_user_agent",
           "type": "required",
           "comment": "The user agent used in the request."
@@ -169,23 +189,8 @@
         },
         {
           "name": "http_content_type",
-          "type": "optional",
+          "type": "required",
           "comment": "The content-type of the requested HTTP resource."
-        },
-        {
-          "name": "http_content_type",
-          "type": "optional",
-          "expected_values": [
-            "GET",
-            "PUT",
-            "POST",
-            "DELETE",
-            "HEAD",
-            "OPTIONS",
-            "CONNECT",
-            "TRACE"
-          ],
-          "comment": "The HTTP method used in the request."
         },
         {
           "name": "response_time",
@@ -205,7 +210,7 @@
         },
         {
           "name": "vendor_product",
-          "type": "optional",
+          "type": "required",
           "comment": "The vendor and product of the proxy server, such as Squid Proxy Server. This field can be automatically populated by vendor and product fields in your data."
         },
         {
@@ -217,6 +222,11 @@
           "name": "http_referrer",
           "type": "optional",
           "comment": "The HTTP referrer used in the request. The W3C specification and many implementations misspell this as http_referer. Use a FIELDALIAS to handle both key names."
+        },
+        {
+          "name": "http_referrer_domain",
+          "type": "optional",
+          "comment": "The domain name contained within the HTTP referrer used in the request."
         },
         {
           "name": "site",
@@ -232,6 +242,31 @@
           "fields": [],
           "child_dataset": [],
           "search_constraints": "tag=proxy"
+        },
+        {
+          "name": "Storage",
+          "tags": [["storage", "web"]],
+          "fields_cluster": [],
+          "fields":[
+            {
+              "name": "error_code",
+              "type": "optional",
+              "comment": "The error code that occurred while accessing the storage account"
+            },
+            {
+              "name": "operation",
+              "type": "optional",
+              "comment": "The operation performed on the storage account."
+            },
+            {
+              "name": "storage_name",
+              "type": "optional",
+              "comment": "The name of the bucket or storage account."
+            }
+          ],
+          "child_dataset": [],
+          "search_constraints": "tag=storage"
+
         }
       ],
       "search_constraints": "tag=web"

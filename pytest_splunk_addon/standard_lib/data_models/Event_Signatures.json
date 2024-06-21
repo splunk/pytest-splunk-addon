@@ -1,0 +1,37 @@
+{
+    "model_name": "Event_Signatures",
+    "version": "1.0.0",
+    "objects": [
+        {
+            "name": "Event_Signatures",
+            "tags": [
+                ["track_event_signatures"]
+            ],
+            "fields_cluster": [],
+            "search_constraints": "tag=track_event_signatures (signature=* OR signature_id=*)",
+            "fields": [
+                {
+                    "name": "dest",
+                    "type": "required",
+                    "comment": "System affected by the signature."
+                },
+                {
+                    "name": "signature",
+                    "type": "required",
+                    "comment": "The human readable event name."
+                },
+                {
+                    "name": "signature_id",
+                    "type": "required",
+                    "comment": "The event name identifier (as supplied by the vendor)."
+                },
+                {
+                    "name": "vendor_product",
+                    "type": "optional",
+                    "comment": "The vendor and product name of the technology that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
+                }
+            ],
+            "child_dataset": []
+        }
+    ]
+}

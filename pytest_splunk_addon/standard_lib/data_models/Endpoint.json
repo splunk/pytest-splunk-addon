@@ -24,6 +24,21 @@
           "comment": "Network port listening on the endpoint, such as 53."
         },
         {
+          "name": "dest_requires_av",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_timesync",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_update",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
           "name": "process_guid",
           "type": "optional",
           "comment": "The globally unique identifier of the process assigned by the vendor_product."
@@ -45,6 +60,21 @@
           "comment": "The 'remote' port connected to the listening port (if applicable)."
         },
         {
+          "name": "src_requires_av",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "src_should_timesync",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "src_should_update",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
           "name": "state",
           "type": "required",
           "expected_values": ["listening"],
@@ -57,13 +87,18 @@
         },
         {
           "name": "transport_dest_port",
-          "type": "not_allowed_in_search",
+          "type": "required",
           "comment": "Calculated as transport/dest_port, such as tcp/53."
         },
         {
           "name": "user",
           "type": "optional",
           "comment": "The user account associated with the listening port."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
         }
       ],
       "child_dataset": [],
@@ -91,6 +126,11 @@
           "comment": "The endpoint for which the process was spawned."
         },
         {
+          "name": "loaded_file",
+          "type": "optional",
+          "comment": "File that was loaded."
+        },
+        {
           "name": "mem_used",
           "type": "optional",
           "validity": "if(isnum(mem_used),mem_used,null())",
@@ -102,8 +142,13 @@
           "comment": "The operating system of the resource, such as Microsoft Windows Server 2008r2."
         },
         {
-          "name": "parent_process",
+          "name": "original_file_name",
           "type": "optional",
+          "comment": "Original name of the file, not including path."
+        },
+        {
+          "name": "parent_process",
+          "type": "required",
           "comment": "The full command string of the parent process."
         },
         {
@@ -134,6 +179,11 @@
           "comment": "The file path of the parent process, such as C:\\Windows\\System32\notepad.exe."
         },
         {
+          "name": "parent_process_hash",
+          "type": "optional",
+          "comment": "TThe digest(s) of the parent process, such as <md5>, <sha1>, etc."
+        },
+        {
           "name": "process",
           "type": "required",
           "comment": "The full command string of the spawned process. Such as C:\\WINDOWS\\system32\\cmd.exe /c \"\"C:\\Program Files\\SplunkUniversalForwarder\\etc\\system\\bin\\powershell.cmd\" --scheme\""
@@ -145,7 +195,7 @@
         },
         {
           "name": "process_exec",
-          "type": "required",
+          "type": "optional",
           "comment": "The executable name of the process."
         },
         {
@@ -193,7 +243,7 @@
         },
         {
           "name": "vendor_product",
-          "type": "optional",
+          "type": "required",
           "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
         }
       ],
@@ -221,6 +271,21 @@
           "name": "dest",
           "type": "required",
           "comment": "The endpoint pertaining to the filesystem activity."
+        },
+        {
+          "name": "dest_requires_av",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_timesync",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_update",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
         },
         {
           "name": "file_access_time",
@@ -263,7 +328,7 @@
         },
         {
           "name": "file_size",
-          "type": "optional",
+          "type": "required",
           "comment": "The size of the file that is the object of the event, in kilobytes."
         },
         {
@@ -283,7 +348,7 @@
         },
         {
           "name": "vendor_product",
-          "type": "optional",
+          "type": "required",
           "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
         }
       ],
@@ -305,6 +370,21 @@
           "name": "dest",
           "type": "required",
           "comment": "The endpoint pertaining to the registry events."
+        },
+        {
+          "name": "dest_requires_av",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_timesync",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_update",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
         },
         {
           "name": "process_guid",
@@ -386,7 +466,7 @@
         },
         {
           "name": "vendor_product",
-          "type": "optional",
+          "type": "required",
           "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
         }
       ],
@@ -409,6 +489,21 @@
           "type": "required",
           "validation": "",
           "comment": "The endpoint for which the service is installed."
+        },
+        {
+          "name": "dest_is_expected",
+          "type": "optional",
+          "comment": "The endpoint for which the service is installed."
+        },
+        {
+          "name": "dest_requires_av",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_timesync",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
         },
         {
           "name": "process_guid",
@@ -521,7 +616,7 @@
         },
         {
           "name": "vendor_product",
-          "type": "optional",
+          "type": "required",
           "validation": "",
           "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
         }
