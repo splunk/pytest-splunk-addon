@@ -861,6 +861,7 @@ TA_REQ_BROKEN_PASSED = [
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication::action* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication::app* PASSED*',
+    '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication::src* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication::dest* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication::src_user* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication::user* PASSED*',
