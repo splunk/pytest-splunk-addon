@@ -847,7 +847,6 @@ TA_REQ_BROKEN_PASSED = [
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::dest_port* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::dest_translated_ip* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::dest_translated_ip+src_translated_ip* PASSED*',
-    '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::dest_translated_port* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::dest_zone* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::icmp_code* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::icmp_code+icmp_type* PASSED*',
