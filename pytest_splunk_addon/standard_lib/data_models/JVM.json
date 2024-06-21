@@ -19,7 +19,7 @@
                     "type": "optional",
                     "comment": "This automatically generated field is used to access tags from within data models. Add-on builders do not need to populate it."
                 }
-            ],e
+            ],
             "child_dataset": [
                 {
                     "name": "Threading",
