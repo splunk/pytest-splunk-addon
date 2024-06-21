@@ -1,3 +1,4 @@
+
 {
     "model_name": "Ticket_Management",
     "version": "1.0.0",
@@ -99,28 +100,28 @@
                     "tags": [["incident", "ticketing"]],
                     "search_constraints": "tag=incident",
                     "fields_cluster": [],
-                    "fields": [],
-                    "child_dataset": [
+                    "fields": [
                         {
                             "name": "incident",
                             "type": "optional",
                             "comment": "The destination of the service request. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
                         }
-                    ]
+                    ],
+                    "child_dataset": []
                 },
                 {
                     "name": "Problem",
                     "tags": [["problem", "ticketing"]],
                     "search_constraints": "tag=problem",
                     "fields_cluster": [],
-                    "fields": [],
-                    "child_dataset": [
+                    "fields": [
                         {
                             "name": "problem",
                             "type": "optional",
                             "comment": "When multiple occurrences of related incidents are observed, they are collectively designated with a single problem value. Problem management differs from the process of managing an isolated incident. Often problems are managed by a specific set of staff and through a problem management process."
                         }
-                    ]
+                    ],
+                    "child_dataset": []
                 }
             ]
         }
