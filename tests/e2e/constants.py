@@ -859,7 +859,6 @@ TA_REQ_BROKEN_PASSED = [
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::src_port* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::src_translated_ip* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::src_translated_port* PASSED*',
-    '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::transport* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::Allowed_Traffic* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::Traffic_By_Action* PASSED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="test_auth"::Authentication* PASSED*',
@@ -903,6 +902,7 @@ Define the TA_broken add-on failed test case list.
 TA_REQ_BROKEN_FAILED = [
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::dest_zone+src_zone* FAILED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::dvc* FAILED*',
+    '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::transport* FAILED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::protocol* FAILED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::src* FAILED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::src_zone* FAILED*',
