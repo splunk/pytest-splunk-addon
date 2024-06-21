@@ -83,7 +83,7 @@
         },
         {
           "name": "dest_translated_ip",
-          "type": "conditional",
+          "type": "optional",
           "condition": "(protocol=IP OR protocol=ICMP) AND src_translated_ip=*",
           "comment": "The NATed IPv4 or IPv6 address to which a packet has been sent."
         },
