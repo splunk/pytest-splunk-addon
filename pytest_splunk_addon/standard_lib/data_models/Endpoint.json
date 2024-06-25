@@ -301,7 +301,7 @@
         {
           "name": "file_hash",
           "type": "conditional",
-          "condition": "action=created or action=modified ",
+          "condition": "action=created or action=modified or action=read",
           "comment": "A cryptographic identifier assigned to the file object affected by the event."
         },
         {
