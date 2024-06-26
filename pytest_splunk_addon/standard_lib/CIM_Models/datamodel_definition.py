@@ -1,4 +1,3 @@
-
 #
 # Copyright 2024 Splunk Inc.
 #
@@ -1994,4 +1993,4 @@ datamodels = {
     },
 }
 
-datamodels["latest"]=datamodels["5.3.2"]
+datamodels["latest"] = datamodels["5.3.2"]
