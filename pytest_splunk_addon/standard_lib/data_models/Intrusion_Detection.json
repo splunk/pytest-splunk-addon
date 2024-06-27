@@ -109,7 +109,7 @@
         },
         {
           "name": "user",
-          "type": "required",
+          "type": "optional",
           "comment": "The user involved with the intrusion detection event."
         },
         {

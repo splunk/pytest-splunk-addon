@@ -189,7 +189,7 @@
         },
         {
           "name": "http_content_type",
-          "type": "required",
+          "type": "optional",
           "comment": "The content-type of the requested HTTP resource."
         },
         {

@@ -197,7 +197,7 @@
         },
         {
           "name": "rule",
-          "type": "required",
+          "type": "optional",
           "comment": "The rule which defines the action that was taken in the network event. Note: This is a string value. Use rule_id for rule fields that are integer data types. The rule_id field is optional, so it is not included in the data model"
         },
         {
