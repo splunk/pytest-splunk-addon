@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, call, patch, PropertyMock
 from collections import namedtuple
-from pytest_splunk_addon.standard_lib.cim_tests.data_model_handler import (
+from pytest_splunk_addon.cim_tests.data_model_handler import (
     DataModelHandler,
 )
 
@@ -19,7 +19,7 @@ def data_model_mock(monkeypatch):
     dm = MagicMock()
     dm.side_effect = ["data_model_instance_1", "data_model_instance_2"]
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.cim_tests.data_model_handler.DataModel", dm
+        "pytest_splunk_addon.cim_tests.data_model_handler.DataModel", dm
     )
     return dm
 
@@ -29,7 +29,7 @@ def json_schema_mock(monkeypatch):
     js = MagicMock()
     js.parse_data_model.side_effect = ["parsed_data_model_1", "parsed_data_model_2"]
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.cim_tests.data_model_handler.JSONSchema", js
+        "pytest_splunk_addon.cim_tests.data_model_handler.JSONSchema", js
     )
     return js
 

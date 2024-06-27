@@ -3,7 +3,7 @@ import pytest
 from collections import namedtuple
 from unittest.mock import MagicMock, patch, mock_open
 
-from pytest_splunk_addon.standard_lib.sample_generation.sample_stanza import (
+from pytest_splunk_addon.sample_generation.sample_stanza import (
     SampleStanza,
 )
 
@@ -63,7 +63,7 @@ class TestSampleStanza:
             rule_mock_value="Test_rule",
         ):
             with patch.object(os, "sep", "/"), patch(
-                "pytest_splunk_addon.standard_lib.sample_generation.sample_stanza.Rule",
+                "pytest_splunk_addon.sample_generation.sample_stanza.Rule",
                 MagicMock(return_value=rule_mock_value),
             ):
                 ss = SampleStanza(SAMPLE_PATH, psa_data_params)
@@ -87,7 +87,7 @@ class TestSampleStanza:
         mock_2 = MagicMock()
         ss.tokenized_events = [mock_1, mock_2]
         with patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.sample_stanza.SampleEvent",
+            "pytest_splunk_addon.sample_generation.sample_stanza.SampleEvent",
             MagicMock(),
         ) as sample_event_mock:
             sample_event_mock.update_metadata.return_value = ("one", "two", "three")
@@ -154,7 +154,7 @@ class TestSampleStanza:
             ]
         )
         with patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.sample_stanza.Rule",
+            "pytest_splunk_addon.sample_generation.sample_stanza.Rule",
             MagicMock(),
         ) as rule_mock:
             rule_mock.parse_rule.return_value = rule_value
@@ -257,7 +257,7 @@ class TestSampleStanza:
         ss = sample_stanza(psa_data_params=psa_data_params)
         data = "sample_raw"
         with patch("builtins.open", mock_open(read_data=data)), patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.sample_stanza.SampleEvent",
+            "pytest_splunk_addon.sample_generation.sample_stanza.SampleEvent",
             MagicMock(return_value="sample_event"),
         ) as sample_event_mock:
             assert list(ss._get_raw_sample()) == ["sample_event"]
@@ -272,7 +272,7 @@ class TestSampleStanza:
         )
         data = ""
         with patch("builtins.open", mock_open(read_data=data)), patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.sample_stanza.SampleEvent",
+            "pytest_splunk_addon.sample_generation.sample_stanza.SampleEvent",
             MagicMock(return_value="sample_event"),
         ) as sample_event_mock:
             assert list(ss._get_raw_sample()) == []
