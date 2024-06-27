@@ -1,11 +1,11 @@
 import pytest
-from pytest_splunk_addon.standard_lib.event_ingestors.hec_event_ingestor import (
+from pytest_splunk_addon.event_ingestors.hec_event_ingestor import (
     HECEventIngestor,
 )
-from pytest_splunk_addon.standard_lib.event_ingestors.hec_metric_ingestor import (
+from pytest_splunk_addon.event_ingestors.hec_metric_ingestor import (
     HECMetricEventIngestor,
 )
-from pytest_splunk_addon.standard_lib.event_ingestors.hec_raw_ingestor import (
+from pytest_splunk_addon.event_ingestors.hec_raw_ingestor import (
     HECRawEventIngestor,
 )
 from urllib.parse import unquote

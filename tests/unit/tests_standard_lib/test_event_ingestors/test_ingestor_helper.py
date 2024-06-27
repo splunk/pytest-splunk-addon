@@ -1,10 +1,10 @@
 import importlib
 import pytest
 from unittest.mock import patch, MagicMock, call
-import pytest_splunk_addon.standard_lib.event_ingestors as event_ingestors
+import pytest_splunk_addon.event_ingestors as event_ingestors
 
 
-EVENT_INGESTOR_PATH = "pytest_splunk_addon.standard_lib.event_ingestors"
+EVENT_INGESTOR_PATH = "pytest_splunk_addon.event_ingestors"
 HEC_EVENT_INGESTOR_RETURN_VALUE = "hec_event_ingestor_return_value"
 HEC_RAW_EVENT_INGESTOR_RETURN_VALUE = "hec_raw_event_ingestor_return_value"
 HEC_METRIC_EVENT_INGESTOR_RETURN_VALUE = "hec_metric_event_ingestor_return_value"
@@ -66,7 +66,7 @@ def sample_mock(monkeypatch, tokenized_events):
         "tokenized_events": tokenized_events,
     }
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.ingestor_helper.SampleXdistGenerator",
+        "pytest_splunk_addon.event_ingestors.ingestor_helper.SampleXdistGenerator",
         sample_mock,
     )
     return sample_mock
@@ -78,7 +78,7 @@ def requirement_mock(monkeypatch, requirement_events):
     req_mock.return_value = req_mock
     req_mock.get_events.return_value = requirement_events
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.ingestor_helper.RequirementEventIngestor",
+        "pytest_splunk_addon.event_ingestors.ingestor_helper.RequirementEventIngestor",
         req_mock,
     )
     return req_mock

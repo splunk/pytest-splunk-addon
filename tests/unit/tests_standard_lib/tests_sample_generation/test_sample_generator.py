@@ -1,10 +1,10 @@
 from unittest.mock import MagicMock, patch
 
-from pytest_splunk_addon.standard_lib.sample_generation.sample_generator import (
+from pytest_splunk_addon.sample_generation.sample_generator import (
     SampleGenerator,
 )
 
-MODULE_PATH = "pytest_splunk_addon.standard_lib.sample_generation.sample_generator"
+MODULE_PATH = "pytest_splunk_addon.sample_generation.sample_generator"
 ADDON_PATH = "/add/on/path"
 CONFIG_PATH = "/config/path"
 

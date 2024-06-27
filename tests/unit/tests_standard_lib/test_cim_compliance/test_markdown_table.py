@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from pytest_splunk_addon.standard_lib.cim_compliance.markdown_table import MarkdownTable
+from pytest_splunk_addon.cim_compliance.markdown_table import MarkdownTable
 
 
 @pytest.fixture()

@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from splunksplwrapper.manager.jobs import Jobs
 from splunksplwrapper.splunk.cloud import CloudSplunk
-from pytest_splunk_addon.standard_lib.addon_parser import AddonParser
+from pytest_splunk_addon.addon_parser import AddonParser
 
 from splunklib import binding
 
