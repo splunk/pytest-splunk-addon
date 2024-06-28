@@ -1,9 +1,9 @@
 import pytest
 from unittest.mock import patch
 from collections import namedtuple
-from pytest_splunk_addon.standard_lib.app_test_generator import AppTestGenerator
+from pytest_splunk_addon.app_test_generator import AppTestGenerator
 
-module = "pytest_splunk_addon.standard_lib.app_test_generator"
+module = "pytest_splunk_addon.app_test_generator"
 config = {
     "splunk_app": "fake_app",
     "field_bank": "fake_field_bank",

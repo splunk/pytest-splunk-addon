@@ -7,9 +7,9 @@
 
 The following 3rd-party software packages may be used by or distributed with pytest-splunk-addon. Any information relevant to third-party vendors listed below are collected using common, reasonable means.
 
-Date generated: 2024-5-15
+Date generated: 2024-6-26
 
-Revision ID: 4fdc90dbc9bc917bc71a4a466681b24c31cd7de1
+Revision ID: 1157ab9c62c584ba31bd92b1951fee73551b503b
 
 ================================================================================
 ================================================================================
@@ -293,7 +293,7 @@ SOFTWARE.
 
 
 --------------------------------------------------------------------------------
-Package Title: certifi (2024.2.2)
+Package Title: certifi (2024.6.2)
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -960,7 +960,7 @@ THE SOFTWARE.
 
 
 * Other Licenses *
-Python-2.0, GPL-2.0-only, public-domain, HPND, PIL
+Python-2.0, GPL-2.0-only, HPND, public-domain, PIL
 
 * Python-2.0 *
 
@@ -999,12 +999,12 @@ This program is free software; you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-* public-domain *
 * HPND *
 
 <copyright notice>
 Permission to use, copy, modify and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies that both copyright notice and this permission notice appear in supporting documentation <copyright holder> <or related entities> not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission<<endOptional>> .
 
+* public-domain *
 * PIL *
 
 By obtaining, using, and/or copying this software and/or its associated documentation, you agree that you have read, understood, and will comply with the following terms and conditions:
@@ -1679,7 +1679,7 @@ Package Title: packaging (24.0)
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
-BSD-3-Clause, BSD-2-Clause, Apache-2.0
+BSD-3-Clause, Apache-2.0, BSD-2-Clause
 
 * BSD-3-Clause *
 
@@ -1710,6 +1710,13 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+* Apache-2.0 *
+
+This software is made available under the terms of *either* of the licenses
+found in LICENSE.APACHE or LICENSE.BSD. Contributions to this software is made
+under the terms of *both* these licenses.
+
+
 * BSD-2-Clause *
 
 Copyright (c) Donald Stufft and individual contributors.
@@ -1735,13 +1742,6 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-* Apache-2.0 *
-
-This software is made available under the terms of *either* of the licenses
-found in LICENSE.APACHE or LICENSE.BSD. Contributions to this software is made
-under the terms of *both* these licenses.
 
 
 
@@ -1907,22 +1907,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 * Other Licenses *
-MIT-CMU, GPL-1.0-only, BSD-3-Clause
-
-* MIT-CMU *
-
-Copyright 1989, 1991, 1992 by Carnegie Mellon University
-Derivative Work - 1996, 1998-2000 Copyright 1996, 1998-2000 The Regents of the University of California
-All Rights Reserved
-Permission to use, copy, modify and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appears in all copies and that both that copyright notice and this permission notice appear in supporting documentation, and that the name of CMU and The Regents of the University of California not be used in advertising or publicity pertaining to distribution of the software without specific written permission.
-CMU AND THE REGENTS OF THE UNIVERSITY OF CALIFORNIA DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL CMU OR THE REGENTS OF THE UNIVERSITY OF CALIFORNIA BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM THE LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-* GPL-1.0-only *
-
-Copyright (C) 2004-2011 Paul T. McGuire.  All rights reserved.
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 1.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+BSD-3-Clause, MIT-CMU, GPL-1.0-only
 
 * BSD-3-Clause *
 
@@ -1952,6 +1937,21 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+* MIT-CMU *
+
+Copyright 1989, 1991, 1992 by Carnegie Mellon University
+Derivative Work - 1996, 1998-2000 Copyright 1996, 1998-2000 The Regents of the University of California
+All Rights Reserved
+Permission to use, copy, modify and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appears in all copies and that both that copyright notice and this permission notice appear in supporting documentation, and that the name of CMU and The Regents of the University of California not be used in advertising or publicity pertaining to distribution of the software without specific written permission.
+CMU AND THE REGENTS OF THE UNIVERSITY OF CALIFORNIA DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL CMU OR THE REGENTS OF THE UNIVERSITY OF CALIFORNIA BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM THE LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+* GPL-1.0-only *
+
+Copyright (C) 2004-2011 Paul T. McGuire.  All rights reserved.
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 1.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
 --------------------------------------------------------------------------------
@@ -5661,4 +5661,4 @@ No license text available
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
-Report Generated by FOSSA on 2024-5-15
+Report Generated by FOSSA on 2024-6-26

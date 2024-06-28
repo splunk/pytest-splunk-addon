@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime
 from freezegun import freeze_time
 
-from pytest_splunk_addon.standard_lib.sample_generation.time_parser import (
+from pytest_splunk_addon.sample_generation.time_parser import (
     time_parse,
 )
 

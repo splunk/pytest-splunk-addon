@@ -13,8 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-[pytest]
-testpaths = tests
-addopts = -v --tb=long --junitxml=/work/test-results/test.xml -m external tests/e2e
-filterwarnings =
-    ignore::DeprecationWarning
+import os
+
+
+def check_first_worker() -> bool:
+    """
+    returns True if the current execution is under gw0 (first worker)
+    """
+    return (
+        "PYTEST_XDIST_WORKER" not in os.environ
+        or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
+    )

@@ -2,10 +2,10 @@ import os
 
 import pytest
 
-from pytest_splunk_addon.standard_lib.addon_parser.props_parser import (
+from pytest_splunk_addon.addon_parser.props_parser import (
     PropsParser,
 )
-from pytest_splunk_addon.standard_lib.addon_parser.fields import Field
+from pytest_splunk_addon.addon_parser.fields import Field
 
 
 @pytest.fixture()
