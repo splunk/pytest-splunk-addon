@@ -3,7 +3,7 @@ import os.path
 import pytest
 from xmlschema import XMLSchema, XMLSchemaChildrenValidationError
 
-from pytest_splunk_addon.standard_lib.sample_generation.pytest_splunk_addon_data_parser import (
+from pytest_splunk_addon.sample_generation.pytest_splunk_addon_data_parser import (
     SCHEMA_PATH,
 )
 
