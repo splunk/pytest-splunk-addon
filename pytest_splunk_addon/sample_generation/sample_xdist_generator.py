@@ -20,7 +20,7 @@ from filelock import FileLock
 import json
 import pytest
 
-from pytest_splunk_addon.standard_lib import utils
+from pytest_splunk_addon import utils
 
 
 class SampleXdistGenerator:

@@ -26,13 +26,13 @@ import splunklib.client as client
 from splunksplwrapper.manager.jobs import Jobs
 from splunksplwrapper.splunk.cloud import CloudSplunk
 from splunksplwrapper.SearchUtil import SearchUtil
-from .standard_lib.event_ingestors import IngestorHelper
+from .event_ingestors import IngestorHelper
 from .docker_class import Services
-from .standard_lib.CIM_Models.datamodel_definition import datamodels
+from .CIM_Models.datamodel_definition import datamodels
 import configparser
 from filelock import FileLock
 
-from pytest_splunk_addon.standard_lib import utils
+from pytest_splunk_addon import utils
 
 RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 

@@ -15,10 +15,11 @@
 #
 import logging
 import pytest
-from .standard_lib.sample_generation.sample_xdist_generator import SampleXdistGenerator
+
+from .app_test_generator import AppTestGenerator
+from .sample_generation.sample_xdist_generator import SampleXdistGenerator
 import traceback
-from .standard_lib import AppTestGenerator
-from .standard_lib.cim_compliance import CIMReportPlugin
+from .cim_compliance import CIMReportPlugin
 from filelock import FileLock
 
 LOG_FILE = "pytest_splunk_addon.log"

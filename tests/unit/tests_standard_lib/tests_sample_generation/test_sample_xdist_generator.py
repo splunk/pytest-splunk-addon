@@ -2,7 +2,7 @@ import pytest
 from collections import namedtuple
 from unittest.mock import MagicMock, patch, mock_open, call
 
-from pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator import (
+from pytest_splunk_addon.sample_generation.sample_xdist_generator import (
     SampleXdistGenerator,
 )
 
@@ -77,13 +77,11 @@ class TestSampleXdistGenerator:
         assert sample_xdist_generator.process_count == 5
 
     @patch(
-        "pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator.FileLock",
+        "pytest_splunk_addon.sample_generation.sample_xdist_generator.FileLock",
         MagicMock(),
     )
     @patch("builtins.open", mock_open())
-    @patch(
-        "pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator.pickle"
-    )
+    @patch("pytest_splunk_addon.sample_generation.sample_xdist_generator.pickle")
     @pytest.mark.parametrize(
         "exists_value, environ, expected",
         [
@@ -112,7 +110,7 @@ class TestSampleXdistGenerator:
             "os.environ",
             environ,
         ), patch(
-            "pytest_splunk_addon.standard_lib.sample_generation.sample_xdist_generator.SampleGenerator",
+            "pytest_splunk_addon.sample_generation.sample_xdist_generator.SampleGenerator",
             MagicMock(),
         ) as sample_generator_mock:
             sample_generator_mock.conf_name = "conf_name"

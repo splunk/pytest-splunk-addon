@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from collections import namedtuple
-from pytest_splunk_addon.standard_lib.cim_tests.test_generator import CIMTestGenerator
+from pytest_splunk_addon.cim_tests.test_generator import CIMTestGenerator
 
 field = namedtuple("Field", ["type", "name"], defaults=["", ""])
 data_set = namedtuple("DataSet", ["fields", "fields_cluster"])
@@ -28,9 +28,7 @@ def mocked_cim_test_generator():
 @pytest.fixture()
 def field_mock(monkeypatch):
     field = MagicMock()
-    monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.cim_tests.test_generator.Field", field
-    )
+    monkeypatch.setattr("pytest_splunk_addon.cim_tests.test_generator.Field", field)
     return field
 
 
@@ -88,10 +86,10 @@ def fake_addon_parser():
 )
 def test_cim_test_generator_instantiation(args):
     with patch(
-        "pytest_splunk_addon.standard_lib.cim_tests.test_generator.DataModelHandler",
+        "pytest_splunk_addon.cim_tests.test_generator.DataModelHandler",
         return_value="DATA_MODEL_HANDLER_RETURN_VALUE",
     ) as dtm_mock, patch(
-        "pytest_splunk_addon.standard_lib.cim_tests.test_generator.AddonParser",
+        "pytest_splunk_addon.cim_tests.test_generator.AddonParser",
         return_value="ADDON_PARSER_RETURN_VALUE",
     ) as ap_mock:
         cim = CIMTestGenerator(*args)
@@ -102,7 +100,7 @@ def test_cim_test_generator_instantiation(args):
         if len(args) == 3:
             assert cim.test_field_type == ["required", "conditional"]
             assert (
-                "pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json"
+                "pytest_splunk_addon/cim_tests/CommonFields.json"
                 in cim.common_fields_path
             )
         else:
