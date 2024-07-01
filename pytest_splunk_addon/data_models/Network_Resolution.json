@@ -13,7 +13,7 @@
     "fields_cluster": [],
     "fields": [{
         "name": "additional_answer_count",
-        "type": "required",
+        "type": "optional",
         "validity": "if(isnum(additional_answer_count),additional_answer_count,null())",
         "comment": "Number of entries in the 'additional' section of the DNS message."
       },
@@ -31,7 +31,7 @@
       },
       {
         "name": "authority_answer_count",
-        "type": "required",
+        "type": "optional",
         "validity": "if(isnum(authority_answer_count),authority_answer_count,null())",
         "comment": "Number of entries in the 'authority' section of the DNS message."
       },
@@ -272,7 +272,7 @@
       },
       {
         "name": "vendor_product",
-        "type": "optional",
+        "type": "required",
         "comment": "The vendor product name of the DNS server. The Splunk platform can derive this field from the fields vendor and product in the raw data, if they exist."
       }
     ],
