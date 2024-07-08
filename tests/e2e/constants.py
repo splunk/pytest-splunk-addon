@@ -499,6 +499,7 @@ TA_FICTION_INDEXTIME_PASSED = [
     "*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample-file-samples-13* PASSED*",
     "*test_splunk_fiction_indextime.py::Test_App::test_props_fields[test:indextime:sourcetype_basic::field::extracted_query* PASSED*",
     "*test_splunk_fiction_indextime.py::Test_App::test_props_fields[test:indextime:sourcetype_basic::field::extracted_path* PASSED*",
+    "*test_splunk_fiction_indextime.py::Test_App::test_props_fields[test:indextime:sourcetype_basic* PASSED*",
     "*test_splunk_fiction_indextime.py::Test_App::test_props_fields_no_dash_not_empty[test:indextime:sourcetype_basic::field::extracted_path* PASSED*",
     "*test_splunk_fiction_indextime.py::Test_App::test_props_fields_no_dash_not_empty[test:indextime:sourcetype_basic::field::extracted_query* PASSED*",
     "*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:sourcetype_basic::sample-file-samples-14* PASSED*",
