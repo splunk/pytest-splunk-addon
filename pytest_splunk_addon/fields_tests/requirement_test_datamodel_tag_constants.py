@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# CIM 4.20.2
+# CIM 5.3.2
 # Defines tags associated with data models. Used to determine the DM's associated with tags returned by the Splunk
 # search for eg: 'tag': "['authentication', 'insecure', 'network', 'resolution', 'dns', 'success']" matches
 # 'Authentication': ['authentication'], 'Authentication_Insecure_Authentication': ['authentication', 'insecure'],

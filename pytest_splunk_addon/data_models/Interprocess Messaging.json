@@ -1,0 +1,194 @@
+{
+    "model_name": "",
+    "version": "1.0.0",
+    "objects": [
+        {
+            "name": "All_Messaging",
+            "tags": [["messaging"]
+            ],
+            "fields_cluster": [],
+            "search_constraints": "tag=messaging",
+            "fields": [
+                {
+                    "name": "dest",
+                    "type": "optional",
+                    "comment": "The destination of the message. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
+                },
+                {
+                    "name": "dest_bunit",
+                    "type": "optional",
+                    "comment": "The business unit of the destination."
+                },
+                {
+                    "name": "dest_category",
+                    "type": "optional",
+                    "expected_values": [
+                        "queue",
+                        "topic"
+                    ],
+                    "comment": "The type of message destination."
+                },
+                {
+                    "name": "dest_priority",
+                    "type": "optional",
+                    "comment": "The priority of the destination."
+                },
+                {
+                    "name": "duration",
+                    "type": "optional",
+                    "comment": "The number of seconds from message call to message response. Can be derived by getting the difference between the request_sent_time and the message_received_time."
+                },
+                {
+                    "name": "endpoint",
+                    "type": "optional",
+                    "comment": "The endpoint that the message accessed during the RPC (remote procedure call) transaction."
+                },
+                {
+                    "name": "endpoint_version",
+                    "type": "optional",
+                    "comment": "The version of the endpoint accessed during the RPC (remote procedure call) transaction, such as 1.0 or 1.22."
+                },
+                {
+                    "name": "message",
+                    "type": "optional",
+                    "comment": "A command or reference that an RPC (remote procedure call) reads or responds to."
+                },
+                {
+                    "name": "message_id",
+                    "type": "optional",
+                    "comment": "The message identification."
+                },
+                {
+                    "name": "message_consumed_time",
+                    "type": "optional",
+                    "comment": "The time that the RPC (remote procedure call) read the message and was prepared to take some sort of action."
+                },
+                {
+                    "name": "message_correlation_id",
+                    "type": "optional",
+                    "comment": "The message correlation identification value."
+                },
+                {
+                    "name": "message_delivered_time",
+                    "type": "optional",
+                    "comment": "The time that the message producer sent the message."
+                },
+                {
+                    "name": "message_delivery_mode",
+                    "type": "optional",
+                    "comment": "The message delivery mode. Possible values depend on the type of message-oriented middleware (MOM) solution in use. They can be words like Transient (meaning the message is stored in memory and is lost if the server dies or restarts) or Persistent (meaning the message is stored both in memory and on disk and is preserved if the server dies or restarts). They can also be numbers like 1, 2, and so on."
+                },
+                {
+                    "name": "message_expiration_time",
+                    "type": "optional",
+                    "comment": "The time that the message expired."
+                },
+                {
+                    "name": "message_priority",
+                    "type": "optional",
+                    "comment": "The priority of the message. Important jobs that the message queue should answer no matter what receive a higher message_priority than other jobs, ensuring they are completed before the others."
+                },
+                {
+                    "name": "message_properties",
+                    "type": "optional",
+                    "comment": "An arbitrary list of message properties. The set of properties displayed depends on the message-oriented middleware (MOM) solution that you are using."
+                },
+                {
+                    "name": "message_received_time",
+                    "type": "optional",
+                    "comment": "The time that the message was received by a message-oriented middleware (MOM) solution."
+                },
+                {
+                    "name": "message_redelivered",
+                    "type": "optional",
+                    "comment": "Indicates whether or not the message was redelivered."
+                },
+                {
+                    "name": "message_reply_dest",
+                    "type": "optional",
+                    "comment": "The name of the destination for replies to the message."
+                },
+                {
+                    "name": "message_type",
+                    "type": "optional",
+                    "comment": "The type of message, such as call or reply."
+                },
+                {
+                    "name": "parameters",
+                    "type": "optional",
+                    "comment": "Arguments that have been passed to an endpoint by a REST call or something similar. A sample parameter could be something like foo=bar."
+                },
+                {
+                    "name": "payload",
+                    "type": "optional",
+                    "comment": "The message payload."
+                },
+                {
+                    "name": "payload_type",
+                    "type": "optional",
+                    "comment": "The type of payload in the message. The payload type can be text (such as json, xml, and raw) or binary (such as compressed, object, encrypted, and image)."
+                },
+                {
+                    "name": "request_payload",
+                    "type": "optional",
+                    "comment": "The content of the message request."
+                },
+                {
+                    "name": "request_payload_type",
+                    "type": "optional",
+                    "comment": "The type of payload in the message request. The payload type can be text (such as json, xml, and raw) or binary (such as compressed, object, encrypted, and image)."
+                },
+                {
+                    "name": "request_sent_time",
+                    "type": "optional",
+                    "comment": "The time that the message request was sent."
+                },
+                {
+                    "name": "response_code",
+                    "type": "optional",
+                    "comment": "The response status code sent by the receiving server. Ranges between 200 and 404."
+                },
+                {
+                    "name": "response_payload_type",
+                    "type": "optional",
+                    "comment": "The type of payload in the message response. The payload type can be text (such as json, xml, and raw) or binary (such as compressed, object, encrypted, and image)."
+                },
+                {
+                    "name": "response_received_time",
+                    "type": "optional",
+                    "comment": "The time that the message response was received."
+                },
+                {
+                    "name": "response_time",
+                    "type": "optional",
+                    "comment": "The amount of time it took to receive a response, in seconds."
+                },
+                {
+                    "name": "return_message",
+                    "type": "optional",
+                    "comment": "The response status message sent by the message server."
+                },
+                {
+                    "name": "rpc_protocol",
+                    "type": "optional",
+                    "comment": "The protocol that the message server uses for remote procedure calls (RPC). Possible values include HTTP REST, SOAP, and EJB."
+                },
+                {
+                    "name": "status",
+                    "type": "optional",
+                    "expected_values": [
+                        "pass",
+                        "fail"
+                    ],
+                    "comment": "The status of the message response."
+                },
+                {
+                    "name": "tag",
+                    "type": "optional",
+                    "comment": "This automatically generated field is used to access tags from within data models. Add-on builders do not need to populate it."
+                }
+            ],
+            "child_dataset": []
+        }
+    ]
+}

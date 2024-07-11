@@ -1,0 +1,332 @@
+{
+    "model_name": "JVM",
+    "version": "1.0.0",
+    "objects": [
+        {
+            "name": "Event_Signatures",
+            "tags": [["jvm"]
+            ],
+            "fields_cluster": [],
+            "search_constraints": "tag=jvm",
+            "fields": [
+                {
+                    "name": "jvm_description",
+                    "type": "optional",
+                    "comment": "A description field provided in some data sources."
+                },
+                {
+                    "name": "tag",
+                    "type": "optional",
+                    "comment": "This automatically generated field is used to access tags from within data models. Add-on builders do not need to populate it."
+                }
+            ],
+            "child_dataset": [
+                {
+                    "name": "Threading",
+                    "tags": [
+                        ["jvm", "threading"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=threading",
+                    "fields": [
+                        {
+                            "name": "threads_started",
+                            "type": "optional",
+                            "comment": "The total number of threads started in the JVM."
+                        },
+                        {
+                            "name": "thread_count",
+                            "type": "optional",
+                            "comment": "The JVM's current thread count."
+                        },
+                        {
+                            "name": "cpu_time_enabled",
+                            "type": "optional",
+                            "expected_values": [
+                                "true",
+                                "false"
+                            ],
+                            "comment": "Indicates whether thread CPU time measurement is enabled."
+                        },
+                        {
+                            "name": "cm_supported",
+                            "type": "optional",
+                            "expected_values": [
+                                "true",
+                                "false"
+                            ],
+                            "comment": "Indicates whether the JVM supports thread contention monitoring."
+                        },
+                        {
+                            "name": "cm_enabled",
+                            "type": "optional",
+                            "expected_values": [
+                                "true",
+                                "false"
+                            ],
+                            "comment": "Indicates whether thread contention monitoring is enabled."
+                        },
+                        {
+                            "name": "synch_supported",
+                            "type": "optional",
+                            "expected_values": [
+                                "true",
+                                "false"
+                            ],
+                            "comment": "Indicates whether the JVM supports monitoring of ownable synchronizer usage."
+                        },
+                        {
+                            "name": "peak_thread_count",
+                            "type": "optional",
+                            "comment": "The JVM's peak thread count."
+                        },
+                        {
+                            "name": "omu_supported",
+                            "type": "optional",
+                            "expected_values": [
+                                "true",
+                                "false"
+                            ],
+                            "comment": "Indicates whether the JVM supports monitoring of object monitor usage."
+                        },
+                        {
+                            "name": "daemon_thread_count",
+                            "type": "optional",
+                            "comment": "The JVM's current daemon count."
+                        },
+                        {
+                            "name": "current_user_time",
+                            "type": "optional",
+                            "comment": "User-space time taken by the JVM, in seconds."
+                        },
+                        {
+                            "name": "cpu_time_supported",
+                            "type": "optional",
+                            "expected_values": [
+                                "true",
+                                "false"
+                            ],
+                            "comment": "Indicates whether the Java virtual machine supports CPU time measurement for the current thread."
+                        },
+                        {
+                            "name": "current_cpu_time",
+                            "type": "optional",
+                            "comment": "CPU-space time taken by the JVM, in seconds."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Runtime",
+                    "tags": [
+                        ["jvm", "runtime"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=runtime",
+                    "fields": [
+                        {
+                            "name": "version",
+                            "type": "optional",
+                            "comment": "Version of the JVM."
+                        },
+                        {
+                            "name": "uptime",
+                            "type": "optional",
+                            "comment": "Uptime of the JVM process, in seconds."
+                        },
+                        {
+                            "name": "start_time",
+                            "type": "optional",
+                            "comment": "Start time of the JVM process."
+                        },
+                        {
+                            "name": "process_name",
+                            "type": "optional",
+                            "comment": "Process name of the JVM process."
+                        },
+                        {
+                            "name": "vendor_product",
+                            "type": "optional",
+                            "comment": "The JVM product or service. This field can be automatically populated by the the vendor and product fields in your raw data."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "OS",
+                    "tags": [
+                        ["jvm", "os"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=os",
+                    "fields": [
+                        {
+                            "name": "os_version",
+                            "type": "optional",
+                            "comment": "OS version that the JVM is running on."
+                        },
+                        {
+                            "name": "swap_space",
+                            "type": "optional",
+                            "comment": "Swap memory space available to the OS that the JVM is running on, in bytes."
+                        },
+                        {
+                            "name": "physical_memory",
+                            "type": "optional",
+                            "comment": "Physical memory available to the OS that the JVM is running on, in bytes."
+                        },
+                        {
+                            "name": "system_load",
+                            "type": "optional",
+                            "comment": "System load of the OS that the JVM is running on."
+                        },
+                        {
+                            "name": "cpu_time",
+                            "type": "optional",
+                            "comment": "Amount of CPU time taken by the JVM, in seconds."
+                        },
+                        {
+                            "name": "os",
+                            "type": "optional",
+                            "comment": "OS that the JVM is running on."
+                        },
+                        {
+                            "name": "open_file_descriptors",
+                            "type": "optional",
+                            "comment": "Number of file descriptors opened by the JVM."
+                        },
+                        {
+                            "name": "max_file_descriptors",
+                            "type": "optional",
+                            "comment": "Maximum file descriptors available to the JVM."
+                        },
+                        {
+                            "name": "free_swap",
+                            "type": "optional",
+                            "comment": "Amount of free swap memory remaining to the JVM, in bytes."
+                        },
+                        {
+                            "name": "free_physical_memory",
+                            "type": "optional",
+                            "comment": "Amount of free physical memory remaining to the JVM, in bytes."
+                        },
+                        {
+                            "name": "committed_memory",
+                            "type": "optional",
+                            "comment": "Amount of memory committed to the JVM, in bytes."
+                        },
+                        {
+                            "name": "total_processors",
+                            "type": "optional",
+                            "comment": "Total processor cores available to the OS that the JVM is running on."
+                        },
+                        {
+                            "name": "os_architecture",
+                            "type": "optional",
+                            "comment": "OS architecture that the JVM is running on."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Compilation",
+                    "tags": [
+                        ["jvm", "compilation"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=compilation",
+                    "fields": [
+                        {
+                            "name": "compilation_time",
+                            "type": "optional",
+                            "comment": "Time taken by JIT compilation, in seconds."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Classloading",
+                    "tags": [
+                        ["jvm", "classloading"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=classloading",
+                    "fields": [
+                        {
+                            "name": "total_loaded",
+                            "type": "optional",
+                            "comment": "The total count of classes loaded in the JVM."
+                        },
+                        {
+                            "name": "current_loaded",
+                            "type": "optional",
+                            "comment": "The current count of classes loaded in the JVM."
+                        },
+                        {
+                            "name": "total_unloaded",
+                            "type": "optional",
+                            "comment": "The total count of classes unloaded from the JVM."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Memory",
+                    "tags": [
+                        ["jvm", "memory"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=memory",
+                    "fields": [
+                        {
+                            "name": "non_heap_used",
+                            "type": "optional",
+                            "comment": "Non-heap memory used by the JVM, in bytes."
+                        },
+                        {
+                            "name": "non_heap_max",
+                            "type": "optional",
+                            "comment": "Maximum amount of non-heap memory used by the JVM, in bytes"
+                        },
+                        {
+                            "name": "non_heap_initial",
+                            "type": "optional",
+                            "comment": "Initial amount of non-heap memory used by the JVM, in bytes."
+                        },
+                        {
+                            "name": "non_heap_committed",
+                            "type": "optional",
+                            "comment": "Committed amount of non-heap memory used by the JVM, in bytes."
+                        },
+                        {
+                            "name": "heap_used",
+                            "type": "optional",
+                            "comment": "Heap memory used by the JVM, in bytes."
+                        },
+                        {
+                            "name": "heap_max",
+                            "type": "optional",
+                            "comment": "Maximum amount of heap memory used by the JVM, in bytes."
+                        },
+                        {
+                            "name": "heap_initial",
+                            "type": "optional",
+                            "comment": "Initial amount of heap memory used by the JVM, in bytes."
+                        },
+                        {
+                            "name": "heap_committed",
+                            "type": "optional",
+                            "comment": "Committed amount of heap memory used by the JVM, in bytes."
+                        },
+                        {
+                            "name": "objects_pending",
+                            "type": "optional",
+                            "comment": "Number of objects pending in the JVM."
+                        }
+                    ],
+                    "child_dataset": []
+                }
+            ]
+        }
+    ]
+}
