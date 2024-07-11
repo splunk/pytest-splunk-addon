@@ -903,6 +903,9 @@ TA_REQ_BROKEN_PASSED = [
     "*test_splunk_app_req_broken.py::Test_App::test_eventtype[eventtype::test_auth* PASSED*",
 ]
 
+TA_REQ_BROKEN_WARNING = [
+    '*List of common fields found in both cim_fields and missing_recommended_fields = ['dest']*'
+    ]
 """
 Define the TA_broken add-on failed test case list.
 """
