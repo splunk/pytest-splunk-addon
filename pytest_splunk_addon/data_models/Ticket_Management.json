@@ -1,0 +1,129 @@
+
+{
+    "model_name": "Ticket_Management",
+    "version": "1.0.0",
+    "objects": [
+        {
+            "name": "All_Ticket_Management",
+            "tags": [["ticketing"]],
+            "search_constraints": "tag=ticketing",
+            "fields_cluster": [],
+            "fields": [
+                {
+                    "name": "affect_dest",
+                    "type": "optional",
+                    "comment": "Destinations affected by the service request."
+                },
+                {
+                    "name": "comments",
+                    "type": "optional",
+                    "comment": "Comments about the service request."
+                },
+                {
+                    "name": "description",
+                    "type": "optional",
+                    "comment": "The description of the service request."
+                },
+                {
+                    "name": "priority",
+                    "type": "required",
+                    "comment": "The relative priority of the service request."
+                },
+                {
+                    "name": "severity",
+                    "type": "required",
+                    "comment": "The relative severity of the service request."
+                },
+                {
+                    "name": "severity_id",
+                    "type": "required",
+                    "comment": "The numeric or vendor specific severity indicator corresponding to the event severity."
+                },
+                {
+                    "name": "splunk_id",
+                    "type": "optional",
+                    "comment": "The unique identifier of the service request as it pertains to Splunk.  For example, 14DA67E8-6084-4FA8-9568-48D05969C522@@_internal@@0533eff241db0d892509be46cd3126e30e0f6046."
+                },
+                {
+                    "name": "splunk_realm",
+                    "type": "optional",
+                    "comment": "The Splunk application or use case associated with the unique identifier (splunk_id).  For example, es_notable."
+                },
+                {
+                    "name": "src_user",
+                    "type": "optional",
+                    "comment": "The user or entity that created or triggered the service request, if applicable."
+                },
+                {
+                    "name": "status",
+                    "type": "required",
+                    "comment": "The relative status of the service request."
+                },
+                {
+                    "name": "time_submitted",
+                    "type": "optional",
+                    "comment": "The time that the src_user submitted the service request."
+                },
+                {
+                    "name": "user",
+                    "type": "optional",
+                    "comment": "The name of the user or entity that is assigned to carry out the service request, if applicable."
+                },
+                {
+                    "name": "dest",
+                    "type": "required",
+                    "comment": "The destination of the service request. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
+                },
+                {
+                    "name": "ticket_id",
+                    "type": "required",
+                    "comment": "An identification name, code, or number for the service request."
+                }
+            ],
+            "child_dataset": [
+                {
+                    "name": "Change",
+                    "tags": [["change", "ticketing"]],
+                    "search_constraints": "tag=change",
+                    "fields_cluster": [],
+                    "fields": [
+                        {
+                            "name": "change",
+                            "type": "optional",
+                            "comment": "Designation for a request for change (RFC) that is raised to modify an IT service to resolve an incident or problem."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Incident",
+                    "tags": [["incident", "ticketing"]],
+                    "search_constraints": "tag=incident",
+                    "fields_cluster": [],
+                    "fields": [
+                        {
+                            "name": "incident",
+                            "type": "optional",
+                            "comment": "The destination of the service request. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Problem",
+                    "tags": [["problem", "ticketing"]],
+                    "search_constraints": "tag=problem",
+                    "fields_cluster": [],
+                    "fields": [
+                        {
+                            "name": "problem",
+                            "type": "optional",
+                            "comment": "When multiple occurrences of related incidents are observed, they are collectively designated with a single problem value. Problem management differs from the process of managing an isolated incident. Often problems are managed by a specific set of staff and through a problem management process."
+                        }
+                    ],
+                    "child_dataset": []
+                }
+            ]
+        }
+    ]
+}

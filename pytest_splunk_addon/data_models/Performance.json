@@ -1,0 +1,314 @@
+{
+    "model_name": "Performance",
+    "version": "1.0.0",
+    "objects": [
+        {
+            "name": "All_Performance",
+            "tags": [["performance"]],
+            "search_constraints": "tag=performance",
+            "fields_cluster": [],
+            "fields": [
+                {
+                    "name": "dest_should_timesync",
+                    "type": "optional",
+                    "comment": "Indicates whether or not the system where the performance event occurred should time sync. This field is automatically provided by Asset and Identity correlation features of applications like the Splunk App for Enterprise Security."
+                },
+                {
+                    "name": "dest_should_update",
+                    "type": "optional",
+                    "comment": "Indicates whether or not the system where the performance event occurred should update. This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+                },
+                {
+                    "name": "hypervisor_id",
+                    "type": "optional",
+                    "comment": "The ID of the virtualization hypervisor."
+                },
+                {
+                    "name": "resource_type",
+                    "type": "optional",
+                    "comment": "The type of facilities resource involved in the performance event, such as a rack, room, or system."
+                },
+                {
+                    "name": "dest",
+                    "type": "required",
+                    "comment": "The system where the event occurred, usually a facilities resource such as a rack or room. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
+                }
+            ],
+            "child_dataset": [
+                {
+                    "name": "CPU",
+                    "tags": [["cpu", "performance"]],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=cpu",
+                    "fields": [
+                        {
+                            "name": "cpu_load_mhz",
+                            "type": "optional",
+                            "comment":  "The amount of CPU load reported by the controller in megahertz."
+                        },
+                        {
+                            "name": "cpu_load_percent",
+                            "type": "required",
+                            "comment": "The amount of CPU load reported by the controller in percentage points."
+                        },
+                        {
+                            "name": "cpu_time",
+                            "type": "optional",
+                            "comment": "The number of CPU seconds consumed by processes."
+                        },
+                        {
+                            "name": "cpu_user_percent",
+                            "type": "optional",
+                            "comment": "Percentage of CPU user time consumed by processes."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Facilities",
+                    "tags": [["facilities", "performance"]],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=facilities",
+                    "fields": [
+                        {
+                            "name": "temperature",
+                            "type": "required",
+                            "comment": "Average temperature of the facilities resource, in degrees Celsius."
+                        },
+                        {
+                            "name": "power",
+                            "type": "optional",
+                            "comment": "Amount of power consumed by the facilities resource, in Kw\/h."
+                        },
+                        {
+                            "name": "fan_speed",
+                            "type": "optional",
+                            "comment": "The speed of the cooling fan in the facilities resource, in rotations per second."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Memory",
+                    "tags": [["memory", "performance"]],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=memory",
+                    "fields": [
+                        {
+                            "name": "mem",
+                            "type": "required",
+                            "comment": "The total amount of memory capacity reported by the resource, in megabytes."
+                        },
+                        {
+                            "name": "mem_committed",
+                            "type": "optional",
+                            "comment": "The committed amount of memory reported by the resource, in megabytes."
+                        },
+                        {
+                            "name": "mem_free",
+                            "type": "required",
+                            "comment": "The free amount of memory reported by the resource, in megabytes."
+                        },
+                        {
+                            "name": "mem_used",
+                            "type": "required",
+                            "comment": "The used amount of memory reported by the resource, in megabytes."
+                        },
+                        {
+                            "name": "swap",
+                            "type": "optional",
+                            "comment": "The total swap space size, in megabytes, if applicable."
+                        },
+                        {
+                            "name": "swap_free",
+                            "type": "optional",
+                            "comment": "The free swap space size, in megabytes, if applicable."
+                        },
+                        {
+                            "name": "swap_used",
+                            "type": "optional",
+                            "comment": "The used swap space size, in megabytes, if applicable."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Storage",
+                    "tags": [["storage", "performance"]],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=storage",
+                    "fields": [
+                        {
+                            "name": "array",
+                            "type": "optional",
+                            "comment": "The array that the resource is a member of, if applicable."
+                        },
+                        {
+                            "name": "blocksize",
+                            "type": "optional",
+                            "comment": "Block size used by the storage resource, in kilobytes."
+                        },
+                        {
+                            "name": "cluster",
+                            "type": "optional",
+                            "comment": "The cluster that the resource is a member of, if applicable."
+                        },
+                        {
+                            "name": "fd_max",
+                            "type": "optional",
+                            "comment": "The maximum number of available file descriptors."
+                        },
+                        {
+                            "name": "fd_used",
+                            "type": "optional",
+                            "comment": "The current number of open file descriptors."
+                        },
+                        {
+                            "name": "latency",
+                            "type": "optional",
+                            "comment": "The latency reported by the resource, in milliseconds."
+                        },
+                        {
+                            "name": "mount",
+                            "type": "optional",
+                            "comment": "The mount point of a storage resource."
+                        },
+                        {
+                            "name": "parent",
+                            "type": "optional",
+                            "comment": "A generic indicator of hierarchy. For instance, a disk event might include the array id here."
+                        },
+                        {
+                            "name": "read_blocks",
+                            "type": "optional",
+                            "comment": "Number of blocks read."
+                        },
+                        {
+                            "name": "read_latency",
+                            "type": "optional",
+                            "comment": "The latency of read operations, in milliseconds."
+                        },
+                        {
+                            "name": "read_ops",
+                            "type": "optional",
+                            "comment": "Number of read operations."
+                        },
+                        {
+                            "name": "storage",
+                            "type": "optional",
+                            "comment": "The total amount of storage capacity reported by the resource, in megabytes."
+                        },
+                        {
+                            "name": "storage_free",
+                            "type": "required",
+                            "comment": "The free amount of storage capacity reported by the resource, in megabytes."
+                        },
+                        {
+                            "name": "storage_free_percent",
+                            "type": "required",
+                            "comment": "The percentage of storage capacity reported by the resource that is free."
+                        },
+                        {
+                            "name": "storage_used",
+                            "type": "required",
+                            "comment": "The used amount of storage capacity reported by the resource, in megabytes."
+                        },
+                        {
+                            "name": "storage_used_percent",
+                            "type": "required",
+                            "comment": "The percentage of storage capacity reported by the resource that is used."
+                        },
+                        {
+                            "name": "write_blocks",
+                            "type": "optional",
+                            "comment": "The number of blocks written by the resource."
+                        },
+                        {
+                            "name": "write_latency",
+                            "type": "optional",
+                            "comment": "The latency of write operations, in milliseconds."
+                        },
+                        {
+                            "name": "write_ops",
+                            "type": "optional",
+                            "comment": "The total number of write operations processed by the resource."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Network",
+                    "tags": [["network", "performance"]],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=network",
+                    "fields": [
+                        {
+                            "name": "thruput",
+                            "type": "required",
+                            "comment": "The current throughput reported by the service, in bytes."
+                        },
+                        {
+                            "name": "thruput_max",
+                            "type": "optional",
+                            "comment": "The maximum possible throughput reported by the service, in bytes."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "OS",
+                    "tags": [["os", "performance"]],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=os",
+                    "fields": [
+                        {
+                            "name": "signature",
+                            "type": "required",
+                            "comment": "The event description signature, if available."
+                        },
+                        {
+                            "name": "signature_id",
+                            "type": "optional",
+                            "comment": "The unique identifier or event code of the event signature."
+                        }
+                    ],
+                    "child_dataset": [
+                        {
+                            "name": "Timesync",
+                            "tags": [["performance", "os", "performance", "synchronize"]],
+                            "fields_cluster": [],
+                            "search_constraints": "tag=synchronize tag=time",
+                            "fields": [
+                                {
+                                    "name": "action",
+                                    "type": "required",
+                                    "expected_values": [
+                                        "success",
+                                        "failure"
+                                    ],
+                                    "comment": "The result of a time sync event."
+                                }
+                            ],
+                            "child_dataset": []
+                        },
+                        {
+                            "name": "Uptime",
+                            "tags": [["uptime", "os", "performance"]],
+                            "fields_cluster": [],
+                            "search_constraints": "tag=uptime",
+                            "fields": [
+                                {
+                                    "name": "uptime",
+                                    "type": "required",
+                                    "comment": "The uptime of the compute resource, in seconds."
+                                }
+                            ],
+                            "child_dataset": []
+                        }
+                    ]
+                }
+            
+            ]
+        }
+    ]
+}
