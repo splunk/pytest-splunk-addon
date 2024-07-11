@@ -635,8 +635,7 @@ def test_splunk_app_req_broken(testdir, request):
     logger.info(result.outlines)
 
     result.stdout.fnmatch_lines_random(
-        constants.TA_REQ_BROKEN_WARNING
-        + constants.TA_REQ_BROKEN_PASSED
+        constants.TA_REQ_BROKEN_PASSED
         + constants.TA_REQ_BROKEN_FAILED
         + constants.TA_REQ_BROKEN_SKIPPED,
     )
@@ -645,10 +644,9 @@ def test_splunk_app_req_broken(testdir, request):
         failed=len(constants.TA_REQ_BROKEN_FAILED),
         skipped=len(constants.TA_REQ_BROKEN_SKIPPED),
     )
-    # assert (
-    #     "List of common fields found in both cim_fields and missing_recommended_fields = ['dest']"
-    #     in result.outlines
-    # )
+
+    # checking warning for same field provided in cim_field and missing_recommended_fields
+    assert result.parseoutcomes().get("warnings") == 2
 
     # make sure that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0
@@ -704,8 +702,6 @@ def test_splunk_app_req(testdir, request):
         failed=len(constants.TA_REQ_TRANSITION_FAILED),
         skipped=len(constants.TA_REQ_TRANSITION_SKIPPED),
     )
-    # checking warning for same field provided in cim_field and missing_recommended_fields
-    assert result.parseoutcomes().get("warnings") == 2
 
     # make sure that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret == 0, "result not equal to 0"
