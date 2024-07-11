@@ -1,0 +1,192 @@
+{
+    "model_name": "Data_Access",
+    "version": "1.0.0",
+    "objects": [
+        {
+            "name": "Data_Access",
+            "tags": [
+                ["data", "access"]
+            ],
+            "fields_cluster": [],
+            "search_constraints": "tag=data tag=access",
+            "fields": [
+                {
+                    "name": "action",
+                    "type": "required",
+                    "comment": "The data access action taken by the user."
+                },
+                {
+                    "name": "app",
+                    "type": "required",
+                    "comment": "he system, service, or application that generated the data access event. Examples include Onedrive, Sharepoint, drive, AzureActiveDirectory."
+                },
+                {
+                    "name": "application_id",
+                    "type": "optional",
+                    "comment": "Application ID of the user"
+                },
+                {
+                    "name": "object",
+                    "type": "required",
+                    "comment": "Resource object name on which the action was performed by a user."
+                },
+                {
+                    "name": "object_attrs",
+                    "type": "required",
+                    "comment": "The attributes that were updated on the updated resource object, if applicable."
+                },
+                {
+                    "name": "object_category",
+                    "type": "required",
+                    "comment": "Generic name for the class of the updated resource object. Expected values may be specific to an app."
+                },
+                {
+                    "name": "object_id",
+                    "type": "required",
+                    "comment": "The unique updated resource object ID as presented to the system, if applicable. For example, a source_folder_id, doc_id."
+                },
+                {
+                    "name": "object_path",
+                    "type": "optional",
+                    "comment": "The path of the modified resource object, if applicable, such as a file, directory, or volume."
+                },
+                {
+                    "name": "object_size",
+                    "type": "required",
+                    "comment": "The size of the modified resource object."
+                },
+                {
+                    "name": "dest",
+                    "type": "required",
+                    "comment": "The destination where the data resides or where it is being accessed, such as the product or application. You can alias this from more specific fields not included in this data model, such as dest_host, dest_ip, dest_url or dest_name."
+                },
+                {
+                    "name": "dest_name",
+                    "type": "optional",
+                    "comment": "Name of the destination as defined by the Vendor."
+                },
+                {
+                    "name": "dest_url",
+                    "type": "optional",
+                    "comment": "Url of the product, application or object."
+                },
+                {
+                    "name": "dvc",
+                    "type": "optional",
+                    "comment": "The device that reported the data access event."
+                },
+                {
+                    "name": "email",
+                    "type": "optional",
+                    "comment": "The email address of the user involved in the event, or who initiated the event."
+                },
+                {
+                    "name": "owner",
+                    "type": "optional",
+                    "comment": "Resource owner."
+                },
+                {
+                    "name": "owner_id",
+                    "type": "optional",
+                    "comment": "ID of the owner as defined by the vendor."
+                },
+                {
+                    "name": "owner_email",
+                    "type": "optional",
+                    "comment": "Email of the resource owner."
+                },
+                {
+                    "name": "parent_object",
+                    "type": "optional",
+                    "comment": "Parent of the object name on which the action was performed by a user."
+                },
+                {
+                    "name": "parent_object_category",
+                    "type": "optional",
+                    "comment": "Object category of the parent object on which action was performed by a user."
+                },
+                {
+                    "name": "parent_object_id",
+                    "type": "optional",
+                    "comment": "Object id of the parent object on which the action was performed by a user."
+                },
+                {
+                    "name": "signature",
+                    "type": "optional",
+                    "comment": "A human-readable signature name."
+                },
+                {
+                    "name": "signature_id",
+                    "type": "optional",
+                    "comment": "The unique identifier or event code of the event signature."
+                },
+                {
+                    "name": "src",
+                    "type": "required",
+                    "comment": "The endpoint client host."
+                },
+                {
+                    "name": "user_agent",
+                    "type": "optional",
+                    "comment": "The user agent through which the request was made, such as Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) or aws-cli/2.0.0 Python/3.7.4 Darwin/18.7.0 botocore/2.0.0dev4."
+                },
+                {
+                    "name": "user_email",
+                    "type": "optional",
+                    "comment": "The email address of the user involved in the event, or who initiated the event."
+                },
+                {
+                    "name": "user_group",
+                    "type": "optional",
+                    "comment": "The group of the user involved in the event, or who initiated the event."
+                },
+                {
+                    "name": "user_id",
+                    "type": "optional",
+                    "comment": "The unique id of the user involved in the event. For authentication privilege escalation events, this should represent the user targeted by the escalation."
+                },
+                {
+                    "name": "user_name",
+                    "type": "required",
+                    "comment": "The user name of the user or entity performing the change. For account changes, this is the account that was changed (see src_user_name for user or entity performing the change)"
+                },
+                {
+                    "name": "user_role",
+                    "type": "optional",
+                    "comment": "The role of the user involved in the event, or who initiated the event."
+                },
+                {
+                    "name": "user_type",
+                    "type": "optional",
+                    "comment": "The type of the user involved in the event or who initiated the event, such as IAMUser, Admin, or System. For account management events, this should represent the type of the user changed by the request."
+                },
+                {
+                    "name": "vendor_account",
+                    "type": "required",
+                    "comment": "The account that manages the user that initiated the request."
+                },
+                {
+                    "name": "vendor_product_id",
+                    "type": "optional",
+                    "comment": "The vendor and product name ID as defined by the vendor."
+                },
+                {
+                    "name": "vendor_region",
+                    "type": "optional",
+                    "comment": "The data center region where the change occurred, such as us-west-2."
+                },
+                {
+                    "name": "user",
+                    "type": "required",
+                    "comment": "The user involved in the event, or who initiated the event."
+                },
+                {
+                    "name": "vendor_product",
+                    "type": "required",
+                    "comment": "The vendor and product name of the vendor."
+                }
+            ],
+            "child_dataset": []
+        }
+    ]
+}
