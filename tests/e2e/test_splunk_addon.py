@@ -644,8 +644,10 @@ def test_splunk_app_req_broken(testdir, request):
         failed=len(constants.TA_REQ_BROKEN_FAILED),
         skipped=len(constants.TA_REQ_BROKEN_SKIPPED),
     )
-    assert "List of common fields found in both cim_fields and missing_recommended_fields = ['dest']" in result.outlines
-
+    assert (
+        "List of common fields found in both cim_fields and missing_recommended_fields = ['dest']"
+        in result.outlines
+    )
 
     # make sure that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0
