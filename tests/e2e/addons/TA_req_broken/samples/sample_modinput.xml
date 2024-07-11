@@ -25,6 +25,7 @@
             </cim_fields>
             <missing_recommended_fields>
                 <field>src_user</field>
+                <field>dest</field>
             </missing_recommended_fields>
         </cim>
     </event>
