@@ -276,7 +276,7 @@ class CIMTestGenerator(object):
                     )
                     if common_fields:
                         LOGGER.warning(
-                            f"List of common fields found in both cim_fields and missing_recommended_fields = {common_fields}"
+                            f"Common fields found in both cim_fields and missing_recommended_fields for {event.sample_name} sample = {common_fields}"
                         )
                     fields = (
                         list(event.requirement_test_data["cim_fields"].keys())

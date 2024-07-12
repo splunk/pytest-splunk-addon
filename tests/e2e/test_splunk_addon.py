@@ -637,7 +637,7 @@ def test_splunk_app_req_broken(testdir, request):
     result.stdout.fnmatch_lines_random(
         constants.TA_REQ_BROKEN_PASSED
         + constants.TA_REQ_BROKEN_FAILED
-        + constants.TA_REQ_BROKEN_SKIPPED,
+        + constants.TA_REQ_BROKEN_SKIPPED
     )
     result.assert_outcomes(
         passed=len(constants.TA_REQ_BROKEN_PASSED),
