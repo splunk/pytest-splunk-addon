@@ -83,7 +83,6 @@
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element type="xs:string" name="note" minOccurs="0" />
               <xs:element type="xs:string" name="raw"/>
               <xs:element name="cim">
                 <xs:complexType>
@@ -104,7 +103,6 @@
                                 <xs:extension base="xs:string">
                                   <xs:attribute type="xs:string" name="name" use="optional"/>
                                   <xs:attribute type="xs:string" name="value" use="optional"/>
-                                  <xs:attribute type="xs:string" name="note" use="optional"/>
                                 </xs:extension>
                               </xs:simpleContent>
                             </xs:complexType>
