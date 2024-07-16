@@ -91,7 +91,7 @@ class PropsParser(object):
                     for transform_stanza, fields in self._get_report_fields(key, value):
                         field_list = list(fields)
                         if (
-                            self.transforms_parser.transforms[transform_stanza].get(
+                            self.transforms_parser.transforms.get(transform_stanza,{}).get(
                                 "CLEAN_KEYS"
                             )
                             != "false"
