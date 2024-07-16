@@ -102,7 +102,9 @@ class TransformsParser(object):
                 LOGGER.info(f"Parsing FIELDS of {transforms_stanza}")
                 fields_values = transforms_values["FIELDS"]
                 # for each_field in fields_values.split(","):
-                for each_field in fields_values.split(transforms_values["DELIMS"][1:-1]):
+                for each_field in fields_values.split(
+                    transforms_values["DELIMS"][1:-1]
+                ):
                     yield each_field.strip()
             if "FORMAT" in transforms_values:
                 LOGGER.info(f"Parsing FORMAT of {transforms_stanza}")

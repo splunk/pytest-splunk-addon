@@ -62,7 +62,7 @@ class PropsParser(object):
         updated field names to remove all the non-alphanumeric chars and replace them with _
         """
         for index in range(len(field_list)):
-            field_list[index].name = re.sub(r'\W+', '_', field_list[index].name)
+            field_list[index].name = re.sub(r"\W+", "_", field_list[index].name)
         return field_list
 
     def get_props_fields(self):
@@ -90,7 +90,12 @@ class PropsParser(object):
                 else:
                     for transform_stanza, fields in self._get_report_fields(key, value):
                         field_list = list(fields)
-                        if self.transforms_parser.transforms[transform_stanza].get("CLEAN_KEYS") != "false":
+                        if (
+                            self.transforms_parser.transforms[transform_stanza].get(
+                                "CLEAN_KEYS"
+                            )
+                            != "false"
+                        ):
                             field_list = self.update_field_names(field_list)
                         if field_list:
                             yield {
