@@ -24,7 +24,6 @@ from ..addon_parser import Field
 import json
 from itertools import chain
 
-from ..utilities import escape_char_event
 from ..utilities.log_helper import get_table_output
 from ..utilities.log_helper import format_search_query_log
 
@@ -185,12 +184,9 @@ class FieldTestTemplates(object):
             if param_value is not None:
                 basic_search += f" {param}={param_value}"
 
-        search = f"search {index_list} {basic_search} {escaped_event} "
+        search = f"search {index_list} {basic_search} {escaped_event} | fields *"
 
         self.logger.info(f"Executing the search query: {search}")
-
-        for k, v in fields.items():
-            search += f' {k}="{escape_char_event(v)}"'
 
         fields_from_splunk = splunk_search_util.getFieldValuesDict(
             search,

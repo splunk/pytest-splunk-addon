@@ -16,7 +16,7 @@
 """
 Provides props.conf parsing mechanism
 """
-from typing import Dict
+from typing import Dict, List
 from typing import Generator
 from typing import Optional
 import logging
@@ -57,9 +57,9 @@ class PropsParser(object):
         self._props = self._conf_parser.item_dict()
         return self._props if self._props else None
 
-    def update_field_names(self, field_list):
+    def update_field_names(self, field_list) -> List:
         """
-        updated field names to remove all the non-alphanumeric chars and replace them with _
+        update field names to remove all the non-alphanumeric chars and replace them with _
         """
         for index in range(len(field_list)):
             field_list[index].name = re.sub(r"\W+", "_", field_list[index].name)
