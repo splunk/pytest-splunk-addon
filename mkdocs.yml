@@ -74,3 +74,4 @@ nav:
       - DataGenerator: "api_reference/sample_generation.md"
       - EventIngestor: "api_reference/event_ingestion.md"
   - Troubleshooting: "troubleshoot.md"
+  - Changelog: "change_log.md"
