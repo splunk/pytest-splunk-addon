@@ -20,13 +20,11 @@ Includes the test scenarios to check the field extractions of an Add-on.
 import pprint
 import logging
 import pytest
-from ..addon_parser import Field
 import json
 from itertools import chain
-
+from ..addon_parser import Field
 from ..utilities.log_helper import get_table_output
 from ..utilities.log_helper import format_search_query_log
-
 from .requirement_test_datamodel_tag_constants import dict_datamodel_tag
 
 TOP_FIVE_STRUCTURALLY_UNIQUE_EVENTS_QUERY_PART = " | dedup punct | head 5"
