@@ -1,0 +1,196 @@
+{
+  "model_name": "Authentication",
+  "version": "1.0.0",
+  "objects": [
+    {
+      "name": "Authentication",
+      "tags": [["authentication"]],
+      "fields_cluster": [],
+      "fields": [
+        {
+          "name": "action",
+          "type": "required",
+          "expected_values": ["success", "failure", "pending", "error"],
+          "comment": "The action performed on the resource."
+        },
+        {
+          "name": "app",
+          "type": "required",
+          "comment": "The application involved in the event (such as ssh, splunk, win:local)."
+        },
+        {
+          "name": "authentication_method",
+          "type": "optional",
+          "comment": "The method used to authenticate the request"
+        },
+        {
+          "name": "authentication_service",
+          "type": "optional",
+          "comment": "The service used to authenticate the request"
+        },
+        {
+          "name": "dest",
+          "type": "required",
+          "comment": "The target involved in the authentication. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_nt_host."
+        },
+        {
+          "name": "src_user_type",
+          "type": "optional",
+          "comment": "The type of the user who initiated the privilege escalation."
+        },
+        {
+        "name": "user_type",
+          "type": "optional",
+          "comment": "The type of the user involved in the event or who initiated the event.\nIAMUser, Admin, or System."
+        },
+        {
+          "name": "src_user_role",
+          "type": "optional",
+          "comment": "The role of the user who initiated the privilege escalation."
+        },
+        {
+          "name": "user_role",
+          "type": "optional",
+          "comment": "The role of the user involved in the event, or who initiated the event. For authentication privilege escalation events, this should represent the user role targeted by the escalation."
+        },
+        {
+          "name": "user_agent",
+          "type": "optional",
+          "comment": "The user agent through which the request was made, such as Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) or aws-cli/2.0.0 Python/3.7.4 Darwin/18.7.0 botocore/2.0.0dev4."
+        },
+        {
+          "name": "duration",
+          "type": "optional",
+          "validity": "if(isnum(duration) and duration>0 and duration<3600, duration, null())",
+          "comment": "The amount of time for the completion of the authentication event, in seconds."
+        },
+        {
+          "name": "response_time",
+          "type": "optional",
+          "validity": "if(isnum(response_time) and response_time>0 AND response_time<3600,response_time,null())",
+          "comment": "The amount of time it took to receive a response in the authentication event, in seconds."
+        },
+        {
+          "name": "signature",
+          "type": "optional",
+          "condition": "signature_id=*",
+          "comment": "A human-readable signature name."
+        },
+        {
+          "name": "signature_id",
+          "type": "optional",
+          "comment": "The unique identifier or event code of the event signature."
+        },
+        {
+          "name": "src",
+          "type": "required",
+          "comment": "The name of the user involved in the event, or who initiated the event. For authentication privilege escalation events, this should represent the user targeted by the escalation."
+        },
+        {
+          "name": "user",
+          "type": "required",
+          "comment": "The name of the user involved in the event, or who initiated the event. For authentication privilege escalation events, this should represent the user targeted by the escalation."
+        },
+        {
+          "name": "user_id",
+          "type": "optional",
+          "comment": "The unique id of the user involved in the event."
+        },
+        {
+          "name": "reason",
+          "type": "optional",
+          "validity": "if(action in ['success', 'failure'], action, null())",
+          "comment": "The human-readable message associated with the authentication action (success or failure)."
+        },
+        {
+          "name": "src_user",
+          "condition": "src_user=* tag=privileged",
+          "type": "conditional",
+          "comment": "In privilege escalation events, src_user represents the user who initiated the privilege escalation. This field is unnecessary when an escalation has not been performed. If present it must be a valid user."
+        },
+        {
+          "name": "vendor_account",
+          "type": "optional",
+          "comment": "The account that manages the user that initiated the request. The account represents the organization, a Cloud customer, or a Cloud account."
+        }
+      ],
+      "child_dataset": [
+        {
+          "name": "Failed_Authentication",
+          "tags": [["authentication"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [],
+          "search_constraints": "action=\"failure\""
+        },
+        {
+          "name": "Successful_Authentication",
+          "tags": [["authentication"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [],
+          "search_constraints": "action=\"success\""
+        },
+        {
+          "name": "Default_Authentication",
+          "tags": [["authentication", "default"]],
+          "fields_cluster": [],
+          "fields": [],
+          "search_constraints": "tag=\"default\"",
+          "child_dataset": [
+            {
+              "name": "Failed_Default_Authentication",
+              "tags": [["authentication", "default"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=\"failure\""
+            },
+            {
+              "name": "Successful_Default_Authentication",
+              "tags": [["authentication", "default"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=\"success\""
+            }
+          ]
+        },
+        {
+          "name": "Insecure_Authentication",
+          "tags": [["authentication", "insecure"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [],
+          "search_constraints": "tag=\"insecure\" OR tag=\"cleartext\""
+        },
+        {
+          "name": "Privileged_Authentication",
+          "tags": [["authentication", "privileged"]],
+          "fields_cluster": [],
+          "fields": [],
+          "search_constraints": "tag=\"privileged\"",
+          "child_dataset": [
+            {
+              "name": "Failed_Privileged_Authentication",
+              "tags": [["authentication", "privileged"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=\"failure\""
+            },
+            {
+              "name": "Successful_Privileged_Authentication",
+              "tags": [["authentication", "privileged"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=\"success\""
+            }
+          ]
+        }
+      ],
+      "search_constraints": "tag=authentication NOT (action=success user=*$)"
+    }
+  ]
+}

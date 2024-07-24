@@ -2,11 +2,11 @@ import pytest
 from unittest.mock import patch, call
 from collections import namedtuple
 from copy import deepcopy
-from pytest_splunk_addon.standard_lib.index_tests.test_generator import (
+from pytest_splunk_addon.index_tests.test_generator import (
     IndexTimeTestGenerator,
 )
 
-module = "pytest_splunk_addon.standard_lib.index_tests.test_generator"
+module = "pytest_splunk_addon.index_tests.test_generator"
 sample_event = namedtuple(
     "SampleEvent",
     ["metadata", "key_fields", "sample_name", "time_values"],

@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from collections import namedtuple
-from pytest_splunk_addon.standard_lib.cim_tests.field_test_helper import FieldTestHelper
-from pytest_splunk_addon.standard_lib.utilities.log_helper import get_table_output
+from pytest_splunk_addon.cim_tests.field_test_helper import FieldTestHelper
+from pytest_splunk_addon.utilities.log_helper import get_table_output
 
 
 field = namedtuple(
@@ -26,7 +26,7 @@ def field_test_adapter_mock(monkeypatch):
     fta_mock.VALID_FIELD_COUNT = "{}_valid_count"
     fta_mock.INVALID_FIELD_VALUES = "{}_invalid_values"
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.cim_tests.field_test_helper.FieldTestAdapter",
+        "pytest_splunk_addon.cim_tests.field_test_helper.FieldTestAdapter",
         fta_mock,
     )
 
@@ -285,7 +285,7 @@ def test_format_exc_message(mocked_field_test_helper, fields, expected_output):
         return output
 
     with patch(
-        "pytest_splunk_addon.standard_lib.cim_tests.field_test_helper.get_table_output",
+        "pytest_splunk_addon.cim_tests.field_test_helper.get_table_output",
         side_effect=table_output,
     ):
         assert mocked_field_test_helper.format_exc_message() == expected_output

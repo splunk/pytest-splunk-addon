@@ -1,4 +1,4 @@
 # AppTestGenerator
 
-::: pytest_splunk_addon.standard_lib.app_test_generator
+::: pytest_splunk_addon.app_test_generator
     handler: python

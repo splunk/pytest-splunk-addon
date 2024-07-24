@@ -1,0 +1,112 @@
+{
+    "version":"1.0.0",
+    "model_name": "Updates",
+    "objects":[
+    {
+        "name": "Updates",
+        "tags": [
+            ["update","status"]
+        ],
+        "fields_cluster": [],
+        "search_constraints": "tag=update tag=status",
+        "fields": [
+            {
+                "name": "dest",
+                "type": "required",
+                "comment":"The system that is affected by the patch change. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
+            },
+            {
+                "name": "dvc",
+                "type": "required",
+                "comment":"The device that detected the patch event, such as a patching or configuration management server. You can alias this from more specific fields, such as dvc_host, dvc_ip, or dvc_name." 
+            },
+            {
+                "name": "file_hash",
+                "type": "optional",
+                "comment":"The checksum of the patch package that was installed or attempted."                
+            },
+            {
+                "name": "file_name",
+                "type": "required",
+                "comment":"The name of the patch package that was installed or attempted." 
+            },
+            {
+                "name": "severity",
+                "type": "optional",
+                "expected_values": [
+                    "critical",
+                    "high",
+                    "medium",
+                    "low",
+                    "informational"
+                  ],
+                "comment":"The severity associated with the patch event." 
+            },
+            {
+                "name": "severity_id",
+                "type": "optional",
+                "comment": "The numeric or vendor specific severity indicator corresponding to the event severity."
+            },
+            {
+                "name": "signature",
+                "type": "required",
+                "multi_value": true,
+                "comment":"The name of the patch requirement detected on the client (the dest), such as MS08-067 or RHBA-2013:0739." 
+            },
+            {
+                "name": "signature_id",
+                "type": "required",
+                "multi_value": true,
+                "comment":"The ID of the patch requirement detected on the client (the src)." 
+            },
+            {
+                "name": "status",
+                "type": "required",
+                "expected_values": [
+                    "available",
+                    "installed",
+                    "invalid",
+                    "restart required"
+                  ],
+                "comment":"Indicates the status of a given patch requirement." 
+            },
+            {
+                "name": "vendor_product",
+                "type": "required",
+                "comment":"The vendor and product of the patch monitoring product, such as Lumension Patch Manager. This field can be automatically populated by vendor and product fields in your data." 
+            }
+        ],
+        "child_dataset": [
+            {
+                "name":"Available_Updates",
+                "tags": [
+                    ["update","status"]
+                  ],
+                "fields_cluster":[],
+                "fields":[],
+                "child_dataset": [],
+                "search_constraints":"status=\"available\""
+            },
+            {
+                "name":"Installed_Updates",
+                "tags": [
+                    ["update","status"]
+                  ],
+                "fields_cluster":[],
+                "fields":[],
+                "child_dataset": [],
+                "search_constraints":"status=\"installed\""
+            },
+            {
+                "name":"Restart_Required_Updates",
+                "tags": [
+                    ["update","status"]
+                  ],
+                "fields_cluster":[],
+                "fields":[],
+                "child_dataset": [],
+                "search_constraints":"status=\"restart_required\""
+            }
+        ]
+    }]
+}

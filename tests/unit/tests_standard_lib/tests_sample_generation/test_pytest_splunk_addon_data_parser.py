@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 
-from pytest_splunk_addon.standard_lib.sample_generation import (
+from pytest_splunk_addon.sample_generation import (
     PytestSplunkAddonDataParser,
 )
 

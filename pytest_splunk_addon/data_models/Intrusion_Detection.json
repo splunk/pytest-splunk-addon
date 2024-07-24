@@ -1,0 +1,149 @@
+{
+  "model_name": "Intrusion_Detection",
+  "version": "1.0.0",
+  "objects": [
+    {
+      "name": "IDS_Attacks",
+      "tags": [["ids", "attack"]],
+      "fields_cluster": [],
+      "search_constraints": "tag=ids tag=attack",
+      "fields": [
+        {
+          "name": "action",
+          "type": "required",
+          "expected_values": ["allowed", "blocked"],
+          "comment": "The action performed on the resource."
+        },
+        {
+          "name": "category",
+          "type": "required",
+          "comment": "The vendor-provided category of the triggered signature, such as spyware. This field is a string. Use a category_id field (not included in this data model) for category ID fields that are integer data types."
+        },
+        {
+          "name": "dest",
+          "type": "conditional",
+          "condition": "ids_type=\"network\"",
+          "comment": "The destination of the attack detected by the intrusion detection system (IDS). You can alias this from more specific fields not included in this data model, such as dest_host, dest_ip, or dest_name."
+        },
+        {
+          "name": "dvc",
+          "type": "required",
+          "comment": "The device that detected the intrusion event. You can alias this from more specific fields not included in this data model, such as dvc_host, dvc_ip, or dvc_name."
+        },
+        {
+          "name": "file_hash",
+          "type": "conditional",
+          "condition": "ids_type=\"host\" ",
+          "comment": "A cryptographic identifier assigned to the file object affected by the event."
+        },
+        {
+          "name": "file_name",
+          "type": "conditional",
+          "condition": "ids_type=\"host\" ",
+          "comment": "The name of the file, such as notepad.exe."
+        },
+        {
+          "name": "file_path",
+          "type": "conditional",
+          "condition": "ids_type=\"host\" ",
+          "comment": "The path of the file, such as C:\\Windows\\System32\\notepad.exe."
+        },
+        {
+          "name": "ids_type",
+          "type": "required",
+          "expected_values": ["network", "host"],
+          "comment": "The type of IDS that generated the event."
+        },
+        {
+          "name": "severity",
+          "type": "required",
+          "expected_values": [
+            "critical",
+            "high",
+            "medium",
+            "low",
+            "informational"
+          ],
+          "comment": "The severity of the network protection event. This field is a string. Use a severity_id field (not included in this data model) for severity ID fields that are integer data types. Also, specific values are required for this field. Use vendor_severity for the vendor's own human readable severity strings, such as Good, Bad, and Really Bad."
+        },
+        {
+          "name": "severity_id",
+          "type": "optional",
+          "comment": "The numeric or vendor specific severity indicator corresponding to the event severity."
+        },
+        {
+          "name": "signature",
+          "type": "required",
+          "comment": "The name of the intrusion detected on the client (the src), such as PlugAndPlay_BO and JavaScript_Obfuscation_Fre. This is a string value. Use a signature_id field (not included in this data model) for numeric indicators."
+        },
+        {
+          "name": "signature_id",
+          "type": "optional",
+          "comment": "The unique identifier or event code of the event signature."
+        },
+        {
+          "name": "src",
+          "type": "conditional",
+          "condition": "ids_type=\"network\"",
+          "comment": "The source involved in the attack detected by the IDS. You can alias this from more specific fields not included in this data model, such as src_host, src_ip, or src_name."
+        },
+        {
+          "name": "transport",
+          "type": "conditional",
+          "condition": "ids_type=\"network\"",
+          "comment": "The OSI layer 4 (transport) protocol of the intrusion, in lower case."
+        },
+        {
+          "name": "src_port",
+          "type": "conditional",
+          "condition": "ids_type=\"network\"",
+          "validity": "if(isnum(src_port),src_port,null())",
+          "comment": "The source port of the intrusion detection. Note: Do not translate the value of this field to a string (tcp/80 is 80, not http). You can set up the corresponding string value in the src_svc field."
+        },
+        {
+          "name": "dest_port",
+          "type": "conditional",
+          "condition": "ids_type=\"network\"",
+          "validity": "if(isnum(dest_port),dest_port,null())",
+          "comment": "The destination port of the intrusion detection. Note: Do not translate the value of this field to a string (tcp/80 is 80, not http). You can set up the corresponding string value in the dest_svc field."
+        },
+        {
+          "name": "user",
+          "type": "optional",
+          "comment": "The user involved with the intrusion detection event."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "comment": "The vendor and product name of the IDS or IPS system that detected the vulnerability, such as HP Tipping Point. This field can be automatically populated by vendor and product fields in your data."
+        }
+      ],
+      "child_dataset": [
+        {
+          "name": "Application_IDS_Attacks",
+          "tags": [["ids", "attack"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [],
+          "search_constraints": "ids_type=\"application\""
+        },
+        {
+          "name": "Host_IDS_Attacks",
+          "tags": [["ids", "attack"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [],
+          "search_constraints": "ids_type=\"host\""
+        },
+        {
+          "name": "Network_IDS_Attacks",
+          "tags": [["ids", "attack"]],
+          "fields_cluster": [],
+          "fields": [],
+          "search_constraints": "ids_type=\"network\"",
+          "child_dataset": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+    "model_name": "Vulnerabilities",
+    "version": "1.0.0",
+    "objects":
+    [{
+        "name": "Vulnerabilities",
+        "tags": [
+            ["vulnerability","report"]
+        ],
+        "fields_cluster": [],
+        "search_constraints": "tag=vulnerability tag=report",
+        "fields": [
+            {
+                "name": "bugtraq",
+                "type": "optional",
+                "comment":"Corresponds to an identifier in the vulnerability database provided by the Security Focus website."
+            },
+            {
+                "name": "category",
+                "type": "required",
+                "comment":"The category of the discovered vulnerability, such as DoS." 
+            },
+            {
+                "name": "cert",
+                "type": "optional",
+                "comment":"Corresponds to an identifier in the vulnerability database provided by the US Computer Emergency Readiness Team"                
+            },
+            {
+                "name": "cve",
+                "type": "required",
+                "multi_value": true,
+                "comment":"Corresponds to an identifier provided in the Common Vulnerabilities and Exposures index" 
+            },
+            {
+                "name": "cvss",
+                "type": "required",
+                "validity": "if(isnum(cvss),cvss,null())",
+                "comment":"Numeric indicator of the common vulnerability scoring system." 
+            },
+            {
+                "name": "dest",
+                "type": "required",
+                "comment":"The host with the discovered vulnerability. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name." 
+            },
+            {
+                "name": "dvc",
+                "type": "required",
+                "comment":"The system that discovered the vulnerability. You can alias this from more specific fields, such as dvc_host, dvc_ip, or dvc_name." 
+            },
+            {
+                "name": "msft",
+                "type": "optional",
+                "comment":"Corresponds to a Microsoft Security Advisory number." 
+            },
+            {
+                "name": "mskb",
+                "type": "optional",
+                "comment":"Corresponds to a Microsoft Knowledge Base article number." 
+            },
+            {
+                "name": "severity",
+                "type": "required",
+                "expected_values": [
+                    "critical",
+                    "high",
+                    "medium",
+                    "low",
+                    "informational"
+                  ],
+                "comment":"The severity of the vulnerability detection event. Specific values are required." 
+            },
+            {
+                "name": "severity_id",
+                "type": "optional",
+                "comment": "The numeric or vendor specific severity indicator corresponding to the event severity."
+            },
+            {
+                "name": "signature",
+                "type": "required",
+                "comment":"The name of the vulnerability detected on the host, such as HPSBMU02785 SSRT100526 rev.2 - HP LoadRunner Running on Windows, Remote Execution of Arbitrary Code, Denial of Service (DoS)." 
+            },
+            {
+                "name": "signature_id",
+                "type": "optional",
+                "comment": "The unique identifier or event code of the event signature."
+            },
+            {
+                "name": "url",
+                "type": "optional",
+                "comment":"The URL involved in the discovered vulnerability." 
+            },
+            {
+                "name": "user",
+                "type": "optional",
+                "comment":"The user involved in the discovered vulnerability." 
+            },
+            {
+                "name": "vendor_product",
+                "type": "required",
+                "comment":"The vendor and product that detected the vulnerability. This field can be automatically populated by vendor and product fields in your data." 
+            },
+            {
+                "name": "xref",
+                "type": "optional",
+                "comment":"A cross-reference identifier associated with the vulnerability. In most cases, the xref field contains both the short name of the database being cross-referenced and the unique identifier used in the external database." 
+            }
+        ],
+        "child_dataset": [
+            {
+                "name":"High_Critical_Vulnerabilities",
+                "tags": [
+                    ["vulnerability","report"]
+                  ],
+                "fields_cluster":[],
+                "fields":[],
+                "child_dataset": [],
+                "search_constraints":"(severity=\"high\" OR severity=\"critical\")"
+            },
+            {
+                "name":"Medium_Vulnerabilities",
+                "tags": [
+                    ["vulnerability","report"]
+                  ],
+                "fields_cluster":[],
+                "fields":[],
+                "child_dataset": [],
+                "search_constraints":"severity=\"medium\""
+            },
+            {
+                "name":"Low_Informational_Vulnerabilities",
+                "tags": [
+                    ["vulnerability","report"]
+                  ],
+                "fields_cluster":[],
+                "fields":[],
+                "child_dataset": [],
+                "search_constraints":"(severity=\"low\" OR severity=\"informational\")"
+            }
+        ]
+    }]
+}

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, call
 from collections import namedtuple
-from pytest_splunk_addon.standard_lib.cim_compliance.plugin import CIMReportPlugin
+from pytest_splunk_addon.cim_compliance.plugin import CIMReportPlugin
 
 config = namedtuple("Config", ["getoption"])
 cim_config = config(getoption=lambda x: f"path_{x}")
@@ -55,7 +55,7 @@ def cim_report_generator_mock(monkeypatch):
     crg = MagicMock()
     crg.return_value = crg
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.cim_compliance.plugin.CIMReportGenerator",
+        "pytest_splunk_addon.cim_compliance.plugin.CIMReportGenerator",
         crg,
     )
     return crg

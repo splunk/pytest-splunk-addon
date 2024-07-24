@@ -4,11 +4,11 @@ from urllib.parse import unquote
 from requests.exceptions import ConnectionError
 from collections import namedtuple
 from os import sep as os_sep
-from pytest_splunk_addon.standard_lib.event_ingestors.file_monitor_ingestor import (
+from pytest_splunk_addon.event_ingestors.file_monitor_ingestor import (
     FileMonitorEventIngestor,
 )
 
-file_name = "pytest_splunk_addon.standard_lib.event_ingestors.file_monitor_ingestor"
+file_name = "pytest_splunk_addon.event_ingestors.file_monitor_ingestor"
 required_config = {
     "uf_host": "localhost",
     "uf_port": "8888",

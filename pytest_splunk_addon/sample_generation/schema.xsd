@@ -1,0 +1,201 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="device">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element type="xs:string" name="vendor"/>
+        <xs:element type="xs:string" name="product"/>
+        <xs:element name="version"  maxOccurs="unbounded" minOccurs="1">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute name="id" use="required">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                    <xs:minLength value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute type="xs:string" name="os" use="optional" />
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="event" maxOccurs="unbounded" minOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="version"  maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute type="xs:string" name="id"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="transport">
+                <xs:complexType>
+                  <xs:attribute name="type" use="required">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:enumeration value="dbx"/>
+                        <xs:enumeration value="forwarder"/>
+                        <xs:enumeration value="modinput"/>
+                        <xs:enumeration value="Mod input"/>
+                        <xs:enumeration value="Modular Input"/>
+                        <xs:enumeration value="Modular input"/>
+                        <xs:enumeration value="modular input"/>
+                        <xs:enumeration value="modular_input"/>
+                        <xs:enumeration value="Mod Input"/>
+                        <xs:enumeration value="scripted input"/>
+                        <xs:enumeration value="Scripted Input"/>
+                        <xs:enumeration value="scripted_input"/>
+                        <xs:enumeration value="Scripted inputs"/>
+                        <xs:enumeration value="scripted inputs"/>
+                        <xs:enumeration value="Syslog"/>
+                        <xs:enumeration value="syslog"/>
+                        <xs:enumeration value="windows_input"/>
+                        <xs:enumeration value="hec_raw"/>
+                        <xs:enumeration value="hec_event"/>
+                        <xs:enumeration value="file_monitor"/>
+                        <xs:enumeration value="file_monitor_w3c"/>
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                  <xs:attribute type="xs:string" name="name" use="optional"/>
+                  <xs:attribute name="host" type="xs:string" use="optional"/>
+                  <xs:attribute name="source" type="xs:string" use="optional"/>
+                  <xs:attribute name="sourcetype" type="xs:string" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="source">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="jira" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="id" use="required"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:string" name="comment" maxOccurs="1" minOccurs="1"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element type="xs:string" name="note" minOccurs="0" />
+              <xs:element type="xs:string" name="raw"/>
+              <xs:element name="cim">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="models" maxOccurs="1" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element type="xs:string" name="model" maxOccurs="unbounded" minOccurs="1"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="cim_fields" maxOccurs="1" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="field" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute type="xs:string" name="name" use="optional"/>
+                                  <xs:attribute type="xs:string" name="value" use="optional"/>
+                                  <xs:attribute type="xs:string" name="note" use="optional"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="missing_recommended_fields" maxOccurs="1" minOccurs="0">
+                      <xs:complexType mixed="true">
+                        <xs:sequence>
+                          <xs:element type="xs:string" name="field" maxOccurs="unbounded" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="exceptions" maxOccurs="1" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="field" maxOccurs="unbounded" minOccurs="1">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute type="xs:string" name="name" use="required" />
+                                  <xs:attribute type="xs:string" name="value" use="required"/>
+                                  <xs:attribute type="xs:string" name="reason" use="required"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute type="xs:string" name="version" use="optional" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="other_mappings" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="field" maxOccurs="unbounded" minOccurs="1">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="name" use="required"/>
+                            <xs:attribute type="xs:string" name="value" use="required"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="test" maxOccurs="1" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="integration" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence/>
+                        <xs:attribute name="product" type="xs:string"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="models" maxOccurs="1" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element type="xs:string" name="model" maxOccurs="unbounded" minOccurs="1"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="field" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence/>
+                        <xs:attribute name="name" type="xs:string"/>
+                        <xs:attribute name="value" type="xs:string"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="code" use="required" />
+            <xs:attribute type="xs:string" name="name" use="required"/>
+            <xs:attribute type="xs:string" name="format" use="required"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="unsupported"  maxOccurs="1" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+               <xs:element type="xs:string" name="raw" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

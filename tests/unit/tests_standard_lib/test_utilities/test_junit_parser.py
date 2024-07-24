@@ -2,7 +2,7 @@ import os
 import tempfile
 
 import pytest
-from pytest_splunk_addon.standard_lib.utilities.junit_parser import JunitParser
+from pytest_splunk_addon.utilities.junit_parser import JunitParser
 
 
 def test_parse_junit_raises_exception_when_not_fields_are_present_in_testcase():

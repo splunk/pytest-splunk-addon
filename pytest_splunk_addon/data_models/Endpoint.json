@@ -1,0 +1,629 @@
+{
+  "model_name": "Endpoint",
+  "version": "1.0.0",
+  "objects": [
+    {
+      "name": "Ports",
+      "tags": [["listening", "port"]],
+      "fields_cluster": [],
+      "fields": [
+        {
+          "name": "creation_time",
+          "type": "optional",
+          "comment": "The time at which the network port started listening on the endpoint."
+        },
+        {
+          "name": "dest",
+          "type": "required",
+          "comment": "The endpoint on which the port is listening.Expression: if(isnull(dest) OR dest=\"\",\"unknown\",dest)"
+        },
+        {
+          "name": "dest_port",
+          "type": "required",
+          "validity": "if(isnum(dest_port),dest_port,null())",
+          "comment": "Network port listening on the endpoint, such as 53."
+        },
+        {
+          "name": "dest_requires_av",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_timesync",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_update",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "process_guid",
+          "type": "optional",
+          "comment": "The globally unique identifier of the process assigned by the vendor_product."
+        },
+        {
+          "name": "process_id",
+          "type": "optional",
+          "comment": "The numeric identifier of the process assigned by the operating system."
+        },
+        {
+          "name": "src",
+          "type": "required",
+          "comment": "The 'remote' system connected to the listening port (if applicable)."
+        },
+        {
+          "name": "src_port",
+          "type": "required",
+          "validity": "if(isnum(src_port),src_port,null())",
+          "comment": "The 'remote' port connected to the listening port (if applicable)."
+        },
+        {
+          "name": "src_requires_av",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "src_should_timesync",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "src_should_update",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "state",
+          "type": "required",
+          "expected_values": ["listening"],
+          "comment": "The status of the listening port, such as listening, etc."
+        },
+        {
+          "name": "transport",
+          "type": "required",
+          "comment": "The network transport protocol associated with the listening port, such as tcp, udp, etc."
+        },
+        {
+          "name": "transport_dest_port",
+          "type": "required",
+          "validity": "(?:tcp|udp|dccp|sctp)\\/(?:(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[0-9]{1,4})$)",
+          "comment": "Calculated as transport/dest_port, such as tcp/53."
+        },
+        {
+          "name": "user",
+          "type": "optional",
+          "comment": "The user account associated with the listening port."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
+        }
+      ],
+      "child_dataset": [],
+      "search_constraints": "tag=listening tag=port | eval transport=if(isnull(transport) OR transport=\"\",\"unknown\",transport),dest_port=if(isnull(dest_port) OR dest_port=\"\",0,dest_port),transport_dest_port=mvzip(transport,dest_port,\"/\") | mvexpand transport_dest_port"
+    },
+    {
+      "name": "Processes",
+      "tags": [["process", "report"]],
+      "fields_cluster": [],
+      "fields": [
+        {
+          "name": "action",
+          "type": "required",
+          "comment": "The action taken by the endpoint, such as allowed, blocked, deferred."
+        },
+        {
+          "name": "cpu_load_percent",
+          "type": "optional",
+          "validity": "if(isnum(cpu_load_percent),cpu_load_percent,null())",
+          "comment": "CPU load consumed by the process (in percent)."
+        },
+        {
+          "name": "dest",
+          "type": "required",
+          "comment": "The endpoint for which the process was spawned."
+        },
+        {
+          "name": "loaded_file",
+          "type": "optional",
+          "comment": "File that was loaded."
+        },
+        {
+          "name": "mem_used",
+          "type": "optional",
+          "validity": "if(isnum(mem_used),mem_used,null())",
+          "comment": "Memory used by the process (in bytes)."
+        },
+        {
+          "name": "os",
+          "type": "optional",
+          "comment": "The operating system of the resource, such as Microsoft Windows Server 2008r2."
+        },
+        {
+          "name": "original_file_name",
+          "type": "optional",
+          "comment": "Original name of the file, not including path."
+        },
+        {
+          "name": "parent_process",
+          "type": "required",
+          "comment": "The full command string of the parent process."
+        },
+        {
+          "name": "parent_process_exec",
+          "type": "optional",
+          "comment": "The executable name of the parent process."
+        },
+        {
+          "name": "parent_process_id",
+          "type": "required",
+          "validity": "if(isnum(parent_process_id),parent_process_id,null())",
+          "comment": "The numeric identifier of the parent process assigned by the operating system."
+        },
+        {
+          "name": "parent_process_guid",
+          "type": "optional",
+          "comment": "The globally unique identifier of the parent process assigned by the vendor_product."
+        },
+        {
+          "name": "parent_process_name",
+          "type": "required",
+          "comment": "The friendly name of the parent process, such as notepad.exe.",
+          "validity": "if(match(parent_process_name,\"^[^\\\\\\/]+$\"),parent_process_name,null())"
+        },
+        {
+          "name": "parent_process_path",
+          "type": "required",
+          "comment": "The file path of the parent process, such as C:\\Windows\\System32\notepad.exe."
+        },
+        {
+          "name": "parent_process_hash",
+          "type": "optional",
+          "comment": "TThe digest(s) of the parent process, such as <md5>, <sha1>, etc."
+        },
+        {
+          "name": "process",
+          "type": "required",
+          "comment": "The full command string of the spawned process. Such as C:\\WINDOWS\\system32\\cmd.exe /c \"\"C:\\Program Files\\SplunkUniversalForwarder\\etc\\system\\bin\\powershell.cmd\" --scheme\""
+        },
+        {
+          "name": "process_current_directory",
+          "type": "optional",
+          "comment": "The current working directory used to spawn the process."
+        },
+        {
+          "name": "process_exec",
+          "type": "optional",
+          "comment": "The executable name of the process."
+        },
+        {
+          "name": "process_hash",
+          "type": "optional",
+          "comment": "The digests of the parent process, such as <md5>, <sha1>, etc."
+        },
+        {
+          "name": "process_guid",
+          "type": "optional",
+          "comment": "The globally unique identifier of the process assigned by the vendor_product."
+        },
+        {
+          "name": "process_id",
+          "type": "required",
+          "validity": "if(isnum(process_id),process_id,null())",
+          "comment": "The numeric identifier of the process assigned by the operating system."
+        },
+        {
+          "name": "process_integrity_level",
+          "type": "optional",
+          "expected_values": ["system", "high", "medium", "low", "untrusted"],
+          "comment": "The Windows integrity level of the process."
+        },
+        {
+          "name": "process_name",
+          "type": "required",
+          "comment": "The friendly name of the process, such as notepad.exe.",
+          "validity": "if(match(process_name,\"^[^\\\\\\/]+$\"),process_name,null())"
+        },
+        {
+          "name": "process_path",
+          "type": "required",
+          "comment": "The file path of the process, such as C:\\Windows\\System32\notepad.exe."
+        },
+        {
+          "name": "user",
+          "type": "required",
+          "comment": "The user account that spawned the process.Expression: if(isnull(user) OR user=\"\",\"unknown\",user)"
+        },
+        {
+          "name": "user_id",
+          "type": "optional",
+          "comment": "The unique identifier of the user account which spawned the process."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
+        }
+      ],
+      "child_dataset": [],
+      "search_constraints": "tag=process tag=report | eval process_integrity_level=lower(process_integrity_level)"
+    },
+    {
+      "name": "Filesystem",
+      "tags": [["endpoint", "filesystem"]],
+      "fields_cluster": [],
+      "fields": [
+        {
+          "name": "action",
+          "type": "required",
+          "expected_values": [
+            "acl_modified",
+            "created",
+            "deleted",
+            "modified",
+            "read"
+          ],
+          "comment": "The action performed on the resource."
+        },
+        {
+          "name": "dest",
+          "type": "required",
+          "comment": "The endpoint pertaining to the filesystem activity."
+        },
+        {
+          "name": "dest_requires_av",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_timesync",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_update",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "file_access_time",
+          "type": "optional",
+          "comment": "The time that the file (the object of the event) was accessed."
+        },
+        {
+          "name": "file_create_time",
+          "type": "conditional",
+          "condition": "action=created ",
+          "comment": "The time that the file (the object of the event) was created."
+        },
+        {
+          "name": "file_hash",
+          "type": "conditional",
+          "condition": "action=created or action=modified or action=read",
+          "comment": "A cryptographic identifier assigned to the file object affected by the event."
+        },
+        {
+          "name": "file_modify_time",
+          "type": "conditional",
+          "condition": "action=modified ",
+          "comment": "The time that the file (the object of the event) was altered."
+        },
+        {
+          "name": "file_name",
+          "type": "required",
+          "comment": "The name of the file, such as notepad.exe."
+        },
+        {
+          "name": "file_path",
+          "type": "required",
+          "comment": "The path of the file, such as C:\\Windows\\System32\notepad.exe."
+        },
+        {
+          "name": "file_acl",
+          "type": "conditional",
+          "condition": "action=acl_modified ",
+          "comment": "Access controls associated with the file affected by the event.."
+        },
+        {
+          "name": "file_size",
+          "type": "required",
+          "comment": "The size of the file that is the object of the event, in kilobytes."
+        },
+        {
+          "name": "process_guid",
+          "type": "optional",
+          "comment": "The globally unique identifier of the process assigned by the vendor_product."
+        },
+        {
+          "name": "process_id",
+          "type": "optional",
+          "comment": "The numeric identifier of the process assigned by the operating system."
+        },
+        {
+          "name": "user",
+          "type": "required",
+          "comment": "The user account associated with the filesystem access."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
+        }
+      ],
+      "child_dataset": [],
+      "search_constraints": "tag=endpoint tag=filesystem"
+    },
+    {
+      "name": "Registry",
+      "tags": [["endpoint", "registry"]],
+      "fields_cluster": [],
+      "fields": [
+        {
+          "name": "action",
+          "type": "required",
+          "expected_values": ["created", "deleted", "modified", "read"],
+          "comment": "The action performed on the resource. Expected values: created, deleted, modified, read."
+        },
+        {
+          "name": "dest",
+          "type": "required",
+          "comment": "The endpoint pertaining to the registry events."
+        },
+        {
+          "name": "dest_requires_av",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_timesync",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_update",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "process_guid",
+          "type": "optional",
+          "comment": "The globally unique identifier of the process assigned by the vendor_product."
+        },
+        {
+          "name": "process_id",
+          "type": "optional",
+          "comment": "The numeric identifier of the process assigned by the operating system."
+        },
+        {
+          "name": "registry_hive",
+          "type": "required",
+          "expected_values": [
+            "HKEY_CURRENT_CONFIG",
+            "HKEY_CURRENT_USER",
+            "HKEY_LOCAL_MACHINE\\SAM",
+            "HKEY_LOCAL_MACHINE\\Security",
+            "HKEY_LOCAL_MACHINE\\Software",
+            "HKEY_LOCAL_MACHINE\\System",
+            "HKEY_USERS\\.DEFAULT"
+          ],
+          "comment": "The logical grouping of registry keys, subkeys, and values."
+        },
+        {
+          "name": "registry_path",
+          "type": "required",
+          "comment": "The path to the registry value, such as \\win\\directory\\directory2\\{676235CD-B656-42D5-B737-49856E97D072}\\PrinterDriverData."
+        },
+        {
+          "name": "registry_key_name",
+          "type": "required",
+          "comment": "The name of the registry key, such as PrinterDriverData."
+        },
+        {
+          "name": "registry_value_data",
+          "type": "required",
+          "comment": "The unaltered registry value."
+        },
+        {
+          "name": "registry_value_name",
+          "type": "required",
+          "comment": "The name of the registry value."
+        },
+        {
+          "name": "registry_value_text",
+          "type": "required",
+          "comment": "The textual representation of registry_value_data (if applicable)."
+        },
+        {
+          "name": "registry_value_type",
+          "type": "required",
+          "expected_values": [
+            "REG_BINARY",
+            "REG_DWORD",
+            "REG_DWORD_LITTLE_ENDIAN",
+            "REG_DWORD_BIG_ENDIAN",
+            "REG_EXPAND_SZ",
+            "REG_LINK",
+            "REG_MULTI_SZ",
+            "REG_NONE",
+            "REG_QWORD",
+            "REG_QWORD_LITTLE_ENDIAN",
+            "REG_SZ"
+          ],
+          "comment": "The type of the registry value."
+        },
+        {
+          "name": "status",
+          "type": "required",
+          "expected_values": ["failure", "success"],
+          "comment": "The outcome of the registry action."
+        },
+        {
+          "name": "user",
+          "type": "required",
+          "comment": "The user account associated with the registry access."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
+        }
+      ],
+      "child_dataset": [],
+      "search_constraints": "tag=endpoint tag=registry"
+    },
+    {
+      "name": "Services",
+      "tags": [["service", "report"]],
+      "fields_cluster": [],
+      "fields": [
+        {
+          "name": "description",
+          "type": "optional",
+          "validation": "",
+          "comment": "The description of the service."
+        },
+        {
+          "name": "dest",
+          "type": "required",
+          "validation": "",
+          "comment": "The endpoint for which the service is installed."
+        },
+        {
+          "name": "dest_is_expected",
+          "type": "optional",
+          "comment": "The endpoint for which the service is installed."
+        },
+        {
+          "name": "dest_requires_av",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "dest_should_timesync",
+          "type": "optional",
+          "comment": "This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+        },
+        {
+          "name": "process_guid",
+          "type": "optional",
+          "validation": "",
+          "comment": "The globally unique identifier of the process assigned by the vendor_product."
+        },
+        {
+          "name": "process_id",
+          "type": "optional",
+          "validation": "",
+          "comment": "The numeric identifier of the process assigned by the operating system."
+        },
+        {
+          "name": "service",
+          "type": "required",
+          "validation": "",
+          "comment": "The full service name."
+        },
+        {
+          "name": "service_dll",
+          "type": "optional",
+          "validation": "",
+          "comment": "The dynamic link library associated with the service."
+        },
+        {
+          "name": "service_dll_path",
+          "type": "optional",
+          "validation": "",
+          "comment": "The file path to the dynamic link library assocatied with the service, such as C:\\Windows\\System32\\comdlg32.dll."
+        },
+        {
+          "name": "service_dll_hash",
+          "type": "optional",
+          "validation": "",
+          "comment": "The digests of the dynamic link library associated with the service, such as <md5>, <sha1>, etc."
+        },
+        {
+          "name": "service_dll_signature_exists",
+          "type": "optional",
+          "validation": "",
+          "comment": "Whether or not the dynamic link library associated with the service has a digitally signed signature."
+        },
+        {
+          "name": "service_dll_signature_verified",
+          "type": "optional",
+          "validation": "",
+          "comment": "Whether or not the dynamic link library associated with the service has had its digitally signed signature verified."
+        },
+        {
+          "name": "service_exec",
+          "type": "optional",
+          "validation": "",
+          "comment": "The executable name of the service."
+        },
+        {
+          "name": "service_hash",
+          "type": "optional",
+          "validation": "",
+          "comment": "The digest(s) of the service, such as <md5>, <sha1>, etc."
+        },
+        {
+          "name": "service_id",
+          "type": "optional",
+          "validation": "",
+          "comment": "The unique identifier of the service assigned by the operating system."
+        },
+        {
+          "name": "service_name",
+          "type": "required",
+          "validation": "",
+          "comment": "The friendly service name."
+        },
+        {
+          "name": "service_path",
+          "type": "required",
+          "validation": "",
+          "comment": "The file path of the service, such as C:\\WINDOWS\\system32\\svchost.exe."
+        },
+        {
+          "name": "service_signature_exists",
+          "type": "optional",
+          "validation": "",
+          "comment": "Whether or not the service has a digitally signed signature."
+        },
+        {
+          "name": "service_signature_verified",
+          "type": "optional",
+          "validation": "",
+          "comment": "Whether or not the service has had its digitally signed signature verified."
+        },
+        {
+          "name": "start_mode",
+          "type": "required",
+          "validation": "",
+          "comment": "The start mode for the service."
+        },
+        {
+          "name": "status",
+          "type": "required",
+          "expected_values": ["critical", "started", "stopped", "warning"],
+          "validation": "",
+          "comment": "The status of the service."
+        },
+        {
+          "name": "user",
+          "type": "required",
+          "validation": "",
+          "comment": "The user account associated with the service."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "validation": "",
+          "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
+        }
+      ],
+      "child_dataset": [],
+      "search_constraints": "tag=service tag=report"
+    }
+  ]
+}

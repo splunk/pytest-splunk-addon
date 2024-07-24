@@ -1,6 +1,6 @@
 # API Documentation
 
-::: pytest_splunk_addon.standard_lib
+::: pytest_splunk_addon
     handler: python
 
 

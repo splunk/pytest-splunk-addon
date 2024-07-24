@@ -4,7 +4,7 @@ import shutil
 import logging
 import pytest
 from tests.e2e import constants
-from pytest_splunk_addon.standard_lib.sample_generation import SampleGenerator, Rule
+from pytest_splunk_addon.sample_generation import SampleGenerator, Rule
 
 logger = logging.getLogger("test_pytest_splunk_addon")
 

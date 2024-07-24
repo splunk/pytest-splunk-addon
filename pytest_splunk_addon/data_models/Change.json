@@ -1,0 +1,312 @@
+{
+  "model_name": "Change",
+  "version": "1.0.0",
+  "objects": [
+    {
+      "name": "All_Changes",
+      "tags": [["change"]],
+      "fields_cluster": [],
+      "search_constraints": "tag=change NOT (object_category=file OR object_category=directory OR object_category=registry)",
+      "fields": [
+        {
+          "name": "action",
+          "type": "required",
+          "validity": "if(like(action,'%\\\"%'),null(),action)",
+          "comment": "The action performed on the resource."
+        },
+        {
+          "name": "change_type",
+          "type": "required",
+          "comment": "The type of change, such as filesystem or AAA (authentication, authorization, and accounting)."
+        },
+        {
+          "name": "command",
+          "type": "required",
+          "comment": "The command that initiated the change."
+        },
+        {
+          "name": "dest",
+          "type": "required",
+          "comment": "The resource where change occurred. You can alias this from more specific fields not included in this data model, such as dest_host, dest_ip, or dest_name."
+        },
+        {
+          "name": "dvc",
+          "type": "required",
+          "comment": "The device that reported the change, if applicable, such as a FIP or CIM server. You can alias this from more specific fields not included in this data model, such as dvc_host, dvc_ip, or dvc_name."
+        },
+        {
+          "name": "object",
+          "type": "required",
+          "comment": "Name of the affected object on the resource (such as a router interface, user account, or server volume)."
+        },
+        {
+          "name": "object_attrs",
+          "multi_value": true,
+          "validity": "if(like(object_attrs,'%\\\"%'),null(),object_attrs)",
+          "type": "required",
+          "comment": "The attributes that were updated on the updated resource object, if applicable."
+        },
+        {
+          "name": "object_category",
+          "validity": "if(tag==\"account\" AND object_category==user,object_category, null())",
+          "type": "required",
+          "comment": "Generic name for the class of the updated resource object. Expected values may be specific to an app."
+        },
+        {
+          "name": "object_id",
+          "validity": "if(like(object_id,'%\\\"%'),null(),object_id)",
+          "type": "required",
+          "comment": "The unique updated resource object ID as presented to the system, if applicable (for instance, a SID, UUID, or GUID value)."
+        },
+        {
+          "name": "object_path",
+          "validity": "if(like(object_path,'%\\\"%'),null(),object_path)",
+          "type": "optional",
+          "comment": "The path of the modified resource object, if applicable (such as a file, directory, or volume)."
+        },
+        {
+          "name": "result",
+          "condition": "status=failure",
+          "type": "conditional",
+          "comment": "The vendor-specific result of a change, or clarification of an action status. For instance, status=failure may be accompanied by result=blocked by policy or result=disk full. result is a string. Please use a msg_severity_id field (not included in the data model) for severity ID fields that are integer data types."
+        },
+        {
+          "name": "result_id",
+          "type": "optional",
+          "comment": "A result indicator for an action status."
+        },
+        {
+          "name": "src",
+          "type": "required",
+          "comment": "The resource where the change was originated. You can alias this from more specific fields not included in the data model, such as src_host, src_ip, or src_name."
+        },
+        {
+          "name": "status",
+          "type": "required",
+          "expected_values": ["success", "failure"],
+          "comment": "Status of the update."
+        },
+        {
+          "name": "tag",
+          "type": "optional",
+          "comment": "This automatically generated field is used to access tags from within data models. Add-on builders do not need to populate it."
+        },
+        {
+          "name": "user",
+          "type": "required",
+          "comment": "The user or entity performing the change. For account changes, this is the account that was changed (see src_user for user or entity performing the change)."
+        },
+        {
+          "name": "user_agent",
+          "type": "optional",
+          "comment": "The user agent through which the request was made, such as Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) or aws-cli/2.0.0 Python/3.7.4 Darwin/18.7.0 botocore/2.0.0dev4."
+        },
+        {
+          "name": "user_name",
+          "type": "optional",
+          "comment": "The user name of the user or entity performing the change. For account changes, this is the account that was changed this is the account that was changed (see src_user_name)."
+        },
+        {
+          "name": "user_type",
+          "type": "optional",
+          "comment": "The type of the user involved in the event or who initiated the event, such as IAMUser, Admin, or System. For account management events, this should represent the type of the user changed by the request."
+        },
+        {
+          "name": "vendor_account",
+          "type": "optional",
+          "comment": "The account that manages the user that initiated the request. The account represents the organization, or a Cloud customer or a Cloud account."
+        },
+        {
+          "name": "vendor_region",
+          "type": "optional",
+          "comment": "The account that manages the user that initiated the request. The account represents the organization, or a Cloud customer or a Cloud account."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "comment": "The vendor and product or service that detected the change. This field can be automatically populated by vendor and product fields in your data."
+        }
+      ],
+      "child_dataset": [
+        {
+          "name": "Account_Management",
+          "tags": [["change", "account"]],
+          "fields_cluster": [],
+          "search_constraints": "tag=account",
+          "fields": [
+            {
+              "name": "dest_nt_domain",
+              "type": "optional",
+              "comment": "The NT domain of the destination, if applicable."
+            },
+            {
+              "name": "src_nt_domain",
+              "type": "optional",
+              "comment": "The NT domain of the source, if applicable."
+            },
+            {
+              "name": "src_user",
+              "type": "conditional",
+              "condition": "object_category=user",
+              "comment": "For account changes, the user or entity performing the change."
+            },
+            {
+              "name": "src_user_type",
+              "type": "optional",
+              "comment": "For account management events, this should represent the type of the user changed by the request."
+            },
+            {
+              "name": "src_user_name",
+              "type": "optional",
+              "comment": "For account changes, the user name of the user or entity performing the change."
+            }
+          ],
+          "child_dataset": [
+            {
+              "name": "Accounts_Created",
+              "tags": [["change", "account"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=\"created\""
+            },
+            {
+              "name": "Accounts_Deleted",
+              "tags": [["change", "account"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=\"deleted\""
+            },
+            {
+              "name": "Account_Lockouts",
+              "tags": [["change", "account"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "result=\"lockout\""
+            },
+            {
+              "name": "Accounts_Updated",
+              "tags": [["change", "account"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=\"updated\" OR action=\"modified\""
+            }
+          ]
+        },
+        {
+          "name": "Auditing_Changes",
+          "tags": [["change", "audit"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [],
+          "search_constraints": "tag=audit"
+        },
+        {
+          "name": "Endpoint_Changes",
+          "tags": [["change", "endpoint"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [
+            {
+              "name": "Endpoint_Restarts",
+              "tags": [["change", "endpoint"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=modified change_type=restart"
+            },
+            {
+              "name": "Other_Endpoint_Changes",
+              "tags": [["change", "endpoint"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "NOT change_type=restart"
+            }
+          ],
+          "search_constraints": "tag=endpoint"
+        },
+        {
+          "name": "Instance_Changes",
+          "tags": [["change", "instance"]],
+          "fields_cluster": [],
+          "search_constraints": "tag=instance",
+          "fields": [
+            {
+              "name": "image_id",
+              "type": "required",
+              "comment": "For create instance events, this field represents the image ID used for creating the instance such as the OS, applications, installed libraries, and more."
+            },
+            {
+              "name": "instance_type",
+              "type": "required",
+              "comment": "For create instance events, this field represents the type of instance to build such as the combination of CPU, memory, storage, and network capacity."
+            }
+          ],
+          "child_dataset": []
+        },
+        {
+          "name": "Network_Changes",
+          "tags": [["change", "network"]],
+          "fields_cluster": [],
+          "fields": [
+            {
+              "name": "dest_ip_range",
+              "type": "optional",
+              "comment": "For network events, the outgoing traffic for a specific destination IP address range. Specify a single IP address or an IP address range in CIDR notation. For example, 203.0.113.5 or 203.0.113.5/32."
+            },
+            {
+              "name": "dest_port_range",
+              "type": "optional",
+              "comment": "For network events, this field represents destination port or range. For example, 80 or 8000 - 8080 or 80,443."
+            },
+            {
+              "name": "direction",
+              "type": "optional",
+              "comment": "For network events, this field represents whether the traffic is inbound or outbound."
+            },
+            {
+              "name": "protocol",
+              "type": "optional",
+              "comment": "This field represents the protocol for the network event rule."
+            },
+            {
+              "name": "rule_action",
+              "type": "optional",
+              "comment": "For network events, this field represents whether to allow or deny traffic."
+            },
+            {
+              "name": "src_ip_range",
+              "type": "optional",
+              "comment": "For network events, this field represents the incoming traffic from a specific source IP address or range. Specify a single IP address or an IP address range in CIDR notation."
+            },
+            {
+              "name": "src_port_range",
+              "type": "optional",
+              "comment": "For network events, this field represents source port or range. For example, 80 or 8000 - 8080 or 80,443"
+            },
+            {
+              "name": "device_restarts",
+              "type": "optional",
+              "comment": "Monitor all infrastructure device restarts."
+            }
+          ],
+          "child_dataset": [
+            {
+              "name": "Device_Restarts",
+              "tags": [["change", "network"]],
+              "fields_cluster": [],
+              "fields": [],
+              "child_dataset": [],
+              "search_constraints": "action=modified change_type=restart"
+            }
+          ],
+          "search_constraints": "tag=network"
+        }
+      ]
+    }
+  ]
+}

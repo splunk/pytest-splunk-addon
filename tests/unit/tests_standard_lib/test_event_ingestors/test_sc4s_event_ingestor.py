@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, call
-from pytest_splunk_addon.standard_lib.event_ingestors.sc4s_event_ingestor import (
+from pytest_splunk_addon.event_ingestors.sc4s_event_ingestor import (
     SC4SEventIngestor,
 )
 
@@ -39,7 +39,7 @@ def socket_mock(monkeypatch):
 @pytest.fixture()
 def sleep_mock(monkeypatch):
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.event_ingestors.sc4s_event_ingestor.sleep",
+        "pytest_splunk_addon.event_ingestors.sc4s_event_ingestor.sleep",
         MagicMock(),
     )
 

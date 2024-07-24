@@ -4,10 +4,10 @@ import pytest
 from unittest.mock import patch, mock_open
 from collections import namedtuple
 
-from pytest_splunk_addon.standard_lib.addon_parser.transforms_parser import (
+from pytest_splunk_addon.addon_parser.transforms_parser import (
     TransformsParser,
 )
-from pytest_splunk_addon.standard_lib.addon_parser.fields import Field
+from pytest_splunk_addon.addon_parser.fields import Field
 
 
 @pytest.mark.parametrize(

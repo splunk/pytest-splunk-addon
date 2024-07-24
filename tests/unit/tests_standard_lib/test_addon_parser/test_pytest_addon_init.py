@@ -8,7 +8,7 @@ TAGS_RETURN_VALUE = "Tags_return_value"
 EVENTTYPE_RETURN_VALUE = "Eventtype_return_value"
 SAVEDSEARCH_RETURN_VALUE = "Savedsearch_return_value"
 TEST_VALUE = "Test_value"
-ADDON_PARSER_PATH = "pytest_splunk_addon.standard_lib.addon_parser"
+ADDON_PARSER_PATH = "pytest_splunk_addon.addon_parser"
 
 
 @pytest.fixture
@@ -24,10 +24,10 @@ def addonparser():
         tags_mock.return_value = TAGS_RETURN_VALUE
         eventtype_mock.return_value = EVENTTYPE_RETURN_VALUE
         savedsearch_mock.return_value = SAVEDSEARCH_RETURN_VALUE
-        import pytest_splunk_addon.standard_lib.addon_parser
+        import pytest_splunk_addon.addon_parser
 
-        importlib.reload(pytest_splunk_addon.standard_lib.addon_parser)
-        return pytest_splunk_addon.standard_lib.addon_parser.AddonParser
+        importlib.reload(pytest_splunk_addon.addon_parser)
+        return pytest_splunk_addon.addon_parser.AddonParser
 
 
 def test_addonparser_init(addonparser):

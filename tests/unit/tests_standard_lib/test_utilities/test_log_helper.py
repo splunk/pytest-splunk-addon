@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from pytest_splunk_addon.standard_lib.utilities.log_helper import get_table_output
-from pytest_splunk_addon.standard_lib.utilities.log_helper import (
+from pytest_splunk_addon.utilities.log_helper import get_table_output
+from pytest_splunk_addon.utilities.log_helper import (
     format_search_query_log,
 )
 

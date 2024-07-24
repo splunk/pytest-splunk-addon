@@ -3,7 +3,7 @@ from unittest.mock import patch, mock_open
 
 import pytest
 
-from pytest_splunk_addon.standard_lib.addon_parser.tags_parser import (
+from pytest_splunk_addon.addon_parser.tags_parser import (
     TagsParser,
 )
 
