@@ -27,6 +27,7 @@ from splunksplwrapper.manager.jobs import Jobs
 from splunksplwrapper.splunk.cloud import CloudSplunk
 from splunksplwrapper.SearchUtil import SearchUtil
 from .event_ingestors import IngestorHelper
+from .event_ingestors.hec_event_ingestor import HECEventIngestorException
 from .docker_class import Services
 from .CIM_Models.datamodel_definition import datamodels
 import configparser
@@ -759,13 +760,22 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
             )
             sleep(50)
         except Exception as e:
+            with open("ingestion_error_main_worker.txt", "w") as f:
+                f.write(f"{type(e).__name__},{str(e)}")
             raise e
-        finally:
+        else:
             if "PYTEST_XDIST_WORKER" in os.environ:
                 with open(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait", "w+"):
                     PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
     else:
         while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait"):
+            if os.path.exists("ingestion_error_main_worker.txt"):
+                with open("ingestion_error_main_worker.txt") as f:
+                    exception_to_throw, message_to_throw = f.readline().split(
+                        ",", maxsplit=1
+                    )
+                    if exception_to_throw:
+                        raise globals()[exception_to_throw](message_to_throw)
             sleep(1)
 
 

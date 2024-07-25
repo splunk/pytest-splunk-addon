@@ -14,7 +14,9 @@
 # limitations under the License.
 #
 import logging
+import os
 import pytest
+import time
 
 from .app_test_generator import AppTestGenerator
 from .event_ingestors.hec_event_ingestor import HECEventIngestorException
@@ -224,3 +226,9 @@ def pytest_exception_interact(node, call, report):
     if call.excinfo.type in node.session.__exc_limits:
         # pytest exits only for exceptions defined in EXC_MAP
         pytest.exit(f"Exiting pytest due to: {call.excinfo.type}")
+
+
+def pytest_sessionfinish(session, exitstatus):
+    if os.path.exists("ingestion_error_main_worker.txt"):
+        time.sleep(10)
+        os.remove("ingestion_error_main_worker.txt")
