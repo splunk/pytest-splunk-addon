@@ -215,7 +215,7 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
 
     result.assert_outcomes(errors=1, passed=0, failed=0, xfailed=0)
     result.stdout.fnmatch_lines(
-        "!!!!!! _pytest.outcomes.Exit: Exiting pytest due to: <class 'Exception'> !!!!!!!"
+        "!!!!!! _pytest.outcomes.Exit: Exiting pytest due to: <class 'pytest_splunk_addon.event_ingestors.hec_event_ingestor.HECEventIngestorException'> !!!!!!!"
     )
 
     assert result.ret != 0
