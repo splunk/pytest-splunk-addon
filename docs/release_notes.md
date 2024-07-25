@@ -47,7 +47,6 @@
  - Refactoring change to remove standard_lib nested folder.
  - Merged respective docker-compose* and pytest* files into one.
    - Now we have common files docker-compose.yml and pytest.ini for ci and local execution.
- - Added validation if a same field is present in cim_fields and missing_recommended_fields for sample and raise warning highlighting the same.
 
 ## Bug fixes
 
