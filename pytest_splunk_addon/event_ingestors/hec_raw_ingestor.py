@@ -21,6 +21,8 @@ import logging
 import os
 import time
 
+from .hec_event_ingestor import HECIngestorException
+
 requests.urllib3.disable_warnings()
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -130,4 +132,6 @@ class HECRawEventIngestor(EventIngestor):
 
         except Exception as e:
             LOGGER.error("\n\nAn error occurred while data ingestion.{}".format(e))
-            raise type(e)("An error occurred while data ingestion.{}".format(e))
+            raise HECIngestorException(
+                "An error occurred while data ingestion.{}".format(e)
+            )
