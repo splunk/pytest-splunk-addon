@@ -1,5 +1,9 @@
 # Release Notes - Pytest-splunk-addon 6.0.0
 
+## Breaking Changes
+- Added code for lovely-pytest-docker in PSA and migrated to v2 version of docker-compose as GitHub runners have stopped supporting docker compose v1.
+  - As we have removed dependency of lovely-pytest-docker from PSA, in addon repos lovely-pytest-docker has to be excluded from pyproject.toml to avoid conflicts.
+
 
 ## New features
 
