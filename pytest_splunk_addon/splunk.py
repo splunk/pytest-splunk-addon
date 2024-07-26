@@ -27,7 +27,7 @@ from splunksplwrapper.manager.jobs import Jobs
 from splunksplwrapper.splunk.cloud import CloudSplunk
 from splunksplwrapper.SearchUtil import SearchUtil
 from .event_ingestors import IngestorHelper
-from .event_ingestors.hec_event_ingestor import HECEventIngestorException
+from .event_ingestors.hec_event_ingestor import HECIngestorException
 from .docker_class import Services
 from .CIM_Models.datamodel_definition import datamodels
 import configparser
