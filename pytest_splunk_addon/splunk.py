@@ -835,6 +835,16 @@ def splunk_dm_recommended_fields():
     return update_recommended_fields
 
 
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item):
+    """
+    Show user properties in report only in case of failure
+    """
+    output = yield
+    if output.get_result().outcome == "passed":
+        item.user_properties = []
+
+
 @pytest.fixture(scope="session")
 def docker_ip():
     """Determine IP address for TCP connections to Docker containers."""
