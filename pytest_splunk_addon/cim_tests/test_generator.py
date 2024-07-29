@@ -270,7 +270,14 @@ class CIMTestGenerator(object):
                     model = model.replace(" ", "_")
                     if datasets:
                         datasets = [dataset.replace(" ", "_") for dataset in datasets]
-
+                    common_fields = list(
+                        set(event.requirement_test_data["cim_fields"].keys())
+                        & set(event.requirement_test_data["missing_recommended_fields"])
+                    )
+                    if common_fields:
+                        LOGGER.warning(
+                            f"Common fields found in both cim_fields and missing_recommended_fields for {event.sample_name} sample = {common_fields}"
+                        )
                     fields = (
                         list(event.requirement_test_data["cim_fields"].keys())
                         + event.requirement_test_data["missing_recommended_fields"]

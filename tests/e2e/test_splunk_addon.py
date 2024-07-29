@@ -645,6 +645,9 @@ def test_splunk_app_req_broken(testdir, request):
         skipped=len(constants.TA_REQ_BROKEN_SKIPPED),
     )
 
+    # checking warning for same field provided in cim_field and missing_recommended_fields
+    assert result.parseoutcomes().get("warnings") == 2
+
     # make sure that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0
 
