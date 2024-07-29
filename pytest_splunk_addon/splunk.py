@@ -16,6 +16,7 @@
 import logging
 import os
 import shutil
+import time
 from collections import defaultdict
 from time import sleep
 import json
@@ -760,7 +761,10 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
             )
             sleep(50)
         except Exception as e:
-            with open("ingestion_error_main_worker.txt", "w") as f:
+            PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
+            with open(
+                os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_ingestion_error", "w"
+            ) as f:
                 f.write(f"{type(e).__name__},{str(e)}")
             raise e
         else:
@@ -769,8 +773,12 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
                     PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
     else:
         while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait"):
-            if os.path.exists("ingestion_error_main_worker.txt"):
-                with open("ingestion_error_main_worker.txt") as f:
+            if os.path.exists(
+                os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_ingestion_error"
+            ):
+                with open(
+                    os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_ingestion_error"
+                ) as f:
                     exception_to_throw, message_to_throw = f.readline().split(
                         ",", maxsplit=1
                     )
@@ -1024,3 +1032,6 @@ def pytest_unconfigure(config):
             os.remove(PYTEST_XDIST_TESTRUNUID + "_events")
         if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_events.lock"):
             os.remove(PYTEST_XDIST_TESTRUNUID + "_events.lock")
+        if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_ingestion_error"):
+            sleep(10)
+            os.remove(PYTEST_XDIST_TESTRUNUID + "_ingestion_error")
