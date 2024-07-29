@@ -14,9 +14,12 @@
 # limitations under the License.
 #
 import logging
+import os
 import pytest
+import time
 
 from .app_test_generator import AppTestGenerator
+from .event_ingestors.hec_event_ingestor import HECIngestorException
 from .sample_generation.sample_xdist_generator import SampleXdistGenerator
 import traceback
 from .cim_compliance import CIMReportPlugin
@@ -26,7 +29,7 @@ LOG_FILE = "pytest_splunk_addon.log"
 
 test_generator = None
 
-EXC_MAP = [Exception]
+EXC_MAP = {HECIngestorException: 1}
 
 
 def pytest_configure(config):
