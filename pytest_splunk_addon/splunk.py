@@ -762,9 +762,8 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
             sleep(50)
         except Exception as e:
             PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
-            with open(
-                os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_ingestion_error", "w"
-            ) as f:
+            error_file = os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_ingestion_error"
+            with open(error_file, "w") as f:
                 f.write(f"{type(e).__name__},{str(e)}")
             raise e
         else:
@@ -773,18 +772,18 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
                     PYTEST_XDIST_TESTRUNUID = os.environ.get("PYTEST_XDIST_TESTRUNUID")
     else:
         while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait"):
-            if os.path.exists(
-                os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_ingestion_error"
-            ):
-                with open(
-                    os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_ingestion_error"
-                ) as f:
-                    exception_to_throw, message_to_throw = f.readline().split(
-                        ",", maxsplit=1
-                    )
+            sleep(1)
+            error_file = os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_ingestion_error"
+            if os.path.exists(error_file):
+                with open(error_file) as f:
+                    try:
+                        exception_to_throw, message_to_throw = f.readline().split(
+                            ",", maxsplit=1
+                        )
+                    except Exception:
+                        continue
                     if exception_to_throw:
                         raise globals()[exception_to_throw](message_to_throw)
-            sleep(1)
 
 
 @pytest.fixture(scope="session")
@@ -1033,5 +1032,5 @@ def pytest_unconfigure(config):
         if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_events.lock"):
             os.remove(PYTEST_XDIST_TESTRUNUID + "_events.lock")
         if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_ingestion_error"):
-            sleep(10)
+            sleep(20)
             os.remove(PYTEST_XDIST_TESTRUNUID + "_ingestion_error")
