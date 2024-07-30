@@ -834,10 +834,11 @@ def splunk_dm_recommended_fields():
 
     return update_recommended_fields
 
+
 @pytest.mark.hookwrapper(hookwrapper=True)
 def pytest_runtest_makereport(item):
     """
-    Show user properties only in case of failure
+    Show user properties in report only in case of failure
     """
     output = yield
     if output.get_result().outcome == "passed":
