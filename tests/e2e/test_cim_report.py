@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from pytest_splunk_addon.standard_lib.cim_compliance import CIMReportGenerator
+from pytest_splunk_addon.cim_compliance import CIMReportGenerator
 
 
 class TestCIMReport(object):

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import mock_open, MagicMock, patch
 from collections import namedtuple
-from pytest_splunk_addon.standard_lib.cim_tests.json_schema import JSONSchema
+from pytest_splunk_addon.cim_tests.json_schema import JSONSchema
 
 
 error = namedtuple("ValidationError", ["path", "instance", "message"])
@@ -9,9 +9,7 @@ error = namedtuple("ValidationError", ["path", "instance", "message"])
 
 @pytest.fixture()
 def validator_mock(monkeypatch):
-    with patch(
-        "pytest_splunk_addon.standard_lib.cim_tests.json_schema.Draft7Validator"
-    ):
+    with patch("pytest_splunk_addon.cim_tests.json_schema.Draft7Validator"):
         yield
 
 
@@ -36,7 +34,7 @@ def validator_mock_with_error(request):
     d7v_mock.return_value = d7v_mock
     d7v_mock.iter_errors.return_value = request.param[0]
     with patch(
-        "pytest_splunk_addon.standard_lib.cim_tests.json_schema.Draft7Validator",
+        "pytest_splunk_addon.cim_tests.json_schema.Draft7Validator",
         d7v_mock,
     ):
         yield request.param[1]
@@ -51,7 +49,7 @@ def validator_mock_raises_decode_error():
     from json.decoder import JSONDecodeError
 
     with patch(
-        "pytest_splunk_addon.standard_lib.cim_tests.json_schema.Draft7Validator",
+        "pytest_splunk_addon.cim_tests.json_schema.Draft7Validator",
         MagicMock(side_effect=JSONDecodeError("error", doc, 9)),
     ):
         yield

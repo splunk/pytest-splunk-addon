@@ -28,6 +28,7 @@ import addonfactory_splunk_conf_parser_lib as conf_parser
 
 from .fields import convert_to_fields
 from .transforms_parser import TransformsParser
+from pytest_splunk_addon import utils
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -110,7 +111,8 @@ class PropsParser(object):
                 LOGGER.info(f"Matched method of type={each_type}")
                 return method_mapping[each_type]
         else:
-            LOGGER.warning(f"No parser available for {class_name}. Skipping...")
+            if utils.check_first_worker():
+                LOGGER.warning(f"No parser available for {class_name}. Skipping...")
 
     def _get_props_stanzas(self) -> Optional[Generator]:
         """

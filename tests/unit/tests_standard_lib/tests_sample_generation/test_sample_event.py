@@ -3,7 +3,7 @@ import pytest
 from collections import namedtuple
 from unittest.mock import patch, MagicMock
 
-import pytest_splunk_addon.standard_lib.sample_generation.sample_event
+import pytest_splunk_addon.sample_generation.sample_event
 
 EVENT_STRING = "Event_string dad ad dfd ddas Value_5."
 UPDATED_STRING = "Updated_string"
@@ -25,10 +25,8 @@ def samp_eve():
     ip_mock.ipv6.return_value = FAKE_IPV6
     with patch("faker.Faker") as faker_mock:
         faker_mock.return_value = ip_mock
-        importlib.reload(
-            pytest_splunk_addon.standard_lib.sample_generation.sample_event
-        )
-    return pytest_splunk_addon.standard_lib.sample_generation.sample_event.SampleEvent(
+        importlib.reload(pytest_splunk_addon.sample_generation.sample_event)
+    return pytest_splunk_addon.sample_generation.sample_event.SampleEvent(
         event_string=EVENT_STRING,
         metadata=METADATA,
         sample_name=SAMPLE_NAME,
@@ -36,17 +34,11 @@ def samp_eve():
 
 
 def check_host_count(value):
-    assert (
-        pytest_splunk_addon.standard_lib.sample_generation.sample_event.host_count
-        == value
-    )
+    assert pytest_splunk_addon.sample_generation.sample_event.host_count == value
 
 
 def check_fqdn_count(value):
-    assert (
-        pytest_splunk_addon.standard_lib.sample_generation.sample_event.fqdn_count
-        == value
-    )
+    assert pytest_splunk_addon.sample_generation.sample_event.fqdn_count == value
 
 
 def test_update(samp_eve):
@@ -79,7 +71,7 @@ def test_get_field_fqdn(samp_eve):
 def test_get_ipv4(samp_eve):
     # that test might be divided into many smaller tests,
     # but feels natural to write it this way
-    module = pytest_splunk_addon.standard_lib.sample_generation.sample_event
+    module = pytest_splunk_addon.sample_generation.sample_event
     rule = "src"
     assert samp_eve.get_ipv4(rule) == "10.1.0.1"
     assert module.src_ipv4 == 1
@@ -120,7 +112,7 @@ def test_get_ipv4(samp_eve):
 def test_get_ipv6(samp_eve):
     # that test might be divided into many smaller tests,
     # but feels natural to write it this way
-    module = pytest_splunk_addon.standard_lib.sample_generation.sample_event
+    module = pytest_splunk_addon.sample_generation.sample_event
     rule = "src"
     assert samp_eve.get_ipv6(rule) == "fdee:1fe4:2b8c:3261:0000:0000:0000:0000"
     assert module.src_ipv6 == 1
@@ -164,7 +156,7 @@ def test_register_field_value(samp_eve, monkeypatch):
     key_fields_mock = MagicMock()
     key_fields_mock.KEY_FIELDS = [field_1, field_2]
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.sample_generation.sample_event.key_fields",
+        "pytest_splunk_addon.sample_generation.sample_event.key_fields",
         key_fields_mock,
     )
     samp_eve.register_field_value(field_1, TokenValue(VALUE_1))
@@ -185,7 +177,7 @@ def test_copy(samp_eve):
     time_values = ["12", "13"]
     samp_eve.key_fields = key_fields_value
     samp_eve.time_values = time_values
-    new_eve = pytest_splunk_addon.standard_lib.sample_generation.sample_event.SampleEvent.copy(
+    new_eve = pytest_splunk_addon.sample_generation.sample_event.SampleEvent.copy(
         samp_eve
     )
     assert new_eve.metadata == METADATA

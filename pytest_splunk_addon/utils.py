@@ -13,27 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-header:
-  license:
-    spdx-id: Apache-2.0
-    copyright-owner: Splunk Inc.
+import os
 
-  paths-ignore:
-    - ".github/"
-    - ".vscode/"
-    - "dist"
-    - "**/*.md"
-    - "**/*.rst"
-    - "LICENSE"
-    - "NOTICE"
-    - "*.lock"
-    - "docs/**"
-    - "tests/**"
-    - ".*"
-    - "pytest_splunk_addon/**/*.json"
-    - "pytest_splunk_addon/**/*.xsd"
-    - "MANIFEST.in"
-    - "entrypoint.sh"
-    - "renovate.json"
-    - "pytest_splunk_addon/.ignore_splunk_internal_errors"
-    - "pytest_splunk_addon/docker_class.py"
+
+def check_first_worker() -> bool:
+    """
+    returns True if the current execution is under gw0 (first worker)
+    """
+    return (
+        "PYTEST_XDIST_WORKER" not in os.environ
+        or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
+    )

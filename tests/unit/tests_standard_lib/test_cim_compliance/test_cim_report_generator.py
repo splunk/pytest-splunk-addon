@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch, call
 from collections import Counter
-from pytest_splunk_addon.standard_lib.cim_compliance.cim_report_generator import (
+from pytest_splunk_addon.cim_compliance.cim_report_generator import (
     CIMReportGenerator,
     NOT_SUPPORTED_DATAMODELS,
 )
@@ -20,7 +20,7 @@ def markdown_table_mock(monkeypatch):
     mdt.return_value = mdt
     mdt.return_table_str.return_value = "| table |"
     monkeypatch.setattr(
-        "pytest_splunk_addon.standard_lib.cim_compliance.cim_report_generator.MarkdownTable",
+        "pytest_splunk_addon.cim_compliance.cim_report_generator.MarkdownTable",
         mdt,
     )
     return mdt
