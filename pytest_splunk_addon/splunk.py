@@ -631,13 +631,11 @@ def splunk_external(request):
 
     if not is_responsive_splunk(splunk_info):
         raise Exception(
-            "Could not connect to the external Splunk Instance"
-            "Please check the log file for possible errors."
+            "Could not connect to the external Splunk Instance. Please check the log file for possible errors."
         )
     if not is_responsive_hec(request, splunk_info):
         raise Exception(
-            "Could not connect to Splunk HEC"
-            "Please check the log file for possible errors."
+            "Could not connect to Splunk HEC. Please check the log file for possible errors."
         )
     return splunk_info
 
@@ -961,19 +959,25 @@ def is_responsive_hec(request, splunk):
     """
     try:
         LOGGER.info(
-            "Trying to connect Splunk HEC...  splunk=%s",
+            "Validating HEC token...  splunk=%s",
             json.dumps(splunk),
         )
-        response = requests.get(  # nosemgrep: splunk.disabled-cert-validation
-            f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/health/1.0',
+        response = requests.post(
+            url=f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/raw',
+            headers={
+                "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
+            },
+            data={"event": "test_hec", "sourcetype": "hec_token_test"},
             verify=False,
         )
         LOGGER.debug("Status code: {}".format(response.status_code))
         if response.status_code in (200, 201):
-            LOGGER.info("Splunk HEC is responsive.")
+            LOGGER.info("Splunk HEC is valid.")
             return True
+        if response.status_code == 403:
+            pytest.exit("Exiting pytest due to invalid HEC token value.")
         return False
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
         LOGGER.warning(
             "Could not connect to Splunk HEC. Will try again. exception=%s",
             str(e),
