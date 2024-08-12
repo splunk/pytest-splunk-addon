@@ -4,7 +4,7 @@
     <product>Jira Data Center</product>
     <version id="8.21.0"/>
     <event code="" name="CorrectEvent" format="">
-        <transport type="modinput" sourcetype="req:test:broken" source="test_data.1" host="so1"/>
+        <transport type="modinput" sourcetype="test:data:1" source="test_data.1" host="so1"/>
         <source>
             <jira id=""/>
             <comment>lab</comment>
@@ -27,12 +27,9 @@
                 <field>src_user</field>
             </missing_recommended_fields>
         </cim>
-        <other_mappings>
-            <field name="vendor_product" value="Pytest Splunk Addon"/>
-        </other_mappings>
     </event>
     <event code="" name="MissingField" format="">
-        <transport type="modinput" sourcetype="req:test:broken" source="test_data.1" host="so1"/>
+        <transport type="modinput" sourcetype="test:data:1" source="test_data.1" host="so1"/>
         <source>
             <jira id=""/>
             <comment>lab</comment>
@@ -54,12 +51,9 @@
                 <field>src_user</field>
             </missing_recommended_fields>
         </cim>
-        <other_mappings>
-            <field name="vendor_product" value="Pytest Splunk Addon"/>
-        </other_mappings>
     </event>
     <event code="" name="CorrectEvent" format="">
-        <transport type="modinput" sourcetype="req:test:broken" source="test_data.1" host="so1"/>
+        <transport type="modinput" sourcetype="test:data:1" source="test_data.1" host="so1"/>
         <source>
             <jira id=""/>
             <comment>lab</comment>
@@ -82,12 +76,9 @@
                 <field>src_user</field>
             </missing_recommended_fields>
         </cim>
-        <other_mappings>
-            <field name="vendor_product" value="Pytest Splunk Addon"/>
-        </other_mappings>
     </event>
     <event code="" name="WrongFieldValue" format="">
-        <transport type="modinput" sourcetype="req:test:broken" source="test_data.1" host="so1"/>
+        <transport type="modinput" sourcetype="test:data:1" source="test_data.1" host="so1"/>
         <source>
             <jira id=""/>
             <comment>lab</comment>
@@ -110,12 +101,9 @@
                 <field>src_user</field>
             </missing_recommended_fields>
         </cim>
-        <other_mappings>
-            <field name="vendor_product" value="Pytest Splunk Addon"/>
-        </other_mappings>
     </event>
-    <event code="" name="WrongValueForOtherMapping" format="">
-        <transport type="modinput" sourcetype="req:test:broken" source="test_data.1" host="so1"/>
+    <event code="" name="WrongFieldValueOtherMappings" format="">
+        <transport type="modinput" sourcetype="test:data:1" source="test_data.1" host="so1"/>
         <source>
             <jira id=""/>
             <comment>lab</comment>
