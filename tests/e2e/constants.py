@@ -913,6 +913,7 @@ TA_REQ_BROKEN_FAILED = [
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::src_zone* FAILED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::Blocked_Traffic* FAILED*',
     "*test_splunk_app_req_broken.py::Test_App::test_requirements_fields[sample_name::sample_modinput.xml::host::so13* FAILED*",
+    "*test_splunk_app_req_broken.py::Test_App::test_requirements_fields[sample_name::sample_modinput.xml::host::so14* FAILED*",
     "*test_splunk_app_req_broken.py::Test_App::test_cim_fields_recommended[Authentication-::sample_name::sample_modinput.xml::host::so11* FAILED*",
     "*test_splunk_app_req_broken.py::Test_App::test_datamodels[Network_Traffic::sample_name::syslog.xml::host::10.0.0.31* FAILED*",
 ]
