@@ -250,17 +250,19 @@ class FieldTestGenerator(object):
             }
 
             cim_fields = event.requirement_test_data.get("cim_fields", {})
+            other_fields = event.requirement_test_data.get("other_fields", {})
+            requirement_fields = {**cim_fields, **other_fields}
 
-            if cim_fields:
-                cim_fields = {
+            if requirement_fields:
+                requirement_fields = {
                     field: value
-                    for field, value in cim_fields.items()
+                    for field, value in requirement_fields.items()
                     if field not in exceptions
                 }
                 yield pytest.param(
                     {
                         "escaped_event": escaped_event,
-                        "fields": cim_fields,
+                        "fields": requirement_fields,
                         "modinput_params": modinput_params,
                     },
                     id=f"sample_name::{event.sample_name}::host::{event.metadata.get('host')}",

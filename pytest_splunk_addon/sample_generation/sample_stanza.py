@@ -398,6 +398,16 @@ class SampleStanza(object):
         """
         requirement_test_data = {}
         cim = event.get("cim")
+        other_mappings = event.get("other_mappings")
+        if other_mappings:
+            other_fields = {}
+            fields = other_mappings["field"]
+            if type(fields) == list:
+                for field in fields:
+                    other_fields[field["@name"]] = field["@value"]
+            elif type(fields) == dict:
+                other_fields[fields["@name"]] = fields["@value"]
+            requirement_test_data["other_fields"] = other_fields
         if cim:
             requirement_test_data["cim_version"] = cim.get("@version", "latest")
             requirement_test_data["datamodels"] = cim.get("models") or {}
