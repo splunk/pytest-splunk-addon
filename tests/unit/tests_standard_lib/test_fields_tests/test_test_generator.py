@@ -4,9 +4,7 @@ from pytest_splunk_addon.fields_tests.test_generator import (
     FieldTestGenerator,
 )
 from pytest_splunk_addon.sample_generation.sample_event import SampleEvent
-from pytest_splunk_addon.utilities import (
-    xml_event_parser
-)
+from pytest_splunk_addon.utilities import xml_event_parser
 
 
 def field_1():
@@ -423,7 +421,7 @@ def test_generate_field_tests(
                     metadata={
                         "input_type": "modinput",
                         "sourcetype_to_search": "dummy_sourcetype",
-                        "host": "dummy_host"
+                        "host": "dummy_host",
                     },
                     sample_name="file1.xml",
                     requirement_test_data={
@@ -437,26 +435,26 @@ def test_generate_field_tests(
                         "exceptions": {"mane_1": "value_1", "dest": "192.168.0.1"},
                         "other_fields": {
                             "vendor_product": "Pytest Splunk Addon",
-                            "target_users": "dummy.user@splunk.com"
-                        }
-                    }
+                            "target_users": "dummy.user@splunk.com",
+                        },
+                    },
                 ),
                 SampleEvent(
                     event_string="escaped_event",
                     metadata={
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
-                        "host": "dummy_host_syslog"
+                        "host": "dummy_host_syslog",
                     },
                     sample_name="file1.xml",
-                    requirement_test_data={}
+                    requirement_test_data={},
                 ),
                 SampleEvent(
                     event_string="escaped_event",
                     metadata={
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
-                        "host": "dummy_host_syslog"
+                        "host": "dummy_host_syslog",
                     },
                     sample_name="file1.xml",
                     requirement_test_data={
@@ -467,10 +465,10 @@ def test_generate_field_tests(
                         "exceptions": {},
                         "other_fields": {
                             "vendor_product": "Pytest Splunk Addon",
-                            "target_users": "dummy.user@splunk.com"
-                        }
-                    }
-                )
+                            "target_users": "dummy.user@splunk.com",
+                        },
+                    },
+                ),
             ],
             [
                 (
@@ -482,13 +480,11 @@ def test_generate_field_tests(
                             "src": "192.168.0.1",
                             "type": "event",
                             "vendor_product": "Pytest Splunk Addon",
-                            "target_users": "dummy.user@splunk.com"
+                            "target_users": "dummy.user@splunk.com",
                         },
-                        "modinput_params": {
-                            "sourcetype": "dummy_sourcetype"
-                        },
+                        "modinput_params": {"sourcetype": "dummy_sourcetype"},
                     },
-                    "sample_name::file1.xml::host::dummy_host"
+                    "sample_name::file1.xml::host::dummy_host",
                 ),
                 (
                     {
@@ -497,14 +493,12 @@ def test_generate_field_tests(
                             "src": "192.168.0.1",
                             "type": "event",
                             "vendor_product": "Pytest Splunk Addon",
-                            "target_users": "dummy.user@splunk.com"
+                            "target_users": "dummy.user@splunk.com",
                         },
-                        "modinput_params": {
-                            "sourcetype": "dummy_sourcetype"
-                        },
+                        "modinput_params": {"sourcetype": "dummy_sourcetype"},
                     },
-                    "sample_name::file1.xml::host::dummy_host_syslog"
-                )
+                    "sample_name::file1.xml::host::dummy_host_syslog",
+                ),
             ],
         ),
     ],
@@ -514,7 +508,9 @@ def test_generate_requirement_tests(tokenised_events, expected_output):
         xml_event_parser, "strip_syslog_header", return_value="escaped_event"
     ), patch.object(
         xml_event_parser, "escape_char_event", return_value="escaped_event"
-    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+    ), patch.object(
+        pytest, "param", side_effect=lambda x, id: (x, id)
+    ) as param_mock:
         out = list(
             FieldTestGenerator(
                 "app_path",
@@ -536,35 +532,33 @@ def test_generate_requirement_tests(tokenised_events, expected_output):
                     metadata={
                         "input_type": "modinput",
                         "sourcetype_to_search": "dummy_sourcetype",
-                        "host": "dummy_host"
+                        "host": "dummy_host",
                     },
                     sample_name="file1.xml",
-                    requirement_test_data={
-                        "datamodels": {"model": "Alerts"}
-                    }
+                    requirement_test_data={"datamodels": {"model": "Alerts"}},
                 ),
                 SampleEvent(
                     event_string="escaped_event",
                     metadata={
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
-                        "host": "dummy_host_syslog"
+                        "host": "dummy_host_syslog",
                     },
                     sample_name="file1.xml",
-                    requirement_test_data={}
+                    requirement_test_data={},
                 ),
                 SampleEvent(
                     event_string="escaped_event",
                     metadata={
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
-                        "host": "dummy_host_syslog"
+                        "host": "dummy_host_syslog",
                     },
                     sample_name="file1.xml",
                     requirement_test_data={
                         "datamodels": {"model": ["Change", "Account Management"]}
-                    }
-                )
+                    },
+                ),
             ],
             [
                 (
@@ -572,15 +566,15 @@ def test_generate_requirement_tests(tokenised_events, expected_output):
                         "datamodels": ["Alerts"],
                         "stanza": "escaped_event",
                     },
-                    "Alerts::sample_name::file1.xml::host::dummy_host"
+                    "Alerts::sample_name::file1.xml::host::dummy_host",
                 ),
                 (
                     {
                         "datamodels": ["Change", "Account_Management"],
                         "stanza": "escaped_event",
                     },
-                    "Change-Account_Management::sample_name::file1.xml::host::dummy_host_syslog"
-                )
+                    "Change-Account_Management::sample_name::file1.xml::host::dummy_host_syslog",
+                ),
             ],
         ),
     ],
@@ -590,7 +584,9 @@ def test_generate_requirement_datamodel_tests(tokenised_events, expected_output)
         xml_event_parser, "strip_syslog_header", return_value="escaped_event"
     ), patch.object(
         xml_event_parser, "escape_char_event", return_value="escaped_event"
-    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+    ), patch.object(
+        pytest, "param", side_effect=lambda x, id: (x, id)
+    ) as param_mock:
         out = list(
             FieldTestGenerator(
                 "app_path",
