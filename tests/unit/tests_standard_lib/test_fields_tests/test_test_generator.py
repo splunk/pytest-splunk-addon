@@ -3,6 +3,10 @@ from unittest.mock import patch, MagicMock
 from pytest_splunk_addon.fields_tests.test_generator import (
     FieldTestGenerator,
 )
+from pytest_splunk_addon.sample_generation.sample_event import SampleEvent
+from pytest_splunk_addon.utilities import (
+    xml_event_parser
+)
 
 
 def field_1():
@@ -71,6 +75,14 @@ def test_field_test_generator_instantiation(addon_parser_mock):
             "splunk_searchtime_fields_savedsearches",
             "GENERATE_SAVEDSEARCHES_TESTS_RETURN_VALUE",
         ),
+        (
+            "splunk_searchtime_fields_requirements",
+            "GENERATE_REQUIREMENT_TESTS_RETURN_VALUE",
+        ),
+        (
+            "splunk_searchtime_fields_datamodels",
+            "GENERATE_REQUIREMENT_DATAMODEL_TESTS_RETURN_VALUE",
+        ),
     ],
 )
 def test_generate_tests(addon_parser_mock, fixture_name, expected_ouptput):
@@ -90,6 +102,14 @@ def test_generate_tests(addon_parser_mock, fixture_name, expected_ouptput):
         FieldTestGenerator,
         "generate_savedsearches_tests",
         return_value=(["GENERATE_SAVEDSEARCHES_TESTS_RETURN_VALUE"]),
+    ), patch.object(
+        FieldTestGenerator,
+        "generate_requirements_tests",
+        return_value=(["GENERATE_REQUIREMENT_TESTS_RETURN_VALUE"]),
+    ), patch.object(
+        FieldTestGenerator,
+        "generate_requirements_datamodels_tests",
+        return_value=(["GENERATE_REQUIREMENT_DATAMODEL_TESTS_RETURN_VALUE"]),
     ):
         assert list(
             FieldTestGenerator(
@@ -388,6 +408,195 @@ def test_generate_field_tests(
                 [],
                 "field_bank",
             ).generate_field_tests(is_positive)
+        )
+        assert out == expected_output
+        assert param_mock.call_count == len(expected_output)
+
+
+@pytest.mark.parametrize(
+    "tokenised_events, expected_output",
+    [
+        (
+            [
+                SampleEvent(
+                    event_string="escaped_event",
+                    metadata={
+                        "input_type": "modinput",
+                        "sourcetype_to_search": "dummy_sourcetype",
+                        "host": "dummy_host"
+                    },
+                    sample_name="file1.xml",
+                    requirement_test_data={
+                        "cim_fields": {
+                            "dest": "192.168.0.1",
+                            "severity": "low",
+                            "signature_id": "405001",
+                            "src": "192.168.0.1",
+                            "type": "event",
+                        },
+                        "exceptions": {"mane_1": "value_1", "dest": "192.168.0.1"},
+                        "other_fields": {
+                            "vendor_product": "Pytest Splunk Addon",
+                            "target_users": "dummy.user@splunk.com"
+                        }
+                    }
+                ),
+                SampleEvent(
+                    event_string="escaped_event",
+                    metadata={
+                        "input_type": "syslog_tcp",
+                        "sourcetype_to_search": "dummy_sourcetype",
+                        "host": "dummy_host_syslog"
+                    },
+                    sample_name="file1.xml",
+                    requirement_test_data={}
+                ),
+                SampleEvent(
+                    event_string="escaped_event",
+                    metadata={
+                        "input_type": "syslog_tcp",
+                        "sourcetype_to_search": "dummy_sourcetype",
+                        "host": "dummy_host_syslog"
+                    },
+                    sample_name="file1.xml",
+                    requirement_test_data={
+                        "cim_fields": {
+                            "src": "192.168.0.1",
+                            "type": "event",
+                        },
+                        "exceptions": {},
+                        "other_fields": {
+                            "vendor_product": "Pytest Splunk Addon",
+                            "target_users": "dummy.user@splunk.com"
+                        }
+                    }
+                )
+            ],
+            [
+                (
+                    {
+                        "escaped_event": "escaped_event",
+                        "fields": {
+                            "severity": "low",
+                            "signature_id": "405001",
+                            "src": "192.168.0.1",
+                            "type": "event",
+                            "vendor_product": "Pytest Splunk Addon",
+                            "target_users": "dummy.user@splunk.com"
+                        },
+                        "modinput_params": {
+                            "sourcetype": "dummy_sourcetype"
+                        },
+                    },
+                    "sample_name::file1.xml::host::dummy_host"
+                ),
+                (
+                    {
+                        "escaped_event": "escaped_event",
+                        "fields": {
+                            "src": "192.168.0.1",
+                            "type": "event",
+                            "vendor_product": "Pytest Splunk Addon",
+                            "target_users": "dummy.user@splunk.com"
+                        },
+                        "modinput_params": {
+                            "sourcetype": "dummy_sourcetype"
+                        },
+                    },
+                    "sample_name::file1.xml::host::dummy_host_syslog"
+                )
+            ],
+        ),
+    ],
+)
+def test_generate_requirement_tests(tokenised_events, expected_output):
+    with patch.object(
+        xml_event_parser, "strip_syslog_header", return_value="escaped_event"
+    ), patch.object(
+        xml_event_parser, "escape_char_event", return_value="escaped_event"
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+        out = list(
+            FieldTestGenerator(
+                "app_path",
+                tokenised_events,
+                "field_bank",
+            ).generate_requirements_tests()
+        )
+        assert out == expected_output
+        assert param_mock.call_count == len(expected_output)
+
+
+@pytest.mark.parametrize(
+    "tokenised_events, expected_output",
+    [
+        (
+            [
+                SampleEvent(
+                    event_string="escaped_event",
+                    metadata={
+                        "input_type": "modinput",
+                        "sourcetype_to_search": "dummy_sourcetype",
+                        "host": "dummy_host"
+                    },
+                    sample_name="file1.xml",
+                    requirement_test_data={
+                        "datamodels": {"model": "Alerts"}
+                    }
+                ),
+                SampleEvent(
+                    event_string="escaped_event",
+                    metadata={
+                        "input_type": "syslog_tcp",
+                        "sourcetype_to_search": "dummy_sourcetype",
+                        "host": "dummy_host_syslog"
+                    },
+                    sample_name="file1.xml",
+                    requirement_test_data={}
+                ),
+                SampleEvent(
+                    event_string="escaped_event",
+                    metadata={
+                        "input_type": "syslog_tcp",
+                        "sourcetype_to_search": "dummy_sourcetype",
+                        "host": "dummy_host_syslog"
+                    },
+                    sample_name="file1.xml",
+                    requirement_test_data={
+                        "datamodels": {"model": ["Change", "Account Management"]}
+                    }
+                )
+            ],
+            [
+                (
+                    {
+                        "datamodels": ["Alerts"],
+                        "stanza": "escaped_event",
+                    },
+                    "Alerts::sample_name::file1.xml::host::dummy_host"
+                ),
+                (
+                    {
+                        "datamodels": ["Change", "Account_Management"],
+                        "stanza": "escaped_event",
+                    },
+                    "Change-Account_Management::sample_name::file1.xml::host::dummy_host_syslog"
+                )
+            ],
+        ),
+    ],
+)
+def test_generate_requirement_datamodel_tests(tokenised_events, expected_output):
+    with patch.object(
+        xml_event_parser, "strip_syslog_header", return_value="escaped_event"
+    ), patch.object(
+        xml_event_parser, "escape_char_event", return_value="escaped_event"
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+        out = list(
+            FieldTestGenerator(
+                "app_path",
+                tokenised_events,
+                "field_bank",
+            ).generate_requirements_datamodels_tests()
         )
         assert out == expected_output
         assert param_mock.call_count == len(expected_output)
