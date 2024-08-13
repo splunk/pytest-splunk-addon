@@ -379,10 +379,16 @@ class TestSampleStanza:
                     },
                     "other_mappings": {
                         "field": [
-                            {"@name": "vendor_product", "@value": "Pytest Splunk Addon"},
-                            {"@name": "target_users", "@value": "dummy.user@splunk.com"},
+                            {
+                                "@name": "vendor_product",
+                                "@value": "Pytest Splunk Addon",
+                            },
+                            {
+                                "@name": "target_users",
+                                "@value": "dummy.user@splunk.com",
+                            },
                         ]
-                    }
+                    },
                 },
                 {
                     "cim_version": "4.20.2",
@@ -398,8 +404,8 @@ class TestSampleStanza:
                     "missing_recommended_fields": ["app", "id", "user", "user_name"],
                     "other_fields": {
                         "vendor_product": "Pytest Splunk Addon",
-                        "target_users": "dummy.user@splunk.com"
-                    }
+                        "target_users": "dummy.user@splunk.com",
+                    },
                 },
             ),
         ],
@@ -408,7 +414,7 @@ class TestSampleStanza:
             "event-no-cim",
             "event-full-cim",
             "event-with-exceptions",
-            "event-with-other-mappings"
+            "event-with-other-mappings",
         ],
     )
     def test_populate_requirement_test_data(self, sample_stanza, event, expected):
