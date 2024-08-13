@@ -358,12 +358,57 @@ class TestSampleStanza:
                     "missing_recommended_fields": [],
                 },
             ),
+            (
+                {
+                    "cim": {
+                        "@version": "4.20.2",
+                        "models": {"model": "Alerts"},
+                        "cim_fields": {
+                            "field": [
+                                {"@name": "dest", "@value": "192.168.0.1"},
+                                {"@name": "signature_id", "@value": "405001"},
+                                {"@name": "severity", "@value": "low"},
+                                {"@name": "src", "@value": "192.168.0.1"},
+                                {"@name": "type", "@value": "event"},
+                            ]
+                        },
+                        "missing_recommended_fields": {
+                            "field": ["app", "id", "user", "user_name"]
+                        },
+                        "exceptions": {},
+                    },
+                    "other_mappings": {
+                        "field": [
+                            {"@name": "vendor_product", "@value": "Pytest Splunk Addon"},
+                            {"@name": "target_users", "@value": "dummy.user@splunk.com"},
+                        ]
+                    }
+                },
+                {
+                    "cim_version": "4.20.2",
+                    "cim_fields": {
+                        "dest": "192.168.0.1",
+                        "severity": "low",
+                        "signature_id": "405001",
+                        "src": "192.168.0.1",
+                        "type": "event",
+                    },
+                    "datamodels": {"model": "Alerts"},
+                    "exceptions": {},
+                    "missing_recommended_fields": ["app", "id", "user", "user_name"],
+                    "other_fields": {
+                        "vendor_product": "Pytest Splunk Addon",
+                        "target_users": "dummy.user@splunk.com"
+                    }
+                },
+            ),
         ],
         ids=[
             "event-empty-directory",
             "event-no-cim",
             "event-full-cim",
             "event-with-exceptions",
+            "event-with-other-mappings"
         ],
     )
     def test_populate_requirement_test_data(self, sample_stanza, event, expected):
