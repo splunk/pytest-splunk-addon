@@ -26,5 +26,8 @@
         <field>src_user</field>
       </missing_recommended_fields>
     </cim>
+    <other_mappings>
+      <field name="vendor_product" value="Pytest Splunk Addon"/>
+    </other_mappings>
   </event>
 </device>
