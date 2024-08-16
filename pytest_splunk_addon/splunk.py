@@ -639,6 +639,7 @@ def splunk_external(request):
             "Could not connect to Splunk HEC"
             "Please check the log file for possible errors."
         )
+    is_valid_hec(request, splunk_info)
     return splunk_info
 
 
@@ -1005,6 +1006,34 @@ def is_responsive(url):
         )
         return False
 
+def is_valid_hec(request, splunk):
+    """
+    Verify if provided hec token is valid by sending simple post request.
+
+    Args:
+        splunk (dict): details of the Splunk instance
+
+    Returns:
+        None
+    """
+
+    LOGGER.info(
+        "Validating HEC token...  splunk=%s",
+        json.dumps(splunk),
+    )
+    response = requests.post(
+        url=f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/raw',
+        headers={
+            "Authorization": f'Splunk {request.config.getoption("splunk_hec_token")}'
+        },
+        data={"event": "test_hec", "sourcetype": "hec_token_test"},
+        verify=False,
+    )
+    LOGGER.debug("Status code: {}".format(response.status_code))
+    if response.status_code == 200:
+        LOGGER.info("Splunk HEC is valid.")
+    else:
+        pytest.exit("Exiting pytest due to invalid HEC token value.")
 
 def pytest_unconfigure(config):
     if PYTEST_XDIST_TESTRUNUID:
