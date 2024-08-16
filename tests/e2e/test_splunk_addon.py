@@ -205,6 +205,9 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
     result = testdir.runpytest(
         f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=external",
+        "--splunk-host=splunk",
+        "--splunk-port=8089",
+        "--splunk-forwarder-host=splunk",
         "-v",
         "--search-interval=0",
         "--search-retry=0",
