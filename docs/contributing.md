@@ -3,7 +3,6 @@
 
 # Prerequisites:
 
-- Docker or an external single instance Splunk deployment
 - Poetry 1.5.1. [Installation guide](https://python-poetry.org/docs/#installing-with-the-official-installer)
 
 # Installation
