@@ -212,9 +212,7 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
         "--search-index=*,_internal",
     )
 
-    result.stdout.fnmatch_lines(
-        "*Exiting pytest due to invalid HEC token value."
-    )
+    result.stdout.fnmatch_lines("*Exiting pytest due to invalid HEC token value.")
 
     assert result.ret != 0
 

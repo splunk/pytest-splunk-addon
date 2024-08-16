@@ -1006,6 +1006,7 @@ def is_responsive(url):
         )
         return False
 
+
 def is_valid_hec(request, splunk):
     """
     Verify if provided hec token is valid by sending simple post request.
@@ -1034,6 +1035,7 @@ def is_valid_hec(request, splunk):
         LOGGER.info("Splunk HEC is valid.")
     else:
         pytest.exit("Exiting pytest due to invalid HEC token value.")
+
 
 def pytest_unconfigure(config):
     if PYTEST_XDIST_TESTRUNUID:
