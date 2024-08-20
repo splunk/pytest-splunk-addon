@@ -13,6 +13,11 @@ You can install "pytest-splunk-addon" via [pip] from [PyPI]:
 $ pip install pytest-splunk-addon
 ```
 
+To install currently checked out version of pytest-splunk-addon use:
+```
+$ poetry install
+```
+
 
 ### Unit tests
 
@@ -95,6 +100,6 @@ We are using [conventional commits](https://www.conventionalcommits.org/en/v1.0.
 The two most important types: "fix" and "feat", would result in the new version of the `Pytest-splunk-addon` once merged.
 
 To do the changes you think are needed, run the previous steps (build / test / linting / documentation).
-After you create a PR, all the needed reviewers will be added automatically by GitHub.
+Create a PR to develop and once reviewed by code-owners make sure to use squash-merge option.
 
 Note: The `semgrep` and `fossa` steps might fail if you are an external contributor. This is expected for now.
