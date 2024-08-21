@@ -103,9 +103,9 @@ Please provide relevant details mentioned below:
 
 We love to see pull requests!
 
-We are using [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/), so make sure to follow the same in PR titles.
-In PR description make sure to highlight what changes are done and why they were needed.
-Also add unit/e2e tests whichever is applicable as per code changes done.
-Create a PR to develop and once reviewed by code-owners make sure to use squash-merge option.
+- We are using [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/), so make sure to follow the same in PR titles.
+- In PR description make sure to highlight what changes are done and why they were needed.
+- Also add unit/e2e tests whichever is applicable as per code changes done.
+- Create a PR to develop and once reviewed by code-owners make sure to use squash-merge option.
 
 Note: The `semgrep` and `fossa` steps might fail if you are an external contributor. This is expected for now.
