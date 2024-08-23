@@ -162,7 +162,7 @@ jobs:
           export SPLUNK_HEC_TOKEN="1b741d03-43e9-4164-908b-e09102327d22"
           export SPLUNK_PASSWORD=Chang3d!
           echo $SPLUNK_VERSION
-          docker build -f Dockerfile.splunk --build-arg SPLUNK_VERSION=$SPLUNK_VERSION --build-arg SPLUNK_APP_ID=$SPLUNK_APP_ID --build-arg SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE --build-arg SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN -t splunk_instance:latest .         
+          docker build -f Dockerfile.splunk --build-arg SPLUNK_VERSION=$SPLUNK_VERSION --build-arg SPLUNK_APP_ID=$SPLUNK_APP_ID --build-arg SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE -t splunk_instance:latest .         
           docker run --detach -e SPLUNK_START_ARGS=--accept-license -e SPLUNK_PASSWORD=$SPLUNK_PASSWORD -e SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN -p 8000:8000 -p 8088:8088 -p 8089:8089  splunk_instance:latest
           poetry run pytest -v --splunk-version=${{ matrix.splunk.version }} -m splunk_fiction_indextime_wrong_hec_token tests/e2e
 
