@@ -129,6 +129,44 @@ jobs:
           path: |
             test-results-${{ matrix.splunk.version }}
 
+  test-splunk-external-wrong-hec-token:
+    runs-on: ubuntu-latest
+    needs:
+      - meta
+      - pre-commit
+      - fossa-scan
+      - compliance-copyrights
+      - test-splunk-unit
+    strategy:
+      fail-fast: false
+      matrix:
+        splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.7
+      - name: Setup for testing
+        run: |
+          pip install git+https://github.com/pixelb/crudini
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
+          poetry install
+      - name: Test
+        run: |
+          export SPLUNK_APP_PACKAGE=./tests/e2e/addons/TA_fiction_indextime
+          export SPLUNK_ADDON=TA_fiction_indextime
+          export SPLUNK_APP_ID=TA_fiction_indextime
+          export SPLUNK_VERSION=${{ matrix.splunk.version }}
+          export SPLUNK_HEC_TOKEN="1b741d03-43e9-4164-908b-e09102327d22"
+          export SPLUNK_PASSWORD=Chang3d!
+          echo $SPLUNK_VERSION
+          docker build -f Dockerfile.splunk --build-arg SPLUNK_VERSION=$SPLUNK_VERSION --build-arg SPLUNK_APP_ID=$SPLUNK_APP_ID --build-arg SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE --build-arg SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN -t splunk_instance:latest .         
+          docker run --detach -e SPLUNK_START_ARGS=--accept-license -e SPLUNK_PASSWORD=$SPLUNK_PASSWORD -e SPLUNK_HEC_TOKEN=$SPLUNK_HEC_TOKEN -p 8000:8000 -p 8088:8088 -p 8089:8089  splunk_instance:latest
+          poetry run pytest -v --splunk-version=${{ matrix.splunk.version }} -m splunk_fiction_indextime_wrong_hec_token tests/e2e
+
+
   test-splunk-matrix:
     needs:
       - meta
@@ -149,7 +187,6 @@ jobs:
           "splunk_app_cim_broken",
           "splunk_fiction_indextime",
           "splunk_fiction_indextime_broken",
-          "splunk_fiction_indextime_wrong_hec_token",
           "splunk_setup_fixture",
           "splunk_app_req",
           "splunk_app_req_broken",
@@ -170,6 +207,7 @@ jobs:
   publish:
     needs:
       - test-splunk-external
+      - test-splunk-external-wrong-hec-token
       - test-splunk-matrix
     runs-on: ubuntu-latest
     steps:

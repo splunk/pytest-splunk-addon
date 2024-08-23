@@ -205,9 +205,9 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
     result = testdir.runpytest(
         f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=external",
-        "--splunk-host=splunk",
+        "--splunk-host=localhost",
         "--splunk-port=8089",
-        "--splunk-forwarder-host=splunk",
+        "--splunk-forwarder-host=localhost",
         "-v",
         "--search-interval=0",
         "--search-retry=0",
@@ -215,7 +215,7 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
         "--search-index=*,_internal",
     )
 
-    result.stdout.fnmatch_lines("*Exiting pytest due to invalid HEC token value.")
+    result.stdout.fnmatch_lines("*_pytest.outcomes.Exit: Exiting pytest due to invalid HEC token value.")
 
     assert result.ret != 0
 
