@@ -168,7 +168,7 @@ def test_splunk_app_fiction(testdir, request):
     # make sure that we get a '0' exit code for the testsuite
     assert result.ret == 0
 
-
+@pytest.mark.external
 @pytest.mark.splunk_fiction_indextime_wrong_hec_token
 def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
     """Make sure that pytest accepts our fixture."""
@@ -205,9 +205,10 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
     result = testdir.runpytest(
         f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=external",
-        "--splunk-host=localhost",
+        "--splunk-host=splunk",
         "--splunk-port=8089",
-        "--splunk-forwarder-host=localhost",
+        "--splunk-forwarder-host=splunk",
+        "--splunk-hec-token=test",
         "-v",
         "--search-interval=0",
         "--search-retry=0",
