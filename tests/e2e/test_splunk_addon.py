@@ -168,6 +168,7 @@ def test_splunk_app_fiction(testdir, request):
     # make sure that we get a '0' exit code for the testsuite
     assert result.ret == 0
 
+
 @pytest.mark.external
 @pytest.mark.splunk_fiction_indextime_wrong_hec_token
 def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
