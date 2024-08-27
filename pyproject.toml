@@ -16,7 +16,7 @@
 
 [tool.poetry]
 name = "pytest-splunk-addon"
-version = "5.3.0-beta.10"
+version = "5.4.0-beta.1"
 description = "A Dynamic test tool for Splunk Apps and Add-ons"
 authors = ["Splunk <addonfactory@splunk.com>"]
 license = "APACHE-2.0"
@@ -60,7 +60,6 @@ pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_ad
 
 [tool.poetry.scripts]
 cim-report = 'pytest_splunk_addon.utilities.junit_parser:main'
-cim-field-report = 'pytest_splunk_addon.tools.cim_field_report:main'
 sample_splitter = 'pytest_splunk_addon.utilities.sample_splitter:main'
 
 [build-system]
