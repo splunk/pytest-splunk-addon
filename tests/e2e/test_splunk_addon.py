@@ -170,6 +170,7 @@ def test_splunk_app_fiction(testdir, request):
 
 
 @pytest.mark.splunk_fiction_indextime_wrong_hec_token
+@pytest.mark.external
 def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
@@ -205,9 +206,10 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
     result = testdir.runpytest(
         f"--splunk-version={request.config.getoption('splunk_version')}",
         "--splunk-type=external",
-        "--splunk-host=localhost",
+        "--splunk-host=splunk",
         "--splunk-port=8089",
-        "--splunk-forwarder-host=localhost",
+        "--splunk-forwarder-host=splunk",
+        "--splunk-hec-token=8b741d03-43e9-4164-908b-e09102327d22",
         "-v",
         "--search-interval=0",
         "--search-retry=0",
