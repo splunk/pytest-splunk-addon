@@ -169,8 +169,8 @@ def test_splunk_app_fiction(testdir, request):
     assert result.ret == 0
 
 
-@pytest.mark.docker
 @pytest.mark.splunk_fiction_indextime_wrong_hec_token
+@pytest.mark.external
 def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
@@ -205,7 +205,11 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
     # run pytest with the following cmd args
     result = testdir.runpytest(
         f"--splunk-version={request.config.getoption('splunk_version')}",
-        "--splunk-type=docker",
+        "--splunk-type=external",
+        "--splunk-host=splunk",
+        "--splunk-port=8089",
+        "--splunk-forwarder-host=splunk",
+        "--splunk-hec-token=8b741d03-43e9-4164-908b-e09102327d22",
         "-v",
         "--search-interval=0",
         "--search-retry=0",
@@ -213,9 +217,8 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
         "--search-index=*,_internal",
     )
 
-    result.assert_outcomes(errors=1, passed=0, failed=0, xfailed=0)
     result.stdout.fnmatch_lines(
-        "!!!!!! _pytest.outcomes.Exit: Exiting pytest due to: <class 'Exception'> !!!!!!!"
+        "*_pytest.outcomes.Exit: Exiting pytest due to invalid HEC token value."
     )
 
     assert result.ret != 0

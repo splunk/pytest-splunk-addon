@@ -43,6 +43,11 @@
                 "comment":"The severity associated with the patch event." 
             },
             {
+                "name": "severity_id",
+                "type": "optional",
+                "comment": "The numeric or vendor specific severity indicator corresponding to the event severity."
+            },
+            {
                 "name": "signature",
                 "type": "required",
                 "multi_value": true,
@@ -67,7 +72,7 @@
             },
             {
                 "name": "vendor_product",
-                "type": "optional",
+                "type": "required",
                 "comment":"The vendor and product of the patch monitoring product, such as Lumension Patch Manager. This field can be automatically populated by vendor and product fields in your data." 
             }
         ],

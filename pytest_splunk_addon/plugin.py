@@ -26,8 +26,6 @@ LOG_FILE = "pytest_splunk_addon.log"
 
 test_generator = None
 
-EXC_MAP = [Exception]
-
 
 def pytest_configure(config):
     """
@@ -122,7 +120,6 @@ def pytest_sessionstart(session):
     SampleXdistGenerator.tokenized_event_source = session.config.getoption(
         "tokenized_event_source"
     ).lower()
-    session.__exc_limits = EXC_MAP
     if (
         SampleXdistGenerator.tokenized_event_source == "store_new"
         and session.config.getoption("ingest_events").lower()
@@ -212,14 +209,3 @@ def init_pytest_splunk_addon_logger():
 
 init_pytest_splunk_addon_logger()
 LOGGER = logging.getLogger("pytest-splunk-addon")
-
-
-def pytest_exception_interact(node, call, report):
-    """
-    Hook called when an exception is raised during a test.
-    If the number of occurrences for a specific exception exceeds the limit in session.__exc_limits, pytest exits
-    https://docs.pytest.org/en/stable/reference/reference.html#pytest.hookspec.pytest_exception_interact
-    """
-    if call.excinfo.type in node.session.__exc_limits:
-        # pytest exits only for exceptions defined in EXC_MAP
-        pytest.exit(f"Exiting pytest due to: {call.excinfo.type}")

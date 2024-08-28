@@ -112,8 +112,8 @@ jobs:
           export SPLUNK_VERSION=${{ matrix.splunk.version }}
           export SPLUNK_HEC_TOKEN="9b741d03-43e9-4164-908b-e09102327d22"
           echo $SPLUNK_VERSION
-          docker compose -f "docker-compose-ci.yml" build
-          SPLUNK_PASSWORD=Chang3d! docker compose -f docker-compose-ci.yml up --abort-on-container-exit
+          docker compose -f "docker-compose.yml" build
+          SPLUNK_PASSWORD=Chang3d! docker compose -f docker-compose.yml up --abort-on-container-exit
           docker volume ls
       - name: Collect Results
         run: |
@@ -128,6 +128,7 @@ jobs:
           name: splunk ${{ matrix.splunk.version }} external test artifacts
           path: |
             test-results-${{ matrix.splunk.version }}
+
 
   test-splunk-matrix:
     needs:
@@ -149,7 +150,6 @@ jobs:
           "splunk_app_cim_broken",
           "splunk_fiction_indextime",
           "splunk_fiction_indextime_broken",
-          "splunk_fiction_indextime_wrong_hec_token",
           "splunk_setup_fixture",
           "splunk_app_req",
           "splunk_app_req_broken",

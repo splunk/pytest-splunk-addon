@@ -979,7 +979,7 @@ def is_responsive_hec(request, splunk):
             f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector/health/1.0',
             verify=False,
         )
-        LOGGER.debug("Status code: {}".format(response.status_code))
+        LOGGER.debug("Status code: %d", response.status_code)
         if response.status_code in (200, 201):
             LOGGER.info("Splunk HEC is responsive.")
             return True
@@ -1040,7 +1040,8 @@ def is_valid_hec(request, splunk):
         data={"event": "test_hec", "sourcetype": "hec_token_test"},
         verify=False,
     )
-    LOGGER.debug("Status code: {}".format(response.status_code))
+    LOGGER.debug("Status code: %d", response.status_code)
+
     if response.status_code == 200:
         LOGGER.info("Splunk HEC is valid.")
     else:

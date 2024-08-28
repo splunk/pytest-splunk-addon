@@ -71,7 +71,7 @@
                 "fields":[
                     {
                         "name": "ssl_end_time",
-                        "type": "optional",
+                        "type": "required",
                         "comment":"The expiry time of the certificate. Needs to be converted to UNIX time for calculations in dashboards."
                     },
                     {
@@ -81,7 +81,7 @@
                     },
                     {
                         "name": "ssl_hash",
-                        "type": "optional",
+                        "type": "required",
                         "comment":"The hash of the certificate."
                     },
                     {
@@ -109,6 +109,11 @@
                         "name": "ssl_issuer_email",
                         "type": "optional",
                         "comment":"The certificate issuer's email address."
+                    },
+                    {
+                        "name": "ssl_issuer_email_domain",
+                        "type": "optional",
+                        "comment":"The domain name contained within the certificate issuer's email address."
                     },
                     {
                         "name": "ssl_issuer_locality",
@@ -167,7 +172,7 @@
                     },
                     {
                         "name": "ssl_start_time",
-                        "type": "optional",
+                        "type": "required",
                         "comment":"This is the start date and time for this certificate's validity. Needs to be converted to UNIX time for calculations in dashboards."
                     },
                     {
@@ -184,6 +189,11 @@
                         "name": "ssl_subject_email",
                         "type": "optional",
                         "comment":"The certificate owner's e-mail address."
+                    },
+                    {
+                        "name": "ssl_subject_email_domain",
+                        "type": "optional",
+                        "comment":"The domain name contained within the certificate subject's email address."
                     },
                     {
                         "name": "ssl_subject_locality",
