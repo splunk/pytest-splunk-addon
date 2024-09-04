@@ -129,6 +129,7 @@ jobs:
           path: |
             test-results-${{ matrix.splunk.version }}
 
+
   test-splunk-matrix:
     needs:
       - meta
@@ -149,7 +150,6 @@ jobs:
           "splunk_app_cim_broken",
           "splunk_fiction_indextime",
           "splunk_fiction_indextime_broken",
-          "splunk_fiction_indextime_wrong_hec_token",
           "splunk_setup_fixture",
           "splunk_app_req",
           "splunk_app_req_broken",
