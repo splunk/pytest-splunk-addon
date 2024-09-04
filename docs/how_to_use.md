@@ -1,7 +1,7 @@
 # How To Use
 
 
-Create a test file in the tests folder
+1. Create a test file in the tests folder
 
 ```python
 from pytest_splunk_addon.standard_lib.addon_basic import Basic
@@ -9,6 +9,10 @@ class Test_App(Basic):
     def empty_method():
         pass
 ```
+
+2. Create sample files and pytest-splunk-addon-data.conf
+
+- For detailed information on how to create samples and pytest-splunk-addon-data.conf, please refer [here](./sample_generator.md).
 
 ## Test Execution
 
@@ -34,7 +38,6 @@ There are three ways to execute the tests:
  ARG SPLUNK_APP_ID=TA_UNKNOWN
  ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
  RUN echo Splunk VERSION=$SPLUNK_VERSION
- COPY deps/apps /opt/splunk/etc/apps/
  COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
 ```
 
@@ -438,6 +441,6 @@ def splunk_setup(splunk):
 
  How can this be achieved :
 
-  - Make json representation of the data models, which satisfies this [DataModelSchema](https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/standard_lib/cim_tests/DatamodelSchema.json).
+  - Make json representation of the data models, which satisfies this [DataModelSchema](https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/cim_tests/DatamodelSchema.json).
   - Provide the path to the directory having all the data models by adding `--splunk_dm_path path_to_dir` to the pytest command
-  - The test cases will now be generated for the data models provided to the plugin and not for the [default data models](https://github.com/splunk/pytest-splunk-addon/tree/main/pytest_splunk_addon/standard_lib/data_models).
+  - The test cases will now be generated for the data models provided to the plugin and not for the [default data models](https://github.com/splunk/pytest-splunk-addon/tree/main/pytest_splunk_addon/data_models).

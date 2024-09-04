@@ -5,6 +5,90 @@ The sample generation & ingestion takes place before executing the testcases.
 For index-time test cases, there are multiple metadata required about the sample file for which `pytest-splunk-addon-data.conf` must be created and provided to the pytest command.
 
 
+## Generate sample files
+Pytest splunk addon supports 2 different formats of sample files
+
+**1. Text format**
+
+- Sample events can be generated from the live events by replacing the field values with the tokens. Token name should be enclosed with ##.
+- Token replacement setting for this samples should be added to pytest-splunk-addon-data.conf to generate events
+- For example,
+     ```
+     Example live event:
+     <111> 2020-02-12T03:27:09+10:00 10.0.0.3 RT_FLOW: RT_FLOW_SESSION_CREATE: action=allowed transport=ICMP dest=10.0.0.1 dest_ip=10.0.0.1 dest_port=5048 dest_zone=DUMMY_ZONE app=app1
+
+     Sample created from live event:
+     <111> ##timestamp_token## ##src_ip_token## RT_FLOW: RT_FLOW_SESSION_CREATE: action=##action_token## transport=##transport_type_token## dest=##dest_ip_token## dest_ip=##dest_ip_token## dest_port=##dest_port_token## dest_zone=##dest_zone_token## app=##app_token##
+     ```
+
+**2. XML format**
+
+- Generate sample xml file using the format provided [here](https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/sample_generation/schema.xsd)
+- Using xml format for the sample events, user can also execute requirement tests for the event for fields mentioned in the cim_fields and other_mappings
+- For example,
+
+```
+Example live event:
+<111> 2020-02-12T03:27:09+10:00 10.0.0.3 RT_FLOW: RT_FLOW_SESSION_CREATE: action=allowed transport=ICMP dest=10.0.0.1 dest_ip=10.0.0.1 dest_port=5048 dest_zone=DUMMY_ZONE app=app1
+```
+
+<details>
+<summary>Sample xml created from live event:</summary>
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<device>
+     <vendor>Test</vendor>
+     <product>Test product</product>
+     <version id="8.21.0"/>
+     <event code="" name="SyslogEvent" format="syslog" >
+          <transport type="syslog" host="10.0.0.3"/>
+          <source>
+               <comment/>
+          </source>
+          <raw>
+               <![CDATA[<111> 2020-02-12T03:27:09+10:00 10.0.0.3 RT_FLOW: RT_FLOW_SESSION_CREATE: action=allowed transport=ICMP dest=10.0.0.1 dest_ip=10.0.0.1 dest_port=5048 dest_zone=DUMMY_ZONE app=app1]]>
+          </raw>
+          <cim>
+               <models>
+                    <model>Network Traffic</model>
+               </models>
+               <cim_fields>
+                    <field name="action" value="allowed"/>
+                    <field name="dest" value="10.0.0.1"/>
+                    <field name="dest_ip" value="10.0.0.1"/>
+                    <field name="dest_port" value="5048"/>
+                    <field name="dest_zone" value="DUMMY_ZONE"/>
+                    <field name="app" value="app1"/>
+                    <field name="transport" value="ICMP"/>
+               </cim_fields>
+               <missing_recommended_fields>
+                    <field>bytes</field>
+                    <field>bytes_in</field>
+                    <field>bytes_out</field>
+                    <field>dvc</field>
+                    <field>rule</field>
+                    <field>session_id</field>
+                    <field>src</field>
+                    <field>src_ip</field>
+                    <field>src_port</field>
+                    <field>src_zone</field>
+                    <field>src_interface</field>
+                    <field>user</field>
+                    <field>protocol</field>
+                    <field>vendor_product</field>
+               </missing_recommended_fields>
+               <exceptions>
+                    <field name="vendor_product" value="Incorrect vendor product" reason="testing exceptions"/>
+               </exceptions>
+          </cim>
+          <other_mappings>
+               <field name="event_name" value="RT_FLOW_SESSION_CREATE">
+          </other_mappings>
+     </event>
+</device>
+```
+</details>
+
 ## pytest-splunk-addon-data.conf.spec
 
 **Default Values**:
@@ -18,6 +102,7 @@ sourcetype = pytest-splunk-addon
 source = pytest-splunk-addon:{{input_type}}
 sourcetype_to_search = {{sourcetype}}
 sample_count = 1
+requirement_test_sample = 1
 timestamp_type = event
 count = 0
 earliest = now
@@ -77,6 +162,11 @@ host_prefix = {{host_prefix}}
 - The no. of events present in the sample file.
 - This parameter will be used to calculate the total number of events which will be generated from the sample file.
 - If `input_type = modinput`, do not provide this parameter.
+
+**requirement_test_sample = 1**
+
+- This parameter is used to run requirement tests for the provided sample xml file
+- only supported with the xml sample file
 
 **expected_event_count = <count\>**
 
