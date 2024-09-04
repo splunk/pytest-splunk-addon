@@ -94,6 +94,7 @@ poetry run mkdocs serve -a localhost:8001
 
 You can create an [issue](https://github.com/splunk/pytest-splunk-addon/issues) on GitHub.
 Please provide relevant details mentioned below:
+
 - PSA-version, OS/Environment
 - Description of issue/bug
 - How to reproduce
