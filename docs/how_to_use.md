@@ -10,7 +10,7 @@ class Test_App(Basic):
         pass
 ```
 
-2. Create sample files and pytest-splunk-addon-data.conf
+2. Create sample files and pytest-splunk-addon-data.conf (Can be skipped if the events are already present in the splunk environment)
 
 - For detailed information on how to create samples and pytest-splunk-addon-data.conf, please refer [here](./sample_generator.md).
 
