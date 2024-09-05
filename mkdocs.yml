@@ -63,6 +63,7 @@ nav:
   - CIM Compliance Report: "cim_compliance.md"
   - Knowledge Object Tests: "field_tests.md"
   - Index Time Tests: "index_time_tests.md"
+  - Requirement Tests: "requirement_tests.md"
   - Data Generator: "sample_generator.md"
   - API Documentation:
       - API Overview: "api_reference/api_reference.md"
