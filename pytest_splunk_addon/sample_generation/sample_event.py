@@ -375,18 +375,18 @@ class SampleEvent(object):
                     if token in value:
                         if isinstance(token_values, list):
                             if len(token_values) == 1:
-                                self.requirement_test_data["cim_fields"][cim_field] = (
-                                    value.replace(token, str(token_values[0].key))
-                                )
+                                self.requirement_test_data["cim_fields"][
+                                    cim_field
+                                ] = value.replace(token, str(token_values[0].key))
                             else:
                                 self.requirement_test_data["cim_fields"][cim_field] = [
                                     value.replace(token, str(token_value.key))
                                     for token_value in token_values
                                 ]
                         else:
-                            self.requirement_test_data["cim_fields"][cim_field] = (
-                                value.replace(token, str(token_values.key))
-                            )
+                            self.requirement_test_data["cim_fields"][
+                                cim_field
+                            ] = value.replace(token, str(token_values.key))
 
     def get_key_fields(self):
         """

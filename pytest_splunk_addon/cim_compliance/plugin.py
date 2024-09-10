@@ -52,9 +52,9 @@ class CIMReportPlugin(object):
             data_dict["test_property"] = "-"
             try:
                 if report.outcome == "failed":
-                    data_dict["test_property"] = (
-                        report.longrepr.reprcrash.message.splitlines()[0][:100]
-                    )
+                    data_dict[
+                        "test_property"
+                    ] = report.longrepr.reprcrash.message.splitlines()[0][:100]
             except AttributeError as e:
                 pass
 
