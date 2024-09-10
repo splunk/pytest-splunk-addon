@@ -73,5 +73,6 @@ nav:
       - AppTestGenerator: "api_reference/app_test_generator.md"
       - DataGenerator: "api_reference/sample_generation.md"
       - EventIngestor: "api_reference/event_ingestion.md"
+      - CimComplianceReport: "api_reference/cim_compliance_report.md"
   - Contributing: "contributing.md"
   - Troubleshooting: "troubleshoot.md"

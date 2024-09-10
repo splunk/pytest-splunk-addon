@@ -79,6 +79,9 @@ class DataModelHandler(object):
         """
         Parse all the data model JSON files one by one
 
+        Args:
+            data_model_path (str): path to the datamodel schema json file
+
         Yields:
             (cim_tests.data_model.DataModel): parsed data model object
         """

@@ -42,8 +42,8 @@ class DataModel(object):
         If the parent data_set is mapped, check the child data_sets too
 
         Args:
-            addon_tags(list): Contains tags mapped to a stanza
-            data_sets(list): list of data sets to check with
+            addon_tags (list): Contains tags mapped to a stanza
+            data_sets (list): list of data sets to check with
 
         Yields:
             data_set.DataSet: data set object mapped with the tags
@@ -62,7 +62,7 @@ class DataModel(object):
         Get all mapped dataSets for an Add-on's tags stanza
 
         Args:
-            addon_tags(list): Contains tags mapped to a stanza
+            addon_tags (list): Contains tags mapped to a stanza
 
         Yields:
             data_set.DataSet: data set object mapped with the tags

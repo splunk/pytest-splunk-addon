@@ -91,9 +91,10 @@ class FieldTestTemplates(object):
 
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
-            splunk_searchtime_fields_positive (fixture): Test for stanza field.
+            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
+            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
+            splunk_searchtime_fields_positive (fixture): fields data of the event to be tested
             record_property (fixture): Document facts of test cases.
-            caplog (fixture): fixture to capture logs.
         """
 
         # Search Query
@@ -154,9 +155,10 @@ class FieldTestTemplates(object):
 
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
-            splunk_searchtime_fields_positive (fixture): Test for stanza field.
+            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
+            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
+            splunk_searchtime_fields_requirements (fixture): fields data of the event to be tested
             record_property (fixture): Document facts of test cases.
-            caplog (fixture): fixture to capture logs.
         """
 
         # Search Query
@@ -239,14 +241,11 @@ class FieldTestTemplates(object):
         This test case checks negative scenario for the field value.
 
         Args:
-            splunk_search_util (SearchUtil):
-                Object that helps to search on Splunk.
-            splunk_searchtime_fields_negative (fixture):
-                Test for stanza field.
-            record_property (fixture):
-                Document facts of test cases.
-            caplog (fixture):
-                fixture to capture logs.
+            splunk_search_util (SearchUtil): Object that helps to search on Splunk.
+            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
+            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
+            splunk_searchtime_fields_negative (fixture): fields data of the event to be tested
+            record_property (fixture): Document facts of test cases.
         """
 
         # Search Query
@@ -318,8 +317,9 @@ class FieldTestTemplates(object):
         and also checks that a tag is not assigned to the event if disabled.
 
         Args:
-            splunk_search_util (splunksplwrapper.SearchUtil.SearchUtil):
-                object that helps to search on Splunk.
+            splunk_search_util (splunksplwrapper.SearchUtil.SearchUtil): object that helps to search on Splunk.
+            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
+            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
             splunk_searchtime_fields_tags (fixture): pytest parameters to test.
             record_property (fixture): pytest fixture to document facts of test cases.
             caplog (fixture): fixture to capture logs.
@@ -484,14 +484,13 @@ class FieldTestTemplates(object):
         Tests if all eventtypes in eventtypes.conf are generated in Splunk.
 
         Args:
-            splunk_search_util (fixture):
-                Fixture to create a simple connection to Splunk via SplunkSDK
-            splunk_searchtime_fields_eventtypes (fixture):
-                Fixture containing list of eventtypes
-            record_property (fixture):
-                Used to add user properties to test report
-            caplog (fixture):
-                Access and control log capturing
+            splunk_search_util (splunksplwrapper.SearchUtil.SearchUtil):
+                object that helps to search on Splunk.
+            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
+            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
+            splunk_searchtime_fields_eventtypes (fixture): Fixture containing list of eventtypes
+            record_property (fixture): Used to add user properties to test report
+            caplog (fixture): Access and control log capturing
 
         Returns:
             Asserts whether test case passes or fails.
@@ -543,14 +542,13 @@ class FieldTestTemplates(object):
         Tests if all savedsearches in savedsearches.conf are being executed properly to generate proper results.
 
         Args:
-            splunk_search_util (fixture):
-                Fixture to create a simple connection to Splunk via SplunkSDK
-            splunk_searchtime_fields_savedsearches (fixture):
-                Fixture containing list of savedsearches
-            record_property (fixture):
-                Used to add user properties to test report
-            caplog (fixture):
-                Access and control log capturing
+            splunk_search_util (splunksplwrapper.SearchUtil.SearchUtil):
+                object that helps to search on Splunk.
+            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
+            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
+            splunk_searchtime_fields_savedsearches (fixture): Fixture containing list of savedsearches
+            record_property (fixture): Used to add user properties to test report
+            caplog (fixture): Access and control log capturing
 
         Returns:
             Asserts whether test case passes or fails.

@@ -24,12 +24,30 @@ from pytest_splunk_addon import utils
 
 
 class SampleXdistGenerator:
+    """
+    This class handles sample generation
+
+    Args:
+        addon_path (str): path to the addon
+        config_path (str): Path to the pytest-splunk-addon-data.conf
+        process_count (num): generate {no} process for execution
+    """
+
     def __init__(self, addon_path, config_path=None, process_count=4):
         self.addon_path = addon_path
         self.process_count = process_count
         self.config_path = config_path
 
     def get_samples(self, store_events):
+        """
+        Function to generate samples
+
+        Args:
+            store_events (bool): variable to define if events should be stored
+
+        Returns:
+            dict: dictionary with conf_name and tokenized events
+        """
         if self.tokenized_event_source == "pregenerated":
             with open(self.event_path, "rb") as file_obj:
                 store_sample = pickle.load(file_obj)
@@ -76,6 +94,12 @@ class SampleXdistGenerator:
         return store_sample
 
     def store_events(self, tokenized_events):
+        """
+        Function to store tokenized events in json file
+
+        Args:
+            tokenized_events (list): list of tokenized events
+        """
         if not os.path.exists(os.path.join(os.getcwd(), ".tokenized_events")):
             os.makedirs(os.path.join(os.getcwd(), ".tokenized_events"))
         tokenized_samples_dict = {}

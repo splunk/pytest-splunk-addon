@@ -356,6 +356,14 @@ class SampleEvent(object):
                 self.key_fields.setdefault(field, []).append(str(token_values.key))
 
     def update_requirement_test_field(self, field, token, token_values):
+        """
+        Function to update field value for requirement_test_data as per the token replacement
+
+        Args:
+            field (str): name of the field
+            token (str): name of the token
+            token_values (list/str): Token value(s) which are replaced in the key fields
+        """
         if field != "_time":
             if (
                 self.requirement_test_data is not None
@@ -367,18 +375,18 @@ class SampleEvent(object):
                     if token in value:
                         if isinstance(token_values, list):
                             if len(token_values) == 1:
-                                self.requirement_test_data["cim_fields"][
-                                    cim_field
-                                ] = value.replace(token, str(token_values[0].key))
+                                self.requirement_test_data["cim_fields"][cim_field] = (
+                                    value.replace(token, str(token_values[0].key))
+                                )
                             else:
                                 self.requirement_test_data["cim_fields"][cim_field] = [
                                     value.replace(token, str(token_value.key))
                                     for token_value in token_values
                                 ]
                         else:
-                            self.requirement_test_data["cim_fields"][
-                                cim_field
-                            ] = value.replace(token, str(token_values.key))
+                            self.requirement_test_data["cim_fields"][cim_field] = (
+                                value.replace(token, str(token_values.key))
+                            )
 
     def get_key_fields(self):
         """

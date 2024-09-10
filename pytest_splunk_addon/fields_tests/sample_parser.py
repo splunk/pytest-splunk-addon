@@ -26,6 +26,15 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 
 
 def parse_sample_files(folder_path):
+    """
+    Parse the sample files
+
+    Args:
+        folder_path (str): path to the sample files
+
+    Yields:
+        EventXML: object of EventXML
+    """
     if os.path.isdir(folder_path):
         for file in os.listdir(folder_path):
             if file.endswith(".log") or file.endswith(".xml"):
@@ -37,6 +46,15 @@ def parse_sample_files(folder_path):
 
 
 def parse_file(filename):
+    """
+    Parse the xml sample file to get the lisst of events
+
+    Args:
+        filename (str): file name of the sample xml
+
+    Yields:
+        Element: xml element for event
+    """
     try:
         tree = ET.parse(filename)
     except ParseError:
@@ -50,11 +68,33 @@ def parse_file(filename):
 
 
 class XMLParser:
+    """
+    Class for parsing the xml samples
+    """
+
     def extract_transport_tag(self, event):
+        """
+        Function to get the transport type for the event
+
+        Args:
+            event (Element): xml element of the event
+
+        Returns:
+            str: transport type of the given event
+        """
         for transport in event.iter("transport"):
             return str(transport.get("type"))
 
     def strip_syslog_header(self, raw_event):
+        """
+        Function to strip the syslog header from the raw event
+
+        Args:
+            raw_event (str): raw event string
+
+        Returns:
+            str: raw event with stripped syslog header
+        """
         # remove leading space chars
         raw_event = raw_event.strip()
         CEF_format_match = re.search(
@@ -92,8 +132,13 @@ class XMLParser:
 
     def get_event(self, root):
         """
-        Input: Root of the xml file
         Function to return raw event string
+
+        Args:
+            root (Element): root of the xml file
+
+        Returns:
+            str: raw event
         """
         event = None
         for raw in root.iter("raw"):
@@ -102,8 +147,13 @@ class XMLParser:
 
     def get_models(self, root):
         """
-        Input: Root of the xml file
         Function to return list of models in each event of the log file
+
+        Args:
+            root (Element): root of the xml file
+
+        Returns:
+            model_list list(str): list of datamodel names
         """
         model_list = []
         for model in root.iter("model"):
@@ -112,8 +162,13 @@ class XMLParser:
 
     def split_model(self, model):
         """
-        Input: Root of the xml file
-        Function to return list of models in each event of the log file
+        Function to parse the data model name defined in sample file
+
+        Args:
+            model (str): name of the datamodel
+
+        Returns:
+            str: name of the data model
         """
         model_name = model.split(":", 2)
         if len(model_name) == 3:
@@ -133,26 +188,30 @@ class XMLParser:
 
         return model_dataset_subdaset
 
-    def get_event(self, root):
-        """
-        Input: Root of the xml file
-        Function to return raw event string
-        """
-        event = None
-        for raw in root.iter("raw"):
-            event = raw.text
-        return event
-
     def get_root(self, filename):
         """
-        Input: Filename ending with .log extension
-        Function to return raw event string
+        Function to get root element of sample file
+
+        Args:
+            filename (str): name of the sample file
+
+        Returns:
+            Element: root xml element of sample file
         """
         tree = ET.parse(filename)
         root = tree.getroot()
         return root
 
     def check_xml_format(self, file_name):
+        """
+        Validates the xml format of the sample file
+
+        Args:
+            file_name (str): name of the sample file
+
+        Returns:
+            bool: True if the provided sample file is valid xml
+        """
         if ET.parse(file_name):
             return True
         else:
@@ -161,6 +220,17 @@ class XMLParser:
         # extract_params_transport
 
     def extract_params(self, event):
+        """
+        Extracts the host, source and sourcetype fields from sample
+
+        Args:
+            event (Element): xml element of the sample event
+
+        Returns:
+            str: host of the event
+            str: source of the event
+            str: sourcetype of the event
+        """
         host, source, source_type = "", "", ""
         for transport in event.iter("transport"):
             if transport.get("host"):
@@ -179,9 +249,14 @@ class XMLParser:
 
     def escape_char_event(self, event):
         """
-        Input: Event getting parsed
         Function to escape special characters in Splunk
         https://docs.splunk.com/Documentation/StyleGuide/current/StyleGuide/Specialcharacters
+
+        Args:
+            event (str): raw event
+
+        Returns:
+            str: event with escaped special chars
         """
         escape_splunk_chars = [
             "`",
@@ -234,6 +309,25 @@ class XMLParser:
 
 
 class EventXML:
+    """
+    Class to handle xml element of event
+
+    * transport_type (str): transport type of the event
+    * event_string (str): raw event
+    * name (str): name of the sample event
+    * models (list(str)): datamodels mapped with the event
+    * tags_to_check (list(str)): list of tag names
+    * list_model_dataset_subdataset (list(str)): list of datasets mapped with event
+    * host (str): host of the event
+    * source (str): source of the event
+    * sourcetype (str): sourcetype of the event
+    * cim_fields (dict): key-value pairs for cim_fields defined for the event
+    * exceptions (dict): key-value pairs for exceptions defined for the event
+
+    Args:
+        event_tag(Element): xml element of the event
+    """
+
     transport_types = [
         "modinput",
         "Modinput",
@@ -269,11 +363,23 @@ class EventXML:
         self.exceptions = self.extract_key_value_xml("exceptions")
 
     def get_transport_type(self):
+        """
+        Function to get the transport type of the evnt
+
+        Raises:
+            ValueError: if transport type defined for the event is not supported
+        """
         tt = self.xml_parser.extract_transport_tag(self.event_tag)
         if tt not in EventXML.all_transport_types:
             raise ValueError(f"Not supported transport type for {self.event_tag}")
 
     def get_model_list(self):
+        """
+        Function to get the list of datamodels mapped with the event
+
+        Returns:
+            list(str): list of datamodel names
+        """
         list_model_dataset_subdataset = []
         for model in self.models:
             model = model.replace(" ", "_")
@@ -284,6 +390,15 @@ class EventXML:
         return list_model_dataset_subdataset
 
     def get_event_string(self):
+        """
+        Function to get the raw event
+
+        Raises:
+            ValueError: if transport type of event is syslog and event does not match the supported syslog format
+
+        Returns:
+            str: escaped raw event with syslog headers stripped
+        """
         unescaped_event = self.xml_parser.get_event(self.event_tag)
         if self.transport_type.lower() == "syslog":
             stripped_event = self.xml_parser.strip_syslog_header(unescaped_event)
@@ -296,6 +411,14 @@ class EventXML:
         return self.xml_parser.escape_char_event(unescaped_event)
 
     def get_basic_fields(self):
+        """
+        Function to get the escaped host, source and sourcetype for the event
+
+        Returns:
+            str: escaped value of host
+            str: escaped value of source
+            str: escaped value of sourcetype
+        """
         if self.transport_types in EventXML.transport_types:
             host, source, sourcetype = self.xml_parser.extract_params(self.event_tag)
             return self.xml_parser.escape_host_src_srctype(host, source, sourcetype)
@@ -310,12 +433,27 @@ class EventXML:
         }
 
     def get_tags_to_check(self):
+        """
+        Function to get the list of tags for the datamodel mapped with the event
+
+        Returns:
+            (list(str)): list of tag names
+        """
         tags = []
         for model in self.models:
             tags += dict_datamodel_tag[model.replace(" ", "_").replace(":", "_")]
         return list(set(tags))
 
     def extract_key_value_xml(self, _type):
+        """
+        Function to generate the dict object with the fields key-value
+
+        Args:
+            _type (str): type of the fields (cim_fields, exceptions)
+
+        Returns:
+            dict: key-value pairs for fields defined for the event
+        """
         key_value_dict = {}
         for type_fields in self.event_tag.iter(_type):
             for fields in type_fields.iter("field"):

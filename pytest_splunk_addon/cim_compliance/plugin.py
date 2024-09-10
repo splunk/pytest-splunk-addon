@@ -38,6 +38,9 @@ class CIMReportPlugin(object):
     def pytest_runtest_logreport(self, report):
         """
         Collect the data to be added into the report.
+
+        Args:
+            report (TestReport): test report object
         """
         if report.when == "call" and "test_cim_required_fields" in report.nodeid:
             data_dict = {}
@@ -49,9 +52,9 @@ class CIMReportPlugin(object):
             data_dict["test_property"] = "-"
             try:
                 if report.outcome == "failed":
-                    data_dict[
-                        "test_property"
-                    ] = report.longrepr.reprcrash.message.splitlines()[0][:100]
+                    data_dict["test_property"] = (
+                        report.longrepr.reprcrash.message.splitlines()[0][:100]
+                    )
             except AttributeError as e:
                 pass
 

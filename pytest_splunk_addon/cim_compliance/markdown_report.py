@@ -20,6 +20,10 @@ from .base_report import CIMReport
 
 
 class MarkDownReport(CIMReport):
+    """
+    Generate the markdown content
+    """
+
     def __init__(self):
         self.markdown_str = ""
         self.note_str = ""
@@ -29,7 +33,7 @@ class MarkDownReport(CIMReport):
         Function to set title of a report
 
         Args:
-            title_string(string): String containing title for report.
+            title_string (str): String containing title for report.
         """
         self.title_str = "# {} \n".format(title_string)
 
@@ -38,7 +42,7 @@ class MarkDownReport(CIMReport):
         Function to add new section to report
 
         Args:
-            section_title(string): String containing title for new Section.
+            section_title (str): String containing title for new Section.
         """
         self.markdown_str += "\n## {}\n".format(section_title)
 
@@ -47,7 +51,7 @@ class MarkDownReport(CIMReport):
         Adds description string to the section
 
         Args:
-            description(str): Description string.
+            description (str): Description string.
         """
         self.markdown_str += "\n**Description:** " + description + "\n"
 
@@ -56,7 +60,7 @@ class MarkDownReport(CIMReport):
         Function to set Note in a report
 
         Args:
-            section_note(string): String containing note for report.
+            section_note (str): String containing note for report.
         """
         self.note_str = "## Note: {} \n".format(section_note)
 
@@ -65,7 +69,7 @@ class MarkDownReport(CIMReport):
         Function to add a table to the Report.
 
         Args:
-            table_string(string): Stringified table.
+            table_string (str): Stringified table.
         """
         self.markdown_str += table_string
 
@@ -74,7 +78,7 @@ class MarkDownReport(CIMReport):
         Function to add a table to the Report.
 
         Args:
-            path(string) : path to store report file.
+            path (str) : path to store report file.
         """
         with open(path, "w") as report:
             report.write(self.title_str)

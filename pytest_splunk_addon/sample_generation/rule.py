@@ -51,7 +51,7 @@ def raise_warning(warning_string):
     To raise a pytest user warning along with a log.
 
     Args:
-        warning_string(str): warning string
+        warning_string (str): warning string
     """
     LOGGER.warning(warning_string)
     warnings.warn(UserWarning(warning_string))
@@ -259,7 +259,6 @@ class Rule:
             rule (str): fieldname i.e. host, src, user, dvc etc
 
         Returns:
-            index_list (list): list of mapped columns(int) as per value_list
             csv_row (list): list of replacement values for the rule.
         """
         csv_row = []

@@ -22,21 +22,18 @@ from itertools import cycle
 
 class SampleGenerator(object):
     """
-    Main Class
-    Generate sample objects
+    Main Class to generate sample objects
+
+    Args:
+        addon_path (str): path to the addon
+        config_path (str): Path to the pytest-splunk-addon-data.conf
+        process_count (num): generate {no} process for execution
     """
 
     sample_stanzas = []
     conf_name = " "
 
     def __init__(self, addon_path, config_path=None, process_count=4):
-        """
-        init method for the class
-
-        Args:
-            addon_path(str): path to the addon
-            process_count(no): generate {no} process for execution
-        """
         self.addon_path = addon_path
         self.process_count = process_count
         self.config_path = config_path
