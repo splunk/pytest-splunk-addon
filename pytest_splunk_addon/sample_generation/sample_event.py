@@ -300,6 +300,15 @@ class SampleEvent(object):
                 elif isinstance(extracted_field, list):
                     for each_filed in extracted_field:
                         tokens_in_extractions += len(re.findall(token, each_filed))
+
+            for extracted_field in self.requirement_test_data.get(
+                "other_fields", {}
+            ).values():
+                if isinstance(extracted_field, str):
+                    tokens_in_extractions += len(re.findall(token, extracted_field))
+                elif isinstance(extracted_field, list):
+                    for each_filed in extracted_field:
+                        tokens_in_extractions += len(re.findall(token, each_filed))
         return 1 if tokens_in_extractions > 0 else 0
 
     def replace_token(self, token, token_values):
@@ -375,18 +384,39 @@ class SampleEvent(object):
                     if token in value:
                         if isinstance(token_values, list):
                             if len(token_values) == 1:
-                                self.requirement_test_data["cim_fields"][
-                                    cim_field
-                                ] = value.replace(token, str(token_values[0].key))
+                                self.requirement_test_data["cim_fields"][cim_field] = (
+                                    value.replace(token, str(token_values[0].key))
+                                )
                             else:
                                 self.requirement_test_data["cim_fields"][cim_field] = [
                                     value.replace(token, str(token_value.key))
                                     for token_value in token_values
                                 ]
                         else:
-                            self.requirement_test_data["cim_fields"][
-                                cim_field
-                            ] = value.replace(token, str(token_values.key))
+                            self.requirement_test_data["cim_fields"][cim_field] = (
+                                value.replace(token, str(token_values.key))
+                            )
+
+                for cim_field, value in self.requirement_test_data.get(
+                    "other_fields", {}
+                ).items():
+                    if token in value:
+                        if isinstance(token_values, list):
+                            if len(token_values) == 1:
+                                self.requirement_test_data["other_fields"][
+                                    cim_field
+                                ] = value.replace(token, str(token_values[0].key))
+                            else:
+                                self.requirement_test_data["other_fields"][
+                                    cim_field
+                                ] = [
+                                    value.replace(token, str(token_value.key))
+                                    for token_value in token_values
+                                ]
+                        else:
+                            self.requirement_test_data["other_fields"][cim_field] = (
+                                value.replace(token, str(token_values.key))
+                            )
 
     def get_key_fields(self):
         """
