@@ -290,9 +290,9 @@ class SampleEvent(object):
             token (str): Token name
         """
         tokens_in_extractions = 0
-        if (
-            self.requirement_test_data is not None
-            and ("cim_fields" in self.requirement_test_data.keys() or "other_fields" in self.requirement_test_data.keys())
+        if self.requirement_test_data is not None and (
+            "cim_fields" in self.requirement_test_data.keys()
+            or "other_fields" in self.requirement_test_data.keys()
         ):
             field_values = [
                 *self.requirement_test_data.get("cim_fields", {}).values(),
@@ -372,28 +372,30 @@ class SampleEvent(object):
             token_values (list/str): Token value(s) which are replaced in the key fields
         """
         if field != "_time":
-            if (
-                self.requirement_test_data is not None
-                and ("cim_fields" in self.requirement_test_data.keys() or "other_fields" in self.requirement_test_data.keys())
+            if self.requirement_test_data is not None and (
+                "cim_fields" in self.requirement_test_data.keys()
+                or "other_fields" in self.requirement_test_data.keys()
             ):
                 fields_key = ["cim_fields", "other_fields"]
                 for key in fields_key:
-                    for field_name, value in self.requirement_test_data.get(key, {}).items():
+                    for field_name, value in self.requirement_test_data.get(
+                        key, {}
+                    ).items():
                         if token in value:
                             if isinstance(token_values, list):
                                 if len(token_values) == 1:
-                                    self.requirement_test_data[key][field_name] = (
-                                        value.replace(token, str(token_values[0].key))
-                                    )
+                                    self.requirement_test_data[key][
+                                        field_name
+                                    ] = value.replace(token, str(token_values[0].key))
                                 else:
                                     self.requirement_test_data[key][field_name] = [
                                         value.replace(token, str(token_value.key))
                                         for token_value in token_values
                                     ]
                             else:
-                                self.requirement_test_data[key][field_name] = (
-                                    value.replace(token, str(token_values.key))
-                                )
+                                self.requirement_test_data[key][
+                                    field_name
+                                ] = value.replace(token, str(token_values.key))
 
     def get_key_fields(self):
         """
