@@ -71,8 +71,23 @@ If all the above conditions are satisfied, further analysis of the test is requi
 For every test case failure, there is a defined structure for the stack trace.
 
  ```text
+ - test_requirements_fields
  AssertionError: <<error_message>>
-     Search =  <Query>
+     Field | Splunk Value | Expected Value
+     ------| ------------ | --------------
+      str  |      str     |      str
+ Search =  <Query>
+
+ - test_datamodels
+ AssertionError: <<error_message>>
+     Expected datamodel | Expected tags | Found datamodel | Found tags
+     -------------------| ------------- | --------------- | ----------
+            str         |      str      |       str       |    str
+ Search =  <Query>
+
+ - test_cim_fields_recommended
+ AssertionError: <<error_message>>
+ Search =  <Query>
  ```
 
 Get the search query from the stack trace and execute it on the Splunk instance and verify which specific event is causing failure.
