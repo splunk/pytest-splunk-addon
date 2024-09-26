@@ -190,7 +190,6 @@ def test_unicode_char(filename):
         ValueError: if file contains unicode chars
     """
     invalid = False
-    # pattern = re.compile("[^\x00-\x7F]") #do ot want to replace printable chars like €¢ etc
     pattern = re.compile(
         "[\u200B-\u200E\uFEFF\u202c\u202D\u2063\u2062]"
     )  # zero width characters

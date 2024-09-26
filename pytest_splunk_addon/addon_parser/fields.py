@@ -28,7 +28,7 @@ class Field(object):
 
     * name (str): name of the field
     * type (str): Field type. Supported [required, conditional, optional]
-    * multi_value (bool): True is field is multi value field
+    * multi_value (bool): True if field is multi value field
     * expected_values (list): The field should have this expected values
     * negative_values (list): The field should not have negative values
     * condition (spl): The field should only be checked if the condition satisfies

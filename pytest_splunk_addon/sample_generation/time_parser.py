@@ -32,10 +32,10 @@ class time_parse:
         Args :
             sign (str): to increase or decrease time
             num (num): time value
-            unit (str): unit of time eg: seconds,minuits etc
+            unit (str): unit of time eg: seconds,minutes etc
 
         Returns :
-            datetime formated time
+            datetime formatted time
         """
         num = int(num)
         unittime = None
@@ -137,14 +137,14 @@ class time_parse:
 
     def get_timezone_time(self, random_time, timezone_time):
         """
-        Converts timezone formated time into datetime object for earliest and latest
+        Converts timezone formatted time into datetime object for earliest and latest
 
         Args:
             random_time (datetime): datetime object
             timezone_time (str): timezone time string
 
         Returns:
-            datetime formated time
+            datetime formatted time
         """
 
         sign, hrs, mins = re.match(r"([+-])(\d\d)(\d\d)", timezone_time).groups()

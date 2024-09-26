@@ -29,7 +29,7 @@ class CIMTestTemplates(object):
     Test scenarios to check the CIM compatibility of an Add-on
     Supported Test scenarios:
 
-        - The eventtype should exctract all required fields of data model
+        - The eventtype should extract all required fields of data model
         - One eventtype should not be mapped with more than one data model
         - Field Cluster should be verified (should be included with required field test)
         - Verify if CIM installed or not
@@ -59,10 +59,10 @@ class CIMTestTemplates(object):
 
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
-            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
-            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
+            splunk_ingest_data (fixture): Ensure data was ingested before running test
+            splunk_setup (fixture): Ensure that test environment was set up before running test
             splunk_searchtime_cim_fields (fixture): Pytest parameter to test required cim field extraction
-            record_property (fixture): Document facts of test cases.
+            record_property (fixture): Document facts of test cases to provide more info in the test failure reports.
         """
 
         cim_data_set = splunk_searchtime_cim_fields["data_set"]
@@ -172,11 +172,11 @@ class CIMTestTemplates(object):
         - Expected event_count for these fields is zero.
 
         Args:
-            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
+            splunk_ingest_data (fixture): Ensure data was ingested before running test
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
-            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
+            splunk_setup (fixture): Ensure that test environment was set up before running test
             splunk_searchtime_cim_fields_not_allowed_in_search (fixture): Object which contain list of fields not_allowed_in_search
-            record_property (fixture): Document facts of test cases.
+            record_property (fixture): Document facts of test cases to provide more info in the test failure reports.
         """
         cim_dataset = splunk_searchtime_cim_fields_not_allowed_in_search["data_set"]
         cim_fields = splunk_searchtime_cim_fields_not_allowed_in_search["fields"]
@@ -274,10 +274,10 @@ class CIMTestTemplates(object):
         This testcase checks for cim field of type ["not_allowed_in_search_and_props", "not_allowed_in_props"] if an extraction is defined in the configuration file.
 
         Args:
-            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
-            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
+            splunk_ingest_data (fixture): Ensure data was ingested before running test
+            splunk_setup (fixture): Ensure that test environment was set up before running test
             splunk_searchtime_cim_fields_not_allowed_in_props (fixture): Object which contain list of fields not allowed in props
-            record_property (fixture): Document facts of test cases.
+            record_property (fixture): Document facts of test cases to provide more info in the test failure reports.
         """
         result_str = (
             "The field extractions are not allowed in the configuration files"
@@ -314,10 +314,10 @@ class CIMTestTemplates(object):
 
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
-            splunk_ingest_data (fixture): Unused but required to ensure data was ingested before running test
-            splunk_setup (fixture): Unused but required to ensure that test environment was set up before running test
+            splunk_ingest_data (fixture): Ensure data was ingested before running test
+            splunk_setup (fixture): Ensure that test environment was set up before running test
             splunk_searchtime_cim_mapped_datamodel (fixture): Object which contain eventtype list
-            record_property (fixture): Document facts of test cases.
+            record_property (fixture): Document facts of test cases to provide more info in the test failure reports.
             caplog (fixture): fixture to capture logs.
         """
 
@@ -514,7 +514,7 @@ class CIMTestTemplates(object):
         self, splunk_dm_recommended_fields, splunk_searchtime_cim_fields_recommended
     ):
         """
-        This test case check that all the recommended cim fields of datamodel mapped with event are exracted.
+        This test case check that all the recommended cim fields of datamodel mapped with event are extracted.
 
         Args:
             splunk_dm_recommended_fields (fixture): function which gets recommended fields for given datamodel

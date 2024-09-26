@@ -91,7 +91,7 @@ class IngestorHelper(object):
         Args:
             ingest_meta_data (dict): Dictionary of required meta_data.
             addon_path (str): Path to Splunk app package.
-            config_path (str): Path to pytest-splunk-addon-sample-generator.conf.
+            config_path (str): Path to pytest-splunk-addon-data.conf
             thread_count (int): number of threads to use for ingestion
             store_events (bool): Boolean param for generating json files with tokenised events
         """

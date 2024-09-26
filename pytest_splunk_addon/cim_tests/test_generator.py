@@ -264,7 +264,7 @@ class CIMTestGenerator(object):
         Generates the tests to check all the recommended cim fields of the mapped data model are extracted.
 
         1. Get a list of fields defined in cim_fields and missing_recommended_fields
-        2. combine hte fields list with the defined exceptions
+        2. combine the fields list with the defined exceptions
         3. yield object with datamodel, dataset, cim_version and list of fields
         """
         for event in self.tokenized_events:

@@ -47,7 +47,7 @@ def parse_sample_files(folder_path):
 
 def parse_file(filename):
     """
-    Parse the xml sample file to get the lisst of events
+    Parse the xml sample file to get the list of events
 
     Args:
         filename (str): file name of the sample xml
@@ -364,7 +364,7 @@ class EventXML:
 
     def get_transport_type(self):
         """
-        Function to get the transport type of the evnt
+        Function to get the transport type of the event
 
         Raises:
             ValueError: if transport type defined for the event is not supported
