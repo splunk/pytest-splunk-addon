@@ -1,7 +1,7 @@
 # How To Use
 
 
-Create a test file in the tests folder
+1. Create a test file in the tests folder
 
 ```python
 from pytest_splunk_addon.standard_lib.addon_basic import Basic
@@ -9,6 +9,10 @@ class Test_App(Basic):
     def empty_method():
         pass
 ```
+
+2. Create sample files and pytest-splunk-addon-data.conf (Can be skipped if the events are already present in the splunk environment)
+
+- For detailed information on how to create samples and pytest-splunk-addon-data.conf, please refer [here](./sample_generator.md).
 
 ## Test Execution
 
@@ -34,7 +38,6 @@ There are three ways to execute the tests:
  ARG SPLUNK_APP_ID=TA_UNKNOWN
  ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
  RUN echo Splunk VERSION=$SPLUNK_VERSION
- COPY deps/apps /opt/splunk/etc/apps/
  COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
 ```
 
@@ -225,7 +228,7 @@ The tool assumes the Splunk Add-on is located in a folder "package" in the proje
 
 ______________________________________________________________________
 
-There are 3 types of tests included in pytest-splunk-addon are:
+There are 4 types of tests included in pytest-splunk-addon are:
 
  1. To generate test cases only for knowledge objects, append the following marker to pytest command:
 
@@ -244,8 +247,14 @@ There are 3 types of tests included in pytest-splunk-addon are:
      ```console
      -m  splunk_indextime --splunk-data-generator=<Path to the conf file>
      ```
-    
+
      For detailed information on index time test execution, please refer [here](./index_time_tests.md).
+
+ 4. To generate only requirement tests, append the folowing marker to pytest command:
+
+     ```console
+     -m splunk_requirements
+     ```
 
  - To execute all the searchtime tests together, i.e both Knowledge objects and CIM compatibility tests,
    append the following marker to the pytest command:
@@ -317,7 +326,7 @@ The following optional arguments are available to modify the default settings in
 6. Options to separate event generation, event ingestion and test execution stage
     :
 
-    ```console
+      ```console
       --tokenized-event-source=new|store_new|pregenerated
       ```
 
@@ -438,6 +447,6 @@ def splunk_setup(splunk):
 
  How can this be achieved :
 
-  - Make json representation of the data models, which satisfies this [DataModelSchema](https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/standard_lib/cim_tests/DatamodelSchema.json).
+  - Make json representation of the data models, which satisfies this [DataModelSchema](https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/cim_tests/DatamodelSchema.json).
   - Provide the path to the directory having all the data models by adding `--splunk_dm_path path_to_dir` to the pytest command
-  - The test cases will now be generated for the data models provided to the plugin and not for the [default data models](https://github.com/splunk/pytest-splunk-addon/tree/main/pytest_splunk_addon/standard_lib/data_models).
+  - The test cases will now be generated for the data models provided to the plugin and not for the [default data models](https://github.com/splunk/pytest-splunk-addon/tree/main/pytest_splunk_addon/data_models).
