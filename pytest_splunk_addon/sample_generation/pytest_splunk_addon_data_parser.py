@@ -34,7 +34,8 @@ class PytestSplunkAddonDataParser:
     This class parses pytest-splunk-addon-data.conf file.
 
     Args:
-        addon_path: Path to the Splunk App
+        addon_path (str): Path to the Splunk App
+        config_path (str): Path to the pytest-splunk-addon-data.conf
     """
 
     conf_name = " "
@@ -48,6 +49,12 @@ class PytestSplunkAddonDataParser:
         self._path_to_samples = self._get_path_to_samples()
 
     def _get_path_to_samples(self):
+        """
+        Function to get the path to the samples folder
+
+        Returns:
+            str: path to the samples folder
+        """
         if os.path.exists(os.path.join(self.config_path, "samples")):
             LOGGER.info(
                 "Samples path is: {}".format(os.path.join(self.config_path, "samples"))
@@ -92,7 +99,7 @@ class PytestSplunkAddonDataParser:
         Converts a stanza in pytest-splunk-addon-data.conf to an object of SampleStanza.
 
         Returns:
-            List of SampleStanza objects.
+            list: List of SampleStanza objects.
         """
         _psa_data = self._get_psa_data_stanzas()
         self._check_samples()
@@ -125,7 +132,7 @@ class PytestSplunkAddonDataParser:
             }
 
         Return:
-            Dictionary representing pytest-splunk-addon-data.conf in the above format.
+            dict: Dictionary representing pytest-splunk-addon-data.conf in the above format.
         """
         psa_data_dict = {}
         schema = XMLSchema(SCHEMA_PATH)
@@ -173,8 +180,16 @@ class PytestSplunkAddonDataParser:
 
 
 def test_unicode_char(filename):
+    """
+    Function to check if the file contains unicode chars
+
+    Args:
+        filename (str): name of the file to check
+
+    Raises:
+        ValueError: if file contains unicode chars
+    """
     invalid = False
-    # pattern = re.compile("[^\x00-\x7F]") #do ot want to replace printable chars like €¢ etc
     pattern = re.compile(
         "[\u200B-\u200E\uFEFF\u202c\u202D\u2063\u2062]"
     )  # zero width characters

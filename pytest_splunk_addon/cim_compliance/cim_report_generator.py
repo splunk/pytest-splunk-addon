@@ -55,7 +55,7 @@ NOT_SUPPORTED_DATAMODELS = [
 
 class CIMReportGenerator(object):
     """
-    Generate the Report
+    Generate the Report.
     data format::
 
         [
@@ -67,6 +67,9 @@ class CIMReportGenerator(object):
                     "status": "pass"/"fail"
                 }
         ]
+
+    Args:
+        data (list): List of dictionaries with specified format.
     """
 
     def __init__(self, data=[], report_class=MarkDownReport):
@@ -78,7 +81,7 @@ class CIMReportGenerator(object):
         adds data to object property.
 
         Args:
-            data(list): List of dictionaries with specified format.
+            data (list): List of dictionaries with specified format.
         """
         self.data.append(data)
 
@@ -87,8 +90,8 @@ class CIMReportGenerator(object):
         Function to generate group of data using Keys provided
 
         Args:
-            keys(list): Contains keys to group data by.
-            data(list): list of dictionaries with specified format.
+            keys (list): Contains keys to group data by.
+            data (list): list of dictionaries with specified format.
 
         Yields:
             data_set.DataSet: data set object mapped with the tags
@@ -105,8 +108,8 @@ class CIMReportGenerator(object):
         Function to generate count of data using Keys provided
 
         Args:
-            keys(list): Contains keys to generate count by.
-            data(list): list of dictionaries with specified format.
+            keys (list): Contains keys to generate count by.
+            data (list): list of dictionaries with specified format.
 
         Yields:
             data_set.DataSet: data set object mapped with the tags
@@ -123,7 +126,7 @@ class CIMReportGenerator(object):
         Function to Get count in Pass/Total format.
 
         Args:
-            counter(collections.Counter): Contains counts of passing/failing Testcases.
+            counter (collections.Counter): Contains counts of passing/failing Testcases.
 
         Yields:
             String: string with pass/total format.
@@ -139,7 +142,7 @@ class CIMReportGenerator(object):
         Function to Get count in Fail/Total format.
 
         Args:
-            counter(collections.Counter): Contains counts of passing/failing Testcases.
+            counter (collections.Counter): Contains counts of passing/failing Testcases.
 
         Yields:
             String: string with fail/total format.
@@ -231,7 +234,9 @@ class CIMReportGenerator(object):
             del field_summary_table
 
     def generate_skip_tests_table(self):
-        """ """
+        """
+        Displays summary of the skipped tests
+        """
         skipped_tests = list(filter(lambda d: d["status"] == "skipped", self.data))
         if skipped_tests:
             skipped_tests_table = MarkdownTable(
@@ -255,7 +260,7 @@ class CIMReportGenerator(object):
         Function to generate report from the stored data.
 
         Args:
-            report_path(string): Path to create the report.
+            report_path (string): Path to create the report.
         """
         self.report_generator.set_title("CIM AUDIT REPORT")
         self.data.sort(

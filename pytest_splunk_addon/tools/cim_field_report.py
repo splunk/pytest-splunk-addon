@@ -217,7 +217,7 @@ def get_punct_by_eventtype(jobs, eventtypes, config):
     list
         list of tuples of 2 elements, representing collected unique pairs of eventtype+punct
     None
-        if exception taks places during splunk search request
+        if exception take place during splunk search request
     """
 
     start = time.time()
@@ -258,7 +258,7 @@ def get_field_names(jobs, eventtypes, config):
     list
         collected field names
     None
-        if exception taks places during splunk search request
+        if exception take place during splunk search request
     """
 
     start = time.time()

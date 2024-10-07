@@ -37,6 +37,7 @@ class IndexTimeTestGenerator(object):
         Generates the test cases based on test_type
 
         Args:
+            store_events (bool): variable to define if events should be stored
             app_path (str): Path of the app package
             config_path (str): Path of package which contains pytest-splunk-addon-data.conf
             test_type (str): Type of test case
@@ -61,9 +62,7 @@ class IndexTimeTestGenerator(object):
             yield from self.generate_line_breaker_tests(tokenized_events)
 
         else:
-
             for tokenized_event in tokenized_events:
-
                 identifier_key = tokenized_event.metadata.get("identifier")
 
                 hosts = self.get_hosts(tokenized_event)
@@ -107,6 +106,9 @@ class IndexTimeTestGenerator(object):
     def generate_line_breaker_tests(self, tokenized_events):
         """
         Generates test case for testing line breaker
+
+        Args:
+            tokenized_events (list): list of tokenized events
 
         Yields:
             pytest.params for the test templates

@@ -28,13 +28,14 @@ class time_parse:
     def convert_to_time(self, sign, num, unit):
         """
         converts splunk time into datetime format for earliest and latest
-        args :
-              sign : to increase or decrease time
-              num : time value
-              unit : unit of time eg: seconds,minuits etc
 
-        returns :
-                datetime formated time
+        Args :
+            sign (str): to increase or decrease time
+            num (num): time value
+            unit (str): unit of time eg: seconds,minutes etc
+
+        Returns :
+            datetime formatted time
         """
         num = int(num)
         unittime = None
@@ -136,15 +137,14 @@ class time_parse:
 
     def get_timezone_time(self, random_time, timezone_time):
         """
-        Converts timezone formated time into datetime object for earliest and latest
+        Converts timezone formatted time into datetime object for earliest and latest
 
         Args:
-            sign to increase or decrease time
-            hrs : hours in timezone
-            mins : minutes in timezone
+            random_time (datetime): datetime object
+            timezone_time (str): timezone time string
 
-        returns:
-            datetime formated time
+        Returns:
+            datetime formatted time
         """
 
         sign, hrs, mins = re.match(r"([+-])(\d\d)(\d\d)", timezone_time).groups()

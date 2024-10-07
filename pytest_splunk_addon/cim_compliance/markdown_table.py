@@ -20,6 +20,14 @@ from .base_table import BaseTable
 
 
 class MarkdownTable(BaseTable):
+    """
+    Generate table in markdown format
+
+    Args:
+        table_title (str): Title of the table
+        header_list (list(str)): List of header names
+    """
+
     def __init__(self, table_title, header_list):
         self.table_title = self.__set_title(table_title)
         self.table_headers = self.__set_headers(header_list)
@@ -32,7 +40,7 @@ class MarkdownTable(BaseTable):
         Adds Title string to the table
 
         Args:
-            title(str): Title string.
+            title (str): Title string.
         """
         return "### {}".format(title) if title else ""
 
@@ -41,7 +49,7 @@ class MarkdownTable(BaseTable):
         Sets the header column for the table.
 
         Args:
-            header_list(list): Contains list of column headers.
+            header_list (list): Contains list of column headers.
         """
         header_str = "\n"
         helper_str = ""
@@ -55,7 +63,7 @@ class MarkdownTable(BaseTable):
         Adds description string to the table
 
         Args:
-            description(str): Description string.
+            description (str): Description string.
         """
         self.table_description = "\n {} \n".format(description)
 
@@ -64,7 +72,7 @@ class MarkdownTable(BaseTable):
         Expects a list of row values to be added in the table
 
         Args:
-            value_list(list): Contains list of row values
+            value_list (list): Contains list of row values
         """
         row_element = ""
         for each_value in value_list:
@@ -76,7 +84,7 @@ class MarkdownTable(BaseTable):
         It adds the note at the end of the table
 
         Args:
-            note_str(str): Note string to be added.
+            note_str (str): Note string to be added.
         """
         self.table_note = "\n*NOTE: {} *\n ".format(note_str)
 

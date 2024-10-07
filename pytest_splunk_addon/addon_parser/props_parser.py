@@ -182,8 +182,8 @@ class PropsParser(object):
             EXTRACT-one = regex with (?<capturing_group>.*)
 
         Args:
-            name: key in the configuration settings
-            value: value of the respective name in the configuration
+            name (str): key in the configuration settings
+            value (str): value of the respective name in the configuration
 
         Regex:
             Parse the fields from a regex. Examples,
@@ -220,8 +220,8 @@ class PropsParser(object):
             EVAL-action = if(isnull(action), "unknown", action)
 
         Args:
-            name: key in the configuration settings
-            value: value of the respective name in the configuration
+            name (str): key in the configuration settings
+            value (str): value of the respective name in the configuration
 
         Yields:
             generator of fields
@@ -240,8 +240,8 @@ class PropsParser(object):
             FIELDALIAS-class = source AS dest, sc2 AS dest2
 
         Args:
-            name: key in the configuration settings
-            value: value of the respective name in the configuration
+            name (str): key in the configuration settings
+            value (str): value of the respective name in the configuration
 
         Regex:
             Description:
@@ -274,8 +274,8 @@ class PropsParser(object):
         transforms.conf and returns the list
 
         Args:
-            name: key in the configuration settings
-            value: value of the respective name in the configuration
+            name (str): key in the configuration settings
+            value (str): value of the respective name in the configuration
 
         Yields:
             generator of (transform_stanza ,fields) parsed from transforms.conf
@@ -294,8 +294,8 @@ class PropsParser(object):
         Extracts the lookup fields
 
         Args:
-            name: key in the configuration settings
-            value: value of the respective name in the configuration
+            name (str): key in the configuration settings
+            value (str): value of the respective name in the configuration
 
         Returns:
             List of lookup fields

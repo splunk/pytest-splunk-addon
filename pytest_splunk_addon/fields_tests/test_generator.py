@@ -40,6 +40,7 @@ class FieldTestGenerator(object):
 
     Args:
         app_path (str): Path of the app package
+        tokenized_events (list): list of tokenized events
         field_bank (str): Path of the fields Json file
     """
 
@@ -63,9 +64,7 @@ class FieldTestGenerator(object):
             * splunk_searchtime_fields_requirements
 
         Args:
-            fixture(str): fixture name
-            sample_generator(SampleGenerator): sample objects generator
-            store_events(bool): variable to define if events should be stored
+            fixture (str): fixture name
 
         """
         if fixture.endswith("positive"):
@@ -155,7 +154,7 @@ class FieldTestGenerator(object):
 
     def generate_requirements_datamodels_tests(self):
         """
-        Generate test case for tags
+        Generate test case for datamodels
 
         Yields:
             pytest.params for the test templates
@@ -224,7 +223,7 @@ class FieldTestGenerator(object):
     def generate_requirements_tests(self):
         """
         Generate test cases for fields defined for datamodel
-        These function generates tests previously covered by requirement tests
+        This function generates tests previously covered by requirement tests
 
         Yields:
             pytest.params for the test templates

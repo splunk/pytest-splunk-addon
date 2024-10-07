@@ -371,7 +371,7 @@ def splunk_search_util(splunk, request):
     Returns:
         splunksplwrapper.SearchUtil.SearchUtil: The SearchUtil object
     """
-    LOGGER.info("Initializing SearchUtil for the Splunk instace.")
+    LOGGER.info("Initializing SearchUtil for the Splunk instance.")
     cloud_splunk = CloudSplunk(
         splunkd_host=splunk["host"],
         splunkd_port=splunk["port"],
@@ -381,7 +381,7 @@ def splunk_search_util(splunk, request):
 
     conn = cloud_splunk.create_logged_in_connector()
     jobs = Jobs(conn)
-    LOGGER.info("initialized SearchUtil for the Splunk instace.")
+    LOGGER.info("initialized SearchUtil for the Splunk instance.")
     search_util = SearchUtil(jobs, LOGGER)
     search_util.search_index = request.config.getoption("search_index")
     search_util.search_retry = request.config.getoption("search_retry")
@@ -393,7 +393,7 @@ def splunk_search_util(splunk, request):
 @pytest.fixture(scope="session")
 def ignore_internal_errors(request):
     """
-    This fixture generates a common list of errors which are suppossed
+    This fixture generates a common list of errors which are supposed
     to be ignored in test_splunk_internal_errors.
 
     Returns:

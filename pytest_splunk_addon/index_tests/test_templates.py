@@ -62,9 +62,10 @@ class IndexTimeTestTemplate(object):
 
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
-            splunk_ingest_data (fixture): To ingest data into splunk.
+            splunk_ingest_data (fixture): Ensure data was ingested before running test
+            splunk_setup (fixture): Ensure that test environment was set up before running test
             splunk_indextime_key_fields (fixture): Test for key fields
-            record_property (fixture): Document facts of test cases.
+            record_property (fixture): Document facts of test cases to provide more info in the test failure reports.
             caplog (fixture): fixture to capture logs.
         """
 
@@ -193,9 +194,10 @@ class IndexTimeTestTemplate(object):
 
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
-            splunk_ingest_data (fixture): To ingest data into splunk.
+            splunk_ingest_data (fixture): Ensure data was ingested before running test
+            splunk_setup (fixture): Ensure that test environment was set up before running test
             splunk_indextime_time (fixture): Test for _time field
-            record_property (fixture): Document facts of test cases.
+            record_property (fixture): Document facts of test cases to provide more info in the test failure reports.
             caplog (fixture): fixture to capture logs.
         """
         index_list = (
@@ -280,9 +282,10 @@ class IndexTimeTestTemplate(object):
 
         Args:
             splunk_search_util (SearchUtil): Object that helps to search on Splunk.
-            splunk_ingest_data (fixture): To ingest data into splunk.
+            splunk_ingest_data (fixture): Ensure data was ingested before running test
+            splunk_setup (fixture): Ensure that test environment was set up before running test
             splunk_indextime_line_breaker (fixture): Test for event count
-            record_property (fixture): Document facts of test cases.
+            record_property (fixture): Document facts of test cases to provide more info in the test failure reports.
             caplog (fixture): fixture to capture logs.
         """
         expected_events_count = int(

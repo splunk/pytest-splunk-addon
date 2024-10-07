@@ -25,7 +25,8 @@ class DataSet(object):
     Handles a single data set
 
     Args:
-        data_set_json(dict): Json of a single DataSet
+        data_set_json (dict): Json of a single DataSet
+        data_model (str): Name of the data model
     """
 
     def __init__(self, data_set_json, data_model):
@@ -55,8 +56,8 @@ class DataSet(object):
         Parse all the fields from the data_model_json
 
         Args:
-            dataset_list(list): Contains list of datasets
-            data_model: Name of the data model
+            dataset_list (list): Contains list of datasets
+            data_model (str): Name of the data model
 
         Yields:
             data_set.DataSet: Dataset object for the given list
@@ -77,6 +78,9 @@ class DataSet(object):
     def _parse_fields_cluster(self, fields_clusters):
         """
         Parse all the fields from the data_model_json
+
+        Args:
+            fields_clusters (list(list(str))): list of field clusters, each field cluster contains list of field names which are expected to be together
         """
         parsed_fields_clusters = []
         for each_cluster in fields_clusters:
@@ -90,6 +94,9 @@ class DataSet(object):
     def match_tags(self, addon_tag_list):
         """
         Check if the tags are mapped with this data set
+
+        Args:
+            addon_tag_list (list): list of tags defined in the addon
         """
         for each_tag_group in self.tags:
             if set(each_tag_group).issubset(set(addon_tag_list)):

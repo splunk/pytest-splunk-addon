@@ -65,6 +65,7 @@ class CIMTestGenerator(object):
     def generate_tests(self, fixture):
         """
         Generate the test cases based on the fixture provided
+
         supported fixtures:
 
             * splunk_searchtime_cim_fields
@@ -72,7 +73,7 @@ class CIMTestGenerator(object):
             * splunk_searchtime_cim_fields_not_extracted
 
         Args:
-            fixture(str): fixture name
+            fixture (str): fixture name
         """
 
         if fixture.endswith("fields"):
@@ -259,6 +260,13 @@ class CIMTestGenerator(object):
         )
 
     def generate_recommended_fields_tests(self):
+        """
+        Generates the tests to check all the recommended cim fields of the mapped data model are extracted.
+
+        1. Get a list of fields defined in cim_fields and missing_recommended_fields
+        2. combine the fields list with the defined exceptions
+        3. yield object with datamodel, dataset, cim_version and list of fields
+        """
         for event in self.tokenized_events:
             if not event.requirement_test_data:
                 continue

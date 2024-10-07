@@ -35,6 +35,10 @@ class IngestorHelper(object):
     def get_event_ingestor(cls, input_type, ingest_meta_data):
         """
         Based on the input_type of the event, it returns an appropriate ingestor.
+
+        Args:
+            input_type (str): input_type defined in pytest-splunk-addon-data.conf
+            ingest_meta_data (dict): Dictionary of required meta_data.
         """
         ingest_methods = {
             "modinput": HECEventIngestor,
@@ -85,10 +89,11 @@ class IngestorHelper(object):
         """
         Events are ingested in the splunk.
         Args:
-            ingest_meta_data(dict): Dictionary of required meta_data.
-            addon_path: Path to Splunk app package.
-            config_path: Path to pytest-splunk-addon-sample-generator.conf.
-            bulk_event_ingestion(bool): Boolean param for bulk event ingestion.
+            ingest_meta_data (dict): Dictionary of required meta_data.
+            addon_path (str): Path to Splunk app package.
+            config_path (str): Path to pytest-splunk-addon-data.conf
+            thread_count (int): number of threads to use for ingestion
+            store_events (bool): Boolean param for generating json files with tokenised events
         """
         sample_generator = SampleXdistGenerator(addon_path, config_path)
         store_sample = sample_generator.get_samples(store_events)

@@ -42,7 +42,7 @@ class HECRawEventIngestor(EventIngestor):
 
 
     Args:
-        required_configs(dict): Dictionary containing hec_uri and session headers
+        required_configs (dict): Dictionary containing hec_uri and session headers
     """
 
     def __init__(self, required_configs):

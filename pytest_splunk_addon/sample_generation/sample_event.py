@@ -356,6 +356,14 @@ class SampleEvent(object):
                 self.key_fields.setdefault(field, []).append(str(token_values.key))
 
     def update_requirement_test_field(self, field, token, token_values):
+        """
+        Function to update field value for requirement_test_data as per the token replacement
+
+        Args:
+            field (str): name of the field
+            token (str): name of the token
+            token_values (list/str): Token value(s) which are replaced in the key fields
+        """
         if field != "_time":
             if (
                 self.requirement_test_data is not None

@@ -38,7 +38,7 @@ class HECMetricEventIngestor(EventIngestor):
         init method for the class
 
         Args:
-            required_configs(dict): {
+            required_configs (dict): {
                 hec_uri: {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector,
                 session_headers(dict): {
                     "Authorization": f"Splunk <hec-token>",
