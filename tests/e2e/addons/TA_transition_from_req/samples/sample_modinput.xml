@@ -30,4 +30,23 @@
       <field name="vendor_product" value="Pytest Splunk Addon"/>
     </other_mappings>
   </event>
+  <event code="" name="UnmappedEvent" format="">
+    <transport type="modinput" sourcetype="test:data:1" source="test_data.1" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[2021-12-31 15:15:30,340+0000 ip=1.1.1.1 tester=admin result=failed]]></raw>
+    <cim>
+    </cim>
+    <other_mappings>
+        <field name="action" value="failed" />
+        <field name="status" value="OTHER" />
+        <field name="app" value="psa" />
+        <field name="src" value="1.1.1.1" />
+        <field name="user" value="admin" />
+        <field name="dest" value="so1" />
+      <field name="vendor_product" value="Pytest Splunk Addon"/>
+    </other_mappings>
+  </event>
 </device>

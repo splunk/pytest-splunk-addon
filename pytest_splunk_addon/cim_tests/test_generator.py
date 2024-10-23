@@ -268,9 +268,9 @@ class CIMTestGenerator(object):
         3. yield object with datamodel, dataset, cim_version and list of fields
         """
         for event in self.tokenized_events:
-            if not event.requirement_test_data or (
-                len(event.requirement_test_data) == 1
-                and "other_fields" in event.requirement_test_data
+            if (
+                not event.requirement_test_data
+                or event.requirement_test_data.keys() == {"other_fields"}
             ):
                 continue
             for _, datamodels in event.requirement_test_data["datamodels"].items():

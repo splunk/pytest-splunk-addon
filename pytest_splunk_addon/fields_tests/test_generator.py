@@ -160,9 +160,9 @@ class FieldTestGenerator(object):
             pytest.params for the test templates
         """
         for event in self.tokenized_events:
-            if not event.requirement_test_data or (
-                len(event.requirement_test_data) == 1
-                and "other_fields" in event.requirement_test_data
+            if (
+                not event.requirement_test_data
+                or event.requirement_test_data.keys() == {"other_fields"}
             ):
                 continue
             if event.metadata.get("input_type", "").startswith("syslog"):
