@@ -187,7 +187,7 @@
           "type": "conditional",
           "condition": "protocol=ip",
           "expected_values": ["ipv4", "ipv6"],
-          "comment": "Version of the OSI layer 3 protocol."
+          "comment": "Version of the OSI layer 3 protocol, in lower case."
         },
         {
           "name": "response_time",

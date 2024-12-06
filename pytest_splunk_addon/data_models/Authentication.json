@@ -71,6 +71,11 @@
           "comment": "The amount of time it took to receive a response in the authentication event, in seconds."
         },
         {
+          "name": "session_id",
+          "type": "optional",
+          "comment": "The unique identifier assigned to the login session."
+        },
+        {
           "name": "signature",
           "type": "optional",
           "condition": "signature_id=*",

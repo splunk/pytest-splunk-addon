@@ -78,7 +78,7 @@
                         {
                             "name": "power",
                             "type": "optional",
-                            "comment": "Amount of power consumed by the facilities resource, in Kw\/h."
+                            "comment": "Amount of power consumed by the facilities resource, in kW."
                         },
                         {
                             "name": "fan_speed",
