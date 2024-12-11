@@ -74,7 +74,7 @@
         {
           "name": "signature",
           "type": "required",
-          "comment": "The name of the intrusion detected on the client (the src), such as PlugAndPlay_BO and JavaScript_Obfuscation_Fre. This is a string value. Use a signature_id field (not included in this data model) for numeric indicators."
+          "comment": "The name of the intrusion detected on the client (the src), such as PlugAndPlay_BO and JavaScript_Obfuscation_Fre."
         },
         {
           "name": "signature_id",
