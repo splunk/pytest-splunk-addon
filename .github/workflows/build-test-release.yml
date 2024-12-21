@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: matrix
-        uses: splunk/addonfactory-test-matrix-action@v1
+        uses: splunk/addonfactory-test-matrix-action@v2
 
   fossa-scan:
     continue-on-error: true
@@ -132,7 +132,7 @@ jobs:
       - fossa-scan
       - compliance-copyrights
       - test-splunk-unit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -166,7 +166,7 @@ jobs:
     needs:
       - test-splunk-external
       - test-splunk-matrix
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
