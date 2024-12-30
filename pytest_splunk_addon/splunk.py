@@ -768,7 +768,11 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
     else:
         while not os.path.exists(os.environ.get("PYTEST_XDIST_TESTRUNUID") + "_wait"):
             sleep(1)
-
+    
+    # waiting 15 minutes after ingestion of data
+    LOGGER.info("Starting wait for all data too populate.")
+    sleep(15*60)
+    LOGGER.info("Ending wait for  all data too populate.")
 
 @pytest.fixture(scope="session")
 def splunk_events_cleanup(request, splunk_search_util):
