@@ -1677,7 +1677,7 @@ datamodels = {
         },
         "Authentication": {
             "BaseEvent": ["action", "app", "src", "dest", "user"],
-            "Privileged_Authentication": ["src_user"]
+            "Privileged_Authentication": ["src_user"],
         },
         "Certificates": {
             "SSL": [
@@ -1957,7 +1957,6 @@ datamodels = {
                 "transport",
                 "vendor_product",
                 "app",
-
             ]
         },
         "Performance": {
@@ -2052,7 +2051,7 @@ datamodels = {
         },
         "Authentication": {
             "BaseEvent": ["action", "app", "src", "dest", "user"],
-            "Privileged_Authentication": ["src_user"]
+            "Privileged_Authentication": ["src_user"],
         },
         "Certificates": {
             "SSL": [
@@ -2332,7 +2331,6 @@ datamodels = {
                 "transport",
                 "vendor_product",
                 "app",
-
             ]
         },
         "Performance": {
