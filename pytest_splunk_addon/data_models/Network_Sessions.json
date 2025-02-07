@@ -75,7 +75,7 @@
           "name": "src_mac",
           "type": "optional",
           "condition": "tag != dhcp",
-          "validity": "if(match(src_mac,\"^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$\"),src_mac,null())",
+          "validity": "if(match(src_mac,\"^([0-9a-f]{2}:){5}([0-9a-f]{2})$\"),src_mac,null())",
           "comment": "The MAC address of the client initializing a network session. Not applicable for DHCP events.Note: Always force lower case on this field.Note: Always use colons instead of dashes, spaces, or no separator."
         },
         {
@@ -85,7 +85,7 @@
         },
         {
           "name": "src_ip",
-          "type": "conditional",
+          "type": "optional",
           "condition": "tag != dhcp",
           "comment": "The IP address of the client initializing a network session. Not applicable for DHCP events."
         },
