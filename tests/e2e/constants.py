@@ -805,6 +805,7 @@ TA_REQ_TRANSITION_PASSED = [
     "*test_splunk_app_req.py::Test_App::test_requirements_fields[sample_name::sample_modinput.xml::host::so1-7* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_requirements_fields[sample_name::sample_modinput.xml::host::so1-8* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_requirements_fields[sample_name::sample_modinput.xml::host::so1-9* PASSED*",
+    "*test_splunk_app_req.py::Test_App::test_requirements_fields[sample_name::sample_modinput.xml::host::so1* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::access* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::action* PASSED*",
     "*test_splunk_app_req.py::Test_App::test_props_fields_no_dash_not_empty[test:data:1::field::app* PASSED*",
