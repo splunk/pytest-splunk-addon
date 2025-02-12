@@ -28,6 +28,7 @@
     </cim>
     <other_mappings>
       <field name="vendor_product" value="Pytest Splunk Addon"/>
+      <field name="access" value="##access_mapping##" />
     </other_mappings>
   </event>
   <event code="" name="UnmappedEvent" format="">
