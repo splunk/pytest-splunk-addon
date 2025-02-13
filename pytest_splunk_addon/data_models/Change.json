@@ -48,7 +48,7 @@
         },
         {
           "name": "object_category",
-          "validity": "if((tag==\"account\" AND object_category==\"user\") OR tag!=\"account\",object_category, null())",
+          "validity": "if((tag==\"account\" AND object_category==\"user\") OR (tag!=\"account\" AND object_category!=\"user\"),object_category, null())",
           "type": "required",
           "comment": "Generic name for the class of the updated resource object. Expected values may be specific to an app."
         },

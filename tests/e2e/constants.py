@@ -940,6 +940,101 @@ TA_REQ_BROKEN_SKIPPED = [
     "*test_splunk_app_req_broken.py::Test_App::test_savedsearches[splunk_searchtime_fields_savedsearches0* SKIPPED*",
 ]
 
-TA_CIM_MODEL_RESULT = [
-    '*test_splunk_cim_model_ipv6_regex.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::src_ip* PASSED*',
+"""
+Defined the TA_cim_addon add-on passed test case list.
+"""
+TA_CIM_MODEL_PASSED = [
+    '*test_splunk_cim_model.py::Test_App::test_events_with_untokenised_values* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::action* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::change_type* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::command* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::dest* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::dvc* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::object* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::object_attrs* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::object_id* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::result* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::src* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::status* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::user* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::vendor_product* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::Account_Management* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::Accounts_Created* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::action* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::change_type* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::command* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::dest* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::dvc* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::object* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::object_attrs* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::object_category* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::object_id* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::result* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::src* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::status* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::user* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::All_Changes::vendor_product* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::bytes* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::bytes+bytes_in+bytes_out* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::bytes_in* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::bytes_out* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest_ip* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest_mac* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest_port* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest_translated_ip* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest_translated_ip+src_translated_ip* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest_translated_port* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest_zone* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest_zone+src_zone* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::icmp_code* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::icmp_code+icmp_type* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::icmp_type* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::packets* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::packets_in+packets_out* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::protocol* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::protocol_version* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::src_ip* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::src_mac* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::src_port* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::src_translated_ip* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::src_translated_port* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::src_zone* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_fields_not_allowed_in_search[eventtype="test_change"::All_Changes* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_fields_not_allowed_in_search[eventtype="test_change_account"::Account_Management* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_fields_not_allowed_in_search[eventtype="test_change_account"::All_Changes* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_fields_not_allowed_in_search[eventtype="test_ipv6"::All_Traffic* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_fields_not_allowed_in_props[searchtime_cim_fields* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel[mapped_datamodel_tests* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_fields_recommended[Change-::sample_name::test_change.xml::host::so10* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_fields_recommended[Change-::sample_name::test_change.xml::host::so11* PASSED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_fields_recommended[Change-Account_Management::sample_name::test_change.xml::host::so1* PASSED*',
 ]
+
+"""
+Defined the TA_cim_addon add-on failed test case list.
+"""
+TA_CIM_MODEL_FAILED = [
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change"::All_Changes::object_category* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::Account_Lockouts* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::Account_Management::src_user* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::Accounts_Deleted* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_change_account"::Accounts_Updated* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::action* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::app* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dvc* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::src* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::transport* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::vendor_product* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::Allowed_Traffic* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::Blocked_Traffic* FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::Traffic_By_Action* FAILED*',
+]
+
+"""
+Defined the TA_cim_addon add-on skipped test case list.
+"""
+TA_CIM_MODEL_SKIPPED = []
