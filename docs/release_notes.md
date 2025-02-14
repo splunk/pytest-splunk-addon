@@ -6,7 +6,7 @@
 
 ## New features
 
-- Added support for CIM v6.0.0
+- Added support for CIM v6.0.2
   - New data models added:
     - Data Access
     - Database
@@ -25,3 +25,7 @@
     - Eg: For Data Access fields like object_category and user_name are added as recommended fields.
     - Again if the addon does not extract these fields then tests with test template : `test_cim_fields_recommended*` will fail for those samples.
   - If the failures for test templates shown above are observed then it is recommended to extract those fields as the updates in all the Data models have been made with guidance of the SMEs.
+
+## Bug fixes
+
+- Fixed the issue with the token replacement for the fields defined under `other_mappings` for the sample event.
