@@ -708,11 +708,12 @@ def test_splunk_app_req(testdir, request):
 
 
 @pytest.mark.docker
-@pytest.mark.splunk_cim_model_ipv6_regex
-def test_splunk_cim_model_ipv6_regex(testdir, request):
+@pytest.mark.splunk_cim_model
+def test_splunk_cim_model(testdir, request):
     """
-    In this test we are only checking if src_ip and dest_ip are extracted and are valid and tests are passing
+    In this test we are checking if src_ip and dest_ip are extracted and are valid and tests are passing
     scr_ip contains ~35 diff advanced form of ipv6 combinations that are tested in this case.
+    We are also checking cim fields extraction condtions of Change Datamodel.
     """
     testdir.makepyfile(
         """
@@ -746,11 +747,21 @@ def test_splunk_cim_model_ipv6_regex(testdir, request):
         "--search-retry=4",
         "--search-index=*",
         "--splunk-data-generator=tests/addons/TA_cim_addon/default",
-        "-k test_cim_required_fields",
+        "-m splunk_searchtime_cim",
     )
     logger.info(result.outlines)
 
-    result.stdout.fnmatch_lines_random(constants.TA_CIM_MODEL_RESULT)
+    result.stdout.fnmatch_lines_random(
+        constants.TA_CIM_MODEL_PASSED
+        + constants.TA_CIM_MODEL_FAILED
+        + constants.TA_CIM_MODEL_SKIPPED
+    )
+
+    result.assert_outcomes(
+        passed=len(constants.TA_CIM_MODEL_PASSED),
+        failed=len(constants.TA_CIM_MODEL_FAILED),
+        skipped=len(constants.TA_CIM_MODEL_SKIPPED),
+    )
 
     # make sure that we get a non '0' exit code for the testsuite as it contains failure
     assert result.ret != 0, "result not equal to 0"
