@@ -23,7 +23,7 @@ import logging
 import re
 import os
 import csv
-import pytest
+import sys
 
 import addonfactory_splunk_conf_parser_lib as conf_parser
 
@@ -115,7 +115,7 @@ class TransformsParser(object):
             LOGGER.error(
                 f"The stanza {transforms_stanza} does not exists in transforms.conf."
             )
-            pytest.exit(
+            sys.exit(
                 f"The stanza {transforms_stanza} does not exists in transforms.conf."
             )
 
