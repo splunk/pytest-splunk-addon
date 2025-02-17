@@ -61,13 +61,14 @@ def test_no_transforms_config_file():
     assert transforms_parser.transforms is None
 
 
-def test_stanza_does_not_exist_in_transforms(caplog):
+def test_stanza_does_not_exist_in_transforms():
     transforms_conf_path = os.path.join(os.path.dirname(__file__), "testdata")
     transforms_parser = TransformsParser(transforms_conf_path)
-    for result in transforms_parser.get_transform_fields("dummy_stanza"):
-        assert result is None
-    assert (
-        "The stanza dummy_stanza does not exists in transforms.conf." in caplog.messages
+    with pytest.raises(SystemExit) as excinfo:
+        for result in transforms_parser.get_transform_fields("dummy_stanza"):
+            assert result is None
+    assert "The stanza dummy_stanza does not exists in transforms.conf." == str(
+        excinfo.value
     )
 
 
