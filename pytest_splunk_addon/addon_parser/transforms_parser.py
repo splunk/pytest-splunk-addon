@@ -23,7 +23,6 @@ import logging
 import re
 import os
 import csv
-import sys
 
 import addonfactory_splunk_conf_parser_lib as conf_parser
 
@@ -113,9 +112,6 @@ class TransformsParser(object):
                         yield each_field.strip()
         except KeyError:
             LOGGER.error(
-                f"The stanza {transforms_stanza} does not exists in transforms.conf."
-            )
-            sys.exit(
                 f"The stanza {transforms_stanza} does not exists in transforms.conf."
             )
 

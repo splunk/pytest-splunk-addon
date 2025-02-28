@@ -97,7 +97,6 @@ jobs:
           submodules: true
       - name: Setup for testing
         run: |
-          pip install git+https://github.com/pixelb/crudini
           mkdir test-results-${{ matrix.splunk.version }}
       - name: Test
         run: |
