@@ -77,3 +77,4 @@ nav:
       - CimComplianceReport: "api_reference/cim_compliance_report.md"
   - Contributing: "contributing.md"
   - Troubleshooting: "troubleshoot.md"
+  - Release Notes: "release_notes.md"
