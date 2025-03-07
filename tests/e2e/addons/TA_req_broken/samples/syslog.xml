@@ -28,6 +28,9 @@
                 <field>bytes</field>
                 <field>bytes_in</field>
                 <field>bytes_out</field>
+                <field>packets</field>
+                <field>packets_in</field>
+                <field>packets_out</field>
                 <field>dvc</field>
                 <field>rule</field>
                 <field>session_id</field>
@@ -70,6 +73,9 @@
                 <field>bytes</field>
                 <field>bytes_in</field>
                 <field>bytes_out</field>
+                <field>packets</field>
+                <field>packets_in</field>
+                <field>packets_out</field>
                 <field>dvc</field>
                 <field>rule</field>
                 <field>session_id</field>

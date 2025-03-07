@@ -13,7 +13,7 @@
     "fields_cluster": [],
     "fields": [{
         "name": "additional_answer_count",
-        "type": "required",
+        "type": "optional",
         "validity": "if(isnum(additional_answer_count),additional_answer_count,null())",
         "comment": "Number of entries in the 'additional' section of the DNS message."
       },
@@ -31,7 +31,7 @@
       },
       {
         "name": "authority_answer_count",
-        "type": "required",
+        "type": "optional",
         "validity": "if(isnum(authority_answer_count),authority_answer_count,null())",
         "comment": "Number of entries in the 'authority' section of the DNS message."
       },
@@ -189,32 +189,10 @@
           "Refused",
           "YXDomain",
           "YXRRSet",
+          "NXRRSet",
           "NotAuth",
           "NotZone",
-          "BADVERS",
-          "BADSIG",
-          "BADKEY",
-          "BADTIME",
-          "BADMODE",
-          "BADNAME",
-          "BADALG"
-        ],
-        "comment": "The return code for the response. For details, see the Domain Name System Parameters on the Internet Assigned Numbers Authority (IANA) web site."
-      },
-      {
-        "name": "reply_code_id",
-        "type": "required",
-        "expected_values": [
-          "No Error",
-          "Format Error",
-          "Server Failure",
-          "Non-Existent Domain",
-          "NotImp",
-          "Refused",
-          "YXDomain",
-          "YXRRSet",
-          "NotAuth",
-          "NotZone",
+          "DSOTYPENI",
           "BADVERS",
           "BADSIG",
           "BADKEY",
@@ -222,12 +200,36 @@
           "BADMODE",
           "BADNAME",
           "BADALG",
-          "0",
+          "BADTRUNC",
+          "BADCOOKIE"
+        ],
+        "comment": "The return code for the response. For details, see the Domain Name System Parameters on the Internet Assigned Numbers Authority (IANA) web site."
+      },
+      {
+        "name": "reply_code_id",
+        "type": "required",
+        "expected_values": [
           "1",
           "2",
-          "3"
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23"
         ],
-        "comment": "The numerical id or name of a return code. For details, see the Domain Name System Parameters on the Internet Assigned Numbers Authority (IANA) web site."
+        "comment": "The numerical id of a return code. For details, see the Domain Name System Parameters on the Internet Assigned Numbers Authority (IANA) web site."
       },
       {
         "name": "response_time",
@@ -270,7 +272,7 @@
       },
       {
         "name": "vendor_product",
-        "type": "optional",
+        "type": "required",
         "comment": "The vendor product name of the DNS server. The Splunk platform can derive this field from the fields vendor and product in the raw data, if they exist."
       }
     ],

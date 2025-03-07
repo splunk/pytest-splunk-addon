@@ -10,7 +10,7 @@
         {
           "name": "action",
           "type": "required",
-          "expected_values": ["success", "failure", "error"],
+          "expected_values": ["success", "failure", "pending", "error"],
           "comment": "The action performed on the resource."
         },
         {
@@ -19,9 +19,44 @@
           "comment": "The application involved in the event (such as ssh, splunk, win:local)."
         },
         {
+          "name": "authentication_method",
+          "type": "optional",
+          "comment": "The method used to authenticate the request"
+        },
+        {
+          "name": "authentication_service",
+          "type": "optional",
+          "comment": "The service used to authenticate the request"
+        },
+        {
           "name": "dest",
           "type": "required",
           "comment": "The target involved in the authentication. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_nt_host."
+        },
+        {
+          "name": "src_user_type",
+          "type": "optional",
+          "comment": "The type of the user who initiated the privilege escalation."
+        },
+        {
+        "name": "user_type",
+          "type": "optional",
+          "comment": "The type of the user involved in the event or who initiated the event.\nIAMUser, Admin, or System."
+        },
+        {
+          "name": "src_user_role",
+          "type": "optional",
+          "comment": "The role of the user who initiated the privilege escalation."
+        },
+        {
+          "name": "user_role",
+          "type": "optional",
+          "comment": "The role of the user involved in the event, or who initiated the event. For authentication privilege escalation events, this should represent the user role targeted by the escalation."
+        },
+        {
+          "name": "user_agent",
+          "type": "optional",
+          "comment": "The user agent through which the request was made, such as Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) or aws-cli/2.0.0 Python/3.7.4 Darwin/18.7.0 botocore/2.0.0dev4."
         },
         {
           "name": "duration",
@@ -36,6 +71,11 @@
           "comment": "The amount of time it took to receive a response in the authentication event, in seconds."
         },
         {
+          "name": "session_id",
+          "type": "optional",
+          "comment": "The unique identifier assigned to the login session."
+        },
+        {
           "name": "signature",
           "type": "optional",
           "condition": "signature_id=*",
@@ -48,7 +88,7 @@
         },
         {
           "name": "src",
-          "type": "optional",
+          "type": "required",
           "comment": "The name of the user involved in the event, or who initiated the event. For authentication privilege escalation events, this should represent the user targeted by the escalation."
         },
         {
@@ -57,10 +97,26 @@
           "comment": "The name of the user involved in the event, or who initiated the event. For authentication privilege escalation events, this should represent the user targeted by the escalation."
         },
         {
+          "name": "user_id",
+          "type": "optional",
+          "comment": "The unique id of the user involved in the event."
+        },
+        {
+          "name": "reason",
+          "type": "optional",
+          "validity": "if(action in ['success', 'failure'], action, null())",
+          "comment": "The human-readable message associated with the authentication action (success or failure)."
+        },
+        {
           "name": "src_user",
-          "condition": "src_user=*",
+          "condition": "src_user=* tag=privileged",
           "type": "conditional",
           "comment": "In privilege escalation events, src_user represents the user who initiated the privilege escalation. This field is unnecessary when an escalation has not been performed. If present it must be a valid user."
+        },
+        {
+          "name": "vendor_account",
+          "type": "optional",
+          "comment": "The account that manages the user that initiated the request. The account represents the organization, a Cloud customer, or a Cloud account."
         }
       ],
       "child_dataset": [

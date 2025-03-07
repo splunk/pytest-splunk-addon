@@ -1,0 +1,405 @@
+{
+    "model_name": "Compute_Inventory",
+    "version": "1.0.0",
+    "objects": [
+        {
+            "name": "All_Inventory",
+            "tags": [["inventory"]
+            ],
+            "fields_cluster": [],
+            "search_constraints": "tag=inventory (tag=cpu OR tag=memory OR tag=network OR tag=storage OR (tag=system tag=version) OR tag=user OR tag=virtual)",
+            "fields": [
+                {
+                    "name": "dest",
+                    "type": "required",
+                    "comment": "The system where the data originated, the source of the event. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
+                },
+                {
+                    "name": "description",
+                    "type": "optional",
+                    "comment": "The description of the inventory system."
+                },
+                {
+                    "name": "dest_bunit",
+                    "type": "optional",
+                    "comment": "The business unit of the system where the data originated. This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+                },
+                {
+                    "name": "dest_category",
+                    "type": "optional",
+                    "comment": "The category of the system where the data originated, such as email_server or SOX-compliant. This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+                },
+                {
+                    "name": "dest_priority",
+                    "type": "optional",
+                    "comment": "The priority of the system where the data originated."
+                },
+                {
+                    "name": "enabled",
+                    "type": "optional",
+                    "comment": "Indicates whether the resource is enabled or disabled."
+                },
+                {
+                    "name": "family",
+                    "type": "optional",
+                    "comment": "The product family of the resource, such as 686_64 or RISC."
+                },
+                {
+                    "name": "hypervisor_id",
+                    "type": "optional",
+                    "comment": "The hypervisor identifier, if applicable."
+                },
+                {
+                    "name": "serial",
+                    "type": "optional",
+                    "comment": "The serial number of the resource."
+                },
+                {
+                    "name": "status",
+                    "type": "optional",
+                    "comment": "The current reported state of the resource."
+                },
+                {
+                    "name": "version",
+                    "type": "optional",
+                    "comment": "The version of a computer resource, such as 2008r2 or 3.0.0."
+                },
+                {
+                    "name": "tag",
+                    "type": "optional",
+                    "comment": "This automatically generated field is used to access tags from within data models. Add-on builders do not need to populate it."
+                },
+                {
+                    "name": "vendor_product",
+                    "type": "required",
+                    "comment": "The vendor and product name of the resource, such as Cisco Catalyst 3850. This field can be automatically populated by vendor and product fields in your data."
+                }
+            ],
+            "child_dataset": [
+                {
+                    "name": "CPU",
+                    "tags": [
+                        ["cpu","inventory"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=cpu",
+                    "fields": [
+                        {
+                            "name": "cpu_cores",
+                            "type": "required",
+                            "comment": "The number of CPU cores reported by the resource (total, not per CPU)."
+                        },
+                        {
+                            "name": "cpu_count",
+                            "type": "required",
+                            "comment": "The number of CPUs reported by the resource."
+                        },
+                        {
+                            "name": "cpu_mhz",
+                            "type": "required",
+                            "comment": "The maximum speed of the CPU reported by the resource (in megahertz)."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Memory",
+                    "tags": [["memory"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=memory",
+                    "fields": [
+                        {
+                            "name": "mem",
+                            "type": "required",
+                            "comment": "The total amount of memory installed in or allocated to the resource, in megabytes."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Network",
+                    "tags": [
+                        ["network", "inventory"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=network",
+                    "fields": [
+                        {
+                            "name": "dns",
+                            "type": "required",
+                            "comment": "The domain name server for the resource."
+                        },
+                        {
+                            "name": "interface",
+                            "type": "required",
+                            "comment": "The network interfaces of the computing resource, such as eth0, eth1 or Wired Ethernet Connection, Teredo Tunneling Pseudo-Interface."
+                        },
+                        {
+                            "name": "ip",
+                            "type": "required",
+                            "comment": "The network addresses of the computing resource, such as 192.168.1.1 or E80:0000:0000:0000:0202:B3FF:FE1E:8329."
+                        },
+                        {
+                            "name": "dest_ip",
+                            "type": "optional",
+                            "comment": "The IP address for the system that the data is going to."
+                        },
+                        {
+                            "name": "src_ip",
+                            "type": "optional",
+                            "comment": "The IP address for the system from which the data originates."
+                        },
+                        {
+                            "name": "mac",
+                            "type": "required",
+                            "comment": "A MAC (media access control) address associated with the resource, such as 06:10:9f:eb:8f:14. Note: Always force lower case on this field and use colons instead of dashes, spaces, or no separator."
+                        },
+                        {
+                            "name": "lb_method",
+                            "type": "optional",
+                            "comment": "The load balancing method used by the computing resource such as method, round robin, or least weight."
+                        },
+                        {
+                            "name": "node",
+                            "type": "optional",
+                            "comment": "Represents a node hit."
+                        },
+                        {
+                            "name": "inline_nat",
+                            "type": "optional",
+                            "comment": "Identifies whether the resource is a network address translation pool."
+                        },
+                        {
+                            "name": "vip_port",
+                            "type": "optional",
+                            "comment": "The port number for the virtual IP address (VIP). A VIP allows multiple MACs to use one IP address. VIPs are often used by load balancers."
+                        },
+                        {
+                            "name": "node_port",
+                            "type": "optional",
+                            "comment": "The number of the destination port on the server that you requested from."
+                        },
+                        {
+                            "name": "name",
+                            "type": "required",
+                            "comment": "A name field provided in some data sources."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "Storage",
+                    "tags": [["storage", "inventory"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=storage",
+                    "fields": [
+                        {
+                            "name": "array",
+                            "type": "optional",
+                            "comment": "The array that the storage resource is a member of, if applicable."
+                        },
+                        {
+                            "name": "blocksize",
+                            "type": "optional",
+                            "comment": "The block size used by the storage resource, in kilobytes."
+                        },
+                        {
+                            "name": "cluster",
+                            "type": "optional",
+                            "comment": "The index cluster that the resource is a member of, if applicable."
+                        },
+                        {
+                            "name": "fd_max",
+                            "type": "optional",
+                            "comment": "The maximum number of file descriptors available."
+                        },
+                        {
+                            "name": "latency",
+                            "type": "optional",
+                            "comment": "The latency reported by the resource, in milliseconds."
+                        },
+                        {
+                            "name": "mount",
+                            "type": "required",
+                            "comment": "The path at which a storage resource is mounted."
+                        },
+                        {
+                            "name": "parent",
+                            "type": "optional",
+                            "comment": "A higher level object that this resource is owned by, if applicable."
+                        },
+                        {
+                            "name": "read_blocks",
+                            "type": "optional",
+                            "comment": "The maximum possible number of blocks read per second during a polling period."
+                        },
+                        {
+                            "name": "read_latency",
+                            "type": "optional",
+                            "comment": "For a polling period, the average amount of time elapsed until a read request is filled by the host disks (in ms)."
+                        },
+                        {
+                            "name": "read_ops",
+                            "type": "optional",
+                            "comment": "The total number of read operations in the polling period."
+                        },
+                        {
+                            "name": "storage",
+                            "type": "required",
+                            "comment": "The amount of storage capacity allocated to the resource, in megabytes."
+                        },
+                        {
+                            "name": "write_blocks",
+                            "type": "optional",
+                            "comment": "The maximum possible number of blocks written per second during a polling period."
+                        },
+                        {
+                            "name": "write_latency",
+                            "type": "optional",
+                            "comment": "For a polling period, the average amount of time elapsed until a write request is filled by the host disks (in ms)."
+                        },
+                        {
+                            "name": "write_ops",
+                            "type": "optional",
+                            "comment": "The total number of write operations in the polling period."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "OS",
+                    "tags": [
+                        ["system", "version", "inventory"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=system OR tag=version",
+                    "fields": [
+                        {
+                            "name": "os",
+                            "type": "required",
+                            "comment": "The operating system of the resource, such as Microsoft Windows Server 2008r2. This field is constructed from vendor_product and version fields."
+                        }
+                    ],
+                    "child_dataset": []
+                },
+                {
+                    "name": "User",
+                    "tags": [
+                        ["user", "inventory"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=user",
+                    "fields": [
+                        {
+                            "name": "shell",
+                            "type": "optional",
+                            "comment": "Indicates the shell program used by a locally defined account."
+                        },
+                        {
+                            "name": "user_bunit",
+                            "type": "optional",
+                            "comment": "The business unit of the locally-defined user account. This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+                        },
+                        {
+                            "name": "user_category",
+                            "type": "optional",
+                            "comment": "The category of the system where the data originated, such as email_server or SOX-compliant. This field is automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for this field when writing add-ons."
+                        },
+                        {
+                            "name": "user_id",
+                            "type": "optional",
+                            "comment": "The user identification for a locally defined account."
+                        },
+                        {
+                            "name": "user_priority",
+                            "type": "optional",
+                            "comment": "The priority of a locally-defined account."
+                        },
+                        {
+                            "name": "interactive",
+                            "type": "required",
+                            "comment": "Indicates whether a locally defined account on a resource can be interactively logged in."
+                        },
+                        {
+                            "name": "password",
+                            "type": "required",
+                            "comment": "Displays the stored password(s) for a locally defined account, if it has any. For instance, an add-on may report the password column from \/etc\/passwd in this field"
+                        },
+                        {
+                            "name": "user",
+                            "type": "required",
+                            "comment": "The full name of a locally defined account."
+                        }
+                    ],
+                    "child_dataset": [
+                        {
+                            "name": "Cleartext_Passwords",
+                            "tags": [
+                                ["user", "inventory"]
+                            ],
+                            "fields_cluster": [],
+                            "search_constraints": "password=*",
+                            "fields": [],
+                            "child_dataset": []
+                        },
+                        {
+                            "name": "Default_Accounts",
+                            "tags": [
+                                ["user", "inventory", "default"]
+                            ],
+                            "fields_cluster": [],
+                            "search_constraints": "tag=default",
+                            "fields": [],
+                            "child_dataset": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Virtual_OS",
+                    "tags": [
+                        ["virtual", "inventory"]
+                    ],
+                    "fields_cluster": [],
+                    "search_constraints": "tag=virtual",
+                    "fields": [
+                        {
+                            "name": "hypervisor",
+                            "type": "required",
+                            "comment": "The hypervisor parent of a virtual guest OS."
+                        }
+                    ],
+                    "child_dataset": [
+                        {
+                            "name": "Snapshot",
+                            "tags": [
+                                ["snapshot", "virtual", "inventory"]
+                            ],
+                            "fields_cluster": [],
+                            "search_constraints": "tag=snapshot",
+                            "fields": [
+                                {
+                                    "name": "size",
+                                    "type": "required",
+                                    "comment": "The snapshot file size, in megabytes."
+                                },
+                                {
+                                    "name": "snapshot",
+                                    "type": "required",
+                                    "comment": "The name of a snapshot file."
+                                },
+                                {
+                                    "name": "time",
+                                    "type": "optional",
+                                    "comment": "The time at which the snapshot was taken."
+                                }
+                            ],
+                            "child_dataset": []
+                        }
+                    ] 
+                }
+            ]
+        }
+    ]
+}

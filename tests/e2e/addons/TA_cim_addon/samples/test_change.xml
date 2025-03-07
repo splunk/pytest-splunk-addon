@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<device>
+  <vendor>Splunk</vendor>
+  <product>PSA</product>
+  <version id="unknown" />
+  <event code="" name="" format="">
+    <transport type="modinput" sourcetype="test:change" source="test_data" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[{"action":"created","change_type":"resources","command":"test_command","dest":"dest-object","dvc":"object-dvc","object":{"name":"object1","attrs":"attr1","category":"Eventhub","id":"test_id","path":"/dummy/path"},"result":"BadRequest","src":"1.1.1.1","status":"failure","user":{"email":"user1@abc.com","name":"user1","type":"Admin"},"timestamp":"2025-02-12T12:00:00Z"}]]></raw>
+    <cim>
+      <models>
+        <model>Change</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="created" />
+        <field name="change_type" value="resources" />
+        <field name="command" value="test_command" />
+        <field name="dest" value="dest-object" />
+        <field name="dvc" value="object-dvc" />
+        <field name="object" value="object1" />
+        <field name="object_attrs" value="attr1" />
+        <field name="object_category" value="Eventhub" />
+        <field name="object_id" value="test_id" />
+        <field name="object_path" value="/dummy/path" />
+        <field name="result" value="BadRequest" />
+        <field name="src" value="1.1.1.1" />
+        <field name="status" value="failure" />
+        <field name="user" value="user1@abc.com" />
+        <field name="user_name" value="user1" />
+        <field name="user_type" value="Admin" />
+        <field name="vendor_product" value="PSA" />
+      </cim_fields>
+      <missing_recommended_fields />
+    </cim>
+  </event>
+  <event code="" name="" format="">
+    <transport type="modinput" sourcetype="test:change" source="test_data" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[{"action":"created","change_type":"resources","command":"test_command","dest":"dest-object","dvc":"object-dvc","object":{"name":"object1","attrs":"attr1","category":"user","id":"test_id","path":"/dummy/path"},"result":"BadRequest","src":"1.1.1.1","status":"failure","user":{"email":"user1@abc.com","name":"user1","type":"Admin"},"timestamp":"2025-02-12T12:00:00Z"}]]></raw>
+    <cim>
+      <models>
+        <model>Change</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="created" />
+        <field name="change_type" value="resources" />
+        <field name="command" value="test_command" />
+        <field name="dest" value="dest-object" />
+        <field name="dvc" value="object-dvc" />
+        <field name="object" value="object1" />
+        <field name="object_attrs" value="attr1" />
+        <field name="object_category" value="user" />
+        <field name="object_id" value="test_id" />
+        <field name="object_path" value="/dummy/path" />
+        <field name="result" value="BadRequest" />
+        <field name="src" value="1.1.1.1" />
+        <field name="status" value="failure" />
+        <field name="user" value="user1@abc.com" />
+        <field name="user_name" value="user1" />
+        <field name="user_type" value="Admin" />
+        <field name="vendor_product" value="PSA" />
+      </cim_fields>
+      <missing_recommended_fields />
+    </cim>
+  </event>
+  <event code="" name="" format="">
+    <transport type="modinput" sourcetype="test:change" source="test_data" host="so1" />
+    <source>
+      <jira id="" />
+      <comment>lab</comment>
+    </source>
+    <raw><![CDATA[{"action":"created","change_type":"account","command":"test_command","dest":"dest-object","dvc":"object-dvc","object":{"name":"object1","attrs":"attr1","category":"user","id":"test_id","path":"/dummy/path"},"src":"1.1.1.1","status":"success","user":{"email":"user1@abc.com","name":"user1","type":"Admin"},"timestamp":"2025-02-12T12:00:00Z"}]]></raw>
+    <cim>
+      <models>
+        <model>Change:Account_Management</model>
+      </models>
+      <cim_fields>
+        <field name="action" value="created" />
+        <field name="change_type" value="account" />
+        <field name="command" value="test_command" />
+        <field name="dest" value="dest-object" />
+        <field name="dvc" value="object-dvc" />
+        <field name="object" value="object1" />
+        <field name="object_attrs" value="attr1" />
+        <field name="object_category" value="user" />
+        <field name="object_id" value="test_id" />
+        <field name="object_path" value="/dummy/path" />
+        <field name="src" value="1.1.1.1" />
+        <field name="status" value="success" />
+        <field name="user" value="user1@abc.com" />
+        <field name="user_name" value="user1" />
+        <field name="user_type" value="Admin" />
+        <field name="vendor_product" value="PSA" />
+      </cim_fields>
+      <missing_recommended_fields>
+        <field>result</field>
+        <field>src_user</field>
+      </missing_recommended_fields>
+    </cim>
+  </event>
+</device>

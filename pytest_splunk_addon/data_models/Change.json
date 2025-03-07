@@ -48,7 +48,7 @@
         },
         {
           "name": "object_category",
-          "validity": "if(like(object_category,'%\\\"%'),null(),object_category)",
+          "validity": "if((tag==\"account\" AND object_category==\"user\") OR (tag!=\"account\" AND object_category!=\"user\"),object_category, null())",
           "type": "required",
           "comment": "Generic name for the class of the updated resource object. Expected values may be specific to an app."
         },
@@ -61,13 +61,13 @@
         {
           "name": "object_path",
           "validity": "if(like(object_path,'%\\\"%'),null(),object_path)",
-          "type": "required",
+          "type": "optional",
           "comment": "The path of the modified resource object, if applicable (such as a file, directory, or volume)."
         },
         {
           "name": "result",
-          "type": "optional",
-          "expected_values": ["lockout"],
+          "condition": "status=failure",
+          "type": "conditional",
           "comment": "The vendor-specific result of a change, or clarification of an action status. For instance, status=failure may be accompanied by result=blocked by policy or result=disk full. result is a string. Please use a msg_severity_id field (not included in the data model) for severity ID fields that are integer data types."
         },
         {
@@ -77,7 +77,7 @@
         },
         {
           "name": "src",
-          "type": "optional",
+          "type": "required",
           "comment": "The resource where the change was originated. You can alias this from more specific fields not included in the data model, such as src_host, src_ip, or src_name."
         },
         {
@@ -95,6 +95,31 @@
           "name": "user",
           "type": "required",
           "comment": "The user or entity performing the change. For account changes, this is the account that was changed (see src_user for user or entity performing the change)."
+        },
+        {
+          "name": "user_agent",
+          "type": "optional",
+          "comment": "The user agent through which the request was made, such as Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) or aws-cli/2.0.0 Python/3.7.4 Darwin/18.7.0 botocore/2.0.0dev4."
+        },
+        {
+          "name": "user_name",
+          "type": "optional",
+          "comment": "The user name of the user or entity performing the change. For account changes, this is the account that was changed this is the account that was changed (see src_user_name)."
+        },
+        {
+          "name": "user_type",
+          "type": "optional",
+          "comment": "The type of the user involved in the event or who initiated the event, such as IAMUser, Admin, or System. For account management events, this should represent the type of the user changed by the request."
+        },
+        {
+          "name": "vendor_account",
+          "type": "optional",
+          "comment": "The account that manages the user that initiated the request. The account represents the organization, or a Cloud customer or a Cloud account."
+        },
+        {
+          "name": "vendor_region",
+          "type": "optional",
+          "comment": "The account that manages the user that initiated the request. The account represents the organization, or a Cloud customer or a Cloud account."
         },
         {
           "name": "vendor_product",
@@ -124,6 +149,16 @@
               "type": "conditional",
               "condition": "object_category=user",
               "comment": "For account changes, the user or entity performing the change."
+            },
+            {
+              "name": "src_user_type",
+              "type": "optional",
+              "comment": "For account management events, this should represent the type of the user changed by the request."
+            },
+            {
+              "name": "src_user_name",
+              "type": "optional",
+              "comment": "For account changes, the user name of the user or entity performing the change."
             }
           ],
           "child_dataset": [
@@ -195,10 +230,70 @@
           "search_constraints": "tag=endpoint"
         },
         {
+          "name": "Instance_Changes",
+          "tags": [["change", "instance"]],
+          "fields_cluster": [],
+          "search_constraints": "tag=instance",
+          "fields": [
+            {
+              "name": "image_id",
+              "type": "required",
+              "comment": "For create instance events, this field represents the image ID used for creating the instance such as the OS, applications, installed libraries, and more."
+            },
+            {
+              "name": "instance_type",
+              "type": "required",
+              "comment": "For create instance events, this field represents the type of instance to build such as the combination of CPU, memory, storage, and network capacity."
+            }
+          ],
+          "child_dataset": []
+        },
+        {
           "name": "Network_Changes",
           "tags": [["change", "network"]],
           "fields_cluster": [],
-          "fields": [],
+          "fields": [
+            {
+              "name": "dest_ip_range",
+              "type": "optional",
+              "comment": "For network events, the outgoing traffic for a specific destination IP address range. Specify a single IP address or an IP address range in CIDR notation. For example, 203.0.113.5 or 203.0.113.5/32."
+            },
+            {
+              "name": "dest_port_range",
+              "type": "optional",
+              "comment": "For network events, this field represents destination port or range. For example, 80 or 8000 - 8080 or 80,443."
+            },
+            {
+              "name": "direction",
+              "type": "optional",
+              "comment": "For network events, this field represents whether the traffic is inbound or outbound."
+            },
+            {
+              "name": "protocol",
+              "type": "optional",
+              "comment": "This field represents the protocol for the network event rule."
+            },
+            {
+              "name": "rule_action",
+              "type": "optional",
+              "comment": "For network events, this field represents whether to allow or deny traffic."
+            },
+            {
+              "name": "src_ip_range",
+              "type": "optional",
+              "comment": "For network events, this field represents the incoming traffic from a specific source IP address or range. Specify a single IP address or an IP address range in CIDR notation."
+            },
+            {
+              "name": "src_port_range",
+              "type": "optional",
+              "comment": "For network events, this field represents source port or range. For example, 80 or 8000 - 8080 or 80,443"
+            },
+            {
+              "name": "device_restarts",
+              "type": "optional",
+              "comment": "Monitor all infrastructure device restarts."
+            }
+          ],
           "child_dataset": [
             {
               "name": "Device_Restarts",

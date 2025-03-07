@@ -1,5 +1,5 @@
 #
-# Copyright 2024 Splunk Inc.
+# Copyright 2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -290,11 +290,15 @@ class SampleEvent(object):
             token (str): Token name
         """
         tokens_in_extractions = 0
-        if (
-            self.requirement_test_data is not None
-            and "cim_fields" in self.requirement_test_data.keys()
+        if self.requirement_test_data is not None and (
+            "cim_fields" in self.requirement_test_data.keys()
+            or "other_fields" in self.requirement_test_data.keys()
         ):
-            for extracted_field in self.requirement_test_data["cim_fields"].values():
+            field_values = [
+                *self.requirement_test_data.get("cim_fields", {}).values(),
+                *self.requirement_test_data.get("other_fields", {}).values(),
+            ]
+            for extracted_field in field_values:
                 if isinstance(extracted_field, str):
                     tokens_in_extractions += len(re.findall(token, extracted_field))
                 elif isinstance(extracted_field, list):
@@ -315,21 +319,24 @@ class SampleEvent(object):
             sample_tokens = re.finditer(token, self.event, flags=re.MULTILINE)
 
             for _, token_value in enumerate(token_values):
-                token_value = token_value.value
-                match_object = next(sample_tokens)
-                match_str = (
-                    match_object.group(0)
-                    if len(match_object.groups()) == 0
-                    else match_object.group(1)
-                )
-                match_str = re.escape(match_str)
-                self.event = re.sub(
-                    match_str,
-                    lambda x: str(token_value),
-                    self.event,
-                    1,
-                    flags=re.MULTILINE,
-                )
+                try:
+                    token_value = token_value.value
+                    match_object = next(sample_tokens)
+                    match_str = (
+                        match_object.group(0)
+                        if len(match_object.groups()) == 0
+                        else match_object.group(1)
+                    )
+                    match_str = re.escape(match_str)
+                    self.event = re.sub(
+                        match_str,
+                        lambda x: str(token_value),
+                        self.event,
+                        1,
+                        flags=re.MULTILINE,
+                    )
+                except StopIteration:
+                    break
         else:
             self.event = re.sub(
                 token, lambda x: str(token_values), self.event, flags=re.MULTILINE
@@ -365,28 +372,30 @@ class SampleEvent(object):
             token_values (list/str): Token value(s) which are replaced in the key fields
         """
         if field != "_time":
-            if (
-                self.requirement_test_data is not None
-                and "cim_fields" in self.requirement_test_data.keys()
+            if self.requirement_test_data is not None and (
+                "cim_fields" in self.requirement_test_data.keys()
+                or "other_fields" in self.requirement_test_data.keys()
             ):
-                for cim_field, value in self.requirement_test_data[
-                    "cim_fields"
-                ].items():
-                    if token in value:
-                        if isinstance(token_values, list):
-                            if len(token_values) == 1:
-                                self.requirement_test_data["cim_fields"][
-                                    cim_field
-                                ] = value.replace(token, str(token_values[0].key))
+                fields_key = ["cim_fields", "other_fields"]
+                for key in fields_key:
+                    for field_name, value in self.requirement_test_data.get(
+                        key, {}
+                    ).items():
+                        if token in value:
+                            if isinstance(token_values, list):
+                                if len(token_values) == 1:
+                                    self.requirement_test_data[key][
+                                        field_name
+                                    ] = value.replace(token, str(token_values[0].key))
+                                else:
+                                    self.requirement_test_data[key][field_name] = [
+                                        value.replace(token, str(token_value.key))
+                                        for token_value in token_values
+                                    ]
                             else:
-                                self.requirement_test_data["cim_fields"][cim_field] = [
-                                    value.replace(token, str(token_value.key))
-                                    for token_value in token_values
-                                ]
-                        else:
-                            self.requirement_test_data["cim_fields"][
-                                cim_field
-                            ] = value.replace(token, str(token_values.key))
+                                self.requirement_test_data[key][
+                                    field_name
+                                ] = value.replace(token, str(token_values.key))
 
     def get_key_fields(self):
         """
