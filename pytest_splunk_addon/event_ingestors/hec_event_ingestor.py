@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import json
+
 from .base_event_ingestor import EventIngestor
 import requests
 from time import time, mktime
@@ -115,6 +117,7 @@ class HECEventIngestor(EventIngestor):
 
     def __ingest(self, data):
         try:
+            batch_data = "".join(json.dumps(obj) for obj in data)
             LOGGER.info(
                 "Making a HEC event request with the following params:\nhec_uri:{}\nheaders:{}".format(
                     str(self.hec_uri), str(self.session_headers)
@@ -122,13 +125,13 @@ class HECEventIngestor(EventIngestor):
             )
             LOGGER.debug(
                 "Creating the following sample event to be ingested via HEC event endoipnt:{}".format(
-                    str(data)
+                    str(batch_data)
                 )
             )
             response = requests.post(  # nosemgrep: splunk.disabled-cert-validation
                 "{}/{}".format(self.hec_uri, "event"),
                 auth=None,
-                json=data,
+                data=batch_data,
                 headers=self.session_headers,
                 verify=False,
             )
