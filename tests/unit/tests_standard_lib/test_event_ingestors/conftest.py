@@ -74,13 +74,13 @@ def modinput_posts_sent():
             '"event": "test_modinput_1 host=modinput_host_event_time_plugin.samples_1", '
             '"index": "main", '
             '"host": "modinput_host_event_time_plugin.samples_1"'
-            "}{"
+            "}\n{"
             '"sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin", '
             '"source": "pytest-splunk-addon:modinput", '
             '"event": "test_modinput_2 host=modinput_host_event_time_plugin.samples_2", '
             '"index": "main", '
             '"host": "modinput_host_event_time_plugin.samples_2"'
-            "}{"
+            "}\n{"
             '"sourcetype": "pytest_splunk_addon", '
             '"source": "pytest_splunk_addon:hec:event", '
             '"event": "fake event nothing happened", '
