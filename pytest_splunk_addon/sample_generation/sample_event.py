@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import uuid
 import re
 import logging
 from ..index_tests import key_fields
@@ -68,6 +69,7 @@ class SampleEvent(object):
         self.metadata = metadata
         self.sample_name = sample_name
         self.host_count = 0
+        self.unique_identifier = str(uuid.uuid4())
         self.requirement_test_data = requirement_test_data
 
     def update(self, new_event):

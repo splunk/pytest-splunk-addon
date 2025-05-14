@@ -92,6 +92,7 @@ class HECEventIngestor(EventIngestor):
                 "source": event.metadata.get("source", "pytest_splunk_addon:hec:event"),
                 "event": event.event,
                 "index": event.metadata.get("index", "main"),
+                "fields": {"unique_identifier": event.unique_identifier}
             }
 
             if event.metadata.get("host_type") in ("plugin", None):

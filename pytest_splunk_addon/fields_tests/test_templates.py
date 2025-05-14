@@ -165,12 +165,16 @@ class FieldTestTemplates(object):
         record_property(
             "stanza_name", splunk_searchtime_fields_requirements["escaped_event"]
         )
+        record_property(
+            "stanza_name", splunk_searchtime_fields_requirements["unique_identifier"]
+        )
         record_property("fields", splunk_searchtime_fields_requirements["fields"])
         record_property(
             "modinput_params", splunk_searchtime_fields_requirements["modinput_params"]
         )
 
         escaped_event = splunk_searchtime_fields_requirements["escaped_event"]
+        unique_identifier = splunk_searchtime_fields_requirements["unique_identifier"]
         fields = splunk_searchtime_fields_requirements["fields"]
         modinput_params = splunk_searchtime_fields_requirements["modinput_params"]
 
@@ -185,7 +189,7 @@ class FieldTestTemplates(object):
             if param_value is not None:
                 basic_search += f" {param}={param_value}"
 
-        search = f"search {index_list} {basic_search} {escaped_event} | fields *"
+        search = f"search {index_list} {basic_search} unique_identifier=\"{unique_identifier}\" | fields *"
 
         self.logger.info(f"Executing the search query: {search}")
 
@@ -225,6 +229,7 @@ class FieldTestTemplates(object):
         assert wrong_value_fields == {}, (
             f"\nNot all required fields have correct values or some fields are missing in Splunk. Wrong field values:\n{wrong_values_table}"
             f"{format_search_query_log(search)}"
+            f"Test failed for event: {escaped_event}\n"
         )
 
     @pytest.mark.splunk_searchtime_fields
