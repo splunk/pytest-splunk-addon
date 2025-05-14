@@ -53,7 +53,7 @@ class HECEventIngestor(EventIngestor):
         """
         Ingests event and metric data into splunk using HEC token via event endpoint.
 
-        For batch ingestion of events in a single request at event endpoint provide a list of event dict to be ingested.
+        For batch ingestion of events in a single request at event endpoint provide stacked events one after the other to be ingested.
 
         The format of dictionary for ingesting a single event::
 
@@ -64,22 +64,20 @@ class HECEventIngestor(EventIngestor):
                 "event": "event_str"
             }
 
-        The format of dictionary for ingesting a batch of events::
+        The format for ingesting a batch of events::
 
-            [
-                {
-                    "sourcetype": "sample_HEC",
-                    "source": "sample_source",
-                    "host": "sample_host",
-                    "event": "event_str1"
-                },
-                {
-                    "sourcetype": "sample_HEC",
-                    "source": "sample_source",
-                    "host": "sample_host",
-                    "event": "event_str2"
-                },
-            ]
+            {
+                "sourcetype": "sample_HEC",
+                "source": "sample_source",
+                "host": "sample_host",
+                "event": "event_str1"
+            }
+            {
+                "sourcetype": "sample_HEC",
+                "source": "sample_source",
+                "host": "sample_host",
+                "event": "event_str2"
+            }
 
         Args:
             events (list): List of events (SampleEvent) to be ingested
@@ -117,6 +115,7 @@ class HECEventIngestor(EventIngestor):
 
     def __ingest(self, data):
         try:
+            batch_data = "\n".join(json.dumps(obj) for obj in data)
             LOGGER.info(
                 "Making a HEC event request with the following params:\nhec_uri:{}\nheaders:{}".format(
                     str(self.hec_uri), str(self.session_headers)
@@ -124,13 +123,13 @@ class HECEventIngestor(EventIngestor):
             )
             LOGGER.debug(
                 "Creating the following sample event to be ingested via HEC event endoipnt:{}".format(
-                    str(data)
+                    str(batch_data)
                 )
             )
             response = requests.post(  # nosemgrep: splunk.disabled-cert-validation
                 "{}/{}".format(self.hec_uri, "event"),
                 auth=None,
-                json=data,
+                data=batch_data,
                 headers=self.session_headers,
                 verify=False,
             )
