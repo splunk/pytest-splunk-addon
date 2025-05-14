@@ -7,9 +7,9 @@
 
 The following 3rd-party software packages may be used by or distributed with pytest-splunk-addon. Any information relevant to third-party vendors listed below are collected using common, reasonable means.
 
-Date generated: 2025-3-7
+Date generated: 2025-5-14
 
-Revision ID: ac3a263830fc117cf8110def75f787da23836132
+Revision ID: 2dc6cf31c04e8c6e38fb15d4764e0c5224853ed7
 
 ================================================================================
 ================================================================================
@@ -46,6 +46,45 @@ No licenses found
 
 ================================================================================
 
+- addonfactory-splunk-conf-parser-lib (0.4.0) [Apache-2.0]
+- attrs (23.2.0) [MIT]
+- certifi (2024.6.2) [MPL-2.0]
+- charset-normalizer (3.3.2) [MIT]
+- colorama (0.4.6) [BSD-3-Clause]
+- defusedxml (0.7.1) [PSF-2.0]
+- deprecation (2.1.0) [Apache-2.0]
+- elementpath (4.1.5) [MIT]
+- exceptiongroup (1.2.1) [Python-2.0, MIT]
+- execnet (2.0.2) [MIT]
+- Faker (18.13.0) [MIT]
+- filelock (3.12.2) [Unlicense]
+- future (1.0.0) [MIT, Python-2.0, GPL-2.0-only, HPND, public-domain, PIL]
+- httplib2 (0.22.0) [MIT, BSD-3-Clause, Apache-2.0, GPL-2.0-only]
+- idna (3.7) [BSD-3-Clause]
+- importlib-metadata (6.7.0) [Apache-2.0]
+- importlib-resources (5.12.0) [Apache-2.0]
+- iniconfig (2.0.0) [MIT]
+- jsonschema (4.17.3) [MIT, Apache-2.0]
+- junitparser (2.8.0) [Apache-2.0]
+- packaging (24.0) [Apache-2.0]
+- pkgutil_resolve_name (1.3.10) [PSF-2.0, MIT]
+- pluggy (1.2.0) [MIT]
+- pyparsing (3.1.2) [MIT, BSD-3-Clause, MIT-CMU, GPL-1.0-only]
+- pyrsistent (0.19.3) [MIT, BSD-3-Clause]
+- pytest (7.4.4) [MIT]
+- pytest-ordering (0.6) [MIT]
+- pytest-xdist (3.5.0) [MIT]
+- python-dateutil (2.9.0.post0) [Apache-2.0, BSD-3-Clause]
+- requests (2.31.0) [Apache-2.0]
+- six (1.16.0) [MIT]
+- splunk-sdk (2.0.1) [Apache-2.0]
+- splunksplwrapper (1.1.4) [Apache-2.0]
+- tomli (2.0.1) [MIT]
+- typing-extensions (4.7.1) [Python-2.0]
+- urllib3 (1.26.19) [MIT]
+- xmlschema (2.5.1) [MIT, W3C, W3C-19980720]
+- xmltodict (0.13.0) [MIT]
+- zipp (3.15.0) [MIT]
 
 
 --------------------------------------------------------------------------------
@@ -59,6 +98,12 @@ Package Depth: Direct
 * Declared Licenses *
 Apache-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+addonfactory_splunk_conf_parser_lib.py
+LICENSE
+pyproject.toml
+--------------------------------------------------------------------------------
 
                                  Apache License
                            Version 2.0, January 2004
@@ -264,6 +309,8 @@ Apache-2.0
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: attrs (23.2.0)
 
@@ -275,6 +322,61 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+conftest.py
+docs/conf.py
+LICENSE
+pyproject.toml
+src/attr/__init__.py
+src/attr/_cmp.py
+src/attr/_compat.py
+src/attr/_config.py
+src/attr/_funcs.py
+src/attr/_make.py
+src/attr/_next_gen.py
+src/attr/_version_info.py
+src/attr/converters.py
+src/attr/exceptions.py
+src/attr/filters.py
+src/attr/setters.py
+src/attr/validators.py
+src/attrs/__init__.py
+src/attrs/converters.py
+src/attrs/exceptions.py
+src/attrs/filters.py
+src/attrs/setters.py
+src/attrs/validators.py
+tests/__init__.py
+tests/attr_import_star.py
+tests/dataclass_transform_example.py
+tests/strategies.py
+tests/test_3rd_party.py
+tests/test_abc.py
+tests/test_annotations.py
+tests/test_cmp.py
+tests/test_compat.py
+tests/test_config.py
+tests/test_converters.py
+tests/test_dunders.py
+tests/test_filters.py
+tests/test_funcs.py
+tests/test_functional.py
+tests/test_hooks.py
+tests/test_import.py
+tests/test_init_subclass.py
+tests/test_make.py
+tests/test_next_gen.py
+tests/test_packaging.py
+tests/test_pattern_matching.py
+tests/test_pyright.py
+tests/test_setattr.py
+tests/test_slots.py
+tests/test_validators.py
+tests/test_version_info.py
+tests/typing_example.py
+tests/utils.py
+--------------------------------------------------------------------------------
 
 The MIT License (MIT)
 
@@ -300,6 +402,8 @@ SOFTWARE.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: certifi (2024.6.2)
 
@@ -311,6 +415,11 @@ Package Depth: Transitive
 * Declared Licenses *
 MPL-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+setup.py
+--------------------------------------------------------------------------------
 
 This package contains a modified version of ca-bundle.crt:
 
@@ -335,6 +444,8 @@ one at http://mozilla.org/MPL/2.0/.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: charset-normalizer (3.3.2)
 
@@ -346,6 +457,12 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+charset_normalizer.egg-info/PKG-INFO
+LICENSE
+PKG-INFO
+--------------------------------------------------------------------------------
 
 MIT License
 
@@ -370,6 +487,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: colorama (0.4.6)
 
@@ -381,6 +500,10 @@ Package Depth: Transitive
 * Declared Licenses *
 BSD-3-Clause
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE.txt
+--------------------------------------------------------------------------------
 
 Copyright (c) 2010 Jonathan Hartley
 All rights reserved.
@@ -412,6 +535,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: defusedxml (0.7.1)
 
@@ -423,6 +548,10 @@ Package Depth: Direct
 * Declared Licenses *
 PSF-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
 --------------------------------------------
@@ -476,6 +605,8 @@ Agreement.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: deprecation (2.1.0)
 
@@ -487,6 +618,13 @@ Package Depth: Transitive
 * Declared Licenses *
 Apache-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+deprecation.py
+LICENSE
+setup.py
+tests/test_deprecation.py
+--------------------------------------------------------------------------------
 
                                  Apache License
                            Version 2.0, January 2004
@@ -692,6 +830,8 @@ Apache-2.0
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: elementpath (4.1.5)
 
@@ -703,6 +843,101 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+elementpath.egg-info/PKG-INFO
+elementpath/__init__.py
+elementpath/collations.py
+elementpath/compare.py
+elementpath/datatypes/__init__.py
+elementpath/datatypes/atomic_types.py
+elementpath/datatypes/binary.py
+elementpath/datatypes/datetime.py
+elementpath/datatypes/numeric.py
+elementpath/datatypes/proxies.py
+elementpath/datatypes/qname.py
+elementpath/datatypes/string.py
+elementpath/datatypes/untyped.py
+elementpath/datatypes/uri.py
+elementpath/etree.py
+elementpath/exceptions.py
+elementpath/helpers.py
+elementpath/namespaces.py
+elementpath/protocols.py
+elementpath/regex/__init__.py
+elementpath/regex/character_classes.py
+elementpath/regex/codepoints.py
+elementpath/regex/generate_categories.py
+elementpath/regex/patterns.py
+elementpath/regex/unicode_categories.py
+elementpath/regex/unicode_subsets.py
+elementpath/schema_proxy.py
+elementpath/sequence_types.py
+elementpath/serialization.py
+elementpath/tdop.py
+elementpath/tree_builders.py
+elementpath/validators/__init__.py
+elementpath/xpath_context.py
+elementpath/xpath_nodes.py
+elementpath/xpath_selectors.py
+elementpath/xpath_tokens.py
+elementpath/xpath1/__init__.py
+elementpath/xpath1/_xpath1_axes.py
+elementpath/xpath1/_xpath1_functions.py
+elementpath/xpath1/_xpath1_operators.py
+elementpath/xpath1/xpath1_parser.py
+elementpath/xpath2/__init__.py
+elementpath/xpath2/_xpath2_constructors.py
+elementpath/xpath2/_xpath2_functions.py
+elementpath/xpath2/_xpath2_operators.py
+elementpath/xpath2/xpath2_parser.py
+elementpath/xpath3.py
+elementpath/xpath30/__init__.py
+elementpath/xpath30/_translation_maps.py
+elementpath/xpath30/_xpath30_functions.py
+elementpath/xpath30/_xpath30_operators.py
+elementpath/xpath30/xpath30_helpers.py
+elementpath/xpath30/xpath30_parser.py
+elementpath/xpath31/__init__.py
+elementpath/xpath31/_xpath31_functions.py
+elementpath/xpath31/_xpath31_operators.py
+elementpath/xpath31/xpath31_parser.py
+LICENSE
+PKG-INFO
+README.rst
+setup.py
+tests/execute_w3c_tests.py
+tests/memory_profiling.py
+tests/test_collations.py
+tests/test_compare.py
+tests/test_datatypes.py
+tests/test_elementpath.py
+tests/test_etree.py
+tests/test_exceptions.py
+tests/test_helpers.py
+tests/test_namespaces.py
+tests/test_package.py
+tests/test_regex.py
+tests/test_schema_context.py
+tests/test_schema_proxy.py
+tests/test_selectors.py
+tests/test_sequence_types.py
+tests/test_serialization.py
+tests/test_tdop_parser.py
+tests/test_tree_builders.py
+tests/test_typing.py
+tests/test_validators.py
+tests/test_xpath_context.py
+tests/test_xpath_nodes.py
+tests/test_xpath_tokens.py
+tests/test_xpath1_parser.py
+tests/test_xpath2_constructors.py
+tests/test_xpath2_functions.py
+tests/test_xpath2_parser.py
+tests/test_xpath30.py
+tests/test_xpath31.py
+tests/xpath_test_class.py
+--------------------------------------------------------------------------------
 
 The MIT License (MIT)
 
@@ -727,6 +962,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+
+* Package Info *
 
 --------------------------------------------------------------------------------
 Package Title: exceptiongroup (1.2.1)
@@ -770,6 +1007,10 @@ Permission to use, copy, modify, and distribute this software and its documentat
 STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 * MIT *
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 The MIT License (MIT)
 
@@ -847,6 +1088,8 @@ Agreement.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: execnet (2.0.2)
 
@@ -858,6 +1101,10 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -880,6 +1127,8 @@ MIT
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: Faker (18.13.0)
 
@@ -891,6 +1140,11 @@ Package Depth: Direct
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE.txt
+setup.py
+--------------------------------------------------------------------------------
 
 Copyright (c) 2012 Daniele Faraglia
 
@@ -914,6 +1168,8 @@ THE SOFTWARE.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: filelock (3.12.2)
 
@@ -925,6 +1181,10 @@ Package Depth: Direct
 * Declared Licenses *
 Unlicense
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 This is free and unencumbered software released into the public domain.
 
@@ -953,6 +1213,8 @@ For more information, please refer to <http://unlicense.org>
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: future (1.0.0)
 
@@ -964,6 +1226,13 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+docs/build/html/_sources/credits.rst.txt
+docs/credits.rst
+LICENSE.txt
+setup.py
+--------------------------------------------------------------------------------
 
 Copyright (c) 2013-2024 Python Charmers, Australia
 
@@ -991,6 +1260,11 @@ THE SOFTWARE.
 Python-2.0, GPL-2.0-only, HPND, public-domain, PIL
 
 * Python-2.0 *
+--------------------------------------------------------------------------------
+File matches:
+src/future/backports/urllib/robotparser.py
+--------------------------------------------------------------------------------
+
 
 1. This LICENSE AGREEMENT is between the Python Software Foundation ("PSF"), and the Individual or Organization ("Licensee") accessing and otherwise using this software ("Python") in source or binary form and its associated documentation.
    2. Subject to the terms and conditions of this License Agreement, PSF hereby grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use Python alone or in any derivative version, provided, however, that PSF's License Agreement and PSF's notice of copyright, i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation; All Rights Reserved" are retained in Python alone or in any derivative version prepared by Licensee.
@@ -1021,6 +1295,11 @@ Permission to use, copy, modify, and distribute this software and its documentat
 STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 * GPL-2.0-only *
+--------------------------------------------------------------------------------
+File matches:
+src/future/backports/urllib/robotparser.py
+--------------------------------------------------------------------------------
+
 
 Copyright (C) 2000 Bastian Kleineidam
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2.
@@ -1028,12 +1307,27 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 * HPND *
+--------------------------------------------------------------------------------
+File matches:
+src/future/backports/http/cookies.py
+--------------------------------------------------------------------------------
+
 
 <copyright notice>
 Permission to use, copy, modify and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies that both copyright notice and this permission notice appear in supporting documentation <copyright holder> <or related entities> not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission<<endOptional>> .
 
 * public-domain *
+--------------------------------------------------------------------------------
+File matches:
+docs/3rd-party-py3k-compat-code/pycrypto_py3compat.py
+--------------------------------------------------------------------------------
+
 * PIL *
+--------------------------------------------------------------------------------
+File matches:
+src/future/backports/xmlrpc/client.py
+--------------------------------------------------------------------------------
+
 
 By obtaining, using, and/or copying this software and/or its associated documentation, you agree that you have read, understood, and will comply with the following terms and conditions:
 
@@ -1041,6 +1335,8 @@ Permission to use, copy, modify, and distribute this software and its associated
 
 SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+
+* Package Info *
 
 --------------------------------------------------------------------------------
 Package Title: httplib2 (0.22.0)
@@ -1053,6 +1349,13 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+doc/html/_static/interface.js
+LICENSE
+python3/README
+setup.py
+--------------------------------------------------------------------------------
 
 Httplib2 Software License
 
@@ -1081,32 +1384,14 @@ SOFTWARE.
 
 
 * Other Licenses *
-Apache-2.0, GPL-2.0-only, BSD-3-Clause
-
-* Apache-2.0 *
-
-Copyright 2007 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-See the License for the specific language governing permissions and limitations under the License.
-
-* GPL-2.0-only *
-
-Copyright (C) 2006 Stefan Petre
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+BSD-3-Clause, Apache-2.0, GPL-2.0-only
 
 * BSD-3-Clause *
+--------------------------------------------------------------------------------
+File matches:
+python2/httplib2/socks.py
+--------------------------------------------------------------------------------
+
 
 Copyright (c) 2006 Dan-Haim. All rights reserved. . All rights reserved.
 
@@ -1135,6 +1420,41 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+* Apache-2.0 *
+--------------------------------------------------------------------------------
+File matches:
+python2/httplib2/__init__.py
+--------------------------------------------------------------------------------
+
+
+Copyright 2007 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+See the License for the specific language governing permissions and limitations under the License.
+
+* GPL-2.0-only *
+--------------------------------------------------------------------------------
+File matches:
+doc/html/_static/interface.js
+--------------------------------------------------------------------------------
+
+
+Copyright (C) 2006 Stefan Petre
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
+* Package Info *
 
 --------------------------------------------------------------------------------
 Package Title: idna (3.7)
@@ -1147,6 +1467,10 @@ Package Depth: Transitive
 * Declared Licenses *
 BSD-3-Clause
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE.md
+--------------------------------------------------------------------------------
 
 BSD 3-Clause License
 
@@ -1182,6 +1506,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: importlib-metadata (6.7.0)
 
@@ -1193,6 +1519,10 @@ Package Depth: Transitive
 * Declared Licenses *
 Apache-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 
                                  Apache License
@@ -1398,6 +1728,8 @@ Apache-2.0
    limitations under the License.
 
 
+
+* Package Info *
 
 --------------------------------------------------------------------------------
 Package Title: importlib-resources (5.12.0)
@@ -1410,6 +1742,10 @@ Package Depth: Transitive
 * Declared Licenses *
 Apache-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 
                                  Apache License
@@ -1616,6 +1952,8 @@ Apache-2.0
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: iniconfig (2.0.0)
 
@@ -1627,6 +1965,10 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1650,6 +1992,8 @@ MIT
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: jsonschema (4.17.3)
 
@@ -1661,6 +2005,14 @@ Package Depth: Direct
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+COPYING
+json/LICENSE
+json/package.json
+PKG-INFO
+pyproject.toml
+--------------------------------------------------------------------------------
 
 Copyright (c) 2013 Julian Berman
 
@@ -1687,6 +2039,11 @@ THE SOFTWARE.
 * Other Licenses *
 Apache-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+jsonschema/benchmarks/issue232/issue.json
+--------------------------------------------------------------------------------
+
 
 Copyright [yyyy] [name of copyright owner]
 
@@ -1703,6 +2060,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: junitparser (2.8.0)
 
@@ -1714,6 +2073,11 @@ Package Depth: Direct
 * Declared Licenses *
 Apache-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+setup.py
+--------------------------------------------------------------------------------
 
 Copyright 2020 Joel Wang
 
@@ -1730,6 +2094,8 @@ Copyright 2020 Joel Wang
    limitations under the License.
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: packaging (24.0)
 
@@ -1741,12 +2107,37 @@ Package Depth: Transitive
 * Declared Licenses *
 Apache-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+docs/conf.py
+docs/development/submitting-patches.rst
+LICENSE
+LICENSE.APACHE
+src/packaging/__init__.py
+src/packaging/_structures.py
+src/packaging/markers.py
+src/packaging/requirements.py
+src/packaging/specifiers.py
+src/packaging/tags.py
+src/packaging/utils.py
+src/packaging/version.py
+tests/__init__.py
+tests/test_markers.py
+tests/test_requirements.py
+tests/test_specifiers.py
+tests/test_structures.py
+tests/test_tags.py
+tests/test_utils.py
+tests/test_version.py
+--------------------------------------------------------------------------------
 
 This software is made available under the terms of *either* of the licenses
 found in LICENSE.APACHE or LICENSE.BSD. Contributions to this software is made
 under the terms of *both* these licenses.
 
 
+
+* Package Info *
 
 --------------------------------------------------------------------------------
 Package Title: pkgutil_resolve_name (1.3.10)
@@ -1760,6 +2151,10 @@ Package Depth: Transitive
 PSF-2.0, MIT
 
 * PSF-2.0 *
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
 
@@ -1773,6 +2168,10 @@ PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
   8. By copying, installing or otherwise using Python, Licensee agrees to be bound by the terms and conditions of this License Agreement.
 
 * MIT *
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1852,6 +2251,8 @@ Agreement.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: pluggy (1.2.0)
 
@@ -1863,6 +2264,10 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1888,6 +2293,8 @@ SOFTWARE.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: pyparsing (3.1.2)
 
@@ -1899,6 +2306,13 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+examples/verilog_parse.py
+LICENSE
+pyparsing/__init__.py
+pyparsing/core.py
+--------------------------------------------------------------------------------
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -1925,6 +2339,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 BSD-3-Clause, MIT-CMU, GPL-1.0-only
 
 * BSD-3-Clause *
+--------------------------------------------------------------------------------
+File matches:
+examples/booleansearchparser.py
+examples/searchparser.py
+--------------------------------------------------------------------------------
+
 
 Copyright (c) 2006 Estrate, the Netherlands . All rights reserved.
 
@@ -1954,6 +2374,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 * MIT-CMU *
+--------------------------------------------------------------------------------
+File matches:
+examples/snmp_api.h
+--------------------------------------------------------------------------------
+
 
 Copyright 1989, 1991, 1992 by Carnegie Mellon University
 Derivative Work - 1996, 1998-2000 Copyright 1996, 1998-2000 The Regents of the University of California
@@ -1962,12 +2387,19 @@ Permission to use, copy, modify and distribute this software and its documentati
 CMU AND THE REGENTS OF THE UNIVERSITY OF CALIFORNIA DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL CMU OR THE REGENTS OF THE UNIVERSITY OF CALIFORNIA BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM THE LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 * GPL-1.0-only *
+--------------------------------------------------------------------------------
+File matches:
+examples/verilog_parse.py
+--------------------------------------------------------------------------------
+
 
 Copyright (C) 2004-2011 Paul T. McGuire.  All rights reserved.
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 1.
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+
+* Package Info *
 
 --------------------------------------------------------------------------------
 Package Title: pyrsistent (0.19.3)
@@ -1980,6 +2412,11 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE.mit
+setup.py
+--------------------------------------------------------------------------------
 
 Copyright (c) 2022 Tobias Gustafsson
 
@@ -2007,6 +2444,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 * Other Licenses *
 BSD-3-Clause
+
+--------------------------------------------------------------------------------
+File matches:
+pyrsistent/_toolz.py
+--------------------------------------------------------------------------------
 
 
 Copyright (c) 2013 Matthew Rocklin . All rights reserved.
@@ -2037,6 +2479,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: pytest (7.4.4)
 
@@ -2048,6 +2492,12 @@ Package Depth: Direct
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+doc/en/license.rst
+LICENSE
+testing/example_scripts/junit-10.xsd
+--------------------------------------------------------------------------------
 
 The MIT License (MIT)
 
@@ -2073,6 +2523,8 @@ SOFTWARE.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: pytest-ordering (0.6)
 
@@ -2084,6 +2536,12 @@ Package Depth: Direct
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+PKG-INFO
+pytest_ordering.egg-info/PKG-INFO
+setup.py
+--------------------------------------------------------------------------------
 
 Copyright (c) <year> <copyright holders>
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -2104,6 +2562,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+
+* Package Info *
 
 --------------------------------------------------------------------------------
 Package Title: pytest-xdist (3.5.0)
@@ -2138,6 +2598,8 @@ MIT
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: python-dateutil (2.9.0.post0)
 
@@ -2150,6 +2612,14 @@ Package Depth: Transitive
 Apache-2.0, BSD-3-Clause
 
 * Apache-2.0 *
+--------------------------------------------------------------------------------
+File matches:
+CONTRIBUTING.md
+LICENSE
+PKG-INFO
+README.rst
+src/python_dateutil.egg-info/PKG-INFO
+--------------------------------------------------------------------------------
 
 Copyright 2017- Paul Ganssle <paul@ganssle.io>
 Copyright 2017- dateutil contributors (see AUTHORS file)
@@ -2207,6 +2677,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The above BSD License Applies to all code, even that also covered by Apache 2.0.
 
 * BSD-3-Clause *
+--------------------------------------------------------------------------------
+File matches:
+CONTRIBUTING.md
+LICENSE
+PKG-INFO
+README.rst
+src/python_dateutil.egg-info/PKG-INFO
+--------------------------------------------------------------------------------
 
 Copyright (c) 2017 Paul Ganssle <paul@ganssle.io> . All rights reserved.
 
@@ -2236,6 +2714,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: requests (2.31.0)
 
@@ -2247,6 +2727,10 @@ Package Depth: Direct
 * Declared Licenses *
 Apache-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 
                                  Apache License
@@ -2426,6 +2910,16 @@ Apache-2.0
 
 
 
+* Package Info *
+
+* Notice File(s) *
+
+NOTICE
+Requests
+Copyright 2019 Kenneth Reitz
+
+
+
 --------------------------------------------------------------------------------
 Package Title: six (1.16.0)
 
@@ -2437,6 +2931,13 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+setup.py
+six.py
+test_six.py
+--------------------------------------------------------------------------------
 
 Copyright (c) 2010-2020 Benjamin Peterson
 
@@ -2459,6 +2960,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: splunk-sdk (2.0.1)
 
@@ -2470,6 +2973,37 @@ Package Depth: Direct
 * Declared Licenses *
 Apache-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+PKG-INFO
+setup.py
+splunk_sdk.egg-info/PKG-INFO
+splunklib/__init__.py
+splunklib/binding.py
+splunklib/client.py
+splunklib/data.py
+splunklib/modularinput/argument.py
+splunklib/modularinput/event_writer.py
+splunklib/modularinput/event.py
+splunklib/modularinput/input_definition.py
+splunklib/modularinput/scheme.py
+splunklib/modularinput/script.py
+splunklib/modularinput/utils.py
+splunklib/modularinput/validation_definition.py
+splunklib/results.py
+splunklib/searchcommands/__init__.py
+splunklib/searchcommands/decorators.py
+splunklib/searchcommands/environment.py
+splunklib/searchcommands/eventing_command.py
+splunklib/searchcommands/external_search_command.py
+splunklib/searchcommands/generating_command.py
+splunklib/searchcommands/internals.py
+splunklib/searchcommands/reporting_command.py
+splunklib/searchcommands/search_command.py
+splunklib/searchcommands/streaming_command.py
+splunklib/searchcommands/validators.py
+splunklib/utils.py
+--------------------------------------------------------------------------------
 
 Copyright 2011-2015 Splunk, Inc.
 
@@ -2486,6 +3020,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: splunksplwrapper (1.1.4)
 
@@ -2497,6 +3033,78 @@ Package Depth: Direct
 * Declared Licenses *
 Apache-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+pyproject.toml
+splunksplwrapper/__init__.py
+splunksplwrapper/app/__init__.py
+splunksplwrapper/connector/__init__.py
+splunksplwrapper/connector/base.py
+splunksplwrapper/connector/httplib2_handler.py
+splunksplwrapper/connector/rest.py
+splunksplwrapper/connector/sdk.py
+splunksplwrapper/exceptions/__init__.py
+splunksplwrapper/exceptions/command_execution.py
+splunksplwrapper/exceptions/confs.py
+splunksplwrapper/exceptions/search.py
+splunksplwrapper/exceptions/wait.py
+splunksplwrapper/log/__init__.py
+splunksplwrapper/log/logging.conf
+splunksplwrapper/manager/__init__.py
+splunksplwrapper/manager/confs/__init__.py
+splunksplwrapper/manager/confs/conf.py
+splunksplwrapper/manager/confs/rest/__init__.py
+splunksplwrapper/manager/confs/rest/conf.py
+splunksplwrapper/manager/confs/rest/stanza.py
+splunksplwrapper/manager/confs/sdk/__init__.py
+splunksplwrapper/manager/confs/sdk/conf.py
+splunksplwrapper/manager/confs/sdk/stanza.py
+splunksplwrapper/manager/confs/stanza.py
+splunksplwrapper/manager/indexes/__init__.py
+splunksplwrapper/manager/indexes/index.py
+splunksplwrapper/manager/indexes/rest/__init__.py
+splunksplwrapper/manager/indexes/rest/index.py
+splunksplwrapper/manager/indexes/sdk/__init__.py
+splunksplwrapper/manager/indexes/sdk/index.py
+splunksplwrapper/manager/jobs/__init__.py
+splunksplwrapper/manager/jobs/job.py
+splunksplwrapper/manager/jobs/rest/__init__.py
+splunksplwrapper/manager/jobs/rest/job.py
+splunksplwrapper/manager/jobs/results.py
+splunksplwrapper/manager/jobs/sdk/__init__.py
+splunksplwrapper/manager/jobs/sdk/job.py
+splunksplwrapper/manager/object.py
+splunksplwrapper/manager/roles/__init__.py
+splunksplwrapper/manager/roles/role.py
+splunksplwrapper/manager/roles/sdk/__init__.py
+splunksplwrapper/manager/roles/sdk/role.py
+splunksplwrapper/manager/saved_searches/__init__.py
+splunksplwrapper/manager/saved_searches/saved_search.py
+splunksplwrapper/manager/saved_searches/sdk/__init__.py
+splunksplwrapper/manager/saved_searches/sdk/saved_search.py
+splunksplwrapper/manager/users/__init__.py
+splunksplwrapper/manager/users/sdk/__init__.py
+splunksplwrapper/manager/users/sdk/user.py
+splunksplwrapper/manager/users/user.py
+splunksplwrapper/misc/__init__.py
+splunksplwrapper/misc/collection.py
+splunksplwrapper/misc/manager_utils.py
+splunksplwrapper/SearchUtil.py
+splunksplwrapper/splunk/__init__.py
+splunksplwrapper/splunk/base.py
+splunksplwrapper/splunk/cloud.py
+splunksplwrapper/util/__init__.py
+splunksplwrapper/util/action_writer.py
+splunksplwrapper/util/attrdict.py
+splunksplwrapper/util/basefileutils.py
+splunksplwrapper/util/Constants.py
+splunksplwrapper/util/rest_uris.py
+splunksplwrapper/util/restutils.py
+splunksplwrapper/util/rip.py
+splunksplwrapper/util/searchhelpers.py
+splunksplwrapper/util/string_unicode_convert.py
+--------------------------------------------------------------------------------
 
                                  Apache License
                            Version 2.0, January 2004
@@ -2702,6 +3310,8 @@ Apache-2.0
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: tomli (2.0.1)
 
@@ -2713,6 +3323,14 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+src/tomli/__init__.py
+src/tomli/_parser.py
+src/tomli/_re.py
+src/tomli/_types.py
+--------------------------------------------------------------------------------
 
 MIT License
 
@@ -2738,6 +3356,8 @@ SOFTWARE.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: typing-extensions (4.7.1)
 
@@ -2749,6 +3369,10 @@ Package Depth: Transitive
 * Declared Licenses *
 Python-2.0
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 1. This LICENSE AGREEMENT is between the Python Software Foundation ("PSF"), and the Individual or Organization ("Licensee") accessing and otherwise using this software ("Python") in source or binary form and its associated documentation.
    2. Subject to the terms and conditions of this License Agreement, PSF hereby grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use Python alone or in any derivative version, provided, however, that PSF's License Agreement and PSF's notice of copyright, i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation; All Rights Reserved" are retained in Python alone or in any derivative version prepared by Licensee.
@@ -2779,6 +3403,8 @@ Permission to use, copy, modify, and distribute this software and its documentat
 STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: urllib3 (1.26.19)
 
@@ -2790,6 +3416,15 @@ Package Depth: Direct
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+dummyserver/proxy.py
+LICENSE.txt
+setup.py
+src/urllib3/contrib/_securetransport/bindings.py
+src/urllib3/contrib/securetransport.py
+src/urllib3/packages/six.py
+--------------------------------------------------------------------------------
 
 MIT License
 
@@ -2815,6 +3450,8 @@ SOFTWARE.
 
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: xmlschema (2.5.1)
 
@@ -2826,6 +3463,106 @@ Package Depth: Direct
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+doc/intro.rst
+LICENSE
+PKG-INFO
+README.rst
+setup.py
+tests/check_memory.py
+tests/test_all.py
+tests/test_cases/examples/collection/collection.py
+tests/test_cli.py
+tests/test_codegen.py
+tests/test_converters.py
+tests/test_dataobjects.py
+tests/test_documents.py
+tests/test_files.py
+tests/test_helpers.py
+tests/test_memory.py
+tests/test_namespaces.py
+tests/test_package.py
+tests/test_resources.py
+tests/test_schemas.py
+tests/test_translations.py
+tests/test_typing.py
+tests/test_validation.py
+tests/test_w3c_suite.py
+tests/test_wsdl.py
+tests/test_xpath.py
+tests/validation/test_decoding.py
+tests/validation/test_encoding.py
+tests/validation/test_validation.py
+tests/validators/test_attributes.py
+tests/validators/test_builtins.py
+tests/validators/test_complex_types.py
+tests/validators/test_elements.py
+tests/validators/test_exceptions.py
+tests/validators/test_facets.py
+tests/validators/test_global_maps.py
+tests/validators/test_groups.py
+tests/validators/test_identities.py
+tests/validators/test_models.py
+tests/validators/test_notations.py
+tests/validators/test_particles.py
+tests/validators/test_schemas.py
+tests/validators/test_simple_types.py
+tests/validators/test_wildcards.py
+tests/validators/test_xsdbase.py
+xmlschema.egg-info/PKG-INFO
+xmlschema/__init__.py
+xmlschema/aliases.py
+xmlschema/cli.py
+xmlschema/converters/__init__.py
+xmlschema/converters/abdera.py
+xmlschema/converters/badgerfish.py
+xmlschema/converters/columnar.py
+xmlschema/converters/default.py
+xmlschema/converters/jsonml.py
+xmlschema/converters/parker.py
+xmlschema/converters/unordered.py
+xmlschema/dataobjects.py
+xmlschema/documents.py
+xmlschema/exceptions.py
+xmlschema/exports.py
+xmlschema/extras/codegen.py
+xmlschema/extras/templates/python/bindings.py.jinja
+xmlschema/extras/templates/python/sample.py.jinja
+xmlschema/extras/wsdl.py
+xmlschema/helpers.py
+xmlschema/limits.py
+xmlschema/names.py
+xmlschema/namespaces.py
+xmlschema/resources.py
+xmlschema/testing/__init__.py
+xmlschema/testing/_builders.py
+xmlschema/testing/_case_class.py
+xmlschema/testing/_factory.py
+xmlschema/testing/_helpers.py
+xmlschema/testing/_observers.py
+xmlschema/translation.py
+xmlschema/validators/__init__.py
+xmlschema/validators/assertions.py
+xmlschema/validators/attributes.py
+xmlschema/validators/builtins.py
+xmlschema/validators/complex_types.py
+xmlschema/validators/elements.py
+xmlschema/validators/exceptions.py
+xmlschema/validators/facets.py
+xmlschema/validators/global_maps.py
+xmlschema/validators/groups.py
+xmlschema/validators/helpers.py
+xmlschema/validators/identities.py
+xmlschema/validators/models.py
+xmlschema/validators/notations.py
+xmlschema/validators/particles.py
+xmlschema/validators/schemas.py
+xmlschema/validators/simple_types.py
+xmlschema/validators/wildcards.py
+xmlschema/validators/xsdbase.py
+xmlschema/xpath.py
+--------------------------------------------------------------------------------
 
 The MIT License (MIT)
 
@@ -2855,11 +3592,25 @@ SOFTWARE.
 W3C, W3C-19980720
 
 * W3C *
+--------------------------------------------------------------------------------
+File matches:
+xmlschema/schemas/DSIG/xmldsig11-schema.xsd
+xmlschema/schemas/XENC/xenc-schema-11.xsd
+xmlschema/schemas/XENC/xenc-schema.xsd
+--------------------------------------------------------------------------------
+
 
 Copyright (C) [$date-of-software] World Wide Web Consortium, (Massachusetts Institute of Technology, European Research Consortium for Informatics and Mathematics, Keio University). All Rights Reserved.
 This work is distributed under the W3C® Software License in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 * W3C-19980720 *
+--------------------------------------------------------------------------------
+File matches:
+xmlschema/schemas/DSIG/xmldsig-core-schema.xsd
+xmlschema/schemas/WSDL/soap-encoding.xsd
+xmlschema/schemas/WSDL/soap-envelope.xsd
+--------------------------------------------------------------------------------
+
 
 Copyright (c) 1994-2002 World Wide Web Consortium, (Massachusetts Institute of Technology, Institut National de Recherche en Informatique et en Automatique, Keio University). All Rights Reserved. http://www.w3.org/Consortium/Legal/
 This W3C work (including software, documents, or other related items) is being provided by the copyright holders under the following license. By obtaining, using and/or copying this work, you (the licensee) agree that you have read, understood, and will comply with the following terms and conditions:
@@ -2872,6 +3623,8 @@ COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQ
 The name and trademarks of copyright holders may NOT be used in advertising or publicity pertaining to the software without specific, written prior permission. Title to copyright in this software and any associated documentation will at all times remain with copyright holders.
 
 
+* Package Info *
+
 --------------------------------------------------------------------------------
 Package Title: xmltodict (0.13.0)
 
@@ -2883,6 +3636,11 @@ Package Depth: Direct
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+setup.py
+--------------------------------------------------------------------------------
 
 Copyright (C) 2012 Martin Blech and individual contributors.
 
@@ -2893,6 +3651,8 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+
+* Package Info *
 
 --------------------------------------------------------------------------------
 Package Title: zipp (3.15.0)
@@ -2905,6 +3665,10 @@ Package Depth: Transitive
 * Declared Licenses *
 MIT
 
+--------------------------------------------------------------------------------
+File matches:
+LICENSE
+--------------------------------------------------------------------------------
 
 Copyright Jason R. Coombs
 
@@ -2927,6 +3691,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 
 
+
+* Package Info *
 
 
 ================================================================================
@@ -5136,10 +5902,6 @@ Copyright (c) 2022 Splunk Inc.
 
 Copyright (c) yyyy} {name of copyright owner}
 
-Copyright (c)  yyyy} {name of copyright owner}
-
-Copyright (c)  owner}
-
 Copyright (c) 2011-2015 Splunk, Inc.
 
 Copyright (c) 2007 Google Inc.
@@ -5415,9 +6177,9 @@ Copyright (c)  Jason R. Coombs
 
 Copyright (c) 2006 by Joe Gregorio
 
-Copyright (c) 2006 Stefan Petre
-
 Copyright (c) 2009 by Mark Pilgrim
+
+Copyright (c) 2006 Stefan Petre
 
 Copyright (c) 2008-2020 Andrey Petrov and contributors (see CONTRIBUTORS.txt)
 
@@ -5469,15 +6231,15 @@ Copyright (c) 2016-2023 SISSA (International School for Advanced Studies).
 
 Copyright (c) 2018-2021 SISSA (Scuola Internazionale Superiore di Studi Avanzati)
 
-Copyright (c) 2022 SISSA (International School for Advanced Studies).
-
 Copyright (c) 2018-2022 SISSA (International School for Advanced Studies).
 
 Copyright (c) 2018-2021 SISSA (International School for Advanced Studies).
 
-Copyright (c) 2018 SISSA (International School for Advanced Studies).
+Copyright (c) 2022 SISSA (International School for Advanced Studies).
 
 Copyright (c) 2018-2023 SISSA (International School for Advanced Studies).
+
+Copyright (c) 2018 SISSA (International School for Advanced Studies).
 
 Copyright (c) 2023 SISSA (International School for Advanced Studies).
 MIT License
@@ -5597,6 +6359,103 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
 This Source Code Form is "Incompatible With Secondary Licenses", as defined by the Mozilla Public License, v. 2.0.
 
 --------------------------------------------------------------------------------
+No Associated License
+
+Copyright (c)  str
+
+Copyright (c)  as __copyright__
+
+Copyright (c)  licensing info to every file, as requested by a large
+
+Copyright (c)  Jonathan Hartley 2013. BSD 3-Clause license, see LICENSE file.
+
+Copyright (c)  Jonathan Hartley & Arnon Yaari, 2013-2020. BSD 3-Clause license; see
+
+Copyright (c)  Copyright 2007-2019 by the Sphinx team, see AUTHORS.
+
+Copyright (c) 2007-2019 by the Sphinx team, see AUTHORS.
+
+Copyright (c)  JS Foundation and other contributors
+
+Copyright (c)  software-19980720
+
+Copyright (c) 2004-2015 
+
+Copyright (c)  Copyright 2013 by the Jinja team, see AUTHORS.
+
+Copyright (c) 2013 by the Jinja team, see AUTHORS.
+
+Copyright (c) 2013-2024 Python Charmers, Australia.
+
+Copyright (c)  is shown in the HTML footer. Default is True.
+
+Copyright (c)  True
+
+Copyright (c)  Copyright 2008 by Armin Ronacher.
+
+Copyright (c) 2008 by Armin Ronacher.
+
+Copyright (c) 2013-2024 Python Charmers, Australia.\n",
+
+Copyright (c) 2013 Damián Avila
+
+Copyright (c)  Copyright 2011 by Armin Ronacher.
+
+Copyright (c) 2011 by Armin Ronacher.
+
+Copyright (c) 2010 by Armin Ronacher.
+
+Copyright (c) 2002-2007 Python Software Foundation
+
+Copyright (c) 2001-2007 Python Software Foundation
+
+Copyright (c) 2001-2006 Python Software Foundation
+
+Copyright (c) 2004-2006 Python Software Foundation
+
+Copyright (c) 2001-2010 Python Software Foundation
+
+Copyright (c) 2002-2006 Python Software Foundation
+
+Copyright (c) 2000 Luke Kenneth Casson Leighton <lkcl@samba.org>
+
+Copyright (c)  of the Python Software Foundation, licensed under the Python
+
+Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 
+
+Copyright (c) 2006 Google, Inc. All Rights Reserved.
+
+Copyright (c) 2009 John Resig
+
+Copyright (c) 2009 The Dojo Foundation
+
+Copyright (c) 2019 by Joel Wang.
+
+Copyright (c)  dates in LICENSE, README.rst and in the documentation.
+
+Copyright (c) 2013 holger krekel et alii"
+
+Copyright (c)  Holger Krekel and others, 2004.
+
+Copyright (c) 2019 Kenneth Reitz
+
+Copyright (c) 2012 by Kenneth Reitz.
+
+Copyright (c) 2017 by Kenneth Reitz.
+
+Copyright (c)  information
+
+Copyright (c)  reasons. You can find the repository
+
+Copyright (c) 2022 , 2016 SISSA (International School for Advanced Studies).
+
+Copyright (c) 2016 SISSA (International School for Advanced Studies).
+
+Copyright (c) 2001 - 2005 International Business Machines Corporation and Microsoft Corporation
+
+Copyright (c) 1998-2002 W3C (MIT, INRIA, Keio),
+
+--------------------------------------------------------------------------------
 PIL Software License
 
 Copyright (c) 1999-2002 by Secret Labs AB.
@@ -5676,10 +6535,6 @@ STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFT
 
 --------------------------------------------------------------------------------
 The Unlicense
-
-Copyright (c) interest in the
-
-Copyright (c)  interest in the
 This is free and unencumbered software released into the public domain.
 Anyone is free to copy, modify, publish, use, compile, sell, or distribute this software, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.
 In jurisdictions that recognize copyright laws, the author or authors of this software dedicate any and all copyright interest in the software to the public domain. We make this dedication for the benefit of the public at large and to the detriment of our heirs and
@@ -5736,4 +6591,4 @@ Public Domain
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
-Report Generated by FOSSA on 2025-3-7
+Report Generated by FOSSA on 2025-5-14
