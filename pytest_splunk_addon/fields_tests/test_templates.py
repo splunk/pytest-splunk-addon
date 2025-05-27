@@ -189,7 +189,7 @@ class FieldTestTemplates(object):
             if param_value is not None:
                 basic_search += f" {param}={param_value}"
 
-        search = f"search {index_list} {basic_search} unique_identifier=\"{unique_identifier}\" | fields *"
+        search = f'search {index_list} {basic_search} unique_identifier="{unique_identifier}" | fields *'
 
         self.logger.info(f"Executing the search query: {search}")
 
