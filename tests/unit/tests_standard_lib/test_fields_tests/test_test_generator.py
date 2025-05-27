@@ -411,115 +411,119 @@ def test_generate_field_tests(
         assert param_mock.call_count == len(expected_output)
 
 
-@pytest.mark.parametrize(
-    "tokenised_events, expected_output",
-    [
-        (
-            [
-                SampleEvent(
-                    event_string="escaped_event",
-                    metadata={
-                        "input_type": "modinput",
-                        "sourcetype_to_search": "dummy_sourcetype",
-                        "host": "dummy_host",
-                    },
-                    sample_name="file1.xml",
-                    requirement_test_data={
-                        "cim_fields": {
-                            "dest": "192.168.0.1",
-                            "severity": "low",
-                            "signature_id": "405001",
-                            "src": "192.168.0.1",
-                            "type": "event",
+with patch("uuid.uuid4", return_value="uuid"):
+
+    @pytest.mark.parametrize(
+        "tokenised_events, expected_output",
+        [
+            (
+                [
+                    SampleEvent(
+                        event_string="escaped_event",
+                        metadata={
+                            "input_type": "modinput",
+                            "sourcetype_to_search": "dummy_sourcetype",
+                            "host": "dummy_host",
                         },
-                        "exceptions": {"mane_1": "value_1", "dest": "192.168.0.1"},
-                        "other_fields": {
-                            "vendor_product": "Pytest Splunk Addon",
-                            "target_users": "dummy.user@splunk.com",
+                        sample_name="file1.xml",
+                        requirement_test_data={
+                            "cim_fields": {
+                                "dest": "192.168.0.1",
+                                "severity": "low",
+                                "signature_id": "405001",
+                                "src": "192.168.0.1",
+                                "type": "event",
+                            },
+                            "exceptions": {"mane_1": "value_1", "dest": "192.168.0.1"},
+                            "other_fields": {
+                                "vendor_product": "Pytest Splunk Addon",
+                                "target_users": "dummy.user@splunk.com",
+                            },
                         },
-                    },
-                ),
-                SampleEvent(
-                    event_string="escaped_event",
-                    metadata={
-                        "input_type": "syslog_tcp",
-                        "sourcetype_to_search": "dummy_sourcetype",
-                        "host": "dummy_host_syslog",
-                    },
-                    sample_name="file1.xml",
-                    requirement_test_data={},
-                ),
-                SampleEvent(
-                    event_string="escaped_event",
-                    metadata={
-                        "input_type": "syslog_tcp",
-                        "sourcetype_to_search": "dummy_sourcetype",
-                        "host": "dummy_host_syslog",
-                    },
-                    sample_name="file1.xml",
-                    requirement_test_data={
-                        "cim_fields": {
-                            "src": "192.168.0.1",
-                            "type": "event",
+                    ),
+                    SampleEvent(
+                        event_string="escaped_event",
+                        metadata={
+                            "input_type": "syslog_tcp",
+                            "sourcetype_to_search": "dummy_sourcetype",
+                            "host": "dummy_host_syslog",
                         },
-                        "exceptions": {},
-                        "other_fields": {
-                            "vendor_product": "Pytest Splunk Addon",
-                            "target_users": "dummy.user@splunk.com",
+                        sample_name="file1.xml",
+                        requirement_test_data={},
+                    ),
+                    SampleEvent(
+                        event_string="escaped_event",
+                        metadata={
+                            "input_type": "syslog_tcp",
+                            "sourcetype_to_search": "dummy_sourcetype",
+                            "host": "dummy_host_syslog",
                         },
-                    },
-                ),
-            ],
-            [
-                (
-                    {
-                        "escaped_event": "escaped_event",
-                        "fields": {
-                            "severity": "low",
-                            "signature_id": "405001",
-                            "src": "192.168.0.1",
-                            "type": "event",
-                            "vendor_product": "Pytest Splunk Addon",
-                            "target_users": "dummy.user@splunk.com",
+                        sample_name="file1.xml",
+                        requirement_test_data={
+                            "cim_fields": {
+                                "src": "192.168.0.1",
+                                "type": "event",
+                            },
+                            "exceptions": {},
+                            "other_fields": {
+                                "vendor_product": "Pytest Splunk Addon",
+                                "target_users": "dummy.user@splunk.com",
+                            },
                         },
-                        "modinput_params": {"sourcetype": "dummy_sourcetype"},
-                    },
-                    "sample_name::file1.xml::host::dummy_host",
-                ),
-                (
-                    {
-                        "escaped_event": "escaped_event",
-                        "fields": {
-                            "src": "192.168.0.1",
-                            "type": "event",
-                            "vendor_product": "Pytest Splunk Addon",
-                            "target_users": "dummy.user@splunk.com",
+                    ),
+                ],
+                [
+                    (
+                        {
+                            "escaped_event": "escaped_event",
+                            "fields": {
+                                "severity": "low",
+                                "signature_id": "405001",
+                                "src": "192.168.0.1",
+                                "type": "event",
+                                "vendor_product": "Pytest Splunk Addon",
+                                "target_users": "dummy.user@splunk.com",
+                            },
+                            "modinput_params": {"sourcetype": "dummy_sourcetype"},
+                            "unique_identifier": "uuid",
                         },
-                        "modinput_params": {"sourcetype": "dummy_sourcetype"},
-                    },
-                    "sample_name::file1.xml::host::dummy_host_syslog",
-                ),
-            ],
-        ),
-    ],
-)
-def test_generate_requirement_tests(tokenised_events, expected_output):
-    with patch.object(
-        xml_event_parser, "strip_syslog_header", return_value="escaped_event"
-    ), patch.object(
-        xml_event_parser, "escape_char_event", return_value="escaped_event"
-    ), patch.object(
-        pytest, "param", side_effect=lambda x, id: (x, id)
-    ) as param_mock:
-        out = list(
-            FieldTestGenerator(
-                "app_path",
-                tokenised_events,
-                "field_bank",
-            ).generate_requirements_tests()
-        )
-        assert out == expected_output
-        assert param_mock.call_count == len(expected_output)
+                        "sample_name::file1.xml::host::dummy_host",
+                    ),
+                    (
+                        {
+                            "escaped_event": "escaped_event",
+                            "fields": {
+                                "src": "192.168.0.1",
+                                "type": "event",
+                                "vendor_product": "Pytest Splunk Addon",
+                                "target_users": "dummy.user@splunk.com",
+                            },
+                            "modinput_params": {"sourcetype": "dummy_sourcetype"},
+                            "unique_identifier": "uuid",
+                        },
+                        "sample_name::file1.xml::host::dummy_host_syslog",
+                    ),
+                ],
+            ),
+        ],
+    )
+    def test_generate_requirement_tests(tokenised_events, expected_output):
+        with patch.object(
+            xml_event_parser, "strip_syslog_header", return_value="escaped_event"
+        ), patch.object(
+            xml_event_parser, "escape_char_event", return_value="escaped_event"
+        ), patch.object(
+            pytest, "param", side_effect=lambda x, id: (x, id)
+        ) as param_mock:
+            out = list(
+                FieldTestGenerator(
+                    "app_path",
+                    tokenised_events,
+                    "field_bank",
+                ).generate_requirements_tests()
+            )
+            assert out == expected_output
+            assert param_mock.call_count == len(expected_output)
 
 
 @pytest.mark.parametrize(

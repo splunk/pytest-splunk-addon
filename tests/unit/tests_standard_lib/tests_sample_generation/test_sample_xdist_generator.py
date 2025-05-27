@@ -12,6 +12,7 @@ tokenized_event = namedtuple(
         "sample_name",
         "metadata",
         "event",
+        "unique_identifier",
         "key_fields",
         "time_values",
         "requirement_test_data",
@@ -30,6 +31,7 @@ tokenized_events = [
             "input_type": "modinput",
         },
         "event_field",
+        "uuid",
         "key_fields_field",
         "time_values_field",
         "requirement_test_data",
@@ -46,6 +48,7 @@ tokenized_events = [
             "sample_count": 4,
         },
         "event_field",
+        "uuid",
         "key_fields_field",
         "time_values_field",
         "requirement_test_data",
@@ -62,6 +65,7 @@ tokenized_events = [
             "sample_count": 4,
         },
         "event_field",
+        "uuid",
         "key_fields_field_3",
         "time_values_field_3",
         "requirement_test_data",
@@ -140,10 +144,10 @@ class TestSampleXdistGenerator:
             open_mock().write.assert_has_calls(
                 [
                     call(
-                        '{\n\t"sample_name_1": {\n\t\t"metadata": {\n\t\t\t"host": "host_1",\n\t\t\t"source": "source_1",\n\t\t\t"sourcetype": "sourcetype_1",\n\t\t\t"timestamp_type": "timestamp_type_1",\n\t\t\t"input_type": "modinput",\n\t\t\t"expected_event_count": 1,\n\t\t\t"index": "main"\n\t\t},\n\t\t"events": [\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field",\n\t\t\t\t"time_values": "time_values_field",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t},\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field_3",\n\t\t\t\t"time_values": "time_values_field_3",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t}\n\t\t]\n\t}\n}'
+                        '{\n\t"sample_name_1": {\n\t\t"metadata": {\n\t\t\t"host": "host_1",\n\t\t\t"source": "source_1",\n\t\t\t"sourcetype": "sourcetype_1",\n\t\t\t"timestamp_type": "timestamp_type_1",\n\t\t\t"input_type": "modinput",\n\t\t\t"expected_event_count": 1,\n\t\t\t"index": "main"\n\t\t},\n\t\t"events": [\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"unique_identifier": "uuid",\n\t\t\t\t"key_fields": "key_fields_field",\n\t\t\t\t"time_values": "time_values_field",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t},\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"unique_identifier": "uuid",\n\t\t\t\t"key_fields": "key_fields_field_3",\n\t\t\t\t"time_values": "time_values_field_3",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t}\n\t\t]\n\t}\n}'
                     ),
                     call(
-                        '{\n\t"sample_name_2": {\n\t\t"metadata": {\n\t\t\t"host": "host_2",\n\t\t\t"source": "source_2",\n\t\t\t"sourcetype": "sourcetype_2",\n\t\t\t"timestamp_type": "timestamp_type_2",\n\t\t\t"input_type": "input_else",\n\t\t\t"expected_event_count": 8,\n\t\t\t"index": "main"\n\t\t},\n\t\t"events": [\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field",\n\t\t\t\t"time_values": "time_values_field",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t}\n\t\t]\n\t}\n}'
+                        '{\n\t"sample_name_2": {\n\t\t"metadata": {\n\t\t\t"host": "host_2",\n\t\t\t"source": "source_2",\n\t\t\t"sourcetype": "sourcetype_2",\n\t\t\t"timestamp_type": "timestamp_type_2",\n\t\t\t"input_type": "input_else",\n\t\t\t"expected_event_count": 8,\n\t\t\t"index": "main"\n\t\t},\n\t\t"events": [\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"unique_identifier": "uuid",\n\t\t\t\t"key_fields": "key_fields_field",\n\t\t\t\t"time_values": "time_values_field",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t}\n\t\t]\n\t}\n}'
                     ),
                 ]
             )

@@ -266,6 +266,7 @@ class FieldTestGenerator(object):
                         "escaped_event": escaped_event,
                         "fields": requirement_fields,
                         "modinput_params": modinput_params,
+                        "unique_identifier": event.unique_identifier,
                     },
                     id=f"sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )
