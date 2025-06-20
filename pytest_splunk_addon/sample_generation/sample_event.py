@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import uuid
 import re
 import logging
 from ..index_tests import key_fields
@@ -67,6 +68,8 @@ class SampleEvent(object):
         self.time_values = list()
         self.metadata = metadata
         self.sample_name = sample_name
+        if metadata["ingest_with_uuid"] == "true":
+            self.unique_identifier = str(uuid.uuid4())
         self.host_count = 0
         self.requirement_test_data = requirement_test_data
 
