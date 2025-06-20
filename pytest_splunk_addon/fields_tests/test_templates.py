@@ -185,7 +185,15 @@ class FieldTestTemplates(object):
             if param_value is not None:
                 basic_search += f" {param}={param_value}"
 
-        search = f"search {index_list} {basic_search} {escaped_event} | fields *"
+        if splunk_searchtime_fields_requirements.get("unique_identifier"):
+            record_property(
+            "stanza_name", splunk_searchtime_fields_requirements["unique_identifier"]
+        )
+            unique_identifier = splunk_searchtime_fields_requirements["unique_identifier"]
+            
+            search = f"search {index_list} {basic_search} unique_identifier=\"{unique_identifier}\" | fields *"
+        else:
+            search = f"search {index_list} {basic_search} {escaped_event} | fields *"
 
         self.logger.info(f"Executing the search query: {search}")
 
@@ -225,6 +233,7 @@ class FieldTestTemplates(object):
         assert wrong_value_fields == {}, (
             f"\nNot all required fields have correct values or some fields are missing in Splunk. Wrong field values:\n{wrong_values_table}"
             f"{format_search_query_log(search)}"
+            f"Test failed for event: {escaped_event}\n"
         )
 
     @pytest.mark.splunk_searchtime_fields

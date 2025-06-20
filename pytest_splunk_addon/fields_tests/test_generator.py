@@ -261,12 +261,15 @@ class FieldTestGenerator(object):
                     for field, value in requirement_fields.items()
                     if field not in exceptions
                 }
-                yield pytest.param(
-                    {
+                sample_event = {
                         "escaped_event": escaped_event,
                         "fields": requirement_fields,
                         "modinput_params": modinput_params,
-                    },
+                    }
+                if metadata["ingest_with_uuid"] == "true":
+                    sample_event["unique_identifier"] = event.unique_identifier
+                yield pytest.param(
+                    sample_event,
                     id=f"sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )
 
