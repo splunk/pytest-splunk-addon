@@ -190,11 +190,14 @@ class FieldTestGenerator(object):
                 datamodel.replace(" ", "_").replace(":", "_")
                 for datamodel in datamodels
             ]
-            yield pytest.param(
-                {
+            sample_event = {
                     "datamodels": datamodels,
                     "stanza": escaped_event,
-                },
+                }
+            if event.metadata["ingest_with_uuid"] == "true":
+                    sample_event["unique_identifier"] = event.unique_identifier
+            yield pytest.param(
+                sample_event,
                 id=f"{'-'.join(datamodels)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
             )
 
