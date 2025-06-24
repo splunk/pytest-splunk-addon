@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 import json
-
 from .base_event_ingestor import EventIngestor
 import requests
 from time import time, mktime
