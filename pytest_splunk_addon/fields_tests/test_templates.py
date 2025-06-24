@@ -401,13 +401,10 @@ class FieldTestTemplates(object):
             record_property (fixture): Document facts of test cases to provide more info in the test failure reports.
             caplog (fixture): fixture to capture logs.
         """
-        esacaped_event = splunk_searchtime_fields_datamodels["stanza"]
+        escaped_event = splunk_searchtime_fields_datamodels["stanza"]
         datamodels = splunk_searchtime_fields_datamodels["datamodels"]
-        self.logger.info(
-            f"Testing for tag {datamodels} with tag_query {esacaped_event}"
-        )
 
-        record_property("Event_with", esacaped_event)
+        record_property("Event_with", escaped_event)
         record_property("datamodels", datamodels)
 
         index_list = (
@@ -415,7 +412,23 @@ class FieldTestTemplates(object):
             + " OR index=".join(splunk_search_util.search_index.split(","))
             + ")"
         )
-        search = f"search {index_list} {esacaped_event} | fields *"
+
+        if splunk_searchtime_fields_datamodels.get("unique_identifier"):
+            record_property(
+            "stanza_name", splunk_searchtime_fields_datamodels["unique_identifier"]
+        )
+            unique_identifier = splunk_searchtime_fields_datamodels["unique_identifier"]
+
+            self.logger.info(
+            f"Testing for tag {datamodels} with unique_identifier=\"{unique_identifier}\""
+        )
+            
+            search = f"search {index_list} unique_identifier=\"{unique_identifier}\" | fields *"
+        else:
+            self.logger.info(
+            f"Testing for tag {datamodels} with tag_query {escaped_event}"
+        )
+            search = f"search {index_list} {escaped_event} | fields *"
 
         self.logger.info(f"Search: {search}")
 
