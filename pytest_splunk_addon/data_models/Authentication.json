@@ -108,6 +108,16 @@
           "comment": "The human-readable message associated with the authentication action (success or failure)."
         },
         {
+          "name": "reason_id",
+          "type": "optional",
+          "comment": "The reason why logon failed. For example \\'0xC0000234\\'."
+        },
+        {
+          "name": "process",
+          "type": "optional",
+          "comment": "Full path and the name of the executable for the process that attempted the logon. For example, it is a \\\"Process Name\\\" in Windows such as `C:\\\\Windows\\\\System32\\\\svchost.exe`."
+        },
+        {
           "name": "src_user",
           "condition": "src_user=* tag=privileged",
           "type": "conditional",
@@ -118,6 +128,7 @@
           "type": "optional",
           "comment": "The account that manages the user that initiated the request. The account represents the organization, a Cloud customer, or a Cloud account."
         }
+
       ],
       "child_dataset": [
         {
