@@ -351,6 +351,11 @@
           "name": "vendor_product",
           "type": "required",
           "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
+        },
+        {
+          "name": "image",
+          "type": "optional",
+          "comment": "The binary file path or name that is tied to a process ID (PID) in events like process creation or termination."
         }
       ],
       "child_dataset": [],
@@ -469,6 +474,11 @@
           "name": "vendor_product",
           "type": "required",
           "comment": "The vendor and product name of the Endpoint solution that reported the event, such as Carbon Black Cb Response. This field can be automatically populated by vendor and product fields in your data."
+        },
+        {
+          "name": "image",
+          "type": "optional",
+          "comment": "The binary file path or name that is tied to a process ID (PID) in events like process creation or termination."
         }
       ],
       "child_dataset": [],

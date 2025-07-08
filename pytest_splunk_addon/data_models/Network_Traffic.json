@@ -198,7 +198,12 @@
         {
           "name": "rule",
           "type": "optional",
-          "comment": "The rule which defines the action that was taken in the network event. Note: This is a string value. Use rule_id for rule fields that are integer data types. The rule_id field is optional, so it is not included in the data model"
+          "comment": "The rule which defines the action that was taken in the network event. Note: This is a string value. Use rule_id for rule fields that are integer data types."
+        },
+        {
+          "name": "rule_id",
+          "type": "optional",
+          "comment": "The vendor-specific unique identifier of the rule. Examples: 0x00011f0000011f00, 0x00011f00-syn_flood."
         },
         {
           "name": "session_id",

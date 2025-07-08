@@ -2399,4 +2399,5 @@ datamodels = {
 # No fields changes between v6.0.0 and v6.0.2
 datamodels["6.0.1"] = datamodels["6.0.0"]
 datamodels["6.0.2"] = datamodels["6.0.0"]
-datamodels["latest"] = datamodels["6.0.2"]
+datamodels["6.1.0"] = datamodels["6.0.2"]
+datamodels["latest"] = datamodels["6.1.0"]
