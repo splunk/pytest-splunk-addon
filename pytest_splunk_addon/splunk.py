@@ -52,10 +52,9 @@ def pytest_addoption(parser):
         "--ingest-with-uuid",
         action="store",
         dest="ingest_with_uuid",
-        default="False",
+        default="false",
         help=(
-            "Type of ingesting and searching the events into Splunk "
-            "with uuid or without uuid."
+            'Use generated UUID for ingesting and searching events. Setting this parameter to "true" will lead to matching events in search by the ID and not by escaped _raw. Default is "false".'
         ),
     )
 

@@ -95,7 +95,9 @@ class IngestorHelper(object):
             thread_count (int): number of threads to use for ingestion
             store_events (bool): Boolean param for generating json files with tokenised events
         """
-        sample_generator = SampleXdistGenerator(addon_path, ingest_meta_data["ingest_with_uuid"], config_path)
+        sample_generator = SampleXdistGenerator(
+            addon_path, ingest_meta_data["ingest_with_uuid"], config_path
+        )
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         ingestor_dict = cls.get_consolidated_events(tokenized_events)
