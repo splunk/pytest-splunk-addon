@@ -191,11 +191,11 @@ class FieldTestGenerator(object):
                 for datamodel in datamodels
             ]
             sample_event = {
-                    "datamodels": datamodels,
-                    "stanza": escaped_event,
-                }
-            if event.metadata["ingest_with_uuid"] == "true":
-                    sample_event["unique_identifier"] = event.unique_identifier
+                "datamodels": datamodels,
+                "stanza": escaped_event,
+            }
+            if event.metadata.get("ingest_with_uuid") == "true":
+                sample_event["unique_identifier"] = event.unique_identifier
             yield pytest.param(
                 sample_event,
                 id=f"{'-'.join(datamodels)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
@@ -265,11 +265,11 @@ class FieldTestGenerator(object):
                     if field not in exceptions
                 }
                 sample_event = {
-                        "escaped_event": escaped_event,
-                        "fields": requirement_fields,
-                        "modinput_params": modinput_params,
-                    }
-                if metadata["ingest_with_uuid"] == "true":
+                    "escaped_event": escaped_event,
+                    "fields": requirement_fields,
+                    "modinput_params": modinput_params,
+                }
+                if metadata.get("ingest_with_uuid") == "true":
                     sample_event["unique_identifier"] = event.unique_identifier
                 yield pytest.param(
                     sample_event,

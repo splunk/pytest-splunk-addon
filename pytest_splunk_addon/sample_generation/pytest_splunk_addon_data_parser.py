@@ -107,7 +107,9 @@ class PytestSplunkAddonDataParser:
         results = []
         for sample_name, stanza_params in sorted(_psa_data.items()):
             sample_path = os.path.join(self._path_to_samples, sample_name)
-            results.append(SampleStanza(sample_path, stanza_params, self.ingest_with_uuid))
+            results.append(
+                SampleStanza(sample_path, stanza_params, self.ingest_with_uuid)
+            )
         return results
 
     def _get_psa_data_stanzas(self):
