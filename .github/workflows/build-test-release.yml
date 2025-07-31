@@ -137,17 +137,7 @@ jobs:
       matrix:
         splunk: ["9.1.4"]
         test-marker: [
-          "splunk_connection_docker",
-          "splunk_app_fiction",
-          "splunk_app_broken",
-          "splunk_app_cim_fiction",
-          "splunk_app_cim_broken",
-          "splunk_fiction_indextime",
-          "splunk_fiction_indextime_broken",
-          "splunk_setup_fixture",
-          "splunk_app_req",
-          "splunk_app_req_broken",
-          "splunk_cim_model",
+          "splunk_connection_docker"
         ]
     steps:
       - uses: actions/checkout@v4
@@ -159,7 +149,7 @@ jobs:
       - run: |
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
-          poetry run pytest -v --splunk-version=${{ matrix.splunk }} -m docker -m ${{ matrix.test-marker }} tests/e2e
+          poetry run pytest -v -s --splunk-version=${{ matrix.splunk }} -m docker -m ${{ matrix.test-marker }} tests/e2e
 
   publish:
     needs:

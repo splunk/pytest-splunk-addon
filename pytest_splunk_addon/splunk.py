@@ -938,26 +938,29 @@ def is_responsive_splunk(splunk):
     Returns:
         bool: True if Splunk is responsive. False otherwise
     """
-    try:
-        LOGGER.info(
-            "Trying to connect Splunk instance...  splunk=%s",
-            json.dumps(splunk),
-        )
-        client.connect(
-            username=splunk["username"],
-            password=splunk["password"],
-            host=splunk["host"],
-            port=splunk["port"],
-        )
+    for _ in range(20):
+        try:
+            LOGGER.info(
+                "Trying to connect Splunk instance...  splunk=%s",
+                json.dumps(splunk),
+            )
+            client.connect(
+                username=splunk["username"],
+                password=splunk["password"],
+                host=splunk["host"],
+                port=splunk["port"],
+            )
 
-        LOGGER.info("Connected to Splunk instance.")
-        return True
-    except Exception as e:
-        LOGGER.warning(
-            "Could not connect to Splunk Instance. Will try again. exception=%s",
-            str(e),
-        )
-        return False
+            LOGGER.info("Connected to Splunk instance.")
+            output = True
+        except Exception as e:
+            LOGGER.warning(
+                "Could not connect to Splunk Instance. Will try again. exception=%s",
+                str(e),
+            )
+            output = False
+        sleep(60)
+    return output
 
 
 def is_responsive_hec(request, splunk):

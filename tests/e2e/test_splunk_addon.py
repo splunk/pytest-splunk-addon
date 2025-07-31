@@ -156,6 +156,15 @@ def test_splunk_app_fiction(testdir, request):
         "--search-index=*,_internal",
     )
 
+    stdout_output = result.stdout.str()
+    stderr_output = result.stderr.str()
+
+    # Print the captured output
+    print("\n--- Captured stdout ---")
+    print(stdout_output)
+    print("\n--- Captured stderr ---")
+    print(stderr_output)
+
     result.stdout.fnmatch_lines_random(
         constants.TA_FICTION_PASSED + constants.TA_FICTION_SKIPPED
     )
