@@ -68,7 +68,7 @@ services:
       args:
         SPLUNK_APP_ID: ${SPLUNK_APP_ID}
         SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
-        SPLUNK_VERSION: ${SPLUNK_VERSION}
+        SPLUNK_VERSION: 9.1.4
     ports:
       - "8000"
       - "8088"
