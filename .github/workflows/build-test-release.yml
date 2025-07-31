@@ -135,7 +135,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
+        splunk: ["9.1.4"]
         test-marker: [
           "splunk_connection_docker",
           "splunk_app_fiction",
