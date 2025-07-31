@@ -959,7 +959,7 @@ def is_responsive_splunk(splunk):
                 str(e),
             )
             output = False
-        sleep(60)
+        sleep(30)
     return output
 
 
