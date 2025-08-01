@@ -1090,14 +1090,13 @@ def capture_diag():
 
     try:
         container_id = ""
-        local_dir = os.path.join(os.getcwd(), "test_artifacts")
+        local_dir = "/test_artifacts"
         try:
             ps_output_raw = execute(
                 ["docker", "ps", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"]
             )
             lines = ps_output_raw.strip().split("\n")
 
-            found_container_by_name = False
             for line in lines:
                 parts = line.split(" ")
                 if len(parts) == 2:  # Expecting ID and Name
@@ -1108,7 +1107,7 @@ def capture_diag():
                         log_command = ["docker", "logs", current_container_id]
                         log_output_path = f"{local_dir}/{current_container_name}.txt"
                         container_logs = execute(log_command)
-                        with open(log_output_path, "w", encoding="utf-8") as f:
+                        with open(log_output_path, "w+", encoding="utf-8") as f:
                             f.write(container_logs)
                         LOGGER.info(
                             f"Docker container logs saved to: {log_output_path}"
