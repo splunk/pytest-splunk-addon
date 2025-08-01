@@ -574,12 +574,8 @@ def test_generate_requirement_tests_with_uuid(mock_uuid4):
     ]
 
     with patch.object(
-        xml_event_parser, "strip_syslog_header", return_value="escaped_event"
-    ), patch.object(
         xml_event_parser, "escape_char_event", return_value="escaped_event"
-    ), patch.object(
-        pytest, "param", side_effect=lambda x, id: (x, id)
-    ) as param_mock:
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
         out = list(
             FieldTestGenerator(
                 "app_path",
@@ -694,12 +690,8 @@ def test_generate_requirement_datamodel_tests_with_uuid(mock_uuid4):
     ]
 
     with patch.object(
-        xml_event_parser, "strip_syslog_header", return_value="escaped_event"
-    ), patch.object(
         xml_event_parser, "escape_char_event", return_value="escaped_event"
-    ), patch.object(
-        pytest, "param", side_effect=lambda x, id: (x, id)
-    ) as param_mock:
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
         out = list(
             FieldTestGenerator(
                 "app_path",
