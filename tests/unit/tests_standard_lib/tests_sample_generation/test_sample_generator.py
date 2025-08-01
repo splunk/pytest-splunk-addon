@@ -11,11 +11,11 @@ CONFIG_PATH = "/config/path"
 
 class TestSampleGenerator:
     def test_init(self):
-        sg = SampleGenerator(ADDON_PATH, CONFIG_PATH)
+        sg = SampleGenerator(ADDON_PATH, "false", CONFIG_PATH)
         assert sg.addon_path == ADDON_PATH
         assert sg.config_path == CONFIG_PATH
         assert sg.process_count == 4
-        sg = SampleGenerator(ADDON_PATH, CONFIG_PATH, 2)
+        sg = SampleGenerator(ADDON_PATH, "false", CONFIG_PATH, 2)
         assert sg.addon_path == ADDON_PATH
         assert sg.config_path == CONFIG_PATH
         assert sg.process_count == 2
@@ -36,7 +36,7 @@ class TestSampleGenerator:
             sample_stanza_mock.get_raw_events = ["event_1", "event_2"]
             sample_stanza_mock.tokenize = lambda x, y: (x, y)
             psa_data_mock.conf_name = CONFIG_PATH
-            sg = SampleGenerator(ADDON_PATH)
+            sg = SampleGenerator(ADDON_PATH, "false")
             assert list(sg.get_samples()) == [tks_1, tks_2, tks_1, tks_2]
 
     def test_clean_samples(self):
