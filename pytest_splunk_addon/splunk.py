@@ -40,6 +40,7 @@ RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 LOGGER = logging.getLogger("pytest-splunk-addon")
 PYTEST_XDIST_TESTRUNUID = ""
 
+
 def execute(command, success_codes=(0,)):
     """Run a shell command."""
     LOGGER.info(f"executing command {command}")
@@ -1088,38 +1089,50 @@ def capture_diag():
     """
 
     try:
-
         container_id = ""
         try:
-            ps_output_raw = execute(["docker", "ps", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"])
-            lines = ps_output_raw.strip().split('\n')
+            ps_output_raw = execute(
+                ["docker", "ps", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"]
+            )
+            lines = ps_output_raw.strip().split("\n")
 
             found_container_by_name = False
             for line in lines:
-                parts = line.split(' ')
-                if len(parts) == 2: # Expecting ID and Name
+                parts = line.split(" ")
+                if len(parts) == 2:  # Expecting ID and Name
                     current_container_id = parts[0].strip("'")
                     current_container_name = parts[1].strip("'")
 
                     expected_name_sufix = "splunk-1"
                     if current_container_name.endswith(expected_name_sufix):
                         container_id = current_container_id
-                        LOGGER.info(f"Found Splunk container ID {container_id} using 'docker ps' by name pattern (Name: {current_container_name}).")
+                        LOGGER.info(
+                            f"Found Splunk container ID {container_id} using 'docker ps' by name pattern (Name: {current_container_name})."
+                        )
                         found_container_by_name = True
                         break
 
             if not found_container_by_name:
-                LOGGER.error("Could not find Splunk container using any method. Cannot capture diag.")
+                LOGGER.error(
+                    "Could not find Splunk container using any method. Cannot capture diag."
+                )
                 sleep(300)
                 return
 
         except Exception as e:
-            LOGGER.warning(f"Error during container ID lookup: {e}. Cannot proceed with diag capture.")
+            LOGGER.warning(
+                f"Error during container ID lookup: {e}. Cannot proceed with diag capture."
+            )
             return
 
         diag_command_exec = [
-            "docker", "exec", "-u", "splunk", container_id,
-            "/opt/splunk/bin/splunk", "diag"
+            "docker",
+            "exec",
+            "-u",
+            "splunk",
+            container_id,
+            "/opt/splunk/bin/splunk",
+            "diag",
         ]
         LOGGER.info(f"Executing splunk diag command: {' '.join(diag_command_exec)}")
         try:
@@ -1130,10 +1143,16 @@ def capture_diag():
             return
 
         get_diag_filename_cmd_shell = [
-            "docker", "exec", container_id,
-            "sh", "-c", "ls /opt/splunk | grep diag"
+            "docker",
+            "exec",
+            container_id,
+            "sh",
+            "-c",
+            "ls /opt/splunk | grep diag",
         ]
-        LOGGER.info(f"Finding diag filename with command: {' '.join(get_diag_filename_cmd_shell)}")
+        LOGGER.info(
+            f"Finding diag filename with command: {' '.join(get_diag_filename_cmd_shell)}"
+        )
         try:
             diag_filename_in_container = execute(get_diag_filename_cmd_shell).strip()
             if not diag_filename_in_container:
@@ -1145,9 +1164,10 @@ def capture_diag():
             return
 
         copy_diag_cmd = [
-            "docker", "cp",
+            "docker",
+            "cp",
             f"{container_id}:/opt/splunk/{diag_filename_in_container}",
-            "/tmp"
+            "/tmp",
         ]
         LOGGER.info(f"Copying diag file with command: {' '.join(copy_diag_cmd)}")
         try:
