@@ -186,12 +186,10 @@ class FieldTestTemplates(object):
                 basic_search += f" {param}={param_value}"
 
         if splunk_searchtime_fields_requirements.get("unique_identifier"):
-            record_property(
-                "Event_with", splunk_searchtime_fields_requirements["unique_identifier"]
-            )
             unique_identifier = splunk_searchtime_fields_requirements[
                 "unique_identifier"
             ]
+            record_property("Event_with", unique_identifier)
 
             search = f'search {index_list} {basic_search} unique_identifier="{unique_identifier}" | fields *'
         else:
@@ -420,10 +418,8 @@ class FieldTestTemplates(object):
         )
 
         if splunk_searchtime_fields_datamodels.get("unique_identifier"):
-            record_property(
-                "Event_with", splunk_searchtime_fields_datamodels["unique_identifier"]
-            )
             unique_identifier = splunk_searchtime_fields_datamodels["unique_identifier"]
+            record_property("Event_with", unique_identifier)
 
             self.logger.info(
                 f'Testing for tag {datamodels} with unique_identifier="{unique_identifier}"'
