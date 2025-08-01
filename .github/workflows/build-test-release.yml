@@ -150,6 +150,10 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
           poetry run pytest -v -s --splunk-version=${{ matrix.splunk }} -m docker -m ${{ matrix.test-marker }} tests/e2e
+      - uses: actions/upload-artifact@v4
+        with:
+          name: splunk diag ${{ matrix.test-marker }}
+          path: /tmp
 
   publish:
     needs:

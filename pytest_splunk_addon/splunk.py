@@ -31,6 +31,7 @@ from .docker_class import Services
 from .CIM_Models.datamodel_definition import datamodels
 import configparser
 from filelock import FileLock
+import subprocess
 
 from pytest_splunk_addon import utils
 
@@ -38,6 +39,27 @@ RESPONSIVE_SPLUNK_TIMEOUT = 300  # seconds
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 PYTEST_XDIST_TESTRUNUID = ""
+
+def execute(command, success_codes=(0,)):
+    """Run a shell command."""
+    LOGGER.info(f"executing command {command}")
+    try:
+        output = subprocess.check_output(
+            command,
+            stderr=subprocess.STDOUT,
+            shell=False,
+        )
+        status = 0
+    except subprocess.CalledProcessError as error:
+        LOGGER.error(f"error during command execution: {error}")
+        output = error.output or b""
+        status = error.returncode
+        command = error.cmd
+    output = output.decode("utf-8")
+    if status not in success_codes:
+        raise Exception('Command %r returned %d: """%s""".' % (command, status, output))
+    LOGGER.info(f"command output: {output}")
+    return output
 
 
 def pytest_addoption(parser):
@@ -893,6 +915,7 @@ def docker_services(
     services = Services(docker_compose_files, docker_ip, docker_services_project_name)
     yield services
     if not keep_alive:
+        capture_diag()
         services.shutdown()
 
 
@@ -938,29 +961,26 @@ def is_responsive_splunk(splunk):
     Returns:
         bool: True if Splunk is responsive. False otherwise
     """
-    for _ in range(20):
-        try:
-            LOGGER.info(
-                "Trying to connect Splunk instance...  splunk=%s",
-                json.dumps(splunk),
-            )
-            client.connect(
-                username=splunk["username"],
-                password=splunk["password"],
-                host=splunk["host"],
-                port=splunk["port"],
-            )
+    try:
+        LOGGER.info(
+            "Trying to connect Splunk instance...  splunk=%s",
+            json.dumps(splunk),
+        )
+        client.connect(
+            username=splunk["username"],
+            password=splunk["password"],
+            host=splunk["host"],
+            port=splunk["port"],
+        )
 
-            LOGGER.info("Connected to Splunk instance.")
-            output = True
-        except Exception as e:
-            LOGGER.warning(
-                "Could not connect to Splunk Instance. Will try again. exception=%s",
-                str(e),
-            )
-            output = False
-        sleep(30)
-    return output
+        LOGGER.info("Connected to Splunk instance.")
+        return True
+    except Exception as e:
+        LOGGER.warning(
+            "Could not connect to Splunk Instance. Will try again. exception=%s",
+            str(e),
+        )
+        return False
 
 
 def is_responsive_hec(request, splunk):
@@ -1059,3 +1079,82 @@ def pytest_unconfigure(config):
             os.remove(PYTEST_XDIST_TESTRUNUID + "_events")
         if os.path.exists(PYTEST_XDIST_TESTRUNUID + "_events.lock"):
             os.remove(PYTEST_XDIST_TESTRUNUID + "_events.lock")
+
+
+def capture_diag():
+    """
+    Pytest hook that runs after the entire test session finishes.
+    Used to capture Splunk diag if tests failed and Splunk was run in Docker.
+    """
+
+    try:
+
+        container_id = ""
+        try:
+            ps_output_raw = execute(["docker", "ps", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"])
+            lines = ps_output_raw.strip().split('\n')
+
+            found_container_by_name = False
+            for line in lines:
+                parts = line.split(' ')
+                if len(parts) == 2: # Expecting ID and Name
+                    current_container_id = parts[0].strip("'")
+                    current_container_name = parts[1].strip("'")
+
+                    expected_name_sufix = "splunk-1"
+                    if current_container_name.endswith(expected_name_sufix):
+                        container_id = current_container_id
+                        LOGGER.info(f"Found Splunk container ID {container_id} using 'docker ps' by name pattern (Name: {current_container_name}).")
+                        found_container_by_name = True
+                        break
+
+            if not found_container_by_name:
+                LOGGER.error("Could not find Splunk container using any method. Cannot capture diag.")
+                sleep(300)
+                return
+
+        except Exception as e:
+            LOGGER.warning(f"Error during container ID lookup: {e}. Cannot proceed with diag capture.")
+            return
+
+        diag_command_exec = [
+            "docker", "exec", "-u", "splunk", container_id,
+            "/opt/splunk/bin/splunk", "diag"
+        ]
+        LOGGER.info(f"Executing splunk diag command: {' '.join(diag_command_exec)}")
+        try:
+            diag_output = execute(diag_command_exec)
+            LOGGER.info("splunk diag command output:\n%s", diag_output)
+        except Exception as e:
+            LOGGER.error(f"Failed to execute splunk diag inside container: {e}")
+            return
+
+        get_diag_filename_cmd_shell = [
+            "docker", "exec", container_id,
+            "sh", "-c", "ls /opt/splunk | grep diag"
+        ]
+        LOGGER.info(f"Finding diag filename with command: {' '.join(get_diag_filename_cmd_shell)}")
+        try:
+            diag_filename_in_container = execute(get_diag_filename_cmd_shell).strip()
+            if not diag_filename_in_container:
+                LOGGER.warning("Could not find generated diag file inside container.")
+                return
+            LOGGER.info(f"Found diag file in container: {diag_filename_in_container}")
+        except Exception as e:
+            LOGGER.error(f"Failed to find diag file inside container: {e}")
+            return
+
+        copy_diag_cmd = [
+            "docker", "cp",
+            f"{container_id}:/opt/splunk/{diag_filename_in_container}",
+            "/tmp"
+        ]
+        LOGGER.info(f"Copying diag file with command: {' '.join(copy_diag_cmd)}")
+        try:
+            execute(copy_diag_cmd)
+            LOGGER.info(f"Splunk diag saved to: /tmp")
+        except Exception as e:
+            LOGGER.error(f"Failed to copy diag file out of container: {e}")
+
+    except Exception as e:
+        LOGGER.error(f"An unexpected error occurred during Splunk diag capture: {e}")
