@@ -80,6 +80,7 @@ def modinput_posts_sent():
             '"source": "pytest-splunk-addon:modinput", '
             '"event": "test_modinput_1 host=modinput_host_event_time_plugin.samples_1", '
             '"index": "main", '
+            '"fields": {"unique_identifier": "uuid"}, '
             '"host": "modinput_host_event_time_plugin.samples_1"'
             "}\n{"
             '"sourcetype": "test:indextime:sourcetype:modinput_host_event_time_plugin", '
