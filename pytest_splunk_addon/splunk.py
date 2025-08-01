@@ -1090,6 +1090,7 @@ def capture_diag():
 
     try:
         container_id = ""
+        local_dir = os.path.join(os.getcwd(), "test_artifacts")
         try:
             ps_output_raw = execute(
                 ["docker", "ps", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"]
@@ -1103,20 +1104,28 @@ def capture_diag():
                     current_container_id = parts[0].strip("'")
                     current_container_name = parts[1].strip("'")
 
+                    try:
+                        log_command = ["docker", "logs", current_container_id]
+                        log_output_path = f"{local_dir}/{current_container_name}.txt"
+                        container_logs = execute(log_command)
+                        with open(log_output_path, "w", encoding="utf-8") as f:
+                            f.write(container_logs)
+                        LOGGER.info(f"Docker container logs saved to: {log_output_path}")
+                    except Exception as e:
+                        LOGGER.error(f"Failed to capture Docker container logs: {e}")
+
+
                     expected_name_sufix = "splunk-1"
                     if current_container_name.endswith(expected_name_sufix):
                         container_id = current_container_id
                         LOGGER.info(
                             f"Found Splunk container ID {container_id} using 'docker ps' by name pattern (Name: {current_container_name})."
                         )
-                        found_container_by_name = True
-                        break
 
-            if not found_container_by_name:
+            if not container_id:
                 LOGGER.error(
                     "Could not find Splunk container using any method. Cannot capture diag."
                 )
-                sleep(300)
                 return
 
         except Exception as e:
@@ -1167,12 +1176,12 @@ def capture_diag():
             "docker",
             "cp",
             f"{container_id}:/opt/splunk/{diag_filename_in_container}",
-            "/tmp",
+            local_dir,
         ]
         LOGGER.info(f"Copying diag file with command: {' '.join(copy_diag_cmd)}")
         try:
             execute(copy_diag_cmd)
-            LOGGER.info(f"Splunk diag saved to: /tmp")
+            LOGGER.info(f"Splunk diag saved to: {local_dir}")
         except Exception as e:
             LOGGER.error(f"Failed to copy diag file out of container: {e}")
 
