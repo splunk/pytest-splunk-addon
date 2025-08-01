@@ -147,11 +147,30 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.7
+      - name: Start Docker Events Listener in Background
+        run: |
+          docker events --format '{{json .}}' > docker_events_${{ github.run_id }}.jsonl &
+          echo $! > docker_events_pid.txt # Store PID to kill later
+          echo "Docker events listener started in background."
       - run: |
           mkdir /home/runner/work/pytest-splunk-addon/pytest-splunk-addon/test_artifacts
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
           poetry run pytest -v -s --splunk-version=${{ matrix.splunk }} -m docker -m ${{ matrix.test-marker }} tests/e2e
+      - name: Stop Docker Events Listener
+        if: always()
+        run: |
+          if [ -f docker_events_pid.txt ]; then
+            EVENTS_PID=$(cat docker_events_pid.txt)
+            kill $EVENTS_PID || true # Kill the background process, ignore if already exited
+            echo "Docker events listener stopped."
+          fi
+      - name: Upload Docker Events Log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docker-events-log
+          path: docker_events_${{ github.run_id }}.jsonl
       - uses: actions/upload-artifact@v4
         if: always()
         with:
