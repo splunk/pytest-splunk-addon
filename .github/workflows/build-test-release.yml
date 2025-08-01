@@ -169,7 +169,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: docker-events-log
+          name: docker-events-log ${{ matrix.test-marker }}
           path: docker_events_${{ github.run_id }}.jsonl
       - uses: actions/upload-artifact@v4
         if: always()
