@@ -1090,7 +1090,7 @@ def capture_diag():
 
     try:
         container_id = ""
-        local_dir = "/test_artifacts"
+        local_dir = "/home/runner/work/pytest-splunk-addon/pytest-splunk-addon/test_artifacts"
         try:
             ps_output_raw = execute(
                 ["docker", "ps", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"]
