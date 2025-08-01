@@ -1106,8 +1106,20 @@ def capture_diag():
                     current_container_name = parts[1].strip("'")
 
                     try:
-                        log_command = ["docker", "logs", current_container_id]
-                        log_output_path = f"{local_dir}/{current_container_name}.txt"
+                        log_command = ["docker", "logs", current_container_id, "--timestamps --details"]
+                        log_output_path = f"{local_dir}/{current_container_name}-logs.txt"
+                        container_logs = execute(log_command)
+                        with open(log_output_path, "w+", encoding="utf-8") as f:
+                            f.write(container_logs)
+                        LOGGER.info(
+                            f"Docker container logs saved to: {log_output_path}"
+                        )
+                    except Exception as e:
+                        LOGGER.error(f"Failed to capture Docker container logs: {e}")
+
+                    try:
+                        log_command = ["docker", "inspect", current_container_id]
+                        log_output_path = f"{local_dir}/{current_container_name}-inspect.txt"
                         container_logs = execute(log_command)
                         with open(log_output_path, "w+", encoding="utf-8") as f:
                             f.write(container_logs)

@@ -137,6 +137,7 @@ jobs:
       matrix:
         splunk: ["9.1.4"]
         test-marker: [
+          "splunk_connection_docker",
           "splunk_app_fiction"
         ]
     steps:
