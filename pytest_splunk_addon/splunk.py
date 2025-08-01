@@ -1109,8 +1109,9 @@ def capture_diag():
                         log_command = [
                             "docker",
                             "logs",
+                            "--timestamps",
+                            "--details",
                             current_container_id,
-                            "--timestamps --details",
                         ]
                         log_output_path = (
                             f"{local_dir}/{current_container_name}-logs.txt"
