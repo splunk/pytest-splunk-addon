@@ -1110,10 +1110,11 @@ def capture_diag():
                         container_logs = execute(log_command)
                         with open(log_output_path, "w", encoding="utf-8") as f:
                             f.write(container_logs)
-                        LOGGER.info(f"Docker container logs saved to: {log_output_path}")
+                        LOGGER.info(
+                            f"Docker container logs saved to: {log_output_path}"
+                        )
                     except Exception as e:
                         LOGGER.error(f"Failed to capture Docker container logs: {e}")
-
 
                     expected_name_sufix = "splunk-1"
                     if current_container_name.endswith(expected_name_sufix):
