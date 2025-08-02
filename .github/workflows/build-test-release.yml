@@ -152,11 +152,73 @@ jobs:
           docker events --format '{{json .}}' > docker_events_${{ github.run_id }}.jsonl &
           echo $! > docker_events_pid.txt # Store PID to kill later
           echo "Docker events listener started in background."
+      - name: Start Resource Monitor in Background
+        run: |
+          # Define the log file name, including run ID for uniqueness
+          LOG_FILE="resource_usage_${{ github.run_id }}.log"
+          # Define the sampling interval in seconds
+          INTERVAL=5
+
+          # Create the monitoring script inline
+          cat << 'EOF' > resource_monitor.sh
+          #!/bin/bash
+          # Ensure the log file is unique per run
+          LOG_FILE_PATH="${{ github.workspace }}/resource_usage_${{ github.run_id }}.log"
+          INTERVAL_SECONDS=2
+
+          echo "Starting resource monitoring. Logs will be written to $LOG_FILE_PATH every $INTERVAL_SECONDS seconds."
+          while true; do
+            TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+            echo "--- $TIMESTAMP ---" >> "$LOG_FILE_PATH"
+
+            echo "--- Docker Container Stats ---" >> "$LOG_FILE_PATH"
+            # Capture stats for all running containers. --no-stream is crucial for single snapshot
+            # Using 'table' format for readability, but can be 'json' for programmatic parsing
+            docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.MemPerc}}\t{{.NetIO}}\t{{.BlockIO}}\t{{.PIDs}}" >> "$LOG_FILE_PATH" 2>&1
+            echo "" >> "$LOG_FILE_PATH" # Add a newline for readability
+
+            echo "--- Host Memory (free -h) ---" >> "$LOG_FILE_PATH"
+            free -h >> "$LOG_FILE_PATH" 2>&1
+            echo "" >> "$LOG_FILE_PATH"
+
+            echo "--- Host Disk Usage (df -h) ---" >> "$LOG_FILE_PATH"
+            df -h >> "$LOG_FILE_PATH" 2>&1
+            echo "" >> "$LOG_FILE_PATH"
+
+            # Optional: Top snapshot (can be very verbose, consider running less frequently or omitting)
+            echo "--- Host Process Snapshot (top -b -n 1) ---" >> "$LOG_FILE_PATH"
+            top -b -n 1 >> "$LOG_FILE_PATH" 2>&1
+            echo "" >> "$LOG_FILE_PATH"
+
+            sleep $INTERVAL_SECONDS
+          done
+          EOF
+          chmod +x resource_monitor.sh
+
+          # Run the script in the background
+          ./resource_monitor.sh &
+          echo $! > resource_monitor_pid.txt # Store PID to kill later
+          echo "Resource monitor started in background."
       - run: |
           mkdir /home/runner/work/pytest-splunk-addon/pytest-splunk-addon/test_artifacts
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
           poetry run pytest -v -s --splunk-version=${{ matrix.splunk }} -m docker -m ${{ matrix.test-marker }} tests/e2e
+      - name: Stop Resource Monitor
+        if: always() # Ensure this runs even if pytest fails
+        run: |
+          if [ -f resource_monitor_pid.txt ]; then
+            MONITOR_PID=$(cat resource_monitor_pid.txt)
+            echo "Stopping resource monitor with PID: $MONITOR_PID"
+            kill $MONITOR_PID || true # Kill the background process, ignore if already exited
+            echo "Resource monitor stopped."
+          fi
+      - name: Upload Resource Usage Log
+        uses: actions/upload-artifact@v4
+        if: always() # Upload even if tests fail
+        with:
+          name: resource-usage-log ${{ matrix.test-marker }}
+          path: resource_usage_${{ github.run_id }}.log
       - name: Stop Docker Events Listener
         if: always()
         run: |

@@ -738,7 +738,7 @@ def splunk_web_uri(request, splunk):
 
 
 @pytest.fixture(scope="session")
-def splunk_ingest_data(request, splunk_hec_uri, uf, splunk_events_cleanup):
+def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup):
     """
     Generates events for the add-on and ingests into Splunk.
     The ingestion can be done using the following methods:
@@ -768,8 +768,8 @@ def splunk_ingest_data(request, splunk_hec_uri, uf, splunk_events_cleanup):
             "uf_password": uf.get("uf_password"),
             "session_headers": splunk_hec_uri[0].headers,
             "splunk_hec_uri": splunk_hec_uri[1],
-            # "sc4s_host": sc4s[0],  # for sc4s
-            # "sc4s_port": sc4s[1][514],  # for sc4s
+            "sc4s_host": sc4s[0],  # for sc4s
+            "sc4s_port": sc4s[1][514],  # for sc4s
         }
         thread_count = int(request.config.getoption("thread_count"))
         store_events = request.config.getoption("store_events")
