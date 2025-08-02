@@ -152,7 +152,7 @@ class DockerComposeExecutor(object):
         self.project_directory = os.path.dirname(os.path.realpath(compose_files[0]))
 
     def execute(self, *subcommand):
-        command = ["docker", "compose"]
+        command = ["podman", "compose"]
         for compose_file in self._compose_files:
             command.append("-f")
             command.append(compose_file)

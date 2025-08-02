@@ -79,6 +79,7 @@ services:
       - SPLUNK_START_ARGS=--accept-license
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
       - TEST_SC4S_ACTIVATE_EXAMPLES=yes
+    stop_grace_period: 60s
 
   uf:
     build:
