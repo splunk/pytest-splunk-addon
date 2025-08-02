@@ -147,6 +147,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.7
+      - run: |
+          podman --version
+          podman compose --help
       - name: Start Docker Events Listener in Background
         run: |
           podman events --format json > podman_events_${{ github.run_id }}.jsonl &
