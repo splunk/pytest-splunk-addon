@@ -154,7 +154,7 @@ class DockerComposeExecutor(object):
     def execute(self, *subcommand):
         command = ["podman", "compose"]
         for compose_file in self._compose_files:
-            command.append("-f")
+            command.append("--file")
             command.append(compose_file)
         command.append("-p")
         command.append(self._project_name)
