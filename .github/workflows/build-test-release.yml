@@ -147,12 +147,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.7
-      - run: |
-          podman --version
-          podman compose --help
       - name: Start Docker Events Listener in Background
         run: |
-          podman events --format json > podman_events_${{ github.run_id }}.jsonl &
+          docker events --format '{{json .}}' > docker_events_${{ github.run_id }}.jsonl &
           echo $! > docker_events_pid.txt # Store PID to kill later
           echo "Docker events listener started in background."
       - name: Start Resource Monitor in Background
@@ -236,6 +233,36 @@ jobs:
         with:
           name: docker-events-log ${{ matrix.test-marker }}
           path: docker_events_${{ github.run_id }}.jsonl
+      - name: Capture Docker Daemon Logs (from journalctl)
+        if: always()
+        run: |
+          echo "Capturing Docker daemon logs..."
+          sudo journalctl -u docker.service --since "10 minutes ago" --no-pager > docker_daemon_logs.txt
+          echo "Docker daemon logs saved to docker_daemon_logs.txt"
+
+      - name: Capture General Systemd Logs (last 10 minutes)
+        if: always()
+        run: |
+          echo "Capturing general systemd logs from last 10 minutes..."
+          sudo journalctl --since "10 minutes ago" --no-pager > systemd_general_logs.txt
+          echo "General systemd logs saved to systemd_general_logs.txt"
+
+      - name: Capture Systemd Error Logs (from current boot)
+        if: always()
+        run: |
+          echo "Capturing systemd error logs from current boot..."
+          sudo journalctl --boot -p err --no-pager > systemd_error_logs.txt
+          echo "Systemd error logs saved to systemd_error_logs.txt"
+
+      - name: Upload All Logs as Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-debug-logs-${{ matrix.test-marker }}
+          path: |
+            docker_daemon_logs.txt
+            systemd_general_logs.txt
+            systemd_error_logs.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:

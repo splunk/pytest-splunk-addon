@@ -1095,7 +1095,7 @@ def capture_diag():
         )
         try:
             ps_output_raw = execute(
-                ["podman", "ps", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"]
+                ["docker", "ps", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"]
             )
             lines = ps_output_raw.strip().split("\n")
 
@@ -1107,7 +1107,7 @@ def capture_diag():
 
                     try:
                         log_command = [
-                            "podman",
+                            "docker",
                             "logs",
                             "--timestamps",
                             "--details",
@@ -1126,7 +1126,7 @@ def capture_diag():
                         LOGGER.error(f"Failed to capture Docker container logs: {e}")
 
                     try:
-                        log_command = ["podman", "inspect", current_container_id]
+                        log_command = ["docker", "inspect", current_container_id]
                         log_output_path = (
                             f"{local_dir}/{current_container_name}-inspect.txt"
                         )
@@ -1159,7 +1159,7 @@ def capture_diag():
             return
 
         diag_command_exec = [
-            "podman",
+            "docker",
             "exec",
             "-u",
             "splunk",
@@ -1176,7 +1176,7 @@ def capture_diag():
             return
 
         get_diag_filename_cmd_shell = [
-            "podman",
+            "docker",
             "exec",
             container_id,
             "sh",
@@ -1197,7 +1197,7 @@ def capture_diag():
             return
 
         copy_diag_cmd = [
-            "podman",
+            "docker",
             "cp",
             f"{container_id}:/opt/splunk/{diag_filename_in_container}",
             local_dir,
