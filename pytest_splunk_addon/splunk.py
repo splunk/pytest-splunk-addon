@@ -768,6 +768,18 @@ def splunk_hec_uri(request, splunk):
                 except Exception as e:
                     LOGGER.error(f"Failed to capture Docker container logs: {e}")
 
+                try:
+                    log_command = ["docker", "top", current_container_id]
+                    log_output_path = (
+                        f"{local_dir}/{current_container_name}-top-before.txt"
+                    )
+                    container_logs = execute(log_command)
+                    with open(log_output_path, "w+", encoding="utf-8") as f:
+                        f.write(container_logs)
+                    LOGGER.info(f"Docker container logs saved to: {log_output_path}")
+                except Exception as e:
+                    LOGGER.error(f"Failed to capture Docker container logs: {e}")
+
     except Exception as e:
         LOGGER.warning(
             f"Error during container ID lookup: {e}. Cannot proceed with diag capture."
@@ -1143,7 +1155,7 @@ def capture_diag():
         )
         try:
             ps_output_raw = execute(
-                ["docker", "ps", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"]
+                ["docker", "ps", "-a", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"]
             )
             lines = ps_output_raw.strip().split("\n")
 
