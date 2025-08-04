@@ -70,10 +70,10 @@ services:
         SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
         SPLUNK_VERSION: ${SPLUNK_VERSION}
     ports:
-      - "8000"
-      - "8088"
-      - "8089"
-      - "9997"
+      - "32772:8000"
+      - "32773:8088"
+      - "32774:8089"
+      - "32775:9997"
     environment:
       - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
       - SPLUNK_START_ARGS=--accept-license

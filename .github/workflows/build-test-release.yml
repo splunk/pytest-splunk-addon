@@ -149,6 +149,7 @@ jobs:
           python-version: 3.7
       - name: Start Docker Events Listener in Background
         run: |
+          docker --version
           docker events --format '{{json .}}' > docker_events_${{ github.run_id }}.jsonl &
           echo $! > docker_events_pid.txt # Store PID to kill later
           echo "Docker events listener started in background."
