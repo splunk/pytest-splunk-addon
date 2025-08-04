@@ -405,55 +405,6 @@ def splunk_search_util(splunk, request):
     conn = cloud_splunk.create_logged_in_connector()
     jobs = Jobs(conn)
     LOGGER.info("initialized SearchUtil for the Splunk instance.")
-    local_dir = (
-        "/home/runner/work/pytest-splunk-addon/pytest-splunk-addon/test_artifacts"
-    )
-    try:
-        ps_output_raw = execute(
-            ["docker", "ps", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"]
-        )
-        lines = ps_output_raw.strip().split("\n")
-
-        for line in lines:
-            parts = line.split(" ")
-            if len(parts) == 2:  # Expecting ID and Name
-                current_container_id = parts[0].strip("'")
-                current_container_name = parts[1].strip("'")
-
-                try:
-                    log_command = [
-                        "docker",
-                        "logs",
-                        "--timestamps",
-                        "--details",
-                        current_container_id,
-                    ]
-                    log_output_path = (
-                        f"{local_dir}/{current_container_name}-logs-before.txt"
-                    )
-                    container_logs = execute(log_command)
-                    with open(log_output_path, "w+", encoding="utf-8") as f:
-                        f.write(container_logs)
-                    LOGGER.info(f"Docker container logs saved to: {log_output_path}")
-                except Exception as e:
-                    LOGGER.error(f"Failed to capture Docker container logs: {e}")
-
-                try:
-                    log_command = ["docker", "inspect", current_container_id]
-                    log_output_path = (
-                        f"{local_dir}/{current_container_name}-inspect-before.txt"
-                    )
-                    container_logs = execute(log_command)
-                    with open(log_output_path, "w+", encoding="utf-8") as f:
-                        f.write(container_logs)
-                    LOGGER.info(f"Docker container logs saved to: {log_output_path}")
-                except Exception as e:
-                    LOGGER.error(f"Failed to capture Docker container logs: {e}")
-
-    except Exception as e:
-        LOGGER.warning(
-            f"Error during container ID lookup: {e}. Cannot proceed with diag capture."
-        )
     search_util = SearchUtil(jobs, LOGGER)
     search_util.search_index = request.config.getoption("search_index")
     search_util.search_retry = request.config.getoption("search_retry")
@@ -772,7 +723,55 @@ def splunk_hec_uri(request, splunk):
     }
     uri = f'{request.config.getoption("splunk_hec_scheme")}://{splunk["forwarder_host"]}:{splunk["port_hec"]}/services/collector'
     LOGGER.info("Fetched splunk_hec_uri=%s", uri)
+    local_dir = (
+        "/home/runner/work/pytest-splunk-addon/pytest-splunk-addon/test_artifacts"
+    )
+    try:
+        ps_output_raw = execute(
+            ["docker", "ps", "--format", "'{{.ID}} {{.Names}}'", "--no-trunc"]
+        )
+        lines = ps_output_raw.strip().split("\n")
 
+        for line in lines:
+            parts = line.split(" ")
+            if len(parts) == 2:  # Expecting ID and Name
+                current_container_id = parts[0].strip("'")
+                current_container_name = parts[1].strip("'")
+
+                try:
+                    log_command = [
+                        "docker",
+                        "logs",
+                        "--timestamps",
+                        "--details",
+                        current_container_id,
+                    ]
+                    log_output_path = (
+                        f"{local_dir}/{current_container_name}-logs-before.txt"
+                    )
+                    container_logs = execute(log_command)
+                    with open(log_output_path, "w+", encoding="utf-8") as f:
+                        f.write(container_logs)
+                    LOGGER.info(f"Docker container logs saved to: {log_output_path}")
+                except Exception as e:
+                    LOGGER.error(f"Failed to capture Docker container logs: {e}")
+
+                try:
+                    log_command = ["docker", "inspect", current_container_id]
+                    log_output_path = (
+                        f"{local_dir}/{current_container_name}-inspect-before.txt"
+                    )
+                    container_logs = execute(log_command)
+                    with open(log_output_path, "w+", encoding="utf-8") as f:
+                        f.write(container_logs)
+                    LOGGER.info(f"Docker container logs saved to: {log_output_path}")
+                except Exception as e:
+                    LOGGER.error(f"Failed to capture Docker container logs: {e}")
+
+    except Exception as e:
+        LOGGER.warning(
+            f"Error during container ID lookup: {e}. Cannot proceed with diag capture."
+        )
     return splunk_session, uri
 
 
