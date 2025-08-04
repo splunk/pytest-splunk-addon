@@ -26,6 +26,11 @@ def setup_test_dir(testdir):
         os.path.join(testdir.tmpdir, "deps"),
     )
 
+    shutil.copy(
+        os.path.join(testdir.request.config.invocation_dir, "capture_ps.sh"),
+        testdir.tmpdir,
+    )
+
     shutil.copytree(
         os.path.join(testdir.request.config.invocation_dir, "tests/e2e/addons"),
         os.path.join(testdir.tmpdir, "tests/addons"),
