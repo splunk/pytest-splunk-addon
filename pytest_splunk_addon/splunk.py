@@ -775,7 +775,6 @@ def splunk_hec_uri(request, splunk):
                         current_container_id,
                         "bash",
                         "/usr/local/bin/capture_ps.sh",
-                        "&",
                     ]
                     container_logs = execute(log_command)
                 except Exception as e:
