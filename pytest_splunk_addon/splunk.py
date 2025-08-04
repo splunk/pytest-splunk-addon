@@ -737,7 +737,6 @@ def splunk_hec_uri(request, splunk):
             if len(parts) == 2:  # Expecting ID and Name
                 current_container_id = parts[0].strip("'")
                 current_container_name = parts[1].strip("'")
-
                 try:
                     log_command = [
                         "docker",
@@ -769,14 +768,15 @@ def splunk_hec_uri(request, splunk):
                     LOGGER.error(f"Failed to capture Docker container logs: {e}")
 
                 try:
-                    log_command = ["docker", "top", current_container_id]
-                    log_output_path = (
-                        f"{local_dir}/{current_container_name}-top-before.txt"
-                    )
+                    log_command = [
+                        "docker",
+                        "exec",
+                        "-d",
+                        current_container_id,
+                        "/usr/local/bin/capture_ps.sh",
+                        "&",
+                    ]
                     container_logs = execute(log_command)
-                    with open(log_output_path, "w+", encoding="utf-8") as f:
-                        f.write(container_logs)
-                    LOGGER.info(f"Docker container logs saved to: {log_output_path}")
                 except Exception as e:
                     LOGGER.error(f"Failed to capture Docker container logs: {e}")
 
