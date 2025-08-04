@@ -773,6 +773,7 @@ def splunk_hec_uri(request, splunk):
                         "exec",
                         "-d",
                         current_container_id,
+                        "bash",
                         "/usr/local/bin/capture_ps.sh",
                         "&",
                     ]
