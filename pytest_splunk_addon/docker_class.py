@@ -60,12 +60,12 @@ class Services(object):
         self._services = {}
         self.docker_ip = docker_ip
 
-    def start(self, *services):
+    def start(self):
         """Ensures that the given services are started via docker compose.
 
         :param services: the names of the services as defined in compose file
         """
-        self._docker_compose.execute("up", "--build", "--wait", *services)
+        self._docker_compose.execute("up", "--build", "--wait")
 
     def stop(self, *services):
         """Ensures that the given services are stopped via docker compose.

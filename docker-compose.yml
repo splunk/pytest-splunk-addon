@@ -38,8 +38,9 @@ services:
       - "6514"
     stdin_open: true
     tty: true
-    links:
-      - splunk
+    depends_on:
+      splunk:
+        condition: service_healthy
     environment:
       - SC4S_DEST_SPLUNK_HEC_DEFAULT_URL=https://splunk:8088
       - SC4S_DEST_SPLUNK_HEC_DEFAULT_TOKEN=${SPLUNK_HEC_TOKEN}
@@ -93,8 +94,9 @@ services:
     ports:
       - "9997"
       - "8089"
-    links:
-      - splunk
+    depends_on:
+      splunk:
+        condition: service_healthy
     environment:
       - SPLUNK_PASSWORD=Chang3d!
       - SPLUNK_START_ARGS=--accept-license
