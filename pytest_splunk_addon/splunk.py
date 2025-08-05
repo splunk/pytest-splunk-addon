@@ -490,14 +490,6 @@ def uf_docker(docker_services, tmp_path_factory, worker_id, request):
     """
     Provides IP of the uf server and management port based on pytest-args(splunk_type)
     """
-    LOGGER.info("Starting docker_service=uf")
-    os.environ["CURRENT_DIR"] = os.getcwd()
-    # if worker_id:
-    #     # get the temp directory shared by all workers
-    #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
-    #     fn = root_tmp_dir / "pytest_docker"
-    #     with FileLock(str(fn) + ".lock"):
-    #         docker_services.start("uf")
     uf_info = {
         "uf_host": docker_services.docker_ip,
         "uf_port": docker_services.port_for("uf", 8089),
@@ -540,6 +532,7 @@ def splunk_docker(
     """
     # configuration of environment variables needed by docker-compose file
     os.environ["SPLUNK_APP_PACKAGE"] = request.config.getoption("splunk_app")
+    os.environ["CURRENT_DIR"] = os.getcwd()
     try:
         config = configparser.ConfigParser()
         config.read(
@@ -558,7 +551,7 @@ def splunk_docker(
     os.environ["SPLUNK_VERSION"] = request.config.getoption("splunk_version")
     os.environ["SC4S_VERSION"] = request.config.getoption("sc4s_version")
 
-    LOGGER.info("Starting docker_service=splunk")
+    LOGGER.info("Starting docker services")
     if worker_id:
         # get the temp directory shared by all workers
         root_tmp_dir = tmp_path_factory.getbasetemp().parent
@@ -648,13 +641,6 @@ def sc4s_docker(docker_services, tmp_path_factory, worker_id):
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
     """
-    # if worker_id:
-    #     # get the temp directory shared by all workers
-    #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
-    #     fn = root_tmp_dir / "pytest_docker"
-    #     with FileLock(str(fn) + ".lock"):
-    #         docker_services.start("sc4s")
-
     ports = {514: docker_services.port_for("sc4s", 514)}
     for x in range(5000, 5007):
         ports.update({x: docker_services.port_for("sc4s", x)})
