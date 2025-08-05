@@ -33,7 +33,7 @@ for (( i=1; i<=TOTAL_ITERATIONS; i++ )); do
 
   # Capture ps aux output
   if command -v ps &> /dev/null; then
-    ps aux > "$OUTPUT_FILE"
+    ps -eo user,pid,ppid,%cpu,%mem,vsz,rss,tty,stat,start,time,command > "$OUTPUT_FILE"
     # echo "Captured ps aux to $OUTPUT_FILE (Iteration $i/$TOTAL_ITERATIONS)" | tee -a "$LOG_DIR/loop_events.log"
   else
     echo "Error: 'ps' command not found in container. Cannot capture process list." | tee -a "$LOG_DIR/loop_events.log"
