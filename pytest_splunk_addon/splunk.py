@@ -771,6 +771,8 @@ def splunk_hec_uri(request, splunk):
                     log_command = [
                         "docker",
                         "exec",
+                        "-u",
+                        "splunk",
                         "-d",
                         current_container_id,
                         "bash",
