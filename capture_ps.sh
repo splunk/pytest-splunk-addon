@@ -18,7 +18,7 @@
 set -e # Exit immediately if a command exits with a non-zero status
 
 # Define the path for the process snapshots
-LOG_DIR="/opt/splunk/var/log/periodic_ps_snapshots"
+LOG_DIR="/opt/splunk/var/log/splunk/periodic_ps_snapshots"
 mkdir -p "$LOG_DIR" # Ensure the directory exists
 
 INTERVAL_SECONDS=2
