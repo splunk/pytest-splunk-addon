@@ -492,12 +492,12 @@ def uf_docker(docker_services, tmp_path_factory, worker_id, request):
     """
     LOGGER.info("Starting docker_service=uf")
     os.environ["CURRENT_DIR"] = os.getcwd()
-    if worker_id:
-        # get the temp directory shared by all workers
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "pytest_docker"
-        with FileLock(str(fn) + ".lock"):
-            docker_services.start("uf")
+    # if worker_id:
+    #     # get the temp directory shared by all workers
+    #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
+    #     fn = root_tmp_dir / "pytest_docker"
+    #     with FileLock(str(fn) + ".lock"):
+    #         docker_services.start("uf")
     uf_info = {
         "uf_host": docker_services.docker_ip,
         "uf_port": docker_services.port_for("uf", 8089),
@@ -565,7 +565,7 @@ def splunk_docker(
         fn = root_tmp_dir / "pytest_docker"
         # if you encounter docker-compose not found modify shell path in your IDE to use /bin/bash
         with FileLock(str(fn) + ".lock"):
-            docker_services.start("splunk")
+            docker_services.start()
 
     splunk_info = {
         "host": docker_services.docker_ip,
@@ -648,12 +648,12 @@ def sc4s_docker(docker_services, tmp_path_factory, worker_id):
     """
     Provides IP of the sc4s server and related ports based on pytest-args(splunk_type)
     """
-    if worker_id:
-        # get the temp directory shared by all workers
-        root_tmp_dir = tmp_path_factory.getbasetemp().parent
-        fn = root_tmp_dir / "pytest_docker"
-        with FileLock(str(fn) + ".lock"):
-            docker_services.start("sc4s")
+    # if worker_id:
+    #     # get the temp directory shared by all workers
+    #     root_tmp_dir = tmp_path_factory.getbasetemp().parent
+    #     fn = root_tmp_dir / "pytest_docker"
+    #     with FileLock(str(fn) + ".lock"):
+    #         docker_services.start("sc4s")
 
     ports = {514: docker_services.port_for("sc4s", 514)}
     for x in range(5000, 5007):
