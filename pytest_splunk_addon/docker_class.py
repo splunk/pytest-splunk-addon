@@ -65,7 +65,7 @@ class Services(object):
 
         :param services: the names of the services as defined in compose file
         """
-        self._docker_compose.execute("up", "--build", *services)
+        self._docker_compose.execute("up", "--build", "--wait", *services)
 
     def stop(self, *services):
         """Ensures that the given services are stopped via docker compose.
