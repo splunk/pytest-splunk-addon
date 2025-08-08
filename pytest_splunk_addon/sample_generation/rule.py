@@ -188,7 +188,7 @@ class Rule:
                             .replace(".", "-")
                         )
                         host_split = host.split("-")
-                        if re.match("\d+", host_split[-1]):
+                        if re.match(r"\d+", host_split[-1]):
                             host = "-".join(host_split[:-1])
                         new_event.metadata["host"] = "{}-{}".format(
                             host, event_host_count
@@ -327,7 +327,7 @@ class FloatRule(Rule):
         float_match = re.match(r"[Ff]loat\[(-?[\d\.]+):(-?[\d\.]+)\]", self.replacement)
         if float_match:
             lower_limit, upper_limit = float_match.groups()
-            precision = re.search("\[-?\d+\.?(\d*):", self.replacement).group(1)
+            precision = re.search(r"\[-?\d+\.?(\d*):", self.replacement).group(1)
             if not precision:
                 precision = str(1)
             for _ in range(token_count):
@@ -681,7 +681,7 @@ class TimeRule(Rule):
             yield self.token
         for _ in range(token_count):
             random_time = datetime.fromtimestamp(
-                randint(earliest_in_epoch, latest_in_epoch)
+                randint(int(earliest_in_epoch), int(latest_in_epoch))
             )
             if timezone_time in ["local", '"local"', "'local'"]:
                 random_time = random_time.replace(tzinfo=timezone.utc).astimezone(
