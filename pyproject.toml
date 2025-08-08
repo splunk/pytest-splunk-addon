@@ -25,14 +25,14 @@ classifiers = [
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.13.6",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: Apache Software License",
 ]
 include = ["pytest_splunk_addon/**/*.json", "pytest_splunk_addon/**/*.txt"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "3.13.6"
 pytest = ">5.4.0,<8"
 splunk-sdk = ">=1.6"
 requests = "^2.31.0"
