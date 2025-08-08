@@ -1,5 +1,5 @@
 #
-# Copyright 2024 Splunk Inc.
+# Copyright 2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -203,7 +203,7 @@ class PropsParser(object):
                 yield field
 
         # If SOURCE_KEY is used in EXTRACT, generate the test for the same.
-        regex_for_source_key = r"(?:(?i)in\s+(\w+))\s*$"
+        regex_for_source_key = r"(?i)(?:in\s+(\w+))\s*$"
         extract_source_key = re.search(regex_for_source_key, value, re.MULTILINE)
         if extract_source_key:
             LOGGER.info(f"Found a source key in {name}")
@@ -260,7 +260,7 @@ class PropsParser(object):
         """
         regex = (
             r"(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+)"
-            r"\s+(?i)(?:as(?:new)?)\s+"
+            r"\s+(?:as(?:new)?)\s+"
             r"(\"(?:\\\"|[^\"])*\"|\'(?:\\\'|[^\'])*\'|[^\s,]+)"
         )
         fields_tuples = re.findall(regex, value, re.IGNORECASE)

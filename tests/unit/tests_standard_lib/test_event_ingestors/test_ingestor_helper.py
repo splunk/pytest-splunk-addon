@@ -103,7 +103,7 @@ def test_ingestor_can_be_obtained(
         ingestor_helper.get_event_ingestor(ingest_method, "ingest_meta_data")
         == expected_output
     )
-    assert ingestors_mocks[expected_output].has_calls("ingest_meta_data")
+    ingestors_mocks[expected_output].assert_called_with("ingest_meta_data")
 
 
 @pytest.mark.parametrize(

@@ -1,5 +1,5 @@
 #
-# Copyright 2024 Splunk Inc.
+# Copyright 2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ from collections import namedtuple
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
-TIMEZONE_REX = "((\+1[0-2])|(-1[0-4])|[+|-][0][0-9])([0-5][0-9])"
+TIMEZONE_REX = r"((\+1[0-2])|(-1[0-4])|[+|-][0][0-9])([0-5][0-9])"
 BULK_EVENT_COUNT = 250
 
 token_value = namedtuple("token_value", ["key", "value"])
