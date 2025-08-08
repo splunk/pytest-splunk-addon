@@ -15,17 +15,19 @@ concurrency:
 
 jobs:
   meta:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       matrix_supportedSplunk: ${{ steps.matrix.outputs.latestSplunk }}
     steps:
       - uses: actions/checkout@v4
       - id: matrix
         uses: splunk/addonfactory-test-matrix-action@v3
+        with:
+          features: PYTHON39
 
   fossa-scan:
     continue-on-error: true
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: run fossa anlyze and create report
@@ -47,18 +49,18 @@ jobs:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
   
   compliance-copyrights:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: apache/skywalking-eyes@v0.6.0
   
   pre-commit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.7"
+          python-version: "3.13"
       - uses: pre-commit/action@v3.0.1
 
   semgrep:
@@ -67,11 +69,14 @@ jobs:
       SEMGREP_KEY: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
 
   test-splunk-unit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
       - name: Install dependencies
         run: |
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
@@ -80,7 +85,7 @@ jobs:
 
 
   test-splunk-external:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - meta
       - pre-commit
@@ -132,7 +137,7 @@ jobs:
       - fossa-scan
       - compliance-copyrights
       - test-splunk-unit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -156,7 +161,7 @@ jobs:
           submodules: true
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.7
+          python-version: 3.13
       - run: |
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
@@ -166,7 +171,7 @@ jobs:
     needs:
       - test-splunk-external
       - test-splunk-matrix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
