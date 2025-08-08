@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 RUN mkdir -p /work/tests
 RUN mkdir -p /work/test-results/functional
@@ -22,20 +22,19 @@ COPY entrypoint.sh /
 
 COPY . /work
 
-RUN export DEBIAN_FRONTEND=noninteractive ;\
-    apt-get update ;\
-    apt-get install -y --no-install-recommends apt-utils ;\
-    apt-get install -y locales ;\
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8;\
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends apt-utils software-properties-common locales && \
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
     apt-get update && \
-    # Install Python 3.13 and its development tools, venv, and pip
-    apt-get install -y curl git python3.13 python3.13-venv python3.13-distutils python3.13-pip && \
-    # Set python3, python, and pip to point to 3.13 using update-alternatives
-    # This ensures that commands like 'python3' and 'pip' use the 3.13 version.
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 10 && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.13 10 && \
-    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3.13 10
+    apt-get install -y curl git python3.13
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 10 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.13 10
 
 ENV LANG en_US.utf8
 
