@@ -1,5 +1,5 @@
 #
-# Copyright 2024 Splunk Inc.
+# Copyright 2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,8 +38,9 @@ services:
       - "6514"
     stdin_open: true
     tty: true
-    links:
-      - splunk
+    depends_on:
+      splunk:
+        condition: service_healthy
     environment:
       - SPLUNK_HEC_URL=https://splunk:8088
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
@@ -77,6 +78,7 @@ services:
     environment:
       - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
       - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
       - TEST_SC4S_ACTIVATE_EXAMPLES=yes
 
@@ -92,11 +94,13 @@ services:
     ports:
       - "9997"
       - "8089"
-    links:
-      - splunk
+    depends_on:
+      splunk:
+        condition: service_healthy
     environment:
       - SPLUNK_PASSWORD=Chang3d!
       - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com
     volumes:
       - ${CURRENT_DIR}/uf_files:${CURRENT_DIR}/uf_files
 
