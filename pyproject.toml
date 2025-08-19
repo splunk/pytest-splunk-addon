@@ -35,7 +35,7 @@ include = ["pytest_splunk_addon/**/*.json", "pytest_splunk_addon/**/*.txt"]
 python = "^3.9"
 pytest = ">5.4.0,<8"
 splunk-sdk = ">=1.6"
-requests = "^2.32.4"
+requests = "^2.32.5"
 jsonschema = "^v4.17.3"
 pytest-xdist = "^3.5.0"
 filelock = "^3.0"
