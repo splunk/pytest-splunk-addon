@@ -11,7 +11,7 @@ which allows the user to test [knowledge objects](https://docs.splunk.com/Splexi
 
 ## Support
 
-- **Python**: 3.7
+- **Python**: 3.9
 - **Platforms**: Linux, Windows and MacOS
 
 ## Installation

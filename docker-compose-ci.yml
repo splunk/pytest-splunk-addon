@@ -88,6 +88,7 @@ services:
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
       - SPLUNK_START_ARGS=--accept-license
       - TEST_SC4S_ACTIVATE_EXAMPLES=yes
+      - SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com
 volumes:
   results:
     external: false
