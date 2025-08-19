@@ -21,7 +21,7 @@ substitutions:
 
 **4. Getting Couldn't find a version that satisfies the requirement when installing pytest-splunk-addon using pip.**
 
- - Use `pip3 install pytest-splunk-addon` and make sure you are using python 3.7
+ - Use `pip3 install pytest-splunk-addon` and make sure you are using python 3.9
 
 **5. While executing test cases on Docker, all the test cases abort with the following setup failure:**
 
