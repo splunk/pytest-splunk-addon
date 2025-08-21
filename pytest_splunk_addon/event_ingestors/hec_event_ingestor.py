@@ -60,7 +60,8 @@ class HECEventIngestor(EventIngestor):
                 "sourcetype": "sample_HEC",
                 "source": "sample_source",
                 "host": "sample_host",
-                "event": "event_str"
+                "event": "event_str",
+                "fields": {"unique_identifier": "uuid"}
             }
 
         The format of dictionary for ingesting a batch of events::
@@ -70,13 +71,15 @@ class HECEventIngestor(EventIngestor):
                     "sourcetype": "sample_HEC",
                     "source": "sample_source",
                     "host": "sample_host",
-                    "event": "event_str1"
+                    "event": "event_str1",
+                    "fields": {"unique_identifier": "uuid"}
                 },
                 {
                     "sourcetype": "sample_HEC",
                     "source": "sample_source",
                     "host": "sample_host",
-                    "event": "event_str2"
+                    "event": "event_str2",
+                    "fields": {"unique_identifier": "uuid"}
                 },
             ]
 
@@ -92,6 +95,7 @@ class HECEventIngestor(EventIngestor):
                 "source": event.metadata.get("source", "pytest_splunk_addon:hec:event"),
                 "event": event.event,
                 "index": event.metadata.get("index", "main"),
+                "fields": {"unique_identifier": event.unique_identifier},
             }
 
             if event.metadata.get("host_type") in ("plugin", None):

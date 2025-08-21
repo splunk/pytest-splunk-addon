@@ -131,6 +131,7 @@ class SampleXdistGenerator:
                     "events": [
                         {
                             "event": each_event.event,
+                            "unique_identifier": each_event.unique_identifier,
                             "key_fields": each_event.key_fields,
                             "time_values": each_event.time_values,
                             "requirement_test_data": each_event.requirement_test_data,
@@ -141,6 +142,7 @@ class SampleXdistGenerator:
                 tokenized_samples_dict[each_event.sample_name]["events"].append(
                     {
                         "event": each_event.event,
+                        "unique_identifier": each_event.unique_identifier,
                         "key_fields": each_event.key_fields,
                         "time_values": each_event.time_values,
                         "requirement_test_data": each_event.requirement_test_data,
