@@ -17,7 +17,7 @@ jobs:
   meta:
     runs-on: ubuntu-22.04
     outputs:
-      matrix_supportedSplunk: ${{ steps.matrix.outputs.supportedSplunk }}
+      matrix_supportedSplunk: ${{ steps.matrix.outputs.latestSplunk }}
     steps:
       - uses: actions/checkout@v4
       - id: matrix
