@@ -16,7 +16,7 @@
 
 [tool.poetry]
 name = "pytest-splunk-addon"
-version = "6.0.0"
+version = "6.1.0-beta.1"
 description = "A Dynamic test tool for Splunk Apps and Add-ons"
 authors = ["Splunk <addonfactory@splunk.com>"]
 license = "APACHE-2.0"
@@ -36,18 +36,20 @@ python = "^3.7"
 pytest = ">5.4.0,<8"
 splunk-sdk = ">=1.6"
 requests = "^2.31.0"
-jsonschema = "^v4.17.3"
+jsonschema = "^4.17.3"
 pytest-xdist = "^3.5.0"
 filelock = "^3.0"
 pytest-ordering = "~0.6"
-junitparser = "^2.2.0"
+junitparser = "^4.0.0"
 addonfactory-splunk-conf-parser-lib = "*"
 defusedxml = "^0.7.1"
-Faker = "^18.0.0"
-xmltodict = "^0.13.0"
+Faker = "^18.12.0"
+xmltodict = "^0.14.0"
 xmlschema = "^2.5.1"
 splunksplwrapper = "^1.1.1"
 urllib3 = "<2"
+certifi = "^2024.7.4"
+zipp = "^3.6.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest-cov = "^4"
