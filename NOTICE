@@ -7,9 +7,9 @@
 
 The following 3rd-party software packages may be used by or distributed with pytest-splunk-addon. Any information relevant to third-party vendors listed below are collected using common, reasonable means.
 
-Date generated: 2025-9-3
+Date generated: 2025-9-8
 
-Revision ID: 5febb21f242bda877b87f39e87bf9b4ef1d200bc
+Revision ID: b399c5a9d580cc21c7554fa20278c311733d4a44
 
 ================================================================================
 ================================================================================
@@ -46,51 +46,50 @@ No licenses found
 
 ================================================================================
 
-- addonfactory-splunk-conf-parser-lib (0.4.0) [Apache-2.0]
-- attrs (23.2.0) [MIT]
-- certifi (2024.6.2) [MPL-2.0]
-- charset-normalizer (3.3.2) [MIT]
+- addonfactory-splunk-conf-parser-lib (0.4.3) [Apache-2.0]
+- attrs (24.2.0) [MIT]
+- certifi (2024.12.14) [MPL-2.0]
+- charset-normalizer (3.4.3) [MIT]
 - colorama (0.4.6) [BSD-3-Clause]
 - defusedxml (0.7.1) [PSF-2.0]
 - deprecation (2.1.0) [Apache-2.0]
 - elementpath (4.1.5) [MIT]
-- exceptiongroup (1.2.1) [MIT, Python-2.0]
+- exceptiongroup (1.3.0) [MIT, Python-2.0]
 - execnet (2.0.2) [MIT]
 - Faker (18.13.0) [MIT]
 - filelock (3.12.2) [Unlicense]
-- future (1.0.0) [MIT, Python-2.0, HPND, public-domain, GPL-2.0-only, PIL]
-- httplib2 (0.22.0) [MIT, Apache-2.0, BSD-3-Clause, GPL-2.0-only]
-- idna (3.7) [BSD-3-Clause]
+- httplib2 (0.30.0) [MIT, GPL-2.0-only]
+- idna (3.10) [BSD-3-Clause]
 - importlib-metadata (6.7.0) [Apache-2.0]
 - importlib-resources (5.12.0) [Apache-2.0]
 - iniconfig (2.0.0) [MIT]
 - jsonschema (4.17.3) [MIT, Apache-2.0]
-- junitparser (2.8.0) [Apache-2.0]
+- junitparser (4.0.2) [Apache-2.0]
 - packaging (24.0) [Apache-2.0]
 - pkgutil_resolve_name (1.3.10) [MIT, PSF-2.0]
 - pluggy (1.2.0) [MIT]
-- pyparsing (3.1.2) [MIT, BSD-3-Clause, MIT-CMU, GPL-1.0-only]
+- pyparsing (3.1.4) [MIT, BSD-3-Clause, MIT-CMU, GPL-1.0-only]
 - pyrsistent (0.19.3) [MIT, BSD-3-Clause]
 - pytest (7.4.4) [MIT]
 - pytest-ordering (0.6) [MIT]
 - pytest-xdist (3.5.0) [MIT]
 - python-dateutil (2.9.0.post0) [BSD-3-Clause, Apache-2.0]
 - requests (2.31.0) [Apache-2.0]
-- six (1.16.0) [MIT]
-- splunk-sdk (2.0.1) [Apache-2.0]
+- six (1.17.0) [MIT]
+- splunk-sdk (2.1.1) [Apache-2.0]
 - splunksplwrapper (1.1.4) [Apache-2.0]
 - tomli (2.0.1) [MIT]
 - typing-extensions (4.7.1) [Python-2.0]
-- urllib3 (1.26.19) [MIT]
+- urllib3 (1.26.20) [MIT]
 - xmlschema (2.5.1) [MIT, W3C, W3C-19980720]
-- xmltodict (0.13.0) [MIT]
+- xmltodict (0.14.2) [MIT]
 - zipp (3.15.0) [MIT]
 
 
 --------------------------------------------------------------------------------
-Package Title: addonfactory-splunk-conf-parser-lib (0.4.0)
+Package Title: addonfactory-splunk-conf-parser-lib (0.4.3)
 
-Package Locator: pip+addonfactory-splunk-conf-parser-lib$0.4.0
+Package Locator: pip+addonfactory-splunk-conf-parser-lib$0.4.3
 
 Package Depth: Direct
 --------------------------------------------------------------------------------
@@ -310,9 +309,9 @@ pyproject.toml
 
 
 --------------------------------------------------------------------------------
-Package Title: attrs (23.2.0)
+Package Title: attrs (24.2.0)
 
-Package Locator: pip+attrs$23.2.0
+Package Locator: pip+attrs$24.2.0
 
 Package Depth: Transitive
 --------------------------------------------------------------------------------
@@ -401,11 +400,11 @@ SOFTWARE.
 
 
 --------------------------------------------------------------------------------
-Package Title: certifi (2024.6.2)
+Package Title: certifi (2024.12.14)
 
-Package Locator: pip+certifi$2024.6.2
+Package Locator: pip+certifi$2024.12.14
 
-Package Depth: Transitive
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -441,9 +440,9 @@ one at http://mozilla.org/MPL/2.0/.
 
 
 --------------------------------------------------------------------------------
-Package Title: charset-normalizer (3.3.2)
+Package Title: charset-normalizer (3.4.3)
 
-Package Locator: pip+charset-normalizer$3.3.2
+Package Locator: pip+charset-normalizer$3.4.3
 
 Package Depth: Transitive
 --------------------------------------------------------------------------------
@@ -453,14 +452,14 @@ MIT
 
 --------------------------------------------------------------------------------
 File matches:
-charset_normalizer.egg-info/PKG-INFO
 LICENSE
 PKG-INFO
+src/charset_normalizer.egg-info/PKG-INFO
 --------------------------------------------------------------------------------
 
 MIT License
 
-Copyright (c) 2019 TAHRI Ahmed R.
+Copyright (c) 2025 TAHRI Ahmed R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -479,6 +478,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 
 
 --------------------------------------------------------------------------------
@@ -950,9 +950,9 @@ SOFTWARE.
 
 
 --------------------------------------------------------------------------------
-Package Title: exceptiongroup (1.2.1)
+Package Title: exceptiongroup (1.3.0)
 
-Package Locator: pip+exceptiongroup$1.2.1
+Package Locator: pip+exceptiongroup$1.3.0
 
 Package Depth: Transitive
 --------------------------------------------------------------------------------
@@ -1196,130 +1196,9 @@ For more information, please refer to <http://unlicense.org>
 
 
 --------------------------------------------------------------------------------
-Package Title: future (1.0.0)
+Package Title: httplib2 (0.30.0)
 
-Package Locator: pip+future$1.0.0
-
-Package Depth: Transitive
---------------------------------------------------------------------------------
-
-* Declared Licenses *
-MIT
-
---------------------------------------------------------------------------------
-File matches:
-docs/build/html/_sources/credits.rst.txt
-docs/credits.rst
-LICENSE.txt
-setup.py
---------------------------------------------------------------------------------
-
-Copyright (c) 2013-2024 Python Charmers, Australia
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-
-
-* Other Licenses *
-Python-2.0, HPND, public-domain, GPL-2.0-only, PIL
-
-* Python-2.0 *
---------------------------------------------------------------------------------
-File matches:
-src/future/backports/urllib/robotparser.py
---------------------------------------------------------------------------------
-
-
-1. This LICENSE AGREEMENT is between the Python Software Foundation ("PSF"), and the Individual or Organization ("Licensee") accessing and otherwise using this software ("Python") in source or binary form and its associated documentation.
-   2. Subject to the terms and conditions of this License Agreement, PSF hereby grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use Python alone or in any derivative version, provided, however, that PSF's License Agreement and PSF's notice of copyright, i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation; All Rights Reserved" are retained in Python alone or in any derivative version prepared by Licensee.
-   3. In the event Licensee prepares a derivative work that is based on or incorporates Python or any part thereof, and wants to make the derivative work available to others as provided herein, then Licensee hereby agrees to include in any such work a brief summary of the changes made to Python.
-   4. PSF is making Python available to Licensee on an "AS IS" basis. PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
-   5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-   6. This License Agreement will automatically terminate upon a material breach of its terms and conditions.
-   7. Nothing in this License Agreement shall be deemed to create any relationship of agency, partnership, or joint venture between PSF and Licensee. This License Agreement does not grant permission to use PSF trademarks or trade name in a trademark sense to endorse or promote products or services of Licensee, or any third party.
-   8. By copying, installing or otherwise using Python, Licensee agrees to be bound by the terms and conditions of this License Agreement.
-   1. This LICENSE AGREEMENT is between BeOpen.com ("BeOpen"), having an office at 160 Saratoga Avenue, Santa Clara, CA 95051, and the Individual or Organization ("Licensee") accessing and otherwise using this software in source or binary form and its associated documentation ("the Software").
-   2. Subject to the terms and conditions of this BeOpen Python License Agreement, BeOpen hereby grants Licensee a non-exclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use the Software alone or in any derivative version, provided, however, that the BeOpen Python License is retained in the Software, alone or in any derivative version prepared by Licensee.
-   3. BeOpen is making the Software available to Licensee on an "AS IS" basis. BEOPEN MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT LIMITATION, BEOPEN MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
-   4. BEOPEN SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE SOFTWARE FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THE SOFTWARE, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-   5. This License Agreement will automatically terminate upon a material breach of its terms and conditions.
-   6. This License Agreement shall be governed by and interpreted in all respects by the law of the State of California, excluding conflict of law provisions. Nothing in this License Agreement shall be deemed to create any relationship of agency, partnership, or joint venture between BeOpen and Licensee. This License Agreement does not grant permission to use BeOpen trademarks or trade names in a trademark sense to endorse or promote products or services of Licensee, or any third party. As an exception, the "BeOpen Python" logos available at http://www.pythonlabs.com/logos.html may be used according to the permissions granted on that web page.
-   7. By copying, installing or otherwise using the software, Licensee agrees to be bound by the terms and conditions of this License Agreement.
-   1. This LICENSE AGREEMENT is between the Corporation for National Research Initiatives, having an office at 1895 Preston White Drive, Reston, VA 20191 ("CNRI"), and the Individual or Organization ("Licensee") accessing and otherwise using Python 1.6, beta 1 software in source or binary form and its associated documentation, as released at the www.python.org Internet site on August 4, 2000 ("Python 1.6b1").
-   2. Subject to the terms and conditions of this License Agreement, CNRI hereby grants Licensee a non-exclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use Python 1.6b1 alone or in any derivative version, provided, however, that CNRIs License Agreement is retained in Python 1.6b1, alone or in any derivative version prepared by Licensee.
-   Alternately, in lieu of CNRIs License Agreement, Licensee may substitute the following text (omitting the quotes): "Python 1.6, beta 1, is made available subject to the terms and conditions in CNRIs License Agreement. This Agreement may be located on the Internet using the following unique, persistent identifier (known as a handle): 1895.22/1011. This Agreement may also be obtained from a proxy server on the Internet using the URL:http://hdl.handle.net/1895.22/1011".
-   3. In the event Licensee prepares a derivative work that is based on or incorporates Python 1.6b1 or any part thereof, and wants to make the derivative work available to the public as provided herein, then Licensee hereby agrees to indicate in any such work the nature of the modifications made to Python 1.6b1.
-   4. CNRI is making Python 1.6b1 available to Licensee on an "AS IS" basis. CNRI MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT LIMITATION, CNRI MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 1.6b1 WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
-   5. CNRI SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE SOFTWARE FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF USING, MODIFYING OR DISTRIBUTING PYTHON 1.6b1, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-   6. This License Agreement will automatically terminate upon a material breach of its terms and conditions.
-   7. This License Agreement shall be governed by and interpreted in all respects by the law of the State of Virginia, excluding conflict of law provisions. Nothing in this License Agreement shall be deemed to create any relationship of agency, partnership, or joint venture between CNRI and Licensee. This License Agreement does not grant permission to use CNRI trademarks or trade name in a trademark sense to endorse or promote products or services of Licensee, or any third party.
-   8. By clicking on the "ACCEPT" button where indicated, or by copying, installing or otherwise using Python 1.6b1, Licensee agrees to be bound by the terms and conditions of this License Agreement.
-Copyright (c) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam, The Netherlands. All rights reserved.
-Permission to use, copy, modify, and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation, and that the name of Stichting Mathematisch Centrum or CWI not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission.
-STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-* HPND *
---------------------------------------------------------------------------------
-File matches:
-src/future/backports/http/cookies.py
---------------------------------------------------------------------------------
-
-
-<copyright notice>
-Permission to use, copy, modify and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies that both copyright notice and this permission notice appear in supporting documentation <copyright holder> <or related entities> not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission<<endOptional>> .
-
-* public-domain *
---------------------------------------------------------------------------------
-File matches:
-docs/3rd-party-py3k-compat-code/pycrypto_py3compat.py
---------------------------------------------------------------------------------
-
-* GPL-2.0-only *
---------------------------------------------------------------------------------
-File matches:
-src/future/backports/urllib/robotparser.py
---------------------------------------------------------------------------------
-
-
-Copyright (C) 2000 Bastian Kleineidam
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-* PIL *
---------------------------------------------------------------------------------
-File matches:
-src/future/backports/xmlrpc/client.py
---------------------------------------------------------------------------------
-
-
-By obtaining, using, and/or copying this software and/or its associated documentation, you agree that you have read, understood, and will comply with the following terms and conditions:
-
-Permission to use, copy, modify, and distribute this software and its associated documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appears in all copies, and that both that copyright notice and this permission notice appear in supporting documentation, and that the name of Secret Labs AB or the author not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission.
-
-SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-
---------------------------------------------------------------------------------
-Package Title: httplib2 (0.22.0)
-
-Package Locator: pip+httplib2$0.22.0
+Package Locator: pip+httplib2$0.30.0
 
 Package Depth: Transitive
 --------------------------------------------------------------------------------
@@ -1331,7 +1210,6 @@ MIT
 File matches:
 doc/html/_static/interface.js
 LICENSE
-python3/README
 setup.py
 --------------------------------------------------------------------------------
 
@@ -1362,64 +1240,8 @@ SOFTWARE.
 
 
 * Other Licenses *
-Apache-2.0, BSD-3-Clause, GPL-2.0-only
+GPL-2.0-only
 
-* Apache-2.0 *
---------------------------------------------------------------------------------
-File matches:
-python2/httplib2/__init__.py
---------------------------------------------------------------------------------
-
-
-Copyright 2007 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-See the License for the specific language governing permissions and limitations under the License.
-
-* BSD-3-Clause *
---------------------------------------------------------------------------------
-File matches:
-python2/httplib2/socks.py
---------------------------------------------------------------------------------
-
-
-Copyright (c) 2006 Dan-Haim. All rights reserved. . All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-   1. Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-
-   2. Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-
-   3. Neither the name of the copyright holder nor the names of its
-      contributors may be used to endorse or promote products derived from
-      this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-* GPL-2.0-only *
 --------------------------------------------------------------------------------
 File matches:
 doc/html/_static/interface.js
@@ -1433,9 +1255,9 @@ You should have received a copy of the GNU General Public License along with thi
 
 
 --------------------------------------------------------------------------------
-Package Title: idna (3.7)
+Package Title: idna (3.10)
 
-Package Locator: pip+idna$3.7
+Package Locator: pip+idna$3.10
 
 Package Depth: Transitive
 --------------------------------------------------------------------------------
@@ -2029,9 +1851,9 @@ See the License for the specific language governing permissions and limitations 
 
 
 --------------------------------------------------------------------------------
-Package Title: junitparser (2.8.0)
+Package Title: junitparser (4.0.2)
 
-Package Locator: pip+junitparser$2.8.0
+Package Locator: pip+junitparser$4.0.2
 
 Package Depth: Direct
 --------------------------------------------------------------------------------
@@ -2042,7 +1864,6 @@ Apache-2.0
 --------------------------------------------------------------------------------
 File matches:
 LICENSE
-setup.py
 --------------------------------------------------------------------------------
 
 Copyright 2020 Joel Wang
@@ -2254,9 +2075,9 @@ SOFTWARE.
 
 
 --------------------------------------------------------------------------------
-Package Title: pyparsing (3.1.2)
+Package Title: pyparsing (3.1.4)
 
-Package Locator: pip+pyparsing$3.1.2
+Package Locator: pip+pyparsing$3.1.4
 
 Package Depth: Transitive
 --------------------------------------------------------------------------------
@@ -2299,7 +2120,6 @@ BSD-3-Clause, MIT-CMU, GPL-1.0-only
 * BSD-3-Clause *
 --------------------------------------------------------------------------------
 File matches:
-examples/booleansearchparser.py
 examples/searchparser.py
 --------------------------------------------------------------------------------
 
@@ -2857,9 +2677,9 @@ LICENSE
 
 
 --------------------------------------------------------------------------------
-Package Title: six (1.16.0)
+Package Title: six (1.17.0)
 
-Package Locator: pip+six$1.16.0
+Package Locator: pip+six$1.17.0
 
 Package Depth: Transitive
 --------------------------------------------------------------------------------
@@ -2875,7 +2695,7 @@ six.py
 test_six.py
 --------------------------------------------------------------------------------
 
-Copyright (c) 2010-2020 Benjamin Peterson
+Copyright (c) 2010-2024 Benjamin Peterson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -2897,9 +2717,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 --------------------------------------------------------------------------------
-Package Title: splunk-sdk (2.0.1)
+Package Title: splunk-sdk (2.1.1)
 
-Package Locator: pip+splunk-sdk$2.0.1
+Package Locator: pip+splunk-sdk$2.1.1
 
 Package Depth: Direct
 --------------------------------------------------------------------------------
@@ -3332,9 +3152,9 @@ STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFT
 
 
 --------------------------------------------------------------------------------
-Package Title: urllib3 (1.26.19)
+Package Title: urllib3 (1.26.20)
 
-Package Locator: pip+urllib3$1.26.19
+Package Locator: pip+urllib3$1.26.20
 
 Package Depth: Direct
 --------------------------------------------------------------------------------
@@ -3548,9 +3368,9 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
 
 
 --------------------------------------------------------------------------------
-Package Title: xmltodict (0.13.0)
+Package Title: xmltodict (0.14.2)
 
-Package Locator: pip+xmltodict$0.13.0
+Package Locator: pip+xmltodict$0.14.2
 
 Package Depth: Direct
 --------------------------------------------------------------------------------
@@ -3579,7 +3399,7 @@ Package Title: zipp (3.15.0)
 
 Package Locator: pip+zipp$3.15.0
 
-Package Depth: Transitive
+Package Depth: Direct
 --------------------------------------------------------------------------------
 
 * Declared Licenses *
@@ -4824,7 +4644,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 * MIT *
 
-Copyright (c) 2010-2020 Benjamin Peterson
+Copyright (c) 2010-2024 Benjamin Peterson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -4870,29 +4690,6 @@ THE SOFTWARE.
 * MIT *
 
 Copyright (c) 2013 Julian Berman
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-
-* MIT *
-
-Copyright (c) 2013-2024 Python Charmers, Australia
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -5161,12 +4958,6 @@ You should also get your employer (if you work as a programmer) or your school, 
 Yoyodyne, Inc., hereby disclaims all copyright interest in the program `Gnomovision' (which makes passes at compilers) written by James Hacker.
 < signature of Ty Coon > , 1 April 1989 Ty Coon, President of Vice
 
-* HPND *
-
-Historical Permission Notice and Disclaimer
-<copyright notice>
-Permission to use, copy, modify and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies , and that both that the copyright notice and this permission notice appear in supporting documentation , and that the name of <copyright holder> <or related entities> not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission . <copyright holder> makes no representations about the suitability of this software for any purpose. It is provided "as is" without express or implied warranty. <copyright holder> DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS . IN NO EVENT SHALL <copyright holder> BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
 * MIT *
 
 Httplib2 Software License
@@ -5246,7 +5037,7 @@ SOFTWARE.
 
 MIT License
 
-Copyright (c) 2019 TAHRI Ahmed R.
+Copyright (c) 2021 Taneli Hukkinen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -5266,11 +5057,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+
 * MIT *
 
 MIT License
 
-Copyright (c) 2021 Taneli Hukkinen
+Copyright (c) 2025 TAHRI Ahmed R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -5298,14 +5090,6 @@ Derivative Work - 1996, 1998-2000 Copyright 1996, 1998-2000 The Regents of the U
 All Rights Reserved
 Permission to use, copy, modify and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appears in all copies and that both that copyright notice and this permission notice appear in supporting documentation, and that the name of CMU and The Regents of the University of California not be used in advertising or publicity pertaining to distribution of the software without specific written permission.
 CMU AND THE REGENTS OF THE UNIVERSITY OF CALIFORNIA DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL CMU OR THE REGENTS OF THE UNIVERSITY OF CALIFORNIA BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM THE LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-* PIL *
-
-By obtaining, using, and/or copying this software and/or its associated documentation, you agree that you have read, understood, and will comply with the following terms and conditions:
-
-Permission to use, copy, modify, and distribute this software and its associated documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appears in all copies, and that both that copyright notice and this permission notice appear in supporting documentation, and that the name of Secret Labs AB or the author not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission.
-
-SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 * PSF-2.0 *
 
@@ -5799,10 +5583,6 @@ COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQ
 The name and trademarks of copyright holders may NOT be used in advertising or publicity pertaining to the software without specific, written prior permission. Title to copyright in this software and any associated documentation will at all times remain with copyright holders. ____________________________________
 This formulation of W3C's notice and license became active on August 14 1998 so as to improve compatibility with GPL. This version ensures that W3C software licensing terms are no more restrictive than GPL and consequently W3C software may be distributed in GPL packages. See the older formulation for the policy prior to this date. Please see our Copyright FAQ for common questions about using materials from our site, including specific terms and conditions for packages like libwww, Amaya, and Jigsaw. Other questions about this notice can be directed to site-policy@w3.org.
 
-* public-domain *
-
-No license text available
-
 
 ================================================================================
 
@@ -5814,15 +5594,15 @@ Apache License 2.0
 
 Copyright (c) 2021 Splunk Inc.
 
-Copyright (c) 2023 Splunk Inc.
+Copyright (c) 2024 Splunk Inc.
 
 Copyright (c) 2022 Splunk Inc.
+
+Copyright (c) 2023 Splunk Inc.
 
 Copyright (c) yyyy} {name of copyright owner}
 
 Copyright (c) 2011-2015 Splunk, Inc.
-
-Copyright (c) 2007 Google Inc.
 
 Copyright (c) 2017 Paul Ganssle <paul@ganssle.io>
 
@@ -5893,8 +5673,6 @@ limitations under the License.
 BSD 3-Clause "New" or "Revised" License
 
 Copyright (c) 2013-2024 Kim Davies and contributors.
-
-Copyright (c) 2006 Dan-Haim. All rights reserved.
 
 Copyright (c) 2006 Estrate, the Netherlands
 
@@ -6000,8 +5778,6 @@ That's all there is to it!
 --------------------------------------------------------------------------------
 GNU General Public License v2.0 only
 
-Copyright (c) 2000 Bastian Kleineidam
-
 Copyright (c) 2006 Stefan Petre
 GNU GENERAL PUBLIC LICENSE
 Version 2, June 1991
@@ -6065,27 +5841,17 @@ Yoyodyne, Inc., hereby disclaims all copyright interest in the program `Gnomovis
 < signature of Ty Coon > , 1 April 1989 Ty Coon, President of Vice
 
 --------------------------------------------------------------------------------
-Historical Permission Notice and Disclaimer
-
-Copyright (c) 2000 by Timothy O'Malley <timo@alum.mit.edu>
-Historical Permission Notice and Disclaimer
-<copyright notice>
-Permission to use, copy, modify and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies , and that both that the copyright notice and this permission notice appear in supporting documentation , and that the name of <copyright holder> <or related entities> not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission . <copyright holder> makes no representations about the suitability of this software for any purpose. It is provided "as is" without express or implied warranty. <copyright holder> DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS . IN NO EVENT SHALL <copyright holder> BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
---------------------------------------------------------------------------------
 MIT License
 
 Copyright (c) 2012 Martin Blech and individual contributors.
 
-Copyright (c) 2010-2020 Benjamin Peterson
+Copyright (c) 2010-2024 Benjamin Peterson
 
 Copyright (c) 2012 Daniele Faraglia
 
 Copyright (c) 2013 Julian Berman
 
 Copyright (c) 2012 Julian Berman
-
-Copyright (c) 2013-2024 Python Charmers, Australia
 
 Copyright (c) 2022 Tobias Gustafsson
 
@@ -6097,19 +5863,19 @@ Copyright (c) 2006 by Joe Gregorio
 
 Copyright (c) 2006 Stefan Petre
 
-Copyright (c) 2009 by Mark Pilgrim
-
 Copyright (c) 2008-2020 Andrey Petrov and contributors (see CONTRIBUTORS.txt)
 
 Copyright (c) 2012 Senko Rasic <senko.rasic@dobarkod.hr>
 
+Copyright (c) 2010-2020 Benjamin Peterson
+
 Copyright (c) 2015-2016 Will Bond <will@wbond.net>
 
-Copyright (c) 2019 TAHRI Ahmed R.
+Copyright (c) 2021 Taneli Hukkinen
+
+Copyright (c) 2025 TAHRI Ahmed R.
 
 Copyright (c)  Ahmed TAHRI @Ousret](https://github.com/Ousret).<br
-
-Copyright (c) 2021 Taneli Hukkinen
 
 Copyright (c) 2004-2011 Paul T. McGuire.  All rights reserved.
 
@@ -6120,8 +5886,6 @@ Copyright (c) 2004 Holger Krekel and others
 Copyright (c) 2014 Gregory Boissinot
 
 Copyright (c) is shown in the HTML footer. Default is True.
-
-Copyright (c)  returns the correct blurp.
 
 Copyright (c)  is shown in the HTML footer. Default is True.
 
@@ -6149,13 +5913,13 @@ Copyright (c) 2016-2023 SISSA (International School for Advanced Studies).
 
 Copyright (c) 2018-2021 SISSA (Scuola Internazionale Superiore di Studi Avanzati)
 
-Copyright (c) 2018-2022 SISSA (International School for Advanced Studies).
-
 Copyright (c) 2022 SISSA (International School for Advanced Studies).
 
 Copyright (c) 2018-2021 SISSA (International School for Advanced Studies).
 
 Copyright (c) 2018-2023 SISSA (International School for Advanced Studies).
+
+Copyright (c) 2018-2022 SISSA (International School for Advanced Studies).
 
 Copyright (c) 2023 SISSA (International School for Advanced Studies).
 
@@ -6283,13 +6047,13 @@ Copyright (c)  str
 
 Copyright (c)  as __copyright__
 
-Copyright (c) 2021 by Ahmed TAHRI
-
 Copyright (c)  FOOBAR
 
-Copyright (c) 2023 Ahmed TAHRI <ahmed(dot)tahri(at)cloudnursery.dev>
+Copyright (c) 2025 Ahmed TAHRI <tahri(dot)ahmed(at)proton.me>
 
 Copyright (c)  Ahmed TAHRI @Ousret](https://github.com/Ousret).<br
+
+Copyright (c) 2021 by Ahmed TAHRI
 
 Copyright (c)  licensing info to every file, as requested by a large
 
@@ -6307,55 +6071,9 @@ Copyright (c)  software-19980720
 
 Copyright (c) 2004-2015 
 
-Copyright (c)  Copyright 2013 by the Jinja team, see AUTHORS.
-
-Copyright (c) 2013 by the Jinja team, see AUTHORS.
-
-Copyright (c) 2013-2024 Python Charmers, Australia.
-
-Copyright (c)  is shown in the HTML footer. Default is True.
-
-Copyright (c)  True
-
-Copyright (c)  Copyright 2008 by Armin Ronacher.
-
-Copyright (c) 2008 by Armin Ronacher.
-
-Copyright (c) 2013-2024 Python Charmers, Australia.\n",
-
-Copyright (c) 2013 Damián Avila
-
-Copyright (c)  Copyright 2011 by Armin Ronacher.
-
-Copyright (c) 2011 by Armin Ronacher.
-
-Copyright (c) 2010 by Armin Ronacher.
-
-Copyright (c) 2002-2007 Python Software Foundation
-
-Copyright (c) 2001-2007 Python Software Foundation
-
-Copyright (c) 2001-2006 Python Software Foundation
-
-Copyright (c) 2004-2006 Python Software Foundation
-
-Copyright (c) 2001-2010 Python Software Foundation
-
-Copyright (c) 2002-2006 Python Software Foundation
-
-Copyright (c) 2000 Luke Kenneth Casson Leighton <lkcl@samba.org>
-
-Copyright (c)  of the Python Software Foundation, licensed under the Python
-
-Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 
-
-Copyright (c) 2006 Google, Inc. All Rights Reserved.
-
 Copyright (c) 2009 John Resig
 
 Copyright (c) 2009 The Dojo Foundation
-
-Copyright (c) 2019 by Joel Wang.
 
 Copyright (c)  Copyright |copy| 2003-2023 Paul McGuire.
 
@@ -6477,6 +6195,10 @@ Copyright (c) 2021
 
 Copyright (c)  dates in LICENSE, README.rst and in the documentation.
 
+Copyright (c)  is shown in the HTML footer. Default is True.
+
+Copyright (c)  True
+
 Copyright (c) 2013 holger krekel et alii"
 
 Copyright (c)  Holger Krekel and others, 2004.
@@ -6498,22 +6220,6 @@ Copyright (c) 2016 SISSA (International School for Advanced Studies).
 Copyright (c) 2001 - 2005 International Business Machines Corporation and Microsoft Corporation
 
 Copyright (c) 1998-2002 W3C (MIT, INRIA, Keio),
-
---------------------------------------------------------------------------------
-PIL Software License
-
-Copyright (c) 1999-2002 by Secret Labs AB.
-
-Copyright (c) 1999-2002 by Fredrik Lundh.
-
-Copyright (c) 1999-2002 by Secret Labs AB
-
-Copyright (c) 1999-2002 by Fredrik Lundh
-By obtaining, using, and/or copying this software and/or its associated documentation, you agree that you have read, understood, and will comply with the following terms and conditions:
-
-Permission to use, copy, modify, and distribute this software and its associated documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appears in all copies, and that both that copyright notice and this permission notice appear in supporting documentation, and that the name of Secret Labs AB or the author not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission.
-
-SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 --------------------------------------------------------------------------------
 Python Software License Agreement 2.0
@@ -6542,8 +6248,6 @@ PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
 Python License 2.0
 
 Copyright (c) 2022 Alex Grönholm
-
-Copyright (c) 2000 Bastian Kleineidam
 
 Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 
@@ -6630,11 +6334,8 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
 This formulation of W3C's notice and license became active on August 14 1998 so as to improve compatibility with GPL. This version ensures that W3C software licensing terms are no more restrictive than GPL and consequently W3C software may be distributed in GPL packages. See the older formulation for the policy prior to this date. Please see our Copyright FAQ for common questions about using materials from our site, including specific terms and conditions for packages like libwww, Amaya, and Jigsaw. Other questions about this notice can be directed to site-policy@w3.org.
 
 --------------------------------------------------------------------------------
-Public Domain
-
---------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
-Report Generated by FOSSA on 2025-9-3
+Report Generated by FOSSA on 2025-9-8
