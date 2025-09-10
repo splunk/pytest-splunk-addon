@@ -11,6 +11,7 @@ config = {
     "store_events": True,
     "splunk_data_generator": "psa.conf",
     "requirement_test": "fake_requirement_path",
+    "ingest_with_uuid": "false",
 }
 pytest_config = namedtuple("Config", ["getoption"])
 test_config = pytest_config(getoption=lambda x, *y: config[x])

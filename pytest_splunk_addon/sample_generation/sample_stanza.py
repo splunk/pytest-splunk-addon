@@ -47,12 +47,13 @@ class SampleStanza(object):
         psa_data_params (dict): Dictionary representing pytest-splunk-addon-data.conf
     """
 
-    def __init__(self, sample_path, psa_data_params):
+    def __init__(self, sample_path, psa_data_params, ingest_with_uuid):
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
         self.metadata = self._parse_meta(psa_data_params)
         self.sample_rules = list(self._parse_rules(psa_data_params, self.sample_path))
         self.input_type = self.metadata.get("input_type", "default")
+        self.metadata["ingest_with_uuid"] = ingest_with_uuid
         self.host_count = 0
 
     def get_raw_events(self):
