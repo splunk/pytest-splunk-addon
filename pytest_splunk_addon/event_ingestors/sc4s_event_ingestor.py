@@ -58,7 +58,7 @@ class SC4SEventIngestor(EventIngestor):
 
         # This loop just checks for a viable remote connection
         tried = 0
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         while True:
             try:
                 sock.connect(self.server_address)
@@ -76,7 +76,7 @@ class SC4SEventIngestor(EventIngestor):
                 sock.close()
 
         raw_events = list()
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         sock.connect(self.server_address)
         for event in events:
             # raw_events.extend()
@@ -88,3 +88,4 @@ class SC4SEventIngestor(EventIngestor):
                     LOGGER.exception(e)
                     sleep(1)
         sock.close()
+
