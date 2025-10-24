@@ -25,14 +25,6 @@ def socket_mock(monkeypatch):
         "socket.socket",
         socket_mock,
     )
-    monkeypatch.setattr(
-        "socket.AF_INET",
-        "AF_INET",
-    )
-    monkeypatch.setattr(
-        "socket.SOCK_STREAM",
-        "SOCK_STREAM",
-    )
     return socket_mock
 
 
