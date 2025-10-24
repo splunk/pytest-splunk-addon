@@ -42,7 +42,7 @@ class SC4SEventIngestor(EventIngestor):
         for res in socket.getaddrinfo(
             self.sc4s_host, self.sc4s_port, socket.AF_UNSPEC, socket.SOCK_STREAM
         ):
-            af, socktype, proto, canonname, sa = res
+            af, socktype, proto, _, sa = res
             try:
                 sock = socket.socket(af, socktype, proto)
                 if af == socket.AF_INET6:
