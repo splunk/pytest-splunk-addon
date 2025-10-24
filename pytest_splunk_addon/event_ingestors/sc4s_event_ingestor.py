@@ -59,6 +59,7 @@ class SC4SEventIngestor(EventIngestor):
         # This loop just checks for a viable remote connection
         tried = 0
         sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+        sock.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
         while True:
             try:
                 sock.connect(self.server_address)
@@ -77,6 +78,7 @@ class SC4SEventIngestor(EventIngestor):
 
         raw_events = list()
         sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+        sock.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
         sock.connect(self.server_address)
         for event in events:
             # raw_events.extend()
