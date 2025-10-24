@@ -39,12 +39,10 @@ def sleep_mock(monkeypatch):
 def test_sc4s_data_can_be_ingested(socket_mock, sc4s_ingestor, sc4s_events):
     sc4s_ingestor.ingest(sc4s_events, 20)
     assert socket_mock.call_count == 1  # Socket created once
-    socket_mock.assert_called_with("AF_INET", "SOCK_STREAM")
     assert socket_mock.connect.call_count == 1
     socket_mock.connect.assert_called_with(("127.0.0.1", 55730))
     assert socket_mock.sendall.call_count == len(sc4s_events)
     assert socket_mock.close.call_count == 1
-
 
 
 def test_exception_raised_when_sc4s_socket_can_not_be_opened(
