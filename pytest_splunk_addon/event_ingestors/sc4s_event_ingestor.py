@@ -16,6 +16,9 @@
 import socket
 from time import sleep
 import logging
+
+from typing import Dict
+
 from .base_event_ingestor import EventIngestor
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -24,9 +27,12 @@ LOGGER = logging.getLogger("pytest-splunk-addon")
 class SC4SEventIngestor(EventIngestor):
     """
     Class to ingest events via SC4S (supports both IPv4 and IPv6)
+
+    Args:
+        required_configs (dict): Dictionary containing splunk host and sc4s port
     """
 
-    def __init__(self, required_configs):
+    def __init__(self, required_configs: Dict[str, str]) -> None:
         self.sc4s_host = required_configs["sc4s_host"]
         self.sc4s_port = required_configs["sc4s_port"]
 
