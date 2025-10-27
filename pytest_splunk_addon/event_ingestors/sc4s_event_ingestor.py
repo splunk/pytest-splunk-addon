@@ -1,24 +1,6 @@
-#
-# Copyright 2025 Splunk Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 import socket
 from time import sleep
 import logging
-
-from typing import Dict
-
 from .base_event_ingestor import EventIngestor
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -32,7 +14,7 @@ class SC4SEventIngestor(EventIngestor):
         required_configs (dict): Dictionary containing splunk host and sc4s port
     """
 
-    def __init__(self, required_configs: Dict[str, str]) -> None:
+    def __init__(self, required_configs):
         self.sc4s_host = required_configs["sc4s_host"]
         self.sc4s_port = required_configs["sc4s_port"]
 
