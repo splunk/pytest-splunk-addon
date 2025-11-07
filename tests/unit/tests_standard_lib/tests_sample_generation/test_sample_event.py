@@ -8,7 +8,7 @@ import pytest_splunk_addon.sample_generation.sample_event
 EVENT_STRING = "Event_string dad ad dfd ddas Value_5."
 UPDATED_STRING = "Updated_string"
 SAMPLE_NAME = "Sample_name"
-METADATA = {"Metadata": "metadata"}
+METADATA = {"Metadata": "metadata", "ingest_with_uuid": "false"}
 RULE = "Rule"
 SAMPLE_HOST = "sample_host"
 FAKE_IPV4 = "222.222.222.222"
@@ -31,6 +31,23 @@ def samp_eve():
         metadata=METADATA,
         sample_name=SAMPLE_NAME,
     )
+
+
+def test_sample_event_generates_uuid():
+    METADATA["ingest_with_uuid"] = "true"
+    with patch(
+        "pytest_splunk_addon.sample_generation.sample_event.uuid.uuid4",
+        return_value="uuid",
+    ) as mock_uuid:
+        event = pytest_splunk_addon.sample_generation.sample_event.SampleEvent(
+            event_string=EVENT_STRING,
+            metadata=METADATA,
+            sample_name=SAMPLE_NAME,
+        )
+
+        mock_uuid.assert_called_once()  # Ensures uuid4 was called
+        assert hasattr(event, "unique_identifier")  # The field was set
+        assert event.unique_identifier == "uuid"
 
 
 def check_host_count(value):
