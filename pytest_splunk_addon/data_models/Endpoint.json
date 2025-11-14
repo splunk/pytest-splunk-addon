@@ -615,7 +615,7 @@
         {
           "name": "status",
           "type": "required",
-          "expected_values": ["critical", "started", "stopped", "warning"],
+          "expected_values": ["critical", "started", "stopped", "warning", "installed"],
           "validation": "",
           "comment": "The status of the service."
         },
