@@ -66,6 +66,11 @@
                     "comment": "Name of the destination as defined by the Vendor."
                 },
                 {
+                    "name": "dest_type",
+                    "type": "optional",
+                    "comment": "The type of the destination object, such as 'instance', 'storage', 'firewall', 'printer'."
+                },
+                {
                     "name": "dest_url",
                     "type": "optional",
                     "comment": "Url of the product, application or object."

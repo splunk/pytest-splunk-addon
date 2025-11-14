@@ -82,6 +82,11 @@
           "comment": "The unique identifier or event code of the event signature."
         },
         {
+          "name": "dest_type",
+          "type": "optional",
+          "comment": "The type of the destination object, such as 'instance', 'storage', 'firewall'."
+        },
+        {
           "name": "src",
           "type": "conditional",
           "condition": "ids_type=\"network\"",
