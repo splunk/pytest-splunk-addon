@@ -111,6 +111,7 @@ class AppTestGenerator(object):
             store_events = self.pytest_config.getoption("store_events")
             app_path = self.pytest_config.getoption("splunk_app")
             config_path = self.pytest_config.getoption("splunk_data_generator")
+            ingest_with_uuid = self.pytest_config.getoption("ingest_with_uuid")
 
             if "key_fields" in fixture:
                 pytest_params = list(
@@ -119,6 +120,7 @@ class AppTestGenerator(object):
                         app_path=app_path,
                         config_path=config_path,
                         test_type="key_fields",
+                        ingest_with_uuid=ingest_with_uuid,
                     )
                 )
 
@@ -129,6 +131,7 @@ class AppTestGenerator(object):
                         app_path=app_path,
                         config_path=config_path,
                         test_type="_time",
+                        ingest_with_uuid=ingest_with_uuid,
                     )
                 )
 
@@ -139,6 +142,7 @@ class AppTestGenerator(object):
                         app_path=app_path,
                         config_path=config_path,
                         test_type="line_breaker",
+                        ingest_with_uuid=ingest_with_uuid,
                     )
                 )
 

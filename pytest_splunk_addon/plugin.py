@@ -130,7 +130,8 @@ def pytest_sessionstart(session):
         app_path = session.config.getoption("splunk_app")
         config_path = session.config.getoption("splunk_data_generator")
         store_events = session.config.getoption("store_events")
-        sample_generator = SampleXdistGenerator(app_path, config_path)
+        ingest_with_uuid = session.config.getoption("ingest_with_uuid")
+        sample_generator = SampleXdistGenerator(app_path, ingest_with_uuid, config_path)
         sample_generator.get_samples(store_events)
     if session.config.getoption("splunk_app", None):
         test_generator = AppTestGenerator(session.config)
