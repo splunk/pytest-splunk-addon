@@ -45,7 +45,7 @@ class SampleGenerator(object):
         """
         if not SampleGenerator.sample_stanzas:
             psa_data_parser = PytestSplunkAddonDataParser(
-                self.addon_path,
+                addon_path=self.addon_path,
                 config_path=self.config_path,
                 ingest_with_uuid=self.ingest_with_uuid,
             )
