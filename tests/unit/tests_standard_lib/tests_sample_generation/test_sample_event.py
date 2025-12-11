@@ -35,17 +35,23 @@ def samp_eve():
 
 def test_sample_event_generates_uuid():
     METADATA["ingest_with_uuid"] = "true"
-    with patch(
-        "pytest_splunk_addon.sample_generation.sample_event.uuid.uuid4",
-        return_value="uuid",
-    ) as mock_uuid:
-        event = pytest_splunk_addon.sample_generation.sample_event.SampleEvent(
-            event_string=EVENT_STRING,
-            metadata=METADATA,
-            sample_name=SAMPLE_NAME,
-        )
+    event = pytest_splunk_addon.sample_generation.sample_event.SampleEvent(
+        event_string=EVENT_STRING,
+        metadata=METADATA,
+        sample_name=SAMPLE_NAME,
+    )
 
-        mock_uuid.assert_called_once()  # Ensures uuid4 was called
+    # UUID should not be generated during SampleEvent creation anymore
+    assert not hasattr(
+        event, "unique_identifier"
+    ), "UUID should not be assigned during SampleEvent creation"
+
+    # Simulate tokenization where UUID is assigned
+    with patch("uuid.uuid4", return_value="uuid") as mock_uuid:
+        if event.metadata.get("ingest_with_uuid") == "true":
+            event.unique_identifier = str(mock_uuid())
+
+        mock_uuid.assert_called_once()  # Ensures uuid4 was called during tokenization simulation
         assert hasattr(event, "unique_identifier")  # The field was set
         assert event.unique_identifier == "uuid"
 

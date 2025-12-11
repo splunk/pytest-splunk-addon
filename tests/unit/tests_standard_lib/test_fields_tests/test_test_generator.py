@@ -486,7 +486,6 @@ def test_generate_field_tests(
                 (
                     {
                         "escaped_event": "escaped_event",
-                        "variant_id": None,
                         "fields": {
                             "severity": "low",
                             "signature_id": "405001",
@@ -502,7 +501,6 @@ def test_generate_field_tests(
                 (
                     {
                         "escaped_event": "escaped_event",
-                        "variant_id": None,
                         "fields": {
                             "src": "192.168.0.1",
                             "type": "event",
@@ -537,34 +535,35 @@ def test_generate_requirement_tests(tokenised_events, expected_output):
 
 
 def test_generate_requirement_tests_with_uuid(mock_uuid4):
-    tokenised_events = [
-        SampleEvent(
-            event_string="escaped_event",
-            metadata={
-                "input_type": "modinput",
-                "sourcetype_to_search": "dummy_sourcetype",
-                "host": "dummy_host",
-                "ingest_with_uuid": "true",
-                "unique_identifier": "uuid",
+    event = SampleEvent(
+        event_string="escaped_event",
+        metadata={
+            "input_type": "modinput",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "dummy_host",
+            "ingest_with_uuid": "true",
+        },
+        sample_name="file1.xml",
+        requirement_test_data={
+            "cim_fields": {
+                "severity": "low",
+                "signature_id": "405001",
+                "src": "192.168.0.1",
+                "type": "event",
             },
-            sample_name="file1.xml",
-            requirement_test_data={
-                "cim_fields": {
-                    "severity": "low",
-                    "signature_id": "405001",
-                    "src": "192.168.0.1",
-                    "type": "event",
-                },
-            },
-        )
-    ]
+        },
+    )
+
+    # Simulate tokenization UUID assignment
+    event.unique_identifier = "uuid"
+
+    tokenised_events = [event]
 
     expected_output = [
         (
             {
                 "escaped_event": "escaped_event",
                 "unique_identifier": "uuid",
-                "variant_id": None,
                 "fields": {
                     "severity": "low",
                     "signature_id": "405001",
@@ -668,19 +667,22 @@ def test_generate_requirement_datamodel_tests(tokenised_events, expected_output)
 
 
 def test_generate_requirement_datamodel_tests_with_uuid(mock_uuid4):
-    tokenised_events = [
-        SampleEvent(
-            event_string="escaped_event",
-            metadata={
-                "input_type": "modinput",
-                "sourcetype_to_search": "dummy_sourcetype",
-                "host": "dummy_host",
-                "ingest_with_uuid": "true",
-            },
-            sample_name="file1.xml",
-            requirement_test_data={"datamodels": {"model": "Alerts"}},
-        )
-    ]
+    event = SampleEvent(
+        event_string="escaped_event",
+        metadata={
+            "input_type": "modinput",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "dummy_host",
+            "ingest_with_uuid": "true",
+        },
+        sample_name="file1.xml",
+        requirement_test_data={"datamodels": {"model": "Alerts"}},
+    )
+
+    # Simulate tokenization UUID assignment
+    event.unique_identifier = "uuid"
+
+    tokenised_events = [event]
 
     expected_output = [
         (

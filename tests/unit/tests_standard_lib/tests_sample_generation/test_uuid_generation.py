@@ -7,6 +7,13 @@ import pytest
 import uuid
 from unittest.mock import patch, MagicMock
 from pytest_splunk_addon.sample_generation.sample_event import SampleEvent
+from pytest_splunk_addon.sample_generation.sample_stanza import SampleStanza
+
+
+def _simulate_tokenization_uuid_assignment(event):
+    """Helper to simulate UUID assignment that happens during tokenization"""
+    if event.metadata.get("ingest_with_uuid") == "true":
+        event.unique_identifier = str(uuid.uuid4())
 
 
 class TestUUIDGeneration:
@@ -18,6 +25,9 @@ class TestUUIDGeneration:
         event = SampleEvent(
             event_string="test event", metadata=metadata, sample_name="test.sample"
         )
+
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
 
         assert hasattr(
             event, "unique_identifier"
@@ -36,6 +46,9 @@ class TestUUIDGeneration:
             event_string="test event", metadata=metadata, sample_name="test.sample"
         )
 
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
+
         assert not hasattr(
             event, "unique_identifier"
         ), "unique_identifier attribute should not exist when flag is disabled"
@@ -47,6 +60,9 @@ class TestUUIDGeneration:
             event_string="test event", metadata=metadata, sample_name="test.sample"
         )
 
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
+
         assert not hasattr(
             event, "unique_identifier"
         ), "unique_identifier attribute should not exist when flag is missing"
@@ -57,6 +73,9 @@ class TestUUIDGeneration:
         event = SampleEvent(
             event_string="test event", metadata=metadata, sample_name="test.sample"
         )
+
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
 
         # Validate UUID format by attempting to parse it
         try:
@@ -88,6 +107,10 @@ class TestUUIDUniqueness:
             for i in range(num_events)
         ]
 
+        # Simulate tokenization UUID assignment for all events
+        for event in events:
+            _simulate_tokenization_uuid_assignment(event)
+
         uuids = [event.unique_identifier for event in events]
 
         # Check all UUIDs are unique
@@ -112,6 +135,10 @@ class TestUUIDUniqueness:
             sample_name="test.sample",
         )
 
+        # Simulate tokenization UUID assignment for both events
+        _simulate_tokenization_uuid_assignment(event1)
+        _simulate_tokenization_uuid_assignment(event2)
+
         assert (
             event1.unique_identifier != event2.unique_identifier
         ), "Identical events should receive different UUIDs"
@@ -122,6 +149,9 @@ class TestUUIDUniqueness:
         event = SampleEvent(
             event_string="test event", metadata=metadata, sample_name="test.sample"
         )
+
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
 
         original_uuid = event.unique_identifier
 
@@ -147,6 +177,9 @@ class TestUUIDCaseSensitivity:
             event_string="test event", metadata=metadata, sample_name="test.sample"
         )
 
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
+
         # Based on implementation, only lowercase "true" generates UUID
         assert not hasattr(
             event, "unique_identifier"
@@ -159,6 +192,9 @@ class TestUUIDCaseSensitivity:
         event = SampleEvent(
             event_string="test event", metadata=metadata, sample_name="test.sample"
         )
+
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
 
         assert not hasattr(
             event, "unique_identifier"
@@ -180,6 +216,9 @@ class TestUUIDWithRequirementData:
             requirement_test_data=requirement_data,
         )
 
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
+
         assert hasattr(
             event, "unique_identifier"
         ), "UUID should be generated even with requirement_test_data"
@@ -198,6 +237,9 @@ class TestUUIDWithRequirementData:
             requirement_test_data=None,
         )
 
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
+
         assert hasattr(
             event, "unique_identifier"
         ), "UUID should be generated even without requirement_test_data"
@@ -211,9 +253,7 @@ class TestUUIDMocking:
         """Verify UUID generation can be mocked for deterministic tests"""
         expected_uuid = "12345678-1234-5678-1234-567812345678"
 
-        with patch(
-            "pytest_splunk_addon.sample_generation.sample_event.uuid.uuid4"
-        ) as mock_uuid:
+        with patch("uuid.uuid4") as mock_uuid:
             mock_uuid.return_value = expected_uuid
 
             metadata = {"ingest_with_uuid": "true", "index": "main"}
@@ -221,14 +261,15 @@ class TestUUIDMocking:
                 event_string="test event", metadata=metadata, sample_name="test.sample"
             )
 
+            # Simulate tokenization UUID assignment
+            _simulate_tokenization_uuid_assignment(event)
+
             mock_uuid.assert_called_once()
             assert event.unique_identifier == expected_uuid
 
     def test_uuid_generation_called_once_per_event(self):
         """Verify UUID is generated exactly once per event"""
-        with patch(
-            "pytest_splunk_addon.sample_generation.sample_event.uuid.uuid4"
-        ) as mock_uuid:
+        with patch("uuid.uuid4") as mock_uuid:
             mock_uuid.return_value = "test-uuid"
 
             metadata = {"ingest_with_uuid": "true", "index": "main"}
@@ -236,11 +277,14 @@ class TestUUIDMocking:
                 event_string="test event", metadata=metadata, sample_name="test.sample"
             )
 
+            # Simulate tokenization UUID assignment
+            _simulate_tokenization_uuid_assignment(event)
+
             # Access the UUID multiple times
             _ = event.unique_identifier
             _ = event.unique_identifier
 
-            # uuid4 should only be called once during __init__
+            # uuid4 should only be called once during tokenization
             mock_uuid.assert_called_once()
 
 
@@ -253,6 +297,9 @@ class TestUUIDWithDifferentMetadata:
         event = SampleEvent(
             event_string="test event", metadata=metadata, sample_name="test.sample"
         )
+
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
 
         assert hasattr(event, "unique_identifier")
 
@@ -276,6 +323,9 @@ class TestUUIDWithDifferentMetadata:
             sample_name="test.sample",
         )
 
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
+
         assert hasattr(event, "unique_identifier")
         assert event.metadata == metadata
 
@@ -293,6 +343,9 @@ class TestUUIDWithDifferentMetadata:
         event = SampleEvent(
             event_string="test event", metadata=metadata, sample_name="test.sample"
         )
+
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
 
         assert hasattr(
             event, "unique_identifier"

@@ -162,19 +162,20 @@ class FieldTestTemplates(object):
         """
 
         # Search Query
-        record_property(
-            "Event_with", splunk_searchtime_fields_requirements["escaped_event"]
+        unique_identifier = splunk_searchtime_fields_requirements.get(
+            "unique_identifier"
         )
+        escaped_event = splunk_searchtime_fields_requirements.get("escaped_event")
+        event_identifier = (
+            unique_identifier if unique_identifier is not None else escaped_event
+        )
+
+        record_property("Event_with", event_identifier)
         record_property("fields", splunk_searchtime_fields_requirements["fields"])
         record_property(
             "modinput_params", splunk_searchtime_fields_requirements["modinput_params"]
         )
 
-        escaped_event = splunk_searchtime_fields_requirements.get("escaped_event")
-        unique_identifier = splunk_searchtime_fields_requirements.get(
-            "unique_identifier"
-        )
-        variant_id = splunk_searchtime_fields_requirements.get("variant_id")
         fields = splunk_searchtime_fields_requirements["fields"]
         modinput_params = splunk_searchtime_fields_requirements["modinput_params"]
 
@@ -190,16 +191,13 @@ class FieldTestTemplates(object):
                 basic_search += f" {param}={param_value}"
 
         if unique_identifier is not None:
-            selector = f'fields.unique_identifier="{unique_identifier}"'
+            selector = f'unique_identifier="{unique_identifier}"'
         elif escaped_event is not None:
             selector = escaped_event
         else:
             selector = ""
-        variant_clause = f" variant_id={variant_id}" if variant_id is not None else ""
 
-        search = (
-            f"search {index_list} {basic_search} {selector}{variant_clause} | fields *"
-        )
+        search = f"search {index_list} {basic_search} {selector} | fields *"
 
         self.logger.info(f"Executing the search query: {search}")
 
@@ -241,8 +239,7 @@ class FieldTestTemplates(object):
             f"{format_search_query_log(search)}"
         )
 
-        if splunk_searchtime_fields_requirements.get("unique_identifier"):
-            error_message += f"Test failed for event: {escaped_event}\n"
+        error_message += f"Test failed for event: {event_identifier}\n"
 
         assert wrong_value_fields == {}, error_message
 

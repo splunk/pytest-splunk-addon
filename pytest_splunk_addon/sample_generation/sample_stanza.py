@@ -16,6 +16,7 @@
 import os
 import re
 import copy
+import uuid
 from . import Rule
 from . import raise_warning
 from . import SampleEvent
@@ -103,6 +104,10 @@ class SampleStanza(object):
                 if each_rule:
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
             for event in raw_event[event_counter]:
+                # Assign UUID per finalized event to ensure uniqueness across variants
+                if event.metadata.get("ingest_with_uuid") == "true":
+                    event.unique_identifier = str(uuid.uuid4())
+
                 host_value = event.metadata.get("host")
                 host = token_value(key=host_value, value=host_value)
                 event.update_requirement_test_field("host", "##host##", host)
@@ -267,9 +272,6 @@ class SampleStanza(object):
         self.host_count += 1
         event_host = self.metadata.get("host") + "_" + str(self.host_count)
         event_metadata = copy.deepcopy(self.metadata)
-        # Add variant_id only when UUID ingestion is enabled
-        if event_metadata.get("ingest_with_uuid") == "true":
-            event_metadata.update(variant_id=self.host_count)
         event_metadata.update(host=event_host)
         LOGGER.info("event metadata: {}".format(event_metadata))
         return event_metadata

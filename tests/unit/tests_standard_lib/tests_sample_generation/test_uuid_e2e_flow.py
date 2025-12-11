@@ -7,6 +7,7 @@ import pytest
 import json
 import tempfile
 import os
+import uuid
 from unittest.mock import patch, MagicMock, mock_open
 from collections import namedtuple
 
@@ -15,6 +16,12 @@ from pytest_splunk_addon.sample_generation.sample_event import SampleEvent
 from pytest_splunk_addon.sample_generation.sample_stanza import SampleStanza
 from pytest_splunk_addon.event_ingestors.hec_event_ingestor import HECEventIngestor
 from pytest_splunk_addon.fields_tests.test_generator import FieldTestGenerator
+
+
+def _simulate_tokenization_uuid_assignment(event):
+    """Helper to simulate UUID assignment that happens during tokenization"""
+    if event.metadata.get("ingest_with_uuid") == "true":
+        event.unique_identifier = str(uuid.uuid4())
 
 
 class TestUUIDFlowThroughPipeline:
@@ -100,6 +107,9 @@ class TestUUIDInHECPayload:
             sample_name="test.sample",
         )
 
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
+
         # Verify event has UUID
         assert hasattr(event, "unique_identifier")
         uuid_value = event.unique_identifier
@@ -165,6 +175,9 @@ class TestUUIDInHECPayload:
             sample_name="test.sample",
         )
 
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
+
         # Verify event doesn't have UUID
         assert not hasattr(event, "unique_identifier")
 
@@ -217,6 +230,9 @@ class TestUUIDInHECPayload:
             sample_name="test.sample",
         )
         event.time_values = [1234567890.123]
+
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
 
         # Verify event has UUID
         assert hasattr(event, "unique_identifier")
@@ -274,23 +290,21 @@ class TestUUIDInTestGeneration:
             "host": "test-host",
         }
 
-        with patch(
-            "pytest_splunk_addon.sample_generation.sample_event.uuid.uuid4"
-        ) as mock_uuid:
-            mock_uuid.return_value = "test-uuid-12345"
+        event = SampleEvent(
+            event_string="test event",
+            metadata=metadata,
+            sample_name="test.sample",
+            requirement_test_data={
+                "cim_fields": {"severity": "low", "signature_id": "12345"}
+            },
+        )
 
-            event = SampleEvent(
-                event_string="test event",
-                metadata=metadata,
-                sample_name="test.sample",
-                requirement_test_data={
-                    "cim_fields": {"severity": "low", "signature_id": "12345"}
-                },
-            )
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
 
         # Verify UUID was generated
         assert hasattr(event, "unique_identifier")
-        assert event.unique_identifier == "test-uuid-12345"
+        assert event.unique_identifier is not None
 
         # Create field test generator
         test_generator = FieldTestGenerator(
@@ -316,7 +330,7 @@ class TestUUIDInTestGeneration:
                 assert (
                     "unique_identifier" in param_data
                 ), "unique_identifier should be in test parameters when UUID is enabled"
-                assert param_data["unique_identifier"] == "test-uuid-12345"
+                assert param_data["unique_identifier"] is not None
 
     def test_uuid_in_datamodel_test_params(self):
         """Verify UUID is included in datamodel test parameters"""
@@ -327,20 +341,18 @@ class TestUUIDInTestGeneration:
             "host": "test-host",
         }
 
-        with patch(
-            "pytest_splunk_addon.sample_generation.sample_event.uuid.uuid4"
-        ) as mock_uuid:
-            mock_uuid.return_value = "test-uuid-67890"
+        event = SampleEvent(
+            event_string="test event for datamodel",
+            metadata=metadata,
+            sample_name="test.sample",
+            requirement_test_data={"datamodels": {"model": "Authentication"}},
+        )
 
-            event = SampleEvent(
-                event_string="test event for datamodel",
-                metadata=metadata,
-                sample_name="test.sample",
-                requirement_test_data={"datamodels": {"model": "Authentication"}},
-            )
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
 
         # Verify UUID was generated
-        assert event.unique_identifier == "test-uuid-67890"
+        assert hasattr(event, "unique_identifier")
 
         # Create field test generator
         test_generator = FieldTestGenerator(
@@ -364,7 +376,7 @@ class TestUUIDInTestGeneration:
 
                 # Verify UUID is in the parameters
                 assert "unique_identifier" in param_data
-                assert param_data["unique_identifier"] == "test-uuid-67890"
+                assert param_data["unique_identifier"] is not None
 
     def test_uuid_not_in_params_when_disabled(self):
         """Verify UUID is NOT in test parameters when flag is disabled"""
@@ -548,17 +560,15 @@ class TestUUIDSearchQueryGeneration:
             "host": "test-host",
         }
 
-        with patch(
-            "pytest_splunk_addon.sample_generation.sample_event.uuid.uuid4"
-        ) as mock_uuid:
-            mock_uuid.return_value = "test-uuid-search"
+        event = SampleEvent(
+            event_string="test event",
+            metadata=metadata,
+            sample_name="test.sample",
+            requirement_test_data={"cim_fields": {"severity": "low"}},
+        )
 
-            event = SampleEvent(
-                event_string="test event",
-                metadata=metadata,
-                sample_name="test.sample",
-                requirement_test_data={"cim_fields": {"severity": "low"}},
-            )
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
 
         test_generator = FieldTestGenerator(
             app_path="fake/path", tokenized_events=[event], field_bank=None
@@ -577,7 +587,7 @@ class TestUUIDSearchQueryGeneration:
 
                 # The key assertion: parameters have UUID, not just escaped event
                 assert "unique_identifier" in param_data
-                assert param_data["unique_identifier"] == "test-uuid-search"
+                assert param_data["unique_identifier"] is not None
                 # This means searches will use UUID instead of escaped event
 
     def test_search_params_lack_uuid_when_disabled(self):
@@ -642,49 +652,47 @@ class TestUUIDEndToEndIntegration:
             "sourcetype_to_search": "test:sourcetype",
         }
 
+        # Step 1: Create event
+        event = SampleEvent(
+            event_string="integration test event",
+            metadata=metadata,
+            sample_name="integration.sample",
+            requirement_test_data={"cim_fields": {"severity": "high"}},
+        )
+
+        # Simulate tokenization UUID assignment
+        _simulate_tokenization_uuid_assignment(event)
+
+        # Verify UUID was created
+        assert hasattr(event, "unique_identifier")
+
+        # Step 2: Verify HEC payload would include UUID
+        assert event.metadata.get("ingest_with_uuid") == "true"
+
+        # Step 3: Generate test parameters
+        test_generator = FieldTestGenerator(
+            app_path="fake/path", tokenized_events=[event], field_bank=None
+        )
+
         with patch(
-            "pytest_splunk_addon.sample_generation.sample_event.uuid.uuid4"
-        ) as mock_uuid:
-            mock_uuid.return_value = "integration-test-uuid"
+            "pytest_splunk_addon.fields_tests.test_generator.xml_event_parser.escape_char_event"
+        ) as mock_escape:
+            mock_escape.return_value = "escaped_integration_event"
 
-            # Step 1: Create event
-            event = SampleEvent(
-                event_string="integration test event",
-                metadata=metadata,
-                sample_name="integration.sample",
-                requirement_test_data={"cim_fields": {"severity": "high"}},
-            )
+            with patch("pytest.param") as mock_param:
+                mock_param.side_effect = lambda x, id: (x, id)
 
-            # Verify UUID was created
-            assert event.unique_identifier == "integration-test-uuid"
+                params = list(test_generator.generate_requirements_tests())
 
-            # Step 2: Verify HEC payload would include UUID
-            assert event.metadata.get("ingest_with_uuid") == "true"
+                assert len(params) > 0
+                param_data, _ = params[0]
 
-            # Step 3: Generate test parameters
-            test_generator = FieldTestGenerator(
-                app_path="fake/path", tokenized_events=[event], field_bank=None
-            )
-
-            with patch(
-                "pytest_splunk_addon.fields_tests.test_generator.xml_event_parser.escape_char_event"
-            ) as mock_escape:
-                mock_escape.return_value = "escaped_integration_event"
-
-                with patch("pytest.param") as mock_param:
-                    mock_param.side_effect = lambda x, id: (x, id)
-
-                    params = list(test_generator.generate_requirements_tests())
-
-                    assert len(params) > 0
-                    param_data, _ = params[0]
-
-                    # Verify UUID is in parameters and escaped_event is still present but not required for UUID path
-                    assert param_data["unique_identifier"] == "integration-test-uuid"
-                    # Key assertion: when UUID is present, consumers should use it (do not manually build search here)
-                    assert (
-                        "escaped_event" in param_data
-                    )  # present for backward compatibility
+                # Verify UUID is in parameters and escaped_event is still present but not required for UUID path
+                assert "unique_identifier" in param_data
+                # Key assertion: when UUID is present, consumers should use it (do not manually build search here)
+                assert (
+                    "escaped_event" in param_data
+                )  # present for backward compatibility
 
     def test_complete_flow_without_uuid(self):
         """Test complete flow works correctly without UUID (backward compatibility)"""

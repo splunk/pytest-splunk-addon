@@ -68,8 +68,7 @@ class SampleEvent(object):
         self.time_values = list()
         self.metadata = metadata
         self.sample_name = sample_name
-        if metadata.get("ingest_with_uuid") == "true":
-            self.unique_identifier = str(uuid.uuid4())
+        # UUID will be assigned post-tokenization per final event to avoid duplicates
         self.host_count = 0
         self.requirement_test_data = requirement_test_data
 
