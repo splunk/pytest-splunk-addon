@@ -486,6 +486,7 @@ def test_generate_field_tests(
                 (
                     {
                         "escaped_event": "escaped_event",
+                        "variant_id": None,
                         "fields": {
                             "severity": "low",
                             "signature_id": "405001",
@@ -501,6 +502,7 @@ def test_generate_field_tests(
                 (
                     {
                         "escaped_event": "escaped_event",
+                        "variant_id": None,
                         "fields": {
                             "src": "192.168.0.1",
                             "type": "event",
@@ -543,6 +545,7 @@ def test_generate_requirement_tests_with_uuid(mock_uuid4):
                 "sourcetype_to_search": "dummy_sourcetype",
                 "host": "dummy_host",
                 "ingest_with_uuid": "true",
+                "unique_identifier": "uuid",
             },
             sample_name="file1.xml",
             requirement_test_data={
@@ -561,6 +564,7 @@ def test_generate_requirement_tests_with_uuid(mock_uuid4):
             {
                 "escaped_event": "escaped_event",
                 "unique_identifier": "uuid",
+                "variant_id": None,
                 "fields": {
                     "severity": "low",
                     "signature_id": "405001",

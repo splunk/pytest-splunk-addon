@@ -264,15 +264,27 @@ class FieldTestGenerator(object):
                     for field, value in requirement_fields.items()
                     if field not in exceptions
                 }
-                sample_event = {
-                    "escaped_event": escaped_event,
-                    "fields": requirement_fields,
-                    "modinput_params": modinput_params,
-                }
-                if metadata.get("ingest_with_uuid") == "true":
-                    sample_event["unique_identifier"] = event.unique_identifier
+                unique_identifier = (
+                    getattr(event, "unique_identifier", None)
+                    if metadata.get("ingest_with_uuid") == "true"
+                    else None
+                )
+                variant_id = metadata.get("variant_id")
+                search_selector = (
+                    {
+                        "unique_identifier": unique_identifier,
+                        "escaped_event": escaped_event,
+                        "variant_id": variant_id,
+                    }
+                    if unique_identifier is not None
+                    else {"escaped_event": escaped_event, "variant_id": variant_id}
+                )
                 yield pytest.param(
-                    sample_event,
+                    {
+                        **search_selector,
+                        "fields": requirement_fields,
+                        "modinput_params": modinput_params,
+                    },
                     id=f"sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )
 

@@ -170,7 +170,11 @@ class FieldTestTemplates(object):
             "modinput_params", splunk_searchtime_fields_requirements["modinput_params"]
         )
 
-        escaped_event = splunk_searchtime_fields_requirements["escaped_event"]
+        escaped_event = splunk_searchtime_fields_requirements.get("escaped_event")
+        unique_identifier = splunk_searchtime_fields_requirements.get(
+            "unique_identifier"
+        )
+        variant_id = splunk_searchtime_fields_requirements.get("variant_id")
         fields = splunk_searchtime_fields_requirements["fields"]
         modinput_params = splunk_searchtime_fields_requirements["modinput_params"]
 
@@ -185,15 +189,17 @@ class FieldTestTemplates(object):
             if param_value is not None:
                 basic_search += f" {param}={param_value}"
 
-        if splunk_searchtime_fields_requirements.get("unique_identifier"):
-            unique_identifier = splunk_searchtime_fields_requirements[
-                "unique_identifier"
-            ]
-            record_property("Event_with", unique_identifier)
-
-            search = f'search {index_list} {basic_search} unique_identifier="{unique_identifier}" | fields *'
+        if unique_identifier is not None:
+            selector = f'fields.unique_identifier="{unique_identifier}"'
+        elif escaped_event is not None:
+            selector = escaped_event
         else:
-            search = f"search {index_list} {basic_search} {escaped_event} | fields *"
+            selector = ""
+        variant_clause = f" variant_id={variant_id}" if variant_id is not None else ""
+
+        search = (
+            f"search {index_list} {basic_search} {selector}{variant_clause} | fields *"
+        )
 
         self.logger.info(f"Executing the search query: {search}")
 

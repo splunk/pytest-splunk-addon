@@ -267,6 +267,9 @@ class SampleStanza(object):
         self.host_count += 1
         event_host = self.metadata.get("host") + "_" + str(self.host_count)
         event_metadata = copy.deepcopy(self.metadata)
+        # Add variant_id only when UUID ingestion is enabled
+        if event_metadata.get("ingest_with_uuid") == "true":
+            event_metadata.update(variant_id=self.host_count)
         event_metadata.update(host=event_host)
         LOGGER.info("event metadata: {}".format(event_metadata))
         return event_metadata
@@ -306,8 +309,7 @@ class SampleStanza(object):
                 if "transport" in each_event.keys():
                     static_host = each_event["transport"].get("@host")
                     if static_host:
-                        # Preserve per-event uniqueness by appending variant counter
-                        event_metadata.update(host=f"{static_host}-{self.host_count}")
+                        event_metadata.update(host=static_host)
                     static_source = each_event["transport"].get("@source")
                     if static_source:
                         event_metadata.update(source=static_source)
