@@ -36,5 +36,5 @@ __all__ = [
     "RangeField",
     "RegexField",
     "SeverityField",
-    "FieldValidationException"
+    "FieldValidationException",
 ]

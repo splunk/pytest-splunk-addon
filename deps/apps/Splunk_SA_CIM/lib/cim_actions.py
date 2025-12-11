@@ -2,6 +2,7 @@ import base64
 import codecs
 import collections
 import csv
+
 try:
     import http.client as http_client
 except ImportError:
@@ -37,33 +38,47 @@ csv.field_size_limit(10485760)
 
 
 def truthy_strint_from_dict(d, k):
-    return True if isinstance(d.get(k, None), (basestring, int)) and (d[k] or d[k] == 0) else False
+    return (
+        True
+        if isinstance(d.get(k, None), (basestring, int)) and (d[k] or d[k] == 0)
+        else False
+    )
 
 
 def default_dropexp(x):
-    """ The purpose of this method is to determine whether or not
+    """The purpose of this method is to determine whether or not
     a key should be dropped.
     """
     return (
-        (x.startswith('_') and x not in ['_bkt', '_cd', '_raw', '_time'])
-        or x.startswith('date_')
-        or x in ['punct', 'sid', 'rid', 'orig_sid', 'orig_rid']
+        (x.startswith("_") and x not in ["_bkt", "_cd", "_raw", "_time"])
+        or x.startswith("date_")
+        or x in ["punct", "sid", "rid", "orig_sid", "orig_rid"]
     )
 
 
 def default_mapexp(x):
-    """ The purpose of this method is to determine whether or not
+    """The purpose of this method is to determine whether or not
     a key should be mapped to orig_key.
     """
-    return (
-        x.startswith('tag::')
-        or x in [
-            '_bkt', '_cd', '_time', '_raw', 'splunk_server', 'index',
-            'source', 'sourcetype', 'host', 'linecount',
-            'timestartpos', 'timeendpos', 'eventtype',
-            'tag', 'search_name', 'event_hash', 'event_id'
-        ]
-    )
+    return x.startswith("tag::") or x in [
+        "_bkt",
+        "_cd",
+        "_time",
+        "_raw",
+        "splunk_server",
+        "index",
+        "source",
+        "sourcetype",
+        "host",
+        "linecount",
+        "timestartpos",
+        "timeendpos",
+        "eventtype",
+        "tag",
+        "search_name",
+        "event_hash",
+        "event_id",
+    ]
 
 
 def parse_mv(mvstr):
@@ -72,14 +87,14 @@ def parse_mv(mvstr):
     vals = []
 
     for c, char in enumerate(mvstr):
-        if char == '$':
+        if char == "$":
             # literal
             if c - 1 == escape_idx:
                 escape_idx = None
             elif grab:
                 nchar = mvstr[c + 1] if len(mvstr) - 1 > c else None
                 # escape
-                if nchar == '$':
+                if nchar == "$":
                     escape_idx = c
                     continue
                 # stop
@@ -90,7 +105,7 @@ def parse_mv(mvstr):
             # start
             else:
                 grab = True
-                vals.append('')
+                vals.append("")
                 continue
 
         if grab:
@@ -101,8 +116,8 @@ def parse_mv(mvstr):
 
 def encode_mv(arr):
     # takes list of strs and returns encoded str in __mv_* multivalue format for splunkd
-    escaped_vals = [i.replace('$', '$$') for i in arr]
-    return "${}$".format(('$;$').join(escaped_vals))
+    escaped_vals = [i.replace("$", "$$") for i in arr]
+    return "${}$".format(("$;$").join(escaped_vals))
 
 
 class InvalidResultID(Exception):
@@ -110,7 +125,7 @@ class InvalidResultID(Exception):
 
 
 class ModularActionFormatter(logging.Formatter):
-    """ An extension to the logging.Formatter base class
+    """An extension to the logging.Formatter base class
     Hardcodes "+0000" into default datefmt
     Use in conjunction with ModularActionFormatter.converter = time.gmtime
     """
@@ -139,22 +154,23 @@ class ModularActionFormatter(logging.Formatter):
 
 class ModularAction(object):
     DEFAULT_MSGFIELDS = [
-        'worker',
-        'signature',
-        'action_name',
-        'search_name',
-        'sid',
-        'orig_sid',
-        'rid',
-        'orig_rid',
-        'app',
-        'user',
-        'digest_mode',
-        'action_mode',
-        'action_status'
+        "worker",
+        "signature",
+        "action_name",
+        "search_name",
+        "sid",
+        "orig_sid",
+        "rid",
+        "orig_rid",
+        "app",
+        "user",
+        "digest_mode",
+        "action_mode",
+        "action_status",
     ]
-    DEFAULT_MESSAGE = 'sendmodaction - {0}'.format(
-        ' '.join(['{i}="{{d[{i}]}}"'.format(i=i) for i in DEFAULT_MSGFIELDS]))
+    DEFAULT_MESSAGE = "sendmodaction - {0}".format(
+        " ".join(['{i}="{{d[{i}]}}"'.format(i=i) for i in DEFAULT_MSGFIELDS])
+    )
     # The above yields a string.format() compatible format string:
     #
     #   'sendmodaction - signature="{d[signature]}" action_name="{d[action_name]}"
@@ -163,21 +179,21 @@ class ModularAction(object):
     #   action_mode="{d[action_mode]}" action_status="{d[action_status]}"'
     # {0} - index, {1} - host, {2} - source
 
-    DEFAULT_HEADER = '***SPLUNK*** %s %s %s'
-    DEFAULT_BREAKER = '==##~~##~~  1E8N3D4E6V5E7N2T9 ~~##~~##==\n'
+    DEFAULT_HEADER = "***SPLUNK*** %s %s %s"
+    DEFAULT_BREAKER = "==##~~##~~  1E8N3D4E6V5E7N2T9 ~~##~~##==\n"
     # {0} - orig_action-name, {1} - orig_sid, {2} - orig_rid, {3} - sourcetype
-    DEFAULT_IDLINE = '***Common Action Model*** %s %s %s %s'
-    DEFAULT_INDEX = 'summary'
+    DEFAULT_IDLINE = "***Common Action Model*** %s %s %s %s"
+    DEFAULT_INDEX = "summary"
     DEFAULT_CHUNK = 50000
 
-    SHORT_FORMAT = '%(asctime)s %(levelname)s %(message)s'
+    SHORT_FORMAT = "%(asctime)s %(levelname)s %(message)s"
 
-    CAM_QUEUE_URI = '/servicesNS/nobody/Splunk_SA_CIM/alerts/modaction_queue/queue'
+    CAM_QUEUE_URI = "/servicesNS/nobody/Splunk_SA_CIM/alerts/modaction_queue/queue"
 
-    PRA_RID_RE = re.compile(r'^tmp_(\d+)\..*')
+    PRA_RID_RE = re.compile(r"^tmp_(\d+)\..*")
 
-    def __init__(self, settings, logger, action_name='unknown'):
-        """ Initialize ModularAction class.
+    def __init__(self, settings, logger, action_name="unknown"):
+        """Initialize ModularAction class.
 
         @param settings:    A modular action payload in JSON format.
         @param logger:      A logging instance.
@@ -190,45 +206,44 @@ class ModularAction(object):
 
         # worker
         try:
-            self.worker = getConfKeyValue('server', 'general', 'serverName')
+            self.worker = getConfKeyValue("server", "general", "serverName")
         except Exception:
-            self.worker = ''
+            self.worker = ""
 
         # settings
         self.settings = json.loads(settings)
 
         # configuration
-        self.configuration = self.settings.get('configuration', {})
+        self.configuration = self.settings.get("configuration", {})
         if not isinstance(self.configuration, dict):
             self.configuration = {}
 
         # logger
         self.logger = logger
         # set loglevel to DEBUG if verbose
-        verbose = normalizeBoolean(self.configuration.get('verbose', False))
+        verbose = normalizeBoolean(self.configuration.get("verbose", False))
         if verbose is True:
             self.logger.setLevel(logging.DEBUG)
-            self.logger.debug('Log level set to DEBUG')
+            self.logger.debug("Log level set to DEBUG")
 
         # replay mode
-        replay_mode = normalizeBoolean(
-            self.settings.get('_cam_replay', False))
+        replay_mode = normalizeBoolean(self.settings.get("_cam_replay", False))
         if replay_mode is True:
             self.replay_mode = replay_mode
-            self.logger.info('Replay mode detected')
+            self.logger.info("Replay mode detected")
         else:
             self.replay_mode = False
 
         # session key
-        self.session_key = self.settings.get('session_key')
+        self.session_key = self.settings.get("session_key")
 
         # search id
-        self.sid = self.settings.get('sid')
-        self.sid_snapshot = ''
+        self.sid = self.settings.get("sid")
+        self.sid_snapshot = ""
         # if sid contains rt_scheduler with snapshot-sid; drop snapshot-sid
         # sometimes self.sid may be an integer (1465593470.1228)
         try:
-            rtsid = re.match(r'^(rt_scheduler.*)\.(\d+)(_?.*)$', self.sid)
+            rtsid = re.match(r"^(rt_scheduler.*)\.(\d+)(_?.*)$", self.sid)
             if rtsid:
                 self.sid = rtsid.group(1)
                 self.sid_snapshot = rtsid.group(2)
@@ -239,34 +254,34 @@ class ModularAction(object):
             pass
         # rid_ntuple is a named tuple that represents
         # the three variables that change on a per-result basis
-        self.rid_ntuple = collections.namedtuple('ID', ['orig_sid', 'rid', 'orig_rid'])
+        self.rid_ntuple = collections.namedtuple("ID", ["orig_sid", "rid", "orig_rid"])
         # rids is a list of rid_ntuple values
         # automatically maintained by update() calls
         self.rids = []
         # current orig_sid based on update()
         # aka self.rids[-1].orig_sid
-        self.orig_sid = ''
+        self.orig_sid = ""
         # current rid based on update()
         # aka self.rids[-1].rid
-        self.rid = ''
+        self.rid = ""
         # current orig_rid based on update()
         # aka self.rids[-1].orig_rid
-        self.orig_rid = ''
+        self.orig_rid = ""
 
         # results_file
-        self.results_file = self.settings.get('results_file')
+        self.results_file = self.settings.get("results_file")
         # results_path
-        results_path = ''
+        results_path = ""
         if self.results_file:
             results_path = os.path.dirname(self.results_file)
 
         # digest_mode (per-result alerting)
         self.digest_mode = 1
         # per SPL-172319 - splunkd to provide result_id for per-result-alerting
-        if truthy_strint_from_dict(self.settings, 'result_id'):
+        if truthy_strint_from_dict(self.settings, "result_id"):
             self.digest_mode = 0
         # pre SPL-172319 behavior
-        elif results_path.split(os.sep)[-1] == 'per_result_alert':
+        elif results_path.split(os.sep)[-1] == "per_result_alert":
             self.digest_mode = 0
 
         # info/job
@@ -275,30 +290,29 @@ class ModularAction(object):
         if self.results_file:
             # handle per-result alerting
             if self.digest_mode == 0:
-                self.info_file = os.path.join(
-                    os.path.dirname(results_path), 'info.csv')
+                self.info_file = os.path.join(os.path.dirname(results_path), "info.csv")
             else:
-                self.info_file = os.path.join(results_path, 'info.csv')
+                self.info_file = os.path.join(results_path, "info.csv")
         self.job = {}
 
-        self.search_name = self.settings.get('search_name')
-        self.app = self.settings.get('app')
-        self.user = self.settings.get('user') or self.settings.get('owner')
+        self.search_name = self.settings.get("search_name")
+        self.app = self.settings.get("app")
+        self.user = self.settings.get("user") or self.settings.get("owner")
 
         # use | sendalert param.action_name=$action_name$
-        self.action_name = self.configuration.get('action_name') or action_name
+        self.action_name = self.configuration.get("action_name") or action_name
 
         # use sid to determine action_mode
-        if isinstance(self.sid, basestring) and 'scheduler' in self.sid:
-            self.action_mode = 'saved'
+        if isinstance(self.sid, basestring) and "scheduler" in self.sid:
+            self.action_mode = "saved"
         else:
-            self.action_mode = 'adhoc'
+            self.action_mode = "adhoc"
 
-        self.action_status = ''
+        self.action_status = ""
 
         # Since we don't use the result object we get from settings it will be purged
         try:
-            del self.settings['result']
+            del self.settings["result"]
         except Exception:
             pass
 
@@ -306,7 +320,7 @@ class ModularAction(object):
         self.events = []
 
     def addinfo(self):
-        """ The purpose of this method is to populate the
+        """The purpose of this method is to populate the
         modular action info variable with the contents of info.csv.
         """
         info_data = None
@@ -314,21 +328,18 @@ class ModularAction(object):
         if self.info_file:
             try:
                 # read-binary usage intentional here
-                with open(self.info_file, 'rb') as fh:
-                    fc = codecs.getreader('utf-8')(fh)
+                with open(self.info_file, "rb") as fh:
+                    fc = codecs.getreader("utf-8")(fh)
                     info_data = fc.read()
                     fh.seek(0)
                     self.info = next(csv.DictReader(fc))
             except Exception:
-                self.message(
-                    'Could not retrieve info.csv',
-                    level=logging.WARN
-                )
+                self.message("Could not retrieve info.csv", level=logging.WARN)
 
         return info_data
 
     def addjobinfo(self):
-        """ The purpose of this method is to populate the job variable
+        """The purpose of this method is to populate the job variable
         with the contents from REST (/services/search/jobs/<sid>)
 
         If we're in replay mode we will not be able to hit /services/search/jobs/<sid>
@@ -338,27 +349,23 @@ class ModularAction(object):
         if self.sid and not self.job and not self.replay_mode:
             try:
                 r, c = rest.simpleRequest(
-                    'search/jobs/%s' % self.sid,
+                    "search/jobs/%s" % self.sid,
                     sessionKey=self.session_key,
-                    getargs={'output_mode': 'json'}
+                    getargs={"output_mode": "json"},
                 )
                 if r.status == http_client.OK:
-                    self.job = json.loads(c)['entry'][0]['content']
-                    self.message('Successfully retrieved search job info')
+                    self.job = json.loads(c)["entry"][0]["content"]
+                    self.message("Successfully retrieved search job info")
                     self.logger.debug(self.job)
                 else:
                     self.message(
-                        'Could not retrieve search job info',
-                        level=logging.WARN
+                        "Could not retrieve search job info", level=logging.WARN
                     )
             except Exception:
-                self.message(
-                    'Could not retrieve search job info',
-                    level=logging.WARN
-                )
+                self.message("Could not retrieve search job info", level=logging.WARN)
 
     def message(self, signature, status=None, rids=None, level=logging.INFO, **kwargs):
-        """ The purpose of this method is to provide a common messaging interface.
+        """The purpose of this method is to provide a common messaging interface.
 
         @param signature: A string representing the message we want to log.
         @param status:    An optional status that we want to log.
@@ -376,22 +383,23 @@ class ModularAction(object):
                           backwards compatibility we also return the message.
         """
         # worker
-        worker = kwargs.get('worker') or self.worker or ''
+        worker = kwargs.get("worker") or self.worker or ""
         # status
-        status = status or self.action_status or ''
+        status = status or self.action_status or ""
         # rid
         if not isinstance(rids, list) or rids == []:
             rids = [self.rid_ntuple(self.orig_sid, self.rid, self.orig_rid)]
         # kwargs - prune any duplicate keys based on DEFAULT_MSGFIELDS
         #          prune any keys with special characters [A-Za-z_]+
         newargs = [
-            x for x in sorted(kwargs)
-            if (x not in ModularAction.DEFAULT_MSGFIELDS) and re.match(r'[A-Za-z_]+', x)
+            x
+            for x in sorted(kwargs)
+            if (x not in ModularAction.DEFAULT_MSGFIELDS) and re.match(r"[A-Za-z_]+", x)
         ]
         # MSG
-        msg = '{0} {1}'.format(
+        msg = "{0} {1}".format(
             ModularAction.DEFAULT_MESSAGE,
-            ' '.join(['{i}="{{d[{i}]}}"'.format(i=i) for i in newargs])
+            " ".join(['{i}="{{d[{i}]}}"'.format(i=i) for i in newargs]),
         )
 
         # This will set the default value of any value NOT in the dictionary to the
@@ -400,43 +408,47 @@ class ModularAction(object):
         # order is important here - here we update first from kwargs, then from our
         # expected arg set.
         argsdict.update(kwargs)
-        argsdict.update({
-            'worker': worker,
-            'signature': signature or '',
-            'action_name': self.action_name or '',
-            'search_name': self.search_name or '',
-            'sid': self.sid or '',
-            'app': self.app or '',
-            'user': self.user or '',
-            'digest_mode': self.digest_mode if self.digest_mode in [0, 1] else '',
-            'action_mode': self.action_mode or '',
-            'action_status': status
-        })
+        argsdict.update(
+            {
+                "worker": worker,
+                "signature": signature or "",
+                "action_name": self.action_name or "",
+                "search_name": self.search_name or "",
+                "sid": self.sid or "",
+                "app": self.app or "",
+                "user": self.user or "",
+                "digest_mode": self.digest_mode if self.digest_mode in [0, 1] else "",
+                "action_mode": self.action_mode or "",
+                "action_status": status,
+            }
+        )
 
         for rid_ntuple in rids:
             if len(rid_ntuple) == 3:
                 # Update the arguments dictionary
-                argsdict.update({
-                    'orig_sid': rid_ntuple.orig_sid or '',
-                    'rid': rid_ntuple.rid or '',
-                    'orig_rid': rid_ntuple.orig_rid or ''
-                })
+                argsdict.update(
+                    {
+                        "orig_sid": rid_ntuple.orig_sid or "",
+                        "rid": rid_ntuple.rid or "",
+                        "orig_rid": rid_ntuple.orig_rid or "",
+                    }
+                )
                 # This is where the magic happens. The format string will use the
                 # attributes of "argsdict"
                 message = msg.format(d=argsdict)
                 # prune empty string key-value pairs
                 for match in re.finditer(r'[A-Za-z_]+=""(\s|$)', message):
-                    message = message.replace(match.group(0), '', 1)
+                    message = message.replace(match.group(0), "", 1)
                 message = message.strip()
                 self.logger.log(level, message)
             else:
-                self.logger.warn('Could not unpack rid_ntuple')
-                message = ''
+                self.logger.warn("Could not unpack rid_ntuple")
+                message = ""
 
         return message
 
     def update(self, result):
-        """ The purpose of this method is to update the ModularAction instance
+        """The purpose of this method is to update the ModularAction instance
         identifiers based on the current result being operated on.
 
         This is the most important method in the library as it sets up
@@ -448,17 +460,17 @@ class ModularAction(object):
         @result: The result dictionary object (arbitrary key/value pairs)
         """
         # This is for events/results that were created as the result of a previous action
-        self.orig_sid = result.get('orig_sid', '')
+        self.orig_sid = result.get("orig_sid", "")
         # This is for events/results that were created as the result of a previous action
-        self.orig_rid = result.get('orig_rid', '')
+        self.orig_rid = result.get("orig_rid", "")
 
         # If using per-result alerting rid will be decided for you.
         # This is due to the fact that a number of scripts inadvertently
         # set this to 0 based on enumeration.
         if self.digest_mode == 0:
             # per SPL-172319 - splunkd to provide result_id for per-result-alerting
-            if truthy_strint_from_dict(self.settings, 'result_id'):
-                self.rid = str(self.settings['result_id'])
+            if truthy_strint_from_dict(self.settings, "result_id"):
+                self.rid = str(self.settings["result_id"])
             # pre SPL-172319 behavior
             else:
                 results_file = os.path.basename(self.results_file)
@@ -466,38 +478,34 @@ class ModularAction(object):
                 if pra_rid_match:
                     self.rid = pra_rid_match.group(1)
                 else:
-                    raise InvalidResultID('Result must have an ID')
+                    raise InvalidResultID("Result must have an ID")
 
-        elif truthy_strint_from_dict(result, 'rid'):
-            self.rid = str(result['rid'])
+        elif truthy_strint_from_dict(result, "rid"):
+            self.rid = str(result["rid"])
 
         else:
-            raise InvalidResultID('Result must have an ID')
+            raise InvalidResultID("Result must have an ID")
 
         # add snapshot id
         if self.sid_snapshot:
-            self.rid = '%s.%s' % (self.rid, self.sid_snapshot)
+            self.rid = "%s.%s" % (self.rid, self.sid_snapshot)
 
         # add result info to list of named tuples
-        self.rids.append(
-            self.rid_ntuple(self.orig_sid, self.rid, self.orig_rid))
+        self.rids.append(self.rid_ntuple(self.orig_sid, self.rid, self.orig_rid))
 
     def invoke(self):
-        """ The purpose of this method is to generate per-result invocation messages.
+        """The purpose of this method is to generate per-result invocation messages.
         This method is used to identify that an action is being attempted on a per-result basis.
 
         Remember to call update() prior to invoke() to ensure that the invocation message
         reflects the appropriate identifiers.
         """
-        self.message('Invoking modular action')
+        self.message("Invoking modular action")
 
     def result2stash(
-            self,
-            result,
-            dropexp=default_dropexp,
-            mapexp=default_mapexp,
-            addinfo=False):
-        """ The purpose of this method is to formulate an event in stash format
+        self, result, dropexp=default_dropexp, mapexp=default_mapexp, addinfo=False
+    ):
+        """The purpose of this method is to formulate an event in stash format
 
         @param result:  The result dictionary to generate a stash event for.
         @param dropexp: A lambda expression used to determine whether a field
@@ -525,33 +533,30 @@ class ModularAction(object):
         mapexp = mapexp or (lambda x: False)
 
         def orig_dropexp(x):
-            """ The purpose of this method is to determine whether we should
+            """The purpose of this method is to determine whether we should
             drop an orig_key that will be overwritten by a key to be mapped.
 
             For instance, if we have orig_foo and foo in result, and foo is a
             mapped key, then orig_foo will be dropped.
             """
-            return x.startswith('orig_') and x[5:] in result and mapexp(x[5:])
+            return x.startswith("orig_") and x[5:] in result and mapexp(x[5:])
 
         # addinfo
         if addinfo:
-            result['info_min_time'] = self.info.get('_search_et', '0.000')
-            info_max_time = self.info.get('_search_lt')
-            if not info_max_time or info_max_time == 0 or info_max_time == '0':
-                info_max_time = '+Infinity'
-            result['info_max_time'] = info_max_time
-            result['info_search_time'] = self.info.get('_timestamp', '')
+            result["info_min_time"] = self.info.get("_search_et", "0.000")
+            info_max_time = self.info.get("_search_lt")
+            if not info_max_time or info_max_time == 0 or info_max_time == "0":
+                info_max_time = "+Infinity"
+            result["info_max_time"] = info_max_time
+            result["info_search_time"] = self.info.get("_timestamp", "")
 
         # construct _raw
-        _raw = '%s' % result.get('_time', mktimegm(time.gmtime()))
+        _raw = "%s" % result.get("_time", mktimegm(time.gmtime()))
         if self.search_name:
-            _raw += ', search_name="%s"' % self.search_name.replace('"', r'\"')
+            _raw += ', search_name="%s"' % self.search_name.replace('"', r"\"")
 
         # get key names
-        result_keys = set([
-            x[5:] if x.startswith('__mv_') else x
-            for x in result
-        ])
+        result_keys = set([x[5:] if x.startswith("__mv_") else x for x in result])
 
         # iterate keys
         for key in sorted(list(result_keys)):
@@ -559,11 +564,13 @@ class ModularAction(object):
                 continue
 
             # if key is MV
-            mv_key = '__mv_{0}'.format(key)
-            if (mv_key in result
-                    and isinstance(result[mv_key], basestring)  # string
-                    and result[mv_key].startswith('$')  # prefix
-                    and result[mv_key].endswith('$')):  # suffix
+            mv_key = "__mv_{0}".format(key)
+            if (
+                mv_key in result
+                and isinstance(result[mv_key], basestring)  # string
+                and result[mv_key].startswith("$")  # prefix
+                and result[mv_key].endswith("$")
+            ):  # suffix
                 vals = parse_mv(result[mv_key])
             # if key is SV
             elif key in result:
@@ -575,7 +582,7 @@ class ModularAction(object):
             for v in vals:
                 if isinstance(v, basestring) and v:
                     # escape slashes
-                    v = v.replace('\\', '\\\\')
+                    v = v.replace("\\", "\\\\")
                     # escape quotes
                     v = v.replace('"', '\\"')
                 elif isinstance(v, basestring) and len(vals) == 1:
@@ -583,14 +590,14 @@ class ModularAction(object):
 
                 # check map
                 if mapexp(key):
-                    _raw += ', %s="%s"' % ('orig_' + key.lstrip('_'), v)
+                    _raw += ', %s="%s"' % ("orig_" + key.lstrip("_"), v)
                 else:
                     _raw += ', %s="%s"' % (key, v)
 
         return _raw
 
     def addevent(self, raw, sourcetype, cam_header=True):
-        """ The purpose of this method is to add a properly constructed event
+        """The purpose of this method is to add a properly constructed event
         to the events list in the ModularAction instance.  This ensures events
         are created with the appropriate index-time header.
 
@@ -610,23 +617,29 @@ class ModularAction(object):
             if self.orig_sid:
                 action_idline = self.DEFAULT_IDLINE % (
                     self.get_header_item(
-                        'orig_action_name', self.action_name, 'unknown'),
-                    self.get_header_item('orig_sid', self.orig_sid),
-                    self.get_header_item('orig_rid', self.orig_rid),
-                    self.get_header_item('sourcetype', sourcetype))
+                        "orig_action_name", self.action_name, "unknown"
+                    ),
+                    self.get_header_item("orig_sid", self.orig_sid),
+                    self.get_header_item("orig_rid", self.orig_rid),
+                    self.get_header_item("sourcetype", sourcetype),
+                )
             else:
                 action_idline = self.DEFAULT_IDLINE % (
                     self.get_header_item(
-                        'orig_action_name', self.action_name, 'unknown'),
-                    self.get_header_item('orig_sid', self.sid),
-                    self.get_header_item('orig_rid', self.rid),
-                    self.get_header_item('sourcetype', sourcetype))
-            self.events.append(action_idline.rstrip() + '\n' + raw)
+                        "orig_action_name", self.action_name, "unknown"
+                    ),
+                    self.get_header_item("orig_sid", self.sid),
+                    self.get_header_item("orig_rid", self.rid),
+                    self.get_header_item("sourcetype", sourcetype),
+                )
+            self.events.append(action_idline.rstrip() + "\n" + raw)
         else:
             self.events.append(raw)
 
-    def writeevents(self, index='summary', host=None, source=None, fext='common_action_model'):
-        """ The purpose of this method is to create arbitrary splunk events
+    def writeevents(
+        self, index="summary", host=None, source=None, fext="common_action_model"
+    ):
+        """The purpose of this method is to create arbitrary splunk events
         from the list of events in the ModularAction instance.
 
         Please use addevent() for populating the list of events in
@@ -652,50 +665,52 @@ class ModularAction(object):
         """
         if self.events:
             # sanitize file extension
-            if not fext or not re.match(r'^[\w-]+$', fext):
-                self.logger.warn('Requested file extension was ignored due to invalid characters')
-                fext = 'common_action_model'
+            if not fext or not re.match(r"^[\w-]+$", fext):
+                self.logger.warn(
+                    "Requested file extension was ignored due to invalid characters"
+                )
+                fext = "common_action_model"
             elif len(fext) > 200:
-                self.logger.warn('Requested file extension was ignored due to length')
-                fext = 'common_action_model'
+                self.logger.warn("Requested file extension was ignored due to length")
+                fext = "common_action_model"
             # header
             header_line = self.DEFAULT_HEADER % (
-                self.get_header_item('index', index, self.DEFAULT_INDEX),
-                self.get_header_item('host', host),
-                self.get_header_item('source', source))
+                self.get_header_item("index", index, self.DEFAULT_INDEX),
+                self.get_header_item("host", host),
+                self.get_header_item("source", source),
+            )
             header_line = header_line.rstrip()
             # process event chunks
             for chunk in (
-                    self.events[x:x + self.DEFAULT_CHUNK]
-                    for x in range(0, len(self.events), self.DEFAULT_CHUNK)):
+                self.events[x : x + self.DEFAULT_CHUNK]
+                for x in range(0, len(self.events), self.DEFAULT_CHUNK)
+            ):
                 # initialize output string
-                default_breaker = '\n' + self.DEFAULT_BREAKER
+                default_breaker = "\n" + self.DEFAULT_BREAKER
                 fout = header_line + default_breaker + (default_breaker).join(chunk)
                 # write output string
                 try:
-                    fn = '{0}_{1}.stash_{2}'.format(
-                        mktimegm(time.gmtime()),
-                        random.randint(0, 100000),
-                        fext)
-                    fp = make_splunkhome_path(['var', 'spool', 'splunk', fn])
+                    fn = "{0}_{1}.stash_{2}".format(
+                        mktimegm(time.gmtime()), random.randint(0, 100000), fext
+                    )
+                    fp = make_splunkhome_path(["var", "spool", "splunk", fn])
                     # obtain fh
                     # write-binary usage intentional here
-                    with open(fp, 'wb') as fh:
-                        fh.write(fout.encode('utf-8'))
+                    with open(fp, "wb") as fh:
+                        fh.write(fout.encode("utf-8"))
                 except Exception:
-                    signature = 'Error obtaining file handle during makeevents'
+                    signature = "Error obtaining file handle during makeevents"
                     self.message(signature, level=logging.ERROR, file_path=fp)
-                    self.logger.exception(signature + ' file_path=%s' % fp)
+                    self.logger.exception(signature + " file_path=%s" % fp)
                     return False
             self.message(
-                'Successfully created splunk events',
-                event_count=len(self.events)
+                "Successfully created splunk events", event_count=len(self.events)
             )
             return True
         return False
 
     def validate(self):
-        """ This method serves as an illustration stub.
+        """This method serves as an illustration stub.
         Serves as a container for operations which validate the action's parameters.
 
         Outer Validation - validation based on non-result based arguments (i.e. user input).
@@ -712,7 +727,7 @@ class ModularAction(object):
         return
 
     def queuework(self, exit_strategy=None, tries=3, raise_all=False):
-        """ This method will queue an action (instead of performing it)
+        """This method will queue an action (instead of performing it)
         by inserting a row into the cam_queue kvstore collection
 
         For action authors wanting to support remote workers it is important
@@ -738,9 +753,9 @@ class ModularAction(object):
         # 1. Load the common action model.
         # If we can't load _cam, "continue" unless raise_all=True
         try:
-            _cam = json.loads(self.configuration.get('_cam') or '{}')
+            _cam = json.loads(self.configuration.get("_cam") or "{}")
         except Exception:
-            signature = 'Failed to load _cam'
+            signature = "Failed to load _cam"
             if raise_all:
                 raise Exception(signature)
             else:
@@ -749,28 +764,26 @@ class ModularAction(object):
 
         # 2. Determine if the action supports workers.
         # If it does not; return.
-        supports_workers = normalizeBoolean(
-            _cam.get('supports_workers', False))
+        supports_workers = normalizeBoolean(_cam.get("supports_workers", False))
 
         # the lack of worker support is not a "raisable" offense
         # action_name must be valid as well
-        if (supports_workers is not True
-                or not self.action_name
-                or self.action_name == 'unknown'):
-            self.message(
-                'Action does not support workers',
-                level=logging.WARN
-            )
+        if (
+            supports_workers is not True
+            or not self.action_name
+            or self.action_name == "unknown"
+        ):
+            self.message("Action does not support workers", level=logging.WARN)
             return
 
         # 3. Load _cam_workers (workers list).
         # If we can't load _cam_workers, "continue" unless raise_all=True
         try:
-            _cam_workers = list(set(
-                json.loads(self.configuration.get('_cam_workers') or '[]')
-            ))
+            _cam_workers = list(
+                set(json.loads(self.configuration.get("_cam_workers") or "[]"))
+            )
         except Exception:
-            signature = 'Failed to load _cam_workers'
+            signature = "Failed to load _cam_workers"
             if raise_all:
                 raise Exception(signature)
             else:
@@ -782,8 +795,7 @@ class ModularAction(object):
         exit_strategy = normalizeBoolean(exit_strategy)
 
         # if exit_strategy is None and work to be done locally
-        if (exit_strategy is None
-                and ('local' in _cam_workers)):
+        if exit_strategy is None and ("local" in _cam_workers):
             exit_strategy = False
         # if exit_strategy is None and work not to be done locally
         elif exit_strategy is None:
@@ -795,61 +807,59 @@ class ModularAction(object):
         else:
             exit_strategy = False
 
-        self.logger.debug('exit_strategy={0}'.format(exit_strategy))
+        self.logger.debug("exit_strategy={0}".format(exit_strategy))
 
         # Remove local
-        _cam_workers = sorted(list(
-            set(_cam_workers) - set(['local'])
-        ))
+        _cam_workers = sorted(list(set(_cam_workers) - set(["local"])))
 
         # If no workers or local-only workers; return
         if not _cam_workers:
-            self.message('No workers specified')
+            self.message("No workers specified")
             return
 
         # use unaltered sid from payload
-        sid = str(self.settings.get('sid'))
+        sid = str(self.settings.get("sid"))
 
         # 5. Get info
-        info = ''
+        info = ""
         info_data = self.addinfo()
-        info = base64.b64encode(info_data.encode('utf-8')).decode('utf-8')
+        info = base64.b64encode(info_data.encode("utf-8")).decode("utf-8")
 
         # 6. Queue action
         records = []
         record = {
-            'time': mktimegm(time.gmtime()),
-            'action_name': self.action_name,
-            'sid': sid,
-            'info': info,
-            'settings': json.dumps(self.settings)
+            "time": mktimegm(time.gmtime()),
+            "action_name": self.action_name,
+            "sid": sid,
+            "info": info,
+            "settings": json.dumps(self.settings),
         }
 
         for worker in _cam_workers:
             new_record = record.copy()
-            new_record['worker'] = worker
+            new_record["worker"] = worker
             records.append(new_record)
 
         c = None
-        e = Exception('Exception Impossible')
+        e = Exception("Exception Impossible")
 
         for unused_x in range(0, tries):
             try:
                 r, c = rest.simpleRequest(
                     self.CAM_QUEUE_URI,
                     sessionKey=self.session_key,
-                    jsonargs=json.dumps(records)
+                    jsonargs=json.dumps(records),
                 )
-                c = c.decode('utf-8')
+                c = c.decode("utf-8")
 
                 if r.status == http_client.OK:
                     # generate pending messages on behalf
                     # of each worker
                     for worker in _cam_workers:
                         self.message(
-                            'Successfully queued action',
-                            status='pending',
-                            worker=worker
+                            "Successfully queued action",
+                            status="pending",
+                            worker=worker,
                         )
                     if exit_strategy:
                         sys.exit(0)
@@ -876,13 +886,11 @@ class ModularAction(object):
 
                 for worker in _cam_workers:
                     self.message(
-                        'Unable to queue action',
-                        status='failure',
-                        worker=worker
+                        "Unable to queue action", status="failure", worker=worker
                     )
 
     def dowork(self):
-        """ This method serves as an illustration stub.
+        """This method serves as an illustration stub.
         Serves as a container for operations which satisfy the nature of the action.
         For instance, the third party API call.
 
@@ -893,12 +901,9 @@ class ModularAction(object):
 
     @staticmethod
     def setup_logger(
-            name,
-            level=logging.INFO,
-            maxBytes=25000000,
-            backupCount=5,
-            format=SHORT_FORMAT):
-        """ Set up a logging instance.
+        name, level=logging.INFO, maxBytes=25000000, backupCount=5, format=SHORT_FORMAT
+    ):
+        """Set up a logging instance.
 
         @param name:        The log file name.
                             We recommend "$action_name$_modalert".
@@ -908,17 +913,20 @@ class ModularAction(object):
 
         @return logger:     Returns an instance of logger
         """
-        logfile = make_splunkhome_path(['var', 'log', 'splunk', name + '.log'])
+        logfile = make_splunkhome_path(["var", "log", "splunk", name + ".log"])
         logger = logging.getLogger(name)
         logger.setLevel(level)
         # Prevent the log messages from being duplicated in the python.log file
         logger.propagate = False
 
         # Prevent re-adding handlers to the logger object, which can cause duplicate log lines.
-        handler_exists = any([True for h in logger.handlers if h.baseFilename == logfile])
+        handler_exists = any(
+            [True for h in logger.handlers if h.baseFilename == logfile]
+        )
         if not handler_exists:
             file_handler = logging.handlers.RotatingFileHandler(
-                logfile, maxBytes=maxBytes, backupCount=backupCount, delay=True)
+                logfile, maxBytes=maxBytes, backupCount=backupCount, delay=True
+            )
             ModularActionFormatter.converter = time.gmtime
             formatter = ModularActionFormatter(format)
             file_handler.setFormatter(formatter)
@@ -943,14 +951,14 @@ class ModularAction(object):
         value = value or default
         if field and value:
             try:
-                return '%s="%s"' % (field, value.replace('"', '_'))
+                return '%s="%s"' % (field, value.replace('"', "_"))
             except AttributeError:
                 pass
-        return ''
+        return ""
 
 
 class ModularActionTimer(object):
-    """ The purpose of this method is to log execution times for different code paths
+    """The purpose of this method is to log execution times for different code paths
     within a modular action script.  When the majority of the script is wrapped, this can
     be used to log the approximate run duration of the action script.
 
@@ -980,12 +988,9 @@ class ModularActionTimer(object):
         try:
             self.interval = int((timer() - self.start) * 1000)
             self.modaction.message(
-                'Modular action script duration',
+                "Modular action script duration",
                 component=self.component,
-                duration=self.interval
+                duration=self.interval,
             )
         except Exception:
-            self.modaction.message(
-                'Unable to compute duration',
-                level=logging.WARN
-            )
+            self.modaction.message("Unable to compute duration", level=logging.WARN)

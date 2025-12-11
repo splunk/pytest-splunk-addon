@@ -845,7 +845,7 @@ def test_splunk_app_fiction_with_uuid(testdir, request):
         "--search-interval=4",
         "--search-retry=4",
         "--search-index=*,_internal",
-        "--use-uuid=true",
+        "--use-uuid",
     )
 
     logger.info(result.outlines)
@@ -899,7 +899,7 @@ def test_splunk_app_req_with_uuid(testdir, request):
         "--search-retry=4",
         "--search-index=*",
         "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
-        "--use-uuid=true",
+        "--use-uuid",
     )
     logger.info(result.outlines)
 

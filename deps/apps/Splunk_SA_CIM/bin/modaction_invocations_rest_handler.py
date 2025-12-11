@@ -12,7 +12,7 @@ import sys
 from splunk.persistconn.application import PersistentServerConnectionApplication
 from splunk.clilib.bundle_paths import make_splunkhome_path
 
-sys.path.append(make_splunkhome_path(['etc', 'apps', 'Splunk_SA_CIM', 'lib']))
+sys.path.append(make_splunkhome_path(["etc", "apps", "Splunk_SA_CIM", "lib"]))
 from splunk_sa_cim.log import setup_logger
 
 # Python 2+3 basestring
@@ -21,50 +21,48 @@ try:
 except NameError:
     basestring = str
 
-logger = setup_logger('modaction_invocations_rest_handler')
+logger = setup_logger("modaction_invocations_rest_handler")
 
 
 class ModularActionInvocationErrors(object):
     """Enum for error strings"""
 
-    ERR_INVALID_ARG = 'Invalid argument provided'
+    ERR_INVALID_ARG = "Invalid argument provided"
 
 
-class ModularActionInvocationsRestHandler(
-        PersistentServerConnectionApplication):
+class ModularActionInvocationsRestHandler(PersistentServerConnectionApplication):
     """REST handler to return responses given sid/rid."""
 
-    MODULAR_ACTION_INVOCATIONS_SEARCH = '| `modular_action_invocations({},{})`'
+    MODULAR_ACTION_INVOCATIONS_SEARCH = "| `modular_action_invocations({},{})`"
 
     def __init__(self, command_line, command_arg):
         super(ModularActionInvocationsRestHandler, self).__init__()
 
     def handle(self, args):
-        logger.debug('ARGS: %s', args)
+        logger.debug("ARGS: %s", args)
 
         args = json.loads(args)
 
         try:
-            logger.info('Handling %s request.' % args['method'])
-            method = 'handle_' + args['method'].lower()
+            logger.info("Handling %s request." % args["method"])
+            method = "handle_" + args["method"].lower()
             if callable(getattr(self, method, None)):
                 return operator.methodcaller(method, args)(self)
             else:
                 return self.response(
-                    'Invalid method for this endpoint',
-                    http_client.METHOD_NOT_ALLOWED)
+                    "Invalid method for this endpoint", http_client.METHOD_NOT_ALLOWED
+                )
         except ValueError as e:
-            msg = 'ValueError: {0}'.format(e)
+            msg = "ValueError: {0}".format(e)
             return self.response(msg, http_client.BAD_REQUEST)
         except splunk.RESTException as e:
             return self.response(
-                'RESTexception: %s' % e,
-                http_client.INTERNAL_SERVER_ERROR)
+                "RESTexception: %s" % e, http_client.INTERNAL_SERVER_ERROR
+            )
         except Exception as e:
-            msg = 'Unknown exception: %s' % e
+            msg = "Unknown exception: %s" % e
             logger.exception(msg)
-            return self.response(
-                msg, http_client.INTERNAL_SERVER_ERROR)
+            return self.response(msg, http_client.INTERNAL_SERVER_ERROR)
 
     @staticmethod
     def response(msg, status):
@@ -82,10 +80,10 @@ class ModularActionInvocationsRestHandler(
             # replicate controller's jsonresponse format
             payload = {
                 "success": False,
-                "messages": [{'type': 'ERROR', 'message': msg}],
+                "messages": [{"type": "ERROR", "message": msg}],
                 "responses": [],
             }
-        return {'status': status, 'payload': payload}
+        return {"status": status, "payload": payload}
 
     def validate_args(self, sid, rid):
         """
@@ -96,8 +94,9 @@ class ModularActionInvocationsRestHandler(
         rid - rid of an event.
         """
 
-        if ((sid and isinstance(sid, basestring))
-                and (rid and isinstance(rid, basestring))):
+        if (sid and isinstance(sid, basestring)) and (
+            rid and isinstance(rid, basestring)
+        ):
             pass
         else:
             raise ValueError(ModularActionInvocationErrors.ERR_INVALID_ARG)
@@ -125,11 +124,11 @@ class ModularActionInvocationsRestHandler(
             raise ValueError(ModularActionInvocationErrors.ERR_INVALID_ARG)
 
     def result_to_dict(self, resultset):
-        '''Take a splunk.search.ResultSet object and turn it into a dictionary
+        """Take a splunk.search.ResultSet object and turn it into a dictionary
         that has a simple representation.
 
         Return: A dictionary of field values.
-        '''
+        """
         result = {}
         for key, field in resultset.fields.items():
             result[key] = str(field)
@@ -156,12 +155,12 @@ class ModularActionInvocationsRestHandler(
         search_string = self.get_search_string(sid, rid)
         srch = splunk.search.dispatch(search_string, sessionKey=session_key)
 
-        rv['search_id'] = srch.sid
-        rv['search'] = srch.search
+        rv["search_id"] = srch.sid
+        rv["search"] = srch.search
         for result in srch.results:
-            rv['responses'].append(self.result_to_dict(result))
+            rv["responses"].append(self.result_to_dict(result))
 
-        rv['success'] = True if rv['responses'] else False
+        rv["success"] = True if rv["responses"] else False
 
         return rv
 
@@ -181,41 +180,40 @@ class ModularActionInvocationsRestHandler(
         try:
             valid_sid, valid_rid = self.validate_args(sid, rid)
         except ValueError as exc:
-            msg = 'Invalid request: sid="{}" rid="{}" exc="{}"'.format(
-                sid, rid, exc)
+            msg = 'Invalid request: sid="{}" rid="{}" exc="{}"'.format(sid, rid, exc)
             logger.exception(msg)
             return self.response(msg, http_client.BAD_REQUEST)
 
         try:
             return self.response(
-                self.run_search(
-                    valid_sid, valid_rid, session_key),
-                http_client.OK)
+                self.run_search(valid_sid, valid_rid, session_key), http_client.OK
+            )
         except Exception as exc:
             msg = 'Search for invocations failed: sid="{}" rid="{}" exc="{}"'.format(
-                valid_sid, valid_rid, exc)
+                valid_sid, valid_rid, exc
+            )
             logger.exception(msg)
             return self.response(msg, http_client.INTERNAL_SERVER_ERROR)
 
     def handle_get(self, args):
-        logger.debug('GET ARGS %s', args)
+        logger.debug("GET ARGS %s", args)
 
         query = dict(args.get("query", []))
         try:
             session_key = args["session"]["authtoken"]
         except KeyError:
             return self.response(
-                "Failed to obtain auth token",
-                http_client.UNAUTHORIZED)
+                "Failed to obtain auth token", http_client.UNAUTHORIZED
+            )
 
-        required = ['sid', 'rid']
+        required = ["sid", "rid"]
         missing = [r for r in required if r not in query]
         if missing:
             return self.response(
-                "Missing required arguments: %s" % missing,
-                http_client.BAD_REQUEST)
+                "Missing required arguments: %s" % missing, http_client.BAD_REQUEST
+            )
 
-        sid = query.pop('sid')
-        rid = query.pop('rid')
+        sid = query.pop("sid")
+        rid = query.pop("rid")
 
         return self.get_modaction_invocations(sid, rid, session_key)
