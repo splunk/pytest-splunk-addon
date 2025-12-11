@@ -1,0 +1,9 @@
+http_method,is_visible
+OPTIONS,false
+GET,true
+HEAD,false
+POST,true
+PUT,false
+DELETE,false
+TRACE,false
+CONNECT,false
