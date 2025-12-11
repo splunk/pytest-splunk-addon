@@ -32,7 +32,9 @@ class IndexTimeTestGenerator(object):
       for the Add-on.
     """
 
-    def generate_tests(self, store_events, app_path, config_path, test_type, ingest_with_uuid="false"):
+    def generate_tests(
+        self, store_events, app_path, config_path, test_type, ingest_with_uuid="false"
+    ):
         """
         Generates the test cases based on test_type
 
