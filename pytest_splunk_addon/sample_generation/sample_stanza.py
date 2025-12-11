@@ -306,7 +306,8 @@ class SampleStanza(object):
                 if "transport" in each_event.keys():
                     static_host = each_event["transport"].get("@host")
                     if static_host:
-                        event_metadata.update(host=static_host)
+                        # Preserve per-event uniqueness by appending variant counter
+                        event_metadata.update(host=f"{static_host}-{self.host_count}")
                     static_source = each_event["transport"].get("@source")
                     if static_source:
                         event_metadata.update(source=static_source)
