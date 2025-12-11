@@ -12,7 +12,7 @@ class SampleEvent:
     time_values: list = None
 
     def __post_init__(self):
-        if self.metadata.get("ingest_with_uuid") == "true":
+        if self.metadata.get("ingest_with_uuid") == True:
             self.unique_identifier = "uuid"
 
 
@@ -32,7 +32,7 @@ def modinput_events():
                 "sample_count": "2",
                 "host": "modinput_host_event_time_plugin.samples_1",
                 "expected_event_count": 2,
-                "ingest_with_uuid": "true",
+                "ingest_with_uuid": True,
             },
             sample_name="modinput_host_event_time_plugin.samples",
         ),
@@ -49,7 +49,7 @@ def modinput_events():
                 "sample_count": "2",
                 "host": "modinput_host_event_time_plugin.samples_2",
                 "expected_event_count": 2,
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
             },
             sample_name="modinput_host_event_time_plugin.samples",
         ),
@@ -62,7 +62,7 @@ def modinput_events():
                 "index": "fake_index",
                 "timestamp_type": "event",
                 "host": "fake host",
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
             },
             sample_name="fake.samples",
             time_values=[1234.5678, 1234.5679],
@@ -120,7 +120,7 @@ def file_monitor_events():
                 "sample_count": "2",
                 "host": "file_monitor_host_prefix.sample",
                 "expected_event_count": 1,
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
             },
             sample_name="file_monitor_host_prefix.sample",
         ),
@@ -139,7 +139,7 @@ def file_monitor_events():
                 "host": "failing-samples-1",
                 "id": "failing.samples_1",
                 "expected_event_count": 2,
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
             },
             sample_name="failing.samples",
         ),
@@ -148,7 +148,7 @@ def file_monitor_events():
             metadata={
                 "input_type": "file_monitor",
                 "index": "fake_index",
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
             },
             sample_name="fake.samples",
         ),
@@ -245,7 +245,7 @@ def requirement_events():
                 "sample_count": "2",
                 "host": "requirement_host_prefix.sample",
                 "expected_event_count": 1,
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
             },
             sample_name="requirement_test",
         ),
@@ -268,7 +268,7 @@ def sc4s_events():
                 "host": "sc4s-host-plugin-time-sample-31",
                 "id": "sc4s_host_plugin_time.sample_31",
                 "expected_event_count": 2,
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
             },
             sample_name="sc4s_host_plugin_time.sample",
         ),
@@ -285,7 +285,7 @@ def sc4s_events():
                 "host": "sc4s-host-plugin-time-sample-32",
                 "id": "sc4s-host-plugin-time-sample-32",
                 "expected_event_count": 2,
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
             },
             sample_name="sc4s_host_plugin_time.sample",
         ),

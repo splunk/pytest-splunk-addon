@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import uuid
 import re
 import logging
 from ..index_tests import key_fields
@@ -68,7 +67,6 @@ class SampleEvent(object):
         self.time_values = list()
         self.metadata = metadata
         self.sample_name = sample_name
-        # UUID will be assigned post-tokenization per final event to avoid duplicates
         self.host_count = 0
         self.requirement_test_data = requirement_test_data
 

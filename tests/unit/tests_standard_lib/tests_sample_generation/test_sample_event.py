@@ -8,7 +8,7 @@ import pytest_splunk_addon.sample_generation.sample_event
 EVENT_STRING = "Event_string dad ad dfd ddas Value_5."
 UPDATED_STRING = "Updated_string"
 SAMPLE_NAME = "Sample_name"
-METADATA = {"Metadata": "metadata", "ingest_with_uuid": "false"}
+METADATA = {"Metadata": "metadata", "ingest_with_uuid": False}
 RULE = "Rule"
 SAMPLE_HOST = "sample_host"
 FAKE_IPV4 = "222.222.222.222"
@@ -34,7 +34,7 @@ def samp_eve():
 
 
 def test_sample_event_generates_uuid():
-    METADATA["ingest_with_uuid"] = "true"
+    METADATA["ingest_with_uuid"] = True
     event = pytest_splunk_addon.sample_generation.sample_event.SampleEvent(
         event_string=EVENT_STRING,
         metadata=METADATA,
@@ -48,7 +48,7 @@ def test_sample_event_generates_uuid():
 
     # Simulate tokenization where UUID is assigned
     with patch("uuid.uuid4", return_value="uuid") as mock_uuid:
-        if event.metadata.get("ingest_with_uuid") == "true":
+        if event.metadata.get("ingest_with_uuid"):
             event.unique_identifier = str(mock_uuid())
 
         mock_uuid.assert_called_once()  # Ensures uuid4 was called during tokenization simulation

@@ -27,7 +27,7 @@ field_3.__dict__.update({"name": "field_3"})
 @pytest.fixture
 def mock_uuid4():
     with patch(
-        "pytest_splunk_addon.sample_generation.sample_event.uuid.uuid4",
+        "uuid.uuid4",
         return_value="uuid",
     ) as mock_uuid:
         yield mock_uuid
@@ -431,7 +431,7 @@ def test_generate_field_tests(
                         "input_type": "modinput",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host",
-                        "ingest_with_uuid": "false",
+                        "ingest_with_uuid": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={
@@ -455,7 +455,7 @@ def test_generate_field_tests(
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host_syslog",
-                        "ingest_with_uuid": "false",
+                        "ingest_with_uuid": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={},
@@ -466,7 +466,7 @@ def test_generate_field_tests(
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host_syslog",
-                        "ingest_with_uuid": "false",
+                        "ingest_with_uuid": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={
@@ -541,7 +541,7 @@ def test_generate_requirement_tests_with_uuid(mock_uuid4):
             "input_type": "modinput",
             "sourcetype_to_search": "dummy_sourcetype",
             "host": "dummy_host",
-            "ingest_with_uuid": "true",
+            "ingest_with_uuid": True,
         },
         sample_name="file1.xml",
         requirement_test_data={
@@ -673,7 +673,7 @@ def test_generate_requirement_datamodel_tests_with_uuid(mock_uuid4):
             "input_type": "modinput",
             "sourcetype_to_search": "dummy_sourcetype",
             "host": "dummy_host",
-            "ingest_with_uuid": "true",
+            "ingest_with_uuid": True,
         },
         sample_name="file1.xml",
         requirement_test_data={"datamodels": {"model": "Alerts"}},

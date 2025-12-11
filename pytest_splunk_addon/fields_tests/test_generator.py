@@ -194,7 +194,7 @@ class FieldTestGenerator(object):
                 "datamodels": datamodels,
                 "stanza": escaped_event,
             }
-            if event.metadata.get("ingest_with_uuid") == "true":
+            if event.metadata.get("ingest_with_uuid"):
                 sample_event["unique_identifier"] = event.unique_identifier
             yield pytest.param(
                 sample_event,
@@ -249,9 +249,8 @@ class FieldTestGenerator(object):
 
             escaped_event = xml_event_parser.escape_char_event(stripped_event)
             exceptions = event.requirement_test_data.get("exceptions", {})
-            metadata = event.metadata
             modinput_params = {
-                "sourcetype": metadata.get("sourcetype_to_search"),
+                "sourcetype": event.metadata.get("sourcetype_to_search"),
             }
 
             cim_fields = event.requirement_test_data.get("cim_fields", {})
@@ -270,8 +269,7 @@ class FieldTestGenerator(object):
                     "modinput_params": modinput_params,
                 }
 
-                # Add unique_identifier if UUID ingestion is enabled and event has UUID
-                if metadata.get("ingest_with_uuid") == "true":
+                if event.metadata.get("ingest_with_uuid"):
                     unique_identifier = getattr(event, "unique_identifier", None)
                     if unique_identifier is not None:
                         sample_event["unique_identifier"] = unique_identifier

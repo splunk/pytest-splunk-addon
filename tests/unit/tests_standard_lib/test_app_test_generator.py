@@ -11,7 +11,7 @@ config = {
     "store_events": True,
     "splunk_data_generator": "psa.conf",
     "requirement_test": "fake_requirement_path",
-    "ingest_with_uuid": "false",
+    "ingest_with_uuid": False,
 }
 pytest_config = namedtuple("Config", ["getoption"])
 test_config = pytest_config(getoption=lambda x, *y: config[x])
@@ -97,7 +97,7 @@ def test_app_test_generator_instantiation(
                 "app_path": "fake_app",
                 "config_path": "psa.conf",
                 "test_type": "key_fields",
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
             },
             [
                 params(values=f"splunk_indextime_key_fields_test_1", id=1),
@@ -118,7 +118,7 @@ def test_app_test_generator_instantiation(
                 "app_path": "fake_app",
                 "config_path": "psa.conf",
                 "test_type": "_time",
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
             },
             [
                 params(values=f"splunk_indextime__time_test_1", id=1),
@@ -139,7 +139,7 @@ def test_app_test_generator_instantiation(
                 "app_path": "fake_app",
                 "config_path": "psa.conf",
                 "test_type": "line_breaker",
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
             },
             [
                 params(values=f"splunk_indextime_line_breaker_test_1", id=1),

@@ -91,7 +91,7 @@ class HECEventIngestor(EventIngestor):
                 "event": event.event,
                 "index": event.metadata.get("index", "main"),
             }
-            if event.metadata.get("ingest_with_uuid") == "true":
+            if event.metadata.get("ingest_with_uuid"):
                 event_dict["fields"] = {"unique_identifier": event.unique_identifier}
 
             if event.metadata.get("host_type") in ("plugin", None):
