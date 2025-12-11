@@ -16,6 +16,7 @@
 import os
 import re
 import copy
+import uuid
 from . import Rule
 from . import raise_warning
 from . import SampleEvent
@@ -47,12 +48,13 @@ class SampleStanza(object):
         psa_data_params (dict): Dictionary representing pytest-splunk-addon-data.conf
     """
 
-    def __init__(self, sample_path, psa_data_params):
+    def __init__(self, sample_path, psa_data_params, ingest_with_uuid: bool):
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
         self.metadata = self._parse_meta(psa_data_params)
         self.sample_rules = list(self._parse_rules(psa_data_params, self.sample_path))
         self.input_type = self.metadata.get("input_type", "default")
+        self.metadata["ingest_with_uuid"] = ingest_with_uuid
         self.host_count = 0
 
     def get_raw_events(self):
@@ -102,6 +104,9 @@ class SampleStanza(object):
                 if each_rule:
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
             for event in raw_event[event_counter]:
+                if event.metadata.get("ingest_with_uuid"):
+                    event.unique_identifier = str(uuid.uuid4())
+
                 host_value = event.metadata.get("host")
                 host = token_value(key=host_value, value=host_value)
                 event.update_requirement_test_field("host", "##host##", host)

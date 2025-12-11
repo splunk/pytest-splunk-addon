@@ -45,13 +45,16 @@ class AppTestGenerator(object):
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
         self.seen_tests = set()
+        self.ingest_with_uuid = self.pytest_config.getoption("ingest_with_uuid")
+        self.config_path = self.pytest_config.getoption("splunk_data_generator")
+        self.store_events = self.pytest_config.getoption("store_events")
 
-        store_events = self.pytest_config.getoption("store_events")
-        config_path = self.pytest_config.getoption("splunk_data_generator")
         sample_generator = SampleXdistGenerator(
-            self.pytest_config.getoption("splunk_app"), config_path
+            self.pytest_config.getoption("splunk_app"),
+            self.ingest_with_uuid,
+            self.config_path,
         )
-        store_sample = sample_generator.get_samples(store_events)
+        store_sample = sample_generator.get_samples(self.store_events)
         self.tokenized_events = store_sample.get("tokenized_events")
         LOGGER.debug("Initializing FieldTestGenerator to generate the test cases")
         self.fieldtest_generator = FieldTestGenerator(
@@ -70,6 +73,38 @@ class AppTestGenerator(object):
             self.tokenized_events,
         )
         self.indextime_test_generator = IndexTimeTestGenerator()
+
+    def _generate_indextime_tests(self, fixture):
+        """
+        Generate index time tests based on the fixture type.
+
+        Args:
+            fixture (str): The fixture name containing the test type
+
+        Returns:
+            list: List of pytest parameters for the specified test type
+        """
+        app_path = self.pytest_config.getoption("splunk_app")
+        config_path = self.pytest_config.getoption("splunk_data_generator")
+
+        if "key_fields" in fixture:
+            test_type = "key_fields"
+        elif "_time" in fixture:
+            test_type = "_time"
+        elif "line_breaker" in fixture:
+            test_type = "line_breaker"
+        else:
+            return []
+
+        return list(
+            self.indextime_test_generator.generate_tests(
+                self.store_events,
+                app_path=app_path,
+                config_path=config_path,
+                test_type=test_type,
+                ingest_with_uuid=self.ingest_with_uuid,
+            )
+        )
 
     def generate_tests(self, fixture):
         """
@@ -100,47 +135,8 @@ class AppTestGenerator(object):
                 self.cim_test_generator.generate_tests(fixture),
                 fixture,
             )
-
         elif fixture.startswith("splunk_indextime"):
-            # TODO: What should be the id of the test case?
-            # Sourcetype + Host + Key field + _count
-
-            pytest_params = None
-
-            store_events = self.pytest_config.getoption("store_events")
-            app_path = self.pytest_config.getoption("splunk_app")
-            config_path = self.pytest_config.getoption("splunk_data_generator")
-
-            if "key_fields" in fixture:
-                pytest_params = list(
-                    self.indextime_test_generator.generate_tests(
-                        store_events,
-                        app_path=app_path,
-                        config_path=config_path,
-                        test_type="key_fields",
-                    )
-                )
-
-            elif "_time" in fixture:
-                pytest_params = list(
-                    self.indextime_test_generator.generate_tests(
-                        store_events,
-                        app_path=app_path,
-                        config_path=config_path,
-                        test_type="_time",
-                    )
-                )
-
-            elif "line_breaker" in fixture:
-                pytest_params = list(
-                    self.indextime_test_generator.generate_tests(
-                        store_events,
-                        app_path=app_path,
-                        config_path=config_path,
-                        test_type="line_breaker",
-                    )
-                )
-
+            pytest_params = self._generate_indextime_tests(fixture)
             yield from sorted(pytest_params, key=lambda param: param.id)
 
     def dedup_tests(self, test_list, fixture):

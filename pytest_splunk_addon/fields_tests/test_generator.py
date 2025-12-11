@@ -190,11 +190,14 @@ class FieldTestGenerator(object):
                 datamodel.replace(" ", "_").replace(":", "_")
                 for datamodel in datamodels
             ]
+            sample_event = {
+                "datamodels": datamodels,
+                "stanza": escaped_event,
+            }
+            if event.metadata.get("ingest_with_uuid"):
+                sample_event["unique_identifier"] = event.unique_identifier
             yield pytest.param(
-                {
-                    "datamodels": datamodels,
-                    "stanza": escaped_event,
-                },
+                sample_event,
                 id=f"{'-'.join(datamodels)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
             )
 
@@ -246,9 +249,8 @@ class FieldTestGenerator(object):
 
             escaped_event = xml_event_parser.escape_char_event(stripped_event)
             exceptions = event.requirement_test_data.get("exceptions", {})
-            metadata = event.metadata
             modinput_params = {
-                "sourcetype": metadata.get("sourcetype_to_search"),
+                "sourcetype": event.metadata.get("sourcetype_to_search"),
             }
 
             cim_fields = event.requirement_test_data.get("cim_fields", {})
@@ -261,12 +263,17 @@ class FieldTestGenerator(object):
                     for field, value in requirement_fields.items()
                     if field not in exceptions
                 }
+                sample_event = {
+                    "escaped_event": escaped_event,
+                    "fields": requirement_fields,
+                    "modinput_params": modinput_params,
+                }
+
+                if event.metadata.get("ingest_with_uuid"):
+                    sample_event["unique_identifier"] = event.unique_identifier
+
                 yield pytest.param(
-                    {
-                        "escaped_event": escaped_event,
-                        "fields": requirement_fields,
-                        "modinput_params": modinput_params,
-                    },
+                    sample_event,
                     id=f"sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )
 

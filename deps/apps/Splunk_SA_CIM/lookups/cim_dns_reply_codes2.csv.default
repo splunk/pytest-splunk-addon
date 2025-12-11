@@ -1,0 +1,323 @@
+reply_code_id,reply_code
+0,No Error
+NoError,No Error
+No Error,No Error
+1,Format Error
+FormErr,Format Error
+Format Error,Format Error
+2,Server Failure
+ServFail,Server Failure
+Server Failure,Server Failure
+3,Non-Existent Domain
+NXDomain,Non-Existent Domain
+Non-Existent Domain,Non-Existent Domain
+4,Not Implemented
+NotImp,Not Implemented
+Not Implemented,Not Implemented
+5,Query Refused
+Refused,Query Refused
+Query Refused,Query Refused
+6,Name Exists when it should not
+YXDomain,Name Exists when it should not
+Name Exists when it should not,Name Exists when it should not
+7,RR Set Exists when it should not
+YXRRSet,RR Set Exists when it should not
+RR Set Exists when it should not,RR Set Exists when it should not
+8,RR Set that should exist does not
+NXRRSet,RR Set that should exist does not
+RR Set that should exist does not,RR Set that should exist does not
+9,Not Authorized
+NotAuth,Not Authorized
+Not Authorized,Not Authorized
+10,Name not contained in zone
+NotZone,Name not contained in zone
+Name not contained in zone,Name not contained in zone
+11,Unassigned
+12,Unassigned
+13,Unassigned
+14,Unassigned
+15,Unassigned
+Unassigned,Unassigned
+BADVERS,Bad OPT Version
+Bad OPT Version,Bad OPT Version
+16,TSIG Signature Failure
+BADSIG,TSIG Signature Failure
+TSIG Signature Failure,TSIG Signature Failure
+17,Key not recognized
+BADKEY,Key not recognized
+Key not recognized,Key not recognized
+18,Signature out of time window
+BADTIME,Signature out of time window
+Signature out of time window,Signature out of time window
+19,Bad TKEY Mode
+BADMODE,Bad TKEY Mode
+Bad TKEY Mode,Bad TKEY Mode
+20,Duplicate key name
+BADNAME,Duplicate key name
+Duplicate key name,Duplicate key name
+21,Algorithm not supported
+BADALG,Algorithm not supported
+Algorithm not supported,Algorithm not supported
+22,Bad Truncation
+BADTRUNC,Bad Truncation
+Bad Truncation,Bad Truncation
+3841,Reserved for Private Use
+3842,Reserved for Private Use
+3843,Reserved for Private Use
+3844,Reserved for Private Use
+3845,Reserved for Private Use
+3846,Reserved for Private Use
+3847,Reserved for Private Use
+3848,Reserved for Private Use
+3849,Reserved for Private Use
+3850,Reserved for Private Use
+3851,Reserved for Private Use
+3852,Reserved for Private Use
+3853,Reserved for Private Use
+3854,Reserved for Private Use
+3855,Reserved for Private Use
+3856,Reserved for Private Use
+3857,Reserved for Private Use
+3858,Reserved for Private Use
+3859,Reserved for Private Use
+3860,Reserved for Private Use
+3861,Reserved for Private Use
+3862,Reserved for Private Use
+3863,Reserved for Private Use
+3864,Reserved for Private Use
+3865,Reserved for Private Use
+3866,Reserved for Private Use
+3867,Reserved for Private Use
+3868,Reserved for Private Use
+3869,Reserved for Private Use
+3870,Reserved for Private Use
+3871,Reserved for Private Use
+3872,Reserved for Private Use
+3873,Reserved for Private Use
+3874,Reserved for Private Use
+3875,Reserved for Private Use
+3876,Reserved for Private Use
+3877,Reserved for Private Use
+3878,Reserved for Private Use
+3879,Reserved for Private Use
+3880,Reserved for Private Use
+3881,Reserved for Private Use
+3882,Reserved for Private Use
+3883,Reserved for Private Use
+3884,Reserved for Private Use
+3885,Reserved for Private Use
+3886,Reserved for Private Use
+3887,Reserved for Private Use
+3888,Reserved for Private Use
+3889,Reserved for Private Use
+3890,Reserved for Private Use
+3891,Reserved for Private Use
+3892,Reserved for Private Use
+3893,Reserved for Private Use
+3894,Reserved for Private Use
+3895,Reserved for Private Use
+3896,Reserved for Private Use
+3897,Reserved for Private Use
+3898,Reserved for Private Use
+3899,Reserved for Private Use
+3900,Reserved for Private Use
+3901,Reserved for Private Use
+3902,Reserved for Private Use
+3903,Reserved for Private Use
+3904,Reserved for Private Use
+3905,Reserved for Private Use
+3906,Reserved for Private Use
+3907,Reserved for Private Use
+3908,Reserved for Private Use
+3909,Reserved for Private Use
+3910,Reserved for Private Use
+3911,Reserved for Private Use
+3912,Reserved for Private Use
+3913,Reserved for Private Use
+3914,Reserved for Private Use
+3915,Reserved for Private Use
+3916,Reserved for Private Use
+3917,Reserved for Private Use
+3918,Reserved for Private Use
+3919,Reserved for Private Use
+3920,Reserved for Private Use
+3921,Reserved for Private Use
+3922,Reserved for Private Use
+3923,Reserved for Private Use
+3924,Reserved for Private Use
+3925,Reserved for Private Use
+3926,Reserved for Private Use
+3927,Reserved for Private Use
+3928,Reserved for Private Use
+3929,Reserved for Private Use
+3930,Reserved for Private Use
+3931,Reserved for Private Use
+3932,Reserved for Private Use
+3933,Reserved for Private Use
+3934,Reserved for Private Use
+3935,Reserved for Private Use
+3936,Reserved for Private Use
+3937,Reserved for Private Use
+3938,Reserved for Private Use
+3939,Reserved for Private Use
+3940,Reserved for Private Use
+3941,Reserved for Private Use
+3942,Reserved for Private Use
+3943,Reserved for Private Use
+3944,Reserved for Private Use
+3945,Reserved for Private Use
+3946,Reserved for Private Use
+3947,Reserved for Private Use
+3948,Reserved for Private Use
+3949,Reserved for Private Use
+3950,Reserved for Private Use
+3951,Reserved for Private Use
+3952,Reserved for Private Use
+3953,Reserved for Private Use
+3954,Reserved for Private Use
+3955,Reserved for Private Use
+3956,Reserved for Private Use
+3957,Reserved for Private Use
+3958,Reserved for Private Use
+3959,Reserved for Private Use
+3960,Reserved for Private Use
+3961,Reserved for Private Use
+3962,Reserved for Private Use
+3963,Reserved for Private Use
+3964,Reserved for Private Use
+3965,Reserved for Private Use
+3966,Reserved for Private Use
+3967,Reserved for Private Use
+3968,Reserved for Private Use
+3969,Reserved for Private Use
+3970,Reserved for Private Use
+3971,Reserved for Private Use
+3972,Reserved for Private Use
+3973,Reserved for Private Use
+3974,Reserved for Private Use
+3975,Reserved for Private Use
+3976,Reserved for Private Use
+3977,Reserved for Private Use
+3978,Reserved for Private Use
+3979,Reserved for Private Use
+3980,Reserved for Private Use
+3981,Reserved for Private Use
+3982,Reserved for Private Use
+3983,Reserved for Private Use
+3984,Reserved for Private Use
+3985,Reserved for Private Use
+3986,Reserved for Private Use
+3987,Reserved for Private Use
+3988,Reserved for Private Use
+3989,Reserved for Private Use
+3990,Reserved for Private Use
+3991,Reserved for Private Use
+3992,Reserved for Private Use
+3993,Reserved for Private Use
+3994,Reserved for Private Use
+3995,Reserved for Private Use
+3996,Reserved for Private Use
+3997,Reserved for Private Use
+3998,Reserved for Private Use
+3999,Reserved for Private Use
+4000,Reserved for Private Use
+4001,Reserved for Private Use
+4002,Reserved for Private Use
+4003,Reserved for Private Use
+4004,Reserved for Private Use
+4005,Reserved for Private Use
+4006,Reserved for Private Use
+4007,Reserved for Private Use
+4008,Reserved for Private Use
+4009,Reserved for Private Use
+4010,Reserved for Private Use
+4011,Reserved for Private Use
+4012,Reserved for Private Use
+4013,Reserved for Private Use
+4014,Reserved for Private Use
+4015,Reserved for Private Use
+4016,Reserved for Private Use
+4017,Reserved for Private Use
+4018,Reserved for Private Use
+4019,Reserved for Private Use
+4020,Reserved for Private Use
+4021,Reserved for Private Use
+4022,Reserved for Private Use
+4023,Reserved for Private Use
+4024,Reserved for Private Use
+4025,Reserved for Private Use
+4026,Reserved for Private Use
+4027,Reserved for Private Use
+4028,Reserved for Private Use
+4029,Reserved for Private Use
+4030,Reserved for Private Use
+4031,Reserved for Private Use
+4032,Reserved for Private Use
+4033,Reserved for Private Use
+4034,Reserved for Private Use
+4035,Reserved for Private Use
+4036,Reserved for Private Use
+4037,Reserved for Private Use
+4038,Reserved for Private Use
+4039,Reserved for Private Use
+4040,Reserved for Private Use
+4041,Reserved for Private Use
+4042,Reserved for Private Use
+4043,Reserved for Private Use
+4044,Reserved for Private Use
+4045,Reserved for Private Use
+4046,Reserved for Private Use
+4047,Reserved for Private Use
+4048,Reserved for Private Use
+4049,Reserved for Private Use
+4050,Reserved for Private Use
+4051,Reserved for Private Use
+4052,Reserved for Private Use
+4053,Reserved for Private Use
+4054,Reserved for Private Use
+4055,Reserved for Private Use
+4056,Reserved for Private Use
+4057,Reserved for Private Use
+4058,Reserved for Private Use
+4059,Reserved for Private Use
+4060,Reserved for Private Use
+4061,Reserved for Private Use
+4062,Reserved for Private Use
+4063,Reserved for Private Use
+4064,Reserved for Private Use
+4065,Reserved for Private Use
+4066,Reserved for Private Use
+4067,Reserved for Private Use
+4068,Reserved for Private Use
+4069,Reserved for Private Use
+4070,Reserved for Private Use
+4071,Reserved for Private Use
+4072,Reserved for Private Use
+4073,Reserved for Private Use
+4074,Reserved for Private Use
+4075,Reserved for Private Use
+4076,Reserved for Private Use
+4077,Reserved for Private Use
+4078,Reserved for Private Use
+4079,Reserved for Private Use
+4080,Reserved for Private Use
+4081,Reserved for Private Use
+4082,Reserved for Private Use
+4083,Reserved for Private Use
+4084,Reserved for Private Use
+4085,Reserved for Private Use
+4086,Reserved for Private Use
+4087,Reserved for Private Use
+4088,Reserved for Private Use
+4089,Reserved for Private Use
+4090,Reserved for Private Use
+4091,Reserved for Private Use
+4092,Reserved for Private Use
+4093,Reserved for Private Use
+4094,Reserved for Private Use
+4095,Reserved for Private Use
+Reserved for Private Use,Reserved for Private Use
+65535,Reserved; can only be allocated by Standards Action
+Reserved; can only be allocated by Standards Action,Reserved; can only be allocated by Standards Action
+Reserved; can only be allocated by Standards Action.,Reserved; can only be allocated by Standards Action
+                          
