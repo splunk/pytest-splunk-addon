@@ -104,7 +104,6 @@ class SampleStanza(object):
                 if each_rule:
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
             for event in raw_event[event_counter]:
-                # Assign UUID per finalized event to ensure uniqueness across variants
                 if event.metadata.get("ingest_with_uuid"):
                     event.unique_identifier = str(uuid.uuid4())
 

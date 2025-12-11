@@ -40,7 +40,7 @@ class TestUUIDGeneration:
         ), "unique_identifier should be a string"
 
     def test_uuid_not_generated_when_flag_disabled(self):
-        """Verify UUID is NOT generated when ingest_with_uuid is 'false'"""
+        """Verify UUID is NOT generated when ingest_with_uuid is False"""
         metadata = {"ingest_with_uuid": False, "index": "main"}
         event = SampleEvent(
             event_string="test event", metadata=metadata, sample_name="test.sample"

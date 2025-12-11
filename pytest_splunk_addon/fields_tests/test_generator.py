@@ -270,9 +270,7 @@ class FieldTestGenerator(object):
                 }
 
                 if event.metadata.get("ingest_with_uuid"):
-                    unique_identifier = getattr(event, "unique_identifier", None)
-                    if unique_identifier is not None:
-                        sample_event["unique_identifier"] = unique_identifier
+                    sample_event["unique_identifier"] = event.unique_identifier
 
                 yield pytest.param(
                     sample_event,

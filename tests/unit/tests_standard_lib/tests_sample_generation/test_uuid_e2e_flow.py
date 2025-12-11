@@ -526,9 +526,7 @@ class TestUUIDInStoredEvents:
             "os.getcwd", return_value="/fake/path"
         ), patch("os.makedirs"), patch("builtins.open", mock_open()) as open_mock:
 
-            xdist_generator = SampleXdistGenerator(
-                "/fake/addon", False, "/fake/config"
-            )
+            xdist_generator = SampleXdistGenerator("/fake/addon", False, "/fake/config")
             xdist_generator.store_events(events)
 
             # Get the written JSON

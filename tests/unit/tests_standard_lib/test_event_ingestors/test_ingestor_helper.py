@@ -124,7 +124,7 @@ def test_events_can_be_ingested(
     get_ingestor_mock, sample_mock, file_monitor_events, modinput_events
 ):
     event_ingestors.ingestor_helper.IngestorHelper.ingest_events(
-        ingest_meta_data={"ingest_with_uuid": "false"},
+        ingest_meta_data={"ingest_with_uuid": False},
         addon_path="fake_path",
         config_path="tests/unit/event_ingestors",
         thread_count=20,
@@ -133,8 +133,8 @@ def test_events_can_be_ingested(
     assert get_ingestor_mock.call_count == 2
     get_ingestor_mock.assert_has_calls(
         [
-            call("file_monitor", {"ingest_with_uuid": "false"}),
-            call("modinput", {"ingest_with_uuid": "false"}),
+            call("file_monitor", {"ingest_with_uuid": False}),
+            call("modinput", {"ingest_with_uuid": False}),
         ],
         any_order=True,
     )

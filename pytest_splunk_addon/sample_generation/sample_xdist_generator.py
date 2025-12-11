@@ -33,7 +33,9 @@ class SampleXdistGenerator:
         process_count (num): generate {no} process for execution
     """
 
-    def __init__(self, addon_path, ingest_with_uuid: bool, config_path=None, process_count=4):
+    def __init__(
+        self, addon_path, ingest_with_uuid: bool, config_path=None, process_count=4
+    ):
         self.addon_path = addon_path
         self.process_count = process_count
         self.config_path = config_path

@@ -166,9 +166,7 @@ class FieldTestTemplates(object):
             "unique_identifier"
         )
         escaped_event = splunk_searchtime_fields_requirements.get("escaped_event")
-        event_identifier = (
-            unique_identifier if unique_identifier is not None else escaped_event
-        )
+        event_identifier = unique_identifier or escaped_event
 
         record_property("Event_with", event_identifier)
         record_property("fields", splunk_searchtime_fields_requirements["fields"])
@@ -190,9 +188,9 @@ class FieldTestTemplates(object):
             if param_value is not None:
                 basic_search += f" {param}={param_value}"
 
-        if unique_identifier is not None:
+        if unique_identifier:
             selector = f'unique_identifier="{unique_identifier}"'
-        elif escaped_event is not None:
+        elif escaped_event:
             selector = escaped_event
         else:
             selector = ""
