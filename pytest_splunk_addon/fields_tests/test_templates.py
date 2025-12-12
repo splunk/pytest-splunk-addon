@@ -162,15 +162,18 @@ class FieldTestTemplates(object):
         """
 
         # Search Query
-        record_property(
-            "stanza_name", splunk_searchtime_fields_requirements["escaped_event"]
+        unique_identifier = splunk_searchtime_fields_requirements.get(
+            "unique_identifier"
         )
+        escaped_event = splunk_searchtime_fields_requirements.get("escaped_event")
+        event_identifier = unique_identifier or escaped_event
+
+        record_property("Event_with", event_identifier)
         record_property("fields", splunk_searchtime_fields_requirements["fields"])
         record_property(
             "modinput_params", splunk_searchtime_fields_requirements["modinput_params"]
         )
 
-        escaped_event = splunk_searchtime_fields_requirements["escaped_event"]
         fields = splunk_searchtime_fields_requirements["fields"]
         modinput_params = splunk_searchtime_fields_requirements["modinput_params"]
 
@@ -185,7 +188,14 @@ class FieldTestTemplates(object):
             if param_value is not None:
                 basic_search += f" {param}={param_value}"
 
-        search = f"search {index_list} {basic_search} {escaped_event} | fields *"
+        if unique_identifier:
+            selector = f'unique_identifier="{unique_identifier}"'
+        elif escaped_event:
+            selector = escaped_event
+        else:
+            selector = ""
+
+        search = f"search {index_list} {basic_search} {selector} | fields *"
 
         self.logger.info(f"Executing the search query: {search}")
 
@@ -222,10 +232,14 @@ class FieldTestTemplates(object):
         if not wrong_value_fields == {}:
             self.logger.error("Wrong field values:\n" + wrong_values_table)
 
-        assert wrong_value_fields == {}, (
+        error_message = (
             f"\nNot all required fields have correct values or some fields are missing in Splunk. Wrong field values:\n{wrong_values_table}"
             f"{format_search_query_log(search)}"
         )
+
+        error_message += f"Test failed for event: {event_identifier}\n"
+
+        assert wrong_value_fields == {}, error_message
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative
@@ -392,13 +406,10 @@ class FieldTestTemplates(object):
             record_property (fixture): Document facts of test cases to provide more info in the test failure reports.
             caplog (fixture): fixture to capture logs.
         """
-        esacaped_event = splunk_searchtime_fields_datamodels["stanza"]
+        escaped_event = splunk_searchtime_fields_datamodels["stanza"]
         datamodels = splunk_searchtime_fields_datamodels["datamodels"]
-        self.logger.info(
-            f"Testing for tag {datamodels} with tag_query {esacaped_event}"
-        )
 
-        record_property("Event_with", esacaped_event)
+        record_property("Event_with", escaped_event)
         record_property("datamodels", datamodels)
 
         index_list = (
@@ -406,7 +417,21 @@ class FieldTestTemplates(object):
             + " OR index=".join(splunk_search_util.search_index.split(","))
             + ")"
         )
-        search = f"search {index_list} {esacaped_event} | fields *"
+
+        if splunk_searchtime_fields_datamodels.get("unique_identifier"):
+            unique_identifier = splunk_searchtime_fields_datamodels["unique_identifier"]
+            record_property("Event_with", unique_identifier)
+
+            self.logger.info(
+                f'Testing for tag {datamodels} with unique_identifier="{unique_identifier}"'
+            )
+
+            search = f'search {index_list} unique_identifier="{unique_identifier}" | fields *'
+        else:
+            self.logger.info(
+                f"Testing for tag {datamodels} with tag_query {escaped_event}"
+            )
+            search = f"search {index_list} {escaped_event} | fields *"
 
         self.logger.info(f"Search: {search}")
 
@@ -465,9 +490,12 @@ class FieldTestTemplates(object):
             ],
         )
 
-        assert (
-            missing_datamodels == [] and wrong_datamodels == []
-        ), f"Incorrect datamodels found:\n{exc_message}"
+        error_message = f"Incorrect datamodels found:\n{exc_message}"
+
+        if splunk_searchtime_fields_datamodels.get("unique_identifier"):
+            error_message += f"\nTest failed for event: {escaped_event}\n"
+
+        assert missing_datamodels == [] and wrong_datamodels == [], error_message
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_eventtypes

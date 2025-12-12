@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import json
 from .base_event_ingestor import EventIngestor
 import requests
 from time import time, mktime
@@ -86,13 +87,14 @@ class HECEventIngestor(EventIngestor):
         """
         data = list()
         for event in events:
-
             event_dict = {
                 "sourcetype": event.metadata.get("sourcetype", "pytest_splunk_addon"),
                 "source": event.metadata.get("source", "pytest_splunk_addon:hec:event"),
                 "event": event.event,
                 "index": event.metadata.get("index", "main"),
             }
+            if event.metadata.get("ingest_with_uuid"):
+                event_dict["fields"] = {"unique_identifier": event.unique_identifier}
 
             if event.metadata.get("host_type") in ("plugin", None):
                 host = event.metadata.get("host")

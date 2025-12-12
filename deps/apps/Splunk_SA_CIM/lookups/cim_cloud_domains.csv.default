@@ -1,0 +1,13 @@
+domain,registrant,is_email,is_storage
+"*drive.google.com",Google,false,true
+"*gmail.google.com",Google,true,false
+"*gmail.com",Google,true,false
+"*google.com",Google,false,false
+"*ymail.com","Yahoo Mail",true,false
+"*aws.amazon.com","Amazon Web Services",false,false
+"*inbox.com",Inbox,true,false
+"*dropbox.com",Dropbox,false,true
+"*box.com",Box,false,true
+"*rackspace.com",Rackspace,false,false
+"*softlayer.com",Softlayer,false,false
+"*hotmail.com",Microsoft,true,false
