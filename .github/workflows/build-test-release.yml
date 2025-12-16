@@ -149,6 +149,9 @@ jobs:
           "splunk_app_req",
           "splunk_app_req_broken",
           "splunk_cim_model_ipv6_regex",
+          "splunk_cim_model",
+          "splunk_app_fiction_with_uuid",
+          "splunk_app_req_with_uuid"
         ]
     steps:
       - uses: actions/checkout@v4

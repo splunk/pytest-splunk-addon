@@ -1,0 +1,7 @@
+task
+block
+allow
+create
+update
+delete
+scan

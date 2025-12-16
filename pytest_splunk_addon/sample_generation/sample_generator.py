@@ -33,10 +33,11 @@ class SampleGenerator(object):
     sample_stanzas = []
     conf_name = " "
 
-    def __init__(self, addon_path, config_path=None, process_count=4):
+    def __init__(self, addon_path, ingest_with_uuid, config_path=None, process_count=4):
         self.addon_path = addon_path
         self.process_count = process_count
         self.config_path = config_path
+        self.ingest_with_uuid = ingest_with_uuid
 
     def get_samples(self):
         """
@@ -44,7 +45,9 @@ class SampleGenerator(object):
         """
         if not SampleGenerator.sample_stanzas:
             psa_data_parser = PytestSplunkAddonDataParser(
-                self.addon_path, config_path=self.config_path
+                addon_path=self.addon_path,
+                config_path=self.config_path,
+                ingest_with_uuid=self.ingest_with_uuid,
             )
             sample_stanzas = psa_data_parser.get_sample_stanzas()
             SampleGenerator.conf_name = psa_data_parser.conf_name
