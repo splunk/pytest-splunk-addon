@@ -1,5 +1,5 @@
 #
-# Copyright 2025 Splunk Inc.
+# Copyright 2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -70,6 +70,7 @@ services:
         SPLUNK_APP_ID: ${SPLUNK_APP_ID}
         SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
         SPLUNK_VERSION: ${SPLUNK_VERSION}
+        platform: linux/amd64
     ports:
       - "8000"
       - "8088"
@@ -91,6 +92,7 @@ services:
         SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
         SPLUNK_VERSION: ${SPLUNK_VERSION}
     hostname: uf
+    platform: linux/amd64
     ports:
       - "9997"
       - "8089"
