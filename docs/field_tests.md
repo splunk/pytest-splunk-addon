@@ -179,7 +179,7 @@ When running tests with pytest-xdist (multiple workers), the plugin automaticall
 - Atomic writes with integrity hashing prevent cache corruption
 
 **Cache files:**
-- Location: `{temp_dir}/pytest-splunk-addon/{testrunuid}_{app_hash}_parser_cache`
+- Location: `{temp_dir}/pytest-splunk-addon/{testrunuid}_parser_cache`
 - Cleaned up at process exit by the first worker (gw0)
 
 **Note:** Caching only activates when running under pytest-xdist. Single-worker execution parses files directly without caching overhead.

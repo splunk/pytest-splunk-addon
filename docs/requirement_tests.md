@@ -3,14 +3,45 @@
 ## Overview
 
 - The tests are written with a purpose of testing the proper functioning of the fields extractions of the add-on.
+- Requirement tests use XML sample files with embedded field expectations (`cim_fields`, `other_mappings`)
 
 ______________________________________________________________________
 
-To generate only requirement tests, append the folowing marker to pytest command:
+To generate only requirement tests, append the following marker to pytest command:
 
  ```console
  -m  splunk_requirements
  ```
+
+## XML Sample File Structure for Requirement Tests
+
+Requirement tests require XML format sample files with `requirement_test_sample = 1` in the conf file.
+
+### Transport Node Usage
+
+The `<transport>` node in XML samples has specific meaning for requirement tests:
+
+```xml
+<transport type="modinput" host="sample_host" source="test_source" sourcetype="test:sourcetype" />
+```
+
+| Attribute | Behavior in Requirement Tests |
+|-----------|------------------------------|
+| `type` | Used for syslog header stripping (if `type="syslog"`). NOT used for ingestion. |
+| `host` | **Overrides** the host value that is recorded in both the ingested event metadata and the search query generated for that event. |
+| `source` | **Overrides** the source value that is recorded in the ingested event metadata and the search query generated for that event. |
+| `sourcetype` | Used in field extraction test searches (not ingestion) |
+
+**Important:** The actual ingestion is still driven by the conf file's `input_type`, `sourcetype`, and other metadata settings, but any `<transport host>` or `<transport source>` values found in the XML are merged into the `SampleEvent` metadata before ingestion and before the search query is generated (see `pytest_splunk_addon/sample_generation/sample_stanza.py`). That means those XML overrides affect the payload submitted to Splunk and the constraints that the requirement tests evaluate, not just the search query.
+
+### Scenarios
+
+- **Requirement test sample with `<transport host/source>` overrides:**  
+  The XML parser injects these override values into `SampleEvent.metadata`, the ingestor emits them in the indexed event, and the search generator reuses them so the test looks for the same host/source.
+- **Field test sample with `<transport type="syslog">`:**  
+  Only the syslog header stripping behavior is affected; the host/source/sourcetype are still driven by the conf stanza (`host_type`, `host`, `source`, `sourcetype_to_search`) and tokens.
+- **Events without XML transport overrides:**  
+  Ingestors rely entirely on stanza metadata; searches use `host`/`source`/`sourcetype_to_search` from the conf file or tokens.
 
 ## Test Scenarios
 

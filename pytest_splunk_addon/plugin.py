@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 import logging
+import os
 import pytest
 
 from .app_test_generator import AppTestGenerator
@@ -21,6 +22,7 @@ from .sample_generation.sample_xdist_generator import SampleXdistGenerator
 import traceback
 from .cim_compliance import CIMReportPlugin
 from filelock import FileLock
+from .addon_parser.parser_cache import ParserCache
 
 LOG_FILE = "pytest_splunk_addon.log"
 
@@ -152,11 +154,24 @@ def pytest_generate_tests(metafunc):
             )
 
             try:
-                # Load associated test data
-                with FileLock("generator.lock"):
-                    if test_generator is None:
-                        test_generator = AppTestGenerator(metafunc.config)
-                metafunc.parametrize(fixture, test_generator.generate_tests(fixture))
+                parser_cache = ParserCache()
+
+                def _generate_params():
+                    global test_generator
+                    with FileLock("generator.lock"):
+                        if test_generator is None:
+                            test_generator = AppTestGenerator(metafunc.config)
+                    return list(test_generator.generate_tests(fixture))
+
+                params = parser_cache.get_or_parse(
+                    _generate_params, f"pytest_params::{fixture}"
+                )
+                LOGGER.info(
+                    "Using cached testcases fixture=%s count=%d",
+                    fixture,
+                    len(params or []),
+                )
+                metafunc.parametrize(fixture, params)
             except Exception as e:
                 log_message = ""
                 try:
@@ -190,15 +205,22 @@ def init_pytest_splunk_addon_logger():
     """
     Configure file based logger for the plugin
     """
+    class XdistWorkerFilter(logging.Filter):
+        def filter(self, record):
+            record.xdist_worker = os.environ.get("PYTEST_XDIST_WORKER", "main")
+            return True
+
     fh = logging.FileHandler(LOG_FILE)
     fh.setLevel(logging.INFO)
     ch = logging.StreamHandler()
     ch.setLevel(logging.WARNING)
     formatter = logging.Formatter(
-        "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s"
+        "%(asctime)s - %(levelname)s - %(xdist_worker)s - %(filename)s - %(funcName)s - %(message)s"
     )
     fh.setFormatter(formatter)
     ch.setFormatter(formatter)
+    fh.addFilter(XdistWorkerFilter())
+    ch.addFilter(XdistWorkerFilter())
     logger = logging.getLogger("pytest-splunk-addon")
     logger.addHandler(fh)
     logger.addHandler(ch)
