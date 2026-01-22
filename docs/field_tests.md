@@ -39,6 +39,12 @@ To generate test cases only for knowledge objects, append the following marker t
 
  - Plugin gets the list of defined sourcetypes by parsing props.conf
  - For each sourcetype, plugin generates an SPL search query and asserts event_count  0.
+ 
+ **Note:** Sourcetypes can be defined in two ways:
+ - **Direct stanzas**: `[sourcetype_name]` in props.conf
+ - **TRANSFORMS-defined**: Sourcetypes dynamically set via TRANSFORMS directives that reference transforms.conf entries with `FORMAT = sourcetype::<sourcetype_name>`
+ 
+ Both types of sourcetypes are automatically discovered and tested for event coverage.
 
 **2. Fields mentioned under source/sourcetype should be extracted**
 
@@ -155,3 +161,25 @@ For every test case failure, there is a defined structure for the stack trace.
  ```
 
 Get the search query from the stack trace and execute it on the Splunk instance and verify which specific type of events are causing failure.
+
+## Performance Optimization
+
+### Caching for pytest-xdist
+
+When running tests with pytest-xdist (multiple workers), the plugin automatically caches parsed configuration files and generated test parameters to avoid redundant work across workers.
+
+**What is cached:**
+- Parsed configuration: props.conf, transforms.conf, tags.conf, eventtypes.conf, savedsearches.conf
+- Generated test parameters for all fixtures
+
+**How it works:**
+- The first worker to request a cache key parses the data and saves it
+- Other workers load from the shared cache instead of re-parsing
+- Per-key locking prevents deadlocks when nested cache lookups occur
+- Atomic writes with integrity hashing prevent cache corruption
+
+**Cache files:**
+- Location: `{temp_dir}/pytest-splunk-addon/{testrunuid}_{app_hash}_parser_cache`
+- Cleaned up at process exit by the first worker (gw0)
+
+**Note:** Caching only activates when running under pytest-xdist. Single-worker execution parses files directly without caching overhead.
