@@ -1,5 +1,5 @@
 #
-# Copyright 2025 Splunk Inc.
+# Copyright 2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -147,3 +147,62 @@ class TransformsParser(object):
                         "Could not read the lookup file, skipping test. error=%s",
                         str(e),
                     )
+
+    def get_sourcetype_from_transform(self, transform_stanza: str) -> Optional[str]:
+        """
+        Extract sourcetype from a transform stanza's FORMAT field.
+
+        Looks for FORMAT field with pattern: sourcetype::<sourcetype_name>
+
+        Args:
+            transform_stanza (str): Name of the transform stanza in transforms.conf
+
+        Returns:
+            Extracted sourcetype name or None if not found
+
+        Example:
+            If transforms.conf has:
+            [gcp_pubsub_activity_sourcetype]
+            FORMAT = sourcetype::google:gcp:pubsub:audit:admin_activity
+
+            Then get_sourcetype_from_transform("gcp_pubsub_activity_sourcetype")
+            returns "google:gcp:pubsub:audit:admin_activity"
+        """
+        if not self.transforms:
+            return None
+
+        try:
+            transforms_values = self.transforms[transform_stanza]
+            if "FORMAT" not in transforms_values:
+                return None
+
+            format_value = transforms_values["FORMAT"]
+            # Match pattern: sourcetype::<sourcetype_name>
+            # Case-insensitive, handles whitespace, handles quoted values
+            regex = r"(?i)sourcetype\s*::\s*([^\s]+)"
+            match = re.search(regex, format_value)
+
+            if match:
+                sourcetype = match.group(1).strip()
+                # Remove quotes if present
+                sourcetype = sourcetype.strip("\"'")
+                LOGGER.debug(
+                    "Extracted sourcetype %s from transform %s",
+                    sourcetype,
+                    transform_stanza,
+                )
+                return sourcetype
+
+            return None
+        except KeyError:
+            LOGGER.warning(
+                "Transform stanza %s not found in transforms.conf", transform_stanza
+            )
+            return None
+        except Exception as e:
+            LOGGER.warning(
+                "Error extracting sourcetype from transform %s: %s",
+                transform_stanza,
+                str(e),
+            )
+            return None
