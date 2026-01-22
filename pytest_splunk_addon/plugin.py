@@ -205,6 +205,7 @@ def init_pytest_splunk_addon_logger():
     """
     Configure file based logger for the plugin
     """
+
     class XdistWorkerFilter(logging.Filter):
         def filter(self, record):
             record.xdist_worker = os.environ.get("PYTEST_XDIST_WORKER", "main")

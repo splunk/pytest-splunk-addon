@@ -48,11 +48,11 @@ T = TypeVar("T")
 class ParserCache:
     """
     Caches parsed configuration data to avoid redundant parsing in xdist workers.
-    
+
     When running under pytest-xdist, this class creates a shared cache file in the
     system temp directory. The first worker to request a cache key will parse the
     data and save it; subsequent workers load from cache.
-    
+
     Thread safety is ensured via FileLock with per-key locks to prevent deadlocks
     when nested cache lookups occur (e.g., props_fields -> props -> transforms).
     """
@@ -63,7 +63,7 @@ class ParserCache:
         self._cache_hash_file: Optional[str] = None
         self._cache_lock: Optional[FileLock] = None
         self._cache_dir: Optional[str] = None
-        
+
         # Only enable caching when running under xdist
         if "PYTEST_XDIST_TESTRUNUID" in os.environ:
             self._init_cache_paths()
@@ -74,7 +74,7 @@ class ParserCache:
         safe_testrunuid = re.sub(r"[^A-Za-z0-9_.-]", "_", testrunuid or "xdist")
         self._cache_dir = os.path.join(tempfile.gettempdir(), "pytest-splunk-addon")
         os.makedirs(self._cache_dir, exist_ok=True)
-        
+
         self._cache_file = os.path.join(
             self._cache_dir, f"{safe_testrunuid}_parser_cache"
         )
@@ -85,10 +85,10 @@ class ParserCache:
     def _get_key_lock(self, cache_key: str) -> Optional[FileLock]:
         """
         Get a per-key lock to prevent deadlocks during nested cache lookups.
-        
+
         Args:
             cache_key: The cache key to get a lock for
-            
+
         Returns:
             FileLock for the key, or None if caching is disabled
         """
@@ -99,10 +99,10 @@ class ParserCache:
     def _is_cache_file_valid(self, path: str) -> bool:
         """
         Check if a cache file exists and is in the expected location.
-        
+
         Args:
             path: Path to the cache file
-            
+
         Returns:
             True if the file exists and is within the cache directory
         """
@@ -119,9 +119,9 @@ class ParserCache:
     def _write_atomic(self, path: str, data: bytes):
         """
         Write data to a file atomically using a temp file and rename.
-        
+
         This prevents partial reads if another process reads during write.
-        
+
         Args:
             path: Destination file path
             data: Bytes to write
@@ -149,11 +149,11 @@ class ParserCache:
     def get_cached_data(self) -> Optional[Dict]:
         """
         Load cached data from disk if available and valid.
-        
+
         Validates that both the cache file and its hash file exist, then
         verifies the hash matches. If hash mismatch occurs (possibly due to
         concurrent write), retries once under lock.
-        
+
         Returns:
             Cached data dictionary, or None if cache is missing/invalid
         """
@@ -166,7 +166,7 @@ class ParserCache:
             return None
         if not self._is_cache_file_valid(self._cache_hash_file):
             return None
-        
+
         def _read_and_verify() -> Optional[Dict]:
             with open(self._cache_file, "rb") as f:
                 cache_bytes = f.read()
@@ -195,10 +195,10 @@ class ParserCache:
     def _save_cached_data(self, data: Dict):
         """
         Save data to cache file with integrity hash.
-        
+
         Writes are atomic (temp file + rename) to prevent corruption.
         Must be called under appropriate lock.
-        
+
         Args:
             data: Dictionary to cache
         """
@@ -216,14 +216,14 @@ class ParserCache:
     def get_or_parse(self, parse_func: Callable[[], T], cache_key: str) -> T:
         """
         Get data from cache or parse it if not cached.
-        
+
         Uses per-key FileLock to ensure only one worker parses each key,
         preventing deadlocks when nested cache lookups occur.
-        
+
         Args:
             parse_func: Zero-argument function that returns the data to cache
             cache_key: Key to store/retrieve data under in the cache dict
-            
+
         Returns:
             The cached or freshly parsed data
         """
@@ -233,7 +233,7 @@ class ParserCache:
             if cached_data and cache_key in cached_data:
                 LOGGER.debug("Using cached %s", cache_key)
                 return cached_data[cache_key]
-        
+
         # Not in cache - acquire per-key lock and parse
         key_lock = self._get_key_lock(cache_key)
         with key_lock or nullcontext():
@@ -260,7 +260,7 @@ class ParserCache:
     def _cleanup_cache(self):
         """
         Remove cache files on process exit.
-        
+
         Only the first worker (gw0) performs cleanup to avoid race conditions.
         Called automatically via atexit.
         """
@@ -277,4 +277,3 @@ class ParserCache:
                         os.remove(path)
         except OSError as e:
             LOGGER.warning("Failed to clean cache files: %s", str(e))
-

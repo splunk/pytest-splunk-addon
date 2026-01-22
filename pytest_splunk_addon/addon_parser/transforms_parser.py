@@ -50,7 +50,7 @@ class TransformsParser(object):
     def transforms(self) -> Optional[Dict]:
         if self._transforms is not None:
             return self._transforms
-        
+
         def _parse_transforms():
             transforms_conf_path = os.path.join(
                 self.splunk_app_path, "default", "transforms.conf"
@@ -58,8 +58,10 @@ class TransformsParser(object):
             LOGGER.info("Parsing transforms.conf")
             self._conf_parser.read(transforms_conf_path)
             return self._conf_parser.item_dict()
-        
-        self._transforms = self._parser_cache.get_or_parse(_parse_transforms, "transforms")
+
+        self._transforms = self._parser_cache.get_or_parse(
+            _parse_transforms, "transforms"
+        )
         return self._transforms if self._transforms else None
 
     @convert_to_fields
@@ -157,48 +159,48 @@ class TransformsParser(object):
     def get_sourcetype_from_transform(self, transform_stanza: str) -> Optional[str]:
         """
         Extract sourcetype from a transform stanza's FORMAT field.
-        
+
         Looks for FORMAT field with pattern: sourcetype::<sourcetype_name>
-        
+
         Args:
             transform_stanza (str): Name of the transform stanza in transforms.conf
-            
+
         Returns:
             Extracted sourcetype name or None if not found
-            
+
         Example:
             If transforms.conf has:
             [gcp_pubsub_activity_sourcetype]
             FORMAT = sourcetype::google:gcp:pubsub:audit:admin_activity
-            
+
             Then get_sourcetype_from_transform("gcp_pubsub_activity_sourcetype")
             returns "google:gcp:pubsub:audit:admin_activity"
         """
         if not self.transforms:
             return None
-        
+
         try:
             transforms_values = self.transforms[transform_stanza]
             if "FORMAT" not in transforms_values:
                 return None
-            
+
             format_value = transforms_values["FORMAT"]
             # Match pattern: sourcetype::<sourcetype_name>
             # Case-insensitive, handles whitespace, handles quoted values
             regex = r"(?i)sourcetype\s*::\s*([^\s]+)"
             match = re.search(regex, format_value)
-            
+
             if match:
                 sourcetype = match.group(1).strip()
                 # Remove quotes if present
-                sourcetype = sourcetype.strip('"\'')
+                sourcetype = sourcetype.strip("\"'")
                 LOGGER.debug(
                     "Extracted sourcetype %s from transform %s",
                     sourcetype,
                     transform_stanza,
                 )
                 return sourcetype
-            
+
             return None
         except KeyError:
             LOGGER.warning(

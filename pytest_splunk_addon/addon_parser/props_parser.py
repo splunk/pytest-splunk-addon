@@ -89,7 +89,7 @@ class PropsParser(object):
                                 "classname": f"{key}::{transform_stanza}",
                                 "fields": field_list,
                             }
-            
+
             # Yield TRANSFORMS-defined sourcetypes for coverage testing
             for transforms_sourcetype_group in self._get_transforms_sourcetypes(
                 stanza_name, stanza_values
@@ -386,41 +386,41 @@ class PropsParser(object):
     def _get_transforms_sourcetypes(self, stanza_name, stanza_values):
         """
         Extract sourcetypes defined via TRANSFORMS directives.
-        
+
         Looks for TRANSFORMS keys matching pattern TRANSFORMS-.*sourcetype.*
         and extracts sourcetypes from the referenced transform stanzas.
-        
+
         Args:
             stanza_name (str): Name of the props.conf stanza
             stanza_values (dict): Dictionary of stanza key-value pairs
-            
+
         Yields:
             Field group dictionaries with empty fields list for sourcetype coverage testing
         """
-        sourcetype_transforms_pattern = re.compile(r"TRANSFORMS-.*", re.IGNORECASE)        
+        sourcetype_transforms_pattern = re.compile(r"TRANSFORMS-.*", re.IGNORECASE)
         seen_sourcetypes = set()
 
         for key, value in stanza_values.items():
             if not sourcetype_transforms_pattern.match(key):
                 continue
-            
+
             LOGGER.debug(
                 "Found TRANSFORMS sourcetype directive: %s=%s in stanza %s",
                 key,
                 value,
                 stanza_name,
             )
-            
+
             transform_stanzas = [s.strip() for s in value.split(",")]
-            
+
             for transform_stanza in transform_stanzas:
                 if not transform_stanza:
                     continue
-                
+
                 sourcetype = self.transforms_parser.get_sourcetype_from_transform(
                     transform_stanza
                 )
-                
+
                 if sourcetype and sourcetype not in seen_sourcetypes:
                     seen_sourcetypes.add(sourcetype)
                     LOGGER.info(
