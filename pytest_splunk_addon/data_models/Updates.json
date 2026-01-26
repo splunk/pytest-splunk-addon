@@ -28,6 +28,7 @@
             {
                 "name": "file_name",
                 "type": "required",
+                "multi_value": true,
                 "comment":"The name of the patch package that was installed or attempted." 
             },
             {
@@ -66,7 +67,8 @@
                     "available",
                     "installed",
                     "invalid",
-                    "restart required"
+                    "restart required",
+                    "failure"
                   ],
                 "comment":"Indicates the status of a given patch requirement." 
             },

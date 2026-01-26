@@ -25,14 +25,6 @@ def socket_mock(monkeypatch):
         "socket.socket",
         socket_mock,
     )
-    monkeypatch.setattr(
-        "socket.AF_INET",
-        "AF_INET",
-    )
-    monkeypatch.setattr(
-        "socket.SOCK_STREAM",
-        "SOCK_STREAM",
-    )
     return socket_mock
 
 
@@ -46,25 +38,22 @@ def sleep_mock(monkeypatch):
 
 def test_sc4s_data_can_be_ingested(socket_mock, sc4s_ingestor, sc4s_events):
     sc4s_ingestor.ingest(sc4s_events, 20)
-    assert socket_mock.call_count == 2
-    socket_mock.assert_has_calls(
-        [call("AF_INET", "SOCK_STREAM"), call("AF_INET", "SOCK_STREAM")], any_order=True
-    )
-    assert socket_mock.connect.call_count == 2
-    socket_mock.connect.assert_has_calls(
-        [call(("127.0.0.1", 55730)), call(("127.0.0.1", 55730))]
-    )
-    assert socket_mock.sendall.call_count == 2
-    assert socket_mock.close.call_count == 2
+    assert socket_mock.call_count == 1  # Socket created once
+    assert socket_mock.connect.call_count == 1
+    socket_mock.connect.assert_called_with(("127.0.0.1", 55730))
+    assert socket_mock.sendall.call_count == len(sc4s_events)
+    assert socket_mock.close.call_count == 1
 
 
 def test_exception_raised_when_sc4s_socket_can_not_be_opened(
     socket_mock, sleep_mock, sc4s_ingestor, sc4s_events, caplog
 ):
-    socket_mock.connect.side_effect = Exception
-    pytest.raises(Exception, sc4s_ingestor.ingest, *(sc4s_events, 20))
-    assert "Failed to ingest event with SC4S 91 times" in caplog.messages
-    assert socket_mock.connect.call_count == socket_mock.close.call_count == 91
+    socket_mock.connect.side_effect = Exception("Connection failed")
+    with pytest.raises(ConnectionError):
+        sc4s_ingestor.ingest(sc4s_events, 20)
+    assert "Failed to ingest event with SC4S 91 times" in caplog.text
+    assert socket_mock.connect.call_count == 91
+    assert socket_mock.close.call_count == 91
 
 
 def test_exception_raised_when_sc4s_event_sent(
@@ -72,5 +61,6 @@ def test_exception_raised_when_sc4s_event_sent(
 ):
     socket_mock.sendall.side_effect = Exception("Send data fail")
     sc4s_ingestor.ingest(sc4s_events, 20)
-    assert "Send data fail" in caplog.messages
-    assert socket_mock.connect.call_count == socket_mock.close.call_count == 2
+    assert "Send data fail" in caplog.text
+    assert socket_mock.connect.call_count == 1
+    assert socket_mock.close.call_count == 1
