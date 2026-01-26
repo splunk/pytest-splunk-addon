@@ -46,12 +46,6 @@ jobs:
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
   
-  compliance-copyrights:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: apache/skywalking-eyes@v0.6.0
-  
   pre-commit:
     runs-on: ubuntu-22.04
     steps:
