@@ -79,7 +79,6 @@ jobs:
       - meta
       - pre-commit
       - fossa-scan
-      - compliance-copyrights
       - test-splunk-unit
     strategy:
       fail-fast: false
@@ -123,7 +122,6 @@ jobs:
       - meta
       - pre-commit
       - fossa-scan
-      - compliance-copyrights
       - test-splunk-unit
     runs-on: ubuntu-22.04
     strategy:
