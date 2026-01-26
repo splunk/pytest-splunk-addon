@@ -79,6 +79,7 @@ services:
       - SPLUNK_START_ARGS=--accept-license
       - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
       - TEST_SC4S_ACTIVATE_EXAMPLES=yes
+      - SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com
 
   uf:
     build:
@@ -97,6 +98,7 @@ services:
     environment:
       - SPLUNK_PASSWORD=Chang3d!
       - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com
     volumes:
       - ${CURRENT_DIR}/uf_files:${CURRENT_DIR}/uf_files
 
