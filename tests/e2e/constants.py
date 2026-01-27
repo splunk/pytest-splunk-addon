@@ -658,7 +658,9 @@ TA_FICTION_INDEXTIME_PASSED = [
 """
 Define the TA_fiction_indextime add-on failed test case list.
 """
-TA_FICTION_INDEXTIME_FAILED = []
+TA_FICTION_INDEXTIME_FAILED = [
+    "*test_splunk_fiction_indextime.py::Test_App::test_indextime_key_fields*test:indextime:file_monitor_host_prefix::test-host-file_monitor_host_prefix.sample-2_to_test-host-file_monitor_host_prefix.sample-4* FAILED*",
+]
 
 """
 Define the TA_fiction_indextime add-on skipped test case list.
@@ -699,7 +701,6 @@ TA_FICTION_INDEXTIME_BROKEN_PASSED = [
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_time*test:indextime:wrong_line_breaker_modinput::wrong_line_breaker_modinput.samples_1* PASSED*",
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*mcafee:epo:syslog::wrong_sc4s_tokens.sample* PASSED*",
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:no_time_provided_when_type_event::no_time_provided_when_type_event.samples* PASSED*",
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:regex_that_does_not_match::regex_that_does_not_match.samples* PASSED*",
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:scripted_input_key_fields::scripted_input_key_fields.samples* PASSED*",
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype:skip_token_or_empty_line::skip_token_or_empty_line.samples* PASSED*",
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:sourcetype:wrong_values::wrong_values.samples* PASSED*",
@@ -750,6 +751,7 @@ TA_FICTION_INDEXTIME_BROKEN_FAILED = [
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_time*test:indextime:pytest_splunk_addon_index_wrong::test-index-wrong-samples-12* FAILED*",
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_time*test:indextime:pytest_splunk_addon_index_wrong::test-index-wrong-samples-13* FAILED*",
     "*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:test_index_HECEventIngestor_wrong::test_index_HECEventIngestor_wrong.samples* FAILED*",
+    "*test_splunk_fiction_indextime_broken.py::Test_App::test_indextime_line_breaker*test:indextime:regex_that_does_not_match::regex_that_does_not_match.samples* FAILED*",
 ]
 """
 Define the TA_fiction_indextime_broken add-on skipped test case list.

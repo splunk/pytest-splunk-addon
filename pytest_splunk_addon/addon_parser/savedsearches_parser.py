@@ -1,5 +1,5 @@
 #
-# Copyright 2025 Splunk Inc.
+# Copyright 2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,10 +35,10 @@ class SavedSearchParser(object):
         splunk_app_path (str): Path of the Splunk app
     """
 
-    def __init__(self, splunk_app_path: str):
+    def __init__(self, splunk_app_path: str, savedsearches_data: Optional[Dict] = None):
         self._conf_parser = conf_parser.TABConfigParser()
         self.splunk_app_path = splunk_app_path
-        self._savedsearches = None
+        self._savedsearches = savedsearches_data
 
     @property
     def savedsearches(self) -> Optional[Dict]:
