@@ -1,3 +1,17 @@
+# Copyright 2026 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 try:
     import http.client as http_client
 except ImportError:
@@ -19,38 +33,36 @@ from splunk.clilib.bundle_paths import make_splunkhome_path
 from splunk.persistconn.application import PersistentServerConnectionApplication
 from time import gmtime
 
-sys.path.append(make_splunkhome_path(['etc', 'apps', 'Splunk_SA_CIM', 'lib']))
+sys.path.append(make_splunkhome_path(["etc", "apps", "Splunk_SA_CIM", "lib"]))
 from splunk_sa_cim.log import setup_logger
 
-logger = setup_logger('modaction_adhoc_rest_handler')
+logger = setup_logger("modaction_adhoc_rest_handler")
 
 
 class ModularActionAdhocException(Exception):
     """Custom exception for Modular Action Adhoc REST handler"""
+
     pass
 
 
 class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
     """REST handler for dispatching modular actions in ad-hoc mode."""
-    ALERT_ACTIONS_URI = '/services/alerts/alert_actions/%s'
 
-    PARAM_ACTION_NAME = 'action_name'
-    TOKENS_EXPECTED = (
-        'action_name',
-        '_time',
-        'source',
-        'indexer_guid',
-        'event_hash')
-    TOKENS_TRIGGER_TIME = ('trigger_time',)
-    TOKENS_RANDOM = ('#random',)
-    TOKENS_UNAVAILABLE = ('name_hash', 'name')
-    TOKENS_UNAVAILABLE_KV = ('results.file', 'results.url')
+    ALERT_ACTIONS_URI = "/services/alerts/alert_actions/%s"
+
+    PARAM_ACTION_NAME = "action_name"
+    TOKENS_EXPECTED = ("action_name", "_time", "source", "indexer_guid", "event_hash")
+    TOKENS_TRIGGER_TIME = ("trigger_time",)
+    TOKENS_RANDOM = ("#random",)
+    TOKENS_UNAVAILABLE = ("name_hash", "name")
+    TOKENS_UNAVAILABLE_KV = ("results.file", "results.url")
 
     # Simple regular expression for finding tokens in search commands.
-    TEMPLATE_REGEX = re.compile(r'''\$([\w.*#\- ]+)(?:\{([^}]+)\})?\$''')
+    TEMPLATE_REGEX = re.compile(r"""\$([\w.*#\- ]+)(?:\{([^}]+)\})?\$""")
 
     # key=value replacement
-    TEMPLATE_REGEX_KV = re.compile(r"""
+    TEMPLATE_REGEX_KV = re.compile(
+        r"""
         "?               # Optional opening double quotation mark
         ('?              # Optional opening single quotation mark
         [A-Za-z0-9_.-]+  # A word representing a Splunk field name
@@ -64,7 +76,9 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         (?:\{([^}]+)\})? # A complex value substitution
         \$               # Required closing dollar sign.
         "?               # Optional closing double quotation mark
-        """, re.X)
+        """,
+        re.X,
+    )
 
     PARAM_TEMPLATE = "action.%s."
 
@@ -86,26 +100,24 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         :rtype dict
         """
 
-        getargs = {'output_mode': 'json', 'count': 0}
+        getargs = {"output_mode": "json", "count": 0}
         unused_response, content = splunk.rest.simpleRequest(
-            cls.ALERT_ACTIONS_URI % action,
-            getargs=getargs,
-            sessionKey=session_key)
-        parsed_content = json.loads(content)['entry'][0]['content']
+            cls.ALERT_ACTIONS_URI % action, getargs=getargs, sessionKey=session_key
+        )
+        parsed_content = json.loads(content)["entry"][0]["content"]
 
         # param._cam is a JSON string in its own right.
-        cam_params = json.loads(
-            parsed_content.get('param._cam', '{}'))
+        cam_params = json.loads(parsed_content.get("param._cam", "{}"))
 
-        if splunk.util.normalizeBoolean(
-                cam_params.get('supports_adhoc', False)):
+        if splunk.util.normalizeBoolean(cam_params.get("supports_adhoc", False)):
             return parsed_content
         else:
             raise ModularActionAdhocException(
-                'Alert action does not support adhoc invocation.')
+                "Alert action does not support adhoc invocation."
+            )
 
     @classmethod
-    def replace_tokens(cls, inputstr, tokens, replacement='', kv=False):
+    def replace_tokens(cls, inputstr, tokens, replacement="", kv=False):
         """Replace a token in a search.
 
         :param inputstr: A Splunk search string.
@@ -152,7 +164,7 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         # Tokens are replaced in reverse order to avoid recalculating indexes.
         for match_obj in reversed(list(rx.finditer(inputstr))):
             if match_obj.groups()[idx] in tokens:
-                rv = rv[:match_obj.start()] + str(replacement) + rv[match_obj.end():]
+                rv = rv[: match_obj.start()] + str(replacement) + rv[match_obj.end() :]
         return rv
 
     @classmethod
@@ -177,20 +189,17 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         tmpstr = cls.replace_tokens(tmpstr, cls.TOKENS_UNAVAILABLE)
 
         # Replace random tokens.
-        tmpstr = cls.replace_tokens(tmpstr, cls.TOKENS_RANDOM, '$random$')
+        tmpstr = cls.replace_tokens(tmpstr, cls.TOKENS_RANDOM, "$random$")
 
         # Replace trigger_time
         tmpstr = cls.replace_tokens(
-            tmpstr, cls.TOKENS_TRIGGER_TIME, splunk.util.mktimegm(gmtime()))
+            tmpstr, cls.TOKENS_TRIGGER_TIME, splunk.util.mktimegm(gmtime())
+        )
 
         return tmpstr
 
     @classmethod
-    def replace_event_tokens(
-            cls,
-            inputstr,
-            replacement_map,
-            substitute_defaults=False):
+    def replace_event_tokens(cls, inputstr, replacement_map, substitute_defaults=False):
         """Replace tokens in a search string using data submitted by the user.
 
         :param inputstr: A Splunk search string.
@@ -210,7 +219,7 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
 
         rv = inputstr
         unused = {}
-        default_re = re.compile(r'^default\s*=\s*(.+)$')
+        default_re = re.compile(r"^default\s*=\s*(.+)$")
 
         for k, v in replacement_map.items():
             tmp = cls.replace_tokens(rv, [k], v)
@@ -224,12 +233,17 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
             for match_obj in reversed(list(cls.TEMPLATE_REGEX.finditer(rv))):
                 if match_obj.group(2):
                     logger.debug(
-                        'Discovered token replacement with default specified: %s',
-                        match_obj.groups())
+                        "Discovered token replacement with default specified: %s",
+                        match_obj.groups(),
+                    )
                     default_match = default_re.match(match_obj.group(2))
                     if default_match:
                         replacement = default_match.group(1).strip('"')
-                        rv = rv[:match_obj.start()] + replacement + rv[match_obj.end():]
+                        rv = (
+                            rv[: match_obj.start()]
+                            + replacement
+                            + rv[match_obj.end() :]
+                        )
 
         return rv, unused
 
@@ -246,7 +260,7 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         :return: A properly quoted token.
         :rtype: str
         """
-        return '"%s"' % value.strip('"').replace('"', r'\"')
+        return '"%s"' % value.strip('"').replace('"', r"\"")
 
     @classmethod
     def inject_tokens(cls, action_name, inputstr, inject_map):
@@ -275,46 +289,50 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
 
         # CIM-731: permit sendalert pipelines with arbitrary action names
         clause_rx = re.compile(
-            r"sendalert\s+(?P<action_name>[\w-]+)\s*(?P<args>[^|]*)(?:\||\s*$)")
+            r"sendalert\s+(?P<action_name>[\w-]+)\s*(?P<args>[^|]*)(?:\||\s*$)"
+        )
 
         tokens = {}
         for k, v in inject_map.items():
-            tokens[k.replace(param_template, '')] = v
+            tokens[k.replace(param_template, "")] = v
 
-        token_rx = re.compile(r'(%s)\s*=' % '|'.join(tokens.keys()))
+        token_rx = re.compile(r"(%s)\s*=" % "|".join(tokens.keys()))
 
         clause_match = clause_rx.search(inputstr)
 
         if clause_match:
             # Find the param.* tokens in the command arguments
-            token_str = clause_match.groupdict()['args']
+            token_str = clause_match.groupdict()["args"]
             token_matches = token_rx.findall(token_str)
 
             cleaned_inject_map = {
-                k: v
-                for k, v in tokens.items()
-                if k not in token_matches
+                k: v for k, v in tokens.items() if k not in token_matches
             }
-            inject_str = " ".join([
-                k + "=" + cls.quote_value(cleaned_inject_map[k])
-                for k in sorted(cleaned_inject_map)
-            ])
+            inject_str = " ".join(
+                [
+                    k + "=" + cls.quote_value(cleaned_inject_map[k])
+                    for k in sorted(cleaned_inject_map)
+                ]
+            )
 
             if inject_str:
                 components = (
-                    i for i in [
-                        inputstr[0:clause_match.span(1)[1]].strip(),
+                    i
+                    for i in [
+                        inputstr[0 : clause_match.span(1)[1]].strip(),
                         inject_str,
-                        inputstr[clause_match.span(1)[1]:].strip()
+                        inputstr[clause_match.span(1)[1] :].strip(),
                     ]
-                    if i != '')
+                    if i != ""
+                )
                 return " ".join(components)
             else:
                 return inputstr
         else:
             # Should never get here.
             raise ModularActionAdhocException(
-                'Mismatch between modular action name and sendalert clause.')
+                "Mismatch between modular action name and sendalert clause."
+            )
 
     @classmethod
     def get_default_replacements(cls, action_name, action_contents):
@@ -336,7 +354,7 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
 
         # Get only the valid modular alert-style parameters
         for k, v in action_contents.items():
-            if k != 'name':
+            if k != "name":
                 v_params[param_template + k] = v
 
         return v_params
@@ -362,20 +380,23 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         v_params = {}
         param_template = cls.PARAM_TEMPLATE % action_name
 
-        logger.debug('param_template: %s', param_template)
-        logger.debug('action_contents: %s', action_contents)
-        logger.debug('replacements: %s', replacements)
+        logger.debug("param_template: %s", param_template)
+        logger.debug("action_contents: %s", action_contents)
+        logger.debug("replacements: %s", replacements)
 
         # Get only the valid modular alert-style parameters for the alert action
         for k, v in replacements.items():
-            if (k.startswith(param_template)
-                    and k.replace(param_template, '') in action_contents):
+            if (
+                k.startswith(param_template)
+                and k.replace(param_template, "") in action_contents
+            ):
                 v_params[k] = v
-            elif k == 'action_name':
+            elif k == "action_name":
                 v_params[k] = v
             else:
                 raise ModularActionAdhocException(
-                    'Invalid parameter for adhoc modular action.')
+                    "Invalid parameter for adhoc modular action."
+                )
 
         return v_params
 
@@ -390,7 +411,7 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         :type status: int
         """
         logger.error(msg)
-        return {'status': status, 'payload': msg}
+        return {"status": status, "payload": msg}
 
     def build_command(self, action_name, token_map, session_key):
         """Return a modular action search command string valid for adhoc execution,
@@ -449,34 +470,34 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
 
         # Perform standard token replacements for any values
         # that are never present in an adhoc invocation (e.g., "name_hash")
-        command = self.replace_standard_tokens(
-            action_contents['command'])
+        command = self.replace_standard_tokens(action_contents["command"])
 
         # Validate the user-provided replacement strings.
         # May raise ModularActionAdhocException.
         user_replacements = self.get_user_replacements(
-            action_name, action_contents, token_map)
+            action_name, action_contents, token_map
+        )
 
         # Obtain the default alert action parameters.
         default_replacements = self.get_default_replacements(
-            action_name, action_contents)
+            action_name, action_contents
+        )
 
         # Substitute tokens using user input (unused replacements don't matter)
-        command, _ = self.replace_event_tokens(
-            command, user_replacements)
+        command, _ = self.replace_event_tokens(command, user_replacements)
 
         # Substitute tokens using default values
         # (unused replacements don't matter)
         command, _ = self.replace_event_tokens(
-            command, default_replacements, substitute_defaults=True)
+            command, default_replacements, substitute_defaults=True
+        )
 
         # Inject unused key=value pairs in the query_args that are NOT substituted into the alert action's "command"
         # parameter directly following the alert action name (e.g., "sendalert risk <injected tokens>".
         # Parameters already present in the sendalert string will not be duplicated.
         # Note: token injection is only performed for commands that use sendalert.
         if "sendalert" in command:
-            command = self.inject_tokens(
-                action_name, command, user_replacements)
+            command = self.inject_tokens(action_name, command, user_replacements)
 
         return command
 
@@ -522,22 +543,14 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         because of the excessive number of imports used in that library.
 
         """
-        args = {
-            'output_mode': 'json',
-            'parse_only': 't',
-            'q': search
-        }
+        args = {"output_mode": "json", "parse_only": "t", "q": search}
 
         r, unused_c = splunk.rest.simpleRequest(
-            '/search/parser',
-            getargs=args,
-            sessionKey=session_key,
-            raiseAllErrors=True
+            "/search/parser", getargs=args, sessionKey=session_key, raiseAllErrors=True
         )
 
         if r.status != 200:
-            raise ModularActionAdhocException(
-                'Constructed search could not be parsed.')
+            raise ModularActionAdhocException("Constructed search could not be parsed.")
 
         return True
 
@@ -558,35 +571,36 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         """
 
         args = {
-            'output_mode': 'json',
+            "output_mode": "json",
             # CIM-944: adhoc_search_level essential to proper field extraction
-            'adhoc_search_level': 'verbose',
+            "adhoc_search_level": "verbose",
             # CIM-990: preview needs to be false to prevent duped sendalert actions
-            'preview': 'false',
-            'search': search
+            "preview": "false",
+            "search": search,
         }
 
         if dispatch_args:
             args.update(dispatch_args)
 
         if namespace and owner:
-            uri = '/servicesNS/{0}/{1}/search/jobs'.format(
-                quote(owner, safe=''),
-                quote(namespace, safe='')
+            uri = "/servicesNS/{0}/{1}/search/jobs".format(
+                quote(owner, safe=""), quote(namespace, safe="")
             )
         else:
-            uri = 'search/jobs'
+            uri = "search/jobs"
 
         r, c = splunk.rest.simpleRequest(
-            uri, postargs=args, sessionKey=session_key, raiseAllErrors=True)
+            uri, postargs=args, sessionKey=session_key, raiseAllErrors=True
+        )
 
         if r.status != http_client.CREATED:
-            logger.debug('JOBS_ENDPOINT_RESPONSE: %s', r)
-            logger.debug('JOBS_ENDPOINT_CONTENT: %s', c)
+            logger.debug("JOBS_ENDPOINT_RESPONSE: %s", r)
+            logger.debug("JOBS_ENDPOINT_CONTENT: %s", c)
             raise ModularActionAdhocException(
-                'Error when dispatching search: status_code="%s"' % r.status)
+                'Error when dispatching search: status_code="%s"' % r.status
+            )
 
-        return json.loads(c)['sid']
+        return json.loads(c)["sid"]
 
     def handle(self, args):
         """Main function for REST call.
@@ -603,26 +617,27 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         - All exceptions should be caught here.
         """
 
-        logger.debug('ARGS: %s', args)
+        logger.debug("ARGS: %s", args)
         args = json.loads(args)
 
         try:
-            logger.info('Handling %s request.', args['method'])
-            method = 'handle_' + args['method'].lower()
+            logger.info("Handling %s request.", args["method"])
+            method = "handle_" + args["method"].lower()
             if callable(getattr(self, method, None)):
                 return operator.methodcaller(method, args)(self)
             else:
                 return self.error(
-                    'Invalid method for this endpoint',
-                    http_client.METHOD_NOT_ALLOWED)
+                    "Invalid method for this endpoint", http_client.METHOD_NOT_ALLOWED
+                )
         except ModularActionAdhocException as e:
-            msg = 'ModularActionException: {0}'.format(e)
+            msg = "ModularActionException: {0}".format(e)
             return self.error(msg, http_client.BAD_REQUEST)
         except splunk.RESTException as e:
             return self.error(
-                'RESTexception: %s' % e, http_client.INTERNAL_SERVER_ERROR)
+                "RESTexception: %s" % e, http_client.INTERNAL_SERVER_ERROR
+            )
         except Exception as e:
-            msg = 'Unknown exception: %s' % e
+            msg = "Unknown exception: %s" % e
             logger.exception(msg)
             return self.error(msg, http_client.INTERNAL_SERVER_ERROR)
 
@@ -639,31 +654,28 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         # Retrieve arguments. Everything not popped from form_args is assumed
         # to be a key=value replacement string that will be passed to
         # validate_replacements().
-        session_key = args['session']['authtoken']
-        post_args = dict(args.pop('form', []))
-        action_name = post_args.get('action_name', '')
-        search = post_args.pop('search', '')
+        session_key = args["session"]["authtoken"]
+        post_args = dict(args.pop("form", []))
+        action_name = post_args.get("action_name", "")
+        search = post_args.pop("search", "")
 
         # If the handler was invoked with a namespace,
         # both namespace and owner will be used when dispatching search.
-        namespace = args.pop('ns', {}).get('app')
-        owner = args['session']['user']
+        namespace = args.pop("ns", {}).get("app")
+        owner = args["session"]["user"]
 
         # Earliest and latest used only in dispatching the search,
         # not in any token substitutions.
-        valid_dispatch_args = ['earliest_time', 'latest_time']
-        dispatch_args = {
-            k: post_args.pop(k, None)
-            for k in valid_dispatch_args
-        }
+        valid_dispatch_args = ["earliest_time", "latest_time"]
+        dispatch_args = {k: post_args.pop(k, None) for k in valid_dispatch_args}
 
         if not all([action_name, search, session_key]):
             raise ModularActionAdhocException(
-                'Missing parameters for adhoc modular action.')
+                "Missing parameters for adhoc modular action."
+            )
 
         if not post_args:
-            logger.info(
-                'Modular action invoked with no user token replacements.')
+            logger.info("Modular action invoked with no user token replacements.")
 
         action_cmd = self.build_command(action_name, post_args, session_key)
 
@@ -675,21 +687,22 @@ class ModularActionAdhocRestHandler(PersistentServerConnectionApplication):
         # (may raise ModularActionAdhocException)
         if self._parse_search(finalized_cmd, session_key):
             sid = self._dispatch_search(
-                finalized_cmd, namespace, owner, session_key, dispatch_args)
+                finalized_cmd, namespace, owner, session_key, dispatch_args
+            )
 
             return {
-                'status': http_client.CREATED,
-                'payload': {
-                    'command': finalized_cmd,
-                    'sid': sid,
-                }
+                "status": http_client.CREATED,
+                "payload": {
+                    "command": finalized_cmd,
+                    "sid": sid,
+                },
             }
 
         else:
 
             return {
-                'status': http_client.BAD_REQUEST,
-                'payload': {
-                    'command': finalized_cmd,
-                }
+                "status": http_client.BAD_REQUEST,
+                "payload": {
+                    "command": finalized_cmd,
+                },
             }

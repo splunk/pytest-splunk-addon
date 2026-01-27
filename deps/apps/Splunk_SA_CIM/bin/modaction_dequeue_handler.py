@@ -1,3 +1,17 @@
+# Copyright 2026 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 try:
     import http.client as http_client
 except ImportError:
@@ -10,15 +24,20 @@ from splunk import RESTException
 from splunk.clilib.bundle_paths import make_splunkhome_path
 from splunk.persistconn.application import PersistentServerConnectionApplication
 
-sys.path.append(make_splunkhome_path(['etc', 'apps', 'Splunk_SA_CIM', 'lib']))
+sys.path.append(make_splunkhome_path(["etc", "apps", "Splunk_SA_CIM", "lib"]))
 from splunk_sa_cim.log import setup_logger
-from splunk_sa_cim.modaction_queue import ModularActionQueueBR, ModularActionQueueISE, ModularActionQueueUnauth, ModularActionQutils
+from splunk_sa_cim.modaction_queue import (
+    ModularActionQueueBR,
+    ModularActionQueueISE,
+    ModularActionQueueUnauth,
+    ModularActionQutils,
+)
 
-logger = setup_logger('modaction_queue_handler')
+logger = setup_logger("modaction_queue_handler")
 
 
 class ModularActionDeQueueHandler(PersistentServerConnectionApplication):
-    '''REST handler for generating modular action queue api keys.'''
+    """REST handler for generating modular action queue api keys."""
 
     def __init__(self, command_line, command_arg):
         super(ModularActionDeQueueHandler, self).__init__()
@@ -47,42 +66,38 @@ class ModularActionDeQueueHandler(PersistentServerConnectionApplication):
         - All exceptions should be caught here.
         """
 
-        logger.debug('ARGS: %s', args)
+        logger.debug("ARGS: %s", args)
         args = json.loads(args)
 
         try:
-            logger.info('Handling %s request.', args['method'])
-            method = 'handle_' + args['method'].lower()
+            logger.info("Handling %s request.", args["method"])
+            method = "handle_" + args["method"].lower()
             if callable(getattr(self, method, None)):
                 return operator.methodcaller(method, args)(self)
             else:
                 return self.modaction_qutils.error(
-                    'Invalid method for this endpoint',
-                    http_client.METHOD_NOT_ALLOWED)
+                    "Invalid method for this endpoint", http_client.METHOD_NOT_ALLOWED
+                )
         except ModularActionQueueBR as e:
-            msg = 'ModularActionException: {0}'.format(e)
-            return self.modaction_qutils.error(
-                msg, http_client.BAD_REQUEST)
+            msg = "ModularActionException: {0}".format(e)
+            return self.modaction_qutils.error(msg, http_client.BAD_REQUEST)
         except ModularActionQueueUnauth as e:
-            msg = 'ModularActionException: {0}'.format(e)
-            return self.modaction_qutils.error(
-                msg, http_client.UNAUTHORIZED)
+            msg = "ModularActionException: {0}".format(e)
+            return self.modaction_qutils.error(msg, http_client.UNAUTHORIZED)
         except ModularActionQueueISE as e:
-            msg = 'ModularActionException: {0}'.format(e)
-            return self.modaction_qutils.error(
-                msg, http_client.INTERNAL_SERVER_ERROR)
+            msg = "ModularActionException: {0}".format(e)
+            return self.modaction_qutils.error(msg, http_client.INTERNAL_SERVER_ERROR)
         except RESTException as e:
             return self.modaction_qutils.error(
-                'RESTexception: %s' % e,
-                http_client.INTERNAL_SERVER_ERROR)
+                "RESTexception: %s" % e, http_client.INTERNAL_SERVER_ERROR
+            )
         except Exception as e:
-            msg = 'Unknown exception: %s' % e
+            msg = "Unknown exception: %s" % e
             logger.exception(msg)
-            return self.modaction_qutils.error(
-                msg, http_client.INTERNAL_SERVER_ERROR)
+            return self.modaction_qutils.error(msg, http_client.INTERNAL_SERVER_ERROR)
 
     def handle_post(self, args):
-        '''Main function for REST call.
+        """Main function for REST call.
 
         :param args:
             A JSON string representing a dictionary of arguments
@@ -94,39 +109,35 @@ class ModularActionDeQueueHandler(PersistentServerConnectionApplication):
 
         - Routing of GET, POST, etc. happens here.
         - All exceptions should be caught here.
-        '''
+        """
         # validate encryption
         if not self.modaction_qutils.is_connection_encrypted(
-                args.get('connection', {})):
-            raise ModularActionQueueISE('Unable to validate encryption')
+            args.get("connection", {})
+        ):
+            raise ModularActionQueueISE("Unable to validate encryption")
 
         # headers
-        headers = args.get('headers', [])
+        headers = args.get("headers", [])
 
         # get worker
-        worker = self.modaction_qutils.get_header_item(
-            headers, 'X-API-ID')
+        worker = self.modaction_qutils.get_header_item(headers, "X-API-ID")
 
         # get api_key
-        api_key = self.modaction_qutils.get_header_item(
-            headers, 'X-API-KEY')
+        api_key = self.modaction_qutils.get_header_item(headers, "X-API-KEY")
 
         # get system key
-        self.modaction_qutils.session_key = args.get(
-            'system_authtoken', None)
+        self.modaction_qutils.session_key = args.get("system_authtoken", None)
 
         # validate api key
-        if not self.modaction_qutils.is_api_key_valid(
-                worker, api_key):
-            raise ModularActionQueueUnauth(
-                'Unable to validate X-API information')
+        if not self.modaction_qutils.is_api_key_valid(worker, api_key):
+            raise ModularActionQueueUnauth("Unable to validate X-API information")
 
         # validate payload
-        payload = args.get('payload', '')
+        payload = args.get("payload", "")
         self.modaction_qutils.validate_dequeue_payload(payload, worker)
 
         # get query
-        query = {"$or": [{'_key': x} for x in json.loads(payload)]}
+        query = {"$or": [{"_key": x} for x in json.loads(payload)]}
         logger.debug(query)
 
         # unsave
@@ -134,7 +145,7 @@ class ModularActionDeQueueHandler(PersistentServerConnectionApplication):
             self.modaction_qutils.unsave_work(query)
         except Exception as e:
             logger.exception(e)
-            logger.warn('Unable to unsave work')
+            logger.warn("Unable to unsave work")
 
         # delete
         return self.modaction_qutils.delete_work(query)

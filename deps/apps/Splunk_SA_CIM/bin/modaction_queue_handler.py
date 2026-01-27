@@ -1,3 +1,17 @@
+# Copyright 2026 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 try:
     import http.client as http_client
 except ImportError:
@@ -11,16 +25,22 @@ from splunk import RESTException
 from splunk.clilib.bundle_paths import make_splunkhome_path
 from splunk.persistconn.application import PersistentServerConnectionApplication
 
-sys.path.append(make_splunkhome_path(['etc', 'apps', 'Splunk_SA_CIM', 'lib']))
+sys.path.append(make_splunkhome_path(["etc", "apps", "Splunk_SA_CIM", "lib"]))
 from splunk_sa_cim.log import setup_logger
-from splunk_sa_cim.modaction_queue import ModularActionQueueBR, ModularActionQueueISE, ModularActionQueueUnauth, ModularActionQutils
+from splunk_sa_cim.modaction_queue import (
+    ModularActionQueueBR,
+    ModularActionQueueISE,
+    ModularActionQueueUnauth,
+    ModularActionQutils,
+)
 
 
-logger = setup_logger('modaction_queue_handler')
+logger = setup_logger("modaction_queue_handler")
 
 
 class ModularActionQueueHandler(PersistentServerConnectionApplication):
-    '''REST handler for generating modular action queue api keys.'''
+    """REST handler for generating modular action queue api keys."""
+
     DEFAULT_MAX_ITEMS = 10
 
     def __init__(self, command_line, command_arg):
@@ -50,42 +70,38 @@ class ModularActionQueueHandler(PersistentServerConnectionApplication):
         - All exceptions should be caught here.
         """
 
-        logger.debug('ARGS: %s', args)
+        logger.debug("ARGS: %s", args)
         args = json.loads(args)
 
         try:
-            logger.info('Handling %s request.', args['method'])
-            method = 'handle_' + args['method'].lower()
+            logger.info("Handling %s request.", args["method"])
+            method = "handle_" + args["method"].lower()
             if callable(getattr(self, method, None)):
                 return operator.methodcaller(method, args)(self)
             else:
                 return self.modaction_qutils.error(
-                    'Invalid method for this endpoint',
-                    http_client.METHOD_NOT_ALLOWED)
+                    "Invalid method for this endpoint", http_client.METHOD_NOT_ALLOWED
+                )
         except ModularActionQueueBR as e:
-            msg = 'ModularActionException: {0}'.format(e)
-            return self.modaction_qutils.error(
-                msg, http_client.BAD_REQUEST)
+            msg = "ModularActionException: {0}".format(e)
+            return self.modaction_qutils.error(msg, http_client.BAD_REQUEST)
         except ModularActionQueueUnauth as e:
-            msg = 'ModularActionException: {0}'.format(e)
-            return self.modaction_qutils.error(
-                msg, http_client.UNAUTHORIZED)
+            msg = "ModularActionException: {0}".format(e)
+            return self.modaction_qutils.error(msg, http_client.UNAUTHORIZED)
         except ModularActionQueueISE as e:
-            msg = 'ModularActionException: {0}'.format(e)
-            return self.modaction_qutils.error(
-                msg, http_client.INTERNAL_SERVER_ERROR)
+            msg = "ModularActionException: {0}".format(e)
+            return self.modaction_qutils.error(msg, http_client.INTERNAL_SERVER_ERROR)
         except RESTException as e:
             return self.modaction_qutils.error(
-                'RESTexception: %s' % e,
-                http_client.INTERNAL_SERVER_ERROR)
+                "RESTexception: %s" % e, http_client.INTERNAL_SERVER_ERROR
+            )
         except Exception as e:
-            msg = 'Unknown exception: %s' % e
+            msg = "Unknown exception: %s" % e
             logger.exception(msg)
-            return self.modaction_qutils.error(
-                msg, http_client.INTERNAL_SERVER_ERROR)
+            return self.modaction_qutils.error(msg, http_client.INTERNAL_SERVER_ERROR)
 
     def handle_post(self, args):
-        '''Main function for REST call.
+        """Main function for REST call.
 
         :param args:
             A JSON string representing a dictionary of arguments
@@ -97,55 +113,49 @@ class ModularActionQueueHandler(PersistentServerConnectionApplication):
 
         - Routing of GET, POST, etc. happens here.
         - All exceptions should be caught here.
-        '''
+        """
         # validate encryption
         if not self.modaction_qutils.is_connection_encrypted(
-                args.get('connection', {})):
-            raise ModularActionQueueISE('Unable to validate encryption')
+            args.get("connection", {})
+        ):
+            raise ModularActionQueueISE("Unable to validate encryption")
 
         # get max items
-        max_items = self.params.get('max_items')
+        max_items = self.params.get("max_items")
 
         if not (isinstance(max_items, int) and max_items > 0):
             max_items = self.DEFAULT_MAX_ITEMS
 
         # get system key
-        self.modaction_qutils.session_key = args.get(
-            'system_authtoken', None)
+        self.modaction_qutils.session_key = args.get("system_authtoken", None)
 
         # validate payload
-        payload = args.get('payload', '')
-        jsonargs = self.modaction_qutils.validate_queue_payload(
-            payload, max_items)
+        payload = args.get("payload", "")
+        jsonargs = self.modaction_qutils.validate_queue_payload(payload, max_items)
 
         # get sid list
-        sids = [jsonitem['sid'] for jsonitem in jsonargs]
+        sids = [jsonitem["sid"] for jsonitem in jsonargs]
 
         # save
         try:
             self.modaction_qutils.save_work(sids)
         except Exception as e:
             logger.exception(e)
-            logger.warn('Unable to save work')
+            logger.warn("Unable to save work")
 
         # system key
-        system_key = args.get('system_authtoken', None)
+        system_key = args.get("system_authtoken", None)
 
         # post
-        batch_save_uri = '/servicesNS/nobody/Splunk_SA_CIM/storage/collections/data/cam_queue/batch_save'
+        batch_save_uri = "/servicesNS/nobody/Splunk_SA_CIM/storage/collections/data/cam_queue/batch_save"
 
         try:
             r, c = rest.simpleRequest(
-                batch_save_uri,
-                sessionKey=system_key,
-                jsonargs=json.dumps(jsonargs)
+                batch_save_uri, sessionKey=system_key, jsonargs=json.dumps(jsonargs)
             )
 
-            return {
-                'status': r.status,
-                'payload': c.decode('utf-8')
-            }
+            return {"status": r.status, "payload": c.decode("utf-8")}
 
         except Exception as e:
             logger.exception(e)
-            raise ModularActionQueueISE('Unable to queue item(s)')
+            raise ModularActionQueueISE("Unable to queue item(s)")
