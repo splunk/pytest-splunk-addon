@@ -1,0 +1,3 @@
+<view template="Splunk_SA_CIM:/templates/base.html" type="html" isDashboard="false">
+    <label>CIM Setup</label>
+</view>
