@@ -92,6 +92,7 @@ class AppTestGenerator(object):
         Args:
             fixture(str): fixture name
         """
+
         def _get_cached_tests(cache_key, generator_func):
             def _generate():
                 LOGGER.info("Generating cached tests fixture=%s", fixture)
@@ -119,6 +120,7 @@ class AppTestGenerator(object):
                 lambda: self.cim_test_generator.generate_tests(fixture),
             )
         elif fixture.startswith("splunk_searchtime_fields"):
+
             def _gen_fields():
                 return self.dedup_tests(
                     self.fieldtest_generator.generate_tests(fixture),
@@ -127,6 +129,7 @@ class AppTestGenerator(object):
 
             yield from _get_cached_tests(f"tests::{fixture}", _gen_fields)
         elif fixture.startswith("splunk_searchtime_cim"):
+
             def _gen_cim():
                 return self.dedup_tests(
                     self.cim_test_generator.generate_tests(fixture),

@@ -42,8 +42,9 @@ class TestParserCacheNoXdist:
         with patch.dict(os.environ, {}, clear=True):
             os.environ.pop("PYTEST_XDIST_TESTRUNUID", None)
             cache = ParserCache()
-            
+
             call_count = 0
+
             def parse_func():
                 nonlocal call_count
                 call_count += 1
@@ -92,6 +93,7 @@ class TestParserCacheWithXdist:
     def test_get_or_parse_caches_result(self, cache):
         """get_or_parse should cache the result and return it on subsequent calls."""
         call_count = 0
+
         def parse_func():
             nonlocal call_count
             call_count += 1
@@ -109,6 +111,7 @@ class TestParserCacheWithXdist:
 
     def test_get_or_parse_different_keys(self, cache):
         """Different keys should be cached separately."""
+
         def parse_a():
             return {"type": "a"}
 
@@ -153,4 +156,3 @@ class TestParserCacheWithXdist:
         # Create cache file without hash file
         cache._write_atomic(cache._cache_file, b"test data")
         assert cache.get_cached_data() is None
-
