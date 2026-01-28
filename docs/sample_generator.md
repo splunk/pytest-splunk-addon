@@ -89,6 +89,28 @@ Example live event:
 ```
 </details>
 
+### XML Transport Node vs. Conf File Settings
+
+The XML `<transport>` node and `pytest-splunk-addon-data.conf` settings serve **different purposes**. Understanding this distinction is important to avoid confusion:
+
+| Setting | Source | Purpose |
+|---------|--------|---------|
+| `<transport type="">` | XML file | **Field tests only** - Used for syslog header stripping in field extraction tests. NOT used for ingestion. |
+| `<transport host="">` | XML file | **Requirement tests** - Overrides conf host for requirement test searches. |
+| `<transport source="">` | XML file | **Requirement tests** - Overrides conf source for requirement test searches. |
+| `<transport sourcetype="">` | XML file | **Field tests only** - Used in field extraction test searches. NOT used for ingestion. |
+| `input_type` | Conf file | **Ingestion** - Controls how events are parsed and ingested into Splunk. |
+| `host` | Conf file | **Ingestion** - Base host value for events. Defaults to sample file name. |
+| `sourcetype` | Conf file | **Ingestion** - The sourcetype assigned when ingesting events. |
+| `sourcetype_to_search` | Conf file | **All test searches** - The sourcetype used in search queries. |
+
+**Key Points:**
+
+1. The conf file's `input_type` **always** controls how events are ingested
+2. The XML's `<transport type="">` only affects field test behavior (e.g., stripping syslog headers)
+3. Use `sourcetype_to_search` in the conf file when your add-on transforms the sourcetype at index-time (via TRANSFORMS)
+4. The XML's `host` and `source` attributes override conf values **only for requirement tests**
+
 ## pytest-splunk-addon-data.conf.spec
 
 **Default Values**:
@@ -119,78 +141,110 @@ host_prefix = {{host_prefix}}
 - Example1: \[sample_file.samples\] would collect samples from file sample_file.samples
 - Example2: \[sample\_\*.samples\] would collect samples from both sample_file.samples and sample_sample.samples.
 
+---
+
+### Ingestion Settings
+
+These settings control how events are ingested into Splunk.
+
 **sourcetype = <sourcetype\>**
 
-- sourcetype to be assigned to the sample events
+- **Purpose:** Sourcetype assigned when **ingesting** events into Splunk
+- This is the sourcetype that Splunk receives at index-time
+- If your add-on uses TRANSFORMS to change the sourcetype, this should be the **original** sourcetype before transformation
 
 **source = <source\>**
 
-- source to be assigned to the sample events
-  - default value: pytest-splunk-addon:{\{input_type}}
-
-
-**sourcetype_to_search = <sourcetype\>**
-
-- The sourcetype used to search events
-  - This would be different then sourcetype= param in cases where TRANSFORMS is used to update the sourcetype index time.
-
-**host_type = plugin | event**
-
-- This key determines if host is assigned from event or default host should be assigned by plugin.
-- If the value is plugin, the plugin will generate host with format of "stanza\_\{count}" to uniquely identify the events.
-- If the value is event, the host field should be provided for a token using "token.<n\>.field = host".
+- **Purpose:** Source assigned when **ingesting** events into Splunk
+- default value: pytest-splunk-addon:{\{input_type}}
 
 **input_type = modinput | scripted_input | syslog_tcp | file_monitor | windows_input | uf_file_monitor | default**
- 
-- The input_type used in addon to ingest data of a sourcetype used in stanza.
-- The way with which the sample data is ingested in Splunk depends on Splunk. The most similar ingesting approach is used for each input_type to get accurate index-time testing.
-- In input_type=uf_file_monitor, universal forwarder will use file monitor to read event and then it will send data to indexer.
-- For example, in an Add-on, a sourcetype "alert" is ingested through syslog in live environment, provide input_type=syslog_tcp.
+
+- **Purpose:** Controls how events are **parsed and ingested** into Splunk
+- This determines how sample files are processed:
+  - `modinput`, `windows_input`: One event per line in the sample file
+  - `file_monitor`, `scripted_input`, `syslog_tcp`, `syslog_udp`, `default`: Entire file as single event (unless breaker is specified)
+- The ingestion method is chosen to match how data flows in production for accurate index-time testing
+- For example, if sourcetype "alert" is ingested through syslog in production, use `input_type=syslog_tcp`
+
+> **_Note:_** This is different from the XML's `<transport type="">` which only affects field test behavior (syslog header stripping). The conf file's `input_type` always controls actual ingestion.
 
 > **_warning:_**  uf_file_monitor input_type will only work with splunk-type=docker.
 
-
 **index = <index\>**
 
-- The index used to ingest the data.
-- The index must be configured beforehand.
-- If the index is not available then the data will not get ingested into Splunk and a warning message will be printed.
+- **Purpose:** The index where events are **ingested**
+- The index must be configured beforehand
+- If the index is not available, data will not be ingested and a warning will be printed
 - Custom index is not supported for syslog_tcp or syslog_udp
+
+**host = <host\>**
+
+- **Purpose:** Base host value assigned when **ingesting** events
+- If not specified, defaults to the sample file name
+- When `host_type = plugin`, the plugin appends `_{count}` to make each event's host unique (e.g., `myhost_1`, `myhost_2`)
+- Can be overridden per-event in XML samples via `<transport host="...">` for requirement tests
+
+---
+
+### Search Settings
+
+These settings control how tests search for events in Splunk.
+
+**sourcetype_to_search = <sourcetype\>**
+
+- **Purpose:** The sourcetype used in **search queries** during tests
+- Use this when your add-on transforms the sourcetype at index-time via TRANSFORMS
+- Example: If you ingest with `sourcetype=raw:data` but TRANSFORMS changes it to `sourcetype=parsed:data`, set:
+  - `sourcetype = raw:data` (for ingestion)
+  - `sourcetype_to_search = parsed:data` (for searching)
+- If not specified, defaults to the value of `sourcetype`
+
+---
+
+### Test Behavior Settings
+
+These settings control test generation and execution.
+
+**host_type = plugin | event**
+
+- **Purpose:** Determines how the host field is assigned
+- `plugin`: The plugin generates unique hosts with format "stanza\_\{count}" to identify events
+- `event`: The host is extracted from a token using "token.<n\>.field = host"
 
 **sample_count = <count\>**
 
-- The no. of events present in the sample file.
-- This parameter will be used to calculate the total number of events which will be generated from the sample file.
-- If `input_type = modinput`, do not provide this parameter.
+- **Purpose:** Number of events present in the sample file
+- Used to calculate total events generated from the sample file
+- If `input_type = modinput`, do not provide this parameter (each line is an event)
 
 **requirement_test_sample = 1**
 
-- This parameter is used to run requirement tests for the provided sample xml file
-- only supported with the xml sample file
+- **Purpose:** Enables requirement tests for XML sample files
+- When set to 1, the plugin parses the XML format and runs requirement tests using `cim_fields` and `other_mappings`
+- Only supported with XML sample files
 
 **expected_event_count = <count\>**
 
-- The no. of events this sample stanza should generate.
-- The parameter will be used to test the line breaking in index-time tests.
-- To calculate expected_event_count 2 parameters can be used. 1) Number of events in the sample file. 2) Number of values of replacementType=all tokens in the sample file. Both the parameters can be multiplied to get expected_event_count.
-- For example, if sample contains 3 lines & a token has replacement_type=all and replacement has list of 2 values, then 6 events will be generated.
-- This parameter is optional, if it is not provided by the user, it will be calculated automatically by the pytest-splunk-addon.
+- **Purpose:** Expected number of events for index-time line-breaking tests
+- Calculated as: (events in sample) × (values in replacementType=all tokens)
+- For example, if sample has 3 lines and a token has `replacement_type=all` with 2 values, then 6 events are generated
+- Optional - if not provided, calculated automatically
 
 **timestamp_type = plugin | event**
 
-- This key determines if \_time is assigned from event or default \_time should be assigned by plugin.
-- The parameter will be used to test the time extraction in index-time tests.
-- If value is plugin, the plugin will assign the time while ingesting the event.
-- If value is event, that means the time will be extracted from event and therfore, there should be a token provided with token.<n\>.field = \_time.
+- **Purpose:** Determines how \_time is assigned for index-time tests
+- `plugin`: The plugin assigns timestamp during ingestion
+- `event`: Timestamp is extracted from the event; requires a token with `token.<n\>.field = _time`
 
 **breaker = <regex\>**
 
-- The breaker is used to breakdown the sample file into multiple events, based on the regex provided.
-- This parameter is optional. If it is not provided by the user, the events will be ingested into Splunk,
-as per the *input_type* provided.
+- **Purpose:** Regex pattern to split sample file into multiple events
+- Optional - if not provided, events are parsed according to `input_type`
 
 **host_prefix = <host_prefix\>**
-- This param is used as an identification for the **host** field, for the events which are ingested using SC4S.
+
+- **Purpose:** Prefix for host field identification when using SC4S ingestion
 
 ## Token replacement settings
 

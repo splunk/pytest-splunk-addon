@@ -1,5 +1,5 @@
 #
-# Copyright 2025 Splunk Inc.
+# Copyright 2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,14 @@
 # -*- coding: utf-8 -*-
 """
 Test Generator for an App.
-Generates test cases of Fields and CIM.
+
+Generates test cases for:
+- Field extraction tests (props.conf, transforms.conf)
+- CIM compliance tests
+- Index-time tests
+
+When running with pytest-xdist, generated test parameters are cached
+to avoid redundant generation across workers.
 """
 import logging
 import os
@@ -24,6 +31,7 @@ from .fields_tests import FieldTestGenerator
 from .cim_tests import CIMTestGenerator
 from .index_tests import IndexTimeTestGenerator
 from .sample_generation import SampleXdistGenerator
+from .addon_parser.parser_cache import ParserCache
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -45,6 +53,7 @@ class AppTestGenerator(object):
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
         self.seen_tests = set()
+        self._parser_cache = ParserCache()
 
         store_events = self.pytest_config.getoption("store_events")
         config_path = self.pytest_config.getoption("splunk_data_generator")
@@ -83,23 +92,51 @@ class AppTestGenerator(object):
         Args:
             fixture(str): fixture name
         """
+
+        def _get_cached_tests(cache_key, generator_func):
+            def _generate():
+                LOGGER.info("Generating cached tests fixture=%s", fixture)
+                return list(generator_func())
+
+            cached = self._parser_cache.get_or_parse(_generate, cache_key)
+            LOGGER.info(
+                "Using cached tests fixture=%s count=%d",
+                fixture,
+                len(cached or []),
+            )
+            return iter(cached or [])
+
         if fixture in (
             "splunk_searchtime_fields_requirements",
             "splunk_searchtime_fields_datamodels",
         ):
-            yield from self.fieldtest_generator.generate_tests(fixture)
+            yield from _get_cached_tests(
+                f"tests::{fixture}",
+                lambda: self.fieldtest_generator.generate_tests(fixture),
+            )
         elif fixture == "splunk_searchtime_cim_fields_recommended":
-            yield from self.cim_test_generator.generate_tests(fixture)
+            yield from _get_cached_tests(
+                f"tests::{fixture}",
+                lambda: self.cim_test_generator.generate_tests(fixture),
+            )
         elif fixture.startswith("splunk_searchtime_fields"):
-            yield from self.dedup_tests(
-                self.fieldtest_generator.generate_tests(fixture),
-                fixture,
-            )
+
+            def _gen_fields():
+                return self.dedup_tests(
+                    self.fieldtest_generator.generate_tests(fixture),
+                    fixture,
+                )
+
+            yield from _get_cached_tests(f"tests::{fixture}", _gen_fields)
         elif fixture.startswith("splunk_searchtime_cim"):
-            yield from self.dedup_tests(
-                self.cim_test_generator.generate_tests(fixture),
-                fixture,
-            )
+
+            def _gen_cim():
+                return self.dedup_tests(
+                    self.cim_test_generator.generate_tests(fixture),
+                    fixture,
+                )
+
+            yield from _get_cached_tests(f"tests::{fixture}", _gen_cim)
 
         elif fixture.startswith("splunk_indextime"):
             # TODO: What should be the id of the test case?
@@ -113,31 +150,40 @@ class AppTestGenerator(object):
 
             if "key_fields" in fixture:
                 pytest_params = list(
-                    self.indextime_test_generator.generate_tests(
-                        store_events,
-                        app_path=app_path,
-                        config_path=config_path,
-                        test_type="key_fields",
+                    _get_cached_tests(
+                        f"tests::{fixture}",
+                        lambda: self.indextime_test_generator.generate_tests(
+                            store_events,
+                            app_path=app_path,
+                            config_path=config_path,
+                            test_type="key_fields",
+                        ),
                     )
                 )
 
             elif "_time" in fixture:
                 pytest_params = list(
-                    self.indextime_test_generator.generate_tests(
-                        store_events,
-                        app_path=app_path,
-                        config_path=config_path,
-                        test_type="_time",
+                    _get_cached_tests(
+                        f"tests::{fixture}",
+                        lambda: self.indextime_test_generator.generate_tests(
+                            store_events,
+                            app_path=app_path,
+                            config_path=config_path,
+                            test_type="_time",
+                        ),
                     )
                 )
 
             elif "line_breaker" in fixture:
                 pytest_params = list(
-                    self.indextime_test_generator.generate_tests(
-                        store_events,
-                        app_path=app_path,
-                        config_path=config_path,
-                        test_type="line_breaker",
+                    _get_cached_tests(
+                        f"tests::{fixture}",
+                        lambda: self.indextime_test_generator.generate_tests(
+                            store_events,
+                            app_path=app_path,
+                            config_path=config_path,
+                            test_type="line_breaker",
+                        ),
                     )
                 )
 

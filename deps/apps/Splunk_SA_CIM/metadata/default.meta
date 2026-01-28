@@ -1,0 +1,40 @@
+
+[collections/cam_queue]
+access = read : [ admin ], write : [ admin ]
+
+## shared Application-level permissions
+[]
+access = read : [ * ], write : [ admin ]
+export = system
+
+[savedsearches]
+owner = admin
+
+## Correlation Searches
+[correlationsearches]
+access = read : [ * ], write : [ * ]
+
+[governance]
+access = read : [ * ], write : [ * ]
+
+## Managed Configurations
+[managed_configurations]
+access = read : [ * ], write : [ * ]
+
+
+## Exclude export of custom alert actions
+[alert_actions/email]
+export = none
+
+
+## ES Investigations.
+[es_investigations]
+access = read : [ * ], write : [ * ]
+
+## Sequence Templates
+[sequence_templates]
+access = read : [ * ], write : [ * ]
+
+## Analytic Stories
+[analyticstories]
+access = read : [ * ], write : [ * ]

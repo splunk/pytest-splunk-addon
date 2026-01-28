@@ -36,3 +36,4 @@ test_report.md
 *_events.lock
 *_events
 .venv
+.DS_Store
