@@ -1,0 +1,526 @@
+# Copyright (C) 2009-2018 Splunk Inc. All Rights Reserved.
+#
+# Translatable strings for Common Information Model
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: CIM Translation\n"
+"Report-Msgid-Bugs-To: <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2016-08-27 16:20-0800\n"
+"PO-Revision-Date: 2017-06-21 11:55+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"X-Generator: Poedit 2.0.1\n"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:250
+msgid "Application State"
+msgstr "État de l’application"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:253
+msgid "Authentication"
+msgstr "Authentification"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:256
+msgid "Certificates"
+msgstr "Certificats"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:259
+msgid "Change Analysis"
+msgstr "Analyse des modifications"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:262
+msgid "Compute Inventory"
+msgstr "Calculer l’inventaire"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:265
+msgid "DLP"
+msgstr "DLP"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:268
+msgid "Databases"
+msgstr "Bases de données"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:274
+msgid "Interprocess Messaging"
+msgstr "Messagerie interprocessus"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:277
+msgid "Intrusion Detection"
+msgstr "Détection des intrusions"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:280
+msgid "JVM"
+msgstr "JVM"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:283
+msgid "Malware"
+msgstr "Malware"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:286
+msgid "Network Resolution"
+msgstr "Résolution réseau"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:289
+msgid "Network Sessions"
+msgstr "Sessions réseau"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:298
+msgid "Ticket Management"
+msgstr "Gestion des tickets"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:301
+msgid "Updates"
+msgstr "Mises à jour"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:304
+msgid "Vulnerabilities"
+msgstr "Vulnérabilités"
+
+#: appserver/static/js/views/CIMSetupView.js:41 appserver/static/cim_setup.js:239
+msgid "Saved"
+msgstr "Enregistrée"
+
+#: appserver/static/js/views/CIMSetupView.js:44
+msgid "Save failed"
+msgstr "Échec de l’enregistrement"
+
+#: appserver/static/js/views/CIMSetupView.js:53
+msgid "Splunk Common Information Model Add-on Set Up"
+msgstr "Configuration de l’extension Modèle d’informations commun Splunk"
+
+#: appserver/static/js/views/CIMSetupView.js:55
+msgid "By default a datamodel will search across all indexes. Use the configuration panel below to constrain data model searches to specific indexes."
+msgstr ""
+"Par défaut, un modèle de données applique ses recherches à tous les index. Utilisez le panneau de configuration ci-dessous pour contraindre les recherches de modèles de données à des index spécifiques."
+
+#: appserver/static/js/views/CIMSetupView.js:266
+#, python-format
+msgid "Restricted to: %s"
+msgstr "Limité à : %s"
+
+#: appserver/static/js/views/CIMSetupView.js:270
+msgid "No restriction"
+msgstr "Aucune restriction"
+
+#: appserver/static/js/views/CIMSetupView.js:276
+msgid "show all"
+msgstr "voir tout"
+
+#: appserver/static/js/views/DataModelConfig.js:260
+msgid "No datamodel found"
+msgstr "Aucun modèle de données trouvé"
+
+#: appserver/static/js/views/IndexList.js:147
+#, python-format
+msgid "%s MB"
+msgstr "%s Mo"
+
+#: appserver/static/js/views/IndexList.js:201
+msgid "Name"
+msgstr "Nom"
+
+#: default/data/ui/views/datamodel_audit.xml:2
+msgid "Data Model Audit"
+msgstr "Audit des modèles de données"
+
+#: default/data/ui/views/datamodel_audit.xml:8
+msgid "Top Accelerations By Size"
+msgstr "Top des accélérations par taille"
+
+#: default/data/ui/views/datamodel_audit.xml:21
+msgid "Top Accelerations By Run Duration"
+msgstr "Top des accélérations par durée d’exécution"
+
+#: default/data/ui/views/datamodel_audit.xml:36
+msgid "Acceleration Details"
+msgstr "Détail des accélérations"
+
+#: default/data/ui/views/predictive_analytics.xml:2
+msgid "Predictive Analytics"
+msgstr "Analyse prédictive"
+
+#: default/data/ui/views/predictive_analytics.xml:17
+msgid "Function"
+msgstr "Fonction"
+
+#: default/data/ui/views/predictive_analytics.xml:30
+msgid "Attribute"
+msgstr "Attribut"
+
+#: default/data/ui/views/predictive_analytics.xml:47
+msgid "Prediction Over Time"
+msgstr "Historique des prédictions"
+
+#: default/data/ui/views/predictive_analytics.xml:60
+msgid "Outliers"
+msgstr "Valeurs extrêmes"
+
+#: default/data/ui/views/cim_setup.xml:2
+msgid "CIM Setup"
+msgstr "Configuration MIC"
+
+#: appserver/static/predictive_analytics.js:28
+msgid "Save as Correlation Search ..."
+msgstr "Enregistrer comme recherche de corrélation..."
+
+#: appserver/static/predictive_analytics.js:59
+msgid "All functions other than count require an attribute!"
+msgstr "En dehors de « count », toutes les fonctions nécessitent un attribut !"
+
+#: appserver/static/predictive_analytics.js:63
+msgid "Please select a function!"
+msgstr "Veuillez sélectionner une fonction."
+
+#: appserver/static/predictive_analytics.js:142
+#, python-format
+msgid "The correlation search was successfully created.<p><br/><a target='_blank' href='correlation_search_edit?name=%s'>View created search</a></p>"
+msgstr "La recherche de corrélation a bien été créée.<p><br/><a target='_blank' href='correlation_search_edit?name=%s'>Afficher la recherche créée</a></p>"
+
+#: appserver/static/predictive_analytics.js:237
+msgid "Correlation search could not be saved"
+msgstr "La recherche de corrélation n’a pas pu être sauvegardée."
+
+#: appserver/static/predictive_analytics.js:352
+msgid "Save as Correlation Search"
+msgstr "Enregistrer comme recherche de corrélation"
+
+#: appserver/static/predictive_analytics.js:354
+msgid "Security Domain"
+msgstr "Domaine de sécurité"
+
+#: appserver/static/predictive_analytics.js:357
+msgid "Severity"
+msgstr "Gravité"
+
+#: appserver/static/predictive_analytics.js:360
+msgid "Correlation Search Name"
+msgstr "Nom de la recherche de corrélation"
+
+#: appserver/static/predictive_analytics.js:361
+msgid "Enter the name of the correlation search"
+msgstr "Saisissez le nom de la recherche de corrélation"
+
+#: appserver/static/predictive_analytics.js:363
+msgid "Correlation Search Description"
+msgstr "Description de la recherche de corrélation"
+
+#: appserver/static/predictive_analytics.js:364
+msgid "Enter a description of the correlation search"
+msgstr "Saisissez la description de la recherche de corrélation"
+
+#: appserver/static/predictive_analytics.js:366
+msgid "The correlation search was successfully created"
+msgstr "La recherche de corrélation a bien été créée."
+
+#: appserver/static/predictive_analytics.js:375
+msgid "Run Search First"
+msgstr "Exécuter d’abord la recherche"
+
+#: appserver/static/predictive_analytics.js:376
+msgid "You need to run the search first before attempting to make a correlation search."
+msgstr "Vous devez d’abord exécuter la recherche avant de tenter d’effectuer une recherche de corrélation."
+
+#: appserver/static/predictive_analytics.js:407
+msgid "Advanced Predict Options"
+msgstr "Options de prédiction avancées"
+
+#: appserver/static/predictive_analytics.js:409
+msgid "Predict Timespan"
+msgstr "Intervalle de prédiction"
+
+#: appserver/static/predictive_analytics.js:410
+msgid "defaults to 10m"
+msgstr "10 m par défaut"
+
+#: appserver/static/predictive_analytics.js:411
+msgid "Use time specifiers: y, mon, d, h, m, s"
+msgstr "Utiliser des indicateurs de temps : y, mon, d, h, m, s"
+
+#: appserver/static/predictive_analytics.js:413
+msgid "Algorithm"
+msgstr "Algorithme"
+
+#: appserver/static/predictive_analytics.js:416
+msgid "Correlate"
+msgstr "Corréler"
+
+#: appserver/static/predictive_analytics.js:417
+msgid "For bivariate model, indicates the field to correlate against"
+msgstr "Dans un modèle bivarié, indiquer le champ avec lequel établit une corrélation"
+
+#: appserver/static/predictive_analytics.js:419
+msgid "Future Timespan"
+msgstr "Intervalle futur"
+
+#: appserver/static/predictive_analytics.js:420
+msgid "Must be a non-negative number"
+msgstr "Doit être un chiffre non négatif"
+
+#: appserver/static/predictive_analytics.js:421
+msgid "The length of prediction into the future"
+msgstr "Longueur de la prédiction dans l’avenir"
+
+#: appserver/static/predictive_analytics.js:423
+msgid "Holdback"
+msgstr "Retenue"
+
+#: appserver/static/predictive_analytics.js:424
+msgid "Specifies the 'number' of data points from the end that are NOT used to build the model"
+msgstr "Spécifie le « nombre » de points de données depuis la fin qui ne sont PAS utilisés pour élaborer le modèle"
+
+#: appserver/static/predictive_analytics.js:426
+msgid "Lower confidence interval"
+msgstr "Intervalle de confiance bas"
+
+#: appserver/static/predictive_analytics.js:427 appserver/static/predictive_analytics.js:431
+msgid "Must be between 0-100; defaults to 95"
+msgstr "Doit être compris entre 0 et 100 ; 95 par défaut"
+
+#: appserver/static/predictive_analytics.js:428
+msgid "Specifies a field name for the lower 'int' percentage confidence interval"
+msgstr "Spécifie un nom de champ pour l’intervalle de confiance inférieur en pourcentage entier."
+
+#: appserver/static/predictive_analytics.js:430
+msgid "Upper confidence interval"
+msgstr "Intervalle de confiance haut"
+
+#: appserver/static/predictive_analytics.js:432
+msgid "Specifies a field name for the upper 'int' percentage confidence interval"
+msgstr "Spécifie un nom de champ pour l’intervalle de confiance supérieur en pourcentage entier."
+
+#: appserver/static/predictive_analytics.js:434
+msgid "Period"
+msgstr "Période"
+
+#: appserver/static/predictive_analytics.js:435
+msgid "Specifies the seasonal period of the time series data"
+msgstr "Spécifie la période saisonnière des données chronologiques"
+
+#: appserver/static/predictive_analytics.js:437
+msgid "Predict command help"
+msgstr "Aide de la commande predict"
+
+#: appserver/static/predictive_analytics.js:439
+msgid "Apply"
+msgstr "Appliquer"
+
+#: appserver/static/predictive_analytics.js:466
+msgid "Local level"
+msgstr "Niveau local"
+
+#: appserver/static/predictive_analytics.js:470
+msgid "Seasonal local level"
+msgstr "Niveau local saisonnier"
+
+#: appserver/static/predictive_analytics.js:478
+msgid "Local level trend"
+msgstr "Tendance du niveau local"
+
+#: appserver/static/predictive_analytics.js:572
+msgid "Must be a valid timespan"
+msgstr "Doit être un intervalle de temps valide"
+
+#: appserver/static/predictive_analytics.js:582 appserver/static/predictive_analytics.js:592
+msgid "Must be between 0 and 100"
+msgstr "Doit être compris entre 0 et 100"
+
+#: appserver/static/predictive_analytics.js:602
+msgid "Must be a positive integer"
+msgstr "Doit être un nombre entier positif"
+
+#: appserver/static/predictive_analytics.js:612
+msgid "Must be zero or more"
+msgstr "Doit être supérieur ou égal à 0"
+
+#: appserver/static/predictive_analytics.js:622
+msgid "Must not be empty"
+msgstr "Ne doit pas être vide"
+
+#: appserver/static/js/commonControl/AddonMenuControl.js:54 appserver/static/js/commonControl/AddonMenuControl.js:64
+msgid "N/A"
+msgstr "S/O"
+
+#: appserver/static/js/views/DataModelConfig.js:42
+msgid "Enable acceleration"
+msgstr "Activer l'accélération"
+
+#: appserver/static/js/views/DataModelConfig.js:53
+msgid "Backfill time"
+msgstr "Temps de remplissage"
+
+#: appserver/static/js/views/DataModelConfig.js:59 appserver/static/js/views/DataModelConfig.js:92
+msgid "Year"
+msgstr "Année"
+
+#: appserver/static/js/views/DataModelConfig.js:63 appserver/static/js/views/DataModelConfig.js:96
+msgid "Quarter"
+msgstr "Trimestre"
+
+#: appserver/static/js/views/DataModelConfig.js:67 appserver/static/js/views/DataModelConfig.js:100
+msgid "Month"
+msgstr "Mois"
+
+#: appserver/static/js/views/DataModelConfig.js:71 appserver/static/js/views/DataModelConfig.js:104
+msgid "Week"
+msgstr "Semaine"
+
+#: appserver/static/js/views/DataModelConfig.js:75 appserver/static/js/views/DataModelConfig.js:108
+msgid "Day"
+msgstr "Jour"
+
+#: appserver/static/js/views/DataModelConfig.js:86
+msgid "Earliest time"
+msgstr "Début de la période"
+
+#: appserver/static/js/views/DataModelConfig.js:119
+msgid "Maximum time"
+msgstr "Durée maximale"
+
+#: appserver/static/js/views/DataModelConfig.js:130
+msgid "Maximum concurrent searches"
+msgstr "Nombre maximum de recherches simultanées"
+
+#: appserver/static/js/views/DataModelConfig.js:141
+msgid "Manual rebuilds"
+msgstr "Reconstructions manuelles"
+
+#: appserver/static/js/views/DataModelConfig.js:155
+msgid "Schedule priority"
+msgstr "Priorité de programmation"
+
+#: appserver/static/js/views/DataModelConfig.js:164
+msgid "default"
+msgstr "défaut"
+
+#: appserver/static/js/views/DataModelConfig.js:168
+msgid "higher"
+msgstr "plus élevée"
+
+#: appserver/static/js/views/DataModelConfig.js:172
+msgid "highest"
+msgstr "la plus élevée"
+
+#: appserver/static/cim_setup.js:68
+msgid "enabled should be boolean"
+msgstr "la valeur activée doit être booléenne"
+
+#: appserver/static/cim_setup.js:71
+msgid "Invalid earliest time"
+msgstr "Début de la période non valide"
+
+#: appserver/static/cim_setup.js:74
+msgid "Invalid backfill time"
+msgstr "Heure de remplissage non valide"
+
+#: appserver/static/cim_setup.js:77
+msgid "Backfill time should be more recent than earliest time"
+msgstr "L'heure de remplissage doit être plus récente que le début de la période"
+
+#: appserver/static/cim_setup.js:80
+msgid "Maximum time should be an integer"
+msgstr "La durée maximale doit être un entier"
+
+#: appserver/static/cim_setup.js:84
+msgid "Maximum concurrent should be an integer"
+msgstr "Le nombre simultané doit être un entier"
+
+#: appserver/static/cim_setup.js:87
+msgid "Manual rebuilds should be boolean"
+msgstr "La valeur de « reconstructions manuelles » doit être booléenne"
+
+#: appserver/static/cim_setup.js:177
+msgid "Saving"
+msgstr "Enregistrement"
+
+#: appserver/static/cim_setup.js:242 appserver/static/js/views/CIMSetupView.js:96
+msgid "Save"
+msgstr "Enregistrer"
+
+#: appserver/static/js/views/CIMSetupView.js:60
+msgid "Data Models"
+msgstr "Modèles de données"
+
+#: appserver/static/js/views/CIMSetupView.js:65 appserver/static/js/views/CIMSetupView.js:71
+msgid "Indexes"
+msgstr "Index"
+
+#: appserver/static/js/views/CIMSetupView.js:66 appserver/static/js/views/CIMSetupView.js:77
+msgid "Settings"
+msgstr "Paramètres"
+
+#: appserver/static/js/views/CIMSetupView.js:79
+msgid "Acceleration properties for the selected data model."
+msgstr "Propriétés de l'accélération pour le modèle de données sélectionné."
+
+#: appserver/static/js/views/CIMSetupView.js:80
+msgid "Splunk help"
+msgstr "Aide Splunk"
+
+#: appserver/static/js/views/CIMSetupView.js:81
+msgid "Learn More"
+msgstr "En savoir plus"
+
+#: appserver/static/js/views/CIMSetupView.js:93
+msgid "Cancel"
+msgstr "Annuler"
+
+#: appserver/static/js/views/CIMSetupView.js:197
+msgid "Filter"
+msgstr "Filtre"
+
+#: appserver/static/js/views/CIMSetupView.js:380
+msgid "Apps"
+msgstr "Apps"

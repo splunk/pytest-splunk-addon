@@ -1,0 +1,526 @@
+# Copyright (C) 2009-2018 Splunk Inc. All Rights Reserved.
+#
+# Translatable strings for Common Information Model
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: CIM Translation\n"
+"Report-Msgid-Bugs-To: <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2016-08-27 16:20-0800\n"
+"PO-Revision-Date: 2017-06-20 12:23+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 2.0.1\n"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:250
+msgid "Application State"
+msgstr "应用程序状态"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:253
+msgid "Authentication"
+msgstr "验证"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:256
+msgid "Certificates"
+msgstr "证书"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:259
+msgid "Change Analysis"
+msgstr "更改分析"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:262
+msgid "Compute Inventory"
+msgstr "计算库存"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:265
+msgid "DLP"
+msgstr "DLP"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:268
+msgid "Databases"
+msgstr "数据库"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:274
+msgid "Interprocess Messaging"
+msgstr "进程间通讯"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:277
+msgid "Intrusion Detection"
+msgstr "入侵检测"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:280
+msgid "JVM"
+msgstr "JVM"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:283
+msgid "Malware"
+msgstr "恶意软件"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:286
+msgid "Network Resolution"
+msgstr "网络分辨率"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:289
+msgid "Network Sessions"
+msgstr "网络会话"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:298
+msgid "Ticket Management"
+msgstr "票据管理"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:301
+msgid "Updates"
+msgstr "更新"
+
+# Final text is programmatically extracted from the original text
+# Original Text : cim_BLAH_BLAH_indexes
+# Extracted Text: BLAH BLAH
+#: default/macros.conf:304
+msgid "Vulnerabilities"
+msgstr "漏洞"
+
+#: appserver/static/js/views/CIMSetupView.js:41 appserver/static/cim_setup.js:239
+msgid "Saved"
+msgstr "已保存"
+
+#: appserver/static/js/views/CIMSetupView.js:44
+msgid "Save failed"
+msgstr "保存失败"
+
+#: appserver/static/js/views/CIMSetupView.js:53
+msgid "Splunk Common Information Model Add-on Set Up"
+msgstr "Splunk 常用信息模型加载项设置"
+
+#: appserver/static/js/views/CIMSetupView.js:55
+msgid ""
+"By default a datamodel will search across all indexes. Use the configuration panel below to constrain data model searches to specific indexes."
+msgstr "默认情况下数据模型会跨所有的索引进行搜索。使用下面的配置面板来约束数据模型搜索特定的索引。"
+
+#: appserver/static/js/views/CIMSetupView.js:266
+#, python-format
+msgid "Restricted to: %s"
+msgstr "限制为: %s"
+
+#: appserver/static/js/views/CIMSetupView.js:270
+msgid "No restriction"
+msgstr "无限制"
+
+#: appserver/static/js/views/CIMSetupView.js:276
+msgid "show all"
+msgstr "显示所有"
+
+#: appserver/static/js/views/DataModelConfig.js:260
+msgid "No datamodel found"
+msgstr "未找到数据模型"
+
+#: appserver/static/js/views/IndexList.js:147
+#, python-format
+msgid "%s MB"
+msgstr "%s MB"
+
+#: appserver/static/js/views/IndexList.js:201
+msgid "Name"
+msgstr "名称"
+
+#: default/data/ui/views/datamodel_audit.xml:2
+msgid "Data Model Audit"
+msgstr "数据模型审计"
+
+#: default/data/ui/views/datamodel_audit.xml:8
+msgid "Top Accelerations By Size"
+msgstr "按大小划分的最优加速"
+
+#: default/data/ui/views/datamodel_audit.xml:21
+msgid "Top Accelerations By Run Duration"
+msgstr "按运行时间划分的最优加速"
+
+#: default/data/ui/views/datamodel_audit.xml:36
+msgid "Acceleration Details"
+msgstr "加速详细信息"
+
+#: default/data/ui/views/predictive_analytics.xml:2
+msgid "Predictive Analytics"
+msgstr "预测分析"
+
+#: default/data/ui/views/predictive_analytics.xml:17
+msgid "Function"
+msgstr "函数"
+
+#: default/data/ui/views/predictive_analytics.xml:30
+msgid "Attribute"
+msgstr "属性"
+
+#: default/data/ui/views/predictive_analytics.xml:47
+msgid "Prediction Over Time"
+msgstr "时段预测值"
+
+#: default/data/ui/views/predictive_analytics.xml:60
+msgid "Outliers"
+msgstr "离群值"
+
+#: default/data/ui/views/cim_setup.xml:2
+msgid "CIM Setup"
+msgstr "CIM 设置"
+
+#: appserver/static/predictive_analytics.js:28
+msgid "Save as Correlation Search ..."
+msgstr "另存为“相关搜索”..."
+
+#: appserver/static/predictive_analytics.js:59
+msgid "All functions other than count require an attribute!"
+msgstr "除了计数以外的所有函数都需要一个属性!"
+
+#: appserver/static/predictive_analytics.js:63
+msgid "Please select a function!"
+msgstr "请选择一个函数!"
+
+#: appserver/static/predictive_analytics.js:142
+#, python-format
+msgid "The correlation search was successfully created.<p><br/><a target='_blank' href='correlation_search_edit?name=%s'>View created search</a></p>"
+msgstr "成功创建了相关搜索。<p><br/><a target='_blank' href='correlation_search_edit?name=%s'>查看创建的搜索</a></p>"
+
+#: appserver/static/predictive_analytics.js:237
+msgid "Correlation search could not be saved"
+msgstr "无法保存相关搜索"
+
+#: appserver/static/predictive_analytics.js:352
+msgid "Save as Correlation Search"
+msgstr "另存为“相关搜索”"
+
+#: appserver/static/predictive_analytics.js:354
+msgid "Security Domain"
+msgstr "安全域"
+
+#: appserver/static/predictive_analytics.js:357
+msgid "Severity"
+msgstr "严重性"
+
+#: appserver/static/predictive_analytics.js:360
+msgid "Correlation Search Name"
+msgstr "相关搜索名称"
+
+#: appserver/static/predictive_analytics.js:361
+msgid "Enter the name of the correlation search"
+msgstr "输入相关搜索的名称"
+
+#: appserver/static/predictive_analytics.js:363
+msgid "Correlation Search Description"
+msgstr "相关搜索描述"
+
+#: appserver/static/predictive_analytics.js:364
+msgid "Enter a description of the correlation search"
+msgstr "输入相关搜索的描述"
+
+#: appserver/static/predictive_analytics.js:366
+msgid "The correlation search was successfully created"
+msgstr "成功创建了相关搜索"
+
+#: appserver/static/predictive_analytics.js:375
+msgid "Run Search First"
+msgstr "首先运行搜索"
+
+#: appserver/static/predictive_analytics.js:376
+msgid "You need to run the search first before attempting to make a correlation search."
+msgstr "在试图进行相关搜索之前，您需要先运行搜索。"
+
+#: appserver/static/predictive_analytics.js:407
+msgid "Advanced Predict Options"
+msgstr "高级预测选项"
+
+#: appserver/static/predictive_analytics.js:409
+msgid "Predict Timespan"
+msgstr "预测时间跨度"
+
+#: appserver/static/predictive_analytics.js:410
+msgid "defaults to 10m"
+msgstr "默认为 10m"
+
+#: appserver/static/predictive_analytics.js:411
+msgid "Use time specifiers: y, mon, d, h, m, s"
+msgstr "使用时间说明符: y、mon、d、h、m、s"
+
+#: appserver/static/predictive_analytics.js:413
+msgid "Algorithm"
+msgstr "算法"
+
+#: appserver/static/predictive_analytics.js:416
+msgid "Correlate"
+msgstr "相关"
+
+#: appserver/static/predictive_analytics.js:417
+msgid "For bivariate model, indicates the field to correlate against"
+msgstr "对于双变量模型，表示要关联的字段"
+
+#: appserver/static/predictive_analytics.js:419
+msgid "Future Timespan"
+msgstr "未来时间跨度"
+
+#: appserver/static/predictive_analytics.js:420
+msgid "Must be a non-negative number"
+msgstr "必须是非负数"
+
+#: appserver/static/predictive_analytics.js:421
+msgid "The length of prediction into the future"
+msgstr "预测到未来的长度"
+
+#: appserver/static/predictive_analytics.js:423
+msgid "Holdback"
+msgstr "阻止"
+
+#: appserver/static/predictive_analytics.js:424
+msgid "Specifies the 'number' of data points from the end that are NOT used to build the model"
+msgstr "从末尾指定没有用于构建模型的数据点数的“数量”"
+
+#: appserver/static/predictive_analytics.js:426
+msgid "Lower confidence interval"
+msgstr "下置信间隔"
+
+#: appserver/static/predictive_analytics.js:427 appserver/static/predictive_analytics.js:431
+msgid "Must be between 0-100; defaults to 95"
+msgstr "必须介于 0 到 100；默认为 95"
+
+#: appserver/static/predictive_analytics.js:428
+msgid "Specifies a field name for the lower 'int' percentage confidence interval"
+msgstr "指定 'int' 百分比的下置信间隔的字段名称"
+
+#: appserver/static/predictive_analytics.js:430
+msgid "Upper confidence interval"
+msgstr "上置信间隔"
+
+#: appserver/static/predictive_analytics.js:432
+msgid "Specifies a field name for the upper 'int' percentage confidence interval"
+msgstr "指定 'int' 百分比的上置信间隔的字段名称"
+
+#: appserver/static/predictive_analytics.js:434
+msgid "Period"
+msgstr "周期"
+
+#: appserver/static/predictive_analytics.js:435
+msgid "Specifies the seasonal period of the time series data"
+msgstr "指定时间系列数据的季节性周期"
+
+#: appserver/static/predictive_analytics.js:437
+msgid "Predict command help"
+msgstr "预测命令帮助"
+
+#: appserver/static/predictive_analytics.js:439
+msgid "Apply"
+msgstr "应用"
+
+#: appserver/static/predictive_analytics.js:466
+msgid "Local level"
+msgstr "本地级别"
+
+#: appserver/static/predictive_analytics.js:470
+msgid "Seasonal local level"
+msgstr "季节性的本地级别"
+
+#: appserver/static/predictive_analytics.js:478
+msgid "Local level trend"
+msgstr "本地级别趋势"
+
+#: appserver/static/predictive_analytics.js:572
+msgid "Must be a valid timespan"
+msgstr "必须为有效的时间跨度"
+
+#: appserver/static/predictive_analytics.js:582 appserver/static/predictive_analytics.js:592
+msgid "Must be between 0 and 100"
+msgstr "必须介于 0 到 100"
+
+#: appserver/static/predictive_analytics.js:602
+msgid "Must be a positive integer"
+msgstr "必须是正整数"
+
+#: appserver/static/predictive_analytics.js:612
+msgid "Must be zero or more"
+msgstr "必须为零或多个"
+
+#: appserver/static/predictive_analytics.js:622
+msgid "Must not be empty"
+msgstr "不能为空"
+
+#: appserver/static/js/commonControl/AddonMenuControl.js:54 appserver/static/js/commonControl/AddonMenuControl.js:64
+msgid "N/A"
+msgstr "N/A"
+
+#: appserver/static/js/views/DataModelConfig.js:42
+msgid "Enable acceleration"
+msgstr "启用加速"
+
+#: appserver/static/js/views/DataModelConfig.js:53
+msgid "Backfill time"
+msgstr "回填时间"
+
+#: appserver/static/js/views/DataModelConfig.js:59 appserver/static/js/views/DataModelConfig.js:92
+msgid "Year"
+msgstr "年"
+
+#: appserver/static/js/views/DataModelConfig.js:63 appserver/static/js/views/DataModelConfig.js:96
+msgid "Quarter"
+msgstr "季度"
+
+#: appserver/static/js/views/DataModelConfig.js:67 appserver/static/js/views/DataModelConfig.js:100
+msgid "Month"
+msgstr "月"
+
+#: appserver/static/js/views/DataModelConfig.js:71 appserver/static/js/views/DataModelConfig.js:104
+msgid "Week"
+msgstr "周"
+
+#: appserver/static/js/views/DataModelConfig.js:75 appserver/static/js/views/DataModelConfig.js:108
+msgid "Day"
+msgstr "天"
+
+#: appserver/static/js/views/DataModelConfig.js:86
+msgid "Earliest time"
+msgstr "最早时间"
+
+#: appserver/static/js/views/DataModelConfig.js:119
+msgid "Maximum time"
+msgstr "最长时间"
+
+#: appserver/static/js/views/DataModelConfig.js:130
+msgid "Maximum concurrent searches"
+msgstr "并发搜索的最大数目"
+
+#: appserver/static/js/views/DataModelConfig.js:141
+msgid "Manual rebuilds"
+msgstr "手动重建"
+
+#: appserver/static/js/views/DataModelConfig.js:155
+msgid "Schedule priority"
+msgstr "计划优先级"
+
+#: appserver/static/js/views/DataModelConfig.js:164
+msgid "default"
+msgstr "默认"
+
+#: appserver/static/js/views/DataModelConfig.js:168
+msgid "higher"
+msgstr "更高"
+
+#: appserver/static/js/views/DataModelConfig.js:172
+msgid "highest"
+msgstr "最高"
+
+#: appserver/static/cim_setup.js:68
+msgid "enabled should be boolean"
+msgstr "已启用应该为布尔表达式"
+
+#: appserver/static/cim_setup.js:71
+msgid "Invalid earliest time"
+msgstr "无效最早时间"
+
+#: appserver/static/cim_setup.js:74
+msgid "Invalid backfill time"
+msgstr "无效回填时间"
+
+#: appserver/static/cim_setup.js:77
+msgid "Backfill time should be more recent than earliest time"
+msgstr "回填时间应该晚于最早时间"
+
+#: appserver/static/cim_setup.js:80
+msgid "Maximum time should be an integer"
+msgstr "最长时间应该为整数"
+
+#: appserver/static/cim_setup.js:84
+msgid "Maximum concurrent should be an integer"
+msgstr "最大并发数应该为整数"
+
+#: appserver/static/cim_setup.js:87
+msgid "Manual rebuilds should be boolean"
+msgstr "手动重建应该为布尔表达式"
+
+#: appserver/static/cim_setup.js:177
+msgid "Saving"
+msgstr "正在保存"
+
+#: appserver/static/cim_setup.js:242 appserver/static/js/views/CIMSetupView.js:96
+msgid "Save"
+msgstr "保存"
+
+#: appserver/static/js/views/CIMSetupView.js:60
+msgid "Data Models"
+msgstr "数据模型"
+
+#: appserver/static/js/views/CIMSetupView.js:65 appserver/static/js/views/CIMSetupView.js:71
+msgid "Indexes"
+msgstr "索引"
+
+#: appserver/static/js/views/CIMSetupView.js:66 appserver/static/js/views/CIMSetupView.js:77
+msgid "Settings"
+msgstr "设置"
+
+#: appserver/static/js/views/CIMSetupView.js:79
+msgid "Acceleration properties for the selected data model."
+msgstr "所选数据模型的加速属性。"
+
+#: appserver/static/js/views/CIMSetupView.js:80
+msgid "Splunk help"
+msgstr "Splunk 帮助"
+
+#: appserver/static/js/views/CIMSetupView.js:81
+msgid "Learn More"
+msgstr "了解更多信息"
+
+#: appserver/static/js/views/CIMSetupView.js:93
+msgid "Cancel"
+msgstr "取消"
+
+#: appserver/static/js/views/CIMSetupView.js:197
+msgid "Filter"
+msgstr "过滤器"
+
+#: appserver/static/js/views/CIMSetupView.js:380
+msgid "Apps"
+msgstr "应用"

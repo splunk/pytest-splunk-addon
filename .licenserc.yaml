@@ -37,3 +37,4 @@ header:
     - "renovate.json"
     - "pytest_splunk_addon/.ignore_splunk_internal_errors"
     - "pytest_splunk_addon/docker_class.py"
+    - "deps"

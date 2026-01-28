@@ -1,0 +1,220 @@
+.section-header {
+  border-bottom: 1px solid #C3CBD4;
+}
+.section-header .title {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: 24px;
+}
+.cimSetupWrapper {
+  border: 1px solid #ccc;
+  margin: 30px auto;
+  width: 70%;
+  min-width: 1000px;
+}
+#cim_setup_container .modal-footer {
+  border-top: 1px solid #C3CBD4;
+}
+#cim_setup_container .modal-header {
+  border-bottom: 1px solid #C3CBD4;
+}
+#cim_setup_container .modal-body {
+  padding: 20px;
+}
+#cim_setup_container .alert {
+  font-size: 12px;
+}
+#cim_setup_container .alert .icon-alert {
+  font-size: 150%;
+  position: absolute;
+  left: 10px;
+  top: 5px;
+}
+.selectModelColumns {
+  position: relative;
+}
+.tab {
+  display: inline-block;
+}
+.layoutBodyColumns {
+  top: 0;
+  border-top: 1px solid #ccc;
+  bottom: 0;
+  background-color: #fff;
+  overflow: auto;
+  position: relative;
+}
+.layoutColLeft {
+  width: 360px;
+  background-color: #eee;
+}
+.layoutCol {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+.layoutColRight {
+  right: 0;
+  left: 360px;
+}
+.layoutColRight .tab-pane {
+  margin: 12px 0 12px 20px;
+}
+.tab-pane-main {
+  display: none;
+}
+.tab-pane-main.active {
+  display: block;
+}
+.layoutRow {
+  overflow: hidden;
+  left: 0;
+  right: 0;
+  min-height: 600px;
+}
+.scroll-y {
+  overflow-y: auto;
+}
+#initial_prompt {
+  left: 0;
+  right: 0;
+  top: 80px;
+  position: absolute;
+  font-size: 20px;
+  font-weight: 200;
+  text-align: center;
+  color: #999;
+}
+.inputForm {
+  margin: 20px;
+}
+.sideTabItem {
+  padding: 10px 30px 10px 20px;
+  position: relative;
+  font-size: 14px;
+  border-right: 1px solid #ccc;
+  margin-left: 40px;
+  cursor: pointer;
+  margin-right: -1px;
+}
+.sideTabItem:hover {
+  background: #DDD;
+}
+.sideTabList {
+  padding-top: 10px;
+  border-right: 1px solid #CCC;
+}
+.sideTabList .link-wrap {
+  display: block;
+  text-decoration: none !important;
+}
+.sideTabItem.selected {
+  color: #666;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-right: 0px;
+}
+.sideTabName {
+  line-height: 20px;
+}
+.indexes_list {
+  color: #999;
+  font-size: 11px;
+}
+.more {
+  text-decoration: underline;
+  color: #1e93c6;
+  cursor: pointer;
+  padding-left: 0.5em;
+}
+.col-visibility label.checkbox {
+  padding: 2px 0px 2px 0px;
+}
+.btn.nopointer {
+  pointer-events: none;
+  cursor: default;
+}
+.filter-control {
+  margin: 20px 0 10px 0;
+}
+.filter-control a.control-clear {
+  position: relative;
+  left: -25px;
+  top: 3px;
+  line-height: 22px;
+  font-size: 18px;
+  color: #999999;
+}
+
+.table-chrome.table-striped>tbody>tr:nth-child(odd)>td {
+  min-width: 20px;
+}
+
+.nav.nav-tabs {
+  border-top-style: none;
+  border-bottom: none;
+}
+
+.control.btn-group {
+  padding-top: 5px;
+}
+
+a.dropdown-toggle.disabled {
+  color: #999;
+}
+
+.timepicker-control-menu .btn {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    border-left: none;
+}
+
+.shared-controls-multiinputcontrol {
+  display: inline-block
+}
+
+.number-text-container input,
+.number-text-container span {
+  min-width: 200px;
+}
+
+.indexes-whitelist-help.help-block {
+  margin-left: 0;
+}
+
+.loading {
+  width: 100%;
+  text-align: center;
+  padding: 30px;
+}
+
+/* Manage API Styles */
+.layoutColRight .tab-pane.manageAPIKeyForm {
+    margin: 12px 20px;
+}
+
+.manageAPIKeyForm input{
+    width: 100%
+}
+
+.manageAPIKeyForm .actionButtons {
+    text-align: center;
+}
+
+.manageAPIKeyForm .actionButtons a {
+    width: 30%;
+    margin: 2px;
+}
+
+.manageAPIKeyForm .status {
+    padding: 20px 20px 0;
+    text-align: center;
+}
+
+.manageAPIKeyForm .apiForm {
+    width: 350px;
+    margin-top: 20px;
+}

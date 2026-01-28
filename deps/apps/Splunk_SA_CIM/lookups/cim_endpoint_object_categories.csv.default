@@ -1,0 +1,15 @@
+object_category
+config_setting
+directory
+directory_entry
+file
+group
+hardware_component
+network
+policy
+process
+registry
+service
+system_object
+system_state
+user
