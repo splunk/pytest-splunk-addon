@@ -67,7 +67,7 @@ class PropsParser(object):
         for stanza_type, stanza_name, stanza_values in self._get_props_stanzas():
             for key, value in stanza_values.items():
                 LOGGER.info(f"Parsing parameter={key} of stanza={stanza_name}")
-                if not re.match("REPORT", key, re.IGNORECASE):
+                if not re.match("REPORT", key, re.IGNORECASE) and not re.match("TRANSFORM", key, re.IGNORECASE):
                     LOGGER.info(f"Trying to parse classname={key}")
                     parsing_method = self._get_props_method(key)
                     if parsing_method:
@@ -79,7 +79,7 @@ class PropsParser(object):
                                 "classname": key,
                                 "fields": field_list,
                             }
-                else:
+                elif re.match("REPORT", key, re.IGNORECASE):
                     for transform_stanza, fields in self._get_report_fields(key, value):
                         field_list = list(fields)
                         if field_list:
@@ -89,12 +89,16 @@ class PropsParser(object):
                                 "classname": f"{key}::{transform_stanza}",
                                 "fields": field_list,
                             }
+                elif re.match("TRANSFORM", key, re.IGNORECASE):
+                    for transforms_sourcetype_group in self._get_transforms_sourcetypes(
+                            stanza_name, stanza_values
+                    ):
+                        yield transforms_sourcetype_group
+                else:
+                    LOGGER.error(f"No parser available for {key}")
 
             # Yield TRANSFORMS-defined sourcetypes for coverage testing
-            for transforms_sourcetype_group in self._get_transforms_sourcetypes(
-                stanza_name, stanza_values
-            ):
-                yield transforms_sourcetype_group
+
 
     def _get_props_method(self, class_name: str):
         """
@@ -397,6 +401,9 @@ class PropsParser(object):
         Yields:
             Field group dictionaries with empty fields list for sourcetype coverage testing
         """
+        LOGGER.info(
+            "Getting transforms sourcetypes for stanza: %s",stanza_name
+        )
         sourcetype_transforms_pattern = re.compile(r"TRANSFORMS-.*", re.IGNORECASE)
         seen_sourcetypes = set()
 
