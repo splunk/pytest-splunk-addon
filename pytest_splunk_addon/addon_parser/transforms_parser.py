@@ -185,6 +185,16 @@ class TransformsParser(object):
                 return None
 
             format_value = transforms_values["FORMAT"]
+            
+            # Skip if format contains $ variables (like $1, $2, etc.)
+            if '$' in format_value:
+                LOGGER.debug(
+                    "Skipping transform %s: FORMAT contains variables (%s)",
+                    transform_stanza,
+                    format_value,
+                )
+                return None
+            
             # Match pattern: sourcetype::<sourcetype_name>
             # Case-insensitive, handles whitespace, handles quoted values
             regex = r"(?i)sourcetype\s*::\s*([^\s]+)"
