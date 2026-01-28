@@ -16,9 +16,9 @@
 # -*- coding: utf-8 -*-
 """
 The module provides the Add-on parsing mechanism. It can
-parse the knowledge objects from an Add-on's configuration files
+parse the knowledge objects from an Add-on's configuration files.
 
-Supports: fields from props & transforms, tags, eventtypes
+Supports: fields from props & transforms, tags, eventtypes, savedsearches
 """
 import os
 import re
@@ -30,6 +30,7 @@ from .props_parser import PropsParser
 from .tags_parser import TagsParser
 from .eventtype_parser import EventTypeParser
 from .savedsearches_parser import SavedSearchParser
+from .parser_cache import ParserCache
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -49,29 +50,64 @@ class AddonParser(object):
         self._tags_parser = None
         self._eventtype_parser = None
         self._savedsearch_parser = None
+        self._parser_cache = ParserCache()
 
     @property
     def props_parser(self):
         if not self._props_parser:
-            self._props_parser = PropsParser(self.splunk_app_path)
+
+            def _parse_props():
+                parser = PropsParser(self.splunk_app_path)
+                return parser.props
+
+            props_data = self._parser_cache.get_or_parse(_parse_props, "props")
+            self._props_parser = PropsParser(
+                self.splunk_app_path, props_data=props_data
+            )
         return self._props_parser
 
     @property
     def tags_parser(self):
         if not self._tags_parser:
-            self._tags_parser = TagsParser(self.splunk_app_path)
+
+            def _parse_tags():
+                parser = TagsParser(self.splunk_app_path)
+                return parser.tags
+
+            tags_data = self._parser_cache.get_or_parse(_parse_tags, "tags")
+            self._tags_parser = TagsParser(self.splunk_app_path, tags_data=tags_data)
         return self._tags_parser
 
     @property
     def eventtype_parser(self):
         if not self._eventtype_parser:
-            self._eventtype_parser = EventTypeParser(self.splunk_app_path)
+
+            def _parse_eventtypes():
+                parser = EventTypeParser(self.splunk_app_path)
+                return parser.eventtypes
+
+            eventtypes_data = self._parser_cache.get_or_parse(
+                _parse_eventtypes, "eventtypes"
+            )
+            self._eventtype_parser = EventTypeParser(
+                self.splunk_app_path, eventtypes_data=eventtypes_data
+            )
         return self._eventtype_parser
 
     @property
     def savedsearch_parser(self):
         if not self._savedsearch_parser:
-            self._savedsearch_parser = SavedSearchParser(self.splunk_app_path)
+
+            def _parse_savedsearches():
+                parser = SavedSearchParser(self.splunk_app_path)
+                return parser.savedsearches
+
+            savedsearches_data = self._parser_cache.get_or_parse(
+                _parse_savedsearches, "savedsearches"
+            )
+            self._savedsearch_parser = SavedSearchParser(
+                self.splunk_app_path, savedsearches_data=savedsearches_data
+            )
         return self._savedsearch_parser
 
     def get_props_fields(self):
@@ -81,7 +117,16 @@ class AddonParser(object):
         Yields:
             generator of all the supported fields
         """
-        return self.props_parser.get_props_fields()
+
+        def _parse_props_fields():
+            LOGGER.info("Building props_fields cache")
+            fields = list(self.props_parser.get_props_fields())
+            return fields
+
+        fields_data = self._parser_cache.get_or_parse(
+            _parse_props_fields, "props_fields"
+        )
+        return iter(fields_data or [])
 
     def get_tags(self):
         """

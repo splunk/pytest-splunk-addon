@@ -41,10 +41,10 @@ class PropsParser(object):
         splunk_app_path (str): Path of the Splunk app
     """
 
-    def __init__(self, splunk_app_path: str):
+    def __init__(self, splunk_app_path: str, props_data: Optional[Dict] = None):
         self._conf_parser = conf_parser.TABConfigParser()
         self.splunk_app_path = splunk_app_path
-        self._props = None
+        self._props = props_data
         self.transforms_parser = TransformsParser(self.splunk_app_path)
 
     @property
@@ -67,7 +67,22 @@ class PropsParser(object):
         for stanza_type, stanza_name, stanza_values in self._get_props_stanzas():
             for key, value in stanza_values.items():
                 LOGGER.info(f"Parsing parameter={key} of stanza={stanza_name}")
-                if not re.match("REPORT", key, re.IGNORECASE):
+                if re.match("REPORT", key, re.IGNORECASE):
+                    for transform_stanza, fields in self._get_report_fields(key, value):
+                        field_list = list(fields)
+                        if field_list:
+                            yield {
+                                "stanza": stanza_name,
+                                "stanza_type": stanza_type,
+                                "classname": f"{key}::{transform_stanza}",
+                                "fields": field_list,
+                            }
+                elif re.match("TRANSFORM", key, re.IGNORECASE):
+                    for transforms_sourcetype_group in self._get_transforms_sourcetypes(
+                        stanza_name, stanza_values
+                    ):
+                        yield transforms_sourcetype_group
+                else:
                     LOGGER.info(f"Trying to parse classname={key}")
                     parsing_method = self._get_props_method(key)
                     if parsing_method:
@@ -77,16 +92,6 @@ class PropsParser(object):
                                 "stanza": stanza_name,
                                 "stanza_type": stanza_type,
                                 "classname": key,
-                                "fields": field_list,
-                            }
-                else:
-                    for transform_stanza, fields in self._get_report_fields(key, value):
-                        field_list = list(fields)
-                        if field_list:
-                            yield {
-                                "stanza": stanza_name,
-                                "stanza_type": stanza_type,
-                                "classname": f"{key}::{transform_stanza}",
                                 "fields": field_list,
                             }
 
@@ -376,3 +381,56 @@ class PropsParser(object):
             "output_fields": input_output_field_list[1],
             "lookup_stanza": lookup_stanza,
         }
+
+    def _get_transforms_sourcetypes(self, stanza_name, stanza_values):
+        """
+        Extract sourcetypes defined via TRANSFORMS directives.
+
+        Looks for TRANSFORMS keys matching pattern TRANSFORMS-.*sourcetype.*
+        and extracts sourcetypes from the referenced transform stanzas.
+
+        Args:
+            stanza_name (str): Name of the props.conf stanza
+            stanza_values (dict): Dictionary of stanza key-value pairs
+
+        Yields:
+            Field group dictionaries with empty fields list for sourcetype coverage testing
+        """
+        LOGGER.info("Getting transforms sourcetypes for stanza: %s", stanza_name)
+        sourcetype_transforms_pattern = re.compile(r"TRANSFORMS-.*", re.IGNORECASE)
+        seen_sourcetypes = set()
+
+        for key, value in stanza_values.items():
+            if not sourcetype_transforms_pattern.match(key):
+                continue
+
+            LOGGER.debug(
+                "Found TRANSFORMS sourcetype directive: %s=%s in stanza %s",
+                key,
+                value,
+                stanza_name,
+            )
+
+            transform_stanzas = [s.strip() for s in value.split(",")]
+
+            for transform_stanza in transform_stanzas:
+                if not transform_stanza:
+                    continue
+
+                sourcetype = self.transforms_parser.get_sourcetype_from_transform(
+                    transform_stanza
+                )
+
+                if sourcetype and sourcetype not in seen_sourcetypes:
+                    seen_sourcetypes.add(sourcetype)
+                    LOGGER.info(
+                        "Found TRANSFORMS-defined sourcetype: %s (from transform %s)",
+                        sourcetype,
+                        transform_stanza,
+                    )
+                    yield {
+                        "stanza": sourcetype,
+                        "stanza_type": "sourcetype",
+                        "classname": f"TRANSFORMS-sourcetype::{transform_stanza}",
+                        "fields": [],  # Empty fields triggers coverage test
+                    }
