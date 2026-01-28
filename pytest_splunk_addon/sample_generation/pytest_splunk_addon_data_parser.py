@@ -1,5 +1,5 @@
 #
-# Copyright 2024 Splunk Inc.
+# Copyright 2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -57,6 +57,7 @@ class PytestSplunkAddonDataParser:
         """
         if os.path.exists(os.path.join(self.config_path, "samples")):
             LOGGER.info(
+            
                 "Samples path is: {}".format(os.path.join(self.config_path, "samples"))
             )
             return os.path.join(self.config_path, "samples")
