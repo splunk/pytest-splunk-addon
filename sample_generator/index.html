@@ -1,0 +1,1616 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Splunk">
+      
+      
+        <link rel="canonical" href="https://splunk.github.io/pytest-splunk-addon/sample_generator/">
+      
+      
+        <link rel="prev" href="../requirement_tests/">
+      
+      
+        <link rel="next" href="../api_reference/api_reference/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Data Generator - Pytest Splunk Addon</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-generator" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Pytest Splunk Addon" class="md-header__button md-logo" aria-label="Pytest Splunk Addon" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pytest Splunk Addon
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Data Generator
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/splunk/pytest-splunk-addon" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pytest Splunk Addon
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Pytest Splunk Addon" class="md-nav__button md-logo" aria-label="Pytest Splunk Addon" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Pytest Splunk Addon
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/splunk/pytest-splunk-addon" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pytest Splunk Addon
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how_to_use/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to use
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cim_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIM Compatibility Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cim_compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIM Compliance Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../field_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge Object Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_time_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index Time Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../requirement_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirement Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Generator
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Generator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#generate-sample-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generate sample files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest-splunk-addon-dataconfspec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pytest-splunk-addon-data.conf.spec
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#token-replacement-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token replacement settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/api_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/addon_parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AddonParser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/cim_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CimTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/fields_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FieldsTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/index_time_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IndexTimeTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/app_test_generator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppTestGenerator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/sample_generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataGenerator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/event_ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EventIngestor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/cim_compliance_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CimComplianceReport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshoot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#generate-sample-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generate sample files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest-splunk-addon-dataconfspec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pytest-splunk-addon-data.conf.spec
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#token-replacement-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token replacement settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="data-generator">Data Generator<a class="headerlink" href="#data-generator" title="Permanent link">&para;</a></h1>
+<p>To ingest samples into Splunk, plugin takes <code>pytest-splunk-addon-data.conf</code> as input.
+The sample generation &amp; ingestion takes place before executing the testcases.
+For index-time test cases, there are multiple metadata required about the sample file for which <code>pytest-splunk-addon-data.conf</code> must be created and provided to the pytest command.</p>
+<h2 id="generate-sample-files">Generate sample files<a class="headerlink" href="#generate-sample-files" title="Permanent link">&para;</a></h2>
+<p>Pytest splunk addon supports 2 different formats of sample files</p>
+<p><strong>1. Text format</strong></p>
+<ul>
+<li>Sample events can be generated from the live events by replacing the field values with the tokens. Token name should be enclosed with ##.</li>
+<li>Token replacement setting for this samples should be added to pytest-splunk-addon-data.conf to generate events</li>
+<li>For example,
+     <div class="highlight"><pre><span></span><code>Example live event:
+&lt;111&gt; 2020-02-12T03:27:09+10:00 10.0.0.3 RT_FLOW: RT_FLOW_SESSION_CREATE: action=allowed transport=ICMP dest=10.0.0.1 dest_ip=10.0.0.1 dest_port=5048 dest_zone=DUMMY_ZONE app=app1
+
+Sample created from live event:
+&lt;111&gt; ##timestamp_token## ##src_ip_token## RT_FLOW: RT_FLOW_SESSION_CREATE: action=##action_token## transport=##transport_type_token## dest=##dest_ip_token## dest_ip=##dest_ip_token## dest_port=##dest_port_token## dest_zone=##dest_zone_token## app=##app_token##
+</code></pre></div></li>
+</ul>
+<p><strong>2. XML format</strong></p>
+<ul>
+<li>Generate sample xml file using the format provided <a href="https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/sample_generation/schema.xsd">here</a></li>
+<li>Using xml format for the sample events, user can also execute requirement tests for the event for fields mentioned in the cim_fields and other_mappings</li>
+<li>For example,</li>
+</ul>
+<div class="highlight"><pre><span></span><code>Example live event:
+&lt;111&gt; 2020-02-12T03:27:09+10:00 10.0.0.3 RT_FLOW: RT_FLOW_SESSION_CREATE: action=allowed transport=ICMP dest=10.0.0.1 dest_ip=10.0.0.1 dest_port=5048 dest_zone=DUMMY_ZONE app=app1
+</code></pre></div>
+<details>
+<summary>Sample xml created from live event:</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;device&gt;</span>
+<span class="w">     </span><span class="nt">&lt;vendor&gt;</span>Test<span class="nt">&lt;/vendor&gt;</span>
+<span class="w">     </span><span class="nt">&lt;product&gt;</span>Test<span class="w"> </span>product<span class="nt">&lt;/product&gt;</span>
+<span class="w">     </span><span class="nt">&lt;version</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;8.21.0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">     </span><span class="nt">&lt;event</span><span class="w"> </span><span class="na">code=</span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;SyslogEvent&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;syslog&quot;</span><span class="w"> </span><span class="nt">&gt;</span>
+<span class="w">          </span><span class="nt">&lt;transport</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;syslog&quot;</span><span class="w"> </span><span class="na">host=</span><span class="s">&quot;10.0.0.3&quot;</span><span class="nt">/&gt;</span>
+<span class="w">          </span><span class="nt">&lt;source&gt;</span>
+<span class="w">               </span><span class="nt">&lt;comment/&gt;</span>
+<span class="w">          </span><span class="nt">&lt;/source&gt;</span>
+<span class="w">          </span><span class="nt">&lt;raw&gt;</span>
+<span class="w">               </span><span class="cp">&lt;![CDATA[&lt;111&gt; 2020-02-12T03:27:09+10:00 10.0.0.3 RT_FLOW: RT_FLOW_SESSION_CREATE: action=allowed transport=ICMP dest=10.0.0.1 dest_ip=10.0.0.1 dest_port=5048 dest_zone=DUMMY_ZONE app=app1]]&gt;</span>
+<span class="w">          </span><span class="nt">&lt;/raw&gt;</span>
+<span class="w">          </span><span class="nt">&lt;cim&gt;</span>
+<span class="w">               </span><span class="nt">&lt;models&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;model&gt;</span>Network<span class="w"> </span>Traffic<span class="nt">&lt;/model&gt;</span>
+<span class="w">               </span><span class="nt">&lt;/models&gt;</span>
+<span class="w">               </span><span class="nt">&lt;cim_fields&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;action&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;allowed&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;dest&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;10.0.0.1&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;dest_ip&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;10.0.0.1&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;dest_port&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;5048&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;dest_zone&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;DUMMY_ZONE&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;app&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;app1&quot;</span><span class="nt">/&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;transport&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;ICMP&quot;</span><span class="nt">/&gt;</span>
+<span class="w">               </span><span class="nt">&lt;/cim_fields&gt;</span>
+<span class="w">               </span><span class="nt">&lt;missing_recommended_fields&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>bytes<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>bytes_in<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>bytes_out<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>dvc<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>rule<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>session_id<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>src<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>src_ip<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>src_port<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>src_zone<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>src_interface<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>user<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>protocol<span class="nt">&lt;/field&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field&gt;</span>vendor_product<span class="nt">&lt;/field&gt;</span>
+<span class="w">               </span><span class="nt">&lt;/missing_recommended_fields&gt;</span>
+<span class="w">               </span><span class="nt">&lt;exceptions&gt;</span>
+<span class="w">                    </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;vendor_product&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;Incorrect vendor product&quot;</span><span class="w"> </span><span class="na">reason=</span><span class="s">&quot;testing exceptions&quot;</span><span class="nt">/&gt;</span>
+<span class="w">               </span><span class="nt">&lt;/exceptions&gt;</span>
+<span class="w">          </span><span class="nt">&lt;/cim&gt;</span>
+<span class="w">          </span><span class="nt">&lt;other_mappings&gt;</span>
+<span class="w">               </span><span class="nt">&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;event_name&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;RT_FLOW_SESSION_CREATE&quot;</span><span class="nt">&gt;</span>
+<span class="w">          </span><span class="nt">&lt;/other_mappings&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/event&gt;</span>
+<span class="nt">&lt;/device&gt;</span>
+</code></pre></div>
+</details>
+
+<h2 id="pytest-splunk-addon-dataconfspec">pytest-splunk-addon-data.conf.spec<a class="headerlink" href="#pytest-splunk-addon-dataconfspec" title="Permanent link">&para;</a></h2>
+<p><strong>Default Values</strong>:</p>
+<div class="highlight"><pre><span></span><code>[default]
+host_type = plugin
+input_type = default
+index = main
+sourcetype = pytest-splunk-addon
+source = pytest-splunk-addon:{{input_type}}
+sourcetype_to_search = {{sourcetype}}
+sample_count = 1
+requirement_test_sample = 1
+timestamp_type = event
+count = 0
+earliest = now
+latest = now
+timezone = 0000
+breaker = {{regex}}
+host_prefix = {{host_prefix}}
+</code></pre></div>
+<p><strong>[&lt;sample file name&gt;]</strong></p>
+<ul>
+<li>The stanza can contain the sample File Name or Regex to match multiple sample files.</li>
+<li>The sample file should be located in samples folder under the Add-on package.</li>
+<li>Example1: [sample_file.samples] would collect samples from file sample_file.samples</li>
+<li>Example2: [sample_*.samples] would collect samples from both sample_file.samples and sample_sample.samples.</li>
+</ul>
+<p><strong>sourcetype = &lt;sourcetype&gt;</strong></p>
+<ul>
+<li>sourcetype to be assigned to the sample events</li>
+</ul>
+<p><strong>source = &lt;source&gt;</strong></p>
+<ul>
+<li>source to be assigned to the sample events</li>
+<li>default value: pytest-splunk-addon:{{input_type}}</li>
+</ul>
+<p><strong>sourcetype_to_search = &lt;sourcetype&gt;</strong></p>
+<ul>
+<li>The sourcetype used to search events</li>
+<li>This would be different then sourcetype= param in cases where TRANSFORMS is used to update the sourcetype index time.</li>
+</ul>
+<p><strong>host_type = plugin | event</strong></p>
+<ul>
+<li>This key determines if host is assigned from event or default host should be assigned by plugin.</li>
+<li>If the value is plugin, the plugin will generate host with format of &ldquo;stanza_{count}&rdquo; to uniquely identify the events.</li>
+<li>If the value is event, the host field should be provided for a token using &ldquo;token.&lt;n&gt;.field = host&rdquo;.</li>
+</ul>
+<p><strong>input_type = modinput | scripted_input | syslog_tcp | file_monitor | windows_input | uf_file_monitor | default</strong></p>
+<ul>
+<li>The input_type used in addon to ingest data of a sourcetype used in stanza.</li>
+<li>The way with which the sample data is ingested in Splunk depends on Splunk. The most similar ingesting approach is used for each input_type to get accurate index-time testing.</li>
+<li>In input_type=uf_file_monitor, universal forwarder will use file monitor to read event and then it will send data to indexer.</li>
+<li>For example, in an Add-on, a sourcetype &ldquo;alert&rdquo; is ingested through syslog in live environment, provide input_type=syslog_tcp.</li>
+</ul>
+<blockquote>
+<p><strong><em>warning:</em></strong>  uf_file_monitor input_type will only work with splunk-type=docker.</p>
+</blockquote>
+<p><strong>index = &lt;index&gt;</strong></p>
+<ul>
+<li>The index used to ingest the data.</li>
+<li>The index must be configured beforehand.</li>
+<li>If the index is not available then the data will not get ingested into Splunk and a warning message will be printed.</li>
+<li>Custom index is not supported for syslog_tcp or syslog_udp</li>
+</ul>
+<p><strong>sample_count = &lt;count&gt;</strong></p>
+<ul>
+<li>The no. of events present in the sample file.</li>
+<li>This parameter will be used to calculate the total number of events which will be generated from the sample file.</li>
+<li>If <code>input_type = modinput</code>, do not provide this parameter.</li>
+</ul>
+<p><strong>requirement_test_sample = 1</strong></p>
+<ul>
+<li>This parameter is used to run requirement tests for the provided sample xml file</li>
+<li>only supported with the xml sample file</li>
+</ul>
+<p><strong>expected_event_count = &lt;count&gt;</strong></p>
+<ul>
+<li>The no. of events this sample stanza should generate.</li>
+<li>The parameter will be used to test the line breaking in index-time tests.</li>
+<li>To calculate expected_event_count 2 parameters can be used. 1) Number of events in the sample file. 2) Number of values of replacementType=all tokens in the sample file. Both the parameters can be multiplied to get expected_event_count.</li>
+<li>For example, if sample contains 3 lines &amp; a token has replacement_type=all and replacement has list of 2 values, then 6 events will be generated.</li>
+<li>This parameter is optional, if it is not provided by the user, it will be calculated automatically by the pytest-splunk-addon.</li>
+</ul>
+<p><strong>timestamp_type = plugin | event</strong></p>
+<ul>
+<li>This key determines if _time is assigned from event or default _time should be assigned by plugin.</li>
+<li>The parameter will be used to test the time extraction in index-time tests.</li>
+<li>If value is plugin, the plugin will assign the time while ingesting the event.</li>
+<li>If value is event, that means the time will be extracted from event and therfore, there should be a token provided with token.&lt;n&gt;.field = _time.</li>
+</ul>
+<p><strong>breaker = &lt;regex&gt;</strong></p>
+<ul>
+<li>The breaker is used to breakdown the sample file into multiple events, based on the regex provided.</li>
+<li>This parameter is optional. If it is not provided by the user, the events will be ingested into Splunk,
+as per the <em>input_type</em> provided.</li>
+</ul>
+<p><strong>host_prefix = &lt;host_prefix&gt;</strong>
+- This param is used as an identification for the <strong>host</strong> field, for the events which are ingested using SC4S.</p>
+<h2 id="token-replacement-settings">Token replacement settings<a class="headerlink" href="#token-replacement-settings" title="Permanent link">&para;</a></h2>
+<p>The following replacementType -&gt; replacement values are supported</p>
+<table>
+<thead>
+<tr>
+<th>ReplacementType</th>
+<th>Replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>static</td>
+<td>&lt;string&gt;</td>
+</tr>
+<tr>
+<td>timestamp</td>
+<td>&lt;strptime&gt;</td>
+</tr>
+<tr>
+<td>random</td>
+<td>ipv4</td>
+</tr>
+<tr>
+<td>random</td>
+<td>ipv6</td>
+</tr>
+<tr>
+<td>random</td>
+<td>mac</td>
+</tr>
+<tr>
+<td>random</td>
+<td>guid</td>
+</tr>
+<tr>
+<td>random</td>
+<td>integer[&lt;start&gt;:&lt;end&gt;]</td>
+</tr>
+<tr>
+<td>random</td>
+<td>float[&lt;start.numzerosforprecision&gt;:&lt;end.numzerosforprecision&gt;]</td>
+</tr>
+<tr>
+<td>random</td>
+<td>list[&lt; &ldquo;,&rdquo; separated list&gt;]</td>
+</tr>
+<tr>
+<td>random</td>
+<td>hex([integer])</td>
+</tr>
+<tr>
+<td>random</td>
+<td>file[&lt;replacment file name, CSV file supported&gt;:&lt;column number / CSV header&gt;]</td>
+</tr>
+<tr>
+<td>random</td>
+<td>dest[&ldquo;host&rdquo;, &ldquo;ipv4&rdquo;, &ldquo;ipv6&rdquo;, &ldquo;fqdn&rdquo;]</td>
+</tr>
+<tr>
+<td>random</td>
+<td>src[&ldquo;host&rdquo;, &ldquo;ipv4&rdquo;, &ldquo;ipv6&rdquo;, &ldquo;fqdn&rdquo;]</td>
+</tr>
+<tr>
+<td>random</td>
+<td>host[&ldquo;host&rdquo;, &ldquo;ipv4&rdquo;, &ldquo;ipv6&rdquo;, &ldquo;fqdn&rdquo;]</td>
+</tr>
+<tr>
+<td>random</td>
+<td>dvc[&ldquo;host&rdquo;, &ldquo;ipv4&rdquo;, &ldquo;ipv6&rdquo;, &ldquo;fqdn&rdquo;]</td>
+</tr>
+<tr>
+<td>random</td>
+<td>user[&ldquo;name&rdquo;, &ldquo;email&rdquo;, &ldquo;domain_user&rdquo;, &ldquo;distinquised_name&rdquo;]</td>
+</tr>
+<tr>
+<td>random</td>
+<td>url[&ldquo;ip_host&rdquo;, &ldquo;fqdn_host&rdquo;, &ldquo;path&rdquo;, &ldquo;query&rdquo;, &ldquo;protocol&rdquo;]</td>
+</tr>
+<tr>
+<td>random</td>
+<td>email</td>
+</tr>
+<tr>
+<td>random</td>
+<td>src_port</td>
+</tr>
+<tr>
+<td>random</td>
+<td>dest_port</td>
+</tr>
+<tr>
+<td>file</td>
+<td>&lt;replacment file name, CSV file supported&gt;:&lt;column number / CSV header&gt;</td>
+</tr>
+<tr>
+<td>all</td>
+<td>integer[&lt;start&gt;:&lt;end&gt;]</td>
+</tr>
+<tr>
+<td>all</td>
+<td>list[&lt; , separated list&gt;]</td>
+</tr>
+<tr>
+<td>all</td>
+<td>file[&lt;replacment file name, CSV file supported&gt;:&lt;column number / CSV header&gt;]</td>
+</tr>
+</tbody>
+</table>
+<p><strong>token.&lt;n&gt;.token = &lt;regular expression&gt;</strong></p>
+<ul>
+<li>&ldquo;n&rdquo; is a number starting at 0, and increasing by 1.</li>
+<li>PCRE expression used to identify segment for replacement.</li>
+<li>If one or more capture groups are present the replacement will be performed on group 1.</li>
+</ul>
+<p><strong>token.&lt;n&gt;.replacementType = static | timestamp | random | all | file</strong></p>
+<ul>
+<li>&ldquo;n&rdquo; is a number starting at 0, and increasing by 1.</li>
+<li>For static, the token will be replaced with the value specified in the replacement setting.</li>
+<li>For timestamp, the token will be replaced with the strptime specified in the replacement setting. Strptime directive: <a href="https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior">https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior</a></li>
+<li>For random, the token will be replaced with a randomly picked type-aware value</li>
+<li>For all, For each possible replacement value, a new event will be generated and the token will be replaced with it. The configuration can be used where a token replacement contains multiple templates/values and all of the values are important and should be ingested at least once. The number of events will be multiplied by the number of values in the replacement. For example, if sample contains 3 lines &amp; a token replacement has list of 2 values, then 6 events will be generated. For a replacement if replacementType=&rsquo;all&rsquo; is not supported, then be default plugin will consider replacementType=&rdquo;random&rdquo;.</li>
+<li>For file, the token will be replaced with a random value retrieved from a file specified in the replacement setting.</li>
+</ul>
+<p><strong>token.&lt;n&gt;.replacement = &lt;string&gt; | &lt;strptime&gt; | [&ldquo;list&rdquo;,&rdquo;of&rdquo;,&rdquo;values&rdquo;] | guid | ipv4 | ipv6 | mac | integer[&lt;start&gt;:&lt;end&gt;] | float[&lt;start&gt;:&lt;end&gt;] | hex(&lt;i&gt;) | &lt;file name&gt; | &lt;file name&gt;:&lt;column number&gt; | host | src | dest | dvc | user | url | email | src_port | dest_port</strong></p>
+<ul>
+<li>
+<p>&ldquo;n&rdquo; is a number starting at 0, and increasing by 1.</p>
+</li>
+<li>
+<p>For &lt;string&gt;, the token will be replaced with the value specified.</p>
+</li>
+<li>
+<p>For &lt;strptime&gt;, a strptime formatted string to replace the timestamp with</p>
+</li>
+<li>
+<p>For guid, the token will be replaced with a random GUID value.</p>
+</li>
+<li>
+<p>For ipv4, the token will be replaced with a random valid IPv4 Address (i.e. 10.10.200.1).</p>
+</li>
+<li>
+<p>For ipv6, the token will be replaced with a random valid IPv6 Address (i.e. c436:4a57:5dea:1035:7194:eebb:a210:6361).</p>
+</li>
+<li>
+<p>For mac, the token will be replaced with a random valid MAC Address (i.e. 6e:0c:51:c6:c6:3a).</p>
+</li>
+<li>
+<p>For integer[&lt;start&gt;:&lt;end&gt;], the token will be replaced with a random integer between start and end values where &lt;start&gt; is a number greater than 0 and &lt;end&gt; is a number greater than 0 and greater than or equal to &lt;start&gt;. For replacement=all, one event will be generated for each value of integer within range &lt;start&gt; and &lt;end&gt;.</p>
+</li>
+<li>
+<p>For float[&lt;start&gt;:&lt;end&gt;], the token will be replaced with a random float between start and end values where &lt;end&gt; is a number greater than or equal to &lt;start&gt;. For floating point numbers, precision will be based off the precision specified in &lt;start&gt;. For example, if we specify 1.0, precision will be one digit, if we specify 1.0000, precision will be four digits.</p>
+</li>
+<li>
+<p>For hex(&lt;i&gt;), the token will be replaced with i number of Hexadecimal characters [0-9A-F] where &ldquo;i&rdquo; is a number greater than 0.</p>
+</li>
+<li>
+<p>For list, the token will be replaced with a random member of the JSON list provided. For replacement=all, one event will be generated for each value within the list</p>
+</li>
+<li>
+<p>For &lt;replacement file name&gt;, the token will be replaced with a random line in the replacement file.</p>
+<ul>
+<li>Replacement file name should be a fully qualified path (i.e. $SPLUNK_HOME/etc/apps/windows/samples/users.list).</li>
+<li>Windows separators should contain double forward slashes &ldquo;\&rdquo; (i.e. $SPLUNK_HOME\etc\apps\windows\samples\users.list).</li>
+<li>Unix separators will work on Windows and vice-versa.</li>
+<li>Column numbers in mvfile references are indexed at 1, meaning the first column is column 1, not 0.</li>
+</ul>
+</li>
+<li>
+<p>For host[&ldquo;host&rdquo;, &ldquo;ipv4&rdquo;, &ldquo;ipv6&rdquo;, &ldquo;fqdn&rdquo;], 4 types of host replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.</p>
+</li>
+<li>
+<p>For host[&ldquo;host&rdquo;], the token will be replaced with a sequential host value with pattern &ldquo;host_sample_host_&lt;number&gt;&ldquo;.</p>
+</li>
+<li>For host[&ldquo;ipv4&rdquo;], the token will be replaced with a random valid IPv4 Address.</li>
+<li>For host[&ldquo;ipv6&rdquo;], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3264:0:0:0:0 range.</li>
+<li>
+<p>For host[&ldquo;fqdn&rdquo;], the token will be replaced with a sequential fqdn value with pattern &ldquo;host_sample_host.sample_domain&lt;number&gt;.com&rdquo;.</p>
+</li>
+<li>
+<p>For src[&ldquo;host&rdquo;, &ldquo;ipv4&rdquo;, &ldquo;ipv6&rdquo;, &ldquo;fqdn&rdquo;], 4 types of src replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.</p>
+<ul>
+<li>For src[&ldquo;host&rdquo;], the token will be replaced with a sequential host value with pattern &ldquo;src_sample_host_&lt;number&gt;&ldquo;.</li>
+<li>For src[&ldquo;ipv4&rdquo;], the token will be replaced with a random valid IPv4 Address from 10.1.0.0 range.</li>
+<li>For src[&ldquo;ipv6&rdquo;], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3261:0:0:0:0 range.</li>
+<li>For src[&ldquo;fqdn&rdquo;], the token will be replaced with a sequential fqdn value with pattern &ldquo;src_sample_host.sample_domain&lt;number&gt;.com&rdquo;.</li>
+</ul>
+</li>
+<li>
+<p>For dest[&ldquo;host&rdquo;, &ldquo;ipv4&rdquo;, &ldquo;ipv6&rdquo;, &ldquo;fqdn&rdquo;], 4 types of dest replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.</p>
+<ul>
+<li>For dest[&ldquo;host&rdquo;], the token will be replaced with a sequential host value with pattern &ldquo;dest_sample_host_&lt;number&gt;&ldquo;.</li>
+<li>For dest[&ldquo;ipv4&rdquo;], the token will be replaced with a random valid IPv4 Address from 10.100.0.0 range.</li>
+<li>For dest[&ldquo;ipv6&rdquo;], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3262:0:0:0:0 range.</li>
+<li>For dest[&ldquo;fqdn&rdquo;], the token will be replaced with a sequential fqdn value with pattern &ldquo;dest_sample_host.sample_domain&lt;number&gt;.com&rdquo;.</li>
+</ul>
+</li>
+<li>
+<p>For dvc[&ldquo;host&rdquo;, &ldquo;ipv4&rdquo;, &ldquo;ipv6&rdquo;, &ldquo;fqdn&rdquo;], 4 types of dvc replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.</p>
+<ul>
+<li>For dvc[&ldquo;host&rdquo;], the token will be replaced with a sequential host value with pattern &ldquo;dvc_sample_host_&lt;number&gt;&ldquo;.</li>
+<li>For dvc[&ldquo;ipv4&rdquo;], the token will be replaced with a random valid IPv4 Address from 172.16.0-50.0 range.</li>
+<li>For dvc[&ldquo;ipv6&rdquo;], the token will be replaced with a random valid IPv6 Address from fdee:1fe4:2b8c:3263:0:0:0:0 range.</li>
+<li>For dvc[&ldquo;fqdn&rdquo;], the token will be replaced with a sequential fqdn value with pattern &ldquo;dvc_sample_host.sample_domain&lt;number&gt;.com&rdquo;.</li>
+</ul>
+</li>
+<li>
+<p>For user[&ldquo;name&rdquo;, &ldquo;email&rdquo;, &ldquo;domain_user&rdquo;, &ldquo;distinquised_name&rdquo;], 4 types of user replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.</p>
+<ul>
+<li>For user[&ldquo;name&rdquo;], the token will be replaced with a random name with pattern &ldquo;user&lt;number&gt;&ldquo;.</li>
+<li>For user[&ldquo;email&rdquo;], the token will be replaced with a random email with pattern &ldquo;user&lt;number&gt;@email.com&rdquo;.</li>
+<li>For user[&ldquo;domain_user&rdquo;], the token will be replaced with a random domain user pattern sample_domain.comuser&lt;number&gt;.</li>
+<li>For user[&ldquo;distinquised_name&rdquo;], the token will be replaced with a distinquised user with pattern CN=user&lt;number&gt;.</li>
+</ul>
+</li>
+<li>
+<p>For url[&ldquo;full&rdquo;, &ldquo;ip_host&rdquo;, &ldquo;fqdn_host&rdquo;, &ldquo;path&rdquo;, &ldquo;query&rdquo;, &ldquo;protocol&rdquo;], 6 types of url replacement are supported. Either one or multiple from the list can be provided to randomly replace the token.</p>
+<ul>
+<li>For url[&ldquo;ip_host&rdquo;], the url to be replaced will contain ip based address.</li>
+<li>For url[&ldquo;fqdn_host&rdquo;], the url to be replaced will contain fqdn address.</li>
+<li>For path[&ldquo;path&rdquo;], the url to be replaced will contain path with pattern &ldquo;&lt;path&gt;&ldquo;.</li>
+<li>For url[&ldquo;query&rdquo;], the url to be replaced will contain query with pattern &ldquo;?&lt;query&gt;=&lt;value&gt;&ldquo;.</li>
+<li>For url[&ldquo;protocol&rdquo;], the url to be replaced will contain protocol with pattern &ldquo;&lt;https or http&gt;://&rdquo;.</li>
+<li>For url[&ldquo;full&rdquo;], the url contain all the parts mentioned above i.e. ip_host, fqdn_host, path, query, protocol.</li>
+<li>Example 1: url[&ldquo;ip_host&rdquo;, &ldquo;path&rdquo;, &ldquo;query&rdquo;], will be replaced with pattern &lt;ip_address&gt;/&lt;path&gt;?&lt;query&gt;=&lt;value&gt;</li>
+<li>Example 2: url[&ldquo;fqdn_host&rdquo;, &ldquo;path&rdquo;, &ldquo;protocol&rdquo;], will be replaced with pattern &lt;https or http&gt;://&lt;fqdn_address&gt;/&lt;path&gt;</li>
+<li>Example 3: url[&ldquo;ip_host&rdquo;, &ldquo;fqdn_host&rdquo;, &ldquo;path&rdquo;, &ldquo;query&rdquo;, &ldquo;protocol&rdquo;], will be replaced with pattern &lt;https or http&gt;://&lt;ip_address or fqdn_address&gt;/&lt;path&gt;?&lt;query&gt;=&lt;value&gt;</li>
+<li>Example 4: url[&ldquo;full&rdquo;], will be replaced same as example 3.</li>
+</ul>
+</li>
+<li>
+<p>For email, the token will be replaced with a random email. If the same sample has a user token as well, the email and user tokens will be replaced with co-related values.</p>
+</li>
+<li>
+<p>For src_port, the token will be replaced with a random source port value between 4000 and 5000</p>
+</li>
+<li>
+<p>For dest_port, the token will be replaced with a random dest port value from (80,443,25,22,21)</p>
+</li>
+</ul>
+<p><strong>token.&lt;n&gt;.field = &lt;field_name&gt;</strong></p>
+<ul>
+<li>&ldquo;n&rdquo; is a number starting at 0, and increasing by 1.</li>
+<li>Assign the field_name for which the tokenized value will be extracted.</li>
+<li>For this <a href="../index_time_tests/#test-scenarios">key field</a>, the index time test cases will be generated.</li>
+<li>Make sure props.conf contains extractions to extract the value from the field.</li>
+<li>If this parameter is not provided, the default value will be same as the token name.</li>
+</ul>
+<blockquote>
+<p><strong><em>NOTE:</em></strong> Make sure token name is not same as that any of <a href="../index_time_tests/#test-scenarios">key field</a> values.</p>
+</blockquote>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="go">[sample_file.samples]</span>
+
+<span class="go">sourcetype = juniper:junos:secintel:structured</span>
+<span class="go">sourcetype_to_search = juniper:junos:secintel:structured</span>
+<span class="go">source = pytest-splunk-addon:syslog_tcp</span>
+<span class="go">host_type = plugin</span>
+<span class="go">input_type = syslog_tcp</span>
+<span class="go">index = main</span>
+<span class="go">timestamp_type = event</span>
+<span class="go">sample_count = 10</span>
+
+<span class="go">token.0.token = (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z)</span>
+<span class="go">token.0.replacementType = timestamp</span>
+<span class="go">token.0.replacement = %Y-%m-%dT%H:%M:%S</span>
+
+<span class="go">token.1.token = ##token1##</span>
+<span class="go">token.1.replacementType = static</span>
+<span class="go">token.1.replacement = sample_value</span>
+
+<span class="go">token.2.token = ##Src_Addr##</span>
+<span class="go">token.2.replacementType = random</span>
+<span class="go">token.2.replacement = src[&quot;ipv4&quot;]</span>
+<span class="go">token.2.field = src</span>
+
+<span class="go">token.3.token = ##Dest_Addr##</span>
+<span class="go">token.3.replacementType = random</span>
+<span class="go">token.3.replacement = dest[&quot;ipv4&quot;]</span>
+
+<span class="go">token.4.token = ##Src_Port##</span>
+<span class="go">token.4.replacementType = random</span>
+<span class="go">token.4.replacement = src_port</span>
+<span class="go">token.4.field = src_port</span>
+
+<span class="go">token.5.token = ##Dest_Port##</span>
+<span class="go">token.5.replacementType = random</span>
+<span class="go">token.5.replacement = dest_port</span>
+
+<span class="go">token.6.token = ##dvc##</span>
+<span class="go">token.6.replacementType = random</span>
+<span class="go">token.6.replacement = dvc[&quot;fqdn&quot;,&quot;host&quot;]</span>
+<span class="go">token.6.field = dvc</span>
+
+<span class="go">token.7.token = ##User##</span>
+<span class="go">token.7.replacementType = random</span>
+<span class="go">token.7.replacement = user[&quot;name&quot;]</span>
+
+<span class="go">token.8.token = ##HTTP_Host##</span>
+<span class="go">token.8.replacementType = random</span>
+<span class="go">token.8.replacement = host[&quot;fqdn&quot;]</span>
+
+<span class="go">token.9.token = ##ReferenceIDhex##</span>
+<span class="go">token.9.replacementType = random</span>
+<span class="go">token.9.replacement = hex(8)</span>
+
+<span class="go">token.10.token = ##Ip##</span>
+<span class="go">token.10.replacementType = random</span>
+<span class="go">token.10.replacement = ipv4</span>
+
+<span class="go">token.11.token = ##Ipv6##</span>
+<span class="go">token.11.replacementType = random</span>
+<span class="go">token.11.replacement = ipv6</span>
+
+<span class="go">token.12.token = ##Name##</span>
+<span class="go">token.12.replacementType = random</span>
+<span class="go">token.12.replacement = list[&quot;abc.exe&quot;,&quot;def.exe&quot;,&quot;efg.exe&quot;]</span>
+
+<span class="go">token.13.token = ##Name##</span>
+<span class="go">token.13.replacementType = all</span>
+<span class="go">token.13.replacement = list[&quot;abc.exe&quot;,&quot;def.exe&quot;,&quot;efg.exe&quot;]</span>
+
+<span class="go">token.14.token = ##email##</span>
+<span class="go">token.14.replacementType = random</span>
+<span class="go">token.14.replacement = email</span>
+
+<span class="go">token.15.token = ##mac##</span>
+<span class="go">token.15.replacementType = random</span>
+<span class="go">token.15.replacement = mac</span>
+
+<span class="go">token.16.token = ##memUsedPct##</span>
+<span class="go">token.16.replacementType = random</span>
+<span class="go">token.16.replacement = float[1.0:99.0]</span>
+
+<span class="go">token.17.token = ##guid##</span>
+<span class="go">token.17.replacementType = random</span>
+<span class="go">token.17.replacement = guid</span>
+
+<span class="go">token.18.token = ##size##</span>
+<span class="go">token.18.replacementType = random</span>
+<span class="go">token.18.replacement = integer[1:10]</span>
+
+<span class="go">token.19.token = ##integer_all##</span>
+<span class="go">token.19.replacementType = all</span>
+<span class="go">token.19.replacement = integer[1:5]</span>
+
+<span class="go">token.20.token = ##url##</span>
+<span class="go">token.20.replacementType = random</span>
+<span class="go">token.20.replacement = url[&quot;ip_host&quot;, &quot;fqdn_host&quot;, &quot;path&quot;, &quot;query&quot;, &quot;protocol&quot;]</span>
+
+<span class="go">token.21.token = ##DHCP_HOST##</span>
+<span class="go">token.21.replacementType = random</span>
+<span class="go">token.21.replacement = file[/path/linux.host.sample]</span>
+
+<span class="go">token.22.token = ##DHCP_HOST_all##</span>
+<span class="go">token.22.replacementType = all</span>
+<span class="go">token.22.replacement = file[/path/linux.host.sample]</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.indexes", "navigation.expand"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1182 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Splunk">
+      
+      
+        <link rel="canonical" href="https://splunk.github.io/pytest-splunk-addon/field_tests/">
+      
+      
+        <link rel="prev" href="../cim_compliance/">
+      
+      
+        <link rel="next" href="../index_time_tests/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Knowledge Object Tests - Pytest Splunk Addon</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#knowledge-object-tests" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Pytest Splunk Addon" class="md-header__button md-logo" aria-label="Pytest Splunk Addon" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pytest Splunk Addon
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Knowledge Object Tests
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/splunk/pytest-splunk-addon" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pytest Splunk Addon
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Pytest Splunk Addon" class="md-nav__button md-logo" aria-label="Pytest Splunk Addon" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Pytest Splunk Addon
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/splunk/pytest-splunk-addon" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pytest Splunk Addon
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how_to_use/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to use
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cim_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIM Compatibility Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cim_compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIM Compliance Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge Object Tests
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge Object Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Scenarios
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testcase-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testcase Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_time_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index Time Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../requirement_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirement Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sample_generator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Generator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/api_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/addon_parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AddonParser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/cim_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CimTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/fields_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FieldsTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/index_time_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IndexTimeTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/app_test_generator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppTestGenerator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/sample_generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataGenerator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/event_ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EventIngestor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/cim_compliance_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CimComplianceReport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshoot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Scenarios
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testcase-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testcase Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="knowledge-object-tests">Knowledge Object Tests<a class="headerlink" href="#knowledge-object-tests" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>The tests are written with a purpose of testing the proper functioning of the search-time knowledge objects of the add-on.</p>
+</li>
+<li>
+<p>Search-time knowledge objects are extracted/generated when a search query is executed on a Splunk Instance.</p>
+</li>
+<li>
+<p>The search-time knowledge objects include the following:</p>
+<ol>
+<li>Extract</li>
+<li>Report</li>
+<li>Lookups</li>
+<li>Fieldalias</li>
+<li>Eval</li>
+<li>Eventtypes</li>
+<li>Tags</li>
+<li>Savedsearches</li>
+</ol>
+</li>
+</ul>
+<hr />
+<p>To generate test cases only for knowledge objects, append the following marker to pytest command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">-m  splunk_searchtime_fields</span>
+</code></pre></div>
+<h2 id="test-scenarios">Test Scenarios<a class="headerlink" href="#test-scenarios" title="Permanent link">&para;</a></h2>
+<p><strong>1. Events should be present in source/sourcetype defined in props.conf stanza.</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">test_props_fields</span><span class="p">[</span><span class="o">&lt;</span><span class="n">stanza</span><span class="o">&gt;</span><span class="p">]</span>
+</code></pre></div>
+<p>Testcase verifies that there are events mapped with source/sourcetype.
+ Here &lt;stanza&gt; is the source/sourcetype that is defined in the stanza.</p>
+<p><strong>Workflow:</strong></p>
+<ul>
+<li>Plugin gets the list of defined sourcetypes by parsing props.conf</li>
+<li>For each sourcetype, plugin generates an SPL search query and asserts event_count  0.</li>
+</ul>
+<p><strong>2. Fields mentioned under source/sourcetype should be extracted</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">test_props_fields</span><span class="p">[</span><span class="o">&lt;</span><span class="n">stanza</span><span class="o">&gt;</span><span class="p">::</span><span class="n">field</span><span class="p">::</span><span class="o">&lt;</span><span class="n">fieldname</span><span class="o">&gt;</span><span class="p">]</span>
+</code></pre></div>
+<p>Testcase verifies that the field should be extracted in the source/sourcetype.
+ Here &lt;stanza&gt; is the source/sourcetype that is defined in the stanza and
+ &lt;fieldname&gt; is the name of a field which is extracted under source/sourcetype.</p>
+<p><strong>Workflow:</strong></p>
+<ul>
+<li>Plugin generates a list of fields extracted under the source/sourcetype by parsing the knowledge objects like Extract, Eval, Fieldalias etc.</li>
+<li>For each field, plugin generates an SPL search query and asserts event_count  0.</li>
+</ul>
+<p><strong>3. Negative scenarios for field values</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">test_props_fields_no_dash_not_empty</span><span class="p">[</span><span class="o">&lt;</span><span class="n">stanza</span><span class="o">&gt;</span><span class="p">::</span><span class="n">field</span><span class="p">::</span><span class="o">&lt;</span><span class="n">fieldname</span><span class="o">&gt;</span><span class="p">]</span>
+</code></pre></div>
+<p>Testcase verifies that the field should not have &ldquo;-&rdquo; (dash) or &ldquo;&rdquo; (empty) as a value.
+ Here &lt;stanza&gt; is the source/sourcetype that is defined in the stanza and
+ &lt;fieldname&gt; is name of field which is extracted under source/sourcetype.</p>
+<p><strong>Workflow:</strong></p>
+<ul>
+<li>Plugin generates a list of fields extracted under the source/sourcetype.</li>
+<li>For each field, plugin generates a search query to check if the field has invalid values like [&rdquo; &ldquo;, &ldquo;-&ldquo;].</li>
+<li>For each field, the event count should be 0.</li>
+</ul>
+<p><strong>4. All the fields mentioned in an EXTRACT, REPORT, LOOKUP should be extracted in a single event.</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">test_props_fields</span><span class="p">[</span><span class="o">&lt;</span><span class="n">stanza</span><span class="o">&gt;</span><span class="p">::</span><span class="n">EXTRACT</span><span class="o">-&lt;</span><span class="n">classname</span><span class="o">&gt;</span><span class="p">]</span>
+<span class="n">test_props_fields</span><span class="p">[</span><span class="o">&lt;</span><span class="n">stanza</span><span class="o">&gt;</span><span class="p">::</span><span class="n">LOOKUP</span><span class="o">-&lt;</span><span class="n">classname</span><span class="o">&gt;</span><span class="p">]</span>
+<span class="n">test_props_fields</span><span class="p">[</span><span class="o">&lt;</span><span class="n">stanza</span><span class="o">&gt;</span><span class="p">::</span><span class="n">REPORT</span><span class="o">-&lt;</span><span class="n">classname</span><span class="o">&gt;</span><span class="p">::</span><span class="o">&lt;</span><span class="n">transforms_stanza</span><span class="o">&gt;</span><span class="p">]</span>
+</code></pre></div>
+<p>All the fields mentioned in EXTRACT, REPORT or LOOKUP can be interdependent.
+ The test case verifies that the extractions are working fine and all the fields are
+ being extracted in a single event.
+ The reason for keeping the test is to identify the corner cases where the fields are being
+ extracted in several events but the extractions mentioned in EXTRACT, REPORT or LOOKUP is not
+ working due to invalid regex/lookup configuration.</p>
+<p><strong>Workflow:</strong></p>
+<ul>
+<li>While parsing the conf file when the plugin finds one of EXTRACT, REPORT, LOOKUP
+   the plugin gets the list of fields extracted and generates a test case.</li>
+<li>For all the fields in the test case it generates a single SPL search query including the stanza and asserts event_count &gt; 0.</li>
+<li>This verifies that all the fields are extracted in the same event.</li>
+</ul>
+<p><strong>5. Events should be present in each eventtype</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">test_eventtype</span><span class="p">[</span><span class="n">eventtype</span><span class="o">=&lt;</span><span class="n">eventtype</span><span class="o">&gt;</span><span class="p">]</span>
+</code></pre></div>
+<p>Test case verifies that there are events mapped with the eventtype.
+ Here eventtype is an eventtype mentioned in eventtypes.conf.</p>
+<p><strong>Workflow:</strong></p>
+<ul>
+<li>For each eventtype mentioned in eventtypes.conf plugin generates an SPL search query and asserts event_count &gt; 0 for the eventtype.</li>
+</ul>
+<p><strong>6. Tags defined in tags.conf should be applied to the events.</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">test_tags</span><span class="p">[</span><span class="o">&lt;</span><span class="n">tags_stanza</span><span class="o">&gt;</span><span class="p">::</span><span class="n">tag</span><span class="p">::</span><span class="o">&lt;</span><span class="n">tag</span><span class="o">&gt;</span><span class="p">]</span>
+</code></pre></div>
+<p>Test case verifies that the there are events mapped with the tag.
+ Here &lt;tag_stanza&gt; is a stanza mentioned in tags.conf and &lt;tag&gt; is an individual tag
+ applied to that stanza.</p>
+<p><strong>Workflow:</strong></p>
+<ul>
+<li>In tags.conf for each tag defined in the stanza, the plugin generates a test case.</li>
+<li>For each tag, the plugin generates a search query including the stanza and the tag and asserts event_count &gt; 0.</li>
+</ul>
+<p><strong>7. Search query should be present in each savedsearches.</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">test_savedsearches</span><span class="p">[</span><span class="o">&lt;</span><span class="n">savedsearch_stanza</span><span class="o">&gt;</span><span class="p">]</span>
+</code></pre></div>
+<p>Test case verifies that the search mentioned in savedsearch.conf generates valid search results.
+ Here savedsearch_stanza is a stanza mentioned in savedsearches.conf file.</p>
+<p><strong>Workflow:</strong></p>
+<ul>
+<li>In savedsearches.conf for each stanza, the plugin generates a test case.</li>
+<li>For each stanza mentioned in savedsearches.conf plugin generates an SPL search query and asserts event_count &gt; 0 for the savedsearch.</li>
+</ul>
+<h2 id="testcase-troubleshooting">Testcase Troubleshooting<a class="headerlink" href="#testcase-troubleshooting" title="Permanent link">&para;</a></h2>
+<p>In the case of test-case failure check if:</p>
+<ul>
+<li>The add-on to be tested is installed on the Splunk instance.</li>
+<li>Data is generated sufficiently for the add-on being tested.</li>
+<li>Data is generated sufficiently in the specific index, it is being tested.</li>
+<li>Splunk licence has not expired.</li>
+<li>Splunk instance is up and running.</li>
+<li>Splunk instance&rsquo;s management port is accessible from the test machine.</li>
+</ul>
+<p>If all the above conditions are satisfied, further analysis of the test is required.
+For every test case failure, there is a defined structure for the stack trace.</p>
+<div class="highlight"><pre><span></span><code>AssertionError: &lt;&lt;error_message&gt;&gt;
+    Search =  &lt;Query&gt;
+</code></pre></div>
+<p>Get the search query from the stack trace and execute it on the Splunk instance and verify which specific type of events are causing failure.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.indexes", "navigation.expand"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

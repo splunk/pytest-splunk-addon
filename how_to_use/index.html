@@ -1,0 +1,1435 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Splunk">
+      
+      
+        <link rel="canonical" href="https://splunk.github.io/pytest-splunk-addon/how_to_use/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../common_tests/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>How to use - Pytest Splunk Addon</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-to-use" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Pytest Splunk Addon" class="md-header__button md-logo" aria-label="Pytest Splunk Addon" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pytest Splunk Addon
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              How to use
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/splunk/pytest-splunk-addon" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pytest Splunk Addon
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Pytest Splunk Addon" class="md-nav__button md-logo" aria-label="Pytest Splunk Addon" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Pytest Splunk Addon
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/splunk/pytest-splunk-addon" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pytest Splunk Addon
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to use
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to use
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#test-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extending-pytest-splunk-addon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extending pytest-splunk-addon
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cim_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIM Compatibility Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cim_compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIM Compliance Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../field_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge Object Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_time_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index Time Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../requirement_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirement Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sample_generator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Generator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/api_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/addon_parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AddonParser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/cim_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CimTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/fields_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FieldsTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/index_time_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IndexTimeTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/app_test_generator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppTestGenerator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/sample_generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataGenerator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/event_ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EventIngestor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/cim_compliance_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CimComplianceReport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshoot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#test-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extending-pytest-splunk-addon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extending pytest-splunk-addon
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="how-to-use">How To Use<a class="headerlink" href="#how-to-use" title="Permanent link">&para;</a></h1>
+<ol>
+<li>Create a test file in the tests folder</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pytest_splunk_addon.standard_lib.addon_basic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Basic</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Test_App</span><span class="p">(</span><span class="n">Basic</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">empty_method</span><span class="p">():</span>
+        <span class="k">pass</span>
+</code></pre></div>
+<ol start="2">
+<li>Create sample files and pytest-splunk-addon-data.conf (Can be skipped if the events are already present in the splunk environment)</li>
+</ol>
+<ul>
+<li>For detailed information on how to create samples and pytest-splunk-addon-data.conf, please refer <a href="../sample_generator/">here</a>.</li>
+</ul>
+<h2 id="test-execution">Test Execution<a class="headerlink" href="#test-execution" title="Permanent link">&para;</a></h2>
+<p>There are three ways to execute the tests:</p>
+<p><strong>1. Running tests with an external Splunk instance</strong></p>
+<p>Run pytest with the add-on, in an external Splunk deployment</p>
+<div class="highlight"><pre><span></span><code>pytest<span class="w"> </span>--splunk-type<span class="o">=</span>external<span class="w"> </span>--splunk-app<span class="o">=</span>&lt;path-to-addon-package&gt;<span class="w"> </span>--splunk-data-generator<span class="o">=</span>&lt;path<span class="w"> </span>to<span class="w"> </span>pytest-splunk-addon-data.conf<span class="w"> </span>file&gt;<span class="w"> </span>--splunk-host<span class="o">=</span>&lt;hostname&gt;<span class="w"> </span>--splunk-port<span class="o">=</span>&lt;splunk-management-port&gt;<span class="w"> </span>--splunk-user<span class="o">=</span>&lt;username&gt;<span class="w"> </span>--splunk-password<span class="o">=</span>&lt;password&gt;<span class="w"> </span>--splunk-hec-token<span class="o">=</span>&lt;splunk_hec_token&gt;
+</code></pre></div>
+<p><strong>2. Running tests with docker splunk</strong></p>
+<p>Create a Dockerfile.splunk file
+<div class="highlight"><pre><span></span><code> ARG SPLUNK_VERSION=latest
+ FROM splunk/splunk:$SPLUNK_VERSION
+ ARG SPLUNK_VERSION=latest
+ ARG SPLUNK_APP_ID=TA_UNKNOWN
+ ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
+ RUN echo Splunk VERSION=$SPLUNK_VERSION
+ COPY $SPLUNK_APP_PACKAGE /opt/splunk/etc/apps/$SPLUNK_APP_ID
+</code></pre></div></p>
+<p>Create a Dockerfile.uf file
+ <div class="highlight"><pre><span></span><code>ARG SPLUNK_VERSION=latest
+FROM splunk/universalforwarder:$SPLUNK_VERSION
+ARG SPLUNK_VERSION=latest
+ARG SPLUNK_APP_ID=TA_UNKNOWN
+ARG SPLUNK_APP_PACKAGE=$SPLUNK_APP_PACKAGE
+COPY $SPLUNK_APP_PACKAGE /opt/splunkforwarder/etc/apps/$SPLUNK_APP_ID
+</code></pre></div></p>
+<details>
+<summary>Create docker-compose.yml</summary>
+
+<div class="highlight"><pre><span></span><code>version: &quot;3.7&quot;
+services:
+
+  sc4s:
+    image: ghcr.io/splunk/splunk-connect-for-syslog/container2:latest
+    hostname: sc4s
+    #When this is enabled test_common will fail
+    #    command: -det
+    ports:
+      - &quot;514&quot;
+      - &quot;601&quot;
+      - &quot;514/udp&quot;
+      - &quot;5000-5050&quot;
+      - &quot;5000-5050/udp&quot;
+      - &quot;6514&quot;
+    stdin_open: true
+    tty: true
+    links:
+      - splunk
+    environment:
+      - SPLUNK_HEC_URL=https://splunk:8088
+      - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
+      - SC4S_SOURCE_TLS_ENABLE=no
+      - SC4S_DEST_SPLUNK_HEC_TLS_VERIFY=no
+      - SC4S_LISTEN_JUNIPER_NETSCREEN_TCP_PORT=5000
+      - SC4S_LISTEN_CISCO_ASA_TCP_PORT=5001
+      - SC4S_LISTEN_CISCO_IOS_TCP_PORT=5002
+      - SC4S_LISTEN_CISCO_MERAKI_TCP_PORT=5003
+      - SC4S_LISTEN_JUNIPER_IDP_TCP_PORT=5004
+      - SC4S_LISTEN_PALOALTO_PANOS_TCP_PORT=5005
+      - SC4S_LISTEN_PFSENSE_TCP_PORT=5006
+      - SC4S_LISTEN_CISCO_ASA_UDP_PORT=5001
+      - SC4S_LISTEN_CISCO_IOS_UDP_PORT=5002
+      - SC4S_LISTEN_CISCO_MERAKI_UDP_PORT=5003
+      - SC4S_LISTEN_JUNIPER_IDP_UDP_PORT=5004
+      - SC4S_LISTEN_PALOALTO_PANOS_UDP_PORT=5005
+      - SC4S_LISTEN_PFSENSE_UDP_PORT=5006
+      - SC4S_ARCHIVE_GLOBAL=no
+      - SC4S_LISTEN_CHECKPOINT_SPLUNK_NOISE_CONTROL=yes
+
+  splunk:
+    build:
+      context: .
+      dockerfile: Dockerfile.splunk
+      args:
+        SPLUNK_APP_ID: ${SPLUNK_APP_ID}
+        SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
+        SPLUNK_VERSION: ${SPLUNK_VERSION}
+    platform: linux/amd64
+    ports:
+      - &quot;8000&quot;
+      - &quot;8088&quot;
+      - &quot;8089&quot;
+      - &quot;9997&quot;
+    environment:
+      - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
+      - TEST_SC4S_ACTIVATE_EXAMPLES=yes
+
+  uf:
+    build:
+      context: .
+      dockerfile: Dockerfile.uf
+      args:
+        SPLUNK_APP_ID: ${SPLUNK_APP_ID}
+        SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
+        SPLUNK_VERSION: ${SPLUNK_VERSION}
+    platform: linux/amd64
+    hostname: uf
+    ports:
+      - &quot;9997&quot;
+      - &quot;8089&quot;
+    links:
+      - splunk
+    environment:
+      - SPLUNK_PASSWORD=Chang3d!
+      - SPLUNK_START_ARGS=--accept-license
+    volumes:
+      - ${CURRENT_DIR}/uf_files:${CURRENT_DIR}/uf_files
+</code></pre></div>
+</details>
+
+<details id="conftest">
+<summary>Create conftest.py file</summary>
+
+<div class="highlight"><pre><span></span><code>import os
+import pytest
+
+pytest_plugins = &quot;pytester&quot;
+
+
+def pytest_configure(config):
+    config.addinivalue_line(&quot;markers&quot;, &quot;external: Test search time only&quot;)
+    config.addinivalue_line(&quot;markers&quot;, &quot;docker: Test search time only&quot;)
+    config.addinivalue_line(&quot;markers&quot;, &quot;doc: Test Sphinx docs&quot;)
+
+
+@pytest.fixture(scope=&quot;session&quot;)
+def docker_compose_files(request):
+    &quot;&quot;&quot;
+    Get an absolute path to the  `docker-compose.yml` file. Override this
+    fixture in your tests if you need a custom location.
+
+    Returns:
+        string: the path of the `docker-compose.yml` file
+
+    &quot;&quot;&quot;
+    docker_compose_path = os.path.join(
+        str(request.config.invocation_dir), &quot;docker-compose.yml&quot;
+    )
+    # LOGGER.info(&quot;docker-compose path: %s&quot;, docker_compose_path)
+
+    return [docker_compose_path]
+
+
+@pytest.fixture(scope=&quot;session&quot;)
+def docker_services_project_name(pytestconfig):
+    rootdir = str(pytestconfig.rootdir)
+    docker_compose_v2_rootdir = rootdir.lower().replace(&quot;/&quot;, &quot;&quot;)
+    return f&quot;pytest{docker_compose_v2_rootdir}&quot;
+</code></pre></div>
+</details>
+
+<p>Run pytest with the add-on, using the following command:</p>
+<div class="highlight"><pre><span></span><code>pytest<span class="w"> </span>--splunk-type<span class="o">=</span>docker<span class="w"> </span>--splunk-data-generator<span class="o">=</span>&lt;path<span class="w"> </span>to<span class="w"> </span>pytest-splunk-addon-data.conf<span class="w"> </span>file&gt;
+</code></pre></div>
+<p>The tool assumes the Splunk Add-on is located in a folder &ldquo;package&rdquo; in the project root.</p>
+<blockquote>
+<p><strong><em>NOTE:</em></strong>
+    - If live events are available in external Splunk instance or docker splunk, then SA-Eventgen is not required. This is applicable only till v1.2.0 of pytest-splunk-addon.
+    - From v1.3.0 pytest-splunk-addon ingests data independently which is used for execution of all the test cases.</p>
+</blockquote>
+<p><strong>3. Running tests with an external forwarder and Splunk instance</strong></p>
+<ul>
+<li>Run pytest with the add-on, using an external forwarder sending events to another Splunk deployment where a user can search for received events.</li>
+<li>Forwarding &amp; receiving configuration in &ndash;splunk-forwarder-host and &ndash;splunk-host must be done before executing the tests.</li>
+<li>User can validate the forwarding using makeresults command.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="p">|</span><span class="w"> </span>makeresults<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nb">eval</span><span class="w"> </span><span class="nv">_raw</span><span class="o">=</span><span class="s2">&quot;sample event&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>collect<span class="w"> </span><span class="nv">index</span><span class="o">=</span>main,<span class="w"> </span><span class="nv">source</span><span class="o">=</span>test_source,<span class="w"> </span><span class="nv">sourcetype</span><span class="o">=</span>test_src_type
+</code></pre></div>
+<ul>
+<li>Sample pytest command with the required params</li>
+</ul>
+<div class="highlight"><pre><span></span><code>pytest<span class="w"> </span>--splunk-type<span class="o">=</span>external<span class="w">                                   </span><span class="c1"># Whether you want to run the addon with docker or an external Splunk instance</span>
+<span class="w">    </span>--splunk-app<span class="o">=</span>&lt;path-to-addon-package&gt;<span class="w">                        </span><span class="c1"># Path to Splunk app package. The package should have the configuration files in the default folder.</span>
+<span class="w">    </span>--splunk-host<span class="o">=</span>&lt;hostname&gt;<span class="w">                                    </span><span class="c1"># Receiver Splunk instance where events are searchable.</span>
+<span class="w">    </span>--splunk-port<span class="o">=</span>&lt;splunk_management_port&gt;<span class="w">                      </span><span class="c1"># default 8089</span>
+<span class="w">    </span>--splunk-user<span class="o">=</span>&lt;username&gt;<span class="w">                                    </span><span class="c1"># default admin</span>
+<span class="w">    </span>--splunk-password<span class="o">=</span>&lt;password&gt;<span class="w">                                </span><span class="c1"># default Chang3d!</span>
+<span class="w">    </span>--splunk-forwarder-host<span class="o">=</span>&lt;splunk_forwarder_host&gt;<span class="w">             </span><span class="c1"># Splunk instance where forwarding to receiver instance is configured.</span>
+<span class="w">    </span>--splunk-hec-port<span class="o">=</span>&lt;splunk_forwarder_hec_port&gt;<span class="w">               </span><span class="c1"># HEC port of the forwarder instance.</span>
+<span class="w">    </span>--splunk-hec-token<span class="o">=</span>&lt;splunk_forwarder_hec_token&gt;<span class="w">             </span><span class="c1"># HEC token configured in forwarder instance.</span>
+<span class="w">    </span>--splunk-data-generator<span class="o">=</span>&lt;pytest_splunk_addon_conf_path&gt;<span class="w">     </span><span class="c1"># Path to pytest-splunk-addon-data.conf</span>
+</code></pre></div>
+<blockquote>
+<p><strong><em>NOTE:</em></strong> 
+    - Forwarder params are supported only for external splunk-type.
+    - If Forwarder params are not provided It will ingest and search in the same Splunk deployment provided in &ndash;splunk-host param.</p>
+</blockquote>
+<hr />
+<p>There are 4 types of tests included in pytest-splunk-addon are:</p>
+<ol>
+<li>
+<p>To generate test cases only for knowledge objects, append the following marker to pytest command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">-m  splunk_searchtime_fields</span>
+</code></pre></div>
+</li>
+<li>
+<p>To generate test cases only for CIM compatibility, append the following marker to pytest command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">-m  splunk_searchtime_cim</span>
+</code></pre></div>
+</li>
+<li>
+<p>To generate test cases only for index time properties, append the following marker to pytest command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">-m  splunk_indextime --splunk-data-generator=&lt;Path to the conf file&gt;</span>
+</code></pre></div>
+<p>For detailed information on index time test execution, please refer <a href="../index_time_tests/">here</a>.</p>
+</li>
+<li>
+<p>To generate only requirement tests, append the folowing marker to pytest command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">-m splunk_requirements</span>
+</code></pre></div>
+</li>
+</ol>
+<ul>
+<li>
+<p>To execute all the searchtime tests together, i.e both Knowledge objects and CIM compatibility tests,
+   append the following marker to the pytest command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">-m  &quot;splunk_searchtime_fields or splunk_searchtime_cim&quot;</span>
+</code></pre></div>
+</li>
+</ul>
+<hr />
+<p>The following optional arguments are available to modify the default settings in the test cases:</p>
+<ol>
+<li>
+<p>To search for events in a specific index, user can provide following additional arguments:</p>
+<div class="highlight"><pre><span></span><code><span class="go">--search-index=&lt;index&gt;</span>
+
+<span class="go">    Splunk index of which the events will be searched while testing. Default value: &quot;*, _internal&quot;.</span>
+</code></pre></div>
+</li>
+<li>
+<p>To increase/decrease time interval and retries for flaky tests, user can provide following additional arguments:</p>
+<div class="highlight"><pre><span></span><code><span class="go">--search-retry=&lt;retry&gt;</span>
+
+<span class="go">    Number of retries to make if there are no events found while searching in the Splunk instance. Default value: 0.</span>
+
+<span class="go">--search-interval=&lt;interval&gt;</span>
+
+<span class="go">    Time interval to wait before retrying the search query.Default value: 0.</span>
+</code></pre></div>
+</li>
+<li>
+<p>To discard the eventlog generation in the working directory, user can provide following additional argument along with pytest command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">--discard-eventlogs</span>
+</code></pre></div>
+</li>
+<li>
+<p>To enable the Splunk Index cleanup performed before the test run, user can provide argument along with pytest command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">--splunk-cleanup</span>
+</code></pre></div>
+</li>
+<li>
+<p>A new functionality is introduced in pytest-splunk-addon to suppress unwanted errors in <strong>test_splunk_internal_errors</strong>.</p>
+<ul>
+<li><strong>Splunk related errors</strong>: There is a file maintained in pytest-splunk-addon <a href="https://github.com/splunk/pytest-splunk-addon/blob/develop/pytest_splunk_addon/.ignore_splunk_internal_errors">&ldquo;.ignore_splunk_internal_errors&rdquo;</a> , user can add the string in the file and events containing these strings will be suppressed by the search query.</li>
+<li><strong>Addon related errors:</strong> To suppress these user can create a file with the list of strings and provide the file in the <strong>&ndash;ignore-addon-errors</strong> param while test execution.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="go">--ignore-addon-errors=&lt;path_to_file&gt;</span>
+</code></pre></div>
+<ul>
+<li>Sample strings in the file.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="go">SearchMessages - orig_component=&quot;SearchStatusEnforcer&quot;</span>
+<span class="go">message_key=&quot;&quot; message=NOT requires an argument</span>
+</code></pre></div>
+<blockquote>
+<p><strong><em>NOTE:</em></strong> <em>Each line in the file will be considered a separate string to be ignored in the events.</em></p>
+</blockquote>
+<ul>
+<li>Sample Event which will be ignored by the search query.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="go">11-04-2020 13:26:01.026 +0000 ERROR SearchMessages - orig_component=&quot;SearchStatusEnforcer&quot; app=&quot;search&quot; sid=&quot;ta_1604496283.232&quot; peer_name=&quot;&quot; message_key=&quot;&quot; message=NOT requires an argument</span>
+</code></pre></div>
+</li>
+<li>
+<p>Options to separate event generation, event ingestion and test execution stage
+    :</p>
+<div class="highlight"><pre><span></span><code><span class="go">--tokenized-event-source=new|store_new|pregenerated</span>
+</code></pre></div>
+<ul>
+<li>new: Generate new events</li>
+<li>store_new: Generate new events and store it in file</li>
+<li>pregenerated: Use pregenerated events from file</li>
+<li>Default value for this parameter is <em>store_new</em></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="go">--event-file-path=&lt;path_to_file&gt;</span>
+</code></pre></div>
+<ul>
+<li>Path to tokenized events file</li>
+<li>If –tokenized-event-source=store_new, then it will store tokenized event file on given path</li>
+<li>If –tokenized-event-source=pregenerated, then it will fetch tokenized events from given path</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="go">--ingest-events=true|false</span>
+</code></pre></div>
+<ul>
+<li>Select false to disable event ingestion on splunk instance, default value is true</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="go">--execute-test=true|false</span>
+</code></pre></div>
+<ul>
+<li>Select false to disable test execution, default value is true</li>
+</ul>
+</li>
+</ol>
+<h2 id="extending-pytest-splunk-addon">Extending pytest-splunk-addon<a class="headerlink" href="#extending-pytest-splunk-addon" title="Permanent link">&para;</a></h2>
+<p><strong>1. Test cases taking too long to execute</strong></p>
+<p>Use <a href="https://pypi.org/project/pytest-xdist/">pytest-xdist</a> to execute test cases across multiple processes.</p>
+<p>How to use pytest-xdist :</p>
+<ul>
+<li>pip install pytest-xdist</li>
+<li>add <code>-n {number-of-processes}</code> to the pytest command</li>
+</ul>
+<p>This will create the mentioned amount of processes and divide the test cases amongst them.</p>
+<blockquote>
+<p><strong><em>NOTE:</em></strong> Make sure there is enough data on the Splunk instance before running tests with pytest-xdist because faster the execution, lesser the time to generate enough data..</p>
+</blockquote>
+<p><strong>2. Want flaky/known failures to not fail the execution</strong></p>
+<p>Use <a href="https://pypi.org/project/pytest-expect/">pytest-expect</a> to mark a list of test cases as flaky/known failures which will not affect the final result of testing.</p>
+<p>How to use pytest-expect:</p>
+<ul>
+<li>pip install pytest-expect</li>
+<li>Add <code>--update-xfail</code> to the pytest command to generate a <code>.pytest.expect</code> file, which is a list of failures while execution.</li>
+<li>Make sure that the <code>.pytest.expect</code> file is in the root directory from where the test cases are executed.</li>
+<li>When the test cases are executed the next time, all the tests in the <code>.pytest.expect</code> file will be marked as <code>xfail</code>.</li>
+<li>If there is a custom file containing the list of failed test cases, it can be used by adding <code>--xfail-file custom_file</code> to the pytest command.</li>
+</ul>
+<blockquote>
+<p><strong><em>NOTE:</em></strong> Test cases should be added to .pytest.expect only after proper validation</p>
+</blockquote>
+<p><strong>3. Setup test environment before executing the test cases</strong></p>
+<p>If any setup is required in the Splunk/test environment before executing the test cases, implement a fixture in <a href="#conftest">conftest.py</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">&quot;session&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">splunk_setup</span><span class="p">(</span><span class="n">splunk</span><span class="p">):</span>
+    <span class="c1"># Will be executed before test execution starts</span>
+    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+</code></pre></div>
+<p>The setup fixture opens many possibilities to setup the testing environment / to configure Splunk. For example,</p>
+<ul>
+<li>Enable Saved-searches</li>
+<li>Configure the inputs of an Add-on.</li>
+<li>Wait for an lookup to be populated.</li>
+<li>Restart Splunk.</li>
+</ul>
+<p>The following snippet shows an example in which the setup fixture is used to enable a saved search.</p>
+<details>
+<summary>Example conftest file</summary>
+
+<div class="highlight"><pre><span></span><code>from splunklib import binding, client, results
+
+class TASetup(object):
+    def __init__(self, splunk):
+        self.splunk = splunk
+
+    def wait_for_lookup(self, lookup):
+        splunk_client = client.connect(**self.splunk)
+        for _ in range(60):
+            job_result = splunk_client.jobs.oneshot(f&quot; | inputlookup {lookup}&quot;)
+            for _ in results.ResultsReader(job_result):
+                return
+            time.sleep(1)
+
+    def enable_savedsearch(self, addon_name, savedsearch):
+        splunk_binding = binding.connect(**self.splunk)
+        splunk_binding.post(
+            f&quot;/servicesNS/nobody/{addon_name}/saved/searches/{savedsearch}/enable&quot;,
+            data=&quot;&quot;,
+        )
+
+
+@pytest.fixture(scope=&quot;session&quot;)
+def splunk_setup(splunk):
+    ta_setup = TASetup(splunk)
+    ta_setup.enable_savedsearch(&quot;TA_SavedSearch&quot;, &quot;ta_saved_search_one&quot;)
+    ta_setup.wait_for_lookup(&quot;ta_saved_search_lookup&quot;)
+</code></pre></div>
+</details>
+
+<p><strong>4. Check mapping of an add-on with custom data models</strong></p>
+<p>pytest-splunk-addon is capable of testing mapping of an add-on with custom data models.</p>
+<p>How can this be achieved :</p>
+<ul>
+<li>Make json representation of the data models, which satisfies this <a href="https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/cim_tests/DatamodelSchema.json">DataModelSchema</a>.</li>
+<li>Provide the path to the directory having all the data models by adding <code>--splunk_dm_path path_to_dir</code> to the pytest command</li>
+<li>The test cases will now be generated for the data models provided to the plugin and not for the <a href="https://github.com/splunk/pytest-splunk-addon/tree/main/pytest_splunk_addon/data_models">default data models</a>.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.indexes", "navigation.expand"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1367 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Splunk">
+      
+      
+        <link rel="canonical" href="https://splunk.github.io/pytest-splunk-addon/index_time_tests/">
+      
+      
+        <link rel="prev" href="../field_tests/">
+      
+      
+        <link rel="next" href="../requirement_tests/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Index Time Tests - Pytest Splunk Addon</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#index-time-tests" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Pytest Splunk Addon" class="md-header__button md-logo" aria-label="Pytest Splunk Addon" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pytest Splunk Addon
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Index Time Tests
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/splunk/pytest-splunk-addon" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pytest Splunk Addon
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Pytest Splunk Addon" class="md-nav__button md-logo" aria-label="Pytest Splunk Addon" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Pytest Splunk Addon
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/splunk/pytest-splunk-addon" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pytest Splunk Addon
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how_to_use/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to use
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cim_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIM Compatibility Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cim_compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIM Compliance Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../field_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge Object Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index Time Tests
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index Time Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Scenarios
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testcase-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testcase Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FAQ
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../requirement_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirement Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sample_generator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Generator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/api_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/addon_parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AddonParser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/cim_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CimTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/fields_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FieldsTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/index_time_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IndexTimeTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/app_test_generator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppTestGenerator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/sample_generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataGenerator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/event_ingestion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EventIngestor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/cim_compliance_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CimComplianceReport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshoot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Scenarios
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testcase-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testcase Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FAQ
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="index-time-tests">Index Time Tests<a class="headerlink" href="#index-time-tests" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>The tests are written with a purpose of testing the proper functioning of the index-time properties of the add-on.</p>
+</li>
+<li>
+<p>Index time properties are applied on the events when they are ingested into the Splunk instance.</p>
+</li>
+<li>
+<p>The index time properties which are tested are as follows:</p>
+<ol>
+<li>Key Fields Extraction</li>
+<li>Timestamp (_time)</li>
+<li>LINE_BREAKER</li>
+</ol>
+</li>
+</ul>
+<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>pytest-splunk-addon-data.conf</code> file which contains all the required data
+  executing the tests. The conf file should follow the specifications as mentioned <a href="../sample_generator/#pytest-splunk-addon-dataconfspec">here</a>.</li>
+</ul>
+<hr />
+<p>To generate test cases only for index time properties, append the following marker to pytest command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">-m  splunk_indextime --splunk-data-generator=&lt;Path to the conf file&gt;</span>
+</code></pre></div>
+<blockquote>
+<p><strong><em>NOTE:</em></strong> &ndash;splunk-data-generator should contain the path to <em>pytest-splunk-addon-data.conf</em>,
+ as the test cases will not execute on <em>eventgen.conf</em> file.</p>
+</blockquote>
+<h2 id="test-scenarios">Test Scenarios<a class="headerlink" href="#test-scenarios" title="Permanent link">&para;</a></h2>
+<p><strong>1. Test case for key fields extraction:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">test_indextime_key_fields</span><span class="p">[</span><span class="o">&lt;</span><span class="n">sourcetype</span><span class="o">&gt;</span><span class="p">::</span><span class="o">&lt;</span><span class="n">host_name</span><span class="o">&gt;</span><span class="p">]</span>
+</code></pre></div>
+<ul>
+<li>
+<p>Test case verifies if all the key fields are extracted properly,
+   as mentioned in the <code>pytest-splunk-addon-data.conf</code> file.</p>
+</li>
+<li>
+<p>The key fields which are checked are as follows:</p>
+<ul>
+<li>src</li>
+<li>src_port</li>
+<li>dest</li>
+<li>dest_port</li>
+<li>dvc</li>
+<li>host</li>
+<li>user</li>
+<li>url</li>
+</ul>
+</li>
+<li>
+<p>This test case will not be generated if there are no key fields specified for the event.</p>
+</li>
+<li>Key field can be assign to token using field property. <code>i.e token.n.field = &lt;KEY_FIELD&gt;</code></li>
+</ul>
+<h4 id="testcase-assertions">Testcase Assertions:<a class="headerlink" href="#testcase-assertions" title="Permanent link">&para;</a></h4>
+<ul>
+<li>There should be at least 1 event with the sourcetype and host.</li>
+<li>The values of the key fields obtained from the event
+   must match with the values of the key fields which was used in generating and ingesting the event.</li>
+</ul>
+<p><strong>Workflow:</strong></p>
+<ul>
+<li>
+<p>To generate the test case, the following properties will be required:</p>
+<ul>
+<li>sourcetype and host in the event.</li>
+<li>Key fields in the event for which the test case is executed.</li>
+</ul>
+</li>
+<li>
+<p>Generates an SPL query according to the properties mentioned above.</p>
+</li>
+<li>
+<p>Execute the SPL query in a Splunk instance.</p>
+</li>
+<li>
+<p>Assert the test case results as mentioned in <a href="#testcase-assertions">testcase assertions</a>.</p>
+</li>
+</ul>
+<p><strong>2. Test case for _time property:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">test_indextime_time</span><span class="p">[</span><span class="o">&lt;</span><span class="n">sourcetype</span><span class="o">&gt;</span><span class="p">::</span><span class="o">&lt;</span><span class="n">host_name</span><span class="o">&gt;</span><span class="p">]</span>
+</code></pre></div>
+<ul>
+<li>Test case verifies if the timestamp for the event is assigned properly.</li>
+<li>The timestamp is assigned to the _time field which is validated by the test case.</li>
+<li>This test case will be generated if timestamp_type = event in stanza.</li>
+<li>_time field can be assign to token using field property. i.e <code>token.n.field = _time</code></li>
+</ul>
+<p>Testcase assertions:</p>
+<ul>
+<li>There should be at least 1 event with the sourcetype and host.</li>
+<li>There should be at least 1 token with field _time in stanza.</li>
+<li>One event should have only one token with token.n.field = _time.</li>
+<li>Every event should have token with token.n.field = _time.</li>
+<li>The values of the _time fields obtained from the event
+   must match with the values of the time values which was used in generating and ingesting the event.</li>
+</ul>
+<p><strong>Workflow:</strong></p>
+<ul>
+<li>Generates an SPL query using sourcetype and host from the event.</li>
+<li>Execute the SPL query in a Splunk instance.</li>
+<li>The value of _time obtained from the search query is matched
+   with the _time value assigned to the event before ingesting it.</li>
+</ul>
+<blockquote>
+<p><strong><em>NOTE:</em></strong> The test case for _time field will not be generated if <code>timestamp_type = plugin</code> in
+ pytest-splunk-addon-data.conf</p>
+</blockquote>
+<p><strong>3. Test case for line-breaker property:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">test_indextime_line_breaker</span><span class="p">[</span><span class="o">&lt;</span><span class="n">sourcetype</span><span class="o">&gt;</span><span class="p">::</span><span class="o">&lt;</span><span class="n">host_name</span><span class="o">&gt;</span><span class="p">]</span>
+</code></pre></div>
+<ul>
+<li>Test case verifies if the LINE_BREAKER property used in props.conf works properly.</li>
+<li>If sample_count is not provided in pytest-splunk-addon-data.conf, it will take
+   sample_count = 1.</li>
+</ul>
+<p>Testcase assertions:</p>
+<ul>
+<li>Number of events for particular sourcetype and host should match with value of
+   <code>expected_event_count</code> which is calculated by pytest-splunk-addon from the <code>sample_count</code>
+   parameter provided in the pytest-splunk-addon-data.conf.</li>
+</ul>
+<p><strong>Workflow:</strong></p>
+<ul>
+<li>Generates an SPL query using sourcetype and host from the event.</li>
+<li>Execute the SPL query in a Splunk instance.</li>
+<li>The number of results obtained from the search query is matched with the
+   <em>expected_event_count</em> value, which is calculated by the plugin.</li>
+</ul>
+<h2 id="testcase-troubleshooting">Testcase Troubleshooting<a class="headerlink" href="#testcase-troubleshooting" title="Permanent link">&para;</a></h2>
+<p>In the case test-case failure check if:</p>
+<ul>
+<li>The add-on to be tested is installed on the Splunk instance.</li>
+<li>Data is generated for the addon being tested.</li>
+<li>Splunk licence has not expired.</li>
+<li>Splunk instance is up and running.</li>
+<li>Splunk instance&rsquo;s management port is accessible from the test machine.</li>
+</ul>
+<p>If all the above conditions are satisfied, further analysis of the test is required.
+For every test case failure, there is a defined structure for the stack trace.</p>
+<div class="highlight"><pre><span></span><code>AssertionError: &lt;&lt;error_message&gt;&gt;
+    Search =  &lt;Query&gt;
+</code></pre></div>
+<p>Get the search query from the stack trace and execute it on the Splunk instance and verify which specific type of events are causing failure.</p>
+<h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>What is the source of data used while testing with pytest-splunk-addon 1.3.0 and above?</p>
+<ul>
+<li>pytest-splunk-addon relies on samples available in addon folder under path provided <code>--splunk-app</code> or <code>--splunk-data-generator</code> options.</li>
+</ul>
+</li>
+<li>
+<p>When do I assign timestamp_type = event to test the time extraction (_time) for a stanza?</p>
+<ul>
+<li>
+<p>When the Splunk assigns _time value from a timestamp present in event based on props configurations, you should assign <code>timestamp_type=event</code> for that sample stanza.</p>
+</li>
+<li>
+<p>Example :
+    : For this sample, Splunk assigns the value <code>2020-06-23T00:00:00.000Z</code> to <code>_time</code>.</p>
+<div class="highlight"><pre><span></span><code>2020-06-23T00:00:00.000Z test_sample_1 test_static=##token_static_field## . . .
+</code></pre></div>
+<p>In this scenario the value <code>2020-06-23T00:00:00.000Z</code> should be tokenized, stanza should have <code>timestamp_type=event</code> and the token should also have <code>token.0.field = _time</code> as shown below:</p>
+<div class="highlight"><pre><span></span><code>token.0.token = (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+)
+token.0.replacementType = timestamp
+token.0.replacement = %Y-%m-%dT%H:%M:%S
+token.0.field = _time
+</code></pre></div>
+</li>
+</ul>
+</li>
+<li>
+<p>When do I assign timestamp_type = plugin to test the time extraction (_time) for a stanza?</p>
+<ul>
+<li>When there is no timestamp available in event or the props configurations are written to have the Splunk default timestamp assigned instead timestamp present in event, you should assign <code>timestamp_type=plugin</code> for that sample stanza.</li>
+<li>No _time test generates for the sample stanza when <code>timestamp_type = plugin</code>.</li>
+<li>Example:</li>
+<li>
+<p>For this sample, Splunk assigns the default time value to <code>_time</code>.</p>
+<div class="highlight"><pre><span></span><code>test_sample_1 test_static=##token_static_field## src=##token_src_ipv4## . . .
+</code></pre></div>
+<p>In this scenario, the stanza should have <code>timestamp_type=plugin</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>When do I assign host_type = plugin for a sample stanza?</p>
+<ul>
+<li>When there are no configurations written in props to override the host value in event and Splunk default host value is assigned for host field instead of a value present in event, you should assign <code>host_type=plugin</code> for that sample stanza.</li>
+</ul>
+</li>
+<li>
+<p>When do I assign host_type = event for a sample stanza?</p>
+<ul>
+<li>When there are some configurations written in props to override the host value for an event you should assign <code>host_type=event</code> for that sample stanza.</li>
+<li>Example:
+        : For this sample, Splunk assigns the value sample_host to host based on the props configurations present in addon</li>
+</ul>
+<div class="highlight"><pre><span></span><code>    test_modinput_1 host=sample_host static_value_2=##static_value_2## . . .
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>    test_modinput_1 host=sample_host static_value_2=##static_value_2## . . .
+</code></pre></div>
+<p>In this scenario the value &ldquo;sample_host&rdquo; should be tokenized, stanza should have <code>host_type=event</code> and the token should also have <code>token.0.field = host</code> as shown below:</p>
+</li>
+</ol>
+<p><code>token.0.token = ##host_value##
+         token.0.replacementType = random
+         token.0.replacement = host["host"]
+         token.0.field = host</code></p>
+<ol start="6">
+<li>
+<p>Can I test any field present in my event as Key Field in Key Fields tests?</p>
+<ul>
+<li>No, Key Fields are defined in plugin and only below fields can be validated as part of Key Field tests.</li>
+<li>src</li>
+<li>src_port</li>
+<li>dest</li>
+<li>dest_port</li>
+<li>dvc</li>
+<li>host</li>
+<li>user</li>
+<li>url</li>
+</ul>
+</li>
+<li>
+<p>What if I don&rsquo;t assign any field as key_field in a particular stanza even if its present in props?</p>
+<ul>
+<li>No test would generate to test Key Fields for that particular stanza and thus won&rsquo;t be correctly tested. </li>
+</ul>
+</li>
+<li>
+<p>When do I assign token.&lt;n&gt;.field = &lt;field_name&gt; to test the Key Fields for an event?</p>
+<ul>
+<li>When there props configurations written in props to extract any of the field present in Key Fields list, you should add <code>token.&lt;n&gt;.field = &lt;field_name&gt;</code> to the token for that field value.</li>
+<li>
+<p>Example:
+   : For this sample, there is report written in props that extracts <code>127.0.0.1</code> as <code>src</code>,</p>
+<div class="highlight"><pre><span></span><code>2020-06-23T00:00:00.000Z test_sample_1 127.0.0.1
+</code></pre></div>
+<p>In this scenario the value <code>127.0.0.1</code> should be tokenized and the token should also have <code>token.0.field = src</code> as shown below:</p>
+<div class="highlight"><pre><span></span><code>token.0.token = ##src_value##
+token.0.replacementType = random
+token.0.replacement = src[&quot;ipv4&quot;]
+token.0.field = src
+</code></pre></div>
+</li>
+</ul>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.indexes", "navigation.expand"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

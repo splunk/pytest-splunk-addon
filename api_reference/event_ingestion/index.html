@@ -1,0 +1,3761 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Splunk">
+      
+      
+        <link rel="canonical" href="https://splunk.github.io/pytest-splunk-addon/api_reference/event_ingestion/">
+      
+      
+        <link rel="prev" href="../sample_generation/">
+      
+      
+        <link rel="next" href="../cim_compliance_report/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>EventIngestor - Pytest Splunk Addon</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#eventingestor" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Pytest Splunk Addon" class="md-header__button md-logo" aria-label="Pytest Splunk Addon" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pytest Splunk Addon
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              EventIngestor
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/splunk/pytest-splunk-addon" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pytest Splunk Addon
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Pytest Splunk Addon" class="md-nav__button md-logo" aria-label="Pytest Splunk Addon" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Pytest Splunk Addon
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/splunk/pytest-splunk-addon" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pytest Splunk Addon
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how_to_use/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to use
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cim_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIM Compatibility Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cim_compliance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CIM Compliance Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../field_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge Object Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index_time_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index Time Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../requirement_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirement Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sample_generator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Generator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../addon_parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AddonParser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cim_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CimTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fields_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FieldsTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_time_tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IndexTimeTests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../app_test_generator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppTestGenerator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sample_generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataGenerator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EventIngestor
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EventIngestor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#hec-event-ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HEC Event Ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_event_ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hec_event_ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_event_ingestor.HECEventIngestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HECEventIngestor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="HECEventIngestor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_event_ingestor.HECEventIngestor.ingest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ingest
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hec-raw-ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HEC Raw Ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_raw_ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hec_raw_ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_raw_ingestor.HECRawEventIngestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HECRawEventIngestor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="HECRawEventIngestor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_raw_ingestor.HECRawEventIngestor.ingest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ingest
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sc4s-event-ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SC4S Event Ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.sc4s_event_ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sc4s_event_ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.sc4s_event_ingestor.SC4SEventIngestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SC4SEventIngestor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SC4SEventIngestor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.sc4s_event_ingestor.SC4SEventIngestor.ingest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ingest
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-monitor-ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Monitor Ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        file_monitor_ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FileMonitorEventIngestor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FileMonitorEventIngestor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_event_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_event_file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_inputs_stanza" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_inputs_stanza
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_output_conf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_output_conf
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.get_file_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_file_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.ingest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ingest
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cim_compliance_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CimComplianceReport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshoot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release_notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#hec-event-ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HEC Event Ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_event_ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hec_event_ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_event_ingestor.HECEventIngestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HECEventIngestor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="HECEventIngestor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_event_ingestor.HECEventIngestor.ingest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ingest
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hec-raw-ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HEC Raw Ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_raw_ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        hec_raw_ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_raw_ingestor.HECRawEventIngestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HECRawEventIngestor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="HECRawEventIngestor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.hec_raw_ingestor.HECRawEventIngestor.ingest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ingest
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sc4s-event-ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SC4S Event Ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.sc4s_event_ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sc4s_event_ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.sc4s_event_ingestor.SC4SEventIngestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SC4SEventIngestor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SC4SEventIngestor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.sc4s_event_ingestor.SC4SEventIngestor.ingest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ingest
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-monitor-ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Monitor Ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        file_monitor_ingestor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FileMonitorEventIngestor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FileMonitorEventIngestor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_event_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_event_file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_inputs_stanza" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_inputs_stanza
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_output_conf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_output_conf
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.get_file_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_file_path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.ingest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ingest
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="eventingestor">EventIngestor<a class="headerlink" href="#eventingestor" title="Permanent link">&para;</a></h1>
+<h2 id="hec-event-ingestor">HEC Event Ingestor<a class="headerlink" href="#hec-event-ingestor" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="pytest_splunk_addon.event_ingestors.hec_event_ingestor"></a>
+    <div class="doc doc-contents first">
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pytest_splunk_addon.event_ingestors.hec_event_ingestor.HECEventIngestor" class="doc doc-heading">
+            <code>HECEventIngestor</code>
+
+
+<a href="#pytest_splunk_addon.event_ingestors.hec_event_ingestor.HECEventIngestor" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pytest_splunk_addon.event_ingestors.base_event_ingestor.EventIngestor">EventIngestor</span></code></p>
+
+
+        <p>Class to ingest event via HEC Event</p>
+<p>The format for required_configs is::</p>
+<div class="codehilite"><pre><span></span><code>{
+    hec_uri: {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector,
+    session_headers(dict):
+    {
+        &quot;Authorization&quot;: f&quot;Splunk &lt;hec-token&gt;&quot;,
+    }
+}
+</code></pre></div>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>required_configs</code></td>
+            <td>
+                  <code>dict</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dictionary containing hec_uri and session headers</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+              <details class="quote">
+                <summary>Source code in <code>pytest_splunk_addon/event_ingestors/hec_event_ingestor.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">HECEventIngestor</span><span class="p">(</span><span class="n">EventIngestor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to ingest event via HEC Event</span>
+
+<span class="sd">    The format for required_configs is::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            hec_uri: {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector,</span>
+<span class="sd">            session_headers(dict):</span>
+<span class="sd">            {</span>
+<span class="sd">                &quot;Authorization&quot;: f&quot;Splunk &lt;hec-token&gt;&quot;,</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        required_configs (dict): Dictionary containing hec_uri and session headers</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required_configs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hec_uri</span> <span class="o">=</span> <span class="n">required_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;splunk_hec_uri&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_headers</span> <span class="o">=</span> <span class="n">required_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;session_headers&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ingests event and metric data into splunk using HEC token via event endpoint.</span>
+
+<span class="sd">        For batch ingestion of events in a single request at event endpoint provide stacked events one after the other to be ingested.</span>
+
+<span class="sd">        The format of dictionary for ingesting a single event::</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &quot;sourcetype&quot;: &quot;sample_HEC&quot;,</span>
+<span class="sd">                &quot;source&quot;: &quot;sample_source&quot;,</span>
+<span class="sd">                &quot;host&quot;: &quot;sample_host&quot;,</span>
+<span class="sd">                &quot;event&quot;: &quot;event_str&quot;</span>
+<span class="sd">            }</span>
+
+<span class="sd">        The format for ingesting a batch of events::</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &quot;sourcetype&quot;: &quot;sample_HEC&quot;,</span>
+<span class="sd">                &quot;source&quot;: &quot;sample_source&quot;,</span>
+<span class="sd">                &quot;host&quot;: &quot;sample_host&quot;,</span>
+<span class="sd">                &quot;event&quot;: &quot;event_str1&quot;</span>
+<span class="sd">            }</span>
+<span class="sd">            {</span>
+<span class="sd">                &quot;sourcetype&quot;: &quot;sample_HEC&quot;,</span>
+<span class="sd">                &quot;source&quot;: &quot;sample_source&quot;,</span>
+<span class="sd">                &quot;host&quot;: &quot;sample_host&quot;,</span>
+<span class="sd">                &quot;event&quot;: &quot;event_str2&quot;</span>
+<span class="sd">            }</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            events (list): List of events (SampleEvent) to be ingested</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+
+            <span class="n">event_dict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;sourcetype&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sourcetype&quot;</span><span class="p">,</span> <span class="s2">&quot;pytest_splunk_addon&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;pytest_splunk_addon:hec:event&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;event&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">event</span><span class="p">,</span>
+                <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;main&quot;</span><span class="p">),</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host_type&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;plugin&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">host</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">host</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">key_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">host</span><span class="p">:</span>
+                <span class="n">event_dict</span><span class="p">[</span><span class="s2">&quot;host&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">host</span>
+
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timestamp_type&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;event&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">time_values</span><span class="p">:</span>
+                    <span class="n">event_dict</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">time_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event_dict</span><span class="p">)</span>
+
+        <span class="n">batch_event_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="mi">100</span><span class="p">):</span>
+            <span class="n">batch_event_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">100</span><span class="p">])</span>
+
+        <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ingest</span><span class="p">,</span> <span class="n">batch_event_list</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">batch_data</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Making a HEC event request with the following params:</span><span class="se">\n</span><span class="s2">hec_uri:</span><span class="si">{}</span><span class="se">\n</span><span class="s2">headers:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hec_uri</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_headers</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Creating the following sample event to be ingested via HEC event endoipnt:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">batch_data</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>  <span class="c1"># nosemgrep: splunk.disabled-cert-validation</span>
+                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hec_uri</span><span class="p">,</span> <span class="s2">&quot;event&quot;</span><span class="p">),</span>
+                <span class="n">auth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">batch_data</span><span class="p">,</span>
+                <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_headers</span><span class="p">,</span>
+                <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Status code: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Status code: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">Reason: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">text:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">An error occurred while data ingestion.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)(</span><span class="s2">&quot;An error occurred while data ingestion.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pytest_splunk_addon.event_ingestors.hec_event_ingestor.HECEventIngestor.ingest" class="doc doc-heading">
+            <code class=" language-python"><span class="n">ingest</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">)</span></code>
+
+<a href="#pytest_splunk_addon.event_ingestors.hec_event_ingestor.HECEventIngestor.ingest" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Ingests event and metric data into splunk using HEC token via event endpoint.</p>
+<p>For batch ingestion of events in a single request at event endpoint provide stacked events one after the other to be ingested.</p>
+<p>The format of dictionary for ingesting a single event::</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="s">&quot;sourcetype&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_HEC&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_source&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_host&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;event_str&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The format for ingesting a batch of events::</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="s">&quot;sourcetype&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_HEC&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_source&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_host&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;event_str1&quot;</span>
+<span class="p">}</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="s">&quot;sourcetype&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_HEC&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_source&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_host&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;event_str2&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>events</code></td>
+            <td>
+                  <code>list</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of events (SampleEvent) to be ingested</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>pytest_splunk_addon/event_ingestors/hec_event_ingestor.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ingests event and metric data into splunk using HEC token via event endpoint.</span>
+
+<span class="sd">    For batch ingestion of events in a single request at event endpoint provide stacked events one after the other to be ingested.</span>
+
+<span class="sd">    The format of dictionary for ingesting a single event::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;sourcetype&quot;: &quot;sample_HEC&quot;,</span>
+<span class="sd">            &quot;source&quot;: &quot;sample_source&quot;,</span>
+<span class="sd">            &quot;host&quot;: &quot;sample_host&quot;,</span>
+<span class="sd">            &quot;event&quot;: &quot;event_str&quot;</span>
+<span class="sd">        }</span>
+
+<span class="sd">    The format for ingesting a batch of events::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;sourcetype&quot;: &quot;sample_HEC&quot;,</span>
+<span class="sd">            &quot;source&quot;: &quot;sample_source&quot;,</span>
+<span class="sd">            &quot;host&quot;: &quot;sample_host&quot;,</span>
+<span class="sd">            &quot;event&quot;: &quot;event_str1&quot;</span>
+<span class="sd">        }</span>
+<span class="sd">        {</span>
+<span class="sd">            &quot;sourcetype&quot;: &quot;sample_HEC&quot;,</span>
+<span class="sd">            &quot;source&quot;: &quot;sample_source&quot;,</span>
+<span class="sd">            &quot;host&quot;: &quot;sample_host&quot;,</span>
+<span class="sd">            &quot;event&quot;: &quot;event_str2&quot;</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        events (list): List of events (SampleEvent) to be ingested</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+
+        <span class="n">event_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;sourcetype&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sourcetype&quot;</span><span class="p">,</span> <span class="s2">&quot;pytest_splunk_addon&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;pytest_splunk_addon:hec:event&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;event&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">event</span><span class="p">,</span>
+            <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;main&quot;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host_type&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;plugin&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">host</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">host</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">key_fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">host</span><span class="p">:</span>
+            <span class="n">event_dict</span><span class="p">[</span><span class="s2">&quot;host&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">host</span>
+
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timestamp_type&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;event&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">time_values</span><span class="p">:</span>
+                <span class="n">event_dict</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">time_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event_dict</span><span class="p">)</span>
+
+    <span class="n">batch_event_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="mi">100</span><span class="p">):</span>
+        <span class="n">batch_event_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">100</span><span class="p">])</span>
+
+    <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ingest</span><span class="p">,</span> <span class="n">batch_event_list</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="hec-raw-ingestor">HEC Raw Ingestor<a class="headerlink" href="#hec-raw-ingestor" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="pytest_splunk_addon.event_ingestors.hec_raw_ingestor"></a>
+    <div class="doc doc-contents first">
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pytest_splunk_addon.event_ingestors.hec_raw_ingestor.HECRawEventIngestor" class="doc doc-heading">
+            <code>HECRawEventIngestor</code>
+
+
+<a href="#pytest_splunk_addon.event_ingestors.hec_raw_ingestor.HECRawEventIngestor" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pytest_splunk_addon.event_ingestors.base_event_ingestor.EventIngestor">EventIngestor</span></code></p>
+
+
+        <p>Class to ingest event via HEC Raw</p>
+<p>The format for required_configs is::</p>
+<div class="codehilite"><pre><span></span><code>{
+    hec_uri: {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector,
+    session_headers(dict):
+    {
+        &quot;Authorization&quot;: f&quot;Splunk &lt;hec-token&gt;&quot;,
+    }
+}
+</code></pre></div>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>required_configs</code></td>
+            <td>
+                  <code>dict</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dictionary containing hec_uri and session headers</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+              <details class="quote">
+                <summary>Source code in <code>pytest_splunk_addon/event_ingestors/hec_raw_ingestor.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">HECRawEventIngestor</span><span class="p">(</span><span class="n">EventIngestor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to ingest event via HEC Raw</span>
+
+<span class="sd">    The format for required_configs is::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            hec_uri: {splunk_hec_scheme}://{splunk_host}:{hec_port}/services/collector,</span>
+<span class="sd">            session_headers(dict):</span>
+<span class="sd">            {</span>
+<span class="sd">                &quot;Authorization&quot;: f&quot;Splunk &lt;hec-token&gt;&quot;,</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        required_configs (dict): Dictionary containing hec_uri and session headers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required_configs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hec_uri</span> <span class="o">=</span> <span class="n">required_configs</span><span class="p">[</span><span class="s2">&quot;splunk_hec_uri&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_headers</span> <span class="o">=</span> <span class="n">required_configs</span><span class="p">[</span><span class="s2">&quot;session_headers&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ingests data into splunk via raw endpoint.</span>
+
+<span class="sd">        For batch ingestion of events in a single request at raw endpoint provide a string of events in data to be ingested.</span>
+
+<span class="sd">        The format of event and params for ingesting a single event::</span>
+
+<span class="sd">            &#39;127.0.0.1 - admin [28/Sep/2016:09:05:26.875 -0700] &quot;GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0&quot; 200 126721 - - - 6ms&#39;</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &quot;sourcetype&quot;: &quot;sample_HEC&quot;,</span>
+<span class="sd">                &quot;source&quot;: &quot;sample_source&quot;,</span>
+<span class="sd">                &quot;host&quot;: &quot;sample_host&quot;,</span>
+<span class="sd">            }</span>
+
+<span class="sd">        The format of event and params for ingesting a batch of events::</span>
+
+<span class="sd">                &#39;&#39;&#39;127.0.0.1 - admin [28/Sep/2016:09:05:26.875 -0700] &quot;GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0&quot; 200 126721 - - - 6ms</span>
+<span class="sd">                127.0.0.1 - admin [28/Sep/2016:09:05:26.917 -0700] &quot;GET /servicesNS/admin/launcher/data/ui/nav/default HTTP/1.0&quot; 200 4367 - - - 6ms</span>
+<span class="sd">                127.0.0.1 - admin [28/Sep/2016:09:05:26.941 -0700] &quot;GET /services/apps/local?search=disabled%3Dfalse&amp;count=-1 HTTP/1.0&quot; 200 31930 - - - 4ms&#39;&#39;&#39;</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &quot;sourcetype&quot;: &quot;sample_HEC&quot;,</span>
+<span class="sd">                &quot;source&quot;: &quot;sample_source&quot;,</span>
+<span class="sd">                &quot;host&quot;: &quot;sample_host&quot;,</span>
+<span class="sd">            }</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            events (list): List of events (SampleEvent) to be ingested</span>
+<span class="sd">            params (dict): dict with the info of the data to be ingested.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">main_event</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">param_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+            <span class="n">event_dict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;sourcetype&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sourcetype&quot;</span><span class="p">,</span> <span class="s2">&quot;pytest_splunk_addon&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;pytest_splunk_addon:hec:raw&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;main&quot;</span><span class="p">),</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">):</span>
+                <span class="n">event_dict</span><span class="p">[</span><span class="s2">&quot;host&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">)</span>
+
+            <span class="n">param_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event_dict</span><span class="p">)</span>
+
+            <span class="n">main_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ingest</span><span class="p">,</span> <span class="n">main_event</span><span class="p">,</span> <span class="n">param_list</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Making a HEC raw endpoint request with the following params:</span><span class="se">\n</span><span class="s2">hec_uri:</span><span class="si">{}</span><span class="se">\n</span><span class="s2">headers:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hec_uri</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_headers</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Creating the following sample event to be ingested via HEC RAW endpoint:</span><span class="se">\n</span><span class="s2">Events: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">Params:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">event</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>  <span class="c1"># nosemgrep: splunk.disabled-cert-validation</span>
+                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hec_uri</span><span class="p">,</span> <span class="s2">&quot;raw&quot;</span><span class="p">),</span>
+                <span class="n">auth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">event</span><span class="p">,</span>
+                <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_headers</span><span class="p">,</span>
+                <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Status code: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Status code: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">Reason: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">text:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">An error occurred while data ingestion.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)(</span><span class="s2">&quot;An error occurred while data ingestion.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pytest_splunk_addon.event_ingestors.hec_raw_ingestor.HECRawEventIngestor.ingest" class="doc doc-heading">
+            <code class=" language-python"><span class="n">ingest</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">)</span></code>
+
+<a href="#pytest_splunk_addon.event_ingestors.hec_raw_ingestor.HECRawEventIngestor.ingest" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Ingests data into splunk via raw endpoint.</p>
+<p>For batch ingestion of events in a single request at raw endpoint provide a string of events in data to be ingested.</p>
+<p>The format of event and params for ingesting a single event::</p>
+<div class="codehilite"><pre><span></span><code><span class="err">&#39;</span><span class="m m-Double">127.0.0.1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">admin</span><span class="w"> </span><span class="p">[</span><span class="mi">28</span><span class="o">/</span><span class="nx">Sep</span><span class="o">/</span><span class="mi">2016</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="m m-Double">26.875</span><span class="w"> </span><span class="o">-</span><span class="mi">0700</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0&quot;</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="mi">126721</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">6</span><span class="nx">ms</span><span class="err">&#39;</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="s">&quot;sourcetype&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_HEC&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_source&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_host&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The format of event and params for ingesting a batch of events::</p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="err">&#39;&#39;&#39;</span><span class="m m-Double">127.0.0.1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">admin</span><span class="w"> </span><span class="p">[</span><span class="mi">28</span><span class="o">/</span><span class="nx">Sep</span><span class="o">/</span><span class="mi">2016</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="m m-Double">26.875</span><span class="w"> </span><span class="o">-</span><span class="mi">0700</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0&quot;</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="mi">126721</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">6</span><span class="nx">ms</span>
+<span class="w">    </span><span class="m m-Double">127.0.0.1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">admin</span><span class="w"> </span><span class="p">[</span><span class="mi">28</span><span class="o">/</span><span class="nx">Sep</span><span class="o">/</span><span class="mi">2016</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="m m-Double">26.917</span><span class="w"> </span><span class="o">-</span><span class="mi">0700</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;GET /servicesNS/admin/launcher/data/ui/nav/default HTTP/1.0&quot;</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="mi">4367</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">6</span><span class="nx">ms</span>
+<span class="w">    </span><span class="m m-Double">127.0.0.1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">admin</span><span class="w"> </span><span class="p">[</span><span class="mi">28</span><span class="o">/</span><span class="nx">Sep</span><span class="o">/</span><span class="mi">2016</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="m m-Double">26.941</span><span class="w"> </span><span class="o">-</span><span class="mi">0700</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;GET /services/apps/local?search=disabled%3Dfalse&amp;count=-1 HTTP/1.0&quot;</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="mi">31930</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">4</span><span class="nx">ms</span><span class="err">&#39;&#39;&#39;</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="s">&quot;sourcetype&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_HEC&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_source&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sample_host&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>events</code></td>
+            <td>
+                  <code>list</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of events (SampleEvent) to be ingested</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>params</code></td>
+            <td>
+                  <code>dict</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>dict with the info of the data to be ingested.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>pytest_splunk_addon/event_ingestors/hec_raw_ingestor.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ingests data into splunk via raw endpoint.</span>
+
+<span class="sd">    For batch ingestion of events in a single request at raw endpoint provide a string of events in data to be ingested.</span>
+
+<span class="sd">    The format of event and params for ingesting a single event::</span>
+
+<span class="sd">        &#39;127.0.0.1 - admin [28/Sep/2016:09:05:26.875 -0700] &quot;GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0&quot; 200 126721 - - - 6ms&#39;</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;sourcetype&quot;: &quot;sample_HEC&quot;,</span>
+<span class="sd">            &quot;source&quot;: &quot;sample_source&quot;,</span>
+<span class="sd">            &quot;host&quot;: &quot;sample_host&quot;,</span>
+<span class="sd">        }</span>
+
+<span class="sd">    The format of event and params for ingesting a batch of events::</span>
+
+<span class="sd">            &#39;&#39;&#39;127.0.0.1 - admin [28/Sep/2016:09:05:26.875 -0700] &quot;GET /servicesNS/admin/launcher/data/ui/views?count=-1 HTTP/1.0&quot; 200 126721 - - - 6ms</span>
+<span class="sd">            127.0.0.1 - admin [28/Sep/2016:09:05:26.917 -0700] &quot;GET /servicesNS/admin/launcher/data/ui/nav/default HTTP/1.0&quot; 200 4367 - - - 6ms</span>
+<span class="sd">            127.0.0.1 - admin [28/Sep/2016:09:05:26.941 -0700] &quot;GET /services/apps/local?search=disabled%3Dfalse&amp;count=-1 HTTP/1.0&quot; 200 31930 - - - 4ms&#39;&#39;&#39;</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;sourcetype&quot;: &quot;sample_HEC&quot;,</span>
+<span class="sd">            &quot;source&quot;: &quot;sample_source&quot;,</span>
+<span class="sd">            &quot;host&quot;: &quot;sample_host&quot;,</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        events (list): List of events (SampleEvent) to be ingested</span>
+<span class="sd">        params (dict): dict with the info of the data to be ingested.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">main_event</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">param_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+        <span class="n">event_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;sourcetype&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sourcetype&quot;</span><span class="p">,</span> <span class="s2">&quot;pytest_splunk_addon&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;pytest_splunk_addon:hec:raw&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;main&quot;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">):</span>
+            <span class="n">event_dict</span><span class="p">[</span><span class="s2">&quot;host&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">)</span>
+
+        <span class="n">param_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event_dict</span><span class="p">)</span>
+
+        <span class="n">main_event</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ingest</span><span class="p">,</span> <span class="n">main_event</span><span class="p">,</span> <span class="n">param_list</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="sc4s-event-ingestor">SC4S Event Ingestor<a class="headerlink" href="#sc4s-event-ingestor" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="pytest_splunk_addon.event_ingestors.sc4s_event_ingestor"></a>
+    <div class="doc doc-contents first">
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pytest_splunk_addon.event_ingestors.sc4s_event_ingestor.SC4SEventIngestor" class="doc doc-heading">
+            <code>SC4SEventIngestor</code>
+
+
+<a href="#pytest_splunk_addon.event_ingestors.sc4s_event_ingestor.SC4SEventIngestor" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pytest_splunk_addon.event_ingestors.base_event_ingestor.EventIngestor">EventIngestor</span></code></p>
+
+
+        <p>Class to ingest events via SC4S (supports both IPv4 and IPv6)</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>required_configs</code></td>
+            <td>
+                  <code>dict</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dictionary containing splunk host and sc4s port</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+              <details class="quote">
+                <summary>Source code in <code>pytest_splunk_addon/event_ingestors/sc4s_event_ingestor.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SC4SEventIngestor</span><span class="p">(</span><span class="n">EventIngestor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to ingest events via SC4S (supports both IPv4 and IPv6)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        required_configs (dict): Dictionary containing splunk host and sc4s port</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required_configs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sc4s_host</span> <span class="o">=</span> <span class="n">required_configs</span><span class="p">[</span><span class="s2">&quot;sc4s_host&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sc4s_port</span> <span class="o">=</span> <span class="n">required_configs</span><span class="p">[</span><span class="s2">&quot;sc4s_port&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_socket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Try all addresses (IPv4 and IPv6) and return a connected socket.&quot;&quot;&quot;</span>
+        <span class="n">last_exc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">socket</span><span class="o">.</span><span class="n">getaddrinfo</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sc4s_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc4s_port</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_UNSPEC</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span>
+        <span class="p">):</span>
+            <span class="n">af</span><span class="p">,</span> <span class="n">socktype</span><span class="p">,</span> <span class="n">proto</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">sa</span> <span class="o">=</span> <span class="n">res</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">af</span><span class="p">,</span> <span class="n">socktype</span><span class="p">,</span> <span class="n">proto</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">af</span> <span class="o">==</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET6</span><span class="p">:</span>
+                    <span class="c1"># Attempt dual-stack if supported</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_IPV6</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">IPV6_V6ONLY</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">):</span>
+                        <span class="k">pass</span>
+                <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">sock</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">last_exc</span> <span class="o">=</span> <span class="n">e</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to connect to </span><span class="si">{</span><span class="n">sa</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">continue</span>
+        <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Could not connect to SC4S at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sc4s_host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sc4s_port</span><span class="si">}</span><span class="s2"> via IPv4 or IPv6&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">last_exc</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ingests events in Splunk via SC4S (single/batch of events)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            events (list): Events with newline character or LineBreaker as separator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Retry loop to establish connection</span>
+        <span class="n">tried</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sock</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_socket</span><span class="p">()</span>
+                <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">tried</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt </span><span class="si">{</span><span class="n">tried</span><span class="si">}</span><span class="s2"> to ingest data with SC4S&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">tried</span> <span class="o">&gt;</span> <span class="mi">90</span><span class="p">:</span>
+                    <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to ingest event with SC4S </span><span class="si">{</span><span class="n">tried</span><span class="si">}</span><span class="s2"> times&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">e</span>
+                <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Send events</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">se</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">se</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt ingest data with SC4S: </span><span class="si">{</span><span class="n">se</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                        <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pytest_splunk_addon.event_ingestors.sc4s_event_ingestor.SC4SEventIngestor.ingest" class="doc doc-heading">
+            <code class=" language-python"><span class="n">ingest</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">)</span></code>
+
+<a href="#pytest_splunk_addon.event_ingestors.sc4s_event_ingestor.SC4SEventIngestor.ingest" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Ingests events in Splunk via SC4S (single/batch of events)</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>events</code></td>
+            <td>
+                  <code>list</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Events with newline character or LineBreaker as separator</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>pytest_splunk_addon/event_ingestors/sc4s_event_ingestor.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ingests events in Splunk via SC4S (single/batch of events)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        events (list): Events with newline character or LineBreaker as separator</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Retry loop to establish connection</span>
+    <span class="n">tried</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sock</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_socket</span><span class="p">()</span>
+            <span class="k">break</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">tried</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt </span><span class="si">{</span><span class="n">tried</span><span class="si">}</span><span class="s2"> to ingest data with SC4S&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tried</span> <span class="o">&gt;</span> <span class="mi">90</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to ingest event with SC4S </span><span class="si">{</span><span class="n">tried</span><span class="si">}</span><span class="s2"> times&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">e</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Send events</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">se</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sock</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">se</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt ingest data with SC4S: </span><span class="si">{</span><span class="n">se</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                    <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="file-monitor-ingestor">File Monitor Ingestor<a class="headerlink" href="#file-monitor-ingestor" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="pytest_splunk_addon.event_ingestors.file_monitor_ingestor"></a>
+    <div class="doc doc-contents first">
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor" class="doc doc-heading">
+            <code>FileMonitorEventIngestor</code>
+
+
+<a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pytest_splunk_addon.event_ingestors.base_event_ingestor.EventIngestor">EventIngestor</span></code></p>
+
+
+        <p>Class to ingest event via File monitor
+This ingestor will only work if splunk_type is docker and container of universal forwarder is linked with container
+of splunk instance as &lsquo;splunk&rsquo; service.</p>
+<p>The format for required_configs is::</p>
+<div class="codehilite"><pre><span></span><code>{
+    uf_host: Host of universal forwarder
+    uf_port: Management port of universal forwarder
+    uf_username: Name of user for universal forwarder
+    uf_password: Password of universal forwarder
+}
+</code></pre></div>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>required_configs</code></td>
+            <td>
+                  <code>dict</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dictionary containing information about universal forwarder</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+              <details class="quote">
+                <summary>Source code in <code>pytest_splunk_addon/event_ingestors/file_monitor_ingestor.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">FileMonitorEventIngestor</span><span class="p">(</span><span class="n">EventIngestor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to ingest event via File monitor</span>
+<span class="sd">    This ingestor will only work if splunk_type is docker and container of universal forwarder is linked with container</span>
+<span class="sd">    of splunk instance as &#39;splunk&#39; service.</span>
+
+<span class="sd">    The format for required_configs is::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            uf_host: Host of universal forwarder</span>
+<span class="sd">            uf_port: Management port of universal forwarder</span>
+<span class="sd">            uf_username: Name of user for universal forwarder</span>
+<span class="sd">            uf_password: Password of universal forwarder</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        required_configs (dict): Dictionary containing information about universal forwarder</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required_configs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uf_host</span> <span class="o">=</span> <span class="n">required_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;uf_host&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uf_port</span> <span class="o">=</span> <span class="n">required_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;uf_port&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uf_username</span> <span class="o">=</span> <span class="n">required_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;uf_username&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uf_password</span> <span class="o">=</span> <span class="n">required_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;uf_password&quot;</span><span class="p">)</span>
+        <span class="c1"># Container of universal forwarder is linked with splunk instance.</span>
+        <span class="c1"># So using splunk_host as splunk and port 9997 directly.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">splunk_host</span> <span class="o">=</span> <span class="s2">&quot;splunk&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">splunk_s2s_port</span> <span class="o">=</span> <span class="s2">&quot;9997&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uf_rest_uri</span> <span class="o">=</span> <span class="s2">&quot;https://</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uf_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uf_port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputs_endpoint</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/services/data/outputs/tcp/group&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">uf_rest_uri</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs_endpoint</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/servicesNS/nobody/search/data/inputs/monitor&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">uf_rest_uri</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ingests data into splunk via file monitor.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            events (list): List of events (SampleEvent) to be ingested</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_output_conf</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">each_event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_event_file</span><span class="p">(</span><span class="n">each_event</span><span class="p">)</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_inputs_stanza</span><span class="p">(</span><span class="n">each_event</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_output_conf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create stanza in outputs.conf file of universal forwarder to send on splunk(indexer).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tcp_out_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;uf_monitor&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;servers&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">splunk_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">splunk_s2s_port</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Making rest call to create stanza in outputs.conf file with following endpoint : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">outputs_endpoint</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Creating following stanza in output.conf : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tcp_out_dict</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>  <span class="c1"># nosemgrep: splunk.disabled-cert-validation</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">outputs_endpoint</span><span class="p">,</span>
+                <span class="n">tcp_out_dict</span><span class="p">,</span>
+                <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uf_username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uf_password</span><span class="p">),</span>
+                <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">):</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Unable to create stanza in outputs.conf</span><span class="se">\n</span><span class="s2">Status code: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">Reason: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">text:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to connect to Universal forwarder, </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_event_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write each tokenized event in files with host name as name of file. The host of all events will be unique.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event (SampleEvent): Instance containing event info</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_file_path</span><span class="p">(</span><span class="n">event</span><span class="p">),</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Writing events file for host=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">))</span>
+                <span class="p">)</span>
+                <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s2">&quot;Wrote tokenized events file on path : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">get_file_path</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Unable to create event file for host : </span><span class="si">{}</span><span class="s2">, Reason : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">),</span> <span class="n">e</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_inputs_stanza</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create stanza in inputs.conf on universal forwarder for each tokenized event.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event (SampleEvent): Instance containing event info</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_path</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="n">host_segment</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">))</span> <span class="o">-</span> <span class="mi">2</span>
+        <span class="c1"># If file path is /home/uf_files/host_name/sample_name</span>
+        <span class="c1"># Then split will return [&#39;&#39;, home, &#39;uf_files&#39;, &#39;host_name&#39;, &#39;sample_name&#39;]</span>
+        <span class="n">sourcetype</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sourcetype&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sourcetype</span><span class="p">:</span>
+            <span class="n">sourcetype</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;sourcetype_to_search&quot;</span><span class="p">,</span> <span class="s2">&quot;pytest_splunk_addon&quot;</span>
+            <span class="p">)</span>
+        <span class="n">stanza</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">file_path</span><span class="p">,</span>
+            <span class="s2">&quot;sourcetype&quot;</span><span class="p">:</span> <span class="n">sourcetype</span><span class="p">,</span>
+            <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;main&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;disabled&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;crc-salt&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;SOURCE&gt;&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host_type&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;plugin&quot;</span><span class="p">):</span>
+            <span class="n">stanza</span><span class="p">[</span><span class="s2">&quot;host_segment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">host_segment</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Making rest call to create stanza in inputs.conf file with following endpoint : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs_endpoint</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating following stanza in inputs.conf : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stanza</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>  <span class="c1"># nosemgrep: splunk.disabled-cert-validation</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs_endpoint</span><span class="p">,</span>
+                <span class="n">stanza</span><span class="p">,</span>
+                <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uf_username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uf_password</span><span class="p">),</span>
+                <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">):</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Unable to add stanza in inputs.conf for Path : </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">Status code: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">Reason: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">text:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">file_path</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to connect to Universal forwarder, </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns absolute path for tokenized events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event (SampleEvent): Instance containing event info</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">host_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">MONITOR_DIR</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">host_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">host_dir</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">host_dir</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_event_file" class="doc doc-heading">
+            <code class=" language-python"><span class="n">create_event_file</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></code>
+
+<a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_event_file" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Write each tokenized event in files with host name as name of file. The host of all events will be unique.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>event</code></td>
+            <td>
+                  <code>SampleEvent</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Instance containing event info</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>pytest_splunk_addon/event_ingestors/file_monitor_ingestor.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_event_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write each tokenized event in files with host name as name of file. The host of all events will be unique.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        event (SampleEvent): Instance containing event info</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_file_path</span><span class="p">(</span><span class="n">event</span><span class="p">),</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Writing events file for host=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Wrote tokenized events file on path : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_file_path</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;Unable to create event file for host : </span><span class="si">{}</span><span class="s2">, Reason : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">),</span> <span class="n">e</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_inputs_stanza" class="doc doc-heading">
+            <code class=" language-python"><span class="n">create_inputs_stanza</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></code>
+
+<a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_inputs_stanza" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create stanza in inputs.conf on universal forwarder for each tokenized event.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>event</code></td>
+            <td>
+                  <code>SampleEvent</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Instance containing event info</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>pytest_splunk_addon/event_ingestors/file_monitor_ingestor.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_inputs_stanza</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create stanza in inputs.conf on universal forwarder for each tokenized event.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        event (SampleEvent): Instance containing event info</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_path</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+    <span class="n">host_segment</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">))</span> <span class="o">-</span> <span class="mi">2</span>
+    <span class="c1"># If file path is /home/uf_files/host_name/sample_name</span>
+    <span class="c1"># Then split will return [&#39;&#39;, home, &#39;uf_files&#39;, &#39;host_name&#39;, &#39;sample_name&#39;]</span>
+    <span class="n">sourcetype</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sourcetype&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sourcetype</span><span class="p">:</span>
+        <span class="n">sourcetype</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;sourcetype_to_search&quot;</span><span class="p">,</span> <span class="s2">&quot;pytest_splunk_addon&quot;</span>
+        <span class="p">)</span>
+    <span class="n">stanza</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">file_path</span><span class="p">,</span>
+        <span class="s2">&quot;sourcetype&quot;</span><span class="p">:</span> <span class="n">sourcetype</span><span class="p">,</span>
+        <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;main&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;disabled&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;crc-salt&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;SOURCE&gt;&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host_type&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;plugin&quot;</span><span class="p">):</span>
+        <span class="n">stanza</span><span class="p">[</span><span class="s2">&quot;host_segment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">host_segment</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;Making rest call to create stanza in inputs.conf file with following endpoint : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs_endpoint</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating following stanza in inputs.conf : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stanza</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>  <span class="c1"># nosemgrep: splunk.disabled-cert-validation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs_endpoint</span><span class="p">,</span>
+            <span class="n">stanza</span><span class="p">,</span>
+            <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uf_username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uf_password</span><span class="p">),</span>
+            <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">):</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Unable to add stanza in inputs.conf for Path : </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">Status code: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">Reason: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">text:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">file_path</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to connect to Universal forwarder, </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_output_conf" class="doc doc-heading">
+            <code class=" language-python"><span class="n">create_output_conf</span><span class="p">()</span></code>
+
+<a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.create_output_conf" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create stanza in outputs.conf file of universal forwarder to send on splunk(indexer).</p>
+
+            <details class="quote">
+              <summary>Source code in <code>pytest_splunk_addon/event_ingestors/file_monitor_ingestor.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_output_conf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create stanza in outputs.conf file of universal forwarder to send on splunk(indexer).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tcp_out_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;uf_monitor&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;servers&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">splunk_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">splunk_s2s_port</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;Making rest call to create stanza in outputs.conf file with following endpoint : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outputs_endpoint</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Creating following stanza in output.conf : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tcp_out_dict</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>  <span class="c1"># nosemgrep: splunk.disabled-cert-validation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outputs_endpoint</span><span class="p">,</span>
+            <span class="n">tcp_out_dict</span><span class="p">,</span>
+            <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uf_username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uf_password</span><span class="p">),</span>
+            <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">):</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Unable to create stanza in outputs.conf</span><span class="se">\n</span><span class="s2">Status code: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">Reason: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">text:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to connect to Universal forwarder, </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.get_file_path" class="doc doc-heading">
+            <code class=" language-python"><span class="n">get_file_path</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></code>
+
+<a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.get_file_path" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Returns absolute path for tokenized events.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>event</code></td>
+            <td>
+                  <code>SampleEvent</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Instance containing event info</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+            <details class="quote">
+              <summary>Source code in <code>pytest_splunk_addon/event_ingestors/file_monitor_ingestor.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns absolute path for tokenized events.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        event (SampleEvent): Instance containing event info</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">host_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">MONITOR_DIR</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;host&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">host_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">host_dir</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">host_dir</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.ingest" class="doc doc-heading">
+            <code class=" language-python"><span class="n">ingest</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">)</span></code>
+
+<a href="#pytest_splunk_addon.event_ingestors.file_monitor_ingestor.FileMonitorEventIngestor.ingest" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Ingests data into splunk via file monitor.
+Args:
+    events (list): List of events (SampleEvent) to be ingested</p>
+
+            <details class="quote">
+              <summary>Source code in <code>pytest_splunk_addon/event_ingestors/file_monitor_ingestor.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ingest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ingests data into splunk via file monitor.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        events (list): List of events (SampleEvent) to be ingested</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">create_output_conf</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">each_event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_event_file</span><span class="p">(</span><span class="n">each_event</span><span class="p">)</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_inputs_stanza</span><span class="p">(</span><span class="n">each_event</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.indexes", "navigation.expand"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
