@@ -67,19 +67,7 @@ class PropsParser(object):
         for stanza_type, stanza_name, stanza_values in self._get_props_stanzas():
             for key, value in stanza_values.items():
                 LOGGER.info(f"Parsing parameter={key} of stanza={stanza_name}")
-                if not re.match("REPORT", key, re.IGNORECASE) and not re.match("TRANSFORM", key, re.IGNORECASE):
-                    LOGGER.info(f"Trying to parse classname={key}")
-                    parsing_method = self._get_props_method(key)
-                    if parsing_method:
-                        field_list = list(parsing_method(key, value))
-                        if field_list:
-                            yield {
-                                "stanza": stanza_name,
-                                "stanza_type": stanza_type,
-                                "classname": key,
-                                "fields": field_list,
-                            }
-                elif re.match("REPORT", key, re.IGNORECASE):
+                if re.match("REPORT", key, re.IGNORECASE):
                     for transform_stanza, fields in self._get_report_fields(key, value):
                         field_list = list(fields)
                         if field_list:
@@ -95,9 +83,17 @@ class PropsParser(object):
                     ):
                         yield transforms_sourcetype_group
                 else:
-                    LOGGER.error(f"No parser available for {key}")
-
-            # Yield TRANSFORMS-defined sourcetypes for coverage testing
+                    LOGGER.info(f"Trying to parse classname={key}")
+                    parsing_method = self._get_props_method(key)
+                    if parsing_method:
+                        field_list = list(parsing_method(key, value))
+                        if field_list:
+                            yield {
+                                "stanza": stanza_name,
+                                "stanza_type": stanza_type,
+                                "classname": key,
+                                "fields": field_list,
+                            }
 
 
     def _get_props_method(self, class_name: str):

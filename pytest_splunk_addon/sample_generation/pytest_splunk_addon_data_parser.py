@@ -85,14 +85,8 @@ class PytestSplunkAddonDataParser:
     @property
     def psa_data(self):
         psa_data_path = os.path.join(self.config_path, PSA_DATA_CONFIG_FILE)
-        a=os.getcwd()
         if os.path.exists(psa_data_path):
             self._conf_parser.read(psa_data_path)
-            self.conf_name = "psa-data-gen"
-            self._psa_data = self._conf_parser.item_dict()
-            return self._psa_data
-        elif os.path.exists(os.path.join(os.getcwd(), PSA_DATA_CONFIG_FILE)):
-            self._conf_parser.read(os.path.join(os.getcwd(), PSA_DATA_CONFIG_FILE))
             self.conf_name = "psa-data-gen"
             self._psa_data = self._conf_parser.item_dict()
             return self._psa_data
