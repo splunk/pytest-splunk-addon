@@ -33,7 +33,9 @@ class SampleXdistGenerator:
         process_count (num): generate {no} process for execution
     """
 
-    def __init__(self, addon_path, ingest_with_uuid, config_path=None, process_count=4):
+    def __init__(
+        self, addon_path, ingest_with_uuid: bool, config_path=None, process_count=4
+    ):
         self.addon_path = addon_path
         self.process_count = process_count
         self.config_path = config_path
@@ -141,7 +143,7 @@ class SampleXdistGenerator:
                         }
                     ],
                 }
-                if self.ingest_with_uuid == "true":
+                if self.ingest_with_uuid:
                     tokenized_samples_dict[each_event.sample_name]["events"][0][
                         "unique_identifier"
                     ] = each_event.unique_identifier
@@ -152,7 +154,7 @@ class SampleXdistGenerator:
                     "time_values": each_event.time_values,
                     "requirement_test_data": each_event.requirement_test_data,
                 }
-                if self.ingest_with_uuid == "true":
+                if self.ingest_with_uuid:
                     sample_event["unique_identifier"] = each_event.unique_identifier
                 tokenized_samples_dict[each_event.sample_name]["events"].append(
                     sample_event

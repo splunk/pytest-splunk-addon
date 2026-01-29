@@ -124,7 +124,7 @@ def test_events_can_be_ingested(
     get_ingestor_mock, sample_mock, file_monitor_events, modinput_events
 ):
     event_ingestors.ingestor_helper.IngestorHelper.ingest_events(
-        ingest_meta_data={"ingest_with_uuid": "false"},
+        ingest_meta_data={"ingest_with_uuid": False},
         addon_path="fake_path",
         config_path="tests/unit/event_ingestors",
         thread_count=20,
@@ -133,8 +133,8 @@ def test_events_can_be_ingested(
     assert get_ingestor_mock.call_count == 2
     get_ingestor_mock.assert_has_calls(
         [
-            call("file_monitor", {"ingest_with_uuid": "false"}),
-            call("modinput", {"ingest_with_uuid": "false"}),
+            call("file_monitor", {"ingest_with_uuid": False}),
+            call("modinput", {"ingest_with_uuid": False}),
         ],
         any_order=True,
     )
@@ -142,3 +142,45 @@ def test_events_can_be_ingested(
     get_ingestor_mock.ingest.assert_has_calls(
         [call(file_monitor_events, 20), call(modinput_events, 20)]
     )
+
+
+def test_events_filtered_when_uuid_mode_enabled(
+    get_ingestor_mock, sample_mock, modinput_events, caplog
+):
+    """Test that incompatible input types are filtered out when UUID mode is enabled."""
+    import logging
+
+    caplog.set_level(logging.INFO)
+
+    event_ingestors.ingestor_helper.IngestorHelper.ingest_events(
+        ingest_meta_data={"ingest_with_uuid": True},
+        addon_path="fake_path",
+        config_path="tests/unit/event_ingestors",
+        thread_count=20,
+        store_events=False,
+    )
+
+    # Only modinput ingestor should be called (file_monitor events should be filtered out)
+    assert get_ingestor_mock.call_count == 1
+    get_ingestor_mock.assert_called_once_with("modinput", {"ingest_with_uuid": True})
+
+    # Only modinput events should be ingested
+    assert get_ingestor_mock.ingest.call_count == 1
+    get_ingestor_mock.ingest.assert_called_once_with(modinput_events, 20)
+
+    # Check that warnings were logged for skipped samples
+    warning_messages = [
+        record.message for record in caplog.records if record.levelno == logging.WARNING
+    ]
+    assert any(
+        "Skipping ingestion of sample" in msg and "file_monitor" in msg
+        for msg in warning_messages
+    ), f"Expected warning about skipped file_monitor samples. Got: {warning_messages}"
+
+    # Check that info message was logged with counts
+    info_messages = [
+        record.message for record in caplog.records if record.levelno == logging.INFO
+    ]
+    assert any(
+        "UUID mode:" in msg and "compatible events" in msg for msg in info_messages
+    ), f"Expected info message about UUID mode. Got: {info_messages}"

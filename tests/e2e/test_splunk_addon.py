@@ -847,9 +847,9 @@ def test_splunk_app_fiction_with_uuid(testdir, request):
         "--search-interval=4",
         "--search-retry=4",
         "--search-index=*,_internal",
-        "--ingest-with-uuid=true"
+        "--use-uuid",
     )
-    
+
     logger.info(result.outlines)
     result.stdout.fnmatch_lines_random(
         constants.TA_FICTION_UUID_PASSED + constants.TA_FICTION_UUID_SKIPPED
@@ -901,8 +901,7 @@ def test_splunk_app_req_with_uuid(testdir, request):
         "--search-retry=4",
         "--search-index=*",
         "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
-        "--ingest-with-uuid=true"
-
+        "--use-uuid",
     )
     logger.info(result.outlines)
 

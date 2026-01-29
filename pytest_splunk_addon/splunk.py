@@ -49,13 +49,11 @@ def pytest_addoption(parser):
     """
     group = parser.getgroup("splunk-addon")
     group.addoption(
-        "--ingest-with-uuid",
-        action="store",
+        "--use-uuid",
+        action="store_true",
         dest="ingest_with_uuid",
-        default="false",
-        help=(
-            'Use generated UUID for ingesting and searching events. Setting this parameter to "true" will lead to matching events in search by the ID and not by escaped _raw. Default is "false".'
-        ),
+        default=False,
+        help="Use generated UUID for ingesting and searching events. Setting this flag will lead to matching events in search by the ID and not by escaped _raw.",
     )
 
     group.addoption(

@@ -16,6 +16,7 @@
 import os
 import re
 import copy
+import uuid
 from . import Rule
 from . import raise_warning
 from . import SampleEvent
@@ -47,7 +48,7 @@ class SampleStanza(object):
         psa_data_params (dict): Dictionary representing pytest-splunk-addon-data.conf
     """
 
-    def __init__(self, sample_path, psa_data_params, ingest_with_uuid):
+    def __init__(self, sample_path, psa_data_params, ingest_with_uuid: bool):
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
         self.metadata = self._parse_meta(psa_data_params)
@@ -103,6 +104,9 @@ class SampleStanza(object):
                 if each_rule:
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
             for event in raw_event[event_counter]:
+                if event.metadata.get("ingest_with_uuid"):
+                    event.unique_identifier = str(uuid.uuid4())
+
                 host_value = event.metadata.get("host")
                 host = token_value(key=host_value, value=host_value)
                 event.update_requirement_test_field("host", "##host##", host)
@@ -306,8 +310,7 @@ class SampleStanza(object):
                 if "transport" in each_event.keys():
                     static_host = each_event["transport"].get("@host")
                     if static_host:
-                        # Preserve per-event uniqueness by appending variant counter
-                        event_metadata.update(host=f"{static_host}-{self.host_count}")
+                        event_metadata.update(host=static_host)
                     static_source = each_event["transport"].get("@source")
                     if static_source:
                         event_metadata.update(source=static_source)

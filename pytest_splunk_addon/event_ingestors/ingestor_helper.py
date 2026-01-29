@@ -22,6 +22,7 @@ from . import (
 )
 import logging
 from ..sample_generation import SampleXdistGenerator
+from ..utils import UUID_COMPATIBLE_INPUT_TYPES
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -100,6 +101,29 @@ class IngestorHelper(object):
         )
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
+
+        # Filter out incompatible events when UUID mode is enabled
+        if ingest_meta_data["ingest_with_uuid"]:
+            compatible_events = []
+            skipped_samples = set()
+            for event in tokenized_events:
+                input_type = event.metadata.get("input_type", "default")
+                if input_type in UUID_COMPATIBLE_INPUT_TYPES:
+                    compatible_events.append(event)
+                else:
+                    if event.sample_name not in skipped_samples:
+                        LOGGER.warning(
+                            f"Skipping ingestion of sample '{event.sample_name}' for UUID-based testing: "
+                            f"input_type '{input_type}' is not compatible with --use-uuid. "
+                            f"Only samples with input_type 'modinput' or 'windows_input' are supported."
+                        )
+                        skipped_samples.add(event.sample_name)
+            tokenized_events = compatible_events
+            LOGGER.info(
+                f"UUID mode: Ingesting {len(compatible_events)} compatible events, "
+                f"skipped {len(skipped_samples)} incompatible samples."
+            )
+
         ingestor_dict = cls.get_consolidated_events(tokenized_events)
         for input_type, events in ingestor_dict.items():
             LOGGER.debug(

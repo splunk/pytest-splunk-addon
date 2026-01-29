@@ -30,7 +30,7 @@ def get_params_for_get_raw_sample():
                     {
                         "input_type": input_type,
                         "host": "path_to.file_1",
-                        "ingest_with_uuid": "false",
+                        "ingest_with_uuid": False,
                     },
                     "path_to.file",
                 ],
@@ -54,7 +54,7 @@ def get_params_for_get_raw_sample():
                     {
                         "input_type": input_type,
                         "host": "path_to.file",
-                        "ingest_with_uuid": "false",
+                        "ingest_with_uuid": False,
                     },
                     "path_to.file",
                 ],
@@ -74,7 +74,7 @@ class TestSampleStanza:
                 "pytest_splunk_addon.sample_generation.sample_stanza.Rule",
                 MagicMock(return_value=rule_mock_value),
             ):
-                ss = SampleStanza(SAMPLE_PATH, psa_data_params, "false")
+                ss = SampleStanza(SAMPLE_PATH, psa_data_params, False)
             return ss
 
         return func
@@ -194,7 +194,7 @@ class TestSampleStanza:
                 "expected_event_count": "hh",
                 "count": "ll",
                 "index": 1,
-                "ingest_with_uuid": "false",
+                "ingest_with_uuid": False,
                 "input_type": input_type,
                 "tokens": {
                     "token_1": {"replacementType": "all"},
@@ -208,7 +208,7 @@ class TestSampleStanza:
             "host": host,
             "host_type": "plugin",
             "index": 1,
-            "ingest_with_uuid": "false",
+            "ingest_with_uuid": False,
             "input_type": input_type_expected,
             "sample_count": "1",
             "timestamp_type": "plugin",
@@ -223,7 +223,7 @@ class TestSampleStanza:
         assert ss.get_eventmetadata() == {
             "host": "path_to.file_1",
             "input_type": "default",
-            "ingest_with_uuid": "false",
+            "ingest_with_uuid": False,
         }
         assert ss.host_count == 1
 
@@ -257,7 +257,7 @@ class TestSampleStanza:
                         "breaker": "aa",
                         "host": "path_to.file_1",
                         "input_type": "default",
-                        "ingest_with_uuid": "false",
+                        "ingest_with_uuid": False,
                     },
                     "path_to.file",
                 ],
