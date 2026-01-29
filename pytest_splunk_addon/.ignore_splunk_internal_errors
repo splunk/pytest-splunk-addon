@@ -17,3 +17,4 @@ ERROR SearchMessages - orig_component="SearchStatusEnforcer" app="search" sid="*
 Error reading SSG config from KV Store
 "service":"compsup"
 "service":"ipc_broker"
+"service":"splunk-supervisor"
