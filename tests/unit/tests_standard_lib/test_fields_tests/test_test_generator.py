@@ -24,6 +24,15 @@ field_2.__dict__.update({"name": "field_2"})
 field_3.__dict__.update({"name": "field_3"})
 
 
+@pytest.fixture
+def mock_uuid4():
+    with patch(
+        "uuid.uuid4",
+        return_value="uuid",
+    ) as mock_uuid:
+        yield mock_uuid
+
+
 @pytest.fixture()
 def addon_parser_mock(monkeypatch):
     ap = MagicMock()
@@ -422,6 +431,7 @@ def test_generate_field_tests(
                         "input_type": "modinput",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host",
+                        "ingest_with_uuid": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={
@@ -445,6 +455,7 @@ def test_generate_field_tests(
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host_syslog",
+                        "ingest_with_uuid": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={},
@@ -455,6 +466,7 @@ def test_generate_field_tests(
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host_syslog",
+                        "ingest_with_uuid": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={
@@ -516,6 +528,63 @@ def test_generate_requirement_tests(tokenised_events, expected_output):
                 "app_path",
                 tokenised_events,
                 "field_bank",
+            ).generate_requirements_tests()
+        )
+        assert out == expected_output
+        assert param_mock.call_count == len(expected_output)
+
+
+def test_generate_requirement_tests_with_uuid(mock_uuid4):
+    event = SampleEvent(
+        event_string="escaped_event",
+        metadata={
+            "input_type": "modinput",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "dummy_host",
+            "ingest_with_uuid": True,
+        },
+        sample_name="file1.xml",
+        requirement_test_data={
+            "cim_fields": {
+                "severity": "low",
+                "signature_id": "405001",
+                "src": "192.168.0.1",
+                "type": "event",
+            },
+        },
+    )
+
+    # Simulate tokenization UUID assignment
+    event.unique_identifier = "uuid"
+
+    tokenised_events = [event]
+
+    expected_output = [
+        (
+            {
+                "escaped_event": "escaped_event",
+                "unique_identifier": "uuid",
+                "fields": {
+                    "severity": "low",
+                    "signature_id": "405001",
+                    "src": "192.168.0.1",
+                    "type": "event",
+                },
+                "modinput_params": {"sourcetype": "dummy_sourcetype"},
+            },
+            "sample_name::file1.xml::host::dummy_host",
+        )
+    ]
+
+    with patch.object(
+        xml_event_parser, "escape_char_event", return_value="escaped_event"
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+        out = list(
+            FieldTestGenerator(
+                "app_path",
+                tokenised_events,
+                "field_bank",
+                ingest_with_uuid=True,
             ).generate_requirements_tests()
         )
         assert out == expected_output
@@ -596,3 +665,195 @@ def test_generate_requirement_datamodel_tests(tokenised_events, expected_output)
         )
         assert out == expected_output
         assert param_mock.call_count == len(expected_output)
+
+
+def test_generate_requirement_datamodel_tests_with_uuid(mock_uuid4):
+    event = SampleEvent(
+        event_string="escaped_event",
+        metadata={
+            "input_type": "modinput",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "dummy_host",
+            "ingest_with_uuid": True,
+        },
+        sample_name="file1.xml",
+        requirement_test_data={"datamodels": {"model": "Alerts"}},
+    )
+
+    # Simulate tokenization UUID assignment
+    event.unique_identifier = "uuid"
+
+    tokenised_events = [event]
+
+    expected_output = [
+        (
+            {
+                "datamodels": ["Alerts"],
+                "stanza": "escaped_event",
+                "unique_identifier": "uuid",
+            },
+            "Alerts::sample_name::file1.xml::host::dummy_host",
+        )
+    ]
+
+    with patch.object(
+        xml_event_parser, "escape_char_event", return_value="escaped_event"
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+        out = list(
+            FieldTestGenerator(
+                "app_path",
+                tokenised_events,
+                "field_bank",
+                ingest_with_uuid=True,
+            ).generate_requirements_datamodels_tests()
+        )
+        assert out == expected_output
+        assert param_mock.call_count == len(expected_output)
+
+
+def test_generate_requirements_tests_filters_incompatible_input_types_when_uuid_enabled():
+    """Test that incompatible input types are filtered when ingest_with_uuid=True."""
+    modinput_event = SampleEvent(
+        event_string="modinput_event",
+        metadata={
+            "input_type": "modinput",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "modinput_host",
+            "ingest_with_uuid": True,
+        },
+        sample_name="modinput_sample.xml",
+        requirement_test_data={
+            "cim_fields": {"src": "192.168.0.1"},
+        },
+    )
+    modinput_event.unique_identifier = "uuid-modinput"
+
+    file_monitor_event = SampleEvent(
+        event_string="file_monitor_event",
+        metadata={
+            "input_type": "file_monitor",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "file_monitor_host",
+            "ingest_with_uuid": True,
+        },
+        sample_name="file_monitor_sample.xml",
+        requirement_test_data={
+            "cim_fields": {"dest": "10.0.0.1"},
+        },
+    )
+    file_monitor_event.unique_identifier = "uuid-file-monitor"
+
+    tokenised_events = [modinput_event, file_monitor_event]
+
+    with patch.object(
+        xml_event_parser, "escape_char_event", side_effect=lambda x: x
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+        # With ingest_with_uuid=True, only modinput event should be included
+        out = list(
+            FieldTestGenerator(
+                "app_path",
+                tokenised_events,
+                "field_bank",
+                ingest_with_uuid=True,
+            ).generate_requirements_tests()
+        )
+        assert len(out) == 1
+        assert out[0][0]["unique_identifier"] == "uuid-modinput"
+        assert param_mock.call_count == 1
+
+
+def test_generate_requirements_tests_includes_all_input_types_when_uuid_disabled():
+    """Test that all input types are included when ingest_with_uuid=False."""
+    modinput_event = SampleEvent(
+        event_string="modinput_event",
+        metadata={
+            "input_type": "modinput",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "modinput_host",
+            "ingest_with_uuid": False,
+        },
+        sample_name="modinput_sample.xml",
+        requirement_test_data={
+            "cim_fields": {"src": "192.168.0.1"},
+        },
+    )
+
+    file_monitor_event = SampleEvent(
+        event_string="file_monitor_event",
+        metadata={
+            "input_type": "file_monitor",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "file_monitor_host",
+            "ingest_with_uuid": False,
+        },
+        sample_name="file_monitor_sample.xml",
+        requirement_test_data={
+            "cim_fields": {"dest": "10.0.0.1"},
+        },
+    )
+
+    tokenised_events = [modinput_event, file_monitor_event]
+
+    with patch.object(
+        xml_event_parser, "escape_char_event", side_effect=lambda x: x
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+        # With ingest_with_uuid=False, both events should be included
+        out = list(
+            FieldTestGenerator(
+                "app_path",
+                tokenised_events,
+                "field_bank",
+                ingest_with_uuid=False,
+            ).generate_requirements_tests()
+        )
+        assert len(out) == 2
+        assert param_mock.call_count == 2
+
+
+def test_generate_requirements_datamodels_tests_filters_incompatible_input_types_when_uuid_enabled():
+    """Test that incompatible input types are filtered from datamodel tests when UUID enabled."""
+    windows_input_event = SampleEvent(
+        event_string="windows_input_event",
+        metadata={
+            "input_type": "windows_input",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "windows_host",
+            "ingest_with_uuid": True,
+        },
+        sample_name="windows_sample.xml",
+        requirement_test_data={"datamodels": {"model": "Alerts"}},
+    )
+    windows_input_event.unique_identifier = "uuid-windows"
+
+    syslog_event = SampleEvent(
+        event_string="syslog_event",
+        metadata={
+            "input_type": "syslog_tcp",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "syslog_host",
+            "ingest_with_uuid": True,
+        },
+        sample_name="syslog_sample.xml",
+        requirement_test_data={"datamodels": {"model": "Network"}},
+    )
+    syslog_event.unique_identifier = "uuid-syslog"
+
+    tokenised_events = [windows_input_event, syslog_event]
+
+    with patch.object(
+        xml_event_parser, "strip_syslog_header", return_value="stripped_event"
+    ), patch.object(
+        xml_event_parser, "escape_char_event", side_effect=lambda x: x
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+        # With ingest_with_uuid=True, only windows_input event should be included
+        out = list(
+            FieldTestGenerator(
+                "app_path",
+                tokenised_events,
+                "field_bank",
+                ingest_with_uuid=True,
+            ).generate_requirements_datamodels_tests()
+        )
+        assert len(out) == 1
+        assert out[0][0]["unique_identifier"] == "uuid-windows"
+        assert param_mock.call_count == 1

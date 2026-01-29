@@ -355,6 +355,15 @@ The following optional arguments are available to modify the default settings in
 
       - Select false to disable test execution, default value is true
 
+      ```console
+      --use-uuid
+      ```
+
+      - When enabled, events are matched using a unique identifier field instead of escaped event content. This improves test reliability for events with special characters or large content.
+      - **Applies to requirement tests only** (`splunk_requirements` marker).
+      - **Only samples with input_type `modinput` or `windows_input` are supported**. These use the HEC Event ingestor which supports indexed fields.
+      - Samples with other input types (`file_monitor`, `syslog_tcp`, etc.) are skipped during ingestion with a warning, as their ingestors don't support UUID fields.
+
 ## Extending pytest-splunk-addon
 
 **1. Test cases taking too long to execute**

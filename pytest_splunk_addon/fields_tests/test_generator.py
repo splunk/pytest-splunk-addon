@@ -25,6 +25,7 @@ from itertools import chain
 from ..addon_parser import AddonParser
 from . import FieldBank
 from ..utilities import xml_event_parser
+from ..utils import UUID_COMPATIBLE_INPUT_TYPES
 
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -44,12 +45,13 @@ class FieldTestGenerator(object):
         field_bank (str): Path of the fields Json file
     """
 
-    def __init__(self, app_path, tokenized_events, field_bank=None):
+    def __init__(self, app_path, tokenized_events, field_bank=None, ingest_with_uuid=False):
         LOGGER.debug("initializing AddonParser to parse the app")
         self.app_path = app_path
         self.addon_parser = AddonParser(self.app_path)
         self.tokenized_events = tokenized_events
         self.field_bank = field_bank
+        self.ingest_with_uuid = ingest_with_uuid
 
     def generate_tests(self, fixture):
         """
@@ -165,6 +167,13 @@ class FieldTestGenerator(object):
                 or event.requirement_test_data.keys() == {"other_fields"}
             ):
                 continue
+
+            # Skip incompatible samples when UUID mode is enabled
+            if self.ingest_with_uuid:
+                input_type = event.metadata.get("input_type", "default")
+                if input_type not in UUID_COMPATIBLE_INPUT_TYPES:
+                    continue
+
             if event.metadata.get("input_type", "").startswith("syslog"):
                 stripped_event = xml_event_parser.strip_syslog_header(event.event)
                 if stripped_event is None:
@@ -190,6 +199,12 @@ class FieldTestGenerator(object):
                 datamodel.replace(" ", "_").replace(":", "_")
                 for datamodel in datamodels
             ]
+            sample_event = {
+                "datamodels": datamodels,
+                "stanza": escaped_event,
+            }
+            if self.ingest_with_uuid and getattr(event, "unique_identifier", None):
+                sample_event["unique_identifier"] = event.unique_identifier
             yield pytest.param(
                 {
                     "datamodels": datamodels,
@@ -234,6 +249,13 @@ class FieldTestGenerator(object):
         for event in self.tokenized_events:
             if not event.requirement_test_data:
                 continue
+
+            # Skip incompatible samples when UUID mode is enabled
+            if self.ingest_with_uuid:
+                input_type = event.metadata.get("input_type", "default")
+                if input_type not in UUID_COMPATIBLE_INPUT_TYPES:
+                    continue
+
             if event.metadata.get("input_type", "").startswith("syslog"):
                 stripped_event = xml_event_parser.strip_syslog_header(event.event)
                 if stripped_event is None:
@@ -246,9 +268,8 @@ class FieldTestGenerator(object):
 
             escaped_event = xml_event_parser.escape_char_event(stripped_event)
             exceptions = event.requirement_test_data.get("exceptions", {})
-            metadata = event.metadata
             modinput_params = {
-                "sourcetype": metadata.get("sourcetype_to_search"),
+                "sourcetype": event.metadata.get("sourcetype_to_search"),
             }
 
             cim_fields = event.requirement_test_data.get("cim_fields", {})
@@ -261,6 +282,15 @@ class FieldTestGenerator(object):
                     for field, value in requirement_fields.items()
                     if field not in exceptions
                 }
+                sample_event = {
+                    "escaped_event": escaped_event,
+                    "fields": requirement_fields,
+                    "modinput_params": modinput_params,
+                }
+
+                if self.ingest_with_uuid and getattr(event, "unique_identifier", None):
+                    sample_event["unique_identifier"] = event.unique_identifier
+
                 yield pytest.param(
                     {
                         "escaped_event": escaped_event,

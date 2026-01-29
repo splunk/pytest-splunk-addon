@@ -15,6 +15,9 @@
 #
 import os
 
+# Only these input types support UUID-based ingestion/matching.
+UUID_COMPATIBLE_INPUT_TYPES = ("modinput", "windows_input")
+
 
 def check_first_worker() -> bool:
     """

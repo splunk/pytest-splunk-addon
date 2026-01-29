@@ -48,6 +48,13 @@ def pytest_addoption(parser):
         by another process such as a ci/cd pipeline
     """
     group = parser.getgroup("splunk-addon")
+    group.addoption(
+        "--use-uuid",
+        action="store_true",
+        dest="ingest_with_uuid",
+        default=False,
+        help="Use generated UUID for ingesting and searching events. Setting this flag will lead to matching events in search by the ID and not by escaped _raw.",
+    )
 
     group.addoption(
         "--splunk-app",

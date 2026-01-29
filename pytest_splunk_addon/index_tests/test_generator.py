@@ -32,7 +32,9 @@ class IndexTimeTestGenerator(object):
       for the Add-on.
     """
 
-    def generate_tests(self, store_events, app_path, config_path, test_type):
+    def generate_tests(
+        self, store_events, app_path, config_path, test_type, ingest_with_uuid=False
+    ):
         """
         Generates the test cases based on test_type
 
@@ -41,6 +43,7 @@ class IndexTimeTestGenerator(object):
             app_path (str): Path of the app package
             config_path (str): Path of package which contains pytest-splunk-addon-data.conf
             test_type (str): Type of test case
+            ingest_with_uuid (bool): Whether to ingest events with UUID
 
         Yields:
             pytest.params for the test templates
