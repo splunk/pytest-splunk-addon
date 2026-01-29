@@ -434,16 +434,18 @@ def test_splunk_fiction_indextime(testdir, request):
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines_random(
-        constants.TA_FICTION_INDEXTIME_PASSED + constants.TA_FICTION_INDEXTIME_SKIPPED
+        constants.TA_FICTION_INDEXTIME_PASSED
+        + constants.TA_FICTION_INDEXTIME_SKIPPED
+        + constants.TA_FICTION_INDEXTIME_FAILED
     )
     result.assert_outcomes(
         passed=len(constants.TA_FICTION_INDEXTIME_PASSED),
         skipped=len(constants.TA_FICTION_INDEXTIME_SKIPPED),
-        failed=0,
+        failed=len(constants.TA_FICTION_INDEXTIME_FAILED),
     )
 
-    # make sure that we get a '0' exit code for the testsuite
-    assert result.ret == 0
+    # The test suite should fail as it contains failures
+    assert result.ret != 0
 
 
 @pytest.mark.docker
