@@ -206,10 +206,7 @@ class FieldTestGenerator(object):
             if self.ingest_with_uuid and getattr(event, "unique_identifier", None):
                 sample_event["unique_identifier"] = event.unique_identifier
             yield pytest.param(
-                {
-                    "datamodels": datamodels,
-                    "stanza": escaped_event,
-                },
+                sample_event,
                 id=f"{'-'.join(datamodels)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
             )
 
@@ -292,11 +289,7 @@ class FieldTestGenerator(object):
                     sample_event["unique_identifier"] = event.unique_identifier
 
                 yield pytest.param(
-                    {
-                        "escaped_event": escaped_event,
-                        "fields": requirement_fields,
-                        "modinput_params": modinput_params,
-                    },
+                    sample_event,
                     id=f"sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )
 

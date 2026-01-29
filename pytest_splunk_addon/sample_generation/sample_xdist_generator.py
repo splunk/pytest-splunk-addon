@@ -39,6 +39,7 @@ class SampleXdistGenerator:
         self.addon_path = addon_path
         self.process_count = process_count
         self.config_path = config_path
+        self.ingest_with_uuid = ingest_with_uuid
 
     def get_samples(self, store_events):
         """
@@ -69,7 +70,7 @@ class SampleXdistGenerator:
                         store_sample = pickle.load(file_obj)
                 else:
                     sample_generator = SampleGenerator(
-                        self.addon_path, self.config_path
+                        self.addon_path, self.config_path, self.ingest_with_uuid
                     )
                     tokenized_events = list(sample_generator.get_samples())
                     store_sample = {
@@ -81,7 +82,9 @@ class SampleXdistGenerator:
                     with open(file_path, "wb") as file_obj:
                         pickle.dump(store_sample, file_obj)
         else:
-            sample_generator = SampleGenerator(self.addon_path, self.config_path)
+            sample_generator = SampleGenerator(
+                self.addon_path, self.config_path, self.ingest_with_uuid
+            )
             tokenized_events = list(sample_generator.get_samples())
             store_sample = {
                 "conf_name": SampleGenerator.conf_name,
