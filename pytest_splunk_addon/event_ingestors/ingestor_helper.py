@@ -31,6 +31,38 @@ class IngestorHelper(object):
     Module for helper methods for ingestors.
     """
 
+    # Mapping of input types to their corresponding ingestor classes
+    INGEST_METHODS = {
+        "modinput": HECEventIngestor,
+        "windows_input": HECEventIngestor,
+        "file_monitor": HECRawEventIngestor,
+        "uf_file_monitor": FileMonitorEventIngestor,
+        "scripted_input": HECRawEventIngestor,
+        "hec_metric": HECMetricEventIngestor,
+        "syslog_tcp": SC4SEventIngestor,
+        "syslog_udp": None,  # TBD
+        "default": HECRawEventIngestor,
+    }
+
+    @classmethod
+    def get_ep_compatible_input_types(cls):
+        """
+        Dynamically determine which input types are compatible with Splunk Edge Processor mode.
+        
+        Returns input types that use HECEventIngestor, which is the only ingestor that supports
+        UUID via indexed fields parameter. This is required for EP mode because EP transforms
+        events, making literal content matching unreliable.
+        
+        Returns:
+            tuple: Input types that use HECEventIngestor
+        """
+        # Return input types that use HECEventIngestor
+        return tuple(
+            input_type 
+            for input_type, ingestor_class in cls.INGEST_METHODS.items() 
+            if ingestor_class is HECEventIngestor
+        )
+
     @classmethod
     def get_event_ingestor(cls, input_type, ingest_meta_data):
         """
@@ -40,19 +72,7 @@ class IngestorHelper(object):
             input_type (str): input_type defined in pytest-splunk-addon-data.conf
             ingest_meta_data (dict): Dictionary of required meta_data.
         """
-        ingest_methods = {
-            "modinput": HECEventIngestor,
-            "windows_input": HECEventIngestor,
-            "file_monitor": HECRawEventIngestor,
-            "uf_file_monitor": FileMonitorEventIngestor,
-            "scripted_input": HECRawEventIngestor,
-            "hec_metric": HECMetricEventIngestor,
-            "syslog_tcp": SC4SEventIngestor,
-            "syslog_udp": None,  # TBD
-            "default": HECRawEventIngestor,
-        }
-
-        ingestor = ingest_methods.get(input_type)(ingest_meta_data)
+        ingestor = cls.INGEST_METHODS.get(input_type)(ingest_meta_data)
         LOGGER.debug("Using the following HEC ingestor: {}".format(str(ingestor)))
         return ingestor
 
@@ -95,7 +115,8 @@ class IngestorHelper(object):
             thread_count (int): number of threads to use for ingestion
             store_events (bool): Boolean param for generating json files with tokenised events
         """
-        sample_generator = SampleXdistGenerator(addon_path, config_path)
+        splunk_ep = ingest_meta_data.get("splunk_ep", False)
+        sample_generator = SampleXdistGenerator(addon_path, splunk_ep, config_path)
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         ingestor_dict = cls.get_consolidated_events(tokenized_events)
