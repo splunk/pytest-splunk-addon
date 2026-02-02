@@ -15,8 +15,9 @@
 #
 import os
 
-# Only these input types support UUID-based ingestion/matching.
-UUID_COMPATIBLE_INPUT_TYPES = ("modinput", "windows_input")
+# Only these input types use HEC Event ingestor which supports UUID via fields parameter.
+# These are the only input types compatible with Splunk Edge Processor mode.
+EP_COMPATIBLE_INPUT_TYPES = ("modinput", "windows_input")
 
 
 def check_first_worker() -> bool:

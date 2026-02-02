@@ -40,13 +40,13 @@ class PytestSplunkAddonDataParser:
 
     conf_name = " "
 
-    def __init__(self, addon_path: str, config_path: str, ingest_with_uuid: bool = False):
+    def __init__(self, addon_path: str, config_path: str, splunk_ep: bool = False):
         self._conf_parser = conf_parser.TABConfigParser()
         self.config_path = config_path
         self._psa_data = None
         self.addon_path = addon_path
         self.match_stanzas = set()
-        self.ingest_with_uuid = ingest_with_uuid
+        self.splunk_ep = splunk_ep
         self._path_to_samples = self._get_path_to_samples()
 
     def _get_path_to_samples(self):
@@ -108,7 +108,7 @@ class PytestSplunkAddonDataParser:
         results = []
         for sample_name, stanza_params in sorted(_psa_data.items()):
             sample_path = os.path.join(self._path_to_samples, sample_name)
-            results.append(SampleStanza(sample_path, stanza_params, self.ingest_with_uuid))
+            results.append(SampleStanza(sample_path, stanza_params, self.splunk_ep))
         return results
 
     def _get_psa_data_stanzas(self):

@@ -34,12 +34,12 @@ class SampleXdistGenerator:
     """
 
     def __init__(
-        self, addon_path, ingest_with_uuid: bool, config_path=None, process_count=4
+        self, addon_path, splunk_ep: bool, config_path=None, process_count=4
     ):
         self.addon_path = addon_path
         self.process_count = process_count
         self.config_path = config_path
-        self.ingest_with_uuid = ingest_with_uuid
+        self.splunk_ep = splunk_ep
 
     def get_samples(self, store_events):
         """
@@ -70,7 +70,7 @@ class SampleXdistGenerator:
                         store_sample = pickle.load(file_obj)
                 else:
                     sample_generator = SampleGenerator(
-                        self.addon_path, self.config_path, self.ingest_with_uuid
+                        self.addon_path, self.config_path, self.splunk_ep
                     )
                     tokenized_events = list(sample_generator.get_samples())
                     store_sample = {
@@ -83,7 +83,7 @@ class SampleXdistGenerator:
                         pickle.dump(store_sample, file_obj)
         else:
             sample_generator = SampleGenerator(
-                self.addon_path, self.config_path, self.ingest_with_uuid
+                self.addon_path, self.config_path, self.splunk_ep
             )
             tokenized_events = list(sample_generator.get_samples())
             store_sample = {
@@ -142,7 +142,7 @@ class SampleXdistGenerator:
                         }
                     ],
                 }
-                if self.ingest_with_uuid:
+                if self.splunk_ep:
                     tokenized_samples_dict[each_event.sample_name]["events"][0][
                         "unique_identifier"
                     ] = each_event.unique_identifier
@@ -153,7 +153,7 @@ class SampleXdistGenerator:
                     "time_values": each_event.time_values,
                     "requirement_test_data": each_event.requirement_test_data,
                 }
-                if self.ingest_with_uuid:
+                if self.splunk_ep:
                     sample_event["unique_identifier"] = each_event.unique_identifier
                 tokenized_samples_dict[each_event.sample_name]["events"].append(
                     {

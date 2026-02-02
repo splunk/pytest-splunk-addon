@@ -431,7 +431,7 @@ def test_generate_field_tests(
                         "input_type": "modinput",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host",
-                        "ingest_with_uuid": False,
+                        "splunk_ep": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={
@@ -455,7 +455,7 @@ def test_generate_field_tests(
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host_syslog",
-                        "ingest_with_uuid": False,
+                        "splunk_ep": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={},
@@ -466,7 +466,7 @@ def test_generate_field_tests(
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host_syslog",
-                        "ingest_with_uuid": False,
+                        "splunk_ep": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={
@@ -541,7 +541,7 @@ def test_generate_requirement_tests_with_uuid(mock_uuid4):
             "input_type": "modinput",
             "sourcetype_to_search": "dummy_sourcetype",
             "host": "dummy_host",
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
         },
         sample_name="file1.xml",
         requirement_test_data={
@@ -584,7 +584,7 @@ def test_generate_requirement_tests_with_uuid(mock_uuid4):
                 "app_path",
                 tokenised_events,
                 "field_bank",
-                ingest_with_uuid=True,
+                splunk_ep=True,
             ).generate_requirements_tests()
         )
         assert out == expected_output
@@ -674,7 +674,7 @@ def test_generate_requirement_datamodel_tests_with_uuid(mock_uuid4):
             "input_type": "modinput",
             "sourcetype_to_search": "dummy_sourcetype",
             "host": "dummy_host",
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
         },
         sample_name="file1.xml",
         requirement_test_data={"datamodels": {"model": "Alerts"}},
@@ -704,7 +704,7 @@ def test_generate_requirement_datamodel_tests_with_uuid(mock_uuid4):
                 "app_path",
                 tokenised_events,
                 "field_bank",
-                ingest_with_uuid=True,
+                splunk_ep=True,
             ).generate_requirements_datamodels_tests()
         )
         assert out == expected_output
@@ -712,14 +712,14 @@ def test_generate_requirement_datamodel_tests_with_uuid(mock_uuid4):
 
 
 def test_generate_requirements_tests_filters_incompatible_input_types_when_uuid_enabled():
-    """Test that incompatible input types are filtered when ingest_with_uuid=True."""
+    """Test that incompatible input types are filtered when splunk_ep=True."""
     modinput_event = SampleEvent(
         event_string="modinput_event",
         metadata={
             "input_type": "modinput",
             "sourcetype_to_search": "dummy_sourcetype",
             "host": "modinput_host",
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
         },
         sample_name="modinput_sample.xml",
         requirement_test_data={
@@ -734,7 +734,7 @@ def test_generate_requirements_tests_filters_incompatible_input_types_when_uuid_
             "input_type": "file_monitor",
             "sourcetype_to_search": "dummy_sourcetype",
             "host": "file_monitor_host",
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
         },
         sample_name="file_monitor_sample.xml",
         requirement_test_data={
@@ -748,13 +748,13 @@ def test_generate_requirements_tests_filters_incompatible_input_types_when_uuid_
     with patch.object(
         xml_event_parser, "escape_char_event", side_effect=lambda x: x
     ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
-        # With ingest_with_uuid=True, only modinput event should be included
+        # With splunk_ep=True, only modinput event should be included
         out = list(
             FieldTestGenerator(
                 "app_path",
                 tokenised_events,
                 "field_bank",
-                ingest_with_uuid=True,
+                splunk_ep=True,
             ).generate_requirements_tests()
         )
         assert len(out) == 1
@@ -763,14 +763,14 @@ def test_generate_requirements_tests_filters_incompatible_input_types_when_uuid_
 
 
 def test_generate_requirements_tests_includes_all_input_types_when_uuid_disabled():
-    """Test that all input types are included when ingest_with_uuid=False."""
+    """Test that all input types are included when splunk_ep=False."""
     modinput_event = SampleEvent(
         event_string="modinput_event",
         metadata={
             "input_type": "modinput",
             "sourcetype_to_search": "dummy_sourcetype",
             "host": "modinput_host",
-            "ingest_with_uuid": False,
+            "splunk_ep": False,
         },
         sample_name="modinput_sample.xml",
         requirement_test_data={
@@ -784,7 +784,7 @@ def test_generate_requirements_tests_includes_all_input_types_when_uuid_disabled
             "input_type": "file_monitor",
             "sourcetype_to_search": "dummy_sourcetype",
             "host": "file_monitor_host",
-            "ingest_with_uuid": False,
+            "splunk_ep": False,
         },
         sample_name="file_monitor_sample.xml",
         requirement_test_data={
@@ -797,13 +797,13 @@ def test_generate_requirements_tests_includes_all_input_types_when_uuid_disabled
     with patch.object(
         xml_event_parser, "escape_char_event", side_effect=lambda x: x
     ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
-        # With ingest_with_uuid=False, both events should be included
+        # With splunk_ep=False, both events should be included
         out = list(
             FieldTestGenerator(
                 "app_path",
                 tokenised_events,
                 "field_bank",
-                ingest_with_uuid=False,
+                splunk_ep=False,
             ).generate_requirements_tests()
         )
         assert len(out) == 2
@@ -818,7 +818,7 @@ def test_generate_requirements_datamodels_tests_filters_incompatible_input_types
             "input_type": "windows_input",
             "sourcetype_to_search": "dummy_sourcetype",
             "host": "windows_host",
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
         },
         sample_name="windows_sample.xml",
         requirement_test_data={"datamodels": {"model": "Alerts"}},
@@ -831,7 +831,7 @@ def test_generate_requirements_datamodels_tests_filters_incompatible_input_types
             "input_type": "syslog_tcp",
             "sourcetype_to_search": "dummy_sourcetype",
             "host": "syslog_host",
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
         },
         sample_name="syslog_sample.xml",
         requirement_test_data={"datamodels": {"model": "Network"}},
@@ -845,13 +845,13 @@ def test_generate_requirements_datamodels_tests_filters_incompatible_input_types
     ), patch.object(
         xml_event_parser, "escape_char_event", side_effect=lambda x: x
     ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
-        # With ingest_with_uuid=True, only windows_input event should be included
+        # With splunk_ep=True, only windows_input event should be included
         out = list(
             FieldTestGenerator(
                 "app_path",
                 tokenised_events,
                 "field_bank",
-                ingest_with_uuid=True,
+                splunk_ep=True,
             ).generate_requirements_datamodels_tests()
         )
         assert len(out) == 1

@@ -33,7 +33,7 @@ class IndexTimeTestGenerator(object):
     """
 
     def generate_tests(
-        self, store_events, app_path, config_path, test_type, ingest_with_uuid=False
+        self, store_events, app_path, config_path, test_type, splunk_ep=False
     ):
         """
         Generates the test cases based on test_type
@@ -43,13 +43,13 @@ class IndexTimeTestGenerator(object):
             app_path (str): Path of the app package
             config_path (str): Path of package which contains pytest-splunk-addon-data.conf
             test_type (str): Type of test case
-            ingest_with_uuid (bool): Whether to ingest events with UUID
+            splunk_ep (bool): Whether Splunk EP mode is enabled
 
         Yields:
             pytest.params for the test templates
 
         """
-        sample_generator = SampleXdistGenerator(app_path, config_path)
+        sample_generator = SampleXdistGenerator(app_path, splunk_ep, config_path)
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         if not store_sample.get("conf_name") == "psa-data-gen":

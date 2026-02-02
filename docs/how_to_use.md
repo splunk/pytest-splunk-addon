@@ -356,13 +356,18 @@ The following optional arguments are available to modify the default settings in
       - Select false to disable test execution, default value is true
 
       ```console
-      --use-uuid
+      --splunk-ep
       ```
 
-      - When enabled, events are matched using a unique identifier field instead of escaped event content. This improves test reliability for events with special characters or large content.
-      - **Applies to requirement tests only** (`splunk_requirements` marker).
-      - **Only samples with input_type `modinput` or `windows_input` are supported**. These use the HEC Event ingestor which supports indexed fields.
-      - Samples with other input types (`file_monitor`, `syslog_tcp`, etc.) are skipped during ingestion with a warning, as their ingestors don't support UUID fields.
+      - Enable Splunk Edge Processor mode when your events are transformed during ingestion.
+      - **Why needed**: Edge Processor modifies event content (transformations, parsing, enrichment), which breaks tests that search for literal event content.
+      - When enabled, the following tests use UUID-based matching instead of escaped _raw:
+        - `test_cim_fields_recommended` (CIM compliance tests)
+        - `test_requirement_fields` (requirement field tests)
+        - `test_datamodels` (datamodel mapping tests)
+      - **Limitation**: These tests are only generated for samples using HEC Event ingestor (`modinput`, `windows_input`) because other ingestors don't support UUID indexed fields.
+      - **Other test types**: Field extraction, tags, eventtypes, savedsearches, etc. are generated for ALL samples and work normally with EP transformations.
+      - **Deprecated alias**: `--use-uuid` (kept for backward compatibility).
 
 ## Extending pytest-splunk-addon
 

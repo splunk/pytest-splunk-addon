@@ -20,7 +20,7 @@ from pytest_splunk_addon.fields_tests.test_generator import FieldTestGenerator
 
 def _simulate_tokenization_uuid_assignment(event):
     """Helper to simulate UUID assignment that happens during tokenization"""
-    if event.metadata.get("ingest_with_uuid"):
+    if event.metadata.get("splunk_ep"):
         event.unique_identifier = str(uuid.uuid4())
 
 
@@ -41,14 +41,14 @@ class TestUUIDFlowThroughPipeline:
             }
 
             # Test with UUID enabled
-            stanza = SampleStanza(sample_path, psa_data_params, ingest_with_uuid=True)
-            assert stanza.metadata["ingest_with_uuid"] == True
+            stanza = SampleStanza(sample_path, psa_data_params, splunk_ep=True)
+            assert stanza.metadata["splunk_ep"] == True
 
             # Test with UUID disabled
             stanza_no_uuid = SampleStanza(
-                sample_path, psa_data_params, ingest_with_uuid=False
+                sample_path, psa_data_params, splunk_ep=False
             )
-            assert stanza_no_uuid.metadata["ingest_with_uuid"] == False
+            assert stanza_no_uuid.metadata["splunk_ep"] == False
 
     def test_uuid_in_sample_generator_initialization(self):
         """Verify SampleGenerator properly initializes with UUID flag"""
@@ -57,15 +57,15 @@ class TestUUIDFlowThroughPipeline:
 
         # Test with UUID enabled
         generator = SampleGenerator(
-            addon_path, ingest_with_uuid=True, config_path=config_path
+            addon_path, splunk_ep=True, config_path=config_path
         )
-        assert generator.ingest_with_uuid == True
+        assert generator.splunk_ep == True
 
         # Test with UUID disabled
         generator_no_uuid = SampleGenerator(
-            addon_path, ingest_with_uuid=False, config_path=config_path
+            addon_path, splunk_ep=False, config_path=config_path
         )
-        assert generator_no_uuid.ingest_with_uuid == False
+        assert generator_no_uuid.splunk_ep == False
 
     def test_uuid_in_sample_xdist_generator_initialization(self):
         """Verify SampleXdistGenerator properly initializes with UUID flag"""
@@ -74,15 +74,15 @@ class TestUUIDFlowThroughPipeline:
 
         # Test with UUID enabled
         xdist_generator = SampleXdistGenerator(
-            addon_path, ingest_with_uuid=True, config_path=config_path
+            addon_path, splunk_ep=True, config_path=config_path
         )
-        assert xdist_generator.ingest_with_uuid == True
+        assert xdist_generator.splunk_ep == True
 
         # Test with UUID disabled
         xdist_generator_no_uuid = SampleXdistGenerator(
-            addon_path, ingest_with_uuid=False, config_path=config_path
+            addon_path, splunk_ep=False, config_path=config_path
         )
-        assert xdist_generator_no_uuid.ingest_with_uuid == False
+        assert xdist_generator_no_uuid.splunk_ep == False
 
 
 class TestUUIDInHECPayload:
@@ -92,7 +92,7 @@ class TestUUIDInHECPayload:
         """Verify UUID is added to HEC payload when flag is enabled"""
         # Create a sample event with UUID
         metadata = {
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
             "sourcetype": "test:sourcetype",
             "source": "/var/log/test.log",
             "index": "main",
@@ -160,7 +160,7 @@ class TestUUIDInHECPayload:
     def test_uuid_not_added_to_hec_payload_when_disabled(self):
         """Verify UUID is NOT added to HEC payload when flag is disabled"""
         metadata = {
-            "ingest_with_uuid": False,
+            "splunk_ep": False,
             "sourcetype": "test:sourcetype",
             "source": "/var/log/test.log",
             "index": "main",
@@ -215,7 +215,7 @@ class TestUUIDInHECPayload:
     def test_hec_payload_structure_with_uuid(self):
         """Verify complete HEC payload structure includes UUID and other fields correctly"""
         metadata = {
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
             "sourcetype": "test:sourcetype",
             "source": "/var/log/test.log",
             "index": "main",
@@ -284,7 +284,7 @@ class TestUUIDInTestGeneration:
         """Verify UUID is included in requirement test parameters"""
         # Create a tokenized event with UUID
         metadata = {
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
             "input_type": "modinput",
             "sourcetype_to_search": "test:sourcetype",
             "host": "test-host",
@@ -311,7 +311,7 @@ class TestUUIDInTestGeneration:
             app_path="fake/path",
             tokenized_events=[event],
             field_bank=None,
-            ingest_with_uuid=True,
+            splunk_ep=True,
         )
 
         # Generate requirement tests
@@ -338,7 +338,7 @@ class TestUUIDInTestGeneration:
     def test_uuid_in_datamodel_test_params(self):
         """Verify UUID is included in datamodel test parameters"""
         metadata = {
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
             "input_type": "modinput",
             "sourcetype_to_search": "test:sourcetype",
             "host": "test-host",
@@ -362,7 +362,7 @@ class TestUUIDInTestGeneration:
             app_path="fake/path",
             tokenized_events=[event],
             field_bank=None,
-            ingest_with_uuid=True,
+            splunk_ep=True,
         )
 
         # Generate datamodel tests
@@ -387,7 +387,7 @@ class TestUUIDInTestGeneration:
     def test_uuid_not_in_params_when_disabled(self):
         """Verify UUID is NOT in test parameters when flag is disabled"""
         metadata = {
-            "ingest_with_uuid": False,
+            "splunk_ep": False,
             "input_type": "modinput",
             "sourcetype_to_search": "test:sourcetype",
             "host": "test-host",
@@ -408,7 +408,7 @@ class TestUUIDInTestGeneration:
             app_path="fake/path",
             tokenized_events=[event],
             field_bank=None,
-            ingest_with_uuid=False,
+            splunk_ep=False,
         )
 
         # Generate requirement tests
@@ -490,7 +490,7 @@ class TestUUIDInStoredEvents:
             sample_data = stored_data["test_sample"]
             assert "metadata" in sample_data
             # Accept both boolean True and string "true" for JSON compatibility
-            ingest_uuid_value = sample_data["metadata"]["ingest_with_uuid"]
+            ingest_uuid_value = sample_data["metadata"]["splunk_ep"]
             assert ingest_uuid_value is True or ingest_uuid_value == "true"
             assert "events" in sample_data
             assert len(sample_data["events"]) > 0
@@ -546,7 +546,7 @@ class TestUUIDInStoredEvents:
                 stored_data = json.loads(json_content)
 
                 sample_data = stored_data["test_sample_no_uuid"]
-                assert sample_data["metadata"]["ingest_with_uuid"] == False
+                assert sample_data["metadata"]["splunk_ep"] == False
 
                 # Verify unique_identifier is NOT in events
                 for event in sample_data["events"]:
@@ -565,7 +565,7 @@ class TestUUIDSearchQueryGeneration:
         """Verify test parameters include UUID when flag is enabled"""
         # This tests that the test parameter generation includes UUID
         metadata = {
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
             "input_type": "modinput",
             "sourcetype_to_search": "test:sourcetype",
             "host": "test-host",
@@ -585,7 +585,7 @@ class TestUUIDSearchQueryGeneration:
             app_path="fake/path",
             tokenized_events=[event],
             field_bank=None,
-            ingest_with_uuid=True,
+            splunk_ep=True,
         )
 
         with patch(
@@ -607,7 +607,7 @@ class TestUUIDSearchQueryGeneration:
     def test_search_params_lack_uuid_when_disabled(self):
         """Verify test parameters do NOT include UUID when flag is disabled"""
         metadata = {
-            "ingest_with_uuid": False,
+            "splunk_ep": False,
             "input_type": "modinput",
             "sourcetype_to_search": "test:sourcetype",
             "host": "test-host",
@@ -624,7 +624,7 @@ class TestUUIDSearchQueryGeneration:
             app_path="fake/path",
             tokenized_events=[event],
             field_bank=None,
-            ingest_with_uuid=False,
+            splunk_ep=False,
         )
 
         with patch(
@@ -658,7 +658,7 @@ class TestUUIDEndToEndIntegration:
         # 4. Assert parameters drive UUID-based search (without reimplementing query builder)
 
         metadata = {
-            "ingest_with_uuid": True,
+            "splunk_ep": True,
             "input_type": "modinput",
             "sourcetype": "test:sourcetype",
             "source": "pytest-splunk-addon:modinput",
@@ -684,14 +684,14 @@ class TestUUIDEndToEndIntegration:
         assert hasattr(event, "unique_identifier")
 
         # Step 2: Verify HEC payload would include UUID
-        assert event.metadata.get("ingest_with_uuid") == True
+        assert event.metadata.get("splunk_ep") == True
 
         # Step 3: Generate test parameters
         test_generator = FieldTestGenerator(
             app_path="fake/path",
             tokenized_events=[event],
             field_bank=None,
-            ingest_with_uuid=True,
+            splunk_ep=True,
         )
 
         with patch(
@@ -717,7 +717,7 @@ class TestUUIDEndToEndIntegration:
     def test_complete_flow_without_uuid(self):
         """Test complete flow works correctly without UUID (backward compatibility)"""
         metadata = {
-            "ingest_with_uuid": False,
+            "splunk_ep": False,
             "input_type": "modinput",
             "sourcetype": "test:sourcetype",
             "source": "pytest-splunk-addon:modinput",
@@ -744,7 +744,7 @@ class TestUUIDEndToEndIntegration:
             app_path="fake/path",
             tokenized_events=[event],
             field_bank=None,
-            ingest_with_uuid=False,
+            splunk_ep=False,
         )
 
         with patch(

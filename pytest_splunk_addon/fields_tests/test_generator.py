@@ -25,7 +25,7 @@ from itertools import chain
 from ..addon_parser import AddonParser
 from . import FieldBank
 from ..utilities import xml_event_parser
-from ..utils import UUID_COMPATIBLE_INPUT_TYPES
+from ..utils import EP_COMPATIBLE_INPUT_TYPES
 
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -45,13 +45,13 @@ class FieldTestGenerator(object):
         field_bank (str): Path of the fields Json file
     """
 
-    def __init__(self, app_path, tokenized_events, field_bank=None, ingest_with_uuid=False):
+    def __init__(self, app_path, tokenized_events, field_bank=None, splunk_ep=False):
         LOGGER.debug("initializing AddonParser to parse the app")
         self.app_path = app_path
         self.addon_parser = AddonParser(self.app_path)
         self.tokenized_events = tokenized_events
         self.field_bank = field_bank
-        self.ingest_with_uuid = ingest_with_uuid
+        self.splunk_ep = splunk_ep
 
     def generate_tests(self, fixture):
         """
@@ -161,6 +161,7 @@ class FieldTestGenerator(object):
         Yields:
             pytest.params for the test templates
         """
+        skipped_samples = set()
         for event in self.tokenized_events:
             if (
                 not event.requirement_test_data
@@ -168,10 +169,16 @@ class FieldTestGenerator(object):
             ):
                 continue
 
-            # Skip incompatible samples when UUID mode is enabled
-            if self.ingest_with_uuid:
+            # Skip incompatible samples when Splunk EP mode is enabled
+            if self.splunk_ep:
                 input_type = event.metadata.get("input_type", "default")
-                if input_type not in UUID_COMPATIBLE_INPUT_TYPES:
+                if input_type not in EP_COMPATIBLE_INPUT_TYPES:
+                    if event.sample_name not in skipped_samples:
+                        LOGGER.info(
+                            f"Splunk EP mode: Skipping datamodel tests for sample '{event.sample_name}' "
+                            f"(input_type: {input_type}). Only 'modinput' and 'windows_input' are supported."
+                        )
+                        skipped_samples.add(event.sample_name)
                     continue
 
             if event.metadata.get("input_type", "").startswith("syslog"):
@@ -203,7 +210,7 @@ class FieldTestGenerator(object):
                 "datamodels": datamodels,
                 "stanza": escaped_event,
             }
-            if self.ingest_with_uuid and getattr(event, "unique_identifier", None):
+            if self.splunk_ep and getattr(event, "unique_identifier", None):
                 sample_event["unique_identifier"] = event.unique_identifier
             yield pytest.param(
                 sample_event,
@@ -243,14 +250,21 @@ class FieldTestGenerator(object):
         Yields:
             pytest.params for the test templates
         """
+        skipped_samples = set()
         for event in self.tokenized_events:
             if not event.requirement_test_data:
                 continue
 
-            # Skip incompatible samples when UUID mode is enabled
-            if self.ingest_with_uuid:
+            # Skip incompatible samples when Splunk EP mode is enabled
+            if self.splunk_ep:
                 input_type = event.metadata.get("input_type", "default")
-                if input_type not in UUID_COMPATIBLE_INPUT_TYPES:
+                if input_type not in EP_COMPATIBLE_INPUT_TYPES:
+                    if event.sample_name not in skipped_samples:
+                        LOGGER.info(
+                            f"Splunk EP mode: Skipping requirement tests for sample '{event.sample_name}' "
+                            f"(input_type: {input_type}). Only 'modinput' and 'windows_input' are supported."
+                        )
+                        skipped_samples.add(event.sample_name)
                     continue
 
             if event.metadata.get("input_type", "").startswith("syslog"):
@@ -285,7 +299,7 @@ class FieldTestGenerator(object):
                     "modinput_params": modinput_params,
                 }
 
-                if self.ingest_with_uuid and getattr(event, "unique_identifier", None):
+                if self.splunk_ep and getattr(event, "unique_identifier", None):
                     sample_event["unique_identifier"] = event.unique_identifier
 
                 yield pytest.param(

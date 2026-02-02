@@ -168,6 +168,9 @@ class FieldTestTemplates(object):
         escaped_event = splunk_searchtime_fields_requirements.get("escaped_event")
         event_identifier = unique_identifier or escaped_event
 
+        self.logger.info(f"Testing requirements for event: {event_identifier}")
+        self.logger.debug(f"unique_identifier={unique_identifier}, escaped_event={escaped_event}")
+
         record_property("Event_with", event_identifier)
         record_property("fields", splunk_searchtime_fields_requirements["fields"])
         record_property(
@@ -210,10 +213,13 @@ class FieldTestTemplates(object):
         missing_fields = []
         wrong_value_fields = {}
 
+        self.logger.debug(f"Expected fields: {list(fields.keys())}")
+        self.logger.debug(f"Fields from Splunk: {list(fields_from_splunk.keys())}")
+
         for field, value in fields.items():
             if field not in fields_from_splunk:
                 missing_fields.append(field)
-
+                continue
             if value != fields_from_splunk.get(field):
                 wrong_value_fields[field] = fields_from_splunk.get(field)
 
@@ -229,17 +235,20 @@ class FieldTestTemplates(object):
             ],
         )
 
-        if not wrong_value_fields == {}:
-            self.logger.error("Wrong field values:\n" + wrong_values_table)
-
-        assert wrong_value_fields == {}, (
-            f"\nNot all required fields have correct values or some fields are missing in Splunk. Wrong field values:\n{wrong_values_table}"
-            f"{format_search_query_log(search)}"
-        )
-
-        error_message += f"Test failed for event: {event_identifier}\n"
-
-        assert wrong_value_fields == {}, error_message
+        if missing_fields or wrong_value_fields:
+            error_details = []
+            if missing_fields:
+                error_details.append(f"Missing fields: {missing_fields}")
+            if wrong_value_fields:
+                error_details.append(f"Wrong field values:\n{wrong_values_table}")
+            details_text = "\n".join(error_details)
+            self.logger.error(details_text)
+            raise AssertionError(
+                "\nNot all required fields have correct values or some fields are missing in Splunk."
+                f"\n{details_text}"
+                f"{format_search_query_log(search)}"
+                f"\nTest failed for event: {event_identifier}"
+            )
 
     @pytest.mark.splunk_searchtime_fields
     @pytest.mark.splunk_searchtime_fields_negative

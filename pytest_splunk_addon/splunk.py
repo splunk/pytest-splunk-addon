@@ -49,11 +49,24 @@ def pytest_addoption(parser):
     """
     group = parser.getgroup("splunk-addon")
     group.addoption(
+        "--splunk-ep",
+        action="store_true",
+        dest="splunk_ep",
+        default=False,
+        help=(
+            "Enable Splunk Edge Processor mode. When using Edge Processor, events are transformed "
+            "during ingestion, making literal content matching unreliable. This flag enables UUID-based "
+            "event matching for CIM compliance tests (test_cim_fields_recommended, test_requirement_fields, "
+            "test_datamodels). Only samples using HEC Event ingestor (modinput, windows_input) are tested. "
+            "Other test types remain unaffected."
+        ),
+    )
+    group.addoption(
         "--use-uuid",
         action="store_true",
-        dest="ingest_with_uuid",
+        dest="splunk_ep",
         default=False,
-        help="Use generated UUID for ingesting and searching events. Setting this flag will lead to matching events in search by the ID and not by escaped _raw.",
+        help="Deprecated alias for --splunk-ep.",
     )
 
     group.addoption(
@@ -754,7 +767,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
             "splunk_hec_uri": splunk_hec_uri[1],
             "sc4s_host": sc4s[0],  # for sc4s
             "sc4s_port": sc4s[1][514],  # for sc4s
-            "ingest_with_uuid": request.config.getoption("ingest_with_uuid"),
+            "splunk_ep": request.config.getoption("splunk_ep"),
         }
         thread_count = int(request.config.getoption("thread_count"))
         store_events = request.config.getoption("store_events")

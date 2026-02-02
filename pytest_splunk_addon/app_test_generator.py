@@ -45,13 +45,13 @@ class AppTestGenerator(object):
     def __init__(self, pytest_config):
         self.pytest_config = pytest_config
         self.seen_tests = set()
-        self.ingest_with_uuid = self.pytest_config.getoption("ingest_with_uuid")
+        self.splunk_ep = self.pytest_config.getoption("splunk_ep")
         self.config_path = self.pytest_config.getoption("splunk_data_generator")
         self.store_events = self.pytest_config.getoption("store_events")
 
         sample_generator = SampleXdistGenerator(
             self.pytest_config.getoption("splunk_app"),
-            self.ingest_with_uuid,
+            self.splunk_ep,
             self.config_path,
         )
         store_sample = sample_generator.get_samples(self.store_events)
@@ -61,7 +61,7 @@ class AppTestGenerator(object):
             self.pytest_config.getoption("splunk_app"),
             self.tokenized_events,
             field_bank=self.pytest_config.getoption("field_bank", False),
-            ingest_with_uuid=self.ingest_with_uuid,
+            splunk_ep=self.splunk_ep,
         )
 
         data_model_path = os.path.join(
@@ -72,6 +72,7 @@ class AppTestGenerator(object):
             self.pytest_config.getoption("splunk_app"),
             self.pytest_config.getoption("splunk_dm_path") or data_model_path,
             self.tokenized_events,
+            splunk_ep=self.splunk_ep,
         )
         self.indextime_test_generator = IndexTimeTestGenerator()
 
@@ -103,7 +104,7 @@ class AppTestGenerator(object):
                 app_path=app_path,
                 config_path=config_path,
                 test_type=test_type,
-                ingest_with_uuid=self.ingest_with_uuid,
+                splunk_ep=self.splunk_ep,
             )
         )
 

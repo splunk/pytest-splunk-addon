@@ -48,12 +48,12 @@ class SampleStanza(object):
         psa_data_params (dict): Dictionary representing pytest-splunk-addon-data.conf
     """
 
-    def __init__(self, sample_path, psa_data_params, ingest_with_uuid: bool):
+    def __init__(self, sample_path, psa_data_params, splunk_ep: bool):
         self.sample_path = sample_path
         self.sample_name = os.path.basename(sample_path)
-        self.ingest_with_uuid = ingest_with_uuid
+        self.splunk_ep = splunk_ep
         self.metadata = self._parse_meta(psa_data_params)
-        self.metadata["ingest_with_uuid"] = ingest_with_uuid
+        self.metadata["splunk_ep"] = splunk_ep
         self.sample_rules = list(self._parse_rules(psa_data_params, self.sample_path))
         self.input_type = self.metadata.get("input_type", "default")
         self.host_count = 0
@@ -105,7 +105,7 @@ class SampleStanza(object):
                 if each_rule:
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
             for event in raw_event[event_counter]:
-                if event.metadata.get("ingest_with_uuid"):
+                if event.metadata.get("splunk_ep"):
                     event.unique_identifier = str(uuid.uuid4())
 
                 host_value = event.metadata.get("host")
