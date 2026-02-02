@@ -51,7 +51,6 @@ class SampleGenerator(object):
             sample_stanzas = psa_data_parser.get_sample_stanzas()
             SampleGenerator.conf_name = psa_data_parser.conf_name
             
-            # Set splunk_ep flag on each stanza's metadata (runtime configuration)
             for stanza in sample_stanzas:
                 stanza.metadata["splunk_ep"] = self.splunk_ep
             

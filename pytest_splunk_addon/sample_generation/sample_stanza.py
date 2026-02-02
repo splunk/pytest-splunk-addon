@@ -46,10 +46,6 @@ class SampleStanza(object):
     Args:
         sample_path (str): Path to the sample file
         psa_data_params (dict): Dictionary representing pytest-splunk-addon-data.conf
-    
-    Note:
-        Runtime flags like splunk_ep should be set on metadata after construction
-        by SampleGenerator, not passed to __init__.
     """
 
     def __init__(self, sample_path, psa_data_params):
