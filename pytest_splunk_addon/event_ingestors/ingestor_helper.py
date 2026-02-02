@@ -32,6 +32,7 @@ class IngestorHelper(object):
     """
 
     # Mapping of input types to their corresponding ingestor classes
+    # Note: This is used by utils.get_ep_compatible_input_types() to determine EP-compatible types
     INGEST_METHODS = {
         "modinput": HECEventIngestor,
         "windows_input": HECEventIngestor,
@@ -43,25 +44,6 @@ class IngestorHelper(object):
         "syslog_udp": None,  # TBD
         "default": HECRawEventIngestor,
     }
-
-    @classmethod
-    def get_ep_compatible_input_types(cls):
-        """
-        Dynamically determine which input types are compatible with Splunk Edge Processor mode.
-        
-        Returns input types that use HECEventIngestor, which is the only ingestor that supports
-        UUID via indexed fields parameter. This is required for EP mode because EP transforms
-        events, making literal content matching unreliable.
-        
-        Returns:
-            tuple: Input types that use HECEventIngestor
-        """
-        # Return input types that use HECEventIngestor
-        return tuple(
-            input_type 
-            for input_type, ingestor_class in cls.INGEST_METHODS.items() 
-            if ingestor_class is HECEventIngestor
-        )
 
     @classmethod
     def get_event_ingestor(cls, input_type, ingest_meta_data):

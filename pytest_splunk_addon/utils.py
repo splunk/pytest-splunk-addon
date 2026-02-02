@@ -24,3 +24,26 @@ def check_first_worker() -> bool:
         "PYTEST_XDIST_WORKER" not in os.environ
         or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
     )
+
+
+def get_ep_compatible_input_types():
+    """
+    Dynamically determine which input types are compatible with Splunk Edge Processor mode.
+    
+    Returns input types that use HECEventIngestor, which is the only ingestor that supports
+    UUID via indexed fields parameter. This is required for EP mode because EP transforms
+    events, making literal content matching unreliable.
+    
+    Note: This function is defined in utils.py (not ingestor_helper.py) to avoid circular imports.
+    
+    Returns:
+        tuple: Input types that use HECEventIngestor (e.g., ("modinput", "windows_input"))
+    """
+    # Import here to avoid circular dependency
+    from .event_ingestors.ingestor_helper import IngestorHelper
+    
+    return tuple(
+        input_type 
+        for input_type, ingestor_class in IngestorHelper.INGEST_METHODS.items() 
+        if ingestor_class.__name__ == "HECEventIngestor"
+    )

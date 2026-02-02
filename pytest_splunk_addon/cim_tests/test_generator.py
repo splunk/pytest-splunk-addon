@@ -24,7 +24,7 @@ import os.path as op
 from . import DataModelHandler
 from ..addon_parser import AddonParser
 from ..addon_parser import Field
-from ..event_ingestors.ingestor_helper import IngestorHelper
+from ..utils import get_ep_compatible_input_types
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -274,7 +274,7 @@ class CIMTestGenerator(object):
         
         # Get EP-compatible input types once before the loop if EP mode is enabled
         ep_compatible_types = (
-            IngestorHelper.get_ep_compatible_input_types() if self.splunk_ep else None
+            get_ep_compatible_input_types() if self.splunk_ep else None
         )
         
         for event in self.tokenized_events:
