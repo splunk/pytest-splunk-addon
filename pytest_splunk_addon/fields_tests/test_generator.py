@@ -25,7 +25,7 @@ from itertools import chain
 from ..addon_parser import AddonParser
 from . import FieldBank
 from ..utilities import xml_event_parser
-from ..utils import get_ep_compatible_input_types
+from ..utils import EP_COMPATIBLE_INPUT_TYPES
 
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -164,9 +164,7 @@ class FieldTestGenerator(object):
         skipped_samples = set()
         
         # Get EP-compatible input types once before the loop if EP mode is enabled
-        ep_compatible_types = (
-            get_ep_compatible_input_types() if self.splunk_ep else None
-        )
+        ep_compatible_types = EP_COMPATIBLE_INPUT_TYPES if self.splunk_ep else None
         
         for event in self.tokenized_events:
             if (
@@ -259,9 +257,7 @@ class FieldTestGenerator(object):
         skipped_samples = set()
         
         # Get EP-compatible input types once before the loop if EP mode is enabled
-        ep_compatible_types = (
-            get_ep_compatible_input_types() if self.splunk_ep else None
-        )
+        ep_compatible_types = EP_COMPATIBLE_INPUT_TYPES if self.splunk_ep else None
         
         for event in self.tokenized_events:
             if not event.requirement_test_data:
