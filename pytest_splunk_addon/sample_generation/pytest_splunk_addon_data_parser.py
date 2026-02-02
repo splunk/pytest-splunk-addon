@@ -32,6 +32,9 @@ SCHEMA_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "schema.
 class PytestSplunkAddonDataParser:
     """
     This class parses pytest-splunk-addon-data.conf file.
+    
+    Responsible for parsing configuration only. Runtime flags (like splunk_ep)
+    should be handled by SampleGenerator after stanzas are created.
 
     Args:
         addon_path (str): Path to the Splunk App

@@ -16,6 +16,7 @@
 import os
 import re
 import copy
+import uuid
 from . import Rule
 from . import raise_warning
 from . import SampleEvent
@@ -45,6 +46,10 @@ class SampleStanza(object):
     Args:
         sample_path (str): Path to the sample file
         psa_data_params (dict): Dictionary representing pytest-splunk-addon-data.conf
+    
+    Note:
+        Runtime flags like splunk_ep should be set on metadata after construction
+        by SampleGenerator, not passed to __init__.
     """
 
     def __init__(self, sample_path, psa_data_params):
@@ -102,6 +107,9 @@ class SampleStanza(object):
                 if each_rule:
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
             for event in raw_event[event_counter]:
+                if event.metadata.get("splunk_ep"):
+                    event.unique_identifier = str(uuid.uuid4())
+
                 host_value = event.metadata.get("host")
                 host = token_value(key=host_value, value=host_value)
                 event.update_requirement_test_field("host", "##host##", host)

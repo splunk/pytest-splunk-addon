@@ -69,6 +69,7 @@ services:
         SPLUNK_APP_ID: ${SPLUNK_APP_ID}
         SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
         SPLUNK_VERSION: ${SPLUNK_VERSION}
+    platform: linux/amd64
     ports:
       - "8000"
       - "8088"
@@ -89,6 +90,7 @@ services:
         SPLUNK_APP_PACKAGE: ${SPLUNK_APP_PACKAGE}
         SPLUNK_VERSION: ${SPLUNK_VERSION}
     hostname: uf
+    platform: linux/amd64
     ports:
       - "9997"
       - "8089"

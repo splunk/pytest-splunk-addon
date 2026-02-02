@@ -355,6 +355,19 @@ The following optional arguments are available to modify the default settings in
 
       - Select false to disable test execution, default value is true
 
+      ```console
+      --splunk-ep
+      ```
+
+      - Enable Splunk Edge Processor mode when your events are transformed during ingestion.
+      - **Why needed**: Edge Processor modifies event content (transformations, parsing, enrichment), which breaks tests that search for literal event content.
+      - When enabled, the following tests use UUID-based matching instead of escaped _raw:
+        - `test_cim_fields_recommended` (CIM compliance tests)
+        - `test_requirement_fields` (requirement field tests)
+        - `test_datamodels` (datamodel mapping tests)
+      - **Limitation**: These tests are only generated for samples using HEC Event ingestor (`modinput`, `windows_input`) because other ingestors don't support UUID indexed fields.
+      - **Other test types**: Field extraction, tags, eventtypes, savedsearches, etc. are generated for ALL samples and work normally with EP transformations.
+
 ## Extending pytest-splunk-addon
 
 **1. Test cases taking too long to execute**

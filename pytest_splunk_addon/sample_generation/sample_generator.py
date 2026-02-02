@@ -33,10 +33,11 @@ class SampleGenerator(object):
     sample_stanzas = []
     conf_name = " "
 
-    def __init__(self, addon_path, config_path=None, process_count=4):
+    def __init__(self, addon_path, config_path=None, splunk_ep=False, process_count=4):
         self.addon_path = addon_path
         self.process_count = process_count
         self.config_path = config_path
+        self.splunk_ep = splunk_ep
 
     def get_samples(self):
         """
@@ -44,10 +45,16 @@ class SampleGenerator(object):
         """
         if not SampleGenerator.sample_stanzas:
             psa_data_parser = PytestSplunkAddonDataParser(
-                self.addon_path, config_path=self.config_path
+                self.addon_path,
+                config_path=self.config_path,
             )
             sample_stanzas = psa_data_parser.get_sample_stanzas()
             SampleGenerator.conf_name = psa_data_parser.conf_name
+            
+            # Set splunk_ep flag on each stanza's metadata (runtime configuration)
+            for stanza in sample_stanzas:
+                stanza.metadata["splunk_ep"] = self.splunk_ep
+            
             with ThreadPoolExecutor(min(20, max(len(sample_stanzas), 1))) as t:
                 t.map(SampleStanza.get_raw_events, sample_stanzas)
             _ = list(

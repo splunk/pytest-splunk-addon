@@ -125,7 +125,7 @@ def test_events_can_be_ingested(
     get_ingestor_mock, sample_mock, file_monitor_events, modinput_events
 ):
     event_ingestors.ingestor_helper.IngestorHelper.ingest_events(
-        ingest_meta_data={},
+        ingest_meta_data={"splunk_ep": False},
         addon_path="fake_path",
         config_path="tests/unit/event_ingestors",
         thread_count=20,
@@ -133,8 +133,46 @@ def test_events_can_be_ingested(
     )
     assert get_ingestor_mock.call_count == 2
     get_ingestor_mock.assert_has_calls(
-        [call("file_monitor", {}), call("modinput", {})], any_order=True
+        [
+            call("file_monitor", {"splunk_ep": False}),
+            call("modinput", {"splunk_ep": False}),
+        ],
+        any_order=True,
     )
+    assert get_ingestor_mock.ingest.call_count == 2
+    get_ingestor_mock.ingest.assert_has_calls(
+        [call(file_monitor_events, 20), call(modinput_events, 20)]
+    )
+
+
+def test_all_events_ingested_when_splunk_ep_enabled(
+    get_ingestor_mock, sample_mock, file_monitor_events, modinput_events
+):
+    """Test that ALL events are ingested regardless of splunk_ep flag.
+    
+    Filtering for EP-compatible samples happens only during TEST GENERATION,
+    not during ingestion. This ensures all samples are available for other
+    test types (field extraction, tags, eventtypes, etc.)
+    """
+    event_ingestors.ingestor_helper.IngestorHelper.ingest_events(
+        ingest_meta_data={"splunk_ep": True},
+        addon_path="fake_path",
+        config_path="tests/unit/event_ingestors",
+        thread_count=20,
+        store_events=False,
+    )
+
+    # ALL ingestors should be called - no filtering at ingestion stage
+    assert get_ingestor_mock.call_count == 2
+    get_ingestor_mock.assert_has_calls(
+        [
+            call("file_monitor", {"splunk_ep": True}),
+            call("modinput", {"splunk_ep": True}),
+        ],
+        any_order=True,
+    )
+    
+    # ALL events should be ingested
     assert get_ingestor_mock.ingest.call_count == 2
     get_ingestor_mock.ingest.assert_has_calls(
         [call(file_monitor_events, 20), call(modinput_events, 20)]
