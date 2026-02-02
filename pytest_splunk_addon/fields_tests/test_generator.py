@@ -25,6 +25,7 @@ from itertools import chain
 from ..addon_parser import AddonParser
 from . import FieldBank
 from ..utilities import xml_event_parser
+from ..event_ingestors.ingestor_helper import IngestorHelper
 
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
@@ -44,12 +45,13 @@ class FieldTestGenerator(object):
         field_bank (str): Path of the fields Json file
     """
 
-    def __init__(self, app_path, tokenized_events, field_bank=None):
+    def __init__(self, app_path, tokenized_events, field_bank=None, splunk_ep=False):
         LOGGER.debug("initializing AddonParser to parse the app")
         self.app_path = app_path
         self.addon_parser = AddonParser(self.app_path)
         self.tokenized_events = tokenized_events
         self.field_bank = field_bank
+        self.splunk_ep = splunk_ep
 
     def generate_tests(self, fixture):
         """
@@ -159,12 +161,32 @@ class FieldTestGenerator(object):
         Yields:
             pytest.params for the test templates
         """
+        skipped_samples = set()
+        
+        # Get EP-compatible input types once before the loop if EP mode is enabled
+        ep_compatible_types = (
+            IngestorHelper.get_ep_compatible_input_types() if self.splunk_ep else None
+        )
+        
         for event in self.tokenized_events:
             if (
                 not event.requirement_test_data
                 or event.requirement_test_data.keys() == {"other_fields"}
             ):
                 continue
+
+            # Skip incompatible samples when Splunk EP mode is enabled
+            if self.splunk_ep:
+                input_type = event.metadata.get("input_type", "default")
+                if input_type not in ep_compatible_types:
+                    if event.sample_name not in skipped_samples:
+                        LOGGER.info(
+                            f"Splunk EP mode: Skipping datamodel tests for sample '{event.sample_name}' "
+                            f"(input_type: {input_type}) as it's not ingested by HECEventIngestor"
+                        )
+                        skipped_samples.add(event.sample_name)
+                    continue
+
             if event.metadata.get("input_type", "").startswith("syslog"):
                 stripped_event = xml_event_parser.strip_syslog_header(event.event)
                 if stripped_event is None:
@@ -190,11 +212,14 @@ class FieldTestGenerator(object):
                 datamodel.replace(" ", "_").replace(":", "_")
                 for datamodel in datamodels
             ]
+            sample_event = {
+                "datamodels": datamodels,
+                "stanza": escaped_event,
+            }
+            if self.splunk_ep and getattr(event, "unique_identifier", None):
+                sample_event["unique_identifier"] = event.unique_identifier
             yield pytest.param(
-                {
-                    "datamodels": datamodels,
-                    "stanza": escaped_event,
-                },
+                sample_event,
                 id=f"{'-'.join(datamodels)}::sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
             )
 
@@ -231,9 +256,29 @@ class FieldTestGenerator(object):
         Yields:
             pytest.params for the test templates
         """
+        skipped_samples = set()
+        
+        # Get EP-compatible input types once before the loop if EP mode is enabled
+        ep_compatible_types = (
+            IngestorHelper.get_ep_compatible_input_types() if self.splunk_ep else None
+        )
+        
         for event in self.tokenized_events:
             if not event.requirement_test_data:
                 continue
+
+            # Skip incompatible samples when Splunk EP mode is enabled
+            if self.splunk_ep:
+                input_type = event.metadata.get("input_type", "default")
+                if input_type not in ep_compatible_types:
+                    if event.sample_name not in skipped_samples:
+                        LOGGER.info(
+                            f"Splunk EP mode: Skipping requirement tests for sample '{event.sample_name}' "
+                            f"(input_type: {input_type}). Only 'modinput' and 'windows_input' are supported."
+                        )
+                        skipped_samples.add(event.sample_name)
+                    continue
+
             if event.metadata.get("input_type", "").startswith("syslog"):
                 stripped_event = xml_event_parser.strip_syslog_header(event.event)
                 if stripped_event is None:
@@ -246,9 +291,8 @@ class FieldTestGenerator(object):
 
             escaped_event = xml_event_parser.escape_char_event(stripped_event)
             exceptions = event.requirement_test_data.get("exceptions", {})
-            metadata = event.metadata
             modinput_params = {
-                "sourcetype": metadata.get("sourcetype_to_search"),
+                "sourcetype": event.metadata.get("sourcetype_to_search"),
             }
 
             cim_fields = event.requirement_test_data.get("cim_fields", {})
@@ -261,12 +305,17 @@ class FieldTestGenerator(object):
                     for field, value in requirement_fields.items()
                     if field not in exceptions
                 }
+                sample_event = {
+                    "escaped_event": escaped_event,
+                    "fields": requirement_fields,
+                    "modinput_params": modinput_params,
+                }
+
+                if self.splunk_ep and getattr(event, "unique_identifier", None):
+                    sample_event["unique_identifier"] = event.unique_identifier
+
                 yield pytest.param(
-                    {
-                        "escaped_event": escaped_event,
-                        "fields": requirement_fields,
-                        "modinput_params": modinput_params,
-                    },
+                    sample_event,
                     id=f"sample_name::{event.sample_name}::host::{event.metadata.get('host')}",
                 )
 

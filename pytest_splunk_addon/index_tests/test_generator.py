@@ -32,21 +32,24 @@ class IndexTimeTestGenerator(object):
       for the Add-on.
     """
 
-    def generate_tests(self, store_events, app_path, config_path, test_type):
+    def generate_tests(
+        self, store_events, app_path, config_path, fixture, splunk_ep=False
+    ):
         """
-        Generates the test cases based on test_type
+        Generates the test cases based on fixture
 
         Args:
             store_events (bool): variable to define if events should be stored
             app_path (str): Path of the app package
             config_path (str): Path of package which contains pytest-splunk-addon-data.conf
-            test_type (str): Type of test case
+            fixture (str): Fixture name (e.g., splunk_indextime_key_fields)
+            splunk_ep (bool): Whether Splunk EP mode is enabled
 
         Yields:
             pytest.params for the test templates
 
         """
-        sample_generator = SampleXdistGenerator(app_path, config_path)
+        sample_generator = SampleXdistGenerator(app_path, splunk_ep, config_path)
         store_sample = sample_generator.get_samples(store_events)
         tokenized_events = store_sample.get("tokenized_events")
         if not store_sample.get("conf_name") == "psa-data-gen":
@@ -57,7 +60,7 @@ class IndexTimeTestGenerator(object):
             LOGGER.warning(msg)
             return msg
 
-        if test_type == "line_breaker":
+        if "line_breaker" in fixture:
             LOGGER.info("Generating line breaker test")
             yield from self.generate_line_breaker_tests(tokenized_events)
 
@@ -68,7 +71,7 @@ class IndexTimeTestGenerator(object):
                 hosts = self.get_hosts(tokenized_event)
 
                 # Generate test params only if key_fields
-                if test_type == "key_fields" and tokenized_event.key_fields:
+                if "key_fields" in fixture and tokenized_event.key_fields:
                     event = SampleEvent.copy(tokenized_event)
                     if tokenized_event.key_fields.get(
                         "host"
@@ -86,7 +89,7 @@ class IndexTimeTestGenerator(object):
 
                 # Generate test only if time_values
                 elif (
-                    test_type == "_time"
+                    "_time" in fixture
                     and tokenized_event.metadata.get("timestamp_type") == "event"
                     and not (
                         int(tokenized_event.metadata.get("requirement_test_sample", 0))

@@ -24,7 +24,7 @@ def test_generate_tests_without_conf_file(mock_object, caplog):
     sample_generator_mock.get_samples.return_value = {"tokenized_events": []}
     list(
         IndexTimeTestGenerator().generate_tests(
-            True, "fake_app_path", "fake_config_path", "key_fields"
+            True, "fake_app_path", "fake_config_path", "splunk_indextime_key_fields"
         )
     )
     assert caplog.messages == [
@@ -33,10 +33,10 @@ def test_generate_tests_without_conf_file(mock_object, caplog):
 
 
 @pytest.mark.parametrize(
-    "test_type, tokenized_events, expected_output",
+    "fixture, tokenized_events, expected_output",
     [
         (
-            "key_fields",
+            "splunk_indextime_key_fields",
             [
                 sample_event(
                     metadata={
@@ -63,7 +63,7 @@ def test_generate_tests_without_conf_file(mock_object, caplog):
             ],
         ),
         (
-            "_time",
+            "splunk_indextime_time",
             [
                 sample_event(
                     metadata={
@@ -91,7 +91,7 @@ def test_generate_tests_without_conf_file(mock_object, caplog):
 )
 def test_generate_tests_triggers_generate_params(
     mock_object,
-    test_type,
+    fixture,
     tokenized_events,
     expected_output,
 ):
@@ -121,7 +121,7 @@ def test_generate_tests_triggers_generate_params(
     ) as generate_params_mock:
         out = list(
             IndexTimeTestGenerator().generate_tests(
-                True, "fake_app_path", "fake_config_path", test_type
+                True, "fake_app_path", "fake_config_path", fixture
             )
         )
         assert out == expected_output
@@ -142,7 +142,7 @@ def test_generate_tests_triggers_generate_line_breaker_tests(mock_object):
     ) as generate_line_breaker_tests:
         out = list(
             IndexTimeTestGenerator().generate_tests(
-                True, "fake_app_path", "fake_config_path", "line_breaker"
+                True, "fake_app_path", "fake_config_path", "splunk_indextime_line_breaker"
             )
         )
         assert out == [sample_event(sample_name="line_breaker_event")]
