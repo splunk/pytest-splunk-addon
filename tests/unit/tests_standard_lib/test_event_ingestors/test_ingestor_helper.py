@@ -149,7 +149,7 @@ def test_all_events_ingested_when_splunk_ep_enabled(
     get_ingestor_mock, sample_mock, file_monitor_events, modinput_events
 ):
     """Test that ALL events are ingested regardless of splunk_ep flag.
-    
+
     Filtering for EP-compatible samples happens only during TEST GENERATION,
     not during ingestion. This ensures all samples are available for other
     test types (field extraction, tags, eventtypes, etc.)
@@ -171,7 +171,7 @@ def test_all_events_ingested_when_splunk_ep_enabled(
         ],
         any_order=True,
     )
-    
+
     # ALL events should be ingested
     assert get_ingestor_mock.ingest.call_count == 2
     get_ingestor_mock.ingest.assert_has_calls(

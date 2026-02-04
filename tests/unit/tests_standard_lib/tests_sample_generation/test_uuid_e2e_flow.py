@@ -45,9 +45,7 @@ class TestUUIDFlowThroughPipeline:
             assert stanza.metadata["splunk_ep"] == True
 
             # Test with UUID disabled
-            stanza_no_uuid = SampleStanza(
-                sample_path, psa_data_params, splunk_ep=False
-            )
+            stanza_no_uuid = SampleStanza(sample_path, psa_data_params, splunk_ep=False)
             assert stanza_no_uuid.metadata["splunk_ep"] == False
 
     def test_uuid_in_sample_generator_initialization(self):
@@ -56,9 +54,7 @@ class TestUUIDFlowThroughPipeline:
         config_path = "/fake/config/path"
 
         # Test with UUID enabled
-        generator = SampleGenerator(
-            addon_path, splunk_ep=True, config_path=config_path
-        )
+        generator = SampleGenerator(addon_path, splunk_ep=True, config_path=config_path)
         assert generator.splunk_ep == True
 
         # Test with UUID disabled
@@ -472,9 +468,7 @@ class TestUUIDInStoredEvents:
             "os.getcwd", return_value="/fake/path"
         ), patch("os.makedirs"), patch("builtins.open", mock_open()) as open_mock:
 
-            xdist_generator = SampleXdistGenerator(
-                "/fake/addon", True, "/fake/config"
-            )
+            xdist_generator = SampleXdistGenerator("/fake/addon", True, "/fake/config")
             xdist_generator.store_events(events)
 
             # Get the written JSON

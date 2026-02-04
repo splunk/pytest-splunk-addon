@@ -844,7 +844,9 @@ def test_generate_requirements_datamodels_tests_filters_incompatible_input_types
         xml_event_parser, "strip_syslog_header", return_value="stripped_event"
     ), patch.object(
         xml_event_parser, "escape_char_event", side_effect=lambda x: x
-    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
+    ), patch.object(
+        pytest, "param", side_effect=lambda x, id: (x, id)
+    ) as param_mock:
         # With splunk_ep=True, only windows_input event should be included
         out = list(
             FieldTestGenerator(

@@ -167,8 +167,12 @@ class FieldTestTemplates(object):
         )
         escaped_event = splunk_searchtime_fields_requirements.get("escaped_event")
 
-        self.logger.info(f"Testing requirements for event: {unique_identifier or escaped_event}")
-        self.logger.debug(f"unique_identifier={unique_identifier}, escaped_event={escaped_event}")
+        self.logger.info(
+            f"Testing requirements for event: {unique_identifier or escaped_event}"
+        )
+        self.logger.debug(
+            f"unique_identifier={unique_identifier}, escaped_event={escaped_event}"
+        )
 
         record_property("Event_with", unique_identifier or escaped_event)
         record_property("fields", splunk_searchtime_fields_requirements["fields"])
@@ -218,7 +222,7 @@ class FieldTestTemplates(object):
         for field, value in fields.items():
             if field not in fields_from_splunk:
                 missing_fields.append(field)
-                
+
             if value != fields_from_splunk.get(field):
                 wrong_value_fields[field] = fields_from_splunk.get(field)
 
