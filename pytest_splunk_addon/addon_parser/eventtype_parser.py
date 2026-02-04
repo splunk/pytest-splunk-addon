@@ -35,10 +35,10 @@ class EventTypeParser(object):
         splunk_app_path (str): Path of the Splunk app
     """
 
-    def __init__(self, splunk_app_path: str):
+    def __init__(self, splunk_app_path: str, eventtypes_data: Optional[Dict] = None):
         self._conf_parser = conf_parser.TABConfigParser()
         self.splunk_app_path = splunk_app_path
-        self._eventtypes = None
+        self._eventtypes = eventtypes_data
 
     @property
     def eventtypes(self) -> Optional[Dict]:

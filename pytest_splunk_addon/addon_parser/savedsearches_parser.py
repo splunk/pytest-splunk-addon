@@ -35,10 +35,10 @@ class SavedSearchParser(object):
         splunk_app_path (str): Path of the Splunk app
     """
 
-    def __init__(self, splunk_app_path: str):
+    def __init__(self, splunk_app_path: str, savedsearches_data: Optional[Dict] = None):
         self._conf_parser = conf_parser.TABConfigParser()
         self.splunk_app_path = splunk_app_path
-        self._savedsearches = None
+        self._savedsearches = savedsearches_data
 
     @property
     def savedsearches(self) -> Optional[Dict]:
