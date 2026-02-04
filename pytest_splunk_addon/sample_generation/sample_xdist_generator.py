@@ -33,9 +33,7 @@ class SampleXdistGenerator:
         process_count (num): generate {no} process for execution
     """
 
-    def __init__(
-        self, addon_path, splunk_ep: bool, config_path=None, process_count=4
-    ):
+    def __init__(self, addon_path, splunk_ep: bool, config_path=None, process_count=4):
         self.addon_path = addon_path
         self.process_count = process_count
         self.config_path = config_path
@@ -135,7 +133,7 @@ class SampleXdistGenerator:
                     },
                     "events": [],
                 }
-            
+
             # Create event dict with optional UUID
             sample_event = {
                 "event": each_event.event,
@@ -145,8 +143,10 @@ class SampleXdistGenerator:
             }
             if self.splunk_ep:
                 sample_event["unique_identifier"] = each_event.unique_identifier
-            
-            tokenized_samples_dict[each_event.sample_name]["events"].append(sample_event)
+
+            tokenized_samples_dict[each_event.sample_name]["events"].append(
+                sample_event
+            )
 
         for sample_name, tokenized_sample in tokenized_samples_dict.items():
             with open(

@@ -271,10 +271,10 @@ class CIMTestGenerator(object):
         3. yield object with datamodel, dataset, cim_version and list of fields
         """
         skipped_samples = set()
-        
+
         # Get EP-compatible input types once before the loop if EP mode is enabled
         ep_compatible_types = EP_COMPATIBLE_INPUT_TYPES if self.splunk_ep else None
-        
+
         for event in self.tokenized_events:
             if (
                 not event.requirement_test_data
