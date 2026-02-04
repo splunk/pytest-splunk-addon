@@ -26,7 +26,8 @@ class TestUUIDTokenizationTiming:
                 "tokens": {},  # No tokens needed for this test
             }
 
-            stanza = SampleStanza(sample_path, psa_data_params, splunk_ep=True)
+            stanza = SampleStanza(sample_path, psa_data_params)
+            stanza.metadata["splunk_ep"] = True  # Enable UUID generation
 
             # Tokenize to generate events with UUIDs
             stanza.tokenize("psa-data-gen")
@@ -75,9 +76,8 @@ class TestUUIDTokenizationTiming:
                 "tokens": {},
             }
 
-            stanza = SampleStanza(
-                sample_path, psa_data_params, splunk_ep=False  # UUID disabled
-            )
+            stanza = SampleStanza(sample_path, psa_data_params)
+            stanza.metadata["splunk_ep"] = False  # UUID disabled
 
             stanza.tokenize("psa-data-gen")
             events = stanza.tokenized_events

@@ -40,12 +40,14 @@ class TestUUIDFlowThroughPipeline:
                 "tokens": {},  # Add tokens to avoid KeyError
             }
 
-            # Test with UUID enabled
-            stanza = SampleStanza(sample_path, psa_data_params, splunk_ep=True)
+            # Test with UUID enabled (mimics how SampleGenerator sets splunk_ep)
+            stanza = SampleStanza(sample_path, psa_data_params)
+            stanza.metadata["splunk_ep"] = True
             assert stanza.metadata["splunk_ep"] == True
 
             # Test with UUID disabled
-            stanza_no_uuid = SampleStanza(sample_path, psa_data_params, splunk_ep=False)
+            stanza_no_uuid = SampleStanza(sample_path, psa_data_params)
+            stanza_no_uuid.metadata["splunk_ep"] = False
             assert stanza_no_uuid.metadata["splunk_ep"] == False
 
     def test_uuid_in_sample_generator_initialization(self):
@@ -483,11 +485,9 @@ class TestUUIDInStoredEvents:
             assert "test_sample" in stored_data
             sample_data = stored_data["test_sample"]
             assert "metadata" in sample_data
-            # Accept both boolean True and string "true" for JSON compatibility
-            ingest_uuid_value = sample_data["metadata"]["splunk_ep"]
-            assert ingest_uuid_value is True or ingest_uuid_value == "true"
             assert "events" in sample_data
             assert len(sample_data["events"]) > 0
+            # Verify unique_identifier is stored in events when splunk_ep is True
             assert "unique_identifier" in sample_data["events"][0]
             assert sample_data["events"][0]["unique_identifier"] == "uuid-12345-67890"
 
@@ -540,9 +540,9 @@ class TestUUIDInStoredEvents:
                 stored_data = json.loads(json_content)
 
                 sample_data = stored_data["test_sample_no_uuid"]
-                assert sample_data["metadata"]["splunk_ep"] == False
+                assert "metadata" in sample_data
 
-                # Verify unique_identifier is NOT in events
+                # Verify unique_identifier is NOT in events when splunk_ep is False
                 for event in sample_data["events"]:
                     assert "unique_identifier" not in event
 

@@ -53,7 +53,9 @@ def test_app_test_generator_instantiation(
         field_bank=config["field_bank"],
         splunk_ep=config["splunk_ep"],
     )
-    atg.cim_test_generator.assert_called_once_with(config["splunk_app"], path, [])
+    atg.cim_test_generator.assert_called_once_with(
+        config["splunk_app"], path, [], splunk_ep=config["splunk_ep"]
+    )
     atg.indextime_test_generator.assert_called_once_with()
 
 
