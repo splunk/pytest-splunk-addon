@@ -125,20 +125,25 @@ class AppTestGenerator(object):
                 lambda: self.cim_test_generator.generate_tests(fixture),
             )
         elif fixture.startswith("splunk_searchtime_fields"):
+
             def _gen_fields():
                 return self.dedup_tests(
                     self.fieldtest_generator.generate_tests(fixture),
                     fixture,
                 )
+
             yield from _get_cached_tests(f"tests::{fixture}", _gen_fields)
         elif fixture.startswith("splunk_searchtime_cim"):
+
             def _gen_cim():
                 return self.dedup_tests(
                     self.cim_test_generator.generate_tests(fixture),
                     fixture,
                 )
+
             yield from _get_cached_tests(f"tests::{fixture}", _gen_cim)
         elif fixture.startswith("splunk_indextime"):
+
             def _gen_indextime():
                 return self.dedup_tests(
                     self.indextime_test_generator.generate_tests(
@@ -150,6 +155,7 @@ class AppTestGenerator(object):
                     ),
                     fixture,
                 )
+
             yield from _get_cached_tests(f"tests::{fixture}", _gen_indextime)
 
     def dedup_tests(self, test_list, fixture):

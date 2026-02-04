@@ -92,8 +92,7 @@ def test_app_test_generator_instantiation(
             "splunk_indextime_key_fields",
             "indextime_test_generator",
             lambda x, app_path, config_path, fixture, splunk_ep: (
-                params(values=f"{fixture}_test_{i + 1}", id=i + 1)
-                for i in range(3)
+                params(values=f"{fixture}_test_{i + 1}", id=i + 1) for i in range(3)
             ),
             [True],
             {
@@ -113,8 +112,7 @@ def test_app_test_generator_instantiation(
             "splunk_indextime_time",
             "indextime_test_generator",
             lambda x, app_path, config_path, fixture, splunk_ep: (
-                params(values=f"{fixture}_test_{i + 1}", id=i + 1)
-                for i in range(3)
+                params(values=f"{fixture}_test_{i + 1}", id=i + 1) for i in range(3)
             ),
             [True],
             {
@@ -134,8 +132,7 @@ def test_app_test_generator_instantiation(
             "splunk_indextime_line_breaker",
             "indextime_test_generator",
             lambda x, app_path, config_path, fixture, splunk_ep: (
-                params(values=f"{fixture}_test_{i + 1}", id=i + 1)
-                for i in range(3)
+                params(values=f"{fixture}_test_{i + 1}", id=i + 1) for i in range(3)
             ),
             [True],
             {

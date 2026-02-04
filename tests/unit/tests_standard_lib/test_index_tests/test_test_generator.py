@@ -142,7 +142,10 @@ def test_generate_tests_triggers_generate_line_breaker_tests(mock_object):
     ) as generate_line_breaker_tests:
         out = list(
             IndexTimeTestGenerator().generate_tests(
-                True, "fake_app_path", "fake_config_path", "splunk_indextime_line_breaker"
+                True,
+                "fake_app_path",
+                "fake_config_path",
+                "splunk_indextime_line_breaker",
             )
         )
         assert out == [sample_event(sample_name="line_breaker_event")]
