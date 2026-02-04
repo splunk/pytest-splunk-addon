@@ -53,7 +53,9 @@ def test_app_test_generator_instantiation(
         field_bank=config["field_bank"],
         splunk_ep=config["splunk_ep"],
     )
-    atg.cim_test_generator.assert_called_once_with(config["splunk_app"], path, [])
+    atg.cim_test_generator.assert_called_once_with(
+        config["splunk_app"], path, [], splunk_ep=config["splunk_ep"]
+    )
     atg.indextime_test_generator.assert_called_once_with()
 
 
@@ -89,7 +91,7 @@ def test_app_test_generator_instantiation(
         (
             "splunk_indextime_key_fields",
             "indextime_test_generator",
-            lambda x, app_path, config_path, test_type: (
+            lambda x, app_path, config_path, test_type, splunk_ep: (
                 params(values=f"splunk_indextime_{test_type}_test_{3 - i}", id=3 - i)
                 for i in range(3)
             ),
@@ -110,7 +112,7 @@ def test_app_test_generator_instantiation(
         (
             "splunk_indextime_time",
             "indextime_test_generator",
-            lambda x, app_path, config_path, test_type: (
+            lambda x, app_path, config_path, test_type, splunk_ep: (
                 params(values=f"splunk_indextime_{test_type}_test_{3 - i}", id=3 - i)
                 for i in range(3)
             ),
@@ -131,7 +133,7 @@ def test_app_test_generator_instantiation(
         (
             "splunk_indextime_line_breaker",
             "indextime_test_generator",
-            lambda x, app_path, config_path, test_type: (
+            lambda x, app_path, config_path, test_type, splunk_ep: (
                 params(values=f"splunk_indextime_{test_type}_test_{3 - i}", id=3 - i)
                 for i in range(3)
             ),

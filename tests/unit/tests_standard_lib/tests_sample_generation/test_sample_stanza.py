@@ -30,7 +30,6 @@ def get_params_for_get_raw_sample():
                     {
                         "input_type": input_type,
                         "host": "path_to.file_1",
-                        "splunk_ep": False,
                     },
                     "path_to.file",
                 ],
@@ -54,7 +53,6 @@ def get_params_for_get_raw_sample():
                     {
                         "input_type": input_type,
                         "host": "path_to.file",
-                        "splunk_ep": False,
                     },
                     "path_to.file",
                 ],
@@ -74,7 +72,7 @@ class TestSampleStanza:
                 "pytest_splunk_addon.sample_generation.sample_stanza.Rule",
                 MagicMock(return_value=rule_mock_value),
             ):
-                ss = SampleStanza(SAMPLE_PATH, psa_data_params, False)
+                ss = SampleStanza(SAMPLE_PATH, psa_data_params)
             return ss
 
         return func
@@ -223,7 +221,6 @@ class TestSampleStanza:
         assert ss.get_eventmetadata() == {
             "host": "path_to.file_1",
             "input_type": "default",
-            "splunk_ep": False,
         }
         assert ss.host_count == 1
 
@@ -257,7 +254,6 @@ class TestSampleStanza:
                         "breaker": "aa",
                         "host": "path_to.file_1",
                         "input_type": "default",
-                        "splunk_ep": False,
                     },
                     "path_to.file",
                 ],

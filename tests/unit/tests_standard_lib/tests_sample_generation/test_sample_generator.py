@@ -15,10 +15,12 @@ class TestSampleGenerator:
         assert sg.addon_path == ADDON_PATH
         assert sg.config_path == CONFIG_PATH
         assert sg.process_count == 4
-        sg = SampleGenerator(ADDON_PATH, CONFIG_PATH, 2)
+        assert sg.splunk_ep is False
+        sg = SampleGenerator(ADDON_PATH, CONFIG_PATH, splunk_ep=True, process_count=2)
         assert sg.addon_path == ADDON_PATH
         assert sg.config_path == CONFIG_PATH
         assert sg.process_count == 2
+        assert sg.splunk_ep is True
 
     def test_get_samples(self):
         tks_1 = "tokenized_sample_1"

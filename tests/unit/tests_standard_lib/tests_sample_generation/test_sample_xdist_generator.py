@@ -75,10 +75,11 @@ tokenized_events = [
 
 class TestSampleXdistGenerator:
     def test_init(self):
-        sample_xdist_generator = SampleXdistGenerator("path", "config_path", 5)
+        sample_xdist_generator = SampleXdistGenerator("path", False, "config_path", 5)
         assert sample_xdist_generator.addon_path == "path"
         assert sample_xdist_generator.config_path == "config_path"
         assert sample_xdist_generator.process_count == 5
+        assert sample_xdist_generator.splunk_ep is False
 
     @patch(
         "pytest_splunk_addon.sample_generation.sample_xdist_generator.FileLock",
@@ -108,7 +109,7 @@ class TestSampleXdistGenerator:
     )
     def test_get_samples(self, pickle_mock, exists_value, environ, expected):
         pickle_mock.load.return_value = "pickle_loaded"
-        sample_xdist_generator = SampleXdistGenerator("path")
+        sample_xdist_generator = SampleXdistGenerator("path", False)
         sample_xdist_generator.store_events = MagicMock()
         with patch("os.path.exists", MagicMock(return_value=exists_value)), patch(
             "os.environ",
@@ -129,13 +130,13 @@ class TestSampleXdistGenerator:
             (False, [call("/path/to/cwd/.tokenized_events")], False),
         ],
     )
-    def test_store_events(self, exists_value, makedirs_calls):
+    def test_store_events(self, exists_value, makedirs_calls, splunk_ep):
         with patch("os.path.exists", MagicMock(return_value=exists_value)), patch(
             "os.getcwd", MagicMock(return_value="/path/to/cwd")
         ), patch("os.makedirs", MagicMock()) as mock_makedirs, patch(
             "builtins.open", mock_open()
         ) as open_mock:
-            sample_xdist_generator = SampleXdistGenerator("path")
+            sample_xdist_generator = SampleXdistGenerator("path", splunk_ep)
             sample_xdist_generator.store_events(tokenized_events)
             mock_makedirs.assert_has_calls(makedirs_calls)
             open_mock.assert_has_calls(
@@ -148,10 +149,10 @@ class TestSampleXdistGenerator:
             open_mock().write.assert_has_calls(
                 [
                     call(
-                        '{\n\t"sample_name_1": {\n\t\t"metadata": {\n\t\t\t"host": "host_1",\n\t\t\t"source": "source_1",\n\t\t\t"sourcetype": "sourcetype_1",\n\t\t\t"timestamp_type": "timestamp_type_1",\n\t\t\t"input_type": "modinput",\n\t\t\t"splunk_ep": false,\n\t\t\t"expected_event_count": 1,\n\t\t\t"index": "main"\n\t\t},\n\t\t"events": [\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field",\n\t\t\t\t"time_values": "time_values_field",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t},\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field_3",\n\t\t\t\t"time_values": "time_values_field_3",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t}\n\t\t]\n\t}\n}'
+                        '{\n\t"sample_name_1": {\n\t\t"metadata": {\n\t\t\t"host": "host_1",\n\t\t\t"source": "source_1",\n\t\t\t"sourcetype": "sourcetype_1",\n\t\t\t"timestamp_type": "timestamp_type_1",\n\t\t\t"input_type": "modinput",\n\t\t\t"expected_event_count": 1,\n\t\t\t"index": "main"\n\t\t},\n\t\t"events": [\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field",\n\t\t\t\t"time_values": "time_values_field",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t},\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field_3",\n\t\t\t\t"time_values": "time_values_field_3",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t}\n\t\t]\n\t}\n}'
                     ),
                     call(
-                        '{\n\t"sample_name_2": {\n\t\t"metadata": {\n\t\t\t"host": "host_2",\n\t\t\t"source": "source_2",\n\t\t\t"sourcetype": "sourcetype_2",\n\t\t\t"timestamp_type": "timestamp_type_2",\n\t\t\t"input_type": "input_else",\n\t\t\t"splunk_ep": false,\n\t\t\t"expected_event_count": 8,\n\t\t\t"index": "main"\n\t\t},\n\t\t"events": [\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field",\n\t\t\t\t"time_values": "time_values_field",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t}\n\t\t]\n\t}\n}'
+                        '{\n\t"sample_name_2": {\n\t\t"metadata": {\n\t\t\t"host": "host_2",\n\t\t\t"source": "source_2",\n\t\t\t"sourcetype": "sourcetype_2",\n\t\t\t"timestamp_type": "timestamp_type_2",\n\t\t\t"input_type": "input_else",\n\t\t\t"expected_event_count": 8,\n\t\t\t"index": "main"\n\t\t},\n\t\t"events": [\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field",\n\t\t\t\t"time_values": "time_values_field",\n\t\t\t\t"requirement_test_data": "requirement_test_data"\n\t\t\t}\n\t\t]\n\t}\n}'
                     ),
                 ]
             )
@@ -222,7 +223,7 @@ class TestSampleXdistGenerator:
             open_mock().write.assert_has_calls(
                 [
                     call(
-                        '{\n\t"sample_with_uuid": {\n\t\t"metadata": {\n\t\t\t"host": "host_1",\n\t\t\t"source": "source_1",\n\t\t\t"sourcetype": "sourcetype_1",\n\t\t\t"timestamp_type": "timestamp_type_1",\n\t\t\t"input_type": "modinput",\n\t\t\t"splunk_ep": true,\n\t\t\t"expected_event_count": 1,\n\t\t\t"index": "main"\n\t\t},\n\t\t"events": [\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field",\n\t\t\t\t"time_values": "time_values_field",\n\t\t\t\t"requirement_test_data": "requirement_test_data",\n\t\t\t\t"unique_identifier": "uuid"\n\t\t\t},\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field_3",\n\t\t\t\t"time_values": "time_values_field_3",\n\t\t\t\t"requirement_test_data": "requirement_test_data",\n\t\t\t\t"unique_identifier": "uuid"\n\t\t\t}\n\t\t]\n\t}\n}'
+                        '{\n\t"sample_with_uuid": {\n\t\t"metadata": {\n\t\t\t"host": "host_1",\n\t\t\t"source": "source_1",\n\t\t\t"sourcetype": "sourcetype_1",\n\t\t\t"timestamp_type": "timestamp_type_1",\n\t\t\t"input_type": "modinput",\n\t\t\t"expected_event_count": 1,\n\t\t\t"index": "main"\n\t\t},\n\t\t"events": [\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field",\n\t\t\t\t"time_values": "time_values_field",\n\t\t\t\t"requirement_test_data": "requirement_test_data",\n\t\t\t\t"unique_identifier": "uuid"\n\t\t\t},\n\t\t\t{\n\t\t\t\t"event": "event_field",\n\t\t\t\t"key_fields": "key_fields_field_3",\n\t\t\t\t"time_values": "time_values_field_3",\n\t\t\t\t"requirement_test_data": "requirement_test_data",\n\t\t\t\t"unique_identifier": "uuid"\n\t\t\t}\n\t\t]\n\t}\n}'
                     ),
                 ]
             )
