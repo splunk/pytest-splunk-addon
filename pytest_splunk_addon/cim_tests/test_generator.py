@@ -24,6 +24,7 @@ import os.path as op
 from . import DataModelHandler
 from ..addon_parser import AddonParser
 from ..addon_parser import Field
+from ..utils import EP_COMPATIBLE_INPUT_TYPES
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 
@@ -52,6 +53,7 @@ class CIMTestGenerator(object):
         tokenized_events,
         test_field_type=["required", "conditional"],
         common_fields_path=None,
+        splunk_ep=False,
     ):
 
         self.data_model_handler = DataModelHandler(data_model_path)
@@ -61,6 +63,7 @@ class CIMTestGenerator(object):
         self.common_fields_path = common_fields_path or op.join(
             op.dirname(op.abspath(__file__)), self.COMMON_FIELDS_PATH
         )
+        self.splunk_ep = splunk_ep
 
     def generate_tests(self, fixture):
         """
@@ -267,12 +270,29 @@ class CIMTestGenerator(object):
         2. combine the fields list with the defined exceptions
         3. yield object with datamodel, dataset, cim_version and list of fields
         """
+        skipped_samples = set()
+
+        # Get EP-compatible input types once before the loop if EP mode is enabled
+        ep_compatible_types = EP_COMPATIBLE_INPUT_TYPES if self.splunk_ep else None
+
         for event in self.tokenized_events:
             if (
                 not event.requirement_test_data
                 or event.requirement_test_data.keys() == {"other_fields"}
             ):
                 continue
+
+            # Skip incompatible samples when Splunk EP mode is enabled
+            if self.splunk_ep:
+                input_type = event.metadata.get("input_type", "default")
+                if input_type not in ep_compatible_types:
+                    if event.sample_name not in skipped_samples:
+                        LOGGER.info(
+                            f"Splunk EP mode: Skipping CIM recommended fields tests for sample '{event.sample_name}' "
+                            f"(input_type: {input_type}) as it's not ingested by HECEventIngestor"
+                        )
+                        skipped_samples.add(event.sample_name)
+                    continue
             for _, datamodels in event.requirement_test_data["datamodels"].items():
                 if type(datamodels) is not list:
                     datamodels = [datamodels]
