@@ -815,8 +815,8 @@ def test_infinite_loop_in_ingest_data_fixture(testdir, request):
 
 
 @pytest.mark.docker
-@pytest.mark.splunk_app_fiction_with_uuid
-def test_splunk_app_fiction_with_uuid(testdir, request):
+@pytest.mark.splunk_app_fiction_with_ep
+def test_splunk_app_fiction_with_ep(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -847,17 +847,17 @@ def test_splunk_app_fiction_with_uuid(testdir, request):
         "--search-interval=4",
         "--search-retry=4",
         "--search-index=*,_internal",
-        "--use-uuid",
+        "--splunk-ep",
     )
 
     logger.info(result.outlines)
     result.stdout.fnmatch_lines_random(
-        constants.TA_FICTION_UUID_PASSED + constants.TA_FICTION_UUID_SKIPPED
+        constants.TA_FICTION_EP_PASSED + constants.TA_FICTION_EP_SKIPPED
     )
     result.assert_outcomes(
-        passed=len(constants.TA_FICTION_UUID_PASSED),
+        passed=len(constants.TA_FICTION_EP_PASSED),
         failed=0,
-        skipped=len(constants.TA_FICTION_UUID_SKIPPED),
+        skipped=len(constants.TA_FICTION_EP_SKIPPED),
     )
 
     # make sure that we get a '0' exit code for the testsuite
@@ -865,8 +865,8 @@ def test_splunk_app_fiction_with_uuid(testdir, request):
 
 
 @pytest.mark.docker
-@pytest.mark.splunk_app_req_with_uuid
-def test_splunk_app_req_with_uuid(testdir, request):
+@pytest.mark.splunk_app_req_with_ep
+def test_splunk_app_req_with_ep(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
     testdir.makepyfile(
@@ -901,19 +901,19 @@ def test_splunk_app_req_with_uuid(testdir, request):
         "--search-retry=4",
         "--search-index=*",
         "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
-        "--use-uuid",
+        "--splunk-ep",
     )
     logger.info(result.outlines)
 
     result.stdout.fnmatch_lines_random(
-        constants.TA_REQ_WITH_UUID_TRANSITION_PASSED
-        + constants.TA_REQ_WITH_UUID_TRANSITION_FAILED
-        + constants.TA_REQ_WITH_UUID_TRANSITION_SKIPPED
+        constants.TA_REQ_EP_TRANSITION_PASSED
+        + constants.TA_REQ_EP_TRANSITION_FAILED
+        + constants.TA_REQ_EP_TRANSITION_SKIPPED
     )
     result.assert_outcomes(
-        passed=len(constants.TA_REQ_WITH_UUID_TRANSITION_PASSED),
-        failed=len(constants.TA_REQ_WITH_UUID_TRANSITION_FAILED),
-        skipped=len(constants.TA_REQ_WITH_UUID_TRANSITION_SKIPPED),
+        passed=len(constants.TA_REQ_EP_TRANSITION_PASSED),
+        failed=len(constants.TA_REQ_EP_TRANSITION_FAILED),
+        skipped=len(constants.TA_REQ_EP_TRANSITION_SKIPPED),
     )
 
     # make sure that we get a non '0' exit code for the testsuite as it contains failure
