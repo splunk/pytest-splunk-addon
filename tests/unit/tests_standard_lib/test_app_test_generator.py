@@ -11,6 +11,7 @@ config = {
     "store_events": True,
     "splunk_data_generator": "psa.conf",
     "requirement_test": "fake_requirement_path",
+    "splunk_ep": False,
 }
 pytest_config = namedtuple("Config", ["getoption"])
 test_config = pytest_config(getoption=lambda x, *y: config[x])
@@ -50,8 +51,11 @@ def test_app_test_generator_instantiation(
         config["splunk_app"],
         [],
         field_bank=config["field_bank"],
+        splunk_ep=config["splunk_ep"],
     )
-    atg.cim_test_generator.assert_called_once_with(config["splunk_app"], path, [])
+    atg.cim_test_generator.assert_called_once_with(
+        config["splunk_app"], path, [], splunk_ep=config["splunk_ep"]
+    )
     atg.indextime_test_generator.assert_called_once_with()
 
 
@@ -87,58 +91,62 @@ def test_app_test_generator_instantiation(
         (
             "splunk_indextime_key_fields",
             "indextime_test_generator",
-            lambda x, app_path, config_path, test_type: (
-                params(values=f"splunk_indextime_{test_type}_test_{3 - i}", id=3 - i)
-                for i in range(3)
+            lambda x, app_path, config_path, fixture, splunk_ep: (
+                params(values=f"{fixture}_test_{i + 1}", id=i + 1) for i in range(3)
             ),
             [True],
             {
                 "app_path": "fake_app",
                 "config_path": "psa.conf",
-                "test_type": "key_fields",
+                "fixture": "splunk_indextime_key_fields",
+                "splunk_ep": False,
             },
             [
-                params(values=f"splunk_indextime_key_fields_test_1", id=1),
-                params(values=f"splunk_indextime_key_fields_test_2", id=2),
-                params(values=f"splunk_indextime_key_fields_test_3", id=3),
+                params(values="splunk_indextime_key_fields_test_1", id=1),
+                params(values="splunk_indextime_key_fields_test_2", id=2),
+                params(values="splunk_indextime_key_fields_test_3", id=3),
             ],
-            0,
+            0,  # No dedup for indextime tests - they need unique hosts per event
         ),
         (
             "splunk_indextime_time",
             "indextime_test_generator",
-            lambda x, app_path, config_path, test_type: (
-                params(values=f"splunk_indextime_{test_type}_test_{3 - i}", id=3 - i)
-                for i in range(3)
-            ),
-            [True],
-            {"app_path": "fake_app", "config_path": "psa.conf", "test_type": "_time"},
-            [
-                params(values=f"splunk_indextime__time_test_1", id=1),
-                params(values=f"splunk_indextime__time_test_2", id=2),
-                params(values=f"splunk_indextime__time_test_3", id=3),
-            ],
-            0,
-        ),
-        (
-            "splunk_indextime_line_breaker",
-            "indextime_test_generator",
-            lambda x, app_path, config_path, test_type: (
-                params(values=f"splunk_indextime_{test_type}_test_{3 - i}", id=3 - i)
-                for i in range(3)
+            lambda x, app_path, config_path, fixture, splunk_ep: (
+                params(values=f"{fixture}_test_{i + 1}", id=i + 1) for i in range(3)
             ),
             [True],
             {
                 "app_path": "fake_app",
                 "config_path": "psa.conf",
-                "test_type": "line_breaker",
+                "fixture": "splunk_indextime_time",
+                "splunk_ep": False,
             },
             [
-                params(values=f"splunk_indextime_line_breaker_test_1", id=1),
-                params(values=f"splunk_indextime_line_breaker_test_2", id=2),
-                params(values=f"splunk_indextime_line_breaker_test_3", id=3),
+                params(values="splunk_indextime_time_test_1", id=1),
+                params(values="splunk_indextime_time_test_2", id=2),
+                params(values="splunk_indextime_time_test_3", id=3),
             ],
-            0,
+            0,  # No dedup for indextime tests - they need unique hosts per event
+        ),
+        (
+            "splunk_indextime_line_breaker",
+            "indextime_test_generator",
+            lambda x, app_path, config_path, fixture, splunk_ep: (
+                params(values=f"{fixture}_test_{i + 1}", id=i + 1) for i in range(3)
+            ),
+            [True],
+            {
+                "app_path": "fake_app",
+                "config_path": "psa.conf",
+                "fixture": "splunk_indextime_line_breaker",
+                "splunk_ep": False,
+            },
+            [
+                params(values="splunk_indextime_line_breaker_test_1", id=1),
+                params(values="splunk_indextime_line_breaker_test_2", id=2),
+                params(values="splunk_indextime_line_breaker_test_3", id=3),
+            ],
+            0,  # No dedup for indextime tests - they need unique hosts per event
         ),
     ],
 )

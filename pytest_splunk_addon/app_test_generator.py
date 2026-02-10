@@ -54,19 +54,23 @@ class AppTestGenerator(object):
         self.pytest_config = pytest_config
         self.seen_tests = set()
         self._parser_cache = ParserCache()
+        self.splunk_ep = self.pytest_config.getoption("splunk_ep")
+        self.config_path = self.pytest_config.getoption("splunk_data_generator")
+        self.store_events = self.pytest_config.getoption("store_events")
 
-        store_events = self.pytest_config.getoption("store_events")
-        config_path = self.pytest_config.getoption("splunk_data_generator")
         sample_generator = SampleXdistGenerator(
-            self.pytest_config.getoption("splunk_app"), config_path
+            self.pytest_config.getoption("splunk_app"),
+            self.splunk_ep,
+            self.config_path,
         )
-        store_sample = sample_generator.get_samples(store_events)
+        store_sample = sample_generator.get_samples(self.store_events)
         self.tokenized_events = store_sample.get("tokenized_events")
         LOGGER.debug("Initializing FieldTestGenerator to generate the test cases")
         self.fieldtest_generator = FieldTestGenerator(
             self.pytest_config.getoption("splunk_app"),
             self.tokenized_events,
             field_bank=self.pytest_config.getoption("field_bank", False),
+            splunk_ep=self.splunk_ep,
         )
 
         data_model_path = os.path.join(
@@ -77,6 +81,7 @@ class AppTestGenerator(object):
             self.pytest_config.getoption("splunk_app"),
             self.pytest_config.getoption("splunk_dm_path") or data_model_path,
             self.tokenized_events,
+            splunk_ep=self.splunk_ep,
         )
         self.indextime_test_generator = IndexTimeTestGenerator()
 
@@ -137,57 +142,23 @@ class AppTestGenerator(object):
                 )
 
             yield from _get_cached_tests(f"tests::{fixture}", _gen_cim)
-
         elif fixture.startswith("splunk_indextime"):
-            # TODO: What should be the id of the test case?
-            # Sourcetype + Host + Key field + _count
 
-            pytest_params = None
-
-            store_events = self.pytest_config.getoption("store_events")
-            app_path = self.pytest_config.getoption("splunk_app")
-            config_path = self.pytest_config.getoption("splunk_data_generator")
-
-            if "key_fields" in fixture:
-                pytest_params = list(
-                    _get_cached_tests(
-                        f"tests::{fixture}",
-                        lambda: self.indextime_test_generator.generate_tests(
-                            store_events,
-                            app_path=app_path,
-                            config_path=config_path,
-                            test_type="key_fields",
-                        ),
+            def _gen_indextime():
+                # Note: Do NOT wrap with dedup_tests() - index-time tests for
+                # requirement samples have the same static host from XML, which
+                # would cause dedup to remove all but one test per sample file.
+                return list(
+                    self.indextime_test_generator.generate_tests(
+                        self.store_events,
+                        app_path=self.pytest_config.getoption("splunk_app"),
+                        config_path=self.config_path,
+                        fixture=fixture,
+                        splunk_ep=self.splunk_ep,
                     )
                 )
 
-            elif "_time" in fixture:
-                pytest_params = list(
-                    _get_cached_tests(
-                        f"tests::{fixture}",
-                        lambda: self.indextime_test_generator.generate_tests(
-                            store_events,
-                            app_path=app_path,
-                            config_path=config_path,
-                            test_type="_time",
-                        ),
-                    )
-                )
-
-            elif "line_breaker" in fixture:
-                pytest_params = list(
-                    _get_cached_tests(
-                        f"tests::{fixture}",
-                        lambda: self.indextime_test_generator.generate_tests(
-                            store_events,
-                            app_path=app_path,
-                            config_path=config_path,
-                            test_type="line_breaker",
-                        ),
-                    )
-                )
-
-            yield from sorted(pytest_params, key=lambda param: param.id)
+            yield from _get_cached_tests(f"tests::{fixture}", _gen_indextime)
 
     def dedup_tests(self, test_list, fixture):
         """

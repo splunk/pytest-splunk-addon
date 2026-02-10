@@ -16,6 +16,7 @@
 import os
 import re
 import copy
+import uuid
 from . import Rule
 from . import raise_warning
 from . import SampleEvent
@@ -102,6 +103,9 @@ class SampleStanza(object):
                 if each_rule:
                     raw_event[event_counter] = each_rule.apply(raw_event[event_counter])
             for event in raw_event[event_counter]:
+                if event.metadata.get("splunk_ep"):
+                    event.unique_identifier = str(uuid.uuid4())
+
                 host_value = event.metadata.get("host")
                 host = token_value(key=host_value, value=host_value)
                 event.update_requirement_test_field("host", "##host##", host)

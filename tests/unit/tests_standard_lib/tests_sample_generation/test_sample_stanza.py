@@ -27,7 +27,10 @@ def get_params_for_get_raw_sample():
                 },
                 [
                     "sample_raw",
-                    {"input_type": input_type, "host": "path_to.file_1"},
+                    {
+                        "input_type": input_type,
+                        "host": "path_to.file_1",
+                    },
                     "path_to.file",
                 ],
             )
@@ -47,7 +50,10 @@ def get_params_for_get_raw_sample():
                 },
                 [
                     "sample_raw",
-                    {"input_type": input_type, "host": "path_to.file"},
+                    {
+                        "input_type": input_type,
+                        "host": "path_to.file",
+                    },
                     "path_to.file",
                 ],
             )
@@ -186,6 +192,7 @@ class TestSampleStanza:
                 "expected_event_count": "hh",
                 "count": "ll",
                 "index": 1,
+                "splunk_ep": False,
                 "input_type": input_type,
                 "tokens": {
                     "token_1": {"replacementType": "all"},
@@ -199,6 +206,7 @@ class TestSampleStanza:
             "host": host,
             "host_type": "plugin",
             "index": 1,
+            "splunk_ep": False,
             "input_type": input_type_expected,
             "sample_count": "1",
             "timestamp_type": "plugin",

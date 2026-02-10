@@ -24,3 +24,9 @@ def check_first_worker() -> bool:
         "PYTEST_XDIST_WORKER" not in os.environ
         or os.environ.get("PYTEST_XDIST_WORKER") == "gw0"
     )
+
+
+# Input types that use HEC Event ingestor, which supports UUID via indexed fields.
+# These are the only input types compatible with Splunk Edge Processor mode.
+# See: event_ingestors.ingestor_helper.IngestorHelper.INGEST_METHODS
+EP_COMPATIBLE_INPUT_TYPES = ("modinput", "windows_input")
