@@ -145,15 +145,17 @@ class AppTestGenerator(object):
         elif fixture.startswith("splunk_indextime"):
 
             def _gen_indextime():
-                return self.dedup_tests(
+                # Note: Do NOT wrap with dedup_tests() - index-time tests for
+                # requirement samples have the same static host from XML, which
+                # would cause dedup to remove all but one test per sample file.
+                return list(
                     self.indextime_test_generator.generate_tests(
                         self.store_events,
                         app_path=self.pytest_config.getoption("splunk_app"),
                         config_path=self.config_path,
                         fixture=fixture,
                         splunk_ep=self.splunk_ep,
-                    ),
-                    fixture,
+                    )
                 )
 
             yield from _get_cached_tests(f"tests::{fixture}", _gen_indextime)
