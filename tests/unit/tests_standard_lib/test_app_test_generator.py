@@ -106,7 +106,7 @@ def test_app_test_generator_instantiation(
                 params(values="splunk_indextime_key_fields_test_2", id=2),
                 params(values="splunk_indextime_key_fields_test_3", id=3),
             ],
-            1,
+            0,  # No dedup for indextime tests - they need unique hosts per event
         ),
         (
             "splunk_indextime_time",
@@ -126,7 +126,7 @@ def test_app_test_generator_instantiation(
                 params(values="splunk_indextime_time_test_2", id=2),
                 params(values="splunk_indextime_time_test_3", id=3),
             ],
-            1,
+            0,  # No dedup for indextime tests - they need unique hosts per event
         ),
         (
             "splunk_indextime_line_breaker",
@@ -146,7 +146,7 @@ def test_app_test_generator_instantiation(
                 params(values="splunk_indextime_line_breaker_test_2", id=2),
                 params(values="splunk_indextime_line_breaker_test_3", id=3),
             ],
-            1,
+            0,  # No dedup for indextime tests - they need unique hosts per event
         ),
     ],
 )
