@@ -1,0 +1,85 @@
+# CIM Separation Proposal
+
+## Current State
+
+```
+┌─────────────────────────────────────────────────────┐
+│              pytest-splunk-addon (v6.4.0)           │
+│                                                     │
+│  ┌───────────────────────────────────────────────┐  │
+│  │  Core Test Framework                          │  │
+│  │  ┌──────────────┐  ┌──────────────────────┐   │  │
+│  │  │ fields_tests/│  │ index_tests/        │   │  │
+│  │  └──────────────┘  └──────────────────────┘   │  │
+│  │  ┌──────────────┐  ┌──────────────────────┐   │  │
+│  │  │ cim_tests/   │  │ sample_generation/   │   │  │
+│  │  └──────┬───────┘  └──────────────────────┘   │  │
+│  │         │                                     │  │
+│  │  ┌──────┴───────────────────────────────────┐ │  │
+│  │  │  addon_parser/  plugin.py  splunk.py     │ │  │
+│  │  └──────────────────────┬───────────────────┘ │  │
+│  └─────────────────────────┼─────────────────────┘  │
+│                            │                        │
+│  ┌─────────────────────────┼─────────────────────┐  │
+│  │  CIM Data (bundled)     │                     │  │
+│  │                         ▼                     │  │
+│  │  ┌──────────────────────────────────────────┐ │  │
+│  │  │ CIM_Models/datamodel_definition.py       │ │  │
+│  │  │ 2,400 lines · 11 CIM versions            │ │  │
+│  │  │ (4.18.1 → 6.2.0) recommended fields      │ │  │
+│  │  └──────────────────────────────────────────┘ │  │
+│  │  ┌──────────────────────────────────────────┐ │  │
+│  │  │ data_models/ (23 JSON files)             │ │  │
+│  │  │ 5,600 lines · tags, fields, schemas      │ │  │
+│  │  └──────────────────────────────────────────┘ │  │
+│  └───────────────────────────────────────────────┘  │
+│                                                     │
+│  ⚠ CIM update → must release entire package         │
+│  ⚠ CIM 6.3.0 comes out → new PSA release needed     │
+└─────────────────────────────────────────────────────┘
+```
+
+---
+
+## Proposed State (Option A)
+
+```
+┌─────────────────────────────────────┐      ┌──────────────────────────────┐
+│    pytest-splunk-addon (v7.x)       │      │  splunk-cim-models (v1.x)    │
+│                                     │      │  (separate package)          │
+│  ┌───────────────────────────────┐  │      │                              │
+│  │  Core Test Framework          │  │ dep  │  ┌────────────────────────┐  │
+│  │  ┌────────────┐ ┌──────────┐  │  │◄─────│  │ datamodel_definition   │  │
+│  │  │fields_tests│ │index_test│  │  │      │  │ recommended fields     │  │
+│  │  └────────────┘ └──────────┘  │  │      │  │ per CIM version        │  │
+│  │  ┌────────────┐ ┌──────────┐  │  │      │  └────────────────────────┘  │
+│  │  │ cim_tests/ │ │sample_gen│  │  │      │  ┌────────────────────────┐  │
+│  │  └────────────┘ └──────────┘  │  │      │  │ data_models/ (JSON)    │  │
+│  │  ┌────────────────────────┐   │  │      │  │ tags, fields, schemas  │  │
+│  │  │ addon_parser  splunk.py│   │  │      │  └────────────────────────┘  │
+│  │  └────────────────────────┘   │  │      │                              │
+│  └───────────────────────────────┘  │      │  ✅ Independent releases     │
+│                                     │      │  ✅ CIM 6.3.0 → new version  │
+│  ✅ Releases only for framework     │      │     without touching PSA     │
+│     logic changes                   │      │  ✅ Pin or range version     │
+│  ✅ --splunk-dm-path still works    │      │     in PSA dependency        │
+│     for custom overrides            │      │                              │
+└─────────────────────────────────────┘      └──────────────────────────────┘
+
+                    Changes Required
+                    ════════════════
+              ┌─────────────────────────────┐
+              │ 1. splunk.py (line 31)      │
+              │    - from .CIM_Models...    │
+              │    + from splunk_cim_models │
+              │                             │
+              │ 2. app_test_generator.py    │
+              │    (lines 76-82)            │
+              │    default path → package   │
+              │                             │
+              │ 3. pyproject.toml           │
+              │    + splunk-cim-models dep  │
+              │                             │
+              │ Only 3 touch points!        │
+              └─────────────────────────────┘
+```
