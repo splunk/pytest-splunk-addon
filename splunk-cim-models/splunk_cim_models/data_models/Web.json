@@ -1,0 +1,275 @@
+{
+  "model_name": "Web",
+  "version": "1.0.0",
+  "objects": [
+    {
+      "name": "Web",
+      "tags": [["web"]],
+      "fields_cluster": [
+        ["bytes", "bytes_in", "bytes_out"],
+        ["http_user_agent", "http_user_agent_length"]
+      ],
+      "fields": [
+        {
+          "name": "action",
+          "type": "required",
+          "comment": "The action taken by the server or proxy."
+        },
+        {
+          "name": "app",
+          "type": "conditional",
+          "condition": "app=*",
+          "validity": "if(isstr(app),app,null())",
+          "comment": "The application detected or hosted by the server/site such as wordpress, splunk, or facebook."
+        },
+        {
+          "name": "dest",
+          "type": "required",
+          "comment": "The destination of the network traffic (the remote host). You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
+        },
+        {
+          "name": "dest_port",
+          "type": "required",
+          "validity": "if(isnum(dest_port),dest_port,null())",
+          "comment": "The destination port of the web traffic."
+        },
+        {
+          "name": "src",
+          "type": "required",
+          "comment": "The source of the network traffic (the client requesting the connection)."
+        },
+        {
+          "name": "status",
+          "type": "required",
+          "expected_values": [
+            "100",
+            "101",
+            "102",
+            "200",
+            "201",
+            "202",
+            "203",
+            "204",
+            "205",
+            "206",
+            "207",
+            "208",
+            "226",
+            "300",
+            "301",
+            "302",
+            "303",
+            "304",
+            "305",
+            "306",
+            "307",
+            "308",
+            "400",
+            "401",
+            "402",
+            "403",
+            "404",
+            "405",
+            "406",
+            "407",
+            "408",
+            "409",
+            "410",
+            "411",
+            "412",
+            "413",
+            "414",
+            "415",
+            "416",
+            "417",
+            "422",
+            "423",
+            "424",
+            "426",
+            "428",
+            "429",
+            "431",
+            "500",
+            "501",
+            "502",
+            "503",
+            "504",
+            "505",
+            "506",
+            "507",
+            "508",
+            "510",
+            "511"
+          ],
+          "comment": "The HTTP response code indicating the status of the proxy request."
+        },
+        {
+          "name": "uri_path",
+          "type": "conditional",
+          "condition": "uri_path=*",
+          "validity": "if(match(uri_path, \"^\/[/.a-zA-Z0-9- _%]*\"),uri_path,null())",
+          "comment": "The path of the resource served by the webserver or proxy."
+        },
+        {
+          "name": "url",
+          "type": "required",
+          "comment": "The URL of the requested HTTP resource."
+        },
+        {
+          "name": "url_domain",
+          "type": "required",
+          "comment": "The domain name contained within the URL of the requested HTTP resource."
+        },
+        {
+          "name": "url_length",
+          "type": "optional",
+          "validity": "if(url_length == len(url), url_length, null())",
+          "comment": "The length of the URL."
+        },
+        {
+          "name": "category",
+          "type": "required",
+          "comment": "The category of traffic, such as may be provided by a proxy server."
+        },
+        {
+          "name": "bytes",
+          "type": "required",
+          "validity": "if(isnum(bytes) and bytes == (bytes_in+bytes_out),bytes,null())",
+          "comment": "The total number of bytes transferred (bytes_in + bytes_out)."
+        },
+        {
+          "name": "bytes_in",
+          "type": "required",
+          "validity": "if(isnum(bytes_in),bytes_in,null())",
+          "comment": "The number of inbound bytes transferred."
+        },
+        {
+          "name": "bytes_out",
+          "type": "required",
+          "validity": "if(isnum(bytes_out),bytes_out,null())",
+          "comment": "The number of outbound bytes transferred."
+        },
+        {
+          "name": "http_method",
+          "type": "required",
+          "expected_values": [
+            "GET",
+            "PUT",
+            "POST",
+            "DELETE",
+            "HEAD",
+            "OPTIONS",
+            "CONNECT",
+            "TRACE"
+          ],
+          "comment": "The HTTP method used in the request."
+        },
+        {
+          "name": "http_user_agent",
+          "type": "required",
+          "comment": "The user agent used in the request."
+        },
+        {
+          "name": "http_user_agent_length",
+          "type": "required",
+          "validity": "if(http_user_agent_length == len(http_user_agent), http_user_agent_length, null())",
+          "comment": "The length of the user agent used in the request."
+        },
+        {
+          "name": "cached",
+          "type": "optional",
+          "expected_values": ["true", "false", "1", "0"],
+          "comment": "Indicates whether the event data is cached or not."
+        },
+        {
+          "name": "duration",
+          "type": "optional",
+          "validity": "if(isnum(duration),duration,null())",
+          "comment": "The time taken by the proxy event, in milliseconds."
+        },
+        {
+          "name": "http_content_type",
+          "type": "optional",
+          "comment": "The content-type of the requested HTTP resource."
+        },
+        {
+          "name": "response_time",
+          "type": "optional",
+          "validity": "if(isnum(response_time),response_time,null())",
+          "comment": "The amount of time it took to receive a response, if applicable, in milliseconds."
+        },
+        {
+          "name": "uri_query",
+          "type": "optional",
+          "comment": "The path of the resource requested by the client."
+        },
+        {
+          "name": "user",
+          "type": "optional",
+          "comment": "The user that requested the HTTP resource."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "comment": "The vendor and product of the proxy server, such as Squid Proxy Server. This field can be automatically populated by vendor and product fields in your data."
+        },
+        {
+          "name": "cookie",
+          "type": "optional",
+          "comment": "The cookie file recorded in the event."
+        },
+        {
+          "name": "http_referrer",
+          "type": "optional",
+          "comment": "The HTTP referrer used in the request. The W3C specification and many implementations misspell this as http_referer. Use a FIELDALIAS to handle both key names."
+        },
+        {
+          "name": "http_referrer_domain",
+          "type": "optional",
+          "comment": "The domain name contained within the HTTP referrer used in the request."
+        },
+        {
+          "name": "site",
+          "type": "optional",
+          "comment": "The virtual site which services the request, if applicable."
+        }
+      ],
+      "child_dataset": [
+        {
+          "name": "Proxy",
+          "tags": [["proxy", "web"]],
+          "fields_cluster": [],
+          "fields": [],
+          "child_dataset": [],
+          "search_constraints": "tag=proxy"
+        },
+        {
+          "name": "Storage",
+          "tags": [["storage", "web"]],
+          "fields_cluster": [],
+          "fields":[
+            {
+              "name": "error_code",
+              "type": "optional",
+              "comment": "The error code that occurred while accessing the storage account"
+            },
+            {
+              "name": "operation",
+              "type": "optional",
+              "comment": "The operation performed on the storage account."
+            },
+            {
+              "name": "storage_name",
+              "type": "optional",
+              "comment": "The name of the bucket or storage account."
+            }
+          ],
+          "child_dataset": [],
+          "search_constraints": "tag=storage"
+
+        }
+      ],
+      "search_constraints": "tag=web"
+    }
+  ]
+}

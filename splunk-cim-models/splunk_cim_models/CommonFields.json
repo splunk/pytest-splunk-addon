@@ -1,0 +1,85 @@
+{
+  "description": "This fields are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security. Do not define extractions for these fields when writing add-ons.",
+  "fields": [
+    {
+      "name": "dest_bunit",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The business unit of the authentication target."
+    },
+    {
+      "name": "dest_category",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The category of the authentication target, such as email_server or SOX-compliant."
+    },
+    {
+      "name": "dest_priority",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The priority of the authentication target."
+    },
+    {
+      "name": "dvc_bunit",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The business unit of the DLP target."
+    },
+    {
+      "name": "dvc_category",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The category of the DLP device."
+    },
+    {
+      "name": "dvc_priority",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The priority of the DLP device."
+    },
+    {
+      "name": "src_bunit",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The business unit of the authentication source."
+    },
+    {
+      "name": "src_category",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The category of the authentication source, such as email_server or SOX-compliant."
+    },
+    {
+      "name": "src_priority",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The priority of the authentication source."
+    },
+    {
+      "name": "src_user_bunit",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The business unit of the user who initiated the privilege escalation. This field is unnecessary when an escalation has not been performed."
+    },
+    {
+      "name": "src_user_category",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The category of the user who initiated the privilege escalation. This field is unnecessary when an escalation has not been performed."
+    },
+    {
+      "name": "src_user_priority",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The priority of the user who initiated the privilege escalation. This field is unnecessary when an escalation has not been performed."
+    },
+    {
+      "name": "user_bunit",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The business unit of the user involved in the event, or who initiated the event. For authentication privilege escalation events, this should represent the user targeted by the escalation."
+    },
+    {
+      "name": "user_category",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The category of the user involved in the event, or who initiated the event. For authentication privilege escalation events, this should represent the user targeted by the escalation."
+    },
+    {
+      "name": "user_priority",
+      "type": "not_allowed_in_search_and_props",
+      "comment": "The priority of the user involved in the event, or who initiated the event. For authentication privilege escalation events, this should represent the user targeted by the escalation."
+    },
+    {
+      "name": "tag",
+      "type": "not_allowed_in_props",
+      "comment": "This automatically-generated field is used to access tags from within data models. Do not define extractions for this field when writing add-ons."
+    }
+  ]
+}

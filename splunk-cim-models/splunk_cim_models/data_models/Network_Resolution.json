@@ -1,0 +1,282 @@
+{
+  "model_name": "Network_Resolution",
+  "version":"1.0.0",
+  "objects": [{
+    "name": "DNS",
+    "tags": [
+      [
+        "network",
+        "resolution",
+        "dns"
+      ]
+    ],
+    "fields_cluster": [],
+    "fields": [{
+        "name": "additional_answer_count",
+        "type": "optional",
+        "validity": "if(isnum(additional_answer_count),additional_answer_count,null())",
+        "comment": "Number of entries in the 'additional' section of the DNS message."
+      },
+      {
+        "name": "answer",
+        "type": "required",
+        "multi_value": true,
+        "comment": "Resolved address for the query."
+      },
+      {
+        "name": "answer_count",
+        "type": "required",
+        "validity": "if(isnum(answer_count) and answer_count == mvcount(answer),answer_count,null())",
+        "comment": "Number of entries in the answer section of the DNS message."
+      },
+      {
+        "name": "authority_answer_count",
+        "type": "optional",
+        "validity": "if(isnum(authority_answer_count),authority_answer_count,null())",
+        "comment": "Number of entries in the 'authority' section of the DNS message."
+      },
+      {
+        "name": "dest",
+        "type": "required",
+        "comment": "The destination of the network resolution event. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
+      },
+      {
+        "name": "message_type",
+        "type": "required",
+        "expected_values": [
+          "Query",
+          "Response"
+        ],
+        "comment": "Type of DNS message."
+      },
+      {
+        "name": "query",
+        "type": "required",
+        "multi_value": true,
+        "comment": "The domain which needs to be resolved. Applies to messages of type 'Query'."
+      },
+      {
+        "name": "query_count",
+        "type": "required",
+        "validity": "if(isnum(query_count) and query_count == mvcount(query),query_count,null())",
+        "comment": "Number of entries that appear in the 'Questions' section of the DNS query."
+      },
+      {
+        "name": "query_type",
+        "type": "required",
+        "expected_values": [
+          "Query",
+          "IQuery",
+          "Status",
+          "Notify",
+          "Update",
+          "A",
+          "MX",
+          "NS",
+          "PTR"
+        ],
+        "comment": "The field may contain DNS OpCodes or Resource Record Type codes. For details, see the Domain Name System Parameters on the Internet Assigned Numbers Authority (IANA) web site. If a value is not set, the DNS.record_type field is referenced."
+      },
+      {
+        "name": "record_type",
+        "type": "required",
+        "expected_values": [
+          "A",
+          "NS",
+          "MD",
+          "MF",
+          "CNAME",
+          "SOA",
+          "MB",
+          "MG",
+          "MR",
+          "NULL",
+          "WKS",
+          "PTR",
+          "HINFO",
+          "MINFO",
+          "MX",
+          "TXT",
+          "RP",
+          "AFSDB",
+          "X25",
+          "ISDN",
+          "RT",
+          "NSAP",
+          "NSAP-PTR",
+          "SIG",
+          "KEY",
+          "PX",
+          "GPOS",
+          "AAAA",
+          "LOC",
+          "NXT",
+          "EID",
+          "NIMLOC",
+          "SRV",
+          "ATMA",
+          "NAPTR",
+          "KX",
+          "CERT",
+          "A6",
+          "DNAME",
+          "SINK",
+          "OPT",
+          "APL",
+          "DS",
+          "SSHFP",
+          "IPSECKEY",
+          "RRSIG",
+          "NSEC",
+          "DNSKEY",
+          "DHCID",
+          "NSEC3",
+          "NSEC3PARAM",
+          "TLSA",
+          "SMIMEA",
+          "Unassigned",
+          "HIP",
+          "NINFO",
+          "RKEY",
+          "TALINK",
+          "CDS",
+          "CDNSKEY",
+          "OPENPGPKEY",
+          "CSYNC",
+          "ZONEMD",
+          "SVCB",
+          "HTTPS",
+          "SPF",
+          "UINFO",
+          "UID",
+          "GID",
+          "UNSPEC",
+          "NID",
+          "L32",
+          "L64",
+          "LP",
+          "EUI48",
+          "EUI64",
+          "TKEY",
+          "TSIG",
+          "IXFR",
+          "AXFR",
+          "MAILB",
+          "MAILA",
+          "*",
+          "URI",
+          "CAA",
+          "AVC",
+          "DOA",
+          "AMTRELAY",
+          "RESINFO",
+          "TA",
+          "DLV",
+          "Private use",
+          "Reserved"
+        ],
+        "comment": "The DNS resource record type. For details, see the List of DNS record types on Internet Assigned Numbers Authority (IANA) web site."
+      },
+      {
+        "name": "reply_code",
+        "type": "required",
+        "expected_values": [
+          "No Error",
+          "Format Error",
+          "Server Failure",
+          "Non-Existent Domain",
+          "NotImp",
+          "Refused",
+          "YXDomain",
+          "YXRRSet",
+          "NXRRSet",
+          "NotAuth",
+          "NotZone",
+          "DSOTYPENI",
+          "BADVERS",
+          "BADSIG",
+          "BADKEY",
+          "BADTIME",
+          "BADMODE",
+          "BADNAME",
+          "BADALG",
+          "BADTRUNC",
+          "BADCOOKIE"
+        ],
+        "comment": "The return code for the response. For details, see the Domain Name System Parameters on the Internet Assigned Numbers Authority (IANA) web site."
+      },
+      {
+        "name": "reply_code_id",
+        "type": "required",
+        "expected_values": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23"
+        ],
+        "comment": "The numerical id of a return code. For details, see the Domain Name System Parameters on the Internet Assigned Numbers Authority (IANA) web site."
+      },
+      {
+        "name": "response_time",
+        "type": "required",
+        "validity": "if(isnum(response_time),response_time,null())",
+        "comment": "The amount of time it took to receive a response in the network resolution event, in seconds."
+      },
+      {
+        "name": "src",
+        "type": "required",
+        "comment": "The source of the network resolution event. You can alias this from more specific fields, such as src_host, src_ip, or src_name."
+      },
+      {
+        "name": "transaction_id",
+        "type": "required",
+        "validity": "if(isnum(transaction_id),transaction_id,null())",
+        "comment": "The unique numerical transaction id of the network resolution event"
+      },
+      {
+        "name": "transport",
+        "type": "required",
+        "comment": "The transport protocol used by the network resolution event."
+      },
+      {
+        "name": "duration",
+        "type": "optional",
+        "validity": "if(isnum(duration),duration,null())",
+        "comment": "The time taken by the network resolution event, in seconds."
+      },
+      {
+        "name": "name",
+        "type": "optional",
+        "comment": "The name of the DNS event."
+      },
+      {
+        "name": "ttl",
+        "type": "optional",
+        "validity": "if(isnum(ttl),ttl,null())",
+        "comment": "The time-to-live of the network resolution event, in seconds."
+      },
+      {
+        "name": "vendor_product",
+        "type": "required",
+        "comment": "The vendor product name of the DNS server. The Splunk platform can derive this field from the fields vendor and product in the raw data, if they exist."
+      }
+    ],
+    "child_dataset": [],
+    "search_constraints": "tag=network tag=resolution tag=dns"
+  }]
+}
