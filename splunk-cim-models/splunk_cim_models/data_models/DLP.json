@@ -1,0 +1,116 @@
+{
+  "model_name": "DLP",
+  "version": "1.0.0",
+  "objects": [
+    {
+      "name": "DLP Incidents",
+      "tags": [["dlp", "incident"]],
+      "search_constraints": "tag=dlp tag=incident",
+      "fields_cluster": [],
+      "fields": [
+        {
+          "name": "action",
+          "type": "required",
+          "comment": "The action taken by the DLP device."
+        },
+        {
+          "name": "app",
+          "type": "required",
+          "comment": "The application involved in the event."
+        },
+        {
+          "name": "category",
+          "type": "required",
+          "comment": "The category of the DLP event."
+        },
+        {
+          "name": "dest",
+          "type": "required",
+          "comment": "The target of the DLP event."
+        },
+        {
+          "name": "dest_zone",
+          "type": "optional",
+          "comment": "The zone of the DLP target."
+        },
+        {
+          "name": "dlp_type",
+          "type": "required",
+          "comment": "The type of DLP system that generated the event."
+        },
+        {
+          "name": "dvc",
+          "type": "required",
+          "comment": "The device that reported the DLP event."
+        },
+        {
+          "name": "dvc_zone",
+          "type": "optional",
+          "comment": "The zone of the DLP device."
+        },
+        {
+          "name": "object",
+          "type": "required",
+          "comment": "The name of the affected object."
+        },
+        {
+          "name": "object_category",
+          "type": "required",
+          "comment": "The category of the affected object."
+        },
+        {
+          "name": "object_path",
+          "type": "required",
+          "comment": "The path of the affected object."
+        },
+        {
+          "name": "severity",
+          "type": "required",
+          "comment": "The severity of the DLP event."
+        },
+        {
+          "name": "severity_id",
+          "type": "optional",
+          "comment": "The numeric or vendor specific severity indicator corresponding to the event severity."
+        },
+        {
+          "name": "signature",
+          "type": "required",
+          "comment": "The name of the DLP event."
+        },
+        {
+          "name": "signature_id",
+          "type": "optional",
+          "comment": "The unique identifier or event code of the event signature."
+        },
+        {
+          "name": "src",
+          "type": "optional",
+          "comment": "The source of the DLP event."
+        },
+        {
+          "name": "src_user",
+          "type": "required",
+          "comment": "The source user of the DLP event."
+        },
+        {
+          "name": "src_zone",
+          "type": "optional",
+          "comment": "The zone of the DLP source."
+        },
+        {
+          "name": "user",
+          "type": "conditional",
+          "condition": "dlp_type=email OR dlp_type=share_point OR dlp_type=o365 OR dlp_type=google.* OR dlp_type=GWS.*",
+          "comment": "The target user of the DLP event."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "comment": "The vendor and product name of the DLP system"
+        }
+      ],
+      "child_dataset": []
+    }
+  ]
+}

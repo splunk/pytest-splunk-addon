@@ -1,0 +1,251 @@
+{
+  "model_name": "Email",
+  "version": "1.0.0",
+  "objects": [
+    {
+      "name": "All Email",
+      "tags": [["email"]],
+      "search_constraints": "tag=email",
+      "fields_cluster": [["recipient", "recipient_count"]],
+      "fields": [
+        {
+          "name": "action",
+          "type": "required",
+          "expected_values": ["delivered", "blocked", "quarantined", "deleted"],
+          "comment": "Action taken by the reporting device"
+        },
+        {
+          "name": "delay",
+          "type": "optional",
+          "validity": "if(isnum(delay),delay,null())",
+          "comment": "Total sending delay in milliseconds"
+        },
+        {
+          "name": "dest",
+          "type": "required",
+          "comment": "The endpoint system to which the message was delivered"
+        },
+        {
+          "name": "duration",
+          "type": "optional",
+          "validity": "if(isnum(duration),duration, null())",
+          "comment": "The amount of time for the completion of the messaging event, in seconds."
+        },
+        {
+          "name": "file_hash",
+          "type": "optional",
+          "comment": "The hashes for the files attached to the message, if any exist."
+        },
+        {
+          "name": "file_name",
+          "type": "optional",
+          "comment": "The names of the files attached to the message, if any exist."
+        },
+        {
+          "name": "file_size",
+          "type": "optional",
+          "validity": "if(isnum(file_size),file_size, null())",
+          "comment": "The size of the files attached the message, in bytes."
+        },
+        {
+          "name": "internal_message_id",
+          "type": "required",
+          "comment": "Host-specific unique message identifier (such as aid in sendmail, IMI in Domino, Internal-Message-ID in Exchange, and MID in Ironport)."
+        },
+        {
+          "name": "message_id",
+          "type": "required",
+          "comment": "The globally-unique message identifier."
+        },
+        {
+          "name": "message_info",
+          "type": "optional",
+          "comment": "Additional information about the message."
+        },
+        {
+          "name": "orig_dest",
+          "type": "optional",
+          "comment": "The original destination host of the message. The message destination host can change when a message is relayed or bounced."
+        },
+        {
+          "name": "orig_recipient",
+          "type": "optional",
+          "comment": "The original recipient of the message. The message recipient can change when the original email address is an alias and has to be resolved to the actual recipient."
+        },
+        {
+          "name": "orig_src",
+          "type": "optional",
+          "comment": "The original source of the message."
+        },
+        {
+          "name": "process",
+          "type": "conditional",
+          "condition": "process_id=*",
+          "comment": "The name of the email executable that carries out the message transaction, such as sendmail, postfix, or the name of an email client."
+        },
+        {
+          "name": "process_id",
+          "type": "optional",
+          "validity": "if(isnum(process_id), process_id, null())",
+          "comment": "The numeric identifier of the process invoked to send the message."
+        },
+        {
+          "name": "protocol",
+          "type": "required",
+          "expected_values": ["smtp", "imap", "pop3", "mapi"],
+          "comment": "The email protocol involved, such as SMTP or RPC."
+        },
+        {
+          "name": "recipient",
+          "type": "required",
+          "multi_value": true,
+          "comment": "A field listing individual recipient email addresses, such as recipient='foo@splunk.com', recipient='bar@splunk.com'"
+        },
+        {
+          "name": "recipient_count",
+          "type": "required",
+          "validity":"if(isnum(recipient_count) and recipient_count==mvcount(recipient),recipient_count, null())",
+          "comment": "The total number of intended message recipients."
+        },
+        {
+          "name": "recipient_domain",
+          "type": "required",
+          "comment": "The domain name contained within the recipient email addresses."
+        },
+        {
+          "name": "recipient_status",
+          "type": "optional",
+          "comment": "The recipient delivery status, if available."
+        },
+        {
+          "name": "response_time",
+          "type": "optional",
+          "validity": "if(isnum(response_time),response_time, null())",
+          "comment": "The amount of time it took to receive a response in the messaging event, in seconds."
+        },
+        {
+          "name": "retries",
+          "type": "optional",
+          "validity": "if(isnum(retries),retries, null())",
+          "comment": "The number of times that the message was automatically resent because it was bounced back, or a similar transmission error condition."
+        },
+        {
+          "name": "return_addr",
+          "type": "required",
+          "comment": "The return address for the message."
+        },
+        {
+          "name": "size",
+          "type": "optional",
+          "validity": "if(isnum(size),size, null())",
+          "comment": "The size of the message, in bytes."
+        },
+        {
+          "name": "src",
+          "type": "required",
+          "comment": "The system that sent the message. You can alias this from more specific fields, such as src_host, src_ip, or src_name."
+        },
+        {
+          "name": "src_user",
+          "type": "required",
+          "comment": "The email address of the message sender."
+        },
+        {
+          "name": "status_code",
+          "type": "conditional",
+          "condition": "protocol=smtp",
+          "validity": "if(match(status_code, \"(?:(\\d(\\.\\d{1,3}){0,2}))\"))",
+          "comment": "The status code associated with the message."
+        },
+        {
+          "name": "src_user_domain",
+          "type": "required",
+          "comment": "The domain name contained within the email address of the message sender."
+        },
+        {
+          "name": "subject",
+          "type": "optional",
+          "comment": "The subject of the message."
+        },
+        {
+          "name": "url",
+          "type": "optional",
+          "comment": "The URL associated with the message, if any."
+        },
+        {
+          "name": "user",
+          "type": "optional",
+          "comment": "The user context for the process. This is not the email address for the sender. For that, look at the src_user field."
+        },
+        {
+          "name": "vendor_product",
+          "type": "required",
+          "comment": "The vendor and product of the email server used for the email transaction. This field can be automatically populated by vendor and product fields in your data."
+        },
+        {
+          "name": "xdelay",
+          "type": "optional",
+          "comment": "Extended delay information for the message transaction. May contain details of all the delays from all the servers in the message transmission chain."
+        },
+        {
+          "name": "xref",
+          "type": "optional",
+          "comment": "An external reference. Can contain message IDs or recipient addresses from related messages."
+        }
+      ],
+      "child_dataset": [
+        {
+          "name": "Delivery",
+          "tags": [["email", "delivery"]],
+          "fields_cluster": [],
+          "search_constraints": "tag=delivery",
+          "fields": [],
+          "child_dataset": []
+        },
+        {
+          "name": "Content",
+          "tags": [["email", "content"]],
+          "fields_cluster": [],
+          "search_constraints": "tag=content",
+          "fields": [],
+          "child_dataset": []
+        },
+        {
+          "name": "Filtering",
+          "tags": [["email", "filter"]],
+          "fields_cluster": [],
+          "search_constraints": "tag=filter",
+          "fields": [
+            {
+              "name": "filter_action",
+              "type": "optional",
+              "comment": "The status produced by the filter, such as 'accepted', 'rejected', or 'dropped'"
+            },
+            {
+              "name": "filter_score",
+              "type": "optional",
+              "validity": "if(isnum(filter_score),filter_score, null())",
+              "comment": "Numeric indicator assigned to specific emails by an email filter"
+            },
+            {
+              "name": "signature",
+              "type": "required",
+              "comment": "The name of the filter applied."
+            },
+            {
+              "name": "signature_extra",
+              "type": "optional",
+              "comment": "Any additional information about the filter."
+            },
+            {
+              "name": "signature_id",
+              "type": "optional",
+              "comment": "The id associated with the filter name."
+            }
+          ],
+          "child_dataset": []
+        }
+      ]
+    }
+  ]
+}

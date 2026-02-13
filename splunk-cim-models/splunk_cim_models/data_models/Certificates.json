@@ -1,0 +1,239 @@
+{
+    "model_name": "Certificates",
+    "version": "1.0.0",
+    "objects":[
+    {
+        "name": "All_Certificates",
+        "tags": [
+            ["certificate"]
+        ],
+        "fields_cluster": [],
+        "search_constraints": "tag=certificate",
+        "fields": [
+            {
+                "name": "dest",
+                "type": "optional",
+                "comment":"The target in the certificate management event."
+            },
+            {
+                "name": "dest_port",
+                "type": "optional",
+                "validity": "if(isnum(dest_port),dest_port,null())",
+                "comment":"The port number of the target." 
+            },
+            {
+                "name": "dest_priority",
+                "type": "optional",
+                "comment":"The priority of the target."                
+            },
+            {
+                "name": "duration",
+                "type": "optional",
+                "validity": "if(isnum(duration),duration,null())",
+                "comment":"The amount of time for the completion of the certificate management event, in seconds." 
+            },
+            {
+                "name": "response_time",
+                "type": "optional",
+                "validity": "if(isnum(response_time),response_time,null())",
+                "comment":"The amount of time it took to receive a response in the certificate management event, if applicable." 
+            },
+            {
+                "name": "src",
+                "type": "optional",
+                "comment":"The source involved in the certificate management event. You can alias this from more specific fields, such as src_host, src_ip, or src_nt_host." 
+            },
+            {
+                "name": "src_port",
+                "type": "optional",
+                "validity": "if(isnum(src_port),src_port,null())",
+                "comment":"The port number of the source." 
+            },
+            {
+                "name": "src_priority",
+                "type": "optional",
+                "comment":"The priority of the certificate management source." 
+            },
+            {
+                "name": "transport",
+                "type": "optional",
+                "comment":"The transport protocol of the Network Traffic involved with this certificate." 
+            }
+        ],
+        "child_dataset": [
+            {
+                "name":"SSL",
+                "tags": [
+                    ["certificate","ssl"]
+                  ],
+                "search_constraints":"(tag=ssl OR tag=tls)",
+                "fields_cluster":[],
+                "fields":[
+                    {
+                        "name": "ssl_end_time",
+                        "type": "required",
+                        "comment":"The expiry time of the certificate. Needs to be converted to UNIX time for calculations in dashboards."
+                    },
+                    {
+                        "name": "ssl_engine",
+                        "type": "optional",
+                        "comment":"The name of the signature engine that created the certificate."
+                    },
+                    {
+                        "name": "ssl_hash",
+                        "type": "required",
+                        "comment":"The hash of the certificate."
+                    },
+                    {
+                        "name": "ssl_is_valid",
+                        "type": "optional",
+                        "expected_values":[
+                            "true",
+                            "false",
+                            "1",
+                            "0"
+                        ],
+                        "comment":"Indicator of whether the ssl certificate is valid or not."
+                    },
+                    {
+                        "name": "ssl_issuer",
+                        "type": "required",
+                        "comment":"The certificate issuer's RFC2253 Distinguished Name."
+                    },
+                    {
+                        "name": "ssl_issuer_common_name",
+                        "type": "required",
+                        "comment":"The certificate issuer's common name."
+                    },
+                    {
+                        "name": "ssl_issuer_email",
+                        "type": "optional",
+                        "comment":"The certificate issuer's email address."
+                    },
+                    {
+                        "name": "ssl_issuer_email_domain",
+                        "type": "optional",
+                        "comment":"The domain name contained within the certificate issuer's email address."
+                    },
+                    {
+                        "name": "ssl_issuer_locality",
+                        "type": "optional",
+                        "comment":"The certificate issuer's locality."
+                    },
+                    {
+                        "name": "ssl_issuer_organization",
+                        "type": "optional",
+                        "comment":"The certificate issuer's organization."
+                    },
+                    {
+                        "name": "ssl_issuer_street",
+                        "type": "optional",
+                        "comment":"The certificate issuer's street address."
+                    },
+                    {
+                        "name": "ssl_issuer_unit",
+                        "type": "optional",
+                        "comment":"The certificate issuer's organizational unit."
+                    },
+                    {
+                        "name": "ssl_name",
+                        "type": "optional",
+                        "comment":"The name of the ssl certificate."
+                    },
+                    {
+                        "name": "ssl_policies",
+                        "type": "optional",
+                        "comment":"The Object Identification Numbers's of the certificate's policies in a comma separated string."
+                    },
+                    {
+                        "name": "ssl_publickey",
+                        "type": "optional",
+                        "comment":"The certificate's public key."
+                    },
+                    {
+                        "name": "ssl_publickey_algorithm",
+                        "type": "optional",
+                        "comment":"The algorithm used to create the public key."
+                    },
+                    {
+                        "name": "ssl_serial",
+                        "type": "required",
+                        "comment":"The certificate's serial number."
+                    },
+                    {
+                        "name": "ssl_session_id",
+                        "type": "optional",
+                        "comment":"The session identifier for this certificate."
+                    },
+                    {
+                        "name": "ssl_signature_algorithm",
+                        "type": "optional",
+                        "comment":"The algorithm used by the Certificate Authority to sign the certificate."
+                    },
+                    {
+                        "name": "ssl_start_time",
+                        "type": "required",
+                        "comment":"This is the start date and time for this certificate's validity. Needs to be converted to UNIX time for calculations in dashboards."
+                    },
+                    {
+                        "name": "ssl_subject",
+                        "type": "required",
+                        "comment":"The certificate owner's RFC2253 Distinguished Name."
+                    },
+                    {
+                        "name": "ssl_subject_common_name",
+                        "type": "required",
+                        "comment":"This certificate owner's common name."
+                    },
+                    {
+                        "name": "ssl_subject_email",
+                        "type": "optional",
+                        "comment":"The certificate owner's e-mail address."
+                    },
+                    {
+                        "name": "ssl_subject_email_domain",
+                        "type": "optional",
+                        "comment":"The domain name contained within the certificate subject's email address."
+                    },
+                    {
+                        "name": "ssl_subject_locality",
+                        "type": "optional",
+                        "comment":"The certificate owner's locality."
+                    },
+                    {
+                        "name": "ssl_subject_organization",
+                        "type": "required",
+                        "comment":"The certificate owner's organization."
+                    },
+                    {
+                        "name": "ssl_subject_state",
+                        "type": "optional",
+                        "comment":"The certificate owner's state of residence."
+                    },
+                    {
+                        "name": "ssl_subject_street",
+                        "type": "optional",
+                        "comment":"The certificate owner's street address."
+                    },
+                    {
+                        "name": "ssl_subject_unit",
+                        "type": "optional",
+                        "comment":"The certificate owner's organizational unit."
+                    },
+                    {
+                        "name": "ssl_validity_window",
+                        "type": "required",
+                        "validity": "if(isnum(ssl_validity_window),ssl_validity_window,null())",
+                        "comment":"The length of time (in seconds) for which this certificate is valid."
+                    },
+                    {
+                        "name": "ssl_version",
+                        "type": "optional",
+                        "comment":"The ssl version of this certificate."
+                    }
+                ],
+                "child_dataset": []
+            }
+        ]
+    }]
+}

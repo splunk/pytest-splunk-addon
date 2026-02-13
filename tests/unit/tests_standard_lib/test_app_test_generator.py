@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import patch
 from collections import namedtuple
 from pytest_splunk_addon.app_test_generator import AppTestGenerator
+from splunk_cim_models import DATA_MODELS_PATH
 
 module = "pytest_splunk_addon.app_test_generator"
 config = {
@@ -38,7 +39,7 @@ def app_test_generator(mock_object):
     "simple_config, path",
     [
         (test_config, "fake_path"),
-        (test_config_without_dm_path, "/fake_dir/data_models"),
+        (test_config_without_dm_path, DATA_MODELS_PATH),
     ],
 )
 def test_app_test_generator_instantiation(
