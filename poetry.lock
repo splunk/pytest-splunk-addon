@@ -729,7 +729,7 @@ version = "2.0.0"
 description = "Splunk CIM (Common Information Model) data model definitions and schemas"
 optional = false
 python-versions = ">=3.7"
-groups = ["main"]
+groups = ["dev"]
 files = []
 develop = false
 
@@ -864,4 +864,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.7"
-content-hash = "b305649581489cf6eeb62240aff083718b086521384a54f09ab74546b5a345cf"
+content-hash = "8957c4a2f9ff0a6a1e1c919643b3b4ad9b1e5b17ed6691c9ff0d2fe11598a112"
