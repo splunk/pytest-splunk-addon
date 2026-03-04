@@ -101,6 +101,8 @@ jobs:
         run: |
           mkdir test-results-${{ matrix.splunk.version }}
       - name: Test
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
         run: |
           export SPLUNK_APP_PACKAGE=./tests/e2e/addons/TA_fiction_indextime
           export SPLUNK_ADDON=TA_fiction_indextime
