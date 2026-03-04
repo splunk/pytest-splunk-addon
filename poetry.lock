@@ -725,17 +725,19 @@ files = [
 
 [[package]]
 name = "splunk-cim-models"
-version = "0.1.0"
+version = "2.0.0"
 description = "Splunk CIM (Common Information Model) data model definitions and schemas"
 optional = false
-python-versions = "^3.7"
+python-versions = ">=3.7"
 groups = ["main"]
 files = []
-develop = true
+develop = false
 
 [package.source]
-type = "directory"
-url = "splunk-cim-models"
+type = "git"
+url = "https://github.com/splunk/psa-cim-models.git"
+reference = "v2"
+resolved_reference = "3533d7fd6a449b7c2424a3eed2321e872af416a2"
 
 [[package]]
 name = "splunk-sdk"
@@ -862,4 +864,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.7"
-content-hash = "0a39d71a125f0f154f828338065c76098c3f46d5367e61cfe14d1d2e50ccde9a"
+content-hash = "b305649581489cf6eeb62240aff083718b086521384a54f09ab74546b5a345cf"
