@@ -32,6 +32,8 @@ services:
       - sc4s
     volumes:
       - results:/work/test-results
+    environment:
+      - GH_TOKEN
 
   sc4s:
     image: ghcr.io/splunk/splunk-connect-for-syslog/container2:latest
