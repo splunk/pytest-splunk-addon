@@ -50,7 +50,7 @@ splunksplwrapper = "^1.1.1"
 urllib3 = "<2"
 certifi = "^2024.7.4"
 zipp = "^3.6.0"
-splunk-cim-models = ">=0.1.0"
+splunk-cim-models = {git = "https://github.com/splunk/psa-cim-models.git", branch = "v2"}
 
 [tool.poetry.group.dev.dependencies]
 pytest-cov = "^4"
