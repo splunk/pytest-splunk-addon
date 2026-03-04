@@ -108,11 +108,6 @@
           "comment": "The total number of intended message recipients."
         },
         {
-          "name": "recipient_domain",
-          "type": "required",
-          "comment": "The domain name contained within the recipient email addresses."
-        },
-        {
           "name": "recipient_status",
           "type": "optional",
           "comment": "The recipient delivery status, if available."
@@ -154,13 +149,7 @@
           "name": "status_code",
           "type": "conditional",
           "condition": "protocol=smtp",
-          "validity": "if(match(status_code, \"(?:(\\d(\\.\\d{1,3}){0,2}))\"))",
           "comment": "The status code associated with the message."
-        },
-        {
-          "name": "src_user_domain",
-          "type": "required",
-          "comment": "The domain name contained within the email address of the message sender."
         },
         {
           "name": "subject",
@@ -174,12 +163,12 @@
         },
         {
           "name": "user",
-          "type": "optional",
+          "type": "required",
           "comment": "The user context for the process. This is not the email address for the sender. For that, look at the src_user field."
         },
         {
           "name": "vendor_product",
-          "type": "required",
+          "type": "optional",
           "comment": "The vendor and product of the email server used for the email transaction. This field can be automatically populated by vendor and product fields in your data."
         },
         {
@@ -229,7 +218,7 @@
             },
             {
               "name": "signature",
-              "type": "required",
+              "type": "optional",
               "comment": "The name of the filter applied."
             },
             {
