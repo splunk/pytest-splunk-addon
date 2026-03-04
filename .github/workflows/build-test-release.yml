@@ -74,6 +74,8 @@ jobs:
           submodules: true
       - name: Install dependencies
         run: |
+          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf https://github.com
+          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf ssh://git@github.com
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
           poetry run pytest -v tests/unit
@@ -159,6 +161,8 @@ jobs:
         with:
           python-version: 3.7
       - run: |
+          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf https://github.com
+          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf ssh://git@github.com
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
           poetry run pytest -v --splunk-version=${{ matrix.splunk.version }} -m docker -m ${{ matrix.test-marker }} tests/e2e
