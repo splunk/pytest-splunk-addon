@@ -48,7 +48,7 @@ xmltodict = "^0.13.0"
 xmlschema = "^2.5.1"
 splunksplwrapper = "^1.1.1"
 urllib3 = "<2"
-splunk-cim-models = {path = "./splunk-cim-models", develop = true}
+splunk-cim-models = {git = "https://github.com/splunk/psa-cim-models.git", branch = "v1"}
 
 [tool.poetry.group.dev.dependencies]
 pytest-cov = "^4"
