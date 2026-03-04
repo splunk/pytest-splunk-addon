@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
+  "title": "Schema for DataModel json files used with pytest-splunk-addon.",
+  "type": "object",
+  "definitions": {
+    "dataset": {
+      "type": "object",
+      "description": "A dict object representing dataset properties.",
+      "properties": {
+        "name": {
+          "description": "Name of the Dataset.",
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "description": "A List of List.",
+          "items": {
+            "type": "array",
+            "description": "It contains the list of tags present in the dataset. i.e. 'tags':['endpoint', 'filesystem']",
+            "items": { "type": "string" }
+          }
+        },
+        "fields_cluster": {
+          "type": "array",
+          "description": "List of clustered field list",
+          "items": {
+            "type": "array",
+            "description": "The fields which are expected to be together must be listed here i.e. ['bytes', 'bytes_in', 'bytes_out']",
+            "items": { "type": "string" }
+          }
+        },
+        "fields": {
+          "type": "array",
+          "description": "List of field object.",
+          "items": { "$ref": "#/definitions/field" }
+        },
+        "child_dataset": {
+          "type": "array",
+          "description": "List of dataset objects.",
+          "items": { "$ref": "#/definitions/dataset" }
+        },
+        "search_constraints": {
+          "type": "string",
+          "description": "The constraints mentioned for the dataset in datamodel json are listed here."
+        }
+      },
+      "required": [
+        "name",
+        "tags",
+        "fields_cluster",
+        "fields",
+        "child_dataset",
+        "search_constraints"
+      ]
+    },
+    "field": {
+      "type": "object",
+      "description": "A dict which describes certain properties of the field.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the field"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the field.",
+          "enum": [
+            "required",
+            "conditional",
+            "not_allowed_in_search",
+            "not_allowed_in_props",
+            "not_allowed_in_search_and_props",
+            "optional"
+          ]
+        },
+        "multi_value": {
+          "type": "boolean",
+          "description": "Whether the field is multi-value or not. If true, validity and expected_values is not supported."
+        },
+        "condition": {
+          "type": "string",
+          "description": "It holds the condition for the conditional fields mentioned in the doc."
+        },
+        "expected_values": {
+          "type": "array",
+          "description": "It is the list of accepted values of the field",
+          "items": { "type": "string" }
+        },
+        "validity": {
+          "type": "string",
+          "description": "Validity of the field, if a numeric field is expected we write query criteria here."
+        },
+        "comment": {
+          "type": "string",
+          "description": "Description of the field"
+        }
+      },
+      "required": ["name", "type", "comment"]
+    }
+  },
+  "properties": {
+    "model_name": {
+      "type": "string",
+      "description": "Name of the Datamodel"
+    },
+    "version": {
+      "type": "string",
+      "description": "Schema Version."
+    },
+    "objects": {
+      "type": "array",
+      "description": "List of the datasets defined in the datamodel.",
+      "items": {
+        "$ref": "#/definitions/dataset"
+      }
+    }
+  },
+  "required": [
+    "model_name",
+    "version",
+    "objects"
+  ]
+}

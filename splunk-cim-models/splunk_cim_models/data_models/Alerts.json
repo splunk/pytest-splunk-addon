@@ -1,0 +1,125 @@
+{
+    "model_name": "Alerts",
+    "version": "1.0.0",
+    "objects":[
+    {
+        "name": "Alerts",
+        "tags": [
+            ["alert"]
+        ],
+        "fields_cluster": [],
+        "search_constraints": "tag=alert",
+        "fields": [
+            {
+                "name": "app",
+                "type": "required",
+                "comment":"The application involved in the event, such as win:app:trendmicro, vmware, nagios."
+            },
+            {
+                "name": "body",
+                "type": "optional",
+                "comment":"The body of a message."
+            },
+            {
+                "name": "description",
+                "type": "required",
+                "comment": "The description of the alert event."
+            },
+            {
+                "name": "dest",
+                "type": "required",
+                "comment":"The destination of the alert message, such as an email address or SNMP trap. You can alias this from more specific fields, such as dest_host, dest_ip, or dest_name."
+            },
+            {
+                "name": "dest_type",
+                "type": "optional",
+                "comment": "The type of the destination object, such as instance, storage, firewall."
+            },
+            {
+                "name": "id",
+                "type": "required",
+                "comment":"The unique identifier of a message." 
+            },
+            {
+                "name": "mitre_technique_id",
+                "type": "optional",
+                "comment": "The MITRE ATT&CK technique ID of the alert event."
+            },
+            {
+                "name": "signature",
+                "type": "required",
+                "comment": "A human-readable signature name."
+            },
+            {
+                "name": "signature_id",
+                "type": "required",
+                "comment": "The unique identifier or event code of the event signature."
+            },
+            {
+                "name": "severity",
+                "type": "required",
+                "expected_values": [
+                    "critical",
+                    "high",
+                    "medium",
+                    "low",
+                    "informational"
+                  ],
+                "comment":"The severity of a message." 
+            },
+            {
+                "name": "severity_id",
+                "type": "optional",
+                "comment":"A numeric severity indicator for a message." 
+            },
+            {
+                "name": "src",
+                "type": "required",
+                "comment":"The source of the message. You can alias this from more specific fields, such as src_host, src_ip, or src_name."
+            },
+            {
+                "name": "src_type",
+                "type": "optional",
+                "comment": "The type of the source object, such as instance, storage, firewall."
+            },
+            {
+                "name": "subject",
+                "type": "optional",
+                "comment":"The message subject." 
+            },
+            {
+                "name": "type",
+                "type": "required",
+                "expected_values":[
+                    "alarm",
+                    "alert",
+                    "event",
+                    "task",
+                    "warning"
+                ],
+                "comment":"The message type."
+            },
+            {
+                "name": "user",
+                "type": "required",
+                "comment": "The user involved in the alert event."
+            },
+            {
+                "name": "user_name",
+                "type": "optional",
+                "comment": "The name of the user involved in the alert event."
+            },
+            {
+                "name": "vendor_account",
+                "type": "optional",
+                "comment": "The account associated with the alert event. The account represents the organization, or a Cloud customer or a Cloud account."
+            },
+            {
+                "name": "vendor_region",
+                "type": "optional",
+                "comment": "The data center region involved in the alert event, such as us-west-2."
+            }
+        ],
+        "child_dataset": []
+    }]
+}

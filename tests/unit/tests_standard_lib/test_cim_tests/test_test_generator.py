@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import patch, MagicMock
 from collections import namedtuple
 from pytest_splunk_addon.cim_tests.test_generator import CIMTestGenerator
+from splunk_cim_models import COMMON_FIELDS_PATH
 
 field = namedtuple("Field", ["type", "name"], defaults=["", ""])
 data_set = namedtuple("DataSet", ["fields", "fields_cluster"])
@@ -99,10 +100,7 @@ def test_cim_test_generator_instantiation(args):
         ap_mock.assert_called_once_with("addon_path")
         if len(args) == 3:
             assert cim.test_field_type == ["required", "conditional"]
-            assert (
-                "pytest_splunk_addon/cim_tests/CommonFields.json"
-                in cim.common_fields_path
-            )
+            assert cim.common_fields_path == COMMON_FIELDS_PATH
         else:
             assert cim.test_field_type == args[3]
             assert cim.common_fields_path == args[4]
