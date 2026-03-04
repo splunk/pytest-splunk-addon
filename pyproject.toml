@@ -50,13 +50,13 @@ splunksplwrapper = "^1.1.1"
 urllib3 = "<2"
 certifi = "^2024.7.4"
 zipp = "^3.6.0"
-splunk-cim-models = {git = "https://github.com/splunk/psa-cim-models.git", branch = "v2"}
 
 [tool.poetry.group.dev.dependencies]
 pytest-cov = "^4"
 requests-mock = "^1.8.0"
 freezegun = "^1.5.1"
 pytz = "^2024.1"
+splunk-cim-models = {git = "https://github.com/splunk/psa-cim-models.git", branch = "v2"}
 
 [tool.poetry.plugins]
 pytest11 = { plugin = "pytest_splunk_addon.plugin", "splunk" = "pytest_splunk_addon.splunk" }
