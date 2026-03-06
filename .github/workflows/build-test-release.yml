@@ -237,14 +237,24 @@ jobs:
           print("DATA_MODELS_PATH:", scm.DATA_MODELS_PATH)
           print("CIM versions available:", list(scm.datamodels.keys()))
           EOF
-      - name: Run CIM model e2e tests
+      - name: Run CIM compatibility e2e tests
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
         run: |
+          # splunk_app_cim_fiction uses --splunk-dm-path with local fiction
+          # data models, so expected test outcomes are identical across all
+          # splunk-cim-models versions.  It still exercises all PSA import
+          # paths (COMMON_FIELDS_PATH, DATAMODEL_SCHEMA_PATH, datamodels) so
+          # an incompatible package version will surface as a collection or
+          # runtime error rather than a wrong-field assertion.
+          #
+          # splunk_cim_model (real Change/Network_Traffic models) is left to
+          # test-splunk-matrix, which always uses the default v2 dev
+          # dependency and asserts version-specific field outcomes.
           poetry run pytest -v \
             --splunk-version=${{ matrix.splunk.version }} \
             -m docker \
-            -m splunk_cim_model \
+            -m splunk_app_cim_fiction \
             tests/e2e
 
   publish:
