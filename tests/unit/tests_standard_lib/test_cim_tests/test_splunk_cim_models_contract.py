@@ -124,25 +124,25 @@ def test_required_symbol_exists(symbol):
 def test_data_models_path_is_directory():
     from splunk_cim_models import DATA_MODELS_PATH
 
-    assert os.path.isdir(DATA_MODELS_PATH), (
-        f"DATA_MODELS_PATH '{DATA_MODELS_PATH}' is not a directory."
-    )
+    assert os.path.isdir(
+        DATA_MODELS_PATH
+    ), f"DATA_MODELS_PATH '{DATA_MODELS_PATH}' is not a directory."
 
 
 def test_common_fields_path_is_file():
     from splunk_cim_models import COMMON_FIELDS_PATH
 
-    assert os.path.isfile(COMMON_FIELDS_PATH), (
-        f"COMMON_FIELDS_PATH '{COMMON_FIELDS_PATH}' is not a file."
-    )
+    assert os.path.isfile(
+        COMMON_FIELDS_PATH
+    ), f"COMMON_FIELDS_PATH '{COMMON_FIELDS_PATH}' is not a file."
 
 
 def test_datamodel_schema_path_is_file():
     from splunk_cim_models import DATAMODEL_SCHEMA_PATH
 
-    assert os.path.isfile(DATAMODEL_SCHEMA_PATH), (
-        f"DATAMODEL_SCHEMA_PATH '{DATAMODEL_SCHEMA_PATH}' is not a file."
-    )
+    assert os.path.isfile(
+        DATAMODEL_SCHEMA_PATH
+    ), f"DATAMODEL_SCHEMA_PATH '{DATAMODEL_SCHEMA_PATH}' is not a file."
 
 
 # ---------------------------------------------------------------------------
@@ -174,9 +174,7 @@ def test_data_models_cover_known_cim_models():
         "Web",
     }
     missing = core_required - present
-    assert not missing, (
-        f"Core CIM data models missing from DATA_MODELS_PATH: {missing}"
-    )
+    assert not missing, f"Core CIM data models missing from DATA_MODELS_PATH: {missing}"
 
 
 def test_each_data_model_file_is_valid_json():
@@ -191,9 +189,9 @@ def test_each_data_model_file_is_valid_json():
                 data = json.load(fh)
             except json.JSONDecodeError as exc:
                 pytest.fail(f"Invalid JSON in {filepath}: {exc}")
-        assert isinstance(data, dict), (
-            f"Expected dict at top level of {filepath}, got {type(data).__name__}"
-        )
+        assert isinstance(
+            data, dict
+        ), f"Expected dict at top level of {filepath}, got {type(data).__name__}"
 
 
 # ---------------------------------------------------------------------------
@@ -206,12 +204,10 @@ def test_common_fields_json_is_valid():
 
     with open(COMMON_FIELDS_PATH) as fh:
         data = json.load(fh)
-    assert "fields" in data, (
-        "CommonFields.json must have a top-level 'fields' key."
-    )
-    assert isinstance(data["fields"], list), (
-        "'fields' in CommonFields.json must be a list."
-    )
+    assert "fields" in data, "CommonFields.json must have a top-level 'fields' key."
+    assert isinstance(
+        data["fields"], list
+    ), "'fields' in CommonFields.json must be a list."
 
 
 def test_common_fields_entries_have_type_and_name():
@@ -248,9 +244,9 @@ def test_datamodel_schema_json_is_valid():
 def test_datamodels_is_dict():
     from splunk_cim_models import datamodels
 
-    assert isinstance(datamodels, dict), (
-        f"'datamodels' must be a dict, got {type(datamodels).__name__}"
-    )
+    assert isinstance(
+        datamodels, dict
+    ), f"'datamodels' must be a dict, got {type(datamodels).__name__}"
 
 
 def test_datamodels_has_at_least_one_version():
@@ -263,9 +259,7 @@ def test_datamodels_latest_key_present():
     """Consumers may rely on the 'latest' sentinel key."""
     from splunk_cim_models import datamodels
 
-    assert "latest" in datamodels, (
-        "'datamodels' dict must contain a 'latest' key."
-    )
+    assert "latest" in datamodels, "'datamodels' dict must contain a 'latest' key."
 
 
 def test_datamodels_version_values_are_dicts():
@@ -285,9 +279,9 @@ def test_datamodels_field_lists_are_non_empty():
 
     for version, models in datamodels.items():
         for model_name, fields in models.items():
-            assert fields, (
-                f"datamodels[{version!r}][{model_name!r}] field list is empty."
-            )
+            assert (
+                fields
+            ), f"datamodels[{version!r}][{model_name!r}] field list is empty."
 
 
 @pytest.mark.parametrize("version", ["latest"])
@@ -301,9 +295,7 @@ def test_datamodels_version_contains_core_models(version):
     core = {"Authentication", "Endpoint", "Network_Traffic", "Malware", "Web"}
     present = set(datamodels[version].keys())
     missing = core - present
-    assert not missing, (
-        f"datamodels[{version!r}] is missing core models: {missing}"
-    )
+    assert not missing, f"datamodels[{version!r}] is missing core models: {missing}"
 
 
 # ---------------------------------------------------------------------------
