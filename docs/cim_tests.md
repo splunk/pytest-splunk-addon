@@ -2,11 +2,41 @@
 
 ## Overview
 
-The CIM tests are written with a purpose of testing the compatibility of the add-on with CIM Data Models (Based on Splunk_SA_CIM 4.15.0).
+The CIM tests are written with a purpose of testing the compatibility of the add-on with CIM Data Models.
 An add-on is said to be CIM compatible if it fulfils the following two criteria:
 
-1. The add-on extracts all the fields with valid values, which are marked as required by the [Data Model Definitions](https://github.com/splunk/pytest-splunk-addon/tree/main/pytest_splunk_addon/standard_lib/data_models).
+1. The add-on extracts all the fields with valid values, which are marked as required by the [Data Model Definitions](https://github.com/splunk/psa-cim-models).
 2. Any event for the add-on is not mapped with more than one data model.
+
+## CIM Data Models Package (`splunk-cim-models`)
+
+CIM data model definitions are provided by the separate
+[`splunk-cim-models`](https://github.com/splunk/psa-cim-models) package.
+This lets you update or pin CIM definitions independently of `pytest-splunk-addon` itself.
+
+**Install for CIM testing:**
+
+```console
+pip install splunk-cim-models
+```
+
+Or, during development, install the latest from the repository:
+
+```console
+pip install git+https://github.com/splunk/psa-cim-models.git@v2
+```
+
+The package exposes:
+
+| Symbol | Description |
+|---|---|
+| `DATA_MODELS_PATH` | Path to the directory containing the built-in CIM JSON data model files |
+| `COMMON_FIELDS_PATH` | Path to `CommonFields.json` (fields forbidden in props/search) |
+| `DATAMODEL_SCHEMA_PATH` | Path to `DatamodelSchema.json` (JSON schema for validating custom data model files) |
+| `datamodels` | Dict mapping CIM version strings to recommended fields per model |
+
+If `splunk-cim-models` is not installed, any test run that exercises CIM functionality
+will raise an `ImportError` with a message pointing to the package.
 
 ______________________________________________________________________
 
@@ -30,7 +60,7 @@ To generate test cases only for CIM compatibility, append the following marker t
  **Workflow:**
 
  - Plugin parses tags.conf to get a list of tags for each eventtype.
- - Plugin parses all the [supported datamodels](https://github.com/splunk/pytest-splunk-addon/tree/main/pytest_splunk_addon/standard_lib/data_models).
+ - Plugin parses all the [supported datamodels](https://github.com/splunk/psa-cim-models).
  - Then it gets a list of the datasets mapped with an eventtype.
  - Generates test case for each eventtype.
 
@@ -79,11 +109,11 @@ To generate test cases only for CIM compatibility, append the following marker t
 
  **Workflow:**
 
- - Plugin collects the list of not_allowed_in_search fields from mapped datasets and [CommonFields.json](https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json).
+ - Plugin collects the list of not_allowed_in_search fields from mapped datasets and [CommonFields.json](https://github.com/splunk/psa-cim-models/blob/v2/splunk_cim_models/CommonFields.json).
  - Using search query the test case verifies if not_allowed_in_search fields are populated in search or not.
 
 > **_NOTE:_** 
- [CommonFields.json](https://github.com/splunk/pytest-splunk-addon/blob/main/pytest_splunk_addon/standard_lib/cim_tests/CommonFields.json) contains fields which are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
+ [CommonFields.json](https://github.com/splunk/psa-cim-models/blob/v2/splunk_cim_models/CommonFields.json) contains fields which are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
 
 
 **4. Testcase for all not_allowed_in_props fields**

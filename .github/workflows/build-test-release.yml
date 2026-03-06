@@ -171,10 +171,87 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
 
+  # ---------------------------------------------------------------------------
+  # Validate PSA against multiple splunk-cim-models package versions.
+  #
+  # Matrix axes:
+  #   splunk          – every supported Splunk version (from meta job)
+  #   cim-models      – every package git ref listed below
+  #
+  # How to add a new CIM models release:
+  #   1. Append a new entry to the cim-models list with the git ref (branch
+  #      or tag) and a short human-readable label.
+  #   2. The matrix will automatically run the splunk_cim_model e2e test
+  #      for each (Splunk version, CIM models version) combination.
+  #
+  # Only the splunk_cim_model marker is used here because the other CIM
+  # e2e markers (splunk_app_cim_fiction, splunk_app_cim_broken) always pass
+  # --splunk-dm-path with custom fiction models and are therefore unaffected
+  # by the installed splunk-cim-models version.
+  # ---------------------------------------------------------------------------
+  test-cim-models-versions:
+    needs:
+      - meta
+      - pre-commit
+      - fossa-scan
+      - compliance-copyrights
+      - test-splunk-unit
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
+        cim-models:
+          - ref: "v1"
+            label: "1.x"
+          - ref: "v2"
+            label: "2.x"
+          # Add future releases here, e.g.:
+          # - ref: "v3"
+          #   label: "3.x"
+    name: "CIM models ${{ matrix.cim-models.label }} / Splunk ${{ matrix.splunk.version }}"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.7"
+      - name: Install PSA with CIM models ${{ matrix.cim-models.label }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
+        run: |
+          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf https://github.com
+          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf ssh://git@github.com
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
+          poetry install
+          # Override the dev-dependency CIM models with the matrix version.
+          # Using pip inside the Poetry venv so the pytester subprocess sees
+          # the same environment.
+          poetry run pip install \
+            "git+https://github.com/splunk/psa-cim-models.git@${{ matrix.cim-models.ref }}"
+      - name: Verify splunk-cim-models ${{ matrix.cim-models.label }}
+        run: |
+          poetry run python - <<'EOF'
+          import splunk_cim_models as scm
+          print("DATA_MODELS_PATH:", scm.DATA_MODELS_PATH)
+          print("CIM versions available:", list(scm.datamodels.keys()))
+          EOF
+      - name: Run CIM model e2e tests
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
+        run: |
+          poetry run pytest -v \
+            --splunk-version=${{ matrix.splunk.version }} \
+            -m docker \
+            -m splunk_cim_model \
+            tests/e2e
+
   publish:
     needs:
       - test-splunk-external
       - test-splunk-matrix
+      - test-cim-models-versions
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
