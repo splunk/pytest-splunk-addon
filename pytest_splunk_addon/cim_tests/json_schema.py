@@ -34,13 +34,15 @@ class JSONSchema(BaseSchema):
         schema_path (str): Relative or absolute path of the schema file
     """
 
+    SCHEMA_FILE = "DatamodelSchema.json"
+
     def __init__(
         self,
         schema_path=None,
     ):
-        from splunk_cim_models import DATAMODEL_SCHEMA_PATH
-
-        self.schema_path = schema_path or DATAMODEL_SCHEMA_PATH
+        self.schema_path = schema_path or op.join(
+            op.dirname(op.abspath(__file__)), self.SCHEMA_FILE
+        )
 
     @classmethod
     def parse_data_model(cls, file_path):

@@ -73,9 +73,9 @@ class AppTestGenerator(object):
             splunk_ep=self.splunk_ep,
         )
 
-        from splunk_cim_models import DATA_MODELS_PATH
-
-        data_model_path = DATA_MODELS_PATH
+        data_model_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "data_models"
+        )
         LOGGER.debug("Initializing CIMTestGenerator to generate the test cases")
         self.cim_test_generator = CIMTestGenerator(
             self.pytest_config.getoption("splunk_app"),
