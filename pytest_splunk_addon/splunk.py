@@ -28,7 +28,7 @@ from splunksplwrapper.splunk.cloud import CloudSplunk
 from splunksplwrapper.SearchUtil import SearchUtil
 from .event_ingestors import IngestorHelper
 from .docker_class import Services
-from .CIM_Models.datamodel_definition import datamodels
+from splunk_cim_models import datamodels
 import configparser
 from filelock import FileLock
 
