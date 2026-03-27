@@ -8,7 +8,6 @@ which allows the user to test [knowledge objects](https://docs.splunk.com/Splexi
 - Splunk App or Add-on package
 - Splunk instance with App or Add-on installed (Not required if using Docker)
 - Docker (Not required if using external Splunk instance)
-- [`splunk-cim-models`](https://github.com/splunk/psa-cim-models) — required for [CIM Compatibility Tests](./cim_tests.md) (not installed automatically)
 
 ## Support
 
@@ -22,17 +21,6 @@ pytest-splunk-addon can be installed via pip from PyPI:
 ```console
 pip3 install pytest-splunk-addon
 ```
-
-To run **CIM compatibility tests** you also need the CIM data models package:
-
-```console
-pip3 install splunk-cim-models
-```
-
-`splunk-cim-models` is versioned independently of `pytest-splunk-addon` so that CIM
-definitions can be updated without a full PSA release. See the
-[CIM Compatibility Tests](./cim_tests.md) page for details on how the two packages
-interact and how to pin or override data model definitions.
 
 ## Features
 

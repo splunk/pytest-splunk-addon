@@ -44,6 +44,8 @@ class CIMTestGenerator(object):
             Relative or absolute path of the json file with common fields
     """
 
+    COMMON_FIELDS_PATH = "CommonFields.json"
+
     def __init__(
         self,
         addon_path,
@@ -53,13 +55,14 @@ class CIMTestGenerator(object):
         common_fields_path=None,
         splunk_ep=False,
     ):
-        from splunk_cim_models import COMMON_FIELDS_PATH as DEFAULT_COMMON_FIELDS
 
         self.data_model_handler = DataModelHandler(data_model_path)
         self.addon_parser = AddonParser(addon_path)
         self.tokenized_events = tokenized_events
         self.test_field_type = test_field_type
-        self.common_fields_path = common_fields_path or DEFAULT_COMMON_FIELDS
+        self.common_fields_path = common_fields_path or op.join(
+            op.dirname(op.abspath(__file__)), self.COMMON_FIELDS_PATH
+        )
         self.splunk_ep = splunk_ep
 
     def generate_tests(self, fixture):

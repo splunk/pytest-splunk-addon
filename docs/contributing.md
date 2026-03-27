@@ -18,42 +18,6 @@ To install currently checked out version of pytest-splunk-addon use:
 $ poetry install
 ```
 
-This installs `splunk-cim-models` automatically as a dev dependency (from the `v2` branch of
-[psa-cim-models](https://github.com/splunk/psa-cim-models)). In CI or when installing from
-PyPI, install `splunk-cim-models` separately before running CIM tests:
-
-```
-$ pip install splunk-cim-models
-```
-
-### Working with `splunk-cim-models`
-
-CIM data model definitions live in the separate
-[`splunk-cim-models`](https://github.com/splunk/psa-cim-models) package.
-PSA imports four symbols from it:
-
-| Symbol | Used by |
-|---|---|
-| `DATA_MODELS_PATH` | `app_test_generator.py` — default path for `--splunk_dm_path` |
-| `COMMON_FIELDS_PATH` | `cim_tests/test_generator.py` — fields forbidden in props/search |
-| `DATAMODEL_SCHEMA_PATH` | `cim_tests/json_schema.py` — JSON schema for custom data models |
-| `datamodels` | `splunk.py` — CIM version → recommended fields map |
-
-To update CIM definitions locally without waiting for a `splunk-cim-models` release:
-
-```bash
-# Edit files under splunk-cim-models/ then reinstall editable
-pip install -e path/to/psa-cim-models/
-
-# Verify
-python -c "from splunk_cim_models import datamodels; print(list(datamodels.keys()))"
-```
-
-After editing, run the unit tests to confirm nothing is broken:
-
-```bash
-poetry run pytest -v tests/unit
-```
 
 ### Unit tests
 
