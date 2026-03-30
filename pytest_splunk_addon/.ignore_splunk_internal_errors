@@ -17,4 +17,5 @@ ERROR SearchMessages - orig_component="SearchStatusEnforcer" app="search" sid="*
 Error reading SSG config from KV Store
 "service":"compsup"
 "service":"ipc_broker"
-"service":"InitialDatasetGlobalMap" message=failed to open globalDatasetConfig file
+"service":"splunk-supervisor"
+"service":"InitialDatasetGlobalMap"
