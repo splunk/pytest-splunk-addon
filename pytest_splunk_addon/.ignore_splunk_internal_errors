@@ -19,3 +19,4 @@ Error reading SSG config from KV Store
 "service":"ipc_broker"
 "service":"splunk-supervisor"
 "service":"InitialDatasetGlobalMap"
+"service":"orchestrator"
