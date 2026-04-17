@@ -72,10 +72,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
       - name: Install dependencies
         run: |
-          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf https://github.com
-          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf ssh://git@github.com
+          git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf https://github.com
+          git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf ssh://git@github.com
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
           poetry run pytest -v tests/unit
@@ -97,12 +104,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
       - name: Setup for testing
         run: |
           mkdir test-results-${{ matrix.splunk.version }}
       - name: Test
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           export SPLUNK_APP_PACKAGE=./tests/e2e/addons/TA_fiction_indextime
           export SPLUNK_ADDON=TA_fiction_indextime
@@ -159,17 +173,24 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
       - uses: actions/setup-python@v5
         with:
           python-version: 3.7
       - run: |
-          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf https://github.com
-          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf ssh://git@github.com
+          git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf https://github.com
+          git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf ssh://git@github.com
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
           poetry run pytest -v --splunk-version=${{ matrix.splunk.version }} -m docker -m ${{ matrix.test-marker }} tests/e2e
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
   # ---------------------------------------------------------------------------
   # Validate PSA against multiple splunk-cim-models package versions.
@@ -214,15 +235,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.7"
       - name: Install PSA with CIM models ${{ matrix.cim-models.label }}
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf https://github.com
-          git config --global --add url."https://${{ secrets.GH_TOKEN_ADMIN }}@github.com".insteadOf ssh://git@github.com
+          git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf https://github.com
+          git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf ssh://git@github.com
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
           # Override the dev-dependency CIM models with the matrix version.
@@ -239,7 +267,7 @@ jobs:
           EOF
       - name: Run CIM compatibility e2e tests
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           # splunk_app_cim_fiction uses --splunk-dm-path with local fiction
           # data models, so expected test outcomes are identical across all
@@ -270,6 +298,13 @@ jobs:
           # build if this is not set false
           submodules: false
           persist-credentials: false
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.7"
@@ -291,7 +326,7 @@ jobs:
           extra_plugins: |
             semantic-release-replace-plugin
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
       - if: ${{ steps.semantic.outputs.new_release_published == 'true' }}
         run: |
           poetry build
