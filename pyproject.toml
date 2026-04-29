@@ -48,7 +48,7 @@ xmltodict = "^0.14.0"
 xmlschema = "^2.5.1"
 splunksplwrapper = "^1.1.1"
 urllib3 = "<2"
-certifi = "^2024.7.4"
+certifi = ">=2024.7.4"
 zipp = "^3.6.0"
 
 [tool.poetry.group.dev.dependencies]
