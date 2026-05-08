@@ -18,7 +18,7 @@ To install currently checked out version of pytest-splunk-addon use:
 $ poetry install
 ```
 
-This installs `splunk-cim-models` automatically as a dev dependency (from the `v2` branch of
+This installs `splunk-cim-models` automatically as a dev dependency (from the `cim-6.4` branch of
 [psa-cim-models](https://github.com/splunk/psa-cim-models)). In CI or when installing from
 PyPI, install `splunk-cim-models` separately before running CIM tests:
 

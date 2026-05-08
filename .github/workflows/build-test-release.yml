@@ -277,7 +277,7 @@ jobs:
           # runtime error rather than a wrong-field assertion.
           #
           # splunk_cim_model (real Change/Network_Traffic models) is left to
-          # test-splunk-matrix, which always uses the default v2 dev
+          # test-splunk-matrix, which always uses the default cim-6.4 dev
           # dependency and asserts version-specific field outcomes.
           poetry run pytest -v \
             --splunk-version=${{ matrix.splunk.version }} \

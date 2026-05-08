@@ -460,9 +460,9 @@ def splunk_setup(splunk):
 
  How can this be achieved :
 
-  - Make json representation of the data models, which satisfies the [DatamodelSchema](https://github.com/splunk/psa-cim-models/blob/v2/splunk_cim_models/DatamodelSchema.json) provided by the `splunk-cim-models` package.
+  - Make json representation of the data models, which satisfies the [DatamodelSchema](https://github.com/splunk/psa-cim-models/blob/cim-6.4/splunk_cim_models/DatamodelSchema.json) provided by the `splunk-cim-models` package.
   - Provide the path to the directory having all the data models by adding `--splunk_dm_path path_to_dir` to the pytest command.
-  - The test cases will now be generated for the data models provided to the plugin and not for the [default data models](https://github.com/splunk/psa-cim-models/tree/v2/splunk_cim_models/data_models) bundled in `splunk-cim-models`.
+  - The test cases will now be generated for the data models provided to the plugin and not for the [default data models](https://github.com/splunk/psa-cim-models/tree/cim-6.4/splunk_cim_models/data_models) bundled in `splunk-cim-models`.
 
 > **_NOTE:_** CIM data model definitions are provided by the [`splunk-cim-models`](https://github.com/splunk/psa-cim-models) package. Install it separately before running CIM tests:
 >

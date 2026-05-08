@@ -23,7 +23,7 @@ pip install splunk-cim-models
 Or, during development, install the latest from the repository:
 
 ```console
-pip install git+https://github.com/splunk/psa-cim-models.git@v2
+pip install git+https://github.com/splunk/psa-cim-models.git@cim-6.4
 ```
 
 The package exposes:
@@ -109,11 +109,11 @@ To generate test cases only for CIM compatibility, append the following marker t
 
  **Workflow:**
 
- - Plugin collects the list of not_allowed_in_search fields from mapped datasets and [CommonFields.json](https://github.com/splunk/psa-cim-models/blob/v2/splunk_cim_models/CommonFields.json).
+ - Plugin collects the list of not_allowed_in_search fields from mapped datasets and [CommonFields.json](https://github.com/splunk/psa-cim-models/blob/cim-6.4/splunk_cim_models/CommonFields.json).
  - Using search query the test case verifies if not_allowed_in_search fields are populated in search or not.
 
 > **_NOTE:_** 
- [CommonFields.json](https://github.com/splunk/psa-cim-models/blob/v2/splunk_cim_models/CommonFields.json) contains fields which are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
+ [CommonFields.json](https://github.com/splunk/psa-cim-models/blob/cim-6.4/splunk_cim_models/CommonFields.json) contains fields which are automatically provided by asset and identity correlation features of applications like Splunk Enterprise Security.
 
 
 **4. Testcase for all not_allowed_in_props fields**
