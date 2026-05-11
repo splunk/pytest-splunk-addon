@@ -33,7 +33,10 @@
         <field name="user_type" value="Admin" />
         <field name="vendor_product" value="PSA" />
       </cim_fields>
-      <missing_recommended_fields />
+      <missing_recommended_fields>
+        <field>image_id</field>
+        <field>result_id</field>
+      </missing_recommended_fields>
     </cim>
   </event>
   <event code="" name="" format="">
@@ -66,7 +69,10 @@
         <field name="user_type" value="Admin" />
         <field name="vendor_product" value="PSA" />
       </cim_fields>
-      <missing_recommended_fields />
+      <missing_recommended_fields>
+        <field>image_id</field>
+        <field>result_id</field>
+      </missing_recommended_fields>
     </cim>
   </event>
   <event code="" name="" format="">
@@ -99,8 +105,13 @@
         <field name="vendor_product" value="PSA" />
       </cim_fields>
       <missing_recommended_fields>
+        <field>dest_nt_domain</field>
+        <field>image_id</field>
         <field>result</field>
+        <field>result_id</field>
+        <field>src_nt_domain</field>
         <field>src_user</field>
+        <field>src_user_name</field>
       </missing_recommended_fields>
     </cim>
   </event>

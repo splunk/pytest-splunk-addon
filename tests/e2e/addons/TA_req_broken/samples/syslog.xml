@@ -37,6 +37,7 @@
                 <field>src</field>
                 <field>src_ip</field>
                 <field>src_port</field>
+                <field>src_translated_ip</field>
                 <field>src_zone</field>
                 <field>src_interface</field>
                 <field>user</field>
@@ -82,6 +83,7 @@
                 <field>src</field>
                 <field>src_ip</field>
                 <field>src_port</field>
+                <field>src_translated_ip</field>
                 <field>src_zone</field>
                 <field>src_interface</field>
                 <field>user</field>
