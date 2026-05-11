@@ -916,7 +916,7 @@ TA_REQ_BROKEN_PASSED = [
 Define the TA_broken add-on failed test case list.
 """
 TA_REQ_BROKEN_FAILED = [
-    '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::dest_zone] FAILED*',
+    '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::dest_zone* FAILED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::dest_zone+src_zone* FAILED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::dvc* FAILED*',
     '*test_splunk_app_req_broken.py::Test_App::test_cim_required_fields[eventtype="net"::All_Traffic::protocol* FAILED*',
@@ -1023,7 +1023,7 @@ TA_CIM_MODEL_FAILED = [
     '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::action* FAILED*',
     '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::app* FAILED*',
     '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest* FAILED*',
-    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest_zone] FAILED*',
+    '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dest_zone* FAILED*',
     '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::dvc* FAILED*',
     '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::src* FAILED*',
     '*test_splunk_cim_model.py::Test_App::test_cim_required_fields[eventtype="test_ipv6"::All_Traffic::transport* FAILED*',
