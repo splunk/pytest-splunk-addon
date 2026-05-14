@@ -15,19 +15,19 @@ concurrency:
 
 jobs:
   meta:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       matrix_supportedSplunk: ${{ steps.matrix.outputs.latestSplunk }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - id: matrix
-        uses: splunk/addonfactory-test-matrix-action@v3.1.2
+        uses: splunk/addonfactory-test-matrix-action@v3.1.7
 
   fossa-scan:
     continue-on-error: true
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: run fossa anlyze and create report
         run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
@@ -36,7 +36,7 @@ jobs:
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
       - name: upload THIRDPARTY file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: THIRDPARTY
           path: /tmp/THIRDPARTY
@@ -47,18 +47,18 @@ jobs:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
   
   compliance-copyrights:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: apache/skywalking-eyes@v0.6.0
+      - uses: actions/checkout@v6
+      - uses: apache/skywalking-eyes@v0.8.0
   
   pre-commit:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.14"
       - uses: pre-commit/action@v3.0.1
 
   semgrep:
@@ -67,9 +67,9 @@ jobs:
       SEMGREP_KEY: ${{ secrets.SEMGREP_PUBLISH_TOKEN }}
 
   test-splunk-unit:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: true
       - name: Generate GitHub App Token
@@ -89,7 +89,7 @@ jobs:
 
 
   test-splunk-external:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       - meta
       - pre-commit
@@ -101,7 +101,7 @@ jobs:
       matrix:
         splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: true
       - name: Generate GitHub App Token
@@ -134,7 +134,7 @@ jobs:
                               -v pytest-splunk-addon_results:/work/test-results \
                               registry.access.redhat.com/ubi7/ubi
           docker cp dummy:/work/test-results/test.xml test-results-${{ matrix.splunk.version }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: splunk ${{ matrix.splunk.version }} external test artifacts
@@ -149,7 +149,7 @@ jobs:
       - fossa-scan
       - compliance-copyrights
       - test-splunk-unit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -170,7 +170,7 @@ jobs:
           "splunk_app_req_with_ep",
         ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: true
       - name: Generate GitHub App Token
@@ -180,9 +180,9 @@ jobs:
           client-id: ${{ secrets.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
-          python-version: 3.7
+          python-version: 3.14
       - run: |
           git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf https://github.com
           git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf ssh://git@github.com
@@ -217,7 +217,7 @@ jobs:
       - fossa-scan
       - compliance-copyrights
       - test-splunk-unit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -232,7 +232,7 @@ jobs:
           #   label: "7.x"
     name: "CIM models ${{ matrix.cim-models.label }} / Splunk ${{ matrix.splunk.version }}"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: true
       - name: Generate GitHub App Token
@@ -242,9 +242,9 @@ jobs:
           client-id: ${{ secrets.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
-          python-version: "3.7"
+          python-version: "3.14"
       - name: Install PSA with CIM models ${{ matrix.cim-models.label }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -290,9 +290,9 @@ jobs:
       - test-splunk-external
       - test-splunk-matrix
       - test-cim-models-versions
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           # Very Important semantic-release won't trigger a tagged
           # build if this is not set false
@@ -305,10 +305,10 @@ jobs:
           client-id: ${{ secrets.GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
-          python-version: "3.7"
-      - uses: actions/download-artifact@v4
+          python-version: "3.14"
+      - uses: actions/download-artifact@v8
         with:
           name: THIRDPARTY
       - name: Update Notices
