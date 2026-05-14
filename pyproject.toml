@@ -33,7 +33,7 @@ include = ["pytest_splunk_addon/**/*.json", "pytest_splunk_addon/**/*.txt"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-pytest = ">5.4.0,<8"
+pytest = ">9.0,<10"
 splunk-sdk = ">=1.6"
 requests = "^2.31.0"
 jsonschema = "^4.17.3"
