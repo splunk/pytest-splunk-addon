@@ -223,13 +223,13 @@ jobs:
       matrix:
         splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
         cim-models:
-          - ref: "v1"
-            label: "1.x"
-          - ref: "v2"
-            label: "2.x"
+          - ref: "cim-5.3.3"
+            label: "5.x"
+          - ref: "cim-6.4"
+            label: "6.x"
           # Add future releases here, e.g.:
-          # - ref: "v3"
-          #   label: "3.x"
+          # - ref: "cim-7.x"
+          #   label: "7.x"
     name: "CIM models ${{ matrix.cim-models.label }} / Splunk ${{ matrix.splunk.version }}"
     steps:
       - uses: actions/checkout@v4
@@ -277,7 +277,7 @@ jobs:
           # runtime error rather than a wrong-field assertion.
           #
           # splunk_cim_model (real Change/Network_Traffic models) is left to
-          # test-splunk-matrix, which always uses the default v2 dev
+          # test-splunk-matrix, which always uses the default cim-6.4 dev
           # dependency and asserts version-specific field outcomes.
           poetry run pytest -v \
             --splunk-version=${{ matrix.splunk.version }} \
