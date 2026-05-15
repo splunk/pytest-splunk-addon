@@ -223,9 +223,9 @@ jobs:
       matrix:
         splunk: ${{ fromJson(needs.meta.outputs.matrix_supportedSplunk) }}
         cim-models:
-          - ref: "cim-5.3.3"
+          - ref: "cim-5"
             label: "5.x"
-          - ref: "cim-6.4"
+          - ref: "cim-6"
             label: "6.x"
           # Add future releases here, e.g.:
           # - ref: "cim-7.x"
