@@ -770,8 +770,8 @@ develop = false
 [package.source]
 type = "git"
 url = "https://github.com/splunk/psa-cim-models.git"
-reference = "cim-6"
-resolved_reference = "9b5c704f4cb7c7da059711d6bb84aa8768b13bc9"
+reference = "align-cim6-4-docs"
+resolved_reference = "51ab83e81e06248fc726af213b1932c5cebebcf4"
 
 [[package]]
 name = "splunk-sdk"
