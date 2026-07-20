@@ -17,6 +17,7 @@
 """
 To enhance the test cases while verifying the field extractions.
 """
+
 import json
 
 from ..addon_parser import Field

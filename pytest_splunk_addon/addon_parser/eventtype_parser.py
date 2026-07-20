@@ -16,6 +16,7 @@
 """
 Provides eventtypes.conf parsing mechanism
 """
+
 from typing import Dict
 from typing import Generator
 from typing import Optional

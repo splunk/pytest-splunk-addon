@@ -191,7 +191,7 @@ def test_unicode_char(filename):
     """
     invalid = False
     pattern = re.compile(
-        "[\u200B-\u200E\uFEFF\u202c\u202D\u2063\u2062]"
+        "[\u200b-\u200e\ufeff\u202c\u202d\u2063\u2062]"
     )  # zero width characters
     error_message = ""
     for i, line in enumerate(open(filename)):

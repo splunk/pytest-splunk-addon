@@ -16,6 +16,7 @@
 """
 Unit tests for ParserCache.
 """
+
 import os
 import tempfile
 from unittest.mock import patch

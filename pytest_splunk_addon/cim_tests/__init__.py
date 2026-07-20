@@ -15,7 +15,7 @@
 #
 # -*- coding: utf-8 -*-
 """
-Test generation mechanism to verify the CIM compatibility of an Add-on 
+Test generation mechanism to verify the CIM compatibility of an Add-on
 """
 
 from .json_schema import JSONSchema

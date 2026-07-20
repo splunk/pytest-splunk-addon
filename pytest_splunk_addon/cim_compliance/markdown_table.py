@@ -16,6 +16,7 @@
 """
 Markdown table generator
 """
+
 from .base_table import BaseTable
 
 

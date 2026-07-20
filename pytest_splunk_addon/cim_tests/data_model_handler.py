@@ -18,8 +18,9 @@
 Provides Data Model handling functionalities. Such as
 
 * Parse all the data model JSON files
-* Get Mapped data model for an eventtype 
+* Get Mapped data model for an eventtype
 """
+
 import os
 import logging
 

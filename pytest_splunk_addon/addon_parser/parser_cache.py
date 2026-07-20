@@ -26,6 +26,7 @@ Key features:
 - Atomic writes with integrity hash to prevent corruption
 - Automatic cleanup on process exit
 """
+
 import atexit
 import hashlib
 import logging

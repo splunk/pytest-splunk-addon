@@ -1,6 +1,7 @@
 """
 Copyright (C) 2005 - 2019 Splunk Inc. All Rights Reserved.
 """
+
 import json
 import splunk.rest as rest
 

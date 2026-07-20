@@ -1,6 +1,7 @@
 """
 Copyright (C) 2005 - 2020 Splunk Inc. All Rights Reserved.
 """
+
 import argparse
 import getpass
 import hashlib

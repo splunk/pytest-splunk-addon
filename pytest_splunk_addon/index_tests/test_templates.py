@@ -16,6 +16,7 @@
 """
 Includes the test scenarios to check the index time properties of an Add-on.
 """
+
 import logging
 import pytest
 import copy
