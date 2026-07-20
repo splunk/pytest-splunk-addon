@@ -15,8 +15,9 @@
 #
 # -*- coding: utf-8 -*-
 """
-Includes base class for data model schema. 
+Includes base class for data model schema.
 """
+
 from abc import ABC, abstractclassmethod
 
 

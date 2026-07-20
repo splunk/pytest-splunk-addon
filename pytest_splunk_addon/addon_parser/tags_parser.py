@@ -16,6 +16,7 @@
 """
 Provides tags.conf parsing mechanism
 """
+
 import os
 from typing import Optional, Dict, Generator
 from urllib.parse import unquote

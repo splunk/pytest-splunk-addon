@@ -126,15 +126,13 @@ def test_splunk_connection_docker(testdir, request):
 def test_splunk_app_fiction(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
 
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
@@ -174,15 +172,13 @@ def test_splunk_app_fiction(testdir, request):
 def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
 
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction_indextime"),
@@ -229,15 +225,13 @@ def test_splunk_fiction_indextime_wrong_hec_token(testdir, request):
 def test_splunk_app_broken(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
 
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_broken"),
@@ -286,15 +280,13 @@ def test_splunk_app_broken(testdir, request):
 def test_splunk_app_cim_fiction(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
 
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_CIM_Fiction"),
@@ -340,15 +332,13 @@ def test_splunk_app_cim_fiction(testdir, request):
 def test_splunk_app_cim_broken(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
 
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_CIM_Broken"),
@@ -397,15 +387,13 @@ def test_splunk_app_cim_broken(testdir, request):
 def test_splunk_fiction_indextime(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
 
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction_indextime"),
@@ -453,15 +441,13 @@ def test_splunk_fiction_indextime(testdir, request):
 def test_splunk_fiction_indextime_broken(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
 
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(
@@ -509,15 +495,13 @@ def test_splunk_fiction_indextime_broken(testdir, request):
 @pytest.mark.docker
 @pytest.mark.splunk_setup_fixture
 def test_splunk_setup_fixture(testdir, request):
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
 
-        """
-    )
+        """)
     setup_test_dir(testdir)
     SampleGenerator.clean_samples()
     Rule.clean_rules()
@@ -549,14 +533,12 @@ def test_splunk_setup_fixture(testdir, request):
 def test_splunk_app_req(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_transition_from_req"),
@@ -604,14 +586,12 @@ def test_splunk_app_req(testdir, request):
 def test_splunk_app_req_broken(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_req_broken"),
@@ -659,14 +639,12 @@ def test_splunk_app_req_broken(testdir, request):
 def test_splunk_app_req(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_transition_from_req"),
@@ -717,14 +695,12 @@ def test_splunk_cim_model(testdir, request):
     scr_ip contains ~35 diff advanced form of ipv6 combinations that are tested in this case.
     We are also checking cim fields extraction condtions of Change Datamodel.
     """
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_cim_addon"),
@@ -774,14 +750,12 @@ def test_splunk_cim_model(testdir, request):
 def test_infinite_loop_in_ingest_data_fixture(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction_indextime"),
@@ -819,15 +793,13 @@ def test_infinite_loop_in_ingest_data_fixture(testdir, request):
 def test_splunk_app_fiction_with_ep(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
 
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
@@ -869,14 +841,12 @@ def test_splunk_app_fiction_with_ep(testdir, request):
 def test_splunk_app_req_with_ep(testdir, request):
     """Make sure that pytest accepts our fixture."""
 
-    testdir.makepyfile(
-        """
+    testdir.makepyfile("""
         from pytest_splunk_addon.standard_lib.addon_basic import Basic
         class Test_App(Basic):
             def empty_method():
                 pass
-    """
-    )
+    """)
 
     shutil.copytree(
         os.path.join(testdir.request.fspath.dirname, "addons/TA_transition_from_req"),

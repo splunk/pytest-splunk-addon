@@ -17,6 +17,7 @@
 """
 Includes JSON schema for data models
 """
+
 import json
 import os.path as op
 from .base_schema import BaseSchema

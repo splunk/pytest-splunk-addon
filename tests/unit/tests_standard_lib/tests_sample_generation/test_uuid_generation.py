@@ -3,6 +3,7 @@
 Unit tests for UUID generation and uniqueness in sample events.
 Tests Priority #1: UUID Generation & Uniqueness Tests
 """
+
 import pytest
 import uuid
 from unittest.mock import patch, MagicMock

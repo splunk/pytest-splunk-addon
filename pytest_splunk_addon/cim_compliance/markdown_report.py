@@ -16,6 +16,7 @@
 """
 Markdown generator
 """
+
 from .base_report import CIMReport
 
 

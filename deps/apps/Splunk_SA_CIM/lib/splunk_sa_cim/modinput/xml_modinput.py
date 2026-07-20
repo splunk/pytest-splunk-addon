@@ -1,6 +1,7 @@
 """
 Copyright (C) 2005 - 2017 Splunk Inc. All Rights Reserved.
 """
+
 import sys
 import xml.dom
 from xml.dom.minidom import Document

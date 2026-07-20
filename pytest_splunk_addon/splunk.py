@@ -192,7 +192,7 @@ def pytest_addoption(parser):
             "Relative or absolute path can be provided."
             "Json files are expected in the directory."
             "Json files must follow the schema mentioned in DatamodelSchema.json"
-            "pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\DatamodelSchema.json"
+            r"pytest-splunk-addon\pytest_splunk_addon\standard_lib\cim_tests\DatamodelSchema.json"
         ),
     )
     group.addoption(

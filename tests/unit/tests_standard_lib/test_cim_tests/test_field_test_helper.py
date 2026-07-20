@@ -4,7 +4,6 @@ from collections import namedtuple
 from pytest_splunk_addon.cim_tests.field_test_helper import FieldTestHelper
 from pytest_splunk_addon.utilities.log_helper import get_table_output
 
-
 field = namedtuple(
     "Field",
     ["name", "condition", "get_stats_query", "gen_validity_query", "get_properties"],

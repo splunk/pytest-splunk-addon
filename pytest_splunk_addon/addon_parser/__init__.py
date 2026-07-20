@@ -20,6 +20,7 @@ parse the knowledge objects from an Add-on's configuration files.
 
 Supports: fields from props & transforms, tags, eventtypes, savedsearches
 """
+
 import os
 import re
 import logging

@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 """
-Test generation mechanism to verify the index time extractions of an Add-on 
+Test generation mechanism to verify the index time extractions of an Add-on
 """
 
 from .test_templates import IndexTimeTestTemplate

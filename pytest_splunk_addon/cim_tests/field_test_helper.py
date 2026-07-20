@@ -17,6 +17,7 @@
 """
 Provides the helper methods to test addon_parser.Field object
 """
+
 import logging
 import json
 from .field_test_adapter import FieldTestAdapter

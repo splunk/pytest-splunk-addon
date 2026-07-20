@@ -17,6 +17,7 @@
 """
 Includes the test scenarios to check the field extractions of an Add-on.
 """
+
 import pprint
 import logging
 import pytest

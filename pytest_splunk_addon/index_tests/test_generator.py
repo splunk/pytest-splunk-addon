@@ -145,9 +145,9 @@ class IndexTimeTestGenerator(object):
                 line_breaker_params[event.sample_name] = {}
 
             if not line_breaker_params[event.sample_name].get("sourcetype"):
-                line_breaker_params[event.sample_name][
-                    "sourcetype"
-                ] = self.get_sourcetype(event)
+                line_breaker_params[event.sample_name]["sourcetype"] = (
+                    self.get_sourcetype(event)
+                )
 
             if not line_breaker_params[event.sample_name].get("expected_event_count"):
                 if event.metadata.get("input_type") not in [

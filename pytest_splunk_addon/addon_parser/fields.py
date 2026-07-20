@@ -15,7 +15,7 @@
 #
 # -*- coding: utf-8 -*-
 """
-Provides the Field class containing all the field properties and a decorator 
+Provides the Field class containing all the field properties and a decorator
 to convert a list to field list
 """
 

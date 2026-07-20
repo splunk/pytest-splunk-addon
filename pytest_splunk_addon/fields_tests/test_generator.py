@@ -18,6 +18,7 @@
 Module include class to generate the test cases
 to test the knowledge objects of an Add-on.
 """
+
 import pytest
 import logging
 from itertools import chain
@@ -26,7 +27,6 @@ from ..addon_parser import AddonParser
 from . import FieldBank
 from ..utilities import xml_event_parser
 from ..utils import EP_COMPATIBLE_INPUT_TYPES
-
 
 LOGGER = logging.getLogger("pytest-splunk-addon")
 

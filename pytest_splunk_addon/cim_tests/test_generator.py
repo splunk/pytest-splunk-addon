@@ -15,8 +15,9 @@
 #
 # -*- coding: utf-8 -*-
 """
-Generates test cases to verify the CIM compatibility . 
+Generates test cases to verify the CIM compatibility .
 """
+
 import logging
 import pytest
 import json

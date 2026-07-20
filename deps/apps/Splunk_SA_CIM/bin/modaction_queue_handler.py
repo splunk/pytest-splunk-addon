@@ -20,7 +20,6 @@ from splunk_sa_cim.modaction_queue import (
     ModularActionQutils,
 )
 
-
 logger = setup_logger("modaction_queue_handler")
 
 

@@ -10,7 +10,6 @@ from pytest_splunk_addon.event_ingestors.hec_raw_ingestor import (
 )
 from urllib.parse import unquote
 
-
 HEC_URI = "https://127.0.0.1:55238/services/collector"
 HEADERS = {"Authorization": "Splunk 9b741d03-43e9-4164-908b-e09102327d22"}
 

@@ -16,6 +16,7 @@
 """
 Provides Rules for all possible replacements for tokens.
 """
+
 import re
 import string
 import uuid

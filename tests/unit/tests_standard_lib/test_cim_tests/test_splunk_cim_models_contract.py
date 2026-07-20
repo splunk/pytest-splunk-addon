@@ -24,6 +24,7 @@ still satisfy the same contract.
 If any of these tests fail after upgrading splunk-cim-models, the
 corresponding PSA import site must be updated to match the new API.
 """
+
 import json
 import os
 import sys
@@ -31,7 +32,6 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # Helpers

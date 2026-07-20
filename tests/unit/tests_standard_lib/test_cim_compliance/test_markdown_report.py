@@ -4,7 +4,6 @@ from pytest_splunk_addon.cim_compliance.markdown_report import (
     MarkDownReport,
 )
 
-
 MARKDOWN_STR = "init string"
 NOTE_STR = "init note"
 

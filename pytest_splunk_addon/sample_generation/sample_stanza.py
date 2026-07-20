@@ -434,9 +434,9 @@ class SampleStanza(object):
                 )
                 if type(missing_recommended_fields) != list:
                     missing_recommended_fields = [missing_recommended_fields]
-            requirement_test_data[
-                "missing_recommended_fields"
-            ] = missing_recommended_fields
+            requirement_test_data["missing_recommended_fields"] = (
+                missing_recommended_fields
+            )
 
             defined_exceptions = cim.get("exceptions") or {}
             exceptions = {}

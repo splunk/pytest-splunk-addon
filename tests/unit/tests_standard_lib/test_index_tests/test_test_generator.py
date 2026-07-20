@@ -105,16 +105,18 @@ def test_generate_tests_triggers_generate_params(
     }
     with patch_object(
         "get_hosts",
-        side_effect=lambda event: event.metadata["host"]
-        if type(event.metadata["host"]) == list
-        else [event.metadata["host"]],
+        side_effect=lambda event: (
+            event.metadata["host"]
+            if type(event.metadata["host"]) == list
+            else [event.metadata["host"]]
+        ),
     ), patch_object(
         "add_host_prefix",
-        side_effect=lambda host_prefix, hosts: [
-            host_prefix + str(host) for host in hosts
-        ]
-        if type(hosts) == list
-        else [host_prefix + str(hosts)],
+        side_effect=lambda host_prefix, hosts: (
+            [host_prefix + str(host) for host in hosts]
+            if type(hosts) == list
+            else [host_prefix + str(hosts)]
+        ),
     ), patch_object(
         "generate_params",
         side_effect=lambda event, ids, hosts: ((event, ids, hosts) for x in range(1)),
@@ -193,9 +195,11 @@ def test_generate_line_breaker_tests(mock_object):
         side_effect=lambda event: event.metadata["sourcetype"],
     ), patch_object(
         "get_hosts",
-        side_effect=lambda event: event.metadata["host"]
-        if type(event.metadata["host"]) == list
-        else [event.metadata["host"]],
+        side_effect=lambda event: (
+            event.metadata["host"]
+            if type(event.metadata["host"]) == list
+            else [event.metadata["host"]]
+        ),
     ), patch.object(
         pytest, "param", side_effect=lambda x, id: (x, id)
     ) as param_mock:

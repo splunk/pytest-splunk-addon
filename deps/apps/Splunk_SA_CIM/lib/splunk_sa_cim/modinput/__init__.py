@@ -1,6 +1,7 @@
 """
 Copyright (C) 2005 - 2019 Splunk Inc. All Rights Reserved.
 """
+
 from .base_modinput import logger
 from .xml_modinput import XmlModularInput
 from .json_modinput import JsonModularInput
