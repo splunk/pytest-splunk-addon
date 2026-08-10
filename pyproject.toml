@@ -33,7 +33,7 @@ classifiers = [
 include = ["pytest_splunk_addon/**/*.json", "pytest_splunk_addon/**/*.txt"]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4.0"
+python = ">=3.13,<3.14"
 pytest = ">=9.0.3,<10"
 splunk-sdk = ">=1.6"
 requests = "^2.31.0"
