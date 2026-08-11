@@ -74,7 +74,7 @@ jobs:
           submodules: true
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
       - name: Generate GitHub App Token
         id: app-token
         uses: actions/create-github-app-token@v3
