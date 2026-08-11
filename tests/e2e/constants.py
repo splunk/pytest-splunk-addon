@@ -248,8 +248,8 @@ TA_FICTION_PASSED = [
 ]
 
 TA_FICTION_SKIPPED = [
-    "*test_splunk_app_fiction.py::Test_App::test_requirements_fields[splunk_searchtime_fields_requirements0* SKIPPED*",
-    "*test_splunk_app_fiction.py::Test_App::test_datamodels[splunk_searchtime_fields_datamodels0* SKIPPED*",
+    "*test_splunk_app_fiction.py::Test_App::test_requirements_fields[* SKIPPED*",
+    "*test_splunk_app_fiction.py::Test_App::test_datamodels[* SKIPPED*",
 ]
 
 """
@@ -390,8 +390,8 @@ TA_BROKEN_FAILED = [
 ]
 
 TA_BROKEN_SKIPPED = [
-    "*test_splunk_app_broken.py::Test_App::test_requirements_fields[splunk_searchtime_fields_requirements0* SKIPPED*",
-    "*test_splunk_app_broken.py::Test_App::test_datamodels[splunk_searchtime_fields_datamodels0* SKIPPED*",
+    "*test_splunk_app_broken.py::Test_App::test_requirements_fields[* SKIPPED*",
+    "*test_splunk_app_broken.py::Test_App::test_datamodels[* SKIPPED*",
 ]
 
 """
@@ -430,7 +430,7 @@ TA_CIM_FICTION_PASSED = [
 ]
 
 TA_CIM_FICTION_SKIPPED = [
-    "*test_splunk_app_cim_fiction.py::Test_App::test_cim_fields_recommended[splunk_searchtime_cim_fields_recommended0* SKIPPED*"
+    "*test_splunk_app_cim_fiction.py::Test_App::test_cim_fields_recommended[* SKIPPED*"
 ]
 
 """
@@ -479,7 +479,7 @@ TA_CIM_BROKEN_FAILED = [
 ]
 
 TA_CIM_BROKEN_SKIPPED = [
-    "*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_recommended[splunk_searchtime_cim_fields_recommended0* SKIPPED*"
+    "*test_splunk_app_cim_broken.py::Test_App::test_cim_fields_recommended[* SKIPPED*"
 ]
 
 """
@@ -669,14 +669,14 @@ TA_FICTION_INDEXTIME_FAILED = [
 Define the TA_fiction_indextime add-on skipped test case list.
 """
 TA_FICTION_INDEXTIME_SKIPPED = [
-    "*test_splunk_fiction_indextime.py::Test_App::test_cim_required_fields*splunk_searchtime_cim_fields0* SKIPPED*",
-    "*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_search*splunk_searchtime_cim_fields_not_allowed_in_search0* SKIPPED*",
-    "*test_splunk_fiction_indextime.py::Test_App::test_tags*splunk_searchtime_fields_tags0* SKIPPED*",
-    "*test_splunk_fiction_indextime.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*",
-    "*test_splunk_fiction_indextime.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*",
-    "*test_splunk_fiction_indextime.py::Test_App::test_datamodels[splunk_searchtime_fields_datamodels0* SKIPPED*",
-    "*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_recommended[splunk_searchtime_cim_fields_recommended0* SKIPPED*",
-    "*test_splunk_fiction_indextime.py::Test_App::test_requirements_fields[splunk_searchtime_fields_requirements0* SKIPPED*",
+    "*test_splunk_fiction_indextime.py::Test_App::test_cim_required_fields* SKIPPED*",
+    "*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_not_allowed_in_search* SKIPPED*",
+    "*test_splunk_fiction_indextime.py::Test_App::test_tags* SKIPPED*",
+    "*test_splunk_fiction_indextime.py::Test_App::test_eventtype* SKIPPED*",
+    "*test_splunk_fiction_indextime.py::Test_App::test_savedsearches* SKIPPED*",
+    "*test_splunk_fiction_indextime.py::Test_App::test_datamodels[* SKIPPED*",
+    "*test_splunk_fiction_indextime.py::Test_App::test_cim_fields_recommended[* SKIPPED*",
+    "*test_splunk_fiction_indextime.py::Test_App::test_requirements_fields[* SKIPPED*",
 ]
 
 """
@@ -760,16 +760,16 @@ TA_FICTION_INDEXTIME_BROKEN_FAILED = [
 Define the TA_fiction_indextime_broken add-on skipped test case list.
 """
 TA_FICTION_INDEXTIME_BROKEN_SKIPPED = [
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_cim_required_fields*splunk_searchtime_cim_fields0* SKIPPED*",
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_cim_fields_not_allowed_in_search*splunk_searchtime_cim_fields_not_allowed_in_search0* SKIPPED*",
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_props_fields*splunk_searchtime_fields_positive0* SKIPPED*",
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_props_fields_no_dash_not_empty*splunk_searchtime_fields_negative0* SKIPPED*",
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_tags*splunk_searchtime_fields_tags0* SKIPPED*",
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_eventtype*splunk_searchtime_fields_eventtypes0* SKIPPED*",
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_savedsearches*splunk_searchtime_fields_savedsearches0* SKIPPED*",
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_datamodels[splunk_searchtime_fields_datamodels0* SKIPPED*",
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_requirements_fields[splunk_searchtime_fields_requirements0* SKIPPED*",
-    "*test_splunk_fiction_indextime_broken.py::Test_App::test_cim_fields_recommended[splunk_searchtime_cim_fields_recommended0* SKIPPED*",
+    "*test_splunk_fiction_indextime_broken.py::Test_App::test_cim_required_fields* SKIPPED*",
+    "*test_splunk_fiction_indextime_broken.py::Test_App::test_cim_fields_not_allowed_in_search* SKIPPED*",
+    "*test_splunk_fiction_indextime_broken.py::Test_App::test_props_fields* SKIPPED*",
+    "*test_splunk_fiction_indextime_broken.py::Test_App::test_props_fields_no_dash_not_empty* SKIPPED*",
+    "*test_splunk_fiction_indextime_broken.py::Test_App::test_tags* SKIPPED*",
+    "*test_splunk_fiction_indextime_broken.py::Test_App::test_eventtype* SKIPPED*",
+    "*test_splunk_fiction_indextime_broken.py::Test_App::test_savedsearches* SKIPPED*",
+    "*test_splunk_fiction_indextime_broken.py::Test_App::test_datamodels[* SKIPPED*",
+    "*test_splunk_fiction_indextime_broken.py::Test_App::test_requirements_fields[* SKIPPED*",
+    "*test_splunk_fiction_indextime_broken.py::Test_App::test_cim_fields_recommended[* SKIPPED*",
 ]
 TA_REQ_TRANSITION_PASSED = [
     "*test_splunk_app_req.py::Test_App::test_events_with_untokenised_values PASSED*",
@@ -829,8 +829,8 @@ TA_REQ_TRANSITION_PASSED = [
 ]
 
 TA_REQ_TRANSITION_SKIPPED = [
-    "*test_splunk_app_req.py::Test_App::test_savedsearches[splunk_searchtime_fields_savedsearches0* SKIPPED*",
-    "*test_splunk_app_req.py::Test_App::test_indextime_key_fields[splunk_indextime_key_fields0* SKIPPED*",
+    "*test_splunk_app_req.py::Test_App::test_savedsearches[* SKIPPED*",
+    "*test_splunk_app_req.py::Test_App::test_indextime_key_fields[* SKIPPED*",
 ]
 
 TA_REQ_TRANSITION_FAILED = []
@@ -935,10 +935,10 @@ TA_REQ_BROKEN_FAILED = [
 Define the TA_broken add-on skipped test case list.
 """
 TA_REQ_BROKEN_SKIPPED = [
-    "*test_splunk_app_req_broken.py::Test_App::test_indextime_key_fields[splunk_indextime_key_fields0* SKIPPED*",
-    "*test_splunk_app_req_broken.py::Test_App::test_props_fields[splunk_searchtime_fields_positive0* SKIPPED*",
-    "*test_splunk_app_req_broken.py::Test_App::test_props_fields_no_dash_not_empty[splunk_searchtime_fields_negative0* SKIPPED*",
-    "*test_splunk_app_req_broken.py::Test_App::test_savedsearches[splunk_searchtime_fields_savedsearches0* SKIPPED*",
+    "*test_splunk_app_req_broken.py::Test_App::test_indextime_key_fields[* SKIPPED*",
+    "*test_splunk_app_req_broken.py::Test_App::test_props_fields[* SKIPPED*",
+    "*test_splunk_app_req_broken.py::Test_App::test_props_fields_no_dash_not_empty[* SKIPPED*",
+    "*test_splunk_app_req_broken.py::Test_App::test_savedsearches[* SKIPPED*",
 ]
 
 """
@@ -1290,8 +1290,8 @@ TA_FICTION_EP_PASSED = [
 ]
 
 TA_FICTION_EP_SKIPPED = [
-    "*test_splunk_app_fiction_with_ep.py::Test_App::test_requirements_fields[splunk_searchtime_fields_requirements0* SKIPPED*",
-    "*test_splunk_app_fiction_with_ep.py::Test_App::test_datamodels[splunk_searchtime_fields_datamodels0* SKIPPED*",
+    "*test_splunk_app_fiction_with_ep.py::Test_App::test_requirements_fields[* SKIPPED*",
+    "*test_splunk_app_fiction_with_ep.py::Test_App::test_datamodels[* SKIPPED*",
 ]
 
 TA_REQ_EP_TRANSITION_PASSED = [
@@ -1352,8 +1352,8 @@ TA_REQ_EP_TRANSITION_PASSED = [
 ]
 
 TA_REQ_EP_TRANSITION_SKIPPED = [
-    "*test_splunk_app_req_with_ep.py::Test_App::test_savedsearches[splunk_searchtime_fields_savedsearches0* SKIPPED*",
-    "*test_splunk_app_req_with_ep.py::Test_App::test_indextime_key_fields[splunk_indextime_key_fields0* SKIPPED*",
+    "*test_splunk_app_req_with_ep.py::Test_App::test_savedsearches[* SKIPPED*",
+    "*test_splunk_app_req_with_ep.py::Test_App::test_indextime_key_fields[* SKIPPED*",
 ]
 
 TA_REQ_EP_TRANSITION_FAILED = []
