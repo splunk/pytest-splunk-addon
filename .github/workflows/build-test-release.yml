@@ -58,7 +58,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
       - uses: pre-commit/action@v3.0.1
 
   semgrep:
@@ -89,33 +89,6 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
           poetry install
           poetry run pytest -v tests/unit
-
-  test-splunk-unit-python-313:
-    # Keep this advisory while Python 3.13 compatibility is being established.
-    continue-on-error: true
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-      - name: Generate GitHub App Token
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          client-id: ${{ secrets.GH_APP_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
-      - name: Install dependencies and run unit tests
-        run: |
-          git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf https://github.com
-          git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf ssh://git@github.com
-          curl -sSL https://install.python-poetry.org | python3 - --version 1.5.1
-          poetry install
-          poetry run pytest -v tests/unit
-
 
   test-splunk-external:
     runs-on: ubuntu-22.04
@@ -211,7 +184,7 @@ jobs:
           owner: ${{ github.repository_owner }}
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.7
+          python-version: "3.13"
       - run: |
           git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf https://github.com
           git config --global --add url."https://x-access-token:${{ steps.app-token.outputs.token }}@github.com".insteadOf ssh://git@github.com
@@ -273,7 +246,7 @@ jobs:
           owner: ${{ github.repository_owner }}
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.7"
+          python-version: "3.13"
       - name: Install PSA with CIM models ${{ matrix.cim-models.label }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -336,7 +309,7 @@ jobs:
           owner: ${{ github.repository_owner }}
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.7"
+          python-version: "3.13"
       - uses: actions/download-artifact@v4
         with:
           name: THIRDPARTY
