@@ -1008,8 +1008,8 @@ TA_CIM_MODEL_PASSED = [
     '*test_splunk_cim_model.py::Test_App::test_cim_fields_not_allowed_in_search[eventtype="test_ipv6"::All_Traffic* PASSED*',
     "*test_splunk_cim_model.py::Test_App::test_cim_fields_not_allowed_in_props[searchtime_cim_fields* PASSED*",
     "*test_splunk_cim_model.py::Test_App::test_eventtype_mapped_multiple_cim_datamodel[mapped_datamodel_tests* PASSED*",
-    "*test_splunk_cim_model.py::Test_App::test_cim_fields_recommended[Change-::sample_name::test_change.xml::host::so10* PASSED*",
-    "*test_splunk_cim_model.py::Test_App::test_cim_fields_recommended[Change-::sample_name::test_change.xml::host::so11* PASSED*",
+    "*test_splunk_cim_model.py::Test_App::test_cim_fields_recommended[Change-::sample_name::test_change.xml::host::so1_0* PASSED*",
+    "*test_splunk_cim_model.py::Test_App::test_cim_fields_recommended[Change-::sample_name::test_change.xml::host::so1_1* PASSED*",
     "*test_splunk_cim_model.py::Test_App::test_cim_fields_recommended[Change-Account_Management::sample_name::test_change.xml::host::so1* PASSED*",
 ]
 
