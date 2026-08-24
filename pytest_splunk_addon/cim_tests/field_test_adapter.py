@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import json
+
 from ..addon_parser import Field
 
 
@@ -22,9 +24,9 @@ class FieldTestAdapter(Field):
 
     Properties:
 
-    * valid_field (str): New field generated which can only have the valid values
-    * invalid_field (str): New field generated which can only have the invalid values
-    * validity_query (str): The query which extracts the valid_field out of the field
+    * valid_field (str): Result alias for the valid-value count
+    * invalid_field (str): Result alias for invalid values
+    * validity_query (str): Pre-aggregation query required by the field
 
     """
 
@@ -59,54 +61,61 @@ class FieldTestAdapter(Field):
 
     def gen_validity_query(self):
         """
-        Generate validation search query::
+        Generate preprocessing required before aggregating validity results.
 
-            | eval valid_field = <validity>
-            | eval valid_field = if(searchmatch(valid_field in <expected_values>), valid_field, null())
-            | eval valid_field = if(searchmatch(valid_field in <negative_values>), null(), valid_field)
-            | eval invalid_field=if(isnull(valid_field),field, null())
+        Validity is evaluated directly by ``get_stats_query`` so multiple fields do
+        not depend on sequential calculated fields in a distributed search.
 
         """
-        if not self.validity_query is None:
-            return self.validity_query
-        else:
-            self.validity_query = ""
-            if self.multi_value:
-                self.validity_query += "\n" f"| nomv {self.name}"
-            self.validity_query += "\n" f"| eval {self.valid_field}={self.validity}"
-            if self.expected_values:
-                self.validity_query += (
-                    "\n"
-                    '| eval {valid_field}=if(searchmatch("{valid_field} IN ({values})"), {valid_field}, null())'.format(
-                        valid_field=self.valid_field,
-                        values=self.get_query_from_values(self.expected_values),
-                    )
+        if self.validity_query is None:
+            self.validity_query = "\n" f"| nomv {self.name}" if self.multi_value else ""
+        return self.validity_query
+
+    @staticmethod
+    def get_eval_query_from_values(values):
+        return ", ".join(json.dumps(value) for value in values)
+
+    def get_validity_expression(self):
+        predicates = []
+        if self.expected_values and "*" not in self.expected_values:
+            predicates.append(
+                "({validity}) IN ({values})".format(
+                    validity=self.validity,
+                    values=self.get_eval_query_from_values(self.expected_values),
                 )
-            if self.negative_values:
-                self.validity_query += (
-                    "\n"
-                    '| eval {valid_field}=if(searchmatch("{valid_field} IN ({values})"), null(), {valid_field})'.format(
-                        valid_field=self.valid_field,
-                        values=self.get_query_from_values(self.negative_values),
-                    )
-                )
-            self.validity_query += (
-                "\n"
-                f"| eval {self.invalid_field}=if(isnull({self.valid_field}), {self.name}, null())"
             )
-            return self.validity_query
+        if self.negative_values:
+            predicates.append(
+                "NOT ({validity}) IN ({values})".format(
+                    validity=self.validity,
+                    values=self.get_eval_query_from_values(self.negative_values),
+                )
+            )
+        if not predicates:
+            return self.validity
+        return "if({predicates}, {validity}, null())".format(
+            predicates=" AND ".join(predicates),
+            validity=self.validity,
+        )
 
     def get_stats_query(self):
         """
         Generate stats search query::
 
-            count(field) as field_count, count(valid_field) as valid_field_count,
-                values(invalid_field) as invalid_values
+            count(field) as field_count,
+                count(eval(validity_expression)) as valid_field_count,
+                values(eval(if(isnull(validity_expression), field, null()))) as invalid_values
         """
+        validity_expression = self.get_validity_expression()
         query = f", count({self.name}) as {self.FIELD_COUNT.format(self.name)}"
-        if self.gen_validity_query():
-            query += f", count({self.valid_field}) as {self.VALID_FIELD_COUNT.format(self.name)}"
-            query += f", values({self.invalid_field}) as {self.INVALID_FIELD_VALUES.format(self.name)}"
+        query += (
+            f", count(eval({validity_expression})) as "
+            f"{self.VALID_FIELD_COUNT.format(self.name)}"
+        )
+        query += (
+            f", values(eval(if(isnull({validity_expression}), {self.name}, null()))) as "
+            f"{self.INVALID_FIELD_VALUES.format(self.name)}"
+        )
         return query
 
     @classmethod

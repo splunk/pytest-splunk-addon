@@ -50,13 +50,9 @@ class FieldTestHelper(object):
         Format of the query is::
 
             <condition>
-            | eval <validity>
-            | eval <expected_values>
-            | eval <not negative_values>
-            | eval <invalid_fields>
             | stats count as event_count, count(field) as field_count,
-                count(valid_field) as valid_field_count,
-                values(invalid_field) by sourcetype, source
+                count(eval(validity_expression)) as valid_field_count,
+                values(eval(invalidity_expression)) by sourcetype, source
 
         Args:
             base_search (str): Base search. Must be a search command.
@@ -82,13 +78,9 @@ class FieldTestHelper(object):
         Make the search query by using the list of fields::
 
             <base_search> <condition>
-            | eval valid_field=<validity>
-            | eval valid_field = if(field in <expected_values>)
-            | eval valid_field = if(field not in <not negative_values>)
-            | eval invalid_field = field if isnull(valid_field)
             | stats count as event_count, count(field) as field_count,
-                count(valid_field) as valid_field_count,
-                values(invalid_field) by sourcetype, source
+                count(eval(validity_expression)) as valid_field_count,
+                values(eval(invalidity_expression)) by sourcetype, source
 
         Args:
             base_search (str): The base search
@@ -131,16 +123,15 @@ class FieldTestHelper(object):
                         )
                     ),
                 }
-                if each_field.gen_validity_query():
-                    field_dict["valid_field_count"] = int(
-                        each_result.get(
-                            FieldTestAdapter.VALID_FIELD_COUNT.format(each_field.name)
-                        )
+                field_dict["valid_field_count"] = int(
+                    each_result.get(
+                        FieldTestAdapter.VALID_FIELD_COUNT.format(each_field.name)
                     )
-                    field_dict["invalid_values"] = each_result.get(
-                        FieldTestAdapter.INVALID_FIELD_VALUES.format(each_field.name),
-                        "-",
-                    )
+                )
+                field_dict["invalid_values"] = each_result.get(
+                    FieldTestAdapter.INVALID_FIELD_VALUES.format(each_field.name),
+                    "-",
+                )
                 field_dict.update(
                     {
                         "sourcetype": sourcetype,
