@@ -82,18 +82,21 @@ def test_validity_query_already_exists(mocked_field_test_adapter):
         (
             ["INFO", "WARN"],
             [],
-            'if((component_validity) IN ("INFO", "WARN"), component_validity, null())',
+            'if((lower(tostring(component_validity))) IN ("info", "warn"), '
+            "component_validity, null())",
         ),
         (
             [],
             ["", "-"],
-            'if(NOT (component_validity) IN ("", "-"), component_validity, null())',
+            'if(NOT (lower(tostring(component_validity))) IN ("", "-"), '
+            "component_validity, null())",
         ),
         (
             ["INFO", "WARN"],
             ["", "-"],
-            'if((component_validity) IN ("INFO", "WARN") AND '
-            'NOT (component_validity) IN ("", "-"), component_validity, null())',
+            'if((lower(tostring(component_validity))) IN ("info", "warn") AND '
+            'NOT (lower(tostring(component_validity))) IN ("", "-"), '
+            "component_validity, null())",
         ),
     ],
     ids=["no_filters", "wildcard", "expected", "negative", "both"],
@@ -105,6 +108,19 @@ def test_get_validity_expression(
     mocked_field_test_adapter.negative_values = negative_values
 
     assert mocked_field_test_adapter.get_validity_expression() == expected_output
+
+
+def test_get_validity_expression_compares_configured_values_case_insensitively(
+    mocked_field_test_adapter,
+):
+    mocked_field_test_adapter.expected_values = ["INFO"]
+    mocked_field_test_adapter.negative_values = ["(null)"]
+
+    assert mocked_field_test_adapter.get_validity_expression() == (
+        'if((lower(tostring(component_validity))) IN ("info") AND '
+        'NOT (lower(tostring(component_validity))) IN ("(null)"), '
+        "component_validity, null())"
+    )
 
 
 def test_gen_stats_query():

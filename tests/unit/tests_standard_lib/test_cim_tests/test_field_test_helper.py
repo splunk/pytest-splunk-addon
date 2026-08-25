@@ -256,7 +256,7 @@ def test_make_search_query_aggregates_multifield_validity_without_intermediate_f
 
     for name in ("packets_in", "packets_out"):
         validity = (
-            f"if(NOT (if(isnum({name}),{name},null())) IN "
+            f"if(NOT (lower(tostring(if(isnum({name}),{name},null())))) IN "
             '("", "-", "unknown", "null", "(null)"), '
             f"if(isnum({name}),{name},null()), null())"
         )

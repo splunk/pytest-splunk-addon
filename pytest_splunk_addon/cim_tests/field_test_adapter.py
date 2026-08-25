@@ -73,21 +73,22 @@ class FieldTestAdapter(Field):
 
     @staticmethod
     def get_eval_query_from_values(values):
-        return ", ".join(json.dumps(value) for value in values)
+        return ", ".join(json.dumps(str(value).lower()) for value in values)
 
     def get_validity_expression(self):
         predicates = []
+        normalized_validity = f"lower(tostring({self.validity}))"
         if self.expected_values and "*" not in self.expected_values:
             predicates.append(
                 "({validity}) IN ({values})".format(
-                    validity=self.validity,
+                    validity=normalized_validity,
                     values=self.get_eval_query_from_values(self.expected_values),
                 )
             )
         if self.negative_values:
             predicates.append(
                 "NOT ({validity}) IN ({values})".format(
-                    validity=self.validity,
+                    validity=normalized_validity,
                     values=self.get_eval_query_from_values(self.negative_values),
                 )
             )
