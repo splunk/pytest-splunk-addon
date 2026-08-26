@@ -44,10 +44,7 @@ To generate test cases only for knowledge objects, append the following marker t
  - **Direct stanzas**: `[sourcetype_name]` in props.conf
  - **TRANSFORMS-defined**: Sourcetypes dynamically set via TRANSFORMS directives that reference transforms.conf entries with `FORMAT = sourcetype::<sourcetype_name>`
  
- Both types of sourcetypes are automatically discovered. Static sourcetypes are tested for
- event coverage automatically. A TRANSFORMS-defined target is tested only when at least one
- sample declares that target as `sourcetype_to_search`; otherwise there is no event fixture
- with which to validate its coverage.
+ Both types of sourcetypes are automatically discovered and tested for event coverage.
 
 **2. Fields mentioned under source/sourcetype should be extracted**
 

@@ -421,51 +421,6 @@ def test_generate_field_tests(
 
 
 @pytest.mark.parametrize(
-    "sample_sourcetype, expected_ids",
-    [
-        (None, []),
-        ("unrelated:sourcetype", []),
-        ("routed:sourcetype", ["routed:sourcetype"]),
-    ],
-)
-def test_generate_field_tests_only_covers_transform_targets_with_samples(
-    addon_parser_mock,
-    field_bank_mock,
-    sample_sourcetype,
-    expected_ids,
-):
-    addon_parser_mock.get_props_fields.return_value = [
-        {
-            "stanza": "routed:sourcetype",
-            "stanza_type": "sourcetype",
-            "classname": "TRANSFORMS-sourcetype::route_event",
-            "fields": [],
-        }
-    ]
-    field_bank_mock.init_field_bank_tests.return_value = []
-    tokenized_events = []
-    if sample_sourcetype:
-        tokenized_events.append(
-            SampleEvent(
-                event_string="event",
-                metadata={"sourcetype_to_search": sample_sourcetype},
-                sample_name="sample.xml",
-            )
-        )
-
-    with patch.object(pytest, "param", side_effect=lambda x, id: (x, id)):
-        generated = list(
-            FieldTestGenerator(
-                "app_path",
-                tokenized_events,
-                "field_bank",
-            ).generate_field_tests(is_positive=True)
-        )
-
-    assert [test_id for _, test_id in generated] == expected_ids
-
-
-@pytest.mark.parametrize(
     "tokenised_events, expected_output",
     [
         (

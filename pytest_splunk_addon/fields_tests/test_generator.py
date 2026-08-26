@@ -99,23 +99,7 @@ class FieldTestGenerator(object):
             FieldBank.init_field_bank_tests(self.field_bank),
             self.addon_parser.get_props_fields(),
         )
-        sampled_sourcetypes = {
-            event.metadata.get("sourcetype_to_search")
-            for event in self.tokenized_events
-            if event.metadata.get("sourcetype_to_search")
-        }
         for fields_group in field_itr:
-            if (
-                fields_group["classname"].startswith("TRANSFORMS-sourcetype::")
-                and fields_group["stanza"] not in sampled_sourcetypes
-            ):
-                LOGGER.info(
-                    "Skipping TRANSFORMS-defined sourcetype coverage for %s: "
-                    "no sample declares it as sourcetype_to_search",
-                    fields_group["stanza"],
-                )
-                continue
-
             # Generate test case for the stanza
             # Do not generate if it is a negative test case
             if is_positive:
