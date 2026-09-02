@@ -10,17 +10,12 @@ An add-on is said to be CIM compatible if it fulfils the following two criteria:
 
 ## CIM Data Models Package (`splunk-cim-models`)
 
-CIM data model definitions are provided by the separate
-[`splunk-cim-models`](https://github.com/splunk/psa-cim-models) package.
-This lets you update or pin CIM definitions independently of `pytest-splunk-addon` itself.
+CIM data model definitions are maintained separately from `pytest-splunk-addon`.
+They must be installed from an approved internal source; do not install
+`splunk-cim-models` by package name from public PyPI.
 
-**Install for CIM testing:**
-
-```console
-pip install splunk-cim-models
-```
-
-Or, during development, install the latest from the repository:
+For authorized internal development, install the required definitions directly
+from the repository:
 
 ```console
 pip install git+https://github.com/splunk/psa-cim-models.git@cim-6
@@ -35,8 +30,8 @@ The package exposes:
 | `DATAMODEL_SCHEMA_PATH` | Path to `DatamodelSchema.json` (JSON schema for validating custom data model files) |
 | `datamodels` | Dict mapping CIM version strings to recommended fields per model |
 
-If `splunk-cim-models` is not installed, any test run that exercises CIM functionality
-will raise an `ImportError` with a message pointing to the package.
+If the CIM data models are not installed, any test run that exercises CIM functionality
+will raise an `ImportError` with a message pointing to the required package.
 
 ______________________________________________________________________
 
