@@ -244,7 +244,7 @@ jobs:
           owner: ${{ github.repository_owner }}
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.7"
+          python-version: "3.9"
       - name: Install PSA with CIM models ${{ matrix.cim-models.label }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
