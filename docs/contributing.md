@@ -20,11 +20,8 @@ $ poetry install
 
 This installs `splunk-cim-models` automatically as a dev dependency (from the `cim-6` branch of
 [psa-cim-models](https://github.com/splunk/psa-cim-models)). In CI or when installing from
-PyPI, install `splunk-cim-models` separately before running CIM tests:
-
-```
-$ pip install splunk-cim-models
-```
+PyPI, use the same approved Git-based source before running CIM tests. Do not install
+`splunk-cim-models` by package name from public PyPI.
 
 ### Working with `splunk-cim-models`
 

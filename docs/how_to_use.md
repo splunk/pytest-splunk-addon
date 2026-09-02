@@ -464,8 +464,6 @@ def splunk_setup(splunk):
   - Provide the path to the directory having all the data models by adding `--splunk_dm_path path_to_dir` to the pytest command.
   - The test cases will now be generated for the data models provided to the plugin and not for the [default data models](https://github.com/splunk/psa-cim-models/tree/cim-6/splunk_cim_models/data_models) bundled in `splunk-cim-models`.
 
-> **_NOTE:_** CIM data model definitions are provided by the [`splunk-cim-models`](https://github.com/splunk/psa-cim-models) package. Install it separately before running CIM tests:
->
-> ```console
-> pip install splunk-cim-models
-> ```
+> **_NOTE:_** CIM data model definitions are provided separately from
+> `pytest-splunk-addon`. Before running CIM tests, install them from an approved
+> internal source. Do not install `splunk-cim-models` by package name from public PyPI.

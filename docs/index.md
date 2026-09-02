@@ -22,12 +22,8 @@ pytest-splunk-addon can be installed via pip from PyPI:
 pip3 install pytest-splunk-addon
 ```
 
-To run **CIM compatibility tests** you also need the CIM data models package:
-
-
-definitions can be updated without a full PSA release. See the
-[CIM Compatibility Tests](./cim_tests.md) page for details on how the two packages
-interact and how to pin or override data model definitions.
+To run **CIM compatibility tests**, see the [CIM Compatibility Tests](./cim_tests.md)
+page for the required CIM data model setup.
 
 ## Features
 
