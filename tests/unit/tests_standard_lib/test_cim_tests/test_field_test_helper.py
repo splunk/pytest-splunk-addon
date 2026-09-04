@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from collections import namedtuple
+from pytest_splunk_addon.addon_parser import Field
 from pytest_splunk_addon.cim_tests.field_test_helper import FieldTestHelper
 from pytest_splunk_addon.utilities.log_helper import get_table_output
 
@@ -12,8 +13,8 @@ field = namedtuple(
 )
 
 
-field_1 = field(name="field_1", gen_validity_query=lambda: True)
-field_2 = field(name="field_2", gen_validity_query=lambda: True)
+field_1 = field(name="field_1", gen_validity_query=lambda: "")
+field_2 = field(name="field_2", gen_validity_query=lambda: "")
 
 
 @pytest.fixture()
@@ -228,6 +229,43 @@ def test_make_search_query(mocked_field_test_helper, fields, expected_output):
         == "index=* event=alert OR event=emergency"
     )
     assert mocked_field_test_helper.search == expected_output
+
+
+def test_make_search_query_aggregates_multifield_validity_without_intermediate_fields():
+    fields = [
+        Field(
+            {
+                "name": "packets_in",
+                "validity": "if(isnum(packets_in),packets_in,null())",
+                "expected_values": [],
+                "negative_values": ["", "-", "unknown", "null", "(null)"],
+            }
+        ),
+        Field(
+            {
+                "name": "packets_out",
+                "validity": "if(isnum(packets_out),packets_out,null())",
+                "expected_values": [],
+                "negative_values": ["", "-", "unknown", "null", "(null)"],
+            }
+        ),
+    ]
+    helper = FieldTestHelper(MagicMock(), fields)
+
+    helper._make_search_query("index=*")
+
+    for name in ("packets_in", "packets_out"):
+        validity = (
+            f"if(NOT (lower(tostring(if(isnum({name}),{name},null())))) IN "
+            '("", "-", "unknown", "null", "(null)"), '
+            f"if(isnum({name}),{name},null()), null())"
+        )
+        assert f"\n| eval {name}_valid=" not in helper.search
+        assert f", count(eval({validity})) as {name}_valid_count" in helper.search
+        assert (
+            f", values(eval(if(isnull({validity}), {name}, null()))) "
+            f"as {name}_invalid_values" in helper.search
+        )
 
 
 @pytest.mark.parametrize(
