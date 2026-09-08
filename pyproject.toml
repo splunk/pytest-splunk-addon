@@ -16,7 +16,7 @@
 
 [tool.poetry]
 name = "pytest-splunk-addon"
-version = "7.0.4"
+version = "8.0.0"
 description = "A Dynamic test tool for Splunk Apps and Add-ons"
 authors = ["Splunk <addonfactory@splunk.com>"]
 license = "APACHE-2.0"
@@ -25,20 +25,20 @@ classifiers = [
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.13",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: Apache Software License",
 ]
 include = ["pytest_splunk_addon/**/*.json", "pytest_splunk_addon/**/*.txt"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-pytest = ">5.4.0,<8"
+python = ">=3.13,<3.14"
+pytest = ">=9.0.3,<10"
 splunk-sdk = ">=1.6"
-requests = "^2.31.0"
+requests = ">=2.33.0,<3"
 jsonschema = "^4.17.3"
 pytest-xdist = "^3.5.0"
-filelock = "^3.0"
+filelock = ">=3.20.3,<4"
 pytest-ordering = "~0.6"
 junitparser = "^4.0.0"
 addonfactory-splunk-conf-parser-lib = "*"
@@ -47,7 +47,7 @@ Faker = "^18.12.0"
 xmltodict = "^0.14.0"
 xmlschema = "^2.5.1"
 splunksplwrapper = "^1.1.1"
-urllib3 = "<2"
+urllib3 = ">=2.5.0,<3"
 certifi = ">=2024.7.4"
 zipp = "^3.6.0"
 

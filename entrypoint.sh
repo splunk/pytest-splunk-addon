@@ -4,8 +4,8 @@ cd /work
 curl https://pyenv.run | bash
 export PATH="~/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
-pyenv install 3.7.8
-pyenv local 3.7.8
+pyenv install 3.13.0
+pyenv local 3.13.0
 curl -sSL https://install.python-poetry.org | python - --version 1.5.1
 export PATH="/root/.local/bin:$PATH"
 source ~/.poetry/env
