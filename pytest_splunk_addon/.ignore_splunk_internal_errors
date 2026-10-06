@@ -20,3 +20,5 @@ Error reading SSG config from KV Store
 "service":"splunk-supervisor"
 "service":"InitialDatasetGlobalMap"
 "service":"orchestrator"
+"service":"LspConnectionManager"
+"msg":"Postgres password-store ACL reconciliation had failures"
