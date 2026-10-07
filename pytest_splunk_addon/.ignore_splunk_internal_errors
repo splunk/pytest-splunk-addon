@@ -20,5 +20,6 @@ Error reading SSG config from KV Store
 "service":"splunk-supervisor"
 "service":"InitialDatasetGlobalMap"
 "service":"orchestrator"
-"service":"LspConnectionManager"
+"error":"could not load managed handle for conn: <nil>"
+"error":"Failed to open resource handle: uds:///opt/splunk/var/run/splunk/orchestrator/lsp-
 "msg":"Postgres password-store ACL reconciliation had failures"
