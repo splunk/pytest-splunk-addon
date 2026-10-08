@@ -1,0 +1,28 @@
+
+[my_action]
+
+...
+
+param._cam = {\
+    "category":   	   ["Information Gathering"],\
+    "task":       	   ["create"],\
+    "subject":         ["network.capture"],\
+    "technology":      [{"vendor": "Splunk", "product": "Splunk App for Stream"}],\
+    "supports_adhoc":  true,\
+    "drilldown_uri":   "my_view?form.orig_sid=$sid$&form.orig_rid=$rid$"\
+}
+
+
+[my_action2]
+
+...
+
+param._cam = {\
+    "category":   	     ["Information Gathering"],\
+    "task":       	     ["scan"],\
+    "subject":           ["process.reputation-service"],\
+    "technology":        [{"vendor": "myvendor", "product": "myproduct", "version": "1.0"}],\
+    "supports_adhoc":    true,\
+    "drilldown_uri":     "../my_app/my_view?form.orig_sid=$sid$&form.orig_rid=$rid$",\
+    "field_name_params": ["param.host_field"]\
+}

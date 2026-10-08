@@ -1,0 +1,6 @@
+vendor_action,action,app
+add,created,
+delete,deleted,
+update,modified,
+failed,failure,splunk
+succeeded,success,splunk

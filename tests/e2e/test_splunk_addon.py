@@ -810,3 +810,109 @@ def test_infinite_loop_in_ingest_data_fixture(testdir, request):
     # Here we are not interested in the failures or errors,
     # we are basically checking that we get results and test execution does not get stuck
     assert result.parseoutcomes().get("passed") > 0
+
+
+@pytest.mark.docker
+@pytest.mark.splunk_app_fiction_with_uuid
+def test_splunk_app_fiction_with_uuid(testdir, request):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_fiction"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
+
+    setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
+        "--splunk-type=docker",
+        "-v",
+        "-m splunk_searchtime_fields",
+        "--search-interval=4",
+        "--search-retry=4",
+        "--search-index=*,_internal",
+        "--use-uuid",
+    )
+
+    logger.info(result.outlines)
+    result.stdout.fnmatch_lines_random(
+        constants.TA_FICTION_UUID_PASSED + constants.TA_FICTION_UUID_SKIPPED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_FICTION_UUID_PASSED),
+        failed=0,
+        skipped=len(constants.TA_FICTION_UUID_SKIPPED),
+    )
+
+    # make sure that we get a '0' exit code for the testsuite
+    assert result.ret == 0
+
+
+@pytest.mark.docker
+@pytest.mark.splunk_app_req_with_uuid
+def test_splunk_app_req_with_uuid(testdir, request):
+    """Make sure that pytest accepts our fixture."""
+
+    testdir.makepyfile(
+        """
+        from pytest_splunk_addon.standard_lib.addon_basic import Basic
+        class Test_App(Basic):
+            def empty_method():
+                pass
+    """
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "addons/TA_transition_from_req"),
+        os.path.join(testdir.tmpdir, "package"),
+    )
+
+    shutil.copytree(
+        os.path.join(testdir.request.fspath.dirname, "test_data_models"),
+        os.path.join(testdir.tmpdir, "tests/data_models"),
+    )
+
+    setup_test_dir(testdir)
+    SampleGenerator.clean_samples()
+    Rule.clean_rules()
+
+    # run pytest with the following cmd args
+    result = testdir.runpytest(
+        f"--splunk-version={request.config.getoption('splunk_version')}",
+        "--splunk-type=docker",
+        "-v",
+        "--search-interval=4",
+        "--search-retry=4",
+        "--search-index=*",
+        "--splunk-data-generator=tests/addons/TA_transition_from_req/default",
+        "--use-uuid",
+    )
+    logger.info(result.outlines)
+
+    result.stdout.fnmatch_lines_random(
+        constants.TA_REQ_WITH_UUID_TRANSITION_PASSED
+        + constants.TA_REQ_WITH_UUID_TRANSITION_FAILED
+        + constants.TA_REQ_WITH_UUID_TRANSITION_SKIPPED
+    )
+    result.assert_outcomes(
+        passed=len(constants.TA_REQ_WITH_UUID_TRANSITION_PASSED),
+        failed=len(constants.TA_REQ_WITH_UUID_TRANSITION_FAILED),
+        skipped=len(constants.TA_REQ_WITH_UUID_TRANSITION_SKIPPED),
+    )
+
+    # make sure that we get a non '0' exit code for the testsuite as it contains failure
+    assert result.ret == 0, "result not equal to 0"

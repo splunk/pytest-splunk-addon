@@ -24,6 +24,15 @@ field_2.__dict__.update({"name": "field_2"})
 field_3.__dict__.update({"name": "field_3"})
 
 
+@pytest.fixture
+def mock_uuid4():
+    with patch(
+        "uuid.uuid4",
+        return_value="uuid",
+    ) as mock_uuid:
+        yield mock_uuid
+
+
 @pytest.fixture()
 def addon_parser_mock(monkeypatch):
     ap = MagicMock()
@@ -422,6 +431,7 @@ def test_generate_field_tests(
                         "input_type": "modinput",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host",
+                        "ingest_with_uuid": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={
@@ -445,6 +455,7 @@ def test_generate_field_tests(
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host_syslog",
+                        "ingest_with_uuid": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={},
@@ -455,6 +466,7 @@ def test_generate_field_tests(
                         "input_type": "syslog_tcp",
                         "sourcetype_to_search": "dummy_sourcetype",
                         "host": "dummy_host_syslog",
+                        "ingest_with_uuid": False,
                     },
                     sample_name="file1.xml",
                     requirement_test_data={
@@ -511,6 +523,62 @@ def test_generate_requirement_tests(tokenised_events, expected_output):
     ), patch.object(
         pytest, "param", side_effect=lambda x, id: (x, id)
     ) as param_mock:
+        out = list(
+            FieldTestGenerator(
+                "app_path",
+                tokenised_events,
+                "field_bank",
+            ).generate_requirements_tests()
+        )
+        assert out == expected_output
+        assert param_mock.call_count == len(expected_output)
+
+
+def test_generate_requirement_tests_with_uuid(mock_uuid4):
+    event = SampleEvent(
+        event_string="escaped_event",
+        metadata={
+            "input_type": "modinput",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "dummy_host",
+            "ingest_with_uuid": True,
+        },
+        sample_name="file1.xml",
+        requirement_test_data={
+            "cim_fields": {
+                "severity": "low",
+                "signature_id": "405001",
+                "src": "192.168.0.1",
+                "type": "event",
+            },
+        },
+    )
+
+    # Simulate tokenization UUID assignment
+    event.unique_identifier = "uuid"
+
+    tokenised_events = [event]
+
+    expected_output = [
+        (
+            {
+                "escaped_event": "escaped_event",
+                "unique_identifier": "uuid",
+                "fields": {
+                    "severity": "low",
+                    "signature_id": "405001",
+                    "src": "192.168.0.1",
+                    "type": "event",
+                },
+                "modinput_params": {"sourcetype": "dummy_sourcetype"},
+            },
+            "sample_name::file1.xml::host::dummy_host",
+        )
+    ]
+
+    with patch.object(
+        xml_event_parser, "escape_char_event", return_value="escaped_event"
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
         out = list(
             FieldTestGenerator(
                 "app_path",
@@ -587,6 +655,49 @@ def test_generate_requirement_datamodel_tests(tokenised_events, expected_output)
     ), patch.object(
         pytest, "param", side_effect=lambda x, id: (x, id)
     ) as param_mock:
+        out = list(
+            FieldTestGenerator(
+                "app_path",
+                tokenised_events,
+                "field_bank",
+            ).generate_requirements_datamodels_tests()
+        )
+        assert out == expected_output
+        assert param_mock.call_count == len(expected_output)
+
+
+def test_generate_requirement_datamodel_tests_with_uuid(mock_uuid4):
+    event = SampleEvent(
+        event_string="escaped_event",
+        metadata={
+            "input_type": "modinput",
+            "sourcetype_to_search": "dummy_sourcetype",
+            "host": "dummy_host",
+            "ingest_with_uuid": True,
+        },
+        sample_name="file1.xml",
+        requirement_test_data={"datamodels": {"model": "Alerts"}},
+    )
+
+    # Simulate tokenization UUID assignment
+    event.unique_identifier = "uuid"
+
+    tokenised_events = [event]
+
+    expected_output = [
+        (
+            {
+                "datamodels": ["Alerts"],
+                "stanza": "escaped_event",
+                "unique_identifier": "uuid",
+            },
+            "Alerts::sample_name::file1.xml::host::dummy_host",
+        )
+    ]
+
+    with patch.object(
+        xml_event_parser, "escape_char_event", return_value="escaped_event"
+    ), patch.object(pytest, "param", side_effect=lambda x, id: (x, id)) as param_mock:
         out = list(
             FieldTestGenerator(
                 "app_path",

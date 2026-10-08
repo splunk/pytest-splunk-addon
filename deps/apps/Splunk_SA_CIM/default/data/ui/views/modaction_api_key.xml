@@ -1,0 +1,10 @@
+<dashboard script="modaction_api_key.js" stylesheet="modaction_api_key.css" hideEdit="true" isDashboard="false">
+  <label>Modular Action API Key</label>
+  <row>
+    <panel>
+      <html>
+        <div id="modaction_api_key_container"/>
+      </html>
+    </panel>
+  </row>
+</dashboard>

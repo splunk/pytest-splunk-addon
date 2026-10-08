@@ -1,0 +1,6 @@
+[relaymodaction://master]
+uri = https://master:8089
+description = splunk cloud search head
+username = username
+verify = True
+client_cert = client_cert.pem
