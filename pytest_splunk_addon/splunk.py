@@ -50,6 +50,14 @@ def pytest_addoption(parser):
     group = parser.getgroup("splunk-addon")
 
     group.addoption(
+        "--untokenised-sourcetype-patterns",
+        action="store",
+        dest="untokenised_sourcetype_patterns",
+        default="[]",
+        help="JSON array of sourcetype patterns that scope the unresolved-token search.",
+    )
+
+    group.addoption(
         "--splunk-app",
         action="store",
         dest="splunk_app",
