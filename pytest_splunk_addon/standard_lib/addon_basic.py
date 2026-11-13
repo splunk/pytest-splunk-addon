@@ -19,6 +19,9 @@ Base class for test cases. Provides test cases to verify
 field extractions and CIM compatibility.
 """
 
+import json
+import re
+
 from ..fields_tests import FieldTestTemplates
 from ..cim_tests import CIMTestTemplates
 from ..index_tests import IndexTimeTestTemplate
@@ -39,7 +42,12 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
     @pytest.mark.splunk_searchtime_cim
     @pytest.mark.splunk_searchtime_fields
     def test_events_with_untokenised_values(
-        self, splunk_search_util, splunk_ingest_data, splunk_setup, record_property
+        self,
+        request,
+        splunk_search_util,
+        splunk_ingest_data,
+        splunk_setup,
+        record_property,
     ):
         """
         Test case to validate that all the events have been properly tokenised
@@ -50,7 +58,29 @@ class Basic(FieldTestTemplates, CIMTestTemplates, IndexTimeTestTemplate):
             record_property (fixture): Document facts of test cases.
 
         """
-        query = f"""search index=* | regex "##[a-zA-Z0-9_-]+##" | stats count by source, sourcetype"""
+        sourcetype_patterns = json.loads(
+            request.config.getoption("untokenised_sourcetype_patterns")
+        )
+        if sourcetype_patterns:
+            if not isinstance(sourcetype_patterns, list) or not all(
+                isinstance(pattern, str)
+                and re.fullmatch(r"[A-Za-z0-9_.:-]+\*?", pattern)
+                for pattern in sourcetype_patterns
+            ):
+                raise ValueError("Invalid --untokenised-sourcetype-patterns value")
+            sourcetype_filter = " OR ".join(
+                f'sourcetype="{pattern}"' for pattern in sourcetype_patterns
+            )
+            query = (
+                f"""search index=* ({sourcetype_filter}) """
+                f"""| regex _raw="##[a-zA-Z0-9_-]+##" """
+                f"""| stats count by source, sourcetype"""
+            )
+        else:
+            query = (
+                'search index=* | regex _raw="##[a-zA-Z0-9_-]+##" '
+                "| stats count by source, sourcetype"
+            )
         record_property("Query", query)
         results = list(
             splunk_search_util.getFieldValuesList(
