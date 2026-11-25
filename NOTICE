@@ -7,9 +7,9 @@
 
 The following 3rd-party software packages may be used by or distributed with pytest-splunk-addon. Any information relevant to third-party vendors listed below are collected using common, reasonable means.
 
-Date generated: 2026-10-8
+Date generated: 2026-11-25
 
-Revision ID: f034bc31278b1e155dfd973388a30ed1f6814caf
+Revision ID: 352204161b7e4541bd826bcf6f8367c9c91f0a88
 
 ================================================================================
 ================================================================================
@@ -47,7 +47,7 @@ No first party licenses found in pytest-splunk-addon
 - certifi (2024.12.14) [MPL-2.0]
 - charset-normalizer (3.4.4) [MIT]
 - colorama (0.4.6) [BSD-3-Clause]
-- configparser (7.2.0) [MIT]
+- configparser (7.3.0) [MIT]
 - defusedxml (0.7.1) [PSF-2.0]
 - deprecation (2.1.0) [Apache-2.0]
 - elementpath (4.1.5) [MIT]
@@ -63,8 +63,8 @@ No first party licenses found in pytest-splunk-addon
 - jsonschema (4.17.3) [MIT, Apache-2.0]
 - junitparser (4.0.2) [Apache-2.0]
 - packaging (24.0) [Apache-2.0]
-- packaging (26.3) [Apache-2.0]
-- pkgutil_resolve_name (1.3.10) [MIT, PSF-2.0]
+- packaging (26.4) [Apache-2.0]
+- pkgutil_resolve_name (1.3.10) [PSF-2.0, MIT]
 - pluggy (1.2.0) [MIT]
 - pyparsing (3.1.4) [MIT, BSD-3-Clause, MIT-CMU, public-domain]
 - pyrsistent (0.19.3) [MIT, BSD-3-Clause]
@@ -645,7 +645,7 @@ SOFTWARE.
 
 * Copyrights *
 MIT
-- Copyright (c)  is shown in the HTML footer. Default is True.
+- Copyright (c) is shown in the HTML footer. Default is True.
 
 * Package Info *
 
@@ -802,7 +802,7 @@ SOFTWARE.
 * Copyrights *
 MIT
 - Copyright (c) 2025 TAHRI Ahmed R.
-- Copyright (c)  Ahmed TAHRI @Ousret](https://github.com/Ousret).<br
+- Copyright (c) Ahmed TAHRI @Ousret](https://github.com/Ousret).<br
 
 * Package Info *
 
@@ -904,9 +904,9 @@ Dependency Path: pytest > colorama > pytest-ordering > pytest > colorama > pytes
 File Path(s): poetry.lock
 
 --------------------------------------------------------------------------------
-Package Title: configparser (7.2.0)
+Package Title: configparser (7.3.0)
 
-Package Locator: pip+configparser$7.2.0
+Package Locator: pip+configparser$7.3.0
 
 Package Depth: Direct
 --------------------------------------------------------------------------------
@@ -918,53 +918,60 @@ MIT
 --------------------------------------------------------------------------------
 File matches:
 - LICENSE
+  - Copyright (c) 2026 copyright holders>
 --------------------------------------------------------------------------------
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to
-deal in the Software without restriction, including without limitation the
-rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-sell copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+MIT License
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+Copyright (c) 2026 <copyright holders>
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-IN THE SOFTWARE.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 * License Header *
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to
-deal in the Software without restriction, including without limitation the
-rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-sell copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+MIT License
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+Copyright (c) 2026 <copyright holders>
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-IN THE SOFTWARE.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
 
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+* Copyrights *
+MIT
+- Copyright (c) 2026 copyright holders>
 
 * Package Info *
 
 Authors: Łukasz Langa <lukasz@langa.pl>
 Package Manager: Pip
 Project URL: https://pypi.org/project/configparser/
-Package Download URL: https://files.pythonhosted.org/packages/8b/ac/ea19242153b5e8be412a726a70e82c7b5c1537c83f61b20995b2eda3dcd7/configparser-7.2.0.tar.gz
+Package Download URL: https://files.pythonhosted.org/packages/05/b6/0740835503f8d6201154a6eb9fba37e1462fa9c21f363c28bbb972daaa3a/configparser-7.3.0.tar.gz
 Dependency Path: configparser
 File Path(s): deps/build/addonfactory_test_matrix_splunk/requirements.txt
 
@@ -2035,7 +2042,7 @@ Agreement.
 
 * Copyrights *
 PSF-2.0
-- Copyright (c)  i.e., "Copyright (c)
+- Copyright (c) i.e., "Copyright (c)
 
 * Package Info *
 
@@ -2553,7 +2560,7 @@ Apache-2.0
 
 * Copyrights *
 Apache-2.0
-- Copyright (c)  yyyy} {name of copyright owner}
+- Copyright (c) yyyy} {name of copyright owner}
 
 * Package Info *
 
@@ -2811,13 +2818,13 @@ SOFTWARE.
 * Copyrights *
 MIT
 - Copyright (c) 2018-2021 SISSA (Scuola Internazionale Superiore di Studi Avanzati)
-- Copyright (c) 2018-2020 SISSA (International School for Advanced Studies).
-- Copyright (c) 2018-2021 SISSA (International School for Advanced Studies).
 - Copyright (c) 2022 SISSA (International School for Advanced Studies).
+- Copyright (c) 2018-2020 SISSA (International School for Advanced Studies).
 - Copyright (c) 2016-2020 SISSA (International School for Advanced Studies).
 - Copyright (c) 2018-2022 SISSA (International School for Advanced Studies).
-- Copyright (c) 2018 SISSA (International School for Advanced Studies).
 - Copyright (c) 2021 SISSA (International School for Advanced Studies).
+- Copyright (c) 2018-2021 SISSA (International School for Advanced Studies).
+- Copyright (c) 2018 SISSA (International School for Advanced Studies).
 - Copyright (c) 2016-2021 SISSA (International School for Advanced Studies).
 - Copyright (c) 2023 SISSA (International School for Advanced Studies).
 - Copyright (c) 2018-2023 SISSA (International School for Advanced Studies).
@@ -3074,10 +3081,10 @@ Agreement.
 * Copyrights *
 Python-2.0
 - Copyright (c) 2022 Alex Grönholm
-- Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 
+- Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 MIT
 - Copyright (c) 2022 Alex Grönholm
-- Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 
+- Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 
 * Package Info *
 
@@ -3481,7 +3488,7 @@ Package Depth: Transitive
 
 Internationalized Domain Names in Applications (IDNA)
 
-* Other Licenses *
+* Declared Licenses *
 BSD-3-Clause
 --------------------------------------------------------------------------------
 File matches:
@@ -4830,9 +4837,9 @@ Dependency Path: pytest > packaging > pytest-ordering > pytest > packaging > pyt
 File Path(s): poetry.lock
 
 --------------------------------------------------------------------------------
-Package Title: packaging (26.3)
+Package Title: packaging (26.4)
 
-Package Locator: pip+packaging$26.3
+Package Locator: pip+packaging$26.4
 
 Package Depth: Direct
 --------------------------------------------------------------------------------
@@ -4934,7 +4941,7 @@ under the terms of *both* these licenses.
 Authors: Donald Stufft <donald@stufft.io>
 Package Manager: Pip
 Project URL: https://pypi.org/project/packaging/
-Package Download URL: https://files.pythonhosted.org/packages/7d/fa/3944b40b07da9ce895c0e6303a5ab7d53da063554f534556b134a54d6093/packaging-26.3.tar.gz
+Package Download URL: https://files.pythonhosted.org/packages/c3/75/ffb1dc0ed12352139fb4ca0e3fde4325a23e3d0f3f40efe89717bc4f557b/packaging-26.4.tar.gz
 Dependency Path: packaging
 File Path(s): deps/build/addonfactory_test_matrix_splunk/requirements.txt
 
@@ -4946,15 +4953,41 @@ Package Locator: pip+pkgutil-resolve-name$1.3.10
 Package Depth: Transitive
 --------------------------------------------------------------------------------
 
-pkgutil-resolve-name
-====================
-
-A backport of Python 3.9's ``pkgutil.resolve_name``.
-See the `Python 3.9 documentation <https://docs.python.org/3.9/library/pkgutil.html#pkgutil.resolve_name>`__.
-
+Resolve a name to an object.
 
 * Declared Licenses *
-MIT, PSF-2.0
+PSF-2.0, MIT
+
+* PSF-2.0 *
+--------------------------------------------------------------------------------
+File matches:
+- LICENSE
+  - Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 
+  - Copyright (c) 2020 Thomas Grainger.
+--------------------------------------------------------------------------------
+
+PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
+
+  1. This LICENSE AGREEMENT is between the Python Software Foundation ("PSF"), and the Individual or Organization ("Licensee") accessing and otherwise using this software ("Python") in source or binary form and its associated documentation.
+  2. Subject to the terms and conditions of this License Agreement, PSF hereby grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use Python alone or in any derivative version, provided, however, that PSF's License Agreement and PSF's notice of copyright, i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation; All Rights Reserved" are retained in Python alone or in any derivative version prepared by Licensee.
+  3. In the event Licensee prepares a derivative work that is based on or incorporates Python or any part thereof, and wants to make the derivative work available to others as provided herein, then Licensee hereby agrees to include in any such work a brief summary of the changes made to Python.
+  4. PSF is making Python available to Licensee on an "AS IS" basis. PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
+  5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+  6. This License Agreement will automatically terminate upon a material breach of its terms and conditions.
+  7. Nothing in this License Agreement shall be deemed to create any relationship of agency, partnership, or joint venture between PSF and Licensee. This License Agreement does not grant permission to use PSF trademarks or trade name in a trademark sense to endorse or promote products or services of Licensee, or any third party.
+  8. By copying, installing or otherwise using Python, Licensee agrees to be bound by the terms and conditions of this License Agreement.
+
+* License Header *
+PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
+
+  1. This LICENSE AGREEMENT is between the Python Software Foundation ("PSF"), and the Individual or Organization ("Licensee") accessing and otherwise using this software ("Python") in source or binary form and its associated documentation.
+  2. Subject to the terms and conditions of this License Agreement, PSF hereby grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use Python alone or in any derivative version, provided, however, that PSF's License Agreement and PSF's notice of copyright, i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation; All Rights Reserved" are retained in Python alone or in any derivative version prepared by Licensee.
+  3. In the event Licensee prepares a derivative work that is based on or incorporates Python or any part thereof, and wants to make the derivative work available to others as provided herein, then Licensee hereby agrees to include in any such work a brief summary of the changes made to Python.
+  4. PSF is making Python available to Licensee on an "AS IS" basis. PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
+  5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+  6. This License Agreement will automatically terminate upon a material breach of its terms and conditions.
+  7. Nothing in this License Agreement shall be deemed to create any relationship of agency, partnership, or joint venture between PSF and Licensee. This License Agreement does not grant permission to use PSF trademarks or trade name in a trademark sense to endorse or promote products or services of Licensee, or any third party.
+  8. By copying, installing or otherwise using Python, Licensee agrees to be bound by the terms and conditions of this License Agreement.
 
 * MIT *
 --------------------------------------------------------------------------------
@@ -5119,44 +5152,13 @@ agrees to be bound by the terms and conditions of this License
 Agreement.
 
 
-* PSF-2.0 *
---------------------------------------------------------------------------------
-File matches:
-- LICENSE
-  - Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 
-  - Copyright (c) 2020 Thomas Grainger.
---------------------------------------------------------------------------------
-
-PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
-
-  1. This LICENSE AGREEMENT is between the Python Software Foundation ("PSF"), and the Individual or Organization ("Licensee") accessing and otherwise using this software ("Python") in source or binary form and its associated documentation.
-  2. Subject to the terms and conditions of this License Agreement, PSF hereby grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use Python alone or in any derivative version, provided, however, that PSF's License Agreement and PSF's notice of copyright, i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation; All Rights Reserved" are retained in Python alone or in any derivative version prepared by Licensee.
-  3. In the event Licensee prepares a derivative work that is based on or incorporates Python or any part thereof, and wants to make the derivative work available to others as provided herein, then Licensee hereby agrees to include in any such work a brief summary of the changes made to Python.
-  4. PSF is making Python available to Licensee on an "AS IS" basis. PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
-  5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-  6. This License Agreement will automatically terminate upon a material breach of its terms and conditions.
-  7. Nothing in this License Agreement shall be deemed to create any relationship of agency, partnership, or joint venture between PSF and Licensee. This License Agreement does not grant permission to use PSF trademarks or trade name in a trademark sense to endorse or promote products or services of Licensee, or any third party.
-  8. By copying, installing or otherwise using Python, Licensee agrees to be bound by the terms and conditions of this License Agreement.
-
-* License Header *
-PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
-
-  1. This LICENSE AGREEMENT is between the Python Software Foundation ("PSF"), and the Individual or Organization ("Licensee") accessing and otherwise using this software ("Python") in source or binary form and its associated documentation.
-  2. Subject to the terms and conditions of this License Agreement, PSF hereby grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce, analyze, test, perform and/or display publicly, prepare derivative works, distribute, and otherwise use Python alone or in any derivative version, provided, however, that PSF's License Agreement and PSF's notice of copyright, i.e., "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation; All Rights Reserved" are retained in Python alone or in any derivative version prepared by Licensee.
-  3. In the event Licensee prepares a derivative work that is based on or incorporates Python or any part thereof, and wants to make the derivative work available to others as provided herein, then Licensee hereby agrees to include in any such work a brief summary of the changes made to Python.
-  4. PSF is making Python available to Licensee on an "AS IS" basis. PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
-  5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
-  6. This License Agreement will automatically terminate upon a material breach of its terms and conditions.
-  7. Nothing in this License Agreement shall be deemed to create any relationship of agency, partnership, or joint venture between PSF and Licensee. This License Agreement does not grant permission to use PSF trademarks or trade name in a trademark sense to endorse or promote products or services of Licensee, or any third party.
-  8. By copying, installing or otherwise using Python, Licensee agrees to be bound by the terms and conditions of this License Agreement.
-
 * Copyrights *
-MIT
-- Copyright (c) 2020 Thomas Grainger.
-- Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 
 PSF-2.0
 - Copyright (c) 2020 Thomas Grainger.
-- Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 
+- Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
+MIT
+- Copyright (c) 2020 Thomas Grainger.
+- Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 
 * Package Info *
 
@@ -5238,7 +5240,7 @@ MIT
 
 * Package Info *
 
-Authors: Holger Krekel <holger@merlinux.eu>
+Authors: Holger Krekel
 Package Manager: Pip
 Project URL: https://pypi.org/project/pluggy/
 Package Download URL: https://files.pythonhosted.org/packages/8a/42/8f2833655a29c4e9cb52ee8a2be04ceac61bcff4a680fb338cbd3d1e322d/pluggy-1.2.0.tar.gz
@@ -6022,9 +6024,9 @@ Apache-2.0
 
 * Package Info *
 
-Authors: gustavo@niemeyer.net
+Authors: Gustavo Niemeyer <gustavo@niemeyer.net>
 Package Manager: Pip
-Project URL: https://github.com/dateutil/dateutil
+Project URL: https://pypi.org/project/python-dateutil/
 Package Download URL: https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee498c46e004a0eb49bc148f2fd230864601a86dcf6db/python-dateutil-2.9.0.post0.tar.gz
 Dependency Path: faker > python-dateutil
 File Path(s): poetry.lock
@@ -7738,7 +7740,7 @@ STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFT
 
 * Copyrights *
 Python-2.0
-- Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 
+- Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
 
 * Package Info *
 
@@ -8265,18 +8267,18 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
 * Copyrights *
 MIT
 - Copyright (c) 2016-2022 SISSA (Scuola Internazionale Superiore di Studi Avanzati)
+- Copyright (c) 2016-2022 SISSA (International School for Advanced Studies).
 - Copyright (c) 2016-2020 SISSA (International School for Advanced Studies).
+- Copyright (c) 2016-2021 SISSA (International School for Advanced Studies).
 - Copyright (c) 2018-2020 SISSA (International School for Advanced Studies).
 - Copyright (c) 2021 SISSA (International School for Advanced Studies).
-- Copyright (c) 2016-2021 SISSA (International School for Advanced Studies).
 - Copyright (c) 2016-2023 SISSA (International School for Advanced Studies).
-- Copyright (c) 2016-2022 SISSA (International School for Advanced Studies).
 W3C
 - Copyright (c) 2011 World Wide Web Consortium
-- Copyright (c)  software-20021231
+- Copyright (c) software-20021231
 W3C-19980720
 - Copyright (c) 2001 The Internet Society and W3C (Massachusetts Institute
-- Copyright (c)  software-19980720
+- Copyright (c) software-19980720
 - Copyright (c) 2001 World Wide Web Consortium, (Massachusetts Institute of Technology, Institut National de Recherche en Informatique et en Automatique, Keio University). All Rights Reserved. http://www.w3.org/Consortium/Legal/"
 
 * Package Info *
@@ -8402,7 +8404,7 @@ IN THE SOFTWARE.
 
 * Copyrights *
 MIT
-- Copyright (c)  Jason R. Coombs
+- Copyright (c) Jason R. Coombs
 
 * Package Info *
 
@@ -8417,4 +8419,4 @@ File Path(s): poetry.lock
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
-Report Generated by FOSSA on 2026-10-8
+Report Generated by FOSSA on 2026-11-25
