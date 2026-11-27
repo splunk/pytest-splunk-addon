@@ -48,8 +48,9 @@ class AppTestGenerator(object):
 
         store_events = self.pytest_config.getoption("store_events")
         config_path = self.pytest_config.getoption("splunk_data_generator")
+        ingest_with_uuid = self.pytest_config.getoption("ingest_with_uuid")
         sample_generator = SampleXdistGenerator(
-            self.pytest_config.getoption("splunk_app"), config_path
+            self.pytest_config.getoption("splunk_app"), ingest_with_uuid, config_path
         )
         store_sample = sample_generator.get_samples(store_events)
         self.tokenized_events = store_sample.get("tokenized_events")

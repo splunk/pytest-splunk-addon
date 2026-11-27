@@ -22,7 +22,6 @@ def ingestors_mocks():
     ) as hec_metric_event_mock, patch(
         f"{EVENT_INGESTOR_PATH}.sc4s_event_ingestor.SC4SEventIngestor"
     ) as sc4s_event_mock:
-
         hec_event_mock.return_value = HEC_EVENT_INGESTOR_RETURN_VALUE
         hec_raw_event_mock.return_value = HEC_RAW_EVENT_INGESTOR_RETURN_VALUE
         hec_metric_event_mock.return_value = HEC_METRIC_EVENT_INGESTOR_RETURN_VALUE
@@ -125,7 +124,7 @@ def test_events_can_be_ingested(
     get_ingestor_mock, sample_mock, file_monitor_events, modinput_events
 ):
     event_ingestors.ingestor_helper.IngestorHelper.ingest_events(
-        ingest_meta_data={},
+        ingest_meta_data={"ingest_with_uuid": "false"},
         addon_path="fake_path",
         config_path="tests/unit/event_ingestors",
         thread_count=20,
@@ -133,7 +132,11 @@ def test_events_can_be_ingested(
     )
     assert get_ingestor_mock.call_count == 2
     get_ingestor_mock.assert_has_calls(
-        [call("file_monitor", {}), call("modinput", {})], any_order=True
+        [
+            call("file_monitor", {"ingest_with_uuid": "false"}),
+            call("modinput", {"ingest_with_uuid": "false"}),
+        ],
+        any_order=True,
     )
     assert get_ingestor_mock.ingest.call_count == 2
     get_ingestor_mock.ingest.assert_has_calls(

@@ -11,7 +11,7 @@ from pytest_splunk_addon.sample_generation import (
 def test_psa_data_when_no_config():
     with tempfile.TemporaryDirectory() as tempdir:
         with pytest.raises(FileNotFoundError):
-            psa_data_parser = PytestSplunkAddonDataParser(tempdir, tempdir)
+            psa_data_parser = PytestSplunkAddonDataParser(tempdir, tempdir, "false")
             _ = psa_data_parser.psa_data
 
 
@@ -20,6 +20,7 @@ def test_path_to_samples():
     psa_data_parser = PytestSplunkAddonDataParser(
         path,
         path,
+        "false",
     )
     assert os.path.join(path, "samples") == psa_data_parser._path_to_samples
 
@@ -29,6 +30,7 @@ def test_get_psa_data_stanzas_with_samples():
     psa_data_parser = PytestSplunkAddonDataParser(
         path,
         path,
+        "false",
     )
     expected_result = {
         "test1.samples": {
@@ -101,6 +103,7 @@ def test_get_sample_stanzas_without_samples(caplog):
         parser = PytestSplunkAddonDataParser(
             tempdir,
             config_path,
+            "false",
         )
         parser.get_sample_stanzas()
         assert "No sample file found for stanza : test1.samples" in caplog.messages

@@ -48,6 +48,15 @@ def pytest_addoption(parser):
         by another process such as a ci/cd pipeline
     """
     group = parser.getgroup("splunk-addon")
+    group.addoption(
+        "--ingest-with-uuid",
+        action="store",
+        dest="ingest_with_uuid",
+        default="false",
+        help=(
+            'Use generated UUID for ingesting and searching events. Setting this parameter to "true" will lead to matching events in search by the ID and not by escaped _raw. Default is "false".'
+        ),
+    )
 
     group.addoption(
         "--splunk-app",
@@ -733,6 +742,7 @@ def splunk_ingest_data(request, splunk_hec_uri, sc4s, uf, splunk_events_cleanup)
             "splunk_hec_uri": splunk_hec_uri[1],
             "sc4s_host": sc4s[0],  # for sc4s
             "sc4s_port": sc4s[1][514],  # for sc4s
+            "ingest_with_uuid": request.config.getoption("ingest_with_uuid"),
         }
         thread_count = int(request.config.getoption("thread_count"))
         store_events = request.config.getoption("store_events")
